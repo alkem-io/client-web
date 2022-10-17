@@ -37,7 +37,7 @@ export const LogoutPage: FC<LogoutPageProps> = () => {
       getLogoutUrl();
     }
     return () => {};
-  }, [logoutUrl]);
+  }, [logoutUrl, getLogoutUrl]);
 
   if (error) return <Typography>{error}</Typography>;
   return <Loading text={t('pages.logout.loading')} />;

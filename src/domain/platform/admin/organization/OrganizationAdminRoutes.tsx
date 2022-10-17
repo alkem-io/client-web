@@ -12,7 +12,10 @@ const OrganizationAdminRoutes: FC<PageProps> = ({ paths }) => {
 
   const { displayName } = useOrganization();
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: displayName, real: true }], [paths, displayName]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: displayName, real: true }],
+    [paths, displayName, url]
+  );
 
   return (
     <Routes>

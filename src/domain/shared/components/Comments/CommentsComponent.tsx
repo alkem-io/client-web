@@ -68,7 +68,7 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
         scrollHeight: commentsContainerRef.current.scrollHeight,
       };
     }
-  }, [messages]);
+  }, [messages, containerHeight]);
 
   useEffect(() => {
     if (wasScrolledToBottomRef.current && commentsContainerRef.current) {

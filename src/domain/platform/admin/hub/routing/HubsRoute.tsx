@@ -22,7 +22,7 @@ export const HubsRoute: FC<PageProps> = ({ paths }) => {
         real: true,
       },
     ],
-    []
+    [paths, url, t]
   );
 
   return (

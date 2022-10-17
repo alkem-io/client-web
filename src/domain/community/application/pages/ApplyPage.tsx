@@ -86,7 +86,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
           }),
         yup.object()
       ),
-    [questions]
+    [questions, t]
   );
 
   const onSubmit = async (values: Record<string, string> /* <question, answer> */) => {

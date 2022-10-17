@@ -102,15 +102,18 @@ export const OrganizationForm: FC<Props> = ({
     return tagsetsTemplate.map(cur => ({ name: cur.name, tags: [] }));
   }, [tagsetsTemplate]);
 
-  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
-    const result: UpdateTagset[] = [];
-    updatedTagsets.forEach(updatedTagset => {
-      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
-      if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
-    });
+  const getUpdatedTagsets = useCallback(
+    (updatedTagsets: Tagset[]) => {
+      const result: UpdateTagset[] = [];
+      updatedTagsets.forEach(updatedTagset => {
+        const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+        if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
+      });
 
-    return result;
-  };
+      return result;
+    },
+    [tagsets]
+  );
 
   const initialValues: OrganizationInput = {
     name: displayName || EmptyOrganization.displayName,
@@ -191,7 +194,7 @@ export const OrganizationForm: FC<Props> = ({
         onSave?.(organization);
       }
     },
-    [isCreateMode, isEditMode, onSave]
+    [isCreateMode, isEditMode, onSave, currentOrganization.id, currentOrganization.profile.id, getUpdatedTagsets]
   );
 
   const handleBack = () => navigate(-1);

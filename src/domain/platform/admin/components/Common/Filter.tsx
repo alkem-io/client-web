@@ -49,7 +49,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
       return orderBy(filtered, sortBy.key, sortBy.order);
     }
     return filtered;
-  }, [data, filterBy, sortBy]);
+  }, [data, filterBy, sortBy, limitKeys]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

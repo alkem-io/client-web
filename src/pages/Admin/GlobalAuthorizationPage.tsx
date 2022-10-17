@@ -24,7 +24,7 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
       ...paths,
       { value: url, name: t(`common.enums.authorization-credentials.${credential}.name` as const), real: true },
     ],
-    [paths]
+    [paths, url, t, credential]
   );
   useUpdateNavigation({ currentPaths });
 

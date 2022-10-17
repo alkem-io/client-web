@@ -46,7 +46,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const getMoreTagsText = (count: number) => t('components.tags-component.more', { count });
+  const getMoreTagsText = useCallback((count: number) => t('components.tags-component.more', { count }), [t]);
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
   const wrapped = (children: ReactNode) => <div className={styles.tagWrapper}>{children}</div>;
 
@@ -67,7 +67,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
         />
       </Tooltip>
     ),
-    []
+    [styles.iconSmall, styles.maxWidth, styles.tagMargin]
   );
 
   const renderMore = useCallback(
@@ -87,7 +87,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
         />
       </Tooltip>
     ),
-    []
+    [getMoreTagsText, styles.iconSmall, styles.tagMargin]
   );
 
   const renderTags = () => {

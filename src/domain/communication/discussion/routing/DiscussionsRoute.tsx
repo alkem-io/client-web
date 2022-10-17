@@ -16,7 +16,10 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
   const { isFeatureEnabled } = useConfig();
   const { pathname } = useResolvedPath('.');
 
-  const currentPaths = useMemo(() => [...paths, { value: pathname, name: 'discussions', real: true }], [paths]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: pathname, name: 'discussions', real: true }],
+    [paths, pathname]
+  );
 
   if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
   return (

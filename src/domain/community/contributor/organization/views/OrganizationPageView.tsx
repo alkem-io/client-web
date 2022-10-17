@@ -29,7 +29,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
       { name: t('components.profile.fields.keywords.title'), tags: keywords },
       { name: t('components.profile.fields.capabilities.title'), tags: capabilities },
     ],
-    [keywords, capabilities]
+    [keywords, capabilities, t]
   );
 
   const entity = useMemo(
@@ -46,7 +46,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         links,
         location: organization?.profile?.location,
       } as OrganizationProfileViewEntity),
-    [organization, tagsets, socialLinks, links]
+    [organization, tagsets, socialLinks, links, t]
   );
 
   return (

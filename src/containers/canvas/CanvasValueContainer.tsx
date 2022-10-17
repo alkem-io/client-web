@@ -145,7 +145,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     if (canvas) {
       onCanvasValueLoaded?.(canvas);
     }
-  }, [canvas]);
+  }, [canvas, onCanvasValueLoaded]);
 
   const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 

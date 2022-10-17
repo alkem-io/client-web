@@ -73,7 +73,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       });
       return update.data?.sendUpdate;
     },
-    [sendUpdate, communityId, updatesId]
+    [sendUpdate, updatesId]
   );
 
   const [removeUpdate, { loading: loadingRemoveUpdate }] = useRemoveUpdateCommunityMutation();
@@ -86,7 +86,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       });
       return update.data?.removeUpdate;
     },
-    [sendUpdate, communityId, updatesId]
+    [communityId, updatesId, hubId, removeUpdate]
   );
 
   const onLoadMore = () => {

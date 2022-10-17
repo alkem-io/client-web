@@ -18,7 +18,7 @@ const FormikEffectFactory = <T,>() => {
     const { values, isValid } = formik;
 
     useDeepCompareEffect(() => onChange && onChange(values), [values]);
-    useEffect(() => onStatusChange && onStatusChange(isValid), [isValid]);
+    useEffect(() => onStatusChange && onStatusChange(isValid), [isValid, onStatusChange]);
 
     return <></>;
   };

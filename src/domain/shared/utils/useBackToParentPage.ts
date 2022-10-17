@@ -31,14 +31,17 @@ const useBackToParentPage = (parentPageUrl: string, { keepScroll }: Options = {}
     } else {
       navigate(parentPageUrl, { replace: true, state: { keepScroll } });
     }
-  }, [parentPageUrl, location]);
+  }, [parentPageUrl, location, keepScroll, navigate]);
 
-  const buildLinkWithState = useCallback((url: string): LinkWithState => {
-    return {
-      to: url,
-      state: { [LOCATION_STATE_PARAM_PARENT_PAGE]: true, keepScroll },
-    };
-  }, []);
+  const buildLinkWithState = useCallback(
+    (url: string): LinkWithState => {
+      return {
+        to: url,
+        state: { [LOCATION_STATE_PARAM_PARENT_PAGE]: true, keepScroll },
+      };
+    },
+    [keepScroll]
+  );
 
   return [backToParentPage, buildLinkWithState];
 };

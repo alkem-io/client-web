@@ -99,7 +99,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         user?.hasCredentials(AuthorizationCredential.OrganizationOwner, organizationId) ||
         user?.hasCredentials(AuthorizationCredential.OrganizationAdmin, organizationId) ||
         false,
-      [user]
+      [user, organizationId]
     ),
   };
 

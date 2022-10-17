@@ -154,7 +154,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const createdDate = aspect?.createdDate.toString();
 
   const commentsId = aspect?.comments?.id;
-  const _messages = aspect?.comments?.messages ?? [];
+  const _messages = useMemo(() => aspect?.comments?.messages ?? [], [aspect?.comments?.messages]);
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
@@ -168,14 +168,16 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     [_messages, getAuthor]
   );
 
-  const isAuthor = (msgId: string, userId?: string) =>
-    messages.find(x => x.id === msgId)?.author?.id === userId ?? false;
+  const isAuthor = useCallback(
+    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
+    [messages]
+  );
 
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
     msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [messages, user, isAuthenticated, canDeleteComments]
+    [user, isAuthenticated, canDeleteComments, isAuthor]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);

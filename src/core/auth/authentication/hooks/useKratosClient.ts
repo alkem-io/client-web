@@ -69,5 +69,5 @@ export const useKratosClient = () => {
     const config = authentication?.providers.map(x => x.config).find(x => isOryConfig(x));
     const apiConfig = new Configuration({ basePath: config?.kratosPublicBaseURL });
     return new V0alpha2Api(apiConfig, undefined, axiosClient);
-  }, [authentication]);
+  }, [authentication, axiosClient]);
 };

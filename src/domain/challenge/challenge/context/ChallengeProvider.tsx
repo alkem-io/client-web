@@ -50,7 +50,10 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
   const challengeId = challenge?.id || '';
   const displayName = challenge?.displayName || '';
 
-  const myPrivileges = challenge?.authorization?.myPrivileges ?? [];
+  const myPrivileges = useMemo(
+    () => challenge?.authorization?.myPrivileges ?? [],
+    [challenge?.authorization?.myPrivileges]
+  );
   const canReadCommunity = (challenge?.community?.authorization?.myPrivileges ?? []).includes(
     AuthorizationPrivilege.Read
   );
@@ -62,7 +65,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
       canReadCommunity,
       contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),
-    [myPrivileges, challenge]
+    [myPrivileges, challenge, canReadCommunity]
   );
 
   return (

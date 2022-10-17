@@ -10,9 +10,12 @@ interface LanguageSelectProps {
 const LanguageSelect: FC<LanguageSelectProps> = ({ sx }) => {
   const { i18n } = useTranslation();
 
-  const handleLanguageSelection = useCallback(({ target: { value } }: { target: { value: string } }) => {
-    i18n.changeLanguage(value);
-  }, []);
+  const handleLanguageSelection = useCallback(
+    ({ target: { value } }: { target: { value: string } }) => {
+      i18n.changeLanguage(value);
+    },
+    [i18n]
+  );
 
   return (
     <Box sx={{ alignItems: 'center' }}>

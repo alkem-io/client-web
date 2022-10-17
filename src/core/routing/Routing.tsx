@@ -27,7 +27,7 @@ import { WithApmTransaction } from '../../domain/shared/components';
 export const Routing: FC = () => {
   const { t } = useTranslation();
 
-  const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], []);
+  const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], [t]);
 
   return (
     <Routes>

@@ -183,7 +183,20 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
         {t('components.application-button.apply-disabled')}
       </Button>
     );
-  }, [loading, isAuthenticated, isMember, applicationState, canJoinCommunity, canApplyToCommunity, isParentMember]);
+  }, [
+    loading,
+    isAuthenticated,
+    isMember,
+    applicationState,
+    canJoinCommunity,
+    canApplyToCommunity,
+    isParentMember,
+    applyUrl,
+    canApplyToParentCommunity,
+    canJoinParentCommunity,
+    parentApplicationState,
+    t,
+  ]);
 
   const dialogVariant = useMemo(
     () => (isApplicationPending(parentApplicationState) ? 'dialog-parent-app-pending' : 'dialog-apply-parent'),

@@ -75,7 +75,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         backUrl: buildChallengeUrl(hubNameId, challengeNameId),
       };
     }
-  }, [type, challengeData, challengeTemplateData, hubData, hubTemplateData]);
+  }, [type, challengeData, challengeTemplateData, hubData, hubTemplateData, challengeNameId, hubNameId]);
 
   return {
     data: result,

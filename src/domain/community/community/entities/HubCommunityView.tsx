@@ -45,7 +45,7 @@ const HubCommunityView: FC = () => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const hostOrganization = useMemo(() => host && user && toOrganizationCardProps(host, user, t), [host, user]);
+  const hostOrganization = useMemo(() => host && user && toOrganizationCardProps(host, user, t), [host, user, t]);
 
   const leadUserCards = useUserCardProps(leadUsers, hubId);
 

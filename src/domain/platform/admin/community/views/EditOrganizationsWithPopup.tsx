@@ -56,7 +56,7 @@ const EditOrganizationsWithPopup: FC<EditOrganizationsProps> = ({
     if (isAdding) {
       loadAvailableMembers();
     }
-  }, [isAdding]);
+  }, [isAdding, loadAvailableMembers]);
 
   const available = useMemo(() => toOrganizationDetailsVm(availableOrganizations), [availableOrganizations]);
   const existing = useMemo(() => toOrganizationDetailsVm(existingOrganizations), [existingOrganizations]);

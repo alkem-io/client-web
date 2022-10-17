@@ -110,7 +110,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, grantMember]
   );
 
   const handleRemoveMember = useCallback(
@@ -130,7 +130,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, revokeMember]
   );
 
   const handleAssignAdmin = useCallback(
@@ -150,7 +150,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, grantAdmin]
   );
 
   const handleRemoveAdmin = useCallback(
@@ -170,7 +170,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, revokeAdmin]
   );
 
   const handleAssignOwner = useCallback(
@@ -190,7 +190,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, grantOwner]
   );
 
   const handleRemoveOwner = useCallback(
@@ -210,7 +210,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, revokeOwner]
   );
 
   const {

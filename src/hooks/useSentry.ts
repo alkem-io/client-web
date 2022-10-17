@@ -8,11 +8,11 @@ export const useUserScope = (metadata: UserMetadata | undefined) => {
 
   useEffect(() => {
     setUserScope((metadata || {}).user, sentry?.submitPII);
-  }, [metadata]);
+  }, [metadata, sentry?.submitPII]);
 };
 
 export const useTransactionScope = (name: TransactionScope) => {
   useEffect(() => {
     setTransactionScope(name);
-  }, []);
+  }, [name]);
 };

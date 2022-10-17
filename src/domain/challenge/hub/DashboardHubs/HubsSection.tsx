@@ -67,7 +67,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
         color: 'primary',
       },
     ],
-    [metrics, loading]
+    [challengeCount, hubCount, isLoadingActivities, opportunityCount, t]
   );
 
   const isLoading = loading || areHubsLoading;

@@ -25,7 +25,7 @@ const useCommunityContributors = <Data, Variables extends EntityIds, ProvidedCon
     skip: skip || somePropsNotDefined(variables),
   });
 
-  const contributors = useMemo(() => selector(data), [data]);
+  const contributors = useMemo(() => selector(data), [data, selector]);
 
   return {
     ...contributors,

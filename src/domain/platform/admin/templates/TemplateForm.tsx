@@ -48,17 +48,20 @@ const TemplateForm = <Values extends {}>({
 }: TemplateFormProps<Values>) => {
   const { t } = useTranslation();
 
-  const handleSubmit = useCallback((values: Partial<Values & TemplateInfoValues>) => {
-    const { title, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
-    onSubmit({
-      ...validValues,
-      info: {
-        title,
-        tags,
-        description,
-      },
-    } as any);
-  }, []);
+  const handleSubmit = useCallback(
+    (values: Partial<Values & TemplateInfoValues>) => {
+      const { title, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
+      onSubmit({
+        ...validValues,
+        info: {
+          title,
+          tags,
+          description,
+        },
+      } as any);
+    },
+    [onSubmit]
+  );
 
   const validationSchema = yup.object().shape({
     title: displayNameValidator,

@@ -23,6 +23,7 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import ChallengeCommunityView from '../../../community/community/entities/ChallengeCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import getDepsValueFromObject from '../../../shared/utils/getDepsValueFromObject';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -64,6 +65,8 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
     id = '',
   } = context || ({} as Context);
 
+  const depsValueFromObjectActivity = getDepsValueFromObject(activity);
+
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
@@ -78,7 +81,8 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
         color: 'neutralMedium',
       },
     ];
-  }, [activity, i18n.language]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depsValueFromObjectActivity, i18n.language, t]);
 
   return (
     <>

@@ -69,7 +69,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
     }
 
     return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, _helperText]);
+  }, [isError, meta.error, _helperText, name, tErr]);
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth>

@@ -67,7 +67,7 @@ export const useActivityToViewModel = (activities: Activity[]): ActivityToViewMo
   const getActivityViewModel = useCallback(
     (activityLog: Activity) =>
       toActivityViewModel(activityLog, authors, calloutActivityData, cardsActivityData, canvasesActivityData),
-    [loading, authors, calloutActivityData, cardsActivityData, canvasesActivityData]
+    [authors, calloutActivityData, cardsActivityData, canvasesActivityData]
   );
 
   const activityViewModel = useMemo(
@@ -75,7 +75,7 @@ export const useActivityToViewModel = (activities: Activity[]): ActivityToViewMo
       activities?.map<ActivityLogViewProps>(activity =>
         toActivityViewModel(activity, authors, calloutActivityData, cardsActivityData, canvasesActivityData)
       ),
-    [loading, activities, authors, calloutActivityData, cardsActivityData, canvasesActivityData]
+    [activities, authors, calloutActivityData, cardsActivityData, canvasesActivityData]
   );
 
   return {
