@@ -39,7 +39,7 @@ module.exports = {
       },
     ],
     'import/prefer-default-export': 'off',
-    'react-hooks/exhaustive-deps': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-pascal-case': 'error',
     'react/jsx-closing-bracket-location': 'error',
     'react/jsx-closing-tag-location': 'error',
