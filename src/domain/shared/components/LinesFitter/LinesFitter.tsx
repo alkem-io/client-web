@@ -139,7 +139,7 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: 
         return;
       }
     }
-  }, [state]);
+  }, [state, items.length]);
 
   const visibleItems = items.slice(0, state.itemsToDisplayCount);
   const showMore =

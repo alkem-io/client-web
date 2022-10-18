@@ -81,7 +81,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, grantAdmin]
   );
 
   const handleRemoveAdmin = useCallback(
@@ -101,7 +101,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, revokeAdmin]
   );
 
   const {

@@ -56,7 +56,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
       const url = buildCanvasUrl({ hubNameId, challengeNameId, calloutNameId, canvasNameId });
       return buildLinkToCanvas(url);
     },
-    [hubNameId, challengeNameId]
+    [hubNameId, challengeNameId, buildLinkToCanvas]
   );
 
   const {

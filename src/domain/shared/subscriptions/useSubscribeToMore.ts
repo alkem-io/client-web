@@ -29,6 +29,8 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables =
 
   const isEnabled = areSubscriptionsEnabled && isAuthenticated && !skip;
 
+  const getDepsValueFromObjectOptions = getDepsValueFromObject(subscribeToMoreOptions.variables);
+
   useEffect(() => {
     if (!isEnabled) {
       return;
@@ -38,7 +40,8 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables =
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       ...subscribeToMoreOptions,
     });
-  }, [isEnabled, getDepsValueFromObject(subscribeToMoreOptions.variables)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEnabled, getDepsValueFromObjectOptions, handleError, subscribeToMore]);
 
   return {
     enabled: isEnabled,

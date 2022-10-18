@@ -19,7 +19,10 @@ export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
   const { hubId, displayName, communityId } = useHub();
   const { pathname: url } = useResolvedPath('.');
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: displayName, real: true }], [paths, displayName]);
+  const currentPaths = useMemo(
+    () => [...paths, { value: url, name: displayName, real: true }],
+    [paths, displayName, url]
+  );
 
   return (
     <Routes>

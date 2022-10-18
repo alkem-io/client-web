@@ -23,7 +23,7 @@ export const IdentityRoute: FC = () => {
     return () => {
       loginNavigationService.send(SHOW_LOGIN_NAVIGATION);
     };
-  }, []);
+  }, [loginNavigationService]);
 
   return (
     <Routes>

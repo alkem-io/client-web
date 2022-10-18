@@ -44,7 +44,7 @@ const createLayoutHolder = () => {
           component: Component as ComponentType<Record<string, unknown>>,
           props,
         });
-      }, [props]);
+      }, [props, setLayout]);
 
       return null;
     }) as FC<P>;

@@ -96,7 +96,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
       });
       setIsDialogOpened(true);
     },
-    [entities.application]
+    [applicationByHub]
   );
 
   const handleDialogClose = () => {

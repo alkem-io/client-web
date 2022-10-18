@@ -70,7 +70,7 @@ const ContributorsView: FC<ContributorsViewProps> = ({
           </Box>
         </>
       )),
-    [users?.pageSize]
+    [users, t]
   );
 
   const usersLoader = useLazyLoading(UsersLoader, {
@@ -88,7 +88,7 @@ const ContributorsView: FC<ContributorsViewProps> = ({
           </Box>
         </>
       )),
-    [orgs?.pageSize]
+    [orgs, t]
   );
 
   const orgsLoader = useLazyLoading(OrgsLoader, {

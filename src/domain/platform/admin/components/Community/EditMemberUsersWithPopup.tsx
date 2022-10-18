@@ -34,7 +34,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
     if (isAdding) {
       loadAvailableMembers();
     }
-  }, [isAdding]);
+  }, [isAdding, loadAvailableMembers]);
 
   const entityName = t('common.users');
 

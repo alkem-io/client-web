@@ -17,7 +17,7 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths, url]);
 
   return (
     <Routes>

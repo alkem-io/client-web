@@ -7,14 +7,15 @@ import { useOrganization } from '../../../../../hooks';
 import { Error404, PageProps } from '../../../../../pages';
 import OrganizationPage from '../pages/OrganizationPage';
 
-const OrganizationRoute: FC<PageProps> = ({ paths }) => {
+const rootPaths = [{ value: '/', name: 'organization', real: false }];
+
+const OrganizationRoute: FC<PageProps> = () => {
   const { pathname: url } = useResolvedPath('.');
   const { organization, displayName, loading } = useOrganization();
 
-  const rootPaths = useMemo(() => [{ value: '/', name: 'organization', real: false }], [paths]);
   const currentPaths = useMemo(
     () => (organization ? [...rootPaths, { value: url, name: displayName, real: true }] : rootPaths),
-    [rootPaths, displayName]
+    [organization, displayName, url]
   );
 
   if (loading) return <Loading />;

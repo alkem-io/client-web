@@ -42,7 +42,7 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
         {action}
       </>
     ),
-    [formattedTime, author?.displayName, action]
+    [formattedTime, author?.displayName, action, author?.url, t]
   );
 
   return (

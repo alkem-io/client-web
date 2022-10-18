@@ -1,8 +1,9 @@
 import { Identifiable } from '../types/Identifiable';
 import { Dispatch, useMemo, useState } from 'react';
 import filterFn, { ValueGetter } from '../../../common/components/core/card-filter/filterFn';
-import { mapValues, sortBy } from 'lodash';
+import { mapValues } from 'lodash';
 import { PossiblyUndefinedProps } from '../types/PossiblyUndefinedProps';
+import getDepsValueFromObject from './getDepsValueFromObject';
 
 type UseContributorsSearchProvided<Items extends {}> = Lists<Items> & {
   searchTerms: string[];
@@ -23,12 +24,15 @@ const useSearchAcrossMultipleLists = <Items extends {}>(
 ): UseContributorsSearchProvided<Items> => {
   const [contributorsSearchTerms, setContributorsSearchTerms] = useState<string[]>([]);
 
+  const depsValueFromObjectBundle = getDepsValueFromObject(bundle);
+
   const filtered = useMemo(() => {
     return mapValues(bundle, (list, listName) => {
       const valueGetter = valueGetters[listName];
       return filterFn(list ?? [], contributorsSearchTerms, valueGetter);
     });
-  }, [contributorsSearchTerms, ...sortBy(Object.entries(bundle), ([key]) => key).flat()]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contributorsSearchTerms, depsValueFromObjectBundle, valueGetters]);
 
   return {
     ...filtered,

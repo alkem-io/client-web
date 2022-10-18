@@ -33,7 +33,7 @@ export const OrganizationGroupsView: FC = () => {
         update: removeFromCache,
       });
     },
-    [groups]
+    [deleteGroup]
   );
 
   return (

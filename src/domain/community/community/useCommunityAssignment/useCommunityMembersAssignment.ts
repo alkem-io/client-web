@@ -105,7 +105,7 @@ const useCommunityMembersAssignment = <
 
   const availableMembers = useMemo(
     () => allPossibleMembers.filter(org => !has(existingOrganizationsIndexed, org.id)),
-    [allPossibleMembers, existingMembers]
+    [allPossibleMembers, existingOrganizationsIndexed]
   );
 
   const [assign, { loading: isAddingMember }] = useAssignMemberMutation({

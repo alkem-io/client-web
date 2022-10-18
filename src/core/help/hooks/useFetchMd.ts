@@ -16,7 +16,7 @@ export const useFetchMd = (path: string) => {
       .then(x => setData(x))
       .catch((x: Error) => setError(x))
       .finally(() => setLoading(false));
-  }, []);
+  }, [path]);
 
   return { data, loading, error };
 };

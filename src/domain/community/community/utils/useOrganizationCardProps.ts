@@ -36,7 +36,10 @@ const useOrganizationCardProps = (
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  return useMemo(() => user && organizations?.map(org => toOrganizationCardProps(org, user, t)), [user, organizations]);
+  return useMemo(
+    () => user && organizations?.map(org => toOrganizationCardProps(org, user, t)),
+    [user, organizations, t]
+  );
 };
 
 export default useOrganizationCardProps;

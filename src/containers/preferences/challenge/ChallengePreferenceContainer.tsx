@@ -67,7 +67,7 @@ const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ c
         },
       });
     },
-    [challengeId]
+    [challengeId, updatePreference]
   );
 
   return <>{children({ preferences }, { loading, error }, { onUpdate })}</>;

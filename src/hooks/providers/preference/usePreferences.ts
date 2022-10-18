@@ -43,7 +43,7 @@ export const usePreferences = <TQuery, TQVariable, TMVariable>(
         variables: mutationVariables(queryVariables, type, checked),
       });
     },
-    [mutationVariables, queryVariables]
+    [mutationVariables, queryVariables, updatePreference]
   );
 
   return { loading, submitting, error, preferences, onUpdate };

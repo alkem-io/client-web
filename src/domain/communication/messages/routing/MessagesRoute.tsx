@@ -4,7 +4,7 @@ import { Error404, MessagesPage } from '../../../../pages';
 
 export const MessagesRoute: FC = () => {
   const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [{ value: url, name: 'messages', real: true }], []);
+  const currentPaths = useMemo(() => [{ value: url, name: 'messages', real: true }], [url]);
 
   return (
     <Routes>

@@ -109,7 +109,7 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
         },
       });
     },
-    [data, fetchMoreRaw]
+    [data, fetchMoreRaw, getPageInfo, pageSize]
   );
 
   const loadQuery = useCallback(async () => {

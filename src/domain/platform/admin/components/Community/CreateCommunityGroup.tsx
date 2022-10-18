@@ -55,7 +55,7 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
           },
         });
     },
-    [communityId]
+    [communityId, createGroup]
   );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);

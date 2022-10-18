@@ -15,16 +15,11 @@ export const useAppendPaths = (initialPaths: Path[], ...pathDefs: PathDef[]) => 
     real: !!pathDef.value,
   }));
 
-  return useMemo(() => [...initialPaths, ...appendedPaths], [initialPaths]);
+  return useMemo(() => [...initialPaths, ...appendedPaths], [initialPaths, appendedPaths]);
 };
 
 export const useAppendPath = (paths: Path[], pathDef: PathDef) => {
-  const path = {
-    value: '',
-    ...pathDef,
-    real: !!pathDef.value,
-  };
-  return useMemo(() => [...paths, path], [paths, pathDef.name, pathDef.value]);
+  return useMemo(() => [...paths, { value: '', ...pathDef, real: !!pathDef.value }], [paths, pathDef]);
 };
 
 export const useAppendBreadcrumb = (paths: Path[], pathDef: PathDef) => {

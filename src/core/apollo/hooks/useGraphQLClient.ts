@@ -37,5 +37,5 @@ export const useGraphQLClient = (
       ]),
       cache,
     });
-  }, [enableWebSockets, graphQLEndpoint]);
+  }, [enableWebSockets, graphQLEndpoint, cache]);
 };

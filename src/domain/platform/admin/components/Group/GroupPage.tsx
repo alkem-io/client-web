@@ -40,7 +40,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   });
 
   const groupName = group?.name || '';
-  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, group]);
+  const currentPaths = useMemo(() => [...paths, { value: '', name: groupName, real: false }], [paths, groupName]);
 
   useUpdateNavigation({ currentPaths });
   const [updateGroup] = useUpdateGroupMutation({

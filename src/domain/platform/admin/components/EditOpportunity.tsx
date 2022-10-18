@@ -80,7 +80,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
 
   const currentPaths = useMemo(
     () => [...paths, { name: opportunityId ? 'edit' : 'new', real: false }],
-    [paths, opportunity]
+    [paths, opportunityId]
   );
   useUpdateNavigation({ currentPaths });
 

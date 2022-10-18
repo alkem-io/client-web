@@ -69,7 +69,7 @@ const CalloutLayout = ({
   const handleVisDialogClose = () => setVisDialogOpen(false);
   const visDialogTitle = useMemo(
     () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
-    [callout.draft]
+    [callout.draft, t]
   );
   const handleVisibilityChange = async (visibility: CalloutVisibility) => {
     await onVisibilityChange(callout.id, visibility);

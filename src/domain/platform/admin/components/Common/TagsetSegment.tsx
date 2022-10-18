@@ -95,7 +95,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
     }
 
     return meta.error;
-  }, [isError, meta.error]);
+  }, [isError, meta.error, _helperText]);
 
   return (
     <Grid item xs={12}>
