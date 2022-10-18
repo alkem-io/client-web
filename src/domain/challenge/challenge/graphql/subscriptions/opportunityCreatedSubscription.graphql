@@ -1,0 +1,7 @@
+subscription OpportunityCreated($challengeID: UUID_NAMEID!) {
+  opportunityCreated(challengeID: $challengeID) {
+    opportunity {
+      ...OpportunityCard
+    }
+  }
+}
