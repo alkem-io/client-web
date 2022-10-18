@@ -34,14 +34,6 @@ export const useApm = (): ApmBase | undefined => {
       return;
     }
 
-    const userObject =
-      isAuthenticated && !!user
-        ? {
-            id: user.id,
-            email: user.email,
-            username: user.displayName,
-          }
-        : {};
     const enabled = (rumEnabled && !!endpoint) ?? false;
 
     const apmInit = initApm({
