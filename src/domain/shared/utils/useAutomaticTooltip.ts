@@ -1,5 +1,4 @@
 import { RefObject, useEffect, useRef } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
 
 interface UseAutomaticTooltipResult {
   containerReference: RefObject<HTMLDivElement>;
@@ -44,9 +43,6 @@ const useAutomaticTooltip = (): UseAutomaticTooltipResult => {
       refs.current.push(element);
     }
   };
-  const { width } = useResizeDetector({
-    targetRef: container,
-  });
 
   useEffect(() => {
     refs.current?.forEach(element => {
@@ -63,7 +59,7 @@ const useAutomaticTooltip = (): UseAutomaticTooltipResult => {
         }
       }
     });
-  }, [container.current, width, refs.current]);
+  }, []);
 
   return {
     containerReference: container,

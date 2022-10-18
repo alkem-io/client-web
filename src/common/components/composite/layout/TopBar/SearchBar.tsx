@@ -29,7 +29,7 @@ const SearchBar = () => {
       return;
     }
     setValue('');
-  }, [match, query]);
+  }, [match, query, value]);
 
   const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
 
@@ -62,7 +62,7 @@ const SearchBar = () => {
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
     navigate(`${SEARCH_ROUTE}?${params}`);
-  }, [match, isTermValid, value, SEARCH_ROUTE, SEARCH_TERMS_PARAM]);
+  }, [match, isTermValid, value, navigate]);
 
   return (
     <Box

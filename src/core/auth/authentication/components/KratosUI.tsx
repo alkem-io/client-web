@@ -43,7 +43,7 @@ const toAlertVariant = (type: string) => {
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
   const { t } = useTranslation();
-  const getFriendlierMessage = useMemo(() => KratosFriendlierMessageMapper(t), []);
+  const getFriendlierMessage = useMemo(() => KratosFriendlierMessageMapper(t), [t]);
 
   return (
     <>
@@ -95,21 +95,18 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
   const { t } = useTranslation();
   const [showFormAlert, setShowFormAlert] = useState(false);
 
-  const handleSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      const button = getActiveElement() as any;
-      // do ckeck if only submitting password method
-      if (button && button.name === 'method' && button.value === 'password') {
-        if (!e.currentTarget.checkValidity()) {
-          setShowFormAlert(true);
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
+  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
+    const button = getActiveElement() as any;
+    // do ckeck if only submitting password method
+    if (button && button.name === 'method' && button.value === 'password') {
+      if (!e.currentTarget.checkValidity()) {
+        setShowFormAlert(true);
+        e.preventDefault();
+        e.stopPropagation();
+        return;
       }
-    },
-    [showFormAlert]
-  );
+    }
+  }, []);
 
   type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
 

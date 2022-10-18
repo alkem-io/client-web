@@ -109,7 +109,7 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
 
       return data;
     },
-    [_generateCommunityMemberCredentialOffer]
+    [_generateCredentialRequest]
   );
 
   return (

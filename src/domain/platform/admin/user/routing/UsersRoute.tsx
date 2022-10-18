@@ -9,7 +9,7 @@ import { nameOfUrl } from '../../../../../core/routing/url-params';
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths, url]);
 
   return (
     <Routes>

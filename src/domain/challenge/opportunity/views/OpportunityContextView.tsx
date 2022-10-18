@@ -59,7 +59,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
     id = '',
   } = context || ({} as Context);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
@@ -74,7 +74,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
         color: 'primary',
       },
     ];
-  }, [activity, i18n.language]);
+  }, [activity, t]);
 
   return (
     <OpportunityContextSection

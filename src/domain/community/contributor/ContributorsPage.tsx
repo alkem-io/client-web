@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorsSearchContainer from './ContributorsSearch/ContributorsSearchContainer';
 import { InputAdornment, OutlinedInput, Typography } from '@mui/material';
@@ -22,10 +22,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
 
   const { isAuthenticated } = useUserContext();
 
-  const onSearchHandlerDebounced = useCallback(
-    debounce((value: string) => setSearchTermsDebounced(value), 500),
-    []
-  );
+  const onSearchHandlerDebounced = debounce((value: string) => setSearchTermsDebounced(value), 500);
 
   const onSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerms(e.target.value);

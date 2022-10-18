@@ -28,7 +28,7 @@ const useUserCardProps = (
       country: user.profile?.location?.country,
       url: buildUserProfileUrl(user.nameID),
     }));
-  }, [data, resourceId]);
+  }, [data, resourceId, t]);
 };
 
 export default useUserCardProps;

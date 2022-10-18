@@ -46,7 +46,7 @@ export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities
         ))}
       </>
     );
-  }, [activities, getActivityViewModel]);
+  }, [activities, getActivityViewModel, loading]);
 
   return <Root>{display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };

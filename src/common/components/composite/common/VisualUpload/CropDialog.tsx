@@ -44,32 +44,35 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
     setCrop(crop);
   };
 
-  const onLoad = useCallback((img: HTMLImageElement) => {
-    imgRef.current = img;
+  const onLoad = useCallback(
+    (img: HTMLImageElement) => {
+      imgRef.current = img;
 
-    const aspect = aspectRatio;
-    // calculate in ration
-    const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
-    const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
+      const aspect = aspectRatio;
+      // calculate in ration
+      const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
+      const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
 
-    // calculate in pixels
-    const width = img.width * widthRatio;
-    const height = img.height * heightRatio;
+      // calculate in pixels
+      const width = img.width * widthRatio;
+      const height = img.height * heightRatio;
 
-    const y = ((1 - heightRatio) / 2) * img.height;
-    const x = ((1 - widthRatio) / 2) * img.width;
+      const y = ((1 - heightRatio) / 2) * img.height;
+      const x = ((1 - widthRatio) / 2) * img.width;
 
-    setCrop({
-      unit: 'px',
-      width,
-      height,
-      x,
-      y,
-      aspect,
-    });
+      setCrop({
+        unit: 'px',
+        width,
+        height,
+        x,
+        y,
+        aspect,
+      });
 
-    return false; // Return false if you set crop state in here.
-  }, []);
+      return false; // Return false if you set crop state in here.
+    },
+    [aspectRatio]
+  );
 
   useEffect(() => {
     const reader = new FileReader();
@@ -83,65 +86,68 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
     return () => reader.removeEventListener('load', loadFile);
   }, [file]);
 
-  const getCroppedImg = (image: HTMLImageElement, crop: Crop, fileName: string) => {
-    const canvas = document.createElement('canvas');
-    const pixelRatio = window.devicePixelRatio;
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    const ctx = canvas.getContext('2d');
+  const getCroppedImg = useCallback(
+    (image: HTMLImageElement, crop: Crop, fileName: string) => {
+      const canvas = document.createElement('canvas');
+      const pixelRatio = window.devicePixelRatio;
+      const scaleX = image.naturalWidth / image.width;
+      const scaleY = image.naturalHeight / image.height;
+      const ctx = canvas.getContext('2d');
 
-    if (!ctx) throw new Error('Can not create canvas context');
+      if (!ctx) throw new Error('Can not create canvas context');
 
-    canvas.width = crop.width * pixelRatio * scaleX;
-    canvas.height = crop.height * pixelRatio * scaleY;
+      canvas.width = crop.width * pixelRatio * scaleX;
+      canvas.height = crop.height * pixelRatio * scaleY;
 
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingQuality = 'high';
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      ctx.imageSmoothingQuality = 'high';
 
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width * scaleX,
-      crop.height * scaleY
-    );
-
-    return new Promise<File>((resolve, reject) => {
-      canvas.toBlob(
-        blob => {
-          if (blob) {
-            try {
-              Resizer.imageFileResizer(
-                blob,
-                maxWidth,
-                maxHeight,
-                'JPEG',
-                100,
-                0,
-                uri => {
-                  resolve(new File([uri as Blob], fileName, { type: 'image/jpeg' }));
-                },
-                'blob',
-                minWidth,
-                minHeight
-              );
-            } catch (err) {
-              console.error(err);
-              reject(err);
-            }
-          }
-        },
-        'image/jpeg',
-        1
+      ctx.drawImage(
+        image,
+        crop.x * scaleX,
+        crop.y * scaleY,
+        crop.width * scaleX,
+        crop.height * scaleY,
+        0,
+        0,
+        crop.width * scaleX,
+        crop.height * scaleY
       );
-    });
-  };
 
-  const handleClose = useCallback(() => rest.onClose && rest.onClose({}, 'escapeKeyDown'), [rest.onClose]);
+      return new Promise<File>((resolve, reject) => {
+        canvas.toBlob(
+          blob => {
+            if (blob) {
+              try {
+                Resizer.imageFileResizer(
+                  blob,
+                  maxWidth,
+                  maxHeight,
+                  'JPEG',
+                  100,
+                  0,
+                  uri => {
+                    resolve(new File([uri as Blob], fileName, { type: 'image/jpeg' }));
+                  },
+                  'blob',
+                  minWidth,
+                  minHeight
+                );
+              } catch (err) {
+                console.error(err);
+                reject(err);
+              }
+            }
+          },
+          'image/jpeg',
+          1
+        );
+      });
+    },
+    [maxHeight, maxWidth, minHeight, minWidth]
+  );
+
+  const handleClose = useCallback(() => rest.onClose && rest.onClose({}, 'escapeKeyDown'), [rest]);
 
   const handleSave = useCallback(async () => {
     if (!imgRef.current) return;

@@ -47,7 +47,7 @@ const UserSegment = <El extends ElementType>({
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
     return roles.filter(r => !r.hidden)[0]?.name;
-  }, [userMetadata]);
+  }, [emailVerified, roles]);
 
   if (!user) {
     return null;

@@ -65,7 +65,10 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
     },
   });
 
-  const current = _current?.usersWithAuthorizationCredential || [];
+  const current = useMemo(
+    () => _current?.usersWithAuthorizationCredential || [],
+    [_current?.usersWithAuthorizationCredential]
+  );
 
   const isLoading = loadingAllPossibleMembers || loadingMembers;
   const hasError = errorOnLoadingAllPossibleMembers || !!membersError;

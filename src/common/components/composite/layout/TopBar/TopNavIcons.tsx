@@ -68,18 +68,21 @@ type MenuItem = {
 const TopNavIcons = () => {
   const { t } = useTranslation();
 
-  const menuItems: MenuItem[] = [
-    {
-      title: t('common.challenges'),
-      icon: <ChallengeIcon />,
-      url: '/challenges',
-    },
-    {
-      title: t('common.contributors'),
-      icon: <GroupOutlinedIcon />,
-      url: '/contributors',
-    },
-  ];
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        title: t('common.challenges'),
+        icon: <ChallengeIcon />,
+        url: '/challenges',
+      },
+      {
+        title: t('common.contributors'),
+        icon: <GroupOutlinedIcon />,
+        url: '/contributors',
+      },
+    ],
+    [t]
+  );
 
   const match = useRouteMatch([...menuItems].reverse().map(x => x.url));
   const selectedIndex = useMemo(() => menuItems.findIndex(x => x.url === match?.pathname), [menuItems, match]);

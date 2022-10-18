@@ -12,6 +12,7 @@ import { FeedbackDataEntry } from '../../../../containers/context/feedback/Commu
 import { QuestionTemplate } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import getDepsValueFromObject from '../../../shared/utils/getDepsValueFromObject';
 
 export interface CommunityFeedbackViewEntities {
   questions: Omit<QuestionTemplate, '__typename'>[];
@@ -49,6 +50,8 @@ const CommunityFeedbackView: FC<CommunityFeedbackViewProps> = ({ entities, actio
     [questions]
   );
 
+  const depsForObjectQuestions = getDepsValueFromObject(questions);
+
   const validationSchema: yup.ObjectSchema = useMemo(
     () =>
       questions.reduce(
@@ -58,7 +61,8 @@ const CommunityFeedbackView: FC<CommunityFeedbackViewProps> = ({ entities, actio
           }),
         yup.object()
       ),
-    [questions]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [depsForObjectQuestions, t]
   );
 
   const innerOnSubmit = useCallback(

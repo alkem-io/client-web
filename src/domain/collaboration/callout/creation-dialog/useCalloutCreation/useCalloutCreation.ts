@@ -119,7 +119,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       return;
     },
-    [collaborationID]
+    [collaborationID, createCallout]
   );
 
   return {

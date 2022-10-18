@@ -133,7 +133,7 @@ const MobileTopBar = () => {
   const open = Boolean(anchorEl);
   const handleOpen = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), []);
   const handleClose = useCallback(() => setAnchorEl(null), []);
-  const handleSearch = useCallback(() => navigate('/search'), []);
+  const handleSearch = useCallback(() => navigate('/search'), [navigate]);
 
   return (
     <Box height={theme => theme.spacing(7)} display="flex" gap={2} alignItems="center" justifyContent="space-between">
@@ -171,10 +171,13 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
     setLanguageOpen(state => !state);
   }, []);
 
-  const handleLanguageSelection = useCallback(language => {
-    i18n.changeLanguage(language);
-    setSelectedLang(language);
-  }, []);
+  const handleLanguageSelection = useCallback(
+    language => {
+      i18n.changeLanguage(language);
+      setSelectedLang(language);
+    },
+    [i18n]
+  );
 
   return (
     <>

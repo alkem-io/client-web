@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
@@ -33,11 +33,11 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, o
     await onCalloutEdit({ ...callout, ...newCallout });
     setLoading(false);
   };
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     setLoading(true);
     await onDelete(callout);
     setLoading(false);
-  };
+  }, [onDelete, callout]);
   const handleDialogDelete = () => setConfirmDialogOpened(true);
 
   const [confirmDialogOpened, setConfirmDialogOpened] = useState(false);

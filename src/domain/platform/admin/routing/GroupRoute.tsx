@@ -17,7 +17,7 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
   const { pathname: url } = useResolvedPath('.');
   const groupName = group?.name || '';
 
-  const currentPaths = useMemo(() => [...paths, { value: url, name: groupName, real: true }], [paths, groupName]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: groupName, real: true }], [paths, url, groupName]);
 
   if (loading) return <Loading text={'Loading group'} />;
 

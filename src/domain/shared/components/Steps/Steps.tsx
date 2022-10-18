@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { StepDefinition, StepProps } from './step/Step';
 
 export interface StepsProps<PassedProps extends {}> {
@@ -7,7 +7,10 @@ export interface StepsProps<PassedProps extends {}> {
 }
 
 const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOrChild }: StepsProps<PassedProps>) => {
-  const children = Array.isArray(childrenOrChild) ? childrenOrChild : [childrenOrChild];
+  const children = useMemo(
+    () => (Array.isArray(childrenOrChild) ? childrenOrChild : [childrenOrChild]),
+    [childrenOrChild]
+  );
 
   if (children.some(x => !x.props.component.displayName)) {
     throw new Error('All steps must have a displayName.');
@@ -32,7 +35,10 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
     throw new Error(`Step with displayName ${activeStep} not found!`);
   }
 
-  const findActiveStepIndex = () => children.findIndex(x => x.props.component.displayName === activeStep);
+  const findActiveStepIndex = useCallback(
+    () => children.findIndex(x => x.props.component.displayName === activeStep),
+    [children, activeStep]
+  );
 
   const prev = useMemo(() => {
     const index = findActiveStepIndex();
@@ -42,7 +48,7 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
     }
 
     return () => setActiveStep(children[index - 1]!.props.component.displayName!);
-  }, [activeStep]);
+  }, [children, findActiveStepIndex]);
 
   const next = useMemo(() => {
     const index = findActiveStepIndex();
@@ -52,7 +58,7 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
     }
 
     return () => setActiveStep(children[index + 1]!.props.component.displayName!);
-  }, [activeStep]);
+  }, [children, findActiveStepIndex]);
 
   // Taking whatever props we make use of here from a <Step>, passing the rest to the step Component
   const { component: Component, title, ...passedProps } = currentStep.props;

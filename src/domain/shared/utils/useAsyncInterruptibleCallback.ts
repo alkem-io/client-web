@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { DependencyList, useEffect, useMemo, useRef } from 'react';
+import getDepsValueFromObject from './getDepsValueFromObject';
 
 interface Checker {
   <Result>(promise: Promise<Result> | Result): Promise<Result>;
@@ -19,7 +20,7 @@ const interruption = Symbol('Unmounted');
  */
 const useAsyncInterruptibleCallback = <Args extends unknown[], Result, Fn extends Callback<Args, Result>>(
   fn: (proceed: Checker) => Fn,
-  deps: unknown[] = []
+  deps: DependencyList = []
 ): Fn & Callback<Args, Result | undefined> => {
   const isUnmounted = useRef(false);
 
@@ -29,6 +30,8 @@ const useAsyncInterruptibleCallback = <Args extends unknown[], Result, Fn extend
     },
     []
   );
+
+  const depsValueFromObjectDeps = getDepsValueFromObject(deps);
 
   return useMemo(() => {
     const checker: Checker = async promise => {
@@ -53,7 +56,8 @@ const useAsyncInterruptibleCallback = <Args extends unknown[], Result, Fn extend
     };
 
     return Object.assign(interruptible, callback); // carrying extra properties such as flash/cancel on a debounced fn
-  }, deps);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [depsValueFromObjectDeps, fn]);
 };
 
 export default useAsyncInterruptibleCallback;

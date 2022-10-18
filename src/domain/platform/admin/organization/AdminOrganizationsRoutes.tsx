@@ -13,7 +13,7 @@ import { AdminSection } from '../toplevel/constants';
 
 const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths, url]);
   const { t } = useTranslation();
 
   return (

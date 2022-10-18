@@ -121,7 +121,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
-  }, [hubPrivileges, contextPrivileges, canReadChallenges, communityPrivileges]);
+  }, [hubPrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateChallenges]);
 
   return (
     <HubContext.Provider

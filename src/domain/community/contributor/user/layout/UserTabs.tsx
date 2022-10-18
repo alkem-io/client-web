@@ -15,15 +15,12 @@ const routes = {
 
 const UserTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
-  const { user, loading: loadingUserContext } = useUserContext();
+  const { user } = useUserContext();
 
   const { userNameId = '' } = useUrlParams();
-  const { user: userMetadata, loading: loadingUserMetadata } = useUserMetadata(userNameId);
+  const { user: userMetadata } = useUserMetadata(userNameId);
 
-  const isCurrentUser = useMemo(
-    () => user?.user.id === userMetadata?.user.id,
-    [loadingUserContext, loadingUserMetadata, user, userMetadata]
-  );
+  const isCurrentUser = useMemo(() => user?.user.id === userMetadata?.user.id, [user, userMetadata]);
 
   return (
     <HeaderNavigationTabs

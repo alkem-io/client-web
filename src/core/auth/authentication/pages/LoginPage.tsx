@@ -55,7 +55,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
       // }
       navigate('/identity/verify/reminder');
     }
-  }, [loginFlow]);
+  }, [loginFlow, navigate]);
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 

@@ -89,7 +89,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       if (canvas?.id) {
         scrollToContent();
       }
-    }, [canvas?.id]);
+    }, [canvas?.id, scrollToContent]);
 
     const handleScroll = useAsyncInterruptibleCallback(check =>
       debounce(async () => {
@@ -105,7 +105,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
         handleScroll.cancel();
         window.removeEventListener('scroll', handleScroll, true);
       };
-    }, []);
+    }, [handleScroll]);
 
     // This needs to be removed in case it crashes the export window
     // We already have a Save button

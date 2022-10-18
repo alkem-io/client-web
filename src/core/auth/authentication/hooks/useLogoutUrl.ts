@@ -10,7 +10,7 @@ export const useLogoutUrl = () => {
   const [loading, setLoading] = useState<boolean>();
   const [logoutUrl, setLogoutUrl] = useState<string>();
 
-  const getLogoutUrl = async () => {
+  const getLogoutUrl = useCallback(async () => {
     if (!client) {
       return;
     }
@@ -26,12 +26,12 @@ export const useLogoutUrl = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [client, t]);
 
   return {
     logoutUrl,
     error,
     loading,
-    getLogoutUrl: useCallback(() => getLogoutUrl(), [client]),
+    getLogoutUrl: useCallback(() => getLogoutUrl(), [getLogoutUrl]),
   };
 };

@@ -78,7 +78,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
         ) : (
           <>{children}</>
         ),
-    [displayName, avatar, tooltip]
+    [displayName, avatar, tooltip, styles.tooltip]
   );
 
   return (

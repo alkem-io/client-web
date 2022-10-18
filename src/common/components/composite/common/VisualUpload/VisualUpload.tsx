@@ -48,7 +48,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) 
         });
       }
     },
-    [visual]
+    [visual, uploadVisual]
   );
 
   if (!visual) {

@@ -2,6 +2,7 @@ import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
 import {} from '../../components/ContributionCard/ContributionCardV2';
+import getDepsValueFromObject from '../../utils/getDepsValueFromObject';
 
 export interface CreateButtonProps {
   onClick?: () => void;
@@ -28,6 +29,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   createButtonComponent: CreateButton,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
+  const depsValueFromObjectDeps = getDepsValueFromObject(deps);
   const cards = useMemo(
     () =>
       items.map((item, index) => {
@@ -35,7 +37,8 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
         const key = item ? item.id : `__loading_${index}`;
         return cloneElement(card, { key });
       }),
-    [items, ...deps]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [items, depsValueFromObjectDeps, children]
   );
 
   return (

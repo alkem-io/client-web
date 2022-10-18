@@ -12,7 +12,7 @@ export const useUpdateNavigation = ({ currentPaths }: UseUpdateNavigationOptions
     if (currentPaths) {
       set(currentPaths);
     }
-  }, [currentPaths]);
+  }, [currentPaths, set]);
 };
 
 export const useNavigation = () => {

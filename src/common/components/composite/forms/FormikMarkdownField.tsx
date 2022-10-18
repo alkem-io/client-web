@@ -61,8 +61,11 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
 
-  const validClass = useMemo(() => (!isError && meta.touched ? 'is-valid' : undefined), [meta]);
-  const invalidClass = useMemo(() => (required && isError && meta.touched ? 'is-invalid' : undefined), [meta]);
+  const validClass = useMemo(() => (!isError && meta.touched ? 'is-valid' : undefined), [meta, isError]);
+  const invalidClass = useMemo(
+    () => (required && isError && meta.touched ? 'is-invalid' : undefined),
+    [meta, required, isError]
+  );
   const helperText = useMemo(() => {
     if (!isError) {
       return _helperText;

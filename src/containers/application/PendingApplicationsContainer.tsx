@@ -66,7 +66,7 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
         awaitRefetchQueries: true,
       });
     },
-    [entities]
+    [entities, deleteApplication]
   );
 
   return <>{children({ applications: appsWithType }, { handleDelete }, { isDeleting, loading: loadingMembership })}</>;

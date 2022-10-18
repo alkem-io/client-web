@@ -48,7 +48,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = ({ paths }) 
 
       navigate(buildOpportunityUrl(hubNameId, challengeNameId, result.nameID));
     },
-    [navigate, createOpportunity, hubNameId, challengeId]
+    [navigate, createOpportunity, hubNameId, challengeId, challengeNameId]
   );
 
   return (

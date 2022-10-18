@@ -33,7 +33,7 @@ const EntityDashboardLeadsSection = ({
 
   const leadOrganizationsMapped = useMemo(
     () => leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
-    [leadOrganizations]
+    [leadOrganizations, t, user?.user]
   );
 
   const leadUsersMapped = useMemo(() => {

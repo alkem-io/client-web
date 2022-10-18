@@ -61,7 +61,7 @@ const UserProvider: FC<{}> = ({ children }) => {
     if (isAuthenticated && meHasProfileData && !meHasProfileData.meHasProfile) {
       createUserProfile();
     }
-  }, [meHasProfileData]);
+  }, [meHasProfileData, createUserProfile, isAuthenticated]);
 
   const loading =
     loadingAuthentication ||
@@ -75,7 +75,7 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const wrappedMe = useMemo(
     () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined),
-    [meData, rolesData, wrapper]
+    [meData, rolesData, wrapper, platformLevelAuthorization]
   );
 
   const providedValue = useMemo<UserContextValue>(

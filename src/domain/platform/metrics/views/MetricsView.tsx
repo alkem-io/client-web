@@ -18,7 +18,7 @@ const ActivityView: FC<MetricViewProps> = ({ activity, loading }) => {
     const rightHalf = activity.slice(leftHalfLength);
 
     return [leftHalf, rightHalf];
-  }, activity);
+  }, [activity]);
 
   if (!activity.length) {
     return <></>;

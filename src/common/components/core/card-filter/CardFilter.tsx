@@ -27,7 +27,7 @@ const CardFilter = <T extends Identifiable>({
 
   const [terms, setTerms] = useState<string[]>([]);
 
-  const filteredData = useMemo(() => filterFn(data, terms, valueGetter), [data, terms]);
+  const filteredData = useMemo(() => filterFn(data, terms, valueGetter), [data, terms, valueGetter]);
 
   const handleChange = useCallback((_e: unknown, value: string[]) => {
     setTerms(value);

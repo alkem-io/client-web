@@ -28,7 +28,7 @@ const SearchResultSection: FC<ResultSectionProps> = ({
     setFilter(value);
   };
 
-  const titleWithCount = useMemo(() => `${title} (${results.length})`, [results.length]);
+  const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
 
   return (
     <DashboardGenericSection

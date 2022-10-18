@@ -35,7 +35,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
 
   const currentPaths = useMemo(
     () => [...paths, { name: t(`common.enums.edit-mode.${mode}` as const), real: false }],
-    [paths]
+    [paths, mode, t]
   );
   const notify = useNotification();
   const navigateToEdit = useNavigateToEdit();
