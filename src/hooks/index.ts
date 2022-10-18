@@ -26,5 +26,6 @@ export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
 export * from './useGlobalState';
+export * from './useApm';
 
 export * from './routing/useRouteMatch';

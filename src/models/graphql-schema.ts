@@ -23,6 +23,14 @@ export type Scalars = {
   Upload: File;
 };
 
+export type Apm = {
+  __typename?: 'APM';
+  /** Endpoint where events are sent. */
+  endpoint: Scalars['String'];
+  /** Flag indicating if real user monitoring is enabled. */
+  rumEnabled: Scalars['Boolean'];
+};
+
 export type Activity = {
   __typename?: 'Activity';
   /** The id of the Collaboration entity within which the Activity was generated. */
@@ -820,6 +828,8 @@ export type CommunityPolicyRole = {
 
 export type Config = {
   __typename?: 'Config';
+  /** Elastic APM (RUM & performance monitoring) related configuration. */
+  apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
   /** Platform related resources. */
@@ -4052,6 +4062,7 @@ export type ConfigurationFragment = {
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+  apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
@@ -4086,6 +4097,7 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+    apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   };
 };
 

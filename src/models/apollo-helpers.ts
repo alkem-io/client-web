@@ -1,4 +1,9 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+export type APMKeySpecifier = ('endpoint' | 'rumEnabled' | APMKeySpecifier)[];
+export type APMFieldPolicy = {
+  endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
+  rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityKeySpecifier = (
   | 'collaborationID'
   | 'createdDate'
@@ -549,8 +554,9 @@ export type CommunityPolicyRoleFieldPolicy = {
   minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   minUser?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ConfigKeySpecifier = ('authentication' | 'platform' | 'sentry' | 'template' | ConfigKeySpecifier)[];
+export type ConfigKeySpecifier = ('apm' | 'authentication' | 'platform' | 'sentry' | 'template' | ConfigKeySpecifier)[];
 export type ConfigFieldPolicy = {
+  apm?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1717,6 +1723,10 @@ export type VisualFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
+  APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | APMKeySpecifier | (() => undefined | APMKeySpecifier);
+    fields?: APMFieldPolicy;
+  };
   Activity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActivityKeySpecifier | (() => undefined | ActivityKeySpecifier);
     fields?: ActivityFieldPolicy;
