@@ -30,6 +30,8 @@ export const EntityFilter: FC<EntityFilterProps> = ({ config, onChange }) => {
     onChange(config[filterKey].value);
   };
 
+  const depsValueFromObjectConfig = getDepsValueFromObject(config);
+
   const menuItems = useMemo(
     () =>
       Object.keys(config).map((x, i) => (
@@ -37,7 +39,8 @@ export const EntityFilter: FC<EntityFilterProps> = ({ config, onChange }) => {
           {config[x].title}
         </MenuItem>
       )),
-    [getDepsValueFromObject(config)]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [depsValueFromObjectConfig]
   );
 
   return (

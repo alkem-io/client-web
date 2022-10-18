@@ -104,7 +104,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
       const url = buildCanvasUrl({ hubNameId, calloutNameId, canvasNameId });
       return buildLinkToCanvas(url);
     },
-    [hubNameId]
+    [hubNameId, buildLinkToCanvas]
   );
 
   const showActivity = (!activities && activityLoading) || !!activities;

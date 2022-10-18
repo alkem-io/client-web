@@ -8,7 +8,7 @@ interface UserAvatarProps extends UserCardProps {}
 export const UserAvatar: FC<UserAvatarProps> = ({ url, ...rest }) => {
   const userCard = useMemo(() => {
     return <UserCard {...rest} url="" />;
-  }, [rest, url]);
+  }, [rest]);
 
   return (
     <ConditionalLink condition={!!url} to={url} aria-label="user-avatar">

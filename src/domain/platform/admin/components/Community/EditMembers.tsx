@@ -149,14 +149,14 @@ export const AvailableMembers = <Member extends Identifiable>({
   // Debouncing here also limits how high can we raise the searchTerm state.
   const onSearchTermChangeDebounced = useMemo(
     () => debounce(onSearchTermChange, FILTER_DEBOUNCE),
-    [onSearchTermChange, FILTER_DEBOUNCE]
+    [onSearchTermChange]
   );
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
 
   useEffect(() => {
     onSearchTermChangeDebounced(searchTerm);
-  }, [searchTerm]);
+  }, [searchTerm, onSearchTermChangeDebounced]);
 
   const columnsCount = React.Children.count(renderHeader()) + 1;
 

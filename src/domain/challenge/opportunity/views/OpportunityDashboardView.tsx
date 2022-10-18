@@ -111,7 +111,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
       });
       return buildLinkToCanvas(url);
     },
-    [hubNameId, challengeNameId, entities.opportunity]
+    [hubNameId, challengeNameId, entities.opportunity, buildLinkToCanvas]
   );
 
   const { user: userMetadata } = useUserContext();

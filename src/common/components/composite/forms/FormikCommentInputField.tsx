@@ -52,7 +52,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   const validClass = useMemo(() => (!Boolean(meta.error) && meta.touched ? 'is-valid' : undefined), [meta]);
   const invalidClass = useMemo(
     () => (required && Boolean(meta.error) && meta.touched ? 'is-invalid' : undefined),
-    [meta]
+    [meta, required]
   );
   const { submitForm } = useFormikContext();
 

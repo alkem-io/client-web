@@ -38,7 +38,7 @@ const CommentsCallout = ({
   const user = userMetadata?.user;
 
   const commentsId = callout.comments.id;
-  const _messages = callout?.comments?.messages ?? [];
+  const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
@@ -52,14 +52,16 @@ const CommentsCallout = ({
     [_messages, getAuthor]
   );
 
-  const isAuthor = (msgId: string, userId?: string) =>
-    messages.find(x => x.id === msgId)?.author?.id === userId ?? false;
+  const isAuthor = useCallback(
+    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
+    [messages]
+  );
 
   const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteMessage = useCallback(
     msgId => canDeleteMessages || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [messages, user, isAuthenticated, canDeleteMessages]
+    [user, isAuthenticated, isAuthor, canDeleteMessages]
   );
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);

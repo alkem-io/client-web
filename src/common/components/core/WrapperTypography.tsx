@@ -139,7 +139,7 @@ const WrapperTypography: FC<TypographyProps> = ({
       return <span dangerouslySetInnerHTML={{ __html: removeSlashes(plainText) }} />;
     }
     return children;
-  }, [children]);
+  }, [children, plainText]);
 
   return (
     <Component

@@ -97,7 +97,7 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
       getCalculatedCardImage(imgHeight),
       getCalculatedCardContents(height, imgHeight),
     ],
-    [imgHeight]
+    [imgHeight, height]
   );
 
   return (

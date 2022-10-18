@@ -46,7 +46,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
     id = '',
   } = context || ({} as Context);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
@@ -67,7 +67,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
         color: 'neutralMedium',
       },
     ];
-  }, [activity, i18n.language]);
+  }, [activity, t]);
 
   return (
     <HubContextSection

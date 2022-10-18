@@ -91,7 +91,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       default:
         return '';
     }
-  }, [callout]);
+  }, [callout, t]);
 
   const calloutTypes = useMemo(
     () => [
@@ -99,7 +99,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       { id: CalloutType.Canvas, name: t('common.canvases') },
       { id: CalloutType.Comments, name: t('common.discussion') },
     ],
-    []
+    [t]
   );
 
   return (

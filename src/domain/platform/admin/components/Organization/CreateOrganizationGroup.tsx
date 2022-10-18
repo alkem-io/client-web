@@ -49,7 +49,7 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
         },
       });
     },
-    [organizationId]
+    [organizationId, createGroup]
   );
 
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);

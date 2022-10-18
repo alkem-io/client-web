@@ -7,7 +7,7 @@ import {
   V0alpha2Api,
 } from '@ory/kratos-client';
 import { AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useKratosClient } from './useKratosClient';
 
 type FlowTypes =
@@ -48,7 +48,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState(false);
 
-  const handleFlowError = err => {
+  const handleFlowError = useCallback(err => {
     const response = err && err.response;
     if (response) {
       if (response.status === 410) {
@@ -57,52 +57,61 @@ const useKratosFlow = <Name extends FlowTypeName>(
         setError(err.message);
       }
     }
-  };
+  }, []);
 
-  const handlePromise = async (promise: Promise<AxiosResponse<FlowTypes>>) => {
-    try {
-      setLoading(true);
-      const { status, data } = await promise;
-      if (status !== 200) {
-        setError(new Error('Error loading flow!'));
+  const handlePromise = useCallback(
+    async (promise: Promise<AxiosResponse<FlowTypes>>) => {
+      try {
+        setLoading(true);
+        const { status, data } = await promise;
+        if (status !== 200) {
+          setError(new Error('Error loading flow!'));
+        }
+        setFlow(data as ReturnFlowType[Name]);
+      } catch (error) {
+        handleFlowError(error);
+      } finally {
+        setLoading(false);
       }
-      setFlow(data as ReturnFlowType[Name]);
-    } catch (error) {
-      handleFlowError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [handleFlowError]
+  );
 
-  const initializeFlow = (client: V0alpha2Api) => {
-    switch (flowTypeName as FlowTypeName) {
-      case FlowTypeName.Login:
-        return client.initializeSelfServiceLoginFlowForBrowsers();
-      case FlowTypeName.Registration:
-        return client.initializeSelfServiceRegistrationFlowForBrowsers();
-      case FlowTypeName.Recovery:
-        return client.initializeSelfServiceRecoveryFlowForBrowsers();
-      case FlowTypeName.Verification:
-        return client.initializeSelfServiceVerificationFlowForBrowsers();
-      case FlowTypeName.Settings:
-        return client.initializeSelfServiceSettingsFlowForBrowsers();
-    }
-  };
+  const initializeFlow = useCallback(
+    (client: V0alpha2Api) => {
+      switch (flowTypeName as FlowTypeName) {
+        case FlowTypeName.Login:
+          return client.initializeSelfServiceLoginFlowForBrowsers();
+        case FlowTypeName.Registration:
+          return client.initializeSelfServiceRegistrationFlowForBrowsers();
+        case FlowTypeName.Recovery:
+          return client.initializeSelfServiceRecoveryFlowForBrowsers();
+        case FlowTypeName.Verification:
+          return client.initializeSelfServiceVerificationFlowForBrowsers();
+        case FlowTypeName.Settings:
+          return client.initializeSelfServiceSettingsFlowForBrowsers();
+      }
+    },
+    [flowTypeName]
+  );
 
-  const getFlow = (client: V0alpha2Api, flowId: string) => {
-    switch (flowTypeName as FlowTypeName) {
-      case FlowTypeName.Login:
-        return client.getSelfServiceLoginFlow(flowId);
-      case FlowTypeName.Registration:
-        return client.getSelfServiceRegistrationFlow(flowId);
-      case FlowTypeName.Recovery:
-        return client.getSelfServiceRecoveryFlow(flowId);
-      case FlowTypeName.Verification:
-        return client.getSelfServiceVerificationFlow(flowId);
-      case FlowTypeName.Settings:
-        return client.getSelfServiceSettingsFlow(flowId);
-    }
-  };
+  const getFlow = useCallback(
+    (client: V0alpha2Api, flowId: string) => {
+      switch (flowTypeName as FlowTypeName) {
+        case FlowTypeName.Login:
+          return client.getSelfServiceLoginFlow(flowId);
+        case FlowTypeName.Registration:
+          return client.getSelfServiceRegistrationFlow(flowId);
+        case FlowTypeName.Recovery:
+          return client.getSelfServiceRecoveryFlow(flowId);
+        case FlowTypeName.Verification:
+          return client.getSelfServiceVerificationFlow(flowId);
+        case FlowTypeName.Settings:
+          return client.getSelfServiceSettingsFlow(flowId);
+      }
+    },
+    [flowTypeName]
+  );
 
   const getOrInitializeFlow = () => {
     if (client) {
@@ -110,7 +119,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
     }
   };
 
-  useEffect(getOrInitializeFlow, [client, flowId]);
+  useEffect(getOrInitializeFlow, [client, flowId, getFlow, handlePromise, initializeFlow]);
 
   return {
     flow,

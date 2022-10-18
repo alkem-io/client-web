@@ -20,7 +20,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: displayName || '', real: true }],
-    [paths, displayName]
+    [paths, displayName, url]
   );
 
   return (

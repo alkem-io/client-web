@@ -73,7 +73,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
 
   const currentPaths = useMemo(
     () => [...paths, { name: challengeId ? 'edit' : 'new', real: false }],
-    [paths, challenge]
+    [paths, challengeId]
   );
   useUpdateNavigation({ currentPaths });
 

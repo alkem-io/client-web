@@ -26,11 +26,11 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
 
     const setFinalElevation = useCallback(
       () => setElevation(elevationDisabled ? 0 : finalElevation),
-      [elevationDisabled]
+      [elevationDisabled, finalElevation]
     );
     const setInitialElevation = useCallback(
       () => setElevation(elevationDisabled ? 0 : initialElevation),
-      [elevationDisabled]
+      [elevationDisabled, initialElevation]
     );
 
     return (

@@ -22,7 +22,7 @@ const useLocalSearch = <Item>(options: UseLocalSearchOptions<Item>): UseLocalSea
     }
 
     return data.filter(item => isMatch(item, searchTerm));
-  }, [searchTerm, data]);
+  }, [searchTerm, data, isMatch]);
 
   return {
     data: filteredData,

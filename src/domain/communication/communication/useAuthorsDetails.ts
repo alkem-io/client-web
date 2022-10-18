@@ -85,7 +85,7 @@ export const useAuthorsDetails = (authorIds: string[]) => {
           roleName: roleName,
         };
       }),
-    [authorData, resourceId]
+    [authorData, resourceId, resourceType, t]
   );
 
   const getAuthor = useCallback((id: string) => authors?.find(a => a.id === id), [authors]);

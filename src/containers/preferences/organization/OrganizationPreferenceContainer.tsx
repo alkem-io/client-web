@@ -63,7 +63,7 @@ const OrganizationPreferenceContainer: FC<OrganizationPreferenceContainerProps> 
         },
       });
     },
-    [orgId]
+    [orgId, updatePreference]
   );
 
   return <>{children({ preferences }, { loading, error }, { onUpdate })}</>;

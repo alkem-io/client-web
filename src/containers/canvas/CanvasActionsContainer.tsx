@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { useApolloErrorHandler } from '../../hooks';
 import {
   CanvasDetailsFragmentDoc,
@@ -42,99 +42,108 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleCreateCanvas = async (canvas: CreateCanvasOnCalloutInput) => {
-    if (!canvas.calloutID) {
-      throw new Error('[canvas:onCreate]: Missing contextID');
-    }
+  const handleCreateCanvas = useCallback(
+    async (canvas: CreateCanvasOnCalloutInput) => {
+      if (!canvas.calloutID) {
+        throw new Error('[canvas:onCreate]: Missing contextID');
+      }
 
-    await createCanvas({
-      update(cache, { data }) {
-        cache.modify({
-          id: cache.identify({
-            id: canvas.calloutID,
-            __typename: 'Callout',
-          }),
-          fields: {
-            canvases(existingCanvases = []) {
-              if (data) {
-                const newCanvas = cache.writeFragment({
-                  data: data?.createCanvasOnCallout,
-                  fragment: CanvasDetailsFragmentDoc,
-                  fragmentName: 'CanvasDetails',
-                });
-                return [...existingCanvases, newCanvas];
-              }
-              return existingCanvases;
+      await createCanvas({
+        update(cache, { data }) {
+          cache.modify({
+            id: cache.identify({
+              id: canvas.calloutID,
+              __typename: 'Callout',
+            }),
+            fields: {
+              canvases(existingCanvases = []) {
+                if (data) {
+                  const newCanvas = cache.writeFragment({
+                    data: data?.createCanvasOnCallout,
+                    fragment: CanvasDetailsFragmentDoc,
+                    fragmentName: 'CanvasDetails',
+                  });
+                  return [...existingCanvases, newCanvas];
+                }
+                return existingCanvases;
+              },
             },
-          },
-        });
-      },
-      variables: {
-        input: canvas,
-      },
-    });
-  };
+          });
+        },
+        variables: {
+          input: canvas,
+        },
+      });
+    },
+    [createCanvas]
+  );
 
   const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasMutation({
     onError: handleError,
   });
 
-  const handleDeleteCanvas = async (canvas: DeleteCanvasInput) => {
-    if (!canvas.ID) {
-      throw new Error('[canvas:onDelete]: Missing canvas ID');
-    }
+  const handleDeleteCanvas = useCallback(
+    async (canvas: DeleteCanvasInput) => {
+      if (!canvas.ID) {
+        throw new Error('[canvas:onDelete]: Missing canvas ID');
+      }
 
-    await deleteCanvas({
-      update: (cache, { data }) => {
-        const output = data?.deleteCanvas;
-        if (output) {
-          evictFromCache(cache, String(output.id), 'Canvas');
-        }
-      },
-      variables: {
-        input: canvas,
-      },
-    });
-  };
+      await deleteCanvas({
+        update: (cache, { data }) => {
+          const output = data?.deleteCanvas;
+          if (output) {
+            evictFromCache(cache, String(output.id), 'Canvas');
+          }
+        },
+        variables: {
+          input: canvas,
+        },
+      });
+    },
+    [deleteCanvas]
+  );
 
   const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasMutation({
     onError: handleError,
   });
 
-  const handleCheckoutCanvas = async (canvas: CanvasDetailsFragment) => {
-    if (!canvas.checkout?.id) {
-      throw new Error('[canvas:onCheckInOut]: Missing canvas.checkout.id');
-    }
+  const handleCheckoutCanvas = useCallback(
+    async (canvas: CanvasDetailsFragment) => {
+      if (!canvas.checkout?.id) {
+        throw new Error('[canvas:onCheckInOut]: Missing canvas.checkout.id');
+      }
 
-    await checkoutCanvas({
-      update: (cache, { data }) => {
-        cache.modify({
-          id: cache.identify({
-            id: canvas.id,
-            __typename: 'Canvas',
-          }),
-          fields: {
-            checkout(existingCheckout) {
-              const output = data?.eventOnCanvasCheckout;
-              if (output) {
-                return output;
-              }
-              return existingCheckout;
+      await checkoutCanvas({
+        update: (cache, { data }) => {
+          cache.modify({
+            id: cache.identify({
+              id: canvas.id,
+              __typename: 'Canvas',
+            }),
+            fields: {
+              checkout(existingCheckout) {
+                const output = data?.eventOnCanvasCheckout;
+                if (output) {
+                  return output;
+                }
+                return existingCheckout;
+              },
             },
-          },
-        });
-      },
-      variables: {
-        input: {
-          canvasCheckoutID: canvas.checkout?.id,
-          eventName:
-            (canvas.checkout.status === CanvasCheckoutStateEnum.CheckedOut &&
-              canvas.checkout?.lifecycle?.nextEvents?.find(e => e === 'CHECKIN')) ||
-            'CHECKOUT',
+          });
         },
-      },
-    });
-  };
+        variables: {
+          input: {
+            canvasCheckoutID: canvas.checkout?.id,
+            eventName:
+              (canvas.checkout.status === CanvasCheckoutStateEnum.CheckedOut &&
+                canvas.checkout?.lifecycle?.nextEvents?.find(e => e === 'CHECKIN')) ||
+              'CHECKOUT',
+          },
+        },
+      });
+    },
+    [checkoutCanvas]
+  );
 
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({
     onError: handleError,
@@ -144,29 +153,32 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleUpdateCanvas = async (canvas: Canvas, previewImage?: Blob) => {
-    await Promise.all([
-      updateCanvas({
-        variables: {
-          input: {
-            ID: canvas.id,
-            displayName: canvas.displayName,
-            value: canvas.value,
-          },
-        },
-      }),
-      canvas.preview &&
-        previewImage &&
-        uploadVisual({
+  const handleUpdateCanvas = useCallback(
+    async (canvas: Canvas, previewImage?: Blob) => {
+      await Promise.all([
+        updateCanvas({
           variables: {
-            file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
-            uploadData: {
-              visualID: canvas.preview?.id,
+            input: {
+              ID: canvas.id,
+              displayName: canvas.displayName,
+              value: canvas.value,
             },
           },
         }),
-    ]);
-  };
+        canvas.preview &&
+          previewImage &&
+          uploadVisual({
+            variables: {
+              file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
+              uploadData: {
+                visualID: canvas.preview?.id,
+              },
+            },
+          }),
+      ]);
+    },
+    [updateCanvas, uploadVisual]
+  );
 
   const actions = useMemo<ICanvasActions>(
     () => ({

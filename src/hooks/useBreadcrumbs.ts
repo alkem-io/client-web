@@ -12,7 +12,7 @@ export interface BreadcrumbsItem {
 }
 
 export const useBreadcrumbs = () => {
-  const { hubNameId, challengeNameId, opportunityNameId, aspectNameId, projectNameId } = useUrlParams();
+  const { hubNameId, challengeNameId, opportunityNameId, aspectNameId } = useUrlParams();
 
   const showOpportunity = false; // TODO: Never show opportunity for now.
 
@@ -71,7 +71,17 @@ export const useBreadcrumbs = () => {
       }
     }
     return items;
-  }, [loading, challengeNameId, opportunityNameId, aspectNameId, projectNameId]);
+  }, [
+    loading,
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
+    showOpportunity,
+    aspectNameId,
+    _challenge?.hub.challenge.displayName,
+    _hub?.hub.displayName,
+    _opportunity?.hub.opportunity.displayName,
+  ]);
 
   return {
     loading,

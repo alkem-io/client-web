@@ -20,37 +20,39 @@ interface QRCodeProps {
 }
 
 export const QRCode: FC<QRCodeProps> = ({ qrCodeJwt, qrCodeImg, className }) => {
-  const container = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const styles = useStyles();
 
   const { height, width } = useResizeDetector({
-    targetRef: container,
+    targetRef: containerRef,
   });
 
   useEffect(() => {
+    const container = containerRef.current;
+
     async function loadCanvas() {
-      if (container.current && qrCodeJwt && typeof height !== 'undefined' && typeof width !== 'undefined') {
+      if (container && qrCodeJwt && typeof height !== 'undefined' && typeof width !== 'undefined') {
         const canvas = await qrcode.toCanvas(qrCodeJwt);
         const size = Math.min(height, width);
         canvas.style.height = `${size}px`;
         canvas.style.width = `${size}px`;
-        container.current.append(canvas);
-      } else if (container.current && qrCodeImg && typeof height !== 'undefined' && typeof width !== 'undefined') {
+        container.append(canvas);
+      } else if (container && qrCodeImg && typeof height !== 'undefined' && typeof width !== 'undefined') {
         const size = Math.min(height, width);
-        container.current.innerHTML = `<img src ='${qrCodeImg}' alt='qr code' height='${size}px' width =  '${size}px' />`;
+        container.innerHTML = `<img src ='${qrCodeImg}' alt='qr code' height='${size}px' width =  '${size}px' />`;
       }
     }
 
     loadCanvas();
 
     return () => {
-      if (container.current) {
-        container.current.innerHTML = '';
+      if (container) {
+        container.innerHTML = '';
       }
     };
-  }, [qrCodeJwt, qrCodeImg, container.current, height, width]);
+  }, [qrCodeJwt, qrCodeImg, height, width]);
 
-  return <div ref={container} className={clsx(styles.container, className)} />;
+  return <div ref={containerRef} className={clsx(styles.container, className)} />;
 };
 
 export default QRCode;

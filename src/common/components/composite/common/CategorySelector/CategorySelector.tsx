@@ -81,7 +81,7 @@ export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value,
           )}
         </StyledListItemButton>
       )),
-    [showLabels, categories, value]
+    [showLabels, categories, value, onSelect]
   );
 
   return <List disablePadding>{items}</List>;

@@ -53,7 +53,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
     }
 
     return tErr(meta.error as TranslationKey, { field: title });
-  }, [isError, meta.error, _helperText]);
+  }, [isError, meta.error, _helperText, tErr, title]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {

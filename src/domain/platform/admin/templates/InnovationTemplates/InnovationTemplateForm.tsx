@@ -51,7 +51,7 @@ const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, action
         id: x,
         name: x,
       })),
-    [LifecycleType]
+    []
   );
 
   return (

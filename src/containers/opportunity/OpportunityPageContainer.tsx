@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useOpportunity, useUserContext } from '../../hooks';
@@ -107,7 +107,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     errorPolicy: 'all',
   });
 
-  const opportunity = (query?.hub.opportunity ?? {}) as OpportunityPageFragment;
+  const opportunity = useMemo(
+    () => (query?.hub.opportunity ?? {}) as OpportunityPageFragment,
+    [query?.hub.opportunity]
+  );
   const collaborationID = opportunity?.collaboration?.id;
 
   const { data: activityLogData } = useActivityLogOnCollaborationQuery({
@@ -140,9 +143,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
   const { context, collaboration, metrics = [] } = opportunity;
-  // Note: Projects are removed from the graphql query until we add them back in properly.
-  const projects: Project[] = [];
-  const relations = collaboration?.relations ?? [];
+  const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references } = context ?? {};
@@ -162,12 +163,16 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
-  const onProjectTransition = (project?: any) => {
-    navigate(project?.nameID ?? 'new');
-  };
+  const onProjectTransition = useCallback(
+    (project?: any) => {
+      navigate(project?.nameID ?? 'new');
+    },
+    [navigate]
+  );
 
   const opportunityProjects = useMemo(() => {
-    const projectList: OpportunityProject[] = projects.map(p => ({
+    // Note: Projects are removed from the graphql query until we add them back in properly.
+    const projectList: OpportunityProject[] = ([] as Project[]).map(p => ({
       title: p.displayName,
       description: p.description,
       type: 'display',
@@ -187,7 +192,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     }
 
     return projectList;
-  }, [projects, onProjectTransition, permissions.projectWrite, t]);
+  }, [onProjectTransition, permissions.projectWrite, t]);
 
   const aspectsCount = useAspectsCount(metrics);
 

@@ -10,9 +10,12 @@ interface CommunityContributorsSearchProps extends Pick<SearchTagsInputProps, 'v
 const CommunityContributorsSearch: FC<CommunityContributorsSearchProps> = ({ onChange, ...props }) => {
   const { t } = useTranslation();
 
-  const handleChange = useCallback((_e: unknown, terms: string[]) => {
-    onChange?.(terms);
-  }, []);
+  const handleChange = useCallback(
+    (_e: unknown, terms: string[]) => {
+      onChange?.(terms);
+    },
+    [onChange]
+  );
 
   return (
     <DashboardGenericSection

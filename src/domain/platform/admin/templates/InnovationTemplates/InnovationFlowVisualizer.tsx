@@ -42,8 +42,8 @@ const InnovationFlowVisualizer: FC<InnovationFlowVisualizerProps> = ({ lifecycle
     if (lifecycle && svgRef.current) {
       buildGraph(svgRef.current, lifecycle, theme, options);
     }
-  }, [lifecycle, svgRef.current, theme, options]);
-
+  }, [theme, options, lifecycle]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const key = useMemo(() => Date.now(), [lifecycle]);
 
   return <svg id="graph-container" key={key} ref={svgRef} />;

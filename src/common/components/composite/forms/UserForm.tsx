@@ -194,7 +194,7 @@ export const UserForm: FC<UserProps> = ({
       };
       onSave && (await onSave(user));
     },
-    [linkedinRef, twitterRef, githubRef]
+    [linkedinRef, twitterRef, githubRef, currentUser, onSave]
   );
 
   if (loading) return <Loading text={'Loading'} />;

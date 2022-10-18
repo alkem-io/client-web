@@ -17,14 +17,14 @@ const PlatformUpdates: FC = () => {
   const [isNotificationVisible, setIsNotificationVisible] = useState(true);
   const { t } = useTranslation();
 
-  const updatedReleaseNotificationData: ReleaseNotificationData = {
-    prevClientVersion: clientVersion,
-  };
-
   const handleCloseNotification = useCallback(() => {
+    const updatedReleaseNotificationData: ReleaseNotificationData = {
+      prevClientVersion: clientVersion,
+    };
+
     setIsNotificationVisible(false);
     localStorage.setItem('releaseNotification', JSON.stringify(updatedReleaseNotificationData));
-  }, [setIsNotificationVisible]);
+  }, [setIsNotificationVisible, clientVersion]);
 
   return (
     <>

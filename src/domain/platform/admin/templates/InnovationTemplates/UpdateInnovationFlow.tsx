@@ -46,13 +46,16 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
     closeSelectInnovationFlowDialog();
   };
 
-  const handleSelectInnovationFlowFormSubmit = useCallback((values: SelectInnovationFlowFormValuesType) => {
-    onSubmit(values);
-  }, []);
+  const handleSelectInnovationFlowFormSubmit = useCallback(
+    (values: SelectInnovationFlowFormValuesType) => {
+      onSubmit(values);
+    },
+    [onSubmit]
+  );
 
   const handleSelectInnovationFlowDialogSubmit = useCallback(() => {
     openConfirmationDialog();
-  }, []);
+  }, [openConfirmationDialog]);
 
   return (
     <>
