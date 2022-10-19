@@ -472,10 +472,10 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "publicado nuevo Callout",
-        "canvas-created": "añadida nueva Pizarra",
+        "canvas-created": "añadida nueva Pizarra - '{{parentDisplayName}}'",
         "card-comment-created": "comentado en una Tarjeta",
-        "card-created": "añadido una nueva Tarjeta",
-        "discussion-comment-created": "comentado en un Debate",
+        "card-created": "añadido una nueva Tarjeta - '{{parentDisplayName}}'",
+        "discussion-comment-created": "comentado en un Debate - '{{parentDisplayName}}'",
         "member-joined": "se ha unido"
       }
     },

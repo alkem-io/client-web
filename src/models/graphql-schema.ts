@@ -23,6 +23,14 @@ export type Scalars = {
   Upload: File;
 };
 
+export type Apm = {
+  __typename?: 'APM';
+  /** Endpoint where events are sent. */
+  endpoint: Scalars['String'];
+  /** Flag indicating if real user monitoring is enabled. */
+  rumEnabled: Scalars['Boolean'];
+};
+
 export type Activity = {
   __typename?: 'Activity';
   /** The id of the Collaboration entity within which the Activity was generated. */
@@ -828,6 +836,8 @@ export type CommunityPolicyRole = {
 
 export type Config = {
   __typename?: 'Config';
+  /** Elastic APM (RUM & performance monitoring) related configuration. */
+  apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
   /** Platform related resources. */
@@ -4080,6 +4090,7 @@ export type ConfigurationFragment = {
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+  apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
@@ -4114,6 +4125,7 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+    apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   };
 };
 
@@ -15520,7 +15532,7 @@ export type CalloutsNamesFromHubQuery = {
       | {
           __typename?: 'Collaboration';
           id: string;
-          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
         }
       | undefined;
   };
@@ -15546,7 +15558,7 @@ export type CalloutsNamesFromChallengeQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
           }
         | undefined;
     };
@@ -15574,7 +15586,7 @@ export type CalloutsNamesFromOpportunityQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
           }
         | undefined;
     };
@@ -15601,6 +15613,7 @@ export type CardsNamesFromHubQuery = {
                 __typename?: 'Callout';
                 id: string;
                 nameID: string;
+                displayName: string;
                 aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
               }>
             | undefined;
@@ -15634,6 +15647,7 @@ export type CardsNamesFromChallengeQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
@@ -15669,6 +15683,7 @@ export type CardsNamesFromOpportunityQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
@@ -15698,6 +15713,7 @@ export type CanvasesNamesFromHubQuery = {
                 __typename?: 'Callout';
                 id: string;
                 nameID: string;
+                displayName: string;
                 canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
               }>
             | undefined;
@@ -15731,6 +15747,7 @@ export type CanvasesNamesFromChallengeQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
@@ -15766,6 +15783,7 @@ export type CanvasesNamesFromOpportunityQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;

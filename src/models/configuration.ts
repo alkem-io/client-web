@@ -20,6 +20,10 @@ export interface Configuration {
     endpoint: string;
     submitPII: boolean;
   };
+  apm: {
+    rumEnabled: boolean;
+    endpoint: string;
+  };
 }
 
 export interface AspectTemplate {
