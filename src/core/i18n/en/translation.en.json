@@ -475,10 +475,10 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new Callout",
-        "canvas-created": "added a new Canvas",
+        "canvas-created": "added a Canvas to '{{parentDisplayName}}'",
         "card-comment-created": "commented on a Card",
-        "card-created": "added a new Card",
-        "discussion-comment-created": "commented on a Discussion",
+        "card-created": "added a Card to '{{parentDisplayName}}'",
+        "discussion-comment-created": "commented",
         "member-joined": "joined"
       }
     },

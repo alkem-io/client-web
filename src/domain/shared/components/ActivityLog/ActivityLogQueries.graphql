@@ -7,6 +7,7 @@ query calloutsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) 
       callouts (IDs: $calloutsIds) {
         id
         nameID
+        displayName
       }
     }
   }
@@ -24,6 +25,7 @@ query calloutsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID
         callouts (IDs: $calloutsIds) {
           id
           nameID
+          displayName
         }
       }
     }
@@ -43,6 +45,7 @@ query calloutsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NA
         callouts (IDs: $calloutsIds) {
           id
           nameID
+          displayName
         }
       }
     }
@@ -58,6 +61,7 @@ query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
       callouts (IDs: $calloutsIds)  {
         id
         nameID
+        displayName
         aspects {
           id
           nameID
@@ -79,6 +83,7 @@ query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, 
         callouts (IDs: $calloutsIds)  {
           id
           nameID
+          displayName
           aspects {
             id
             nameID
@@ -102,6 +107,7 @@ query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEI
         callouts (IDs: $calloutsIds)  {
           id
           nameID
+          displayName
           aspects {
             id
             nameID
@@ -121,6 +127,7 @@ query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) 
       callouts (IDs: $calloutsIds)  {
         id
         nameID
+        displayName
         canvases {
           id
           nameID
@@ -142,6 +149,7 @@ query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID
         callouts (IDs: $calloutsIds)  {
           id
           nameID
+          displayName
           canvases {
             id
             nameID
@@ -165,6 +173,7 @@ query canvasesNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NA
         callouts (IDs: $calloutsIds)  {
           id
           nameID
+          displayName
           canvases {
             id
             nameID
