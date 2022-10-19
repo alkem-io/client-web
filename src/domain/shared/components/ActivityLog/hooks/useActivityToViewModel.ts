@@ -3,10 +3,21 @@ import { useAuthorsDetails } from '../../../../communication/communication/useAu
 import { Activity, ActivityEventType } from '../../../../../models/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 import { useCallback, useMemo } from 'react';
-import { buildAspectUrl, buildCalloutUrl, buildCanvasUrl } from '../../../../../common/utils/urlBuilders';
+import {
+  buildAspectUrl,
+  buildCalloutUrl,
+  buildCanvasUrl,
+  buildChallengeUrl,
+  buildOpportunityUrl,
+} from '../../../../../common/utils/urlBuilders';
 import { CalloutActivityData, useCalloutsActivityData } from './useCalloutsActivityData';
 import { CardActivityData, useCardsActivityData } from './useCardsActivityData';
 import { CanvasActivityData, useCanvasesActivityData } from './useCanvasesActivityData';
+import { ChallengeActivityData, useChallengeActivityData } from './useChallengeActivityData/useChallengeActivityData';
+import {
+  OpportunityActivityData,
+  useOpportunityActivityData,
+} from './useOpportunityActivityData/useOpportunityActivityData';
 
 interface ActivityToViewModelReturnType {
   activityViewModel: ActivityViewProps[] | undefined;
@@ -19,7 +30,9 @@ function getUrlByActivityType(
   authors: Author[],
   callouts: CalloutActivityData[],
   cards: CardActivityData[],
-  canvases: CanvasActivityData[]
+  canvases: CanvasActivityData[],
+  challenges: ChallengeActivityData[],
+  opportunities: OpportunityActivityData[]
 ): string | undefined {
   switch (activityLog.type) {
     case ActivityEventType.CanvasCreated: {
@@ -50,7 +63,14 @@ function getUrlByActivityType(
         : undefined;
     }
     case ActivityEventType.ChallengeCreated: {
-
+      const challenge = challenges.find(c => c.id === activityLog.resourceID);
+      return challenge ? buildChallengeUrl(challenge.hubNameId, challenge.nameID) : undefined;
+    }
+    case ActivityEventType.OpportunityCreated: {
+      const opportunity = opportunities.find(o => o.id === activityLog.resourceID);
+      return opportunity
+        ? buildOpportunityUrl(opportunity.hubNameId, opportunity.challengeNameId, opportunity.nameID)
+        : undefined;
     }
   }
 }
@@ -84,6 +104,9 @@ function getParentDisplayNameByActivityType(
       const callout = callouts.find(c => c.id === activityLog.resourceID);
       return callout ? callout.displayName : undefined;
     }
+    default: {
+      return undefined;
+    }
   }
 }
 
@@ -97,20 +120,55 @@ export const useActivityToViewModel = (activities: Activity[]): ActivityToViewMo
 
   const { canvasesActivityData, loading: loadingCanvases } = useCanvasesActivityData(activities);
 
-  const loading = loadingAuthors || loadingCallouts || loadingCards || loadingCanvases;
+  const { challengesActivityData, loading: loadingChallenges } = useChallengeActivityData(activities);
+  const { opportunitiesActivityData, loading: loadingOpportunities } = useOpportunityActivityData(activities);
+
+  const loading =
+    loadingAuthors || loadingCallouts || loadingCards || loadingCanvases || loadingChallenges || loadingOpportunities;
 
   const getActivityViewModel = useCallback(
     (activityLog: Activity) =>
-      toActivityViewModel(activityLog, authors, calloutActivityData, cardsActivityData, canvasesActivityData),
-    [authors, calloutActivityData, cardsActivityData, canvasesActivityData]
+      toActivityViewModel(
+        activityLog,
+        authors,
+        calloutActivityData,
+        cardsActivityData,
+        canvasesActivityData,
+        challengesActivityData,
+        opportunitiesActivityData
+      ),
+    [
+      authors,
+      calloutActivityData,
+      cardsActivityData,
+      canvasesActivityData,
+      challengesActivityData,
+      opportunitiesActivityData,
+    ]
   );
 
   const activityViewModel = useMemo(
     () =>
       activities?.map<ActivityViewProps>(activity =>
-        toActivityViewModel(activity, authors, calloutActivityData, cardsActivityData, canvasesActivityData)
+        toActivityViewModel(
+          activity,
+          authors,
+          calloutActivityData,
+          cardsActivityData,
+          canvasesActivityData,
+          challengesActivityData,
+          opportunitiesActivityData
+        )
       ),
-    [activities, authors, calloutActivityData, cardsActivityData, canvasesActivityData]
+    [
+      activities,
+      authors,
+      calloutActivityData,
+      cardsActivityData,
+      canvasesActivityData,
+      challengesActivityData,
+      opportunitiesActivityData,
+    ]
   );
 
   return {
@@ -125,11 +183,13 @@ const toActivityViewModel = (
   authors: Author[],
   callouts: CalloutActivityData[],
   cards: CardActivityData[],
-  canvases: CanvasActivityData[]
+  canvases: CanvasActivityData[],
+  challenges: ChallengeActivityData[],
+  opportunities: OpportunityActivityData[]
 ) => ({
   author: authors.find(author => author.id === activityLog.triggeredBy),
   createdDate: activityLog.createdDate,
-  url: getUrlByActivityType(activityLog, authors, callouts, cards, canvases),
+  url: getUrlByActivityType(activityLog, authors, callouts, cards, canvases, challenges, opportunities),
   description: activityLog.description,
   parentDisplayName: getParentDisplayNameByActivityType(activityLog, callouts, cards, canvases),
 });

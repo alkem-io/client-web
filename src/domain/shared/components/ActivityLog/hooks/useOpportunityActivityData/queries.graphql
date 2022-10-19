@@ -1,0 +1,10 @@
+query opportunitiesName($hubID: UUID_NAMEID!, $opportunityIDs: [UUID!]) {
+  hub(ID: $hubID) {
+    id
+    opportunities(IDs: $opportunityIDs) {
+      id
+      nameID
+      displayName
+    }
+  }
+}

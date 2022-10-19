@@ -33,8 +33,8 @@ export interface ActivityLogComponentProps {
   activities: Activity[] | undefined;
 }
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities }) => {
-  const { getActivityViewModel, loading } = useActivityToViewModel(activities ?? []);
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = [] }) => {
+  const { getActivityViewModel, loading } = useActivityToViewModel(activities);
 
   const display = useMemo(() => {
     if (!activities || loading) {

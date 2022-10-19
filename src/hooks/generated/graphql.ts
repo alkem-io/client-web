@@ -19250,10 +19250,10 @@ export function refetchCanvasesNamesFromOpportunityQuery(
   return { query: CanvasesNamesFromOpportunityDocument, variables: variables };
 }
 export const ChallengesNameDocument = gql`
-  query challengesName($hubID: UUID_NAMEID!, $challengeID: [UUID!]!) {
+  query challengesName($hubID: UUID_NAMEID!, $challengeIDs: [UUID!]) {
     hub(ID: $hubID) {
       id
-      challenges(IDs: $challengeID) {
+      challenges(IDs: $challengeIDs) {
         id
         nameID
         displayName
@@ -19275,7 +19275,7 @@ export const ChallengesNameDocument = gql`
  * const { data, loading, error } = useChallengesNameQuery({
  *   variables: {
  *      hubID: // value for 'hubID'
- *      challengeID: // value for 'challengeID'
+ *      challengeIDs: // value for 'challengeIDs'
  *   },
  * });
  */
@@ -19307,10 +19307,10 @@ export function refetchChallengesNameQuery(variables: SchemaTypes.ChallengesName
   return { query: ChallengesNameDocument, variables: variables };
 }
 export const OpportunitiesNameDocument = gql`
-  query opportunitiesName($hubID: UUID_NAMEID!, $opportunityID: [UUID!]!) {
+  query opportunitiesName($hubID: UUID_NAMEID!, $opportunityIDs: [UUID!]) {
     hub(ID: $hubID) {
       id
-      opportunities(IDs: $opportunityID) {
+      opportunities(IDs: $opportunityIDs) {
         id
         nameID
         displayName
@@ -19332,7 +19332,7 @@ export const OpportunitiesNameDocument = gql`
  * const { data, loading, error } = useOpportunitiesNameQuery({
  *   variables: {
  *      hubID: // value for 'hubID'
- *      opportunityID: // value for 'opportunityID'
+ *      opportunityIDs: // value for 'opportunityIDs'
  *   },
  * });
  */

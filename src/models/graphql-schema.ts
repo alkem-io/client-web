@@ -15467,7 +15467,7 @@ export type CanvasesNamesFromOpportunityQuery = {
 
 export type ChallengesNameQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
-  challengeID: Array<Scalars['UUID']> | Scalars['UUID'];
+  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
 export type ChallengesNameQuery = {
@@ -15481,7 +15481,7 @@ export type ChallengesNameQuery = {
 
 export type OpportunitiesNameQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
-  opportunityID: Array<Scalars['UUID']> | Scalars['UUID'];
+  opportunityIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
 export type OpportunitiesNameQuery = {
