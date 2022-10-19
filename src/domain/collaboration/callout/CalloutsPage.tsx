@@ -59,23 +59,23 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
   return (
     <>
       <PageLayout currentSection={EntityPageSection.Explore}>
-        <Box display="flex" justifyContent="end" mb={1} gap={1}>
-          <Button
-            variant="text"
-            startIcon={<TipsAndUpdatesOutlinedIcon />}
-            target="_blank"
-            rel="noopener noreferrer"
-            component={RouterLink}
-            to={INSPIRATION_ROUTE}
-          >
-            {t('common.inspiration')}
-          </Button>
-          {canCreateCallout && (
+        {canCreateCallout && (
+          <Box display="flex" justifyContent="end" mb={1} gap={1}>
+            <Button
+              variant="text"
+              startIcon={<TipsAndUpdatesOutlinedIcon />}
+              target="_blank"
+              rel="noopener noreferrer"
+              component={RouterLink}
+              to={INSPIRATION_ROUTE}
+            >
+              {t('common.inspiration')}
+            </Button>
             <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={handleCreateCalloutOpened}>
               {t('common.create')}
             </Button>
-          )}
-        </Box>
+          </Box>
+        )}
         <Box display="flex" flexDirection="column" gap={3.5}>
           {callouts?.map(callout => {
             return (
