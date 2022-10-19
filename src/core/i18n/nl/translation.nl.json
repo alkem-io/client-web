@@ -473,7 +473,7 @@
       "actions": {
         "callout-published": "heeft een nieuwe Callout gepubliceerd",
         "canvas-created": "heeft een Canvas toegevoegd in '{{parentDisplayName}}'",
-        "card-comment-created": "heeft gereageerd op Kaart '{{parentDisplayName}}'",
+        "card-comment-created": "heeft gereageerd op Kaart",
         "card-created": "heeft een Kaart toegevoegd in '{{parentDisplayName}}'",
         "discussion-comment-created": "heeft gereageerd op '{{parentDisplayName}}'",
         "member-joined": "is lid geworden"

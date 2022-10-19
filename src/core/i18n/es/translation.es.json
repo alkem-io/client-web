@@ -473,7 +473,7 @@
       "actions": {
         "callout-published": "publicado nuevo Callout",
         "canvas-created": "añadida nueva Pizarra - '{{parentDisplayName}}'",
-        "card-comment-created": "comentado en una Tarjeta - '{{parentDisplayName}}'",
+        "card-comment-created": "comentado en una Tarjeta",
         "card-created": "añadido una nueva Tarjeta - '{{parentDisplayName}}'",
         "discussion-comment-created": "comentado en un Debate - '{{parentDisplayName}}'",
         "member-joined": "se ha unido"
