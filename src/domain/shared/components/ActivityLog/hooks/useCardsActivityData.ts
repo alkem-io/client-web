@@ -19,6 +19,7 @@ export type CardActivityData = {
   id: string;
   nameID: string;
   calloutNameId: string;
+  calloutDisplayName: string;
   hubNameId: string;
   challengeNameId?: string;
   opportunityNameId?: string;
@@ -36,6 +37,7 @@ function flatMapAllCards(
       callout.aspects?.map(card => ({
         ...card,
         calloutNameId: callout.nameID,
+        calloutDisplayName: callout.displayName,
         hubNameId: hubData.hub.nameID,
       }))
     )
@@ -47,6 +49,7 @@ function flatMapAllCards(
       callout.aspects?.map(card => ({
         ...card,
         calloutNameId: callout.nameID,
+        calloutDisplayName: callout.displayName,
         hubNameId: challengeData.hub.nameID,
         challengeNameId: challengeData.hub.challenge.nameID,
       }))
@@ -59,6 +62,7 @@ function flatMapAllCards(
       callout.aspects?.map(card => ({
         ...card,
         calloutNameId: callout.nameID,
+        calloutDisplayName: callout.displayName,
         hubNameId: opportunityData.hub.nameID,
         challengeNameId: opportunityData.hub.opportunity.parentNameID,
         opportunityNameId: opportunityData.hub.opportunity.nameID,

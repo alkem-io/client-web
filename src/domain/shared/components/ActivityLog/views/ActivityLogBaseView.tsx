@@ -15,6 +15,7 @@ export interface ActivityLogBaseViewProps {
   action: string;
   description: string;
   url?: string;
+  parentDisplayName?: string;
   loading?: boolean;
 }
 

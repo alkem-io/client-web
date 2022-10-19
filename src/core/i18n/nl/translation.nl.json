@@ -472,10 +472,10 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "heeft een nieuwe Callout gepubliceerd",
-        "canvas-created": "heeft een nieuwe Canvas toegevoegd",
-        "card-comment-created": "heeft gereageerd op een Kaart",
-        "card-created": "heeft een nieuwe Kaart toegevoegd",
-        "discussion-comment-created": "heeft gereageerd op een Discussie Callout",
+        "canvas-created": "heeft een Canvas toegevoegd in '{{parentDisplayName}}'",
+        "card-comment-created": "heeft gereageerd op Kaart",
+        "card-created": "heeft een Kaart toegevoegd in '{{parentDisplayName}}'",
+        "discussion-comment-created": "heeft gereageerd op '{{parentDisplayName}}'",
         "member-joined": "is lid geworden"
       }
     },

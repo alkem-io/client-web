@@ -18582,6 +18582,7 @@ export const CalloutsNamesFromHubDocument = gql`
         callouts(IDs: $calloutsIds) {
           id
           nameID
+          displayName
         }
       }
     }
@@ -18651,6 +18652,7 @@ export const CalloutsNamesFromChallengeDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
+            displayName
           }
         }
       }
@@ -18729,6 +18731,7 @@ export const CalloutsNamesFromOpportunityDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
+            displayName
           }
         }
       }
@@ -18801,6 +18804,7 @@ export const CardsNamesFromHubDocument = gql`
         callouts(IDs: $calloutsIds) {
           id
           nameID
+          displayName
           aspects {
             id
             nameID
@@ -18871,6 +18875,7 @@ export const CardsNamesFromChallengeDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
+            displayName
             aspects {
               id
               nameID
@@ -18947,6 +18952,7 @@ export const CardsNamesFromOpportunityDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
+            displayName
             aspects {
               id
               nameID
@@ -19019,6 +19025,7 @@ export const CanvasesNamesFromHubDocument = gql`
         callouts(IDs: $calloutsIds) {
           id
           nameID
+          displayName
           canvases {
             id
             nameID
@@ -19092,6 +19099,7 @@ export const CanvasesNamesFromChallengeDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
+            displayName
             canvases {
               id
               nameID
@@ -19174,6 +19182,7 @@ export const CanvasesNamesFromOpportunityDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
+            displayName
             canvases {
               id
               nameID

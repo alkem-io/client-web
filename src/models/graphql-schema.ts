@@ -15197,7 +15197,7 @@ export type CalloutsNamesFromHubQuery = {
       | {
           __typename?: 'Collaboration';
           id: string;
-          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
         }
       | undefined;
   };
@@ -15223,7 +15223,7 @@ export type CalloutsNamesFromChallengeQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
           }
         | undefined;
     };
@@ -15251,7 +15251,7 @@ export type CalloutsNamesFromOpportunityQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
           }
         | undefined;
     };
@@ -15278,6 +15278,7 @@ export type CardsNamesFromHubQuery = {
                 __typename?: 'Callout';
                 id: string;
                 nameID: string;
+                displayName: string;
                 aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
               }>
             | undefined;
@@ -15311,6 +15312,7 @@ export type CardsNamesFromChallengeQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
@@ -15346,6 +15348,7 @@ export type CardsNamesFromOpportunityQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
@@ -15375,6 +15378,7 @@ export type CanvasesNamesFromHubQuery = {
                 __typename?: 'Callout';
                 id: string;
                 nameID: string;
+                displayName: string;
                 canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
               }>
             | undefined;
@@ -15408,6 +15412,7 @@ export type CanvasesNamesFromChallengeQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
@@ -15443,6 +15448,7 @@ export type CanvasesNamesFromOpportunityQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
                   canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
                 }>
               | undefined;
