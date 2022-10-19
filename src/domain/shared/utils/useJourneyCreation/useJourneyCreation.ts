@@ -1,8 +1,7 @@
+import { useCallback } from 'react';
 import {
   ChallengeCardFragmentDoc,
   OpportunityCardFragmentDoc,
-  refetchChallengeCardsQuery,
-  refetchChallengePageQuery,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
 } from '../../../../hooks/generated/graphql';
@@ -69,7 +68,6 @@ export const useJourneyCreation = () => {
         },
       });
     },
-    refetchQueries: [refetchChallengeCardsQuery({ hubId })],
   });
   const [createOpportunityLazy] = useCreateOpportunityMutation({
     onError: handleError,
@@ -103,114 +101,119 @@ export const useJourneyCreation = () => {
         },
       });
     },
-    refetchQueries: [refetchChallengePageQuery({ hubId, challengeId })],
   });
 
   // add useCallback
-  const createChallenge = async (value: ChallengeCreationInput) => {
-    const { data } = await createChallengeLazy({
-      variables: {
-        input: {
-          hubID: value.hubID,
-          displayName: value.displayName,
-          context: {
-            tagline: value.tagline,
-            background: value.background,
-            vision: value.vision,
-          },
-          tags: value.tags,
-        },
-      },
-      optimisticResponse: {
-        createChallenge: {
-          __typename: 'Challenge',
-          id: '',
-          nameID: '',
-          displayName: value.displayName ?? '',
-          metrics: [
-            {
-              id: '',
-              name: '',
-              value: '',
+  const createChallenge = useCallback(
+    async (value: ChallengeCreationInput) => {
+      const { data } = await createChallengeLazy({
+        variables: {
+          input: {
+            hubID: value.hubID,
+            displayName: value.displayName,
+            context: {
+              tagline: value.tagline,
+              background: value.background,
+              vision: value.vision,
             },
-          ],
-          context: {
+            tags: value.tags,
+          },
+        },
+        optimisticResponse: {
+          createChallenge: {
+            __typename: 'Challenge',
             id: '',
-            tagline: value.tagline,
-            visuals: [
+            nameID: '',
+            displayName: value.displayName ?? '',
+            metrics: [
               {
                 id: '',
-                uri: '',
                 name: '',
+                value: '',
               },
             ],
-          },
-          tagset: {
-            id: '-1',
-            name: 'default',
-            tags: value.tags ?? [],
-          },
-        },
-      },
-    });
-
-    return data?.createChallenge;
-  };
-
-  const createOpportunity = async (value: OpportunityCreationInput) => {
-    const { data } = await createOpportunityLazy({
-      variables: {
-        input: {
-          challengeID: value.challengeID,
-          displayName: value.displayName,
-          context: {
-            tagline: value.tagline,
-            vision: value.vision,
-          },
-          tags: value.tags,
-        },
-      },
-      optimisticResponse: {
-        createOpportunity: {
-          __typename: 'Opportunity',
-          id: '',
-          nameID: '',
-          displayName: value.displayName ?? '',
-          metrics: [
-            {
+            context: {
               id: '',
-              name: '',
-              value: '',
+              tagline: value.tagline,
+              visuals: [
+                {
+                  id: '',
+                  uri: '',
+                  name: '',
+                },
+              ],
             },
-          ],
-          context: {
+            tagset: {
+              id: '-1',
+              name: 'default',
+              tags: value.tags ?? [],
+            },
+          },
+        },
+      });
+
+      return data?.createChallenge;
+    },
+    [createChallengeLazy]
+  );
+
+  const createOpportunity = useCallback(
+    async (value: OpportunityCreationInput) => {
+      const { data } = await createOpportunityLazy({
+        variables: {
+          input: {
+            challengeID: value.challengeID,
+            displayName: value.displayName,
+            context: {
+              tagline: value.tagline,
+              vision: value.vision,
+            },
+            tags: value.tags,
+          },
+        },
+        optimisticResponse: {
+          createOpportunity: {
+            __typename: 'Opportunity',
             id: '',
-            tagline: value.tagline,
-            visuals: [
+            nameID: '',
+            displayName: value.displayName ?? '',
+            metrics: [
               {
                 id: '',
-                uri: '',
                 name: '',
-                allowedTypes: [],
-                aspectRatio: 1,
-                maxHeight: 1,
-                maxWidth: 1,
-                minHeight: 1,
-                minWidth: 1,
+                value: '',
               },
             ],
-          },
-          tagset: {
-            id: '-1',
-            name: 'default',
-            tags: value.tags ?? [],
+            context: {
+              id: '',
+              tagline: value.tagline,
+              visuals: [
+                {
+                  id: '',
+                  uri: '',
+                  name: '',
+                  allowedTypes: [],
+                  aspectRatio: 1,
+                  maxHeight: 1,
+                  maxWidth: 1,
+                  minHeight: 1,
+                  minWidth: 1,
+                },
+              ],
+            },
+            tagset: {
+              id: '-1',
+              name: 'default',
+              tags: value.tags ?? [],
+            },
           },
         },
-      },
-    });
+      });
 
-    return data?.createOpportunity;
-  };
+      return data?.createOpportunity;
+    },
+    [createOpportunityLazy]
+  );
 
   return { createChallenge, createOpportunity };
 };
