@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '../../../../../containers/NotificationHandler';
-import { useUserContext, useUserScope } from '../../../../../hooks';
+import { useApm, useUserContext, useUserScope } from '../../../../../hooks';
 import { ScrollButton } from '../../../core';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
@@ -18,6 +18,8 @@ const App: FC = () => {
 
   useUserScope(user);
   useCommunityUpdatesNotifier();
+
+  useApm();
 
   const { services } = useServerMetadata();
 
