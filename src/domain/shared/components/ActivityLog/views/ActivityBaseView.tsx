@@ -9,7 +9,7 @@ import { Author } from '../../AuthorAvatar/models/author';
 import { ClampedTypography } from '../../ClampedTypography';
 import { Link } from 'react-router-dom';
 
-export interface ActivityLogBaseViewProps {
+export interface ActivityBaseViewProps {
   author: Author | undefined;
   createdDate: Date | string;
   action: string;
@@ -19,7 +19,7 @@ export interface ActivityLogBaseViewProps {
   loading?: boolean;
 }
 
-export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
+export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   author,
   createdDate,
   action,

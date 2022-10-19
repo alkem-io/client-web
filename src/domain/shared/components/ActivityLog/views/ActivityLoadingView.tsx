@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import { times } from 'lodash';
-import { ActivityLogBaseView } from './ActivityLogBaseView';
+import { ActivityBaseView } from './ActivityBaseView';
 
-interface ActivityLogLoadingViewProps {
+interface ActivityLoadingViewProps {
   rows: number;
 }
 
-export const ActivityLogLoadingView: FC<ActivityLogLoadingViewProps> = ({ rows }) => {
+export const ActivityLoadingView: FC<ActivityLoadingViewProps> = ({ rows }) => {
   return (
     <>
       {times(rows, i => (
-        <ActivityLogBaseView
+        <ActivityBaseView
           key={`_activity_log_loading_view_row_${i}`}
           loading
           author={undefined}

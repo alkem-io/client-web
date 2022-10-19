@@ -4,13 +4,15 @@ import { Activity, ActivityEventType } from '../../../../models/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
 import {
   ActivityCardCommentCreatedView,
-  ActivityLogCalloutPublishedView,
-  ActivityLogCanvasCreatedView,
-  ActivityLogCardCreatedView,
-  ActivityLogDiscussionCommentCreatedView,
-  ActivityLogLoadingView,
-  ActivityLogMemberJoinedView,
-  ActivityLogViewProps,
+  ActivityCalloutPublishedView,
+  ActivityCanvasCreatedView,
+  ActivityCardCreatedView,
+  ActivityDiscussionCommentCreatedView,
+  ActivityLoadingView,
+  ActivityMemberJoinedView,
+  ActivityChallengeCreatedView,
+  ActivityOpportunityCreatedView,
+  ActivityViewProps,
 } from './views';
 import { useActivityToViewModel } from './hooks';
 
@@ -31,7 +33,7 @@ export interface ActivityLogComponentProps {
   activities: Activity[] | undefined;
 }
 
-export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities }) => {
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities }) => {
   const { getActivityViewModel, loading } = useActivityToViewModel(activities ?? []);
 
   const display = useMemo(() => {
@@ -48,26 +50,28 @@ export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities
     );
   }, [activities, getActivityViewModel, loading]);
 
-  return <Root>{display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
+  return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };
 
-interface ActivityViewChooserProps extends ActivityLogViewProps {
+interface ActivityViewChooserProps extends ActivityViewProps {
   type: ActivityEventType;
 }
 
-const ActivityViewChooser = ({ type, ...rest }: ActivityViewChooserProps): React.ReactElement<ActivityLogViewProps> => {
-  const lookup: Record<ActivityEventType, ComponentType<ActivityLogViewProps> | null> = {
-    [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedView,
-    [ActivityEventType.CanvasCreated]: ActivityLogCanvasCreatedView,
+const ActivityViewChooser = ({ type, ...rest }: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {
+  const lookup: Record<ActivityEventType, ComponentType<ActivityViewProps>> = {
+    [ActivityEventType.CalloutPublished]: ActivityCalloutPublishedView,
+    [ActivityEventType.CanvasCreated]: ActivityCanvasCreatedView,
     [ActivityEventType.CardComment]: ActivityCardCommentCreatedView,
-    [ActivityEventType.CardCreated]: ActivityLogCardCreatedView,
-    [ActivityEventType.DiscussionComment]: ActivityLogDiscussionCommentCreatedView,
-    [ActivityEventType.MemberJoined]: ActivityLogMemberJoinedView,
+    [ActivityEventType.CardCreated]: ActivityCardCreatedView,
+    [ActivityEventType.DiscussionComment]: ActivityDiscussionCommentCreatedView,
+    [ActivityEventType.MemberJoined]: ActivityMemberJoinedView,
+    [ActivityEventType.ChallengeCreated]: ActivityChallengeCreatedView,
+    [ActivityEventType.OpportunityCreated]: ActivityOpportunityCreatedView,
   };
 
   const ActivityView = lookup[type];
 
-  if (!ActivityView) {
+  if (ActivityView === undefined) {
     throw new Error(`Unable to choose a view for activity type: ${type}`);
   }
 

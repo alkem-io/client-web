@@ -474,12 +474,14 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new Callout",
-        "canvas-created": "added a Canvas to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on a Card",
-        "card-created": "added a Card to '{{parentDisplayName}}'",
+        "callout-published": "published a new $t(common.callout)",
+        "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
+        "card-comment-created": "commented on a $t(common.aspect)",
+        "card-created": "added a $t(common.aspect) to '{{parentDisplayName}}'",
         "discussion-comment-created": "commented",
-        "member-joined": "joined"
+        "member-joined": "joined",
+        "challenge-created": "created a new $t(common.challenge)",
+        "opportunity-created": "created a new $t(common.opportunity)"
       }
     },
     "lifecycle-visualizer": {

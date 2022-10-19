@@ -32,7 +32,7 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { useChallenge } from '../hooks/useChallenge';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import { ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
@@ -129,7 +129,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <ActivityLogSection activities={activities} />
+          <ActivitySection activities={activities} />
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}

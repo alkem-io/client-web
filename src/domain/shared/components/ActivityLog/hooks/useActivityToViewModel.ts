@@ -1,4 +1,4 @@
-import { ActivityLogViewProps } from '../views';
+import { ActivityViewProps } from '../views';
 import { useAuthorsDetails } from '../../../../communication/communication/useAuthorsDetails';
 import { Activity, ActivityEventType } from '../../../../../models/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
@@ -9,8 +9,8 @@ import { CardActivityData, useCardsActivityData } from './useCardsActivityData';
 import { CanvasActivityData, useCanvasesActivityData } from './useCanvasesActivityData';
 
 interface ActivityToViewModelReturnType {
-  activityViewModel: ActivityLogViewProps[] | undefined;
-  getActivityViewModel: (activityLog: Activity) => ActivityLogViewProps;
+  activityViewModel: ActivityViewProps[] | undefined;
+  getActivityViewModel: (activityLog: Activity) => ActivityViewProps;
   loading: boolean;
 }
 
@@ -48,6 +48,9 @@ function getUrlByActivityType(
       return callout
         ? buildCalloutUrl(callout.nameID, callout.hubNameId, callout.challengeNameId, callout.opportunityNameId)
         : undefined;
+    }
+    case ActivityEventType.ChallengeCreated: {
+
     }
   }
 }
@@ -104,7 +107,7 @@ export const useActivityToViewModel = (activities: Activity[]): ActivityToViewMo
 
   const activityViewModel = useMemo(
     () =>
-      activities?.map<ActivityLogViewProps>(activity =>
+      activities?.map<ActivityViewProps>(activity =>
         toActivityViewModel(activity, authors, calloutActivityData, cardsActivityData, canvasesActivityData)
       ),
     [activities, authors, calloutActivityData, cardsActivityData, canvasesActivityData]

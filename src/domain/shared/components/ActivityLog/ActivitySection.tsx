@@ -2,13 +2,13 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Activity } from '../../../../models/graphql-schema';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
-import { ActivityLogComponent } from './ActivityLogComponent';
+import { ActivityComponent } from './ActivityComponent';
 
 export interface ActivityLogSectionProps {
   activities: Activity[] | undefined;
 }
 
-export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activities }) => {
+export const ActivitySection: FC<ActivityLogSectionProps> = ({ activities }) => {
   const { t } = useTranslation();
 
   return (
@@ -17,7 +17,7 @@ export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activities }) 
       navText={t('common.explore')}
       navLink="explore"
     >
-      <ActivityLogComponent activities={activities} />
+      <ActivityComponent activities={activities} />
     </DashboardGenericSection>
   );
 };
