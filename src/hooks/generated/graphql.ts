@@ -66,6 +66,10 @@ export const ConfigurationFragmentDoc = gql`
       endpoint
       submitPII
     }
+    apm {
+      rumEnabled
+      endpoint
+    }
   }
 `;
 export const VisualUriFragmentDoc = gql`
