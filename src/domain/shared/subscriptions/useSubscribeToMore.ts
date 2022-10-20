@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
 import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
@@ -18,7 +18,7 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables =
   subscribeToMore: SubscribeToMore<QueryData>,
   options: SubscribeToMoreOptions<QueryData, SubscriptionVariables, SubscriptionData> & Options
 ) => {
-  const handleError = useApolloErrorHandler();
+  const handleError = useRef(useApolloErrorHandler()).current;
   const { isFeatureEnabled } = useConfig();
 
   const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);

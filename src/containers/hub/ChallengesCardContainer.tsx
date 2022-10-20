@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
+import useChallengeCreatedSubscription from '../../domain/challenge/hub/hooks/useChallengeCreatedSubscription';
 import { useChallengeCardsQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { ChallengeCardFragment } from '../../models/graphql-schema';
@@ -25,10 +26,12 @@ export interface ChallengesCardContainerProps
 }
 
 export const ChallengesCardContainer: FC<ChallengesCardContainerProps> = ({ hubNameId, children }) => {
-  const { data, error, loading } = useChallengeCardsQuery({
+  const { data, error, loading, subscribeToMore } = useChallengeCardsQuery({
     variables: { hubId: hubNameId },
     skip: !hubNameId,
   });
+
+  useChallengeCreatedSubscription(data, data => data?.hub, subscribeToMore);
 
   const challenges = data?.hub?.challenges ?? [];
 

@@ -46,7 +46,9 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = ({ paths }) 
         return;
       }
 
-      navigate(buildOpportunityUrl(hubNameId, challengeNameId, result.nameID));
+      // delay the navigation so all other processes related to updating the cache
+      // and closing all subscriptions are completed
+      setTimeout(() => navigate(buildOpportunityUrl(hubNameId, challengeNameId, result.nameID)), 100);
     },
     [navigate, createOpportunity, hubNameId, challengeId, challengeNameId]
   );

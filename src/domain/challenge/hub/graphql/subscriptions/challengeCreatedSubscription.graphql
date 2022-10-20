@@ -1,0 +1,7 @@
+subscription ChallengeCreated($hubID: UUID_NAMEID!) {
+  challengeCreated(hubID: $hubID) {
+    challenge {
+      ...ChallengeCard
+    }
+  }
+}

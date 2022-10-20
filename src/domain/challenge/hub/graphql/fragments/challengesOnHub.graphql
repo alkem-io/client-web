@@ -1,0 +1,6 @@
+fragment ChallengesOnHub on Hub {
+  id
+  challenges {
+    ...ChallengeCard
+  }
+}

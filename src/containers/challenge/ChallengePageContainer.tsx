@@ -23,6 +23,7 @@ import {
 import { Reference } from '../../models/Profile';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
 import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
+import useOpportunityCreatedSubscription from '../../domain/challenge/challenge/hooks/useOpportunityCreatedSubscription';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -60,13 +61,19 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { loading: loadingHubContext, ...hub } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
 
-  const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
+  const {
+    data: _challenge,
+    loading: loadingProfile,
+    subscribeToMore,
+  } = useChallengePageQuery({
     variables: {
       hubId: hubNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
   });
+  useOpportunityCreatedSubscription(_challenge, data => data?.hub?.challenge, subscribeToMore);
+
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
   const { data: activityLogData } = useActivityLogOnCollaborationQuery({

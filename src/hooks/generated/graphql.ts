@@ -421,6 +421,41 @@ export const ContextDetailsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
+export const OpportunityCardFragmentDoc = gql`
+  fragment OpportunityCard on Opportunity {
+    id
+    nameID
+    displayName
+    metrics {
+      id
+      name
+      value
+    }
+    lifecycle {
+      id
+      state
+    }
+    context {
+      ...ContextDetails
+    }
+    projects {
+      id
+      nameID
+      displayName
+      description
+      lifecycle {
+        id
+        state
+      }
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+`;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
@@ -475,43 +510,14 @@ export const ChallengeProfileFragmentDoc = gql`
       tags
     }
     opportunities {
-      id
-      nameID
-      displayName
-      metrics {
-        id
-        name
-        value
-      }
-      lifecycle {
-        id
-        state
-      }
-      context {
-        ...ContextDetails
-      }
-      projects {
-        id
-        nameID
-        displayName
-        description
-        lifecycle {
-          id
-          state
-        }
-      }
-      tagset {
-        id
-        name
-        tags
-      }
+      ...OpportunityCard
     }
   }
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
-  ${ContextDetailsFragmentDoc}
+  ${OpportunityCardFragmentDoc}
 `;
 export const ContextTabFragmentDoc = gql`
   fragment ContextTab on Context {
@@ -824,6 +830,15 @@ export const NewChallengeFragmentDoc = gql`
     displayName
   }
 `;
+export const OpportunitiesOnChallengeFragmentDoc = gql`
+  fragment OpportunitiesOnChallenge on Challenge {
+    id
+    opportunities {
+      ...OpportunityCard
+    }
+  }
+  ${OpportunityCardFragmentDoc}
+`;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -916,6 +931,15 @@ export const AdminHubFragmentDoc = gql`
       myPrivileges
     }
   }
+`;
+export const ChallengesOnHubFragmentDoc = gql`
+  fragment ChallengesOnHub on Hub {
+    id
+    challenges {
+      ...ChallengeCard
+    }
+  }
+  ${ChallengeCardFragmentDoc}
 `;
 export const ContextDetailsProviderFragmentDoc = gql`
   fragment ContextDetailsProvider on Context {
@@ -7715,10 +7739,10 @@ export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.Challe
 export const CreateChallengeDocument = gql`
   mutation createChallenge($input: CreateChallengeOnHubInput!) {
     createChallenge(challengeData: $input) {
-      ...NewChallenge
+      ...ChallengeCard
     }
   }
-  ${NewChallengeFragmentDoc}
+  ${ChallengeCardFragmentDoc}
 `;
 export type CreateChallengeMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateChallengeMutation,
@@ -8673,6 +8697,48 @@ export type ChallengesQueryResult = Apollo.QueryResult<
 export function refetchChallengesQuery(variables: SchemaTypes.ChallengesQueryVariables) {
   return { query: ChallengesDocument, variables: variables };
 }
+export const OpportunityCreatedDocument = gql`
+  subscription OpportunityCreated($challengeID: UUID!) {
+    opportunityCreated(challengeID: $challengeID) {
+      opportunity {
+        ...OpportunityCard
+      }
+    }
+  }
+  ${OpportunityCardFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCreatedSubscription__
+ *
+ * To run a query within a React component, call `useOpportunityCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCreatedSubscription({
+ *   variables: {
+ *      challengeID: // value for 'challengeID'
+ *   },
+ * });
+ */
+export function useOpportunityCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.OpportunityCreatedSubscription,
+    SchemaTypes.OpportunityCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.OpportunityCreatedSubscription,
+    SchemaTypes.OpportunityCreatedSubscriptionVariables
+  >(OpportunityCreatedDocument, options);
+}
+export type OpportunityCreatedSubscriptionHookResult = ReturnType<typeof useOpportunityCreatedSubscription>;
+export type OpportunityCreatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.OpportunityCreatedSubscription>;
 export const HubProviderDocument = gql`
   query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -9567,6 +9633,47 @@ export type HubsQueryResult = Apollo.QueryResult<SchemaTypes.HubsQuery, SchemaTy
 export function refetchHubsQuery(variables?: SchemaTypes.HubsQueryVariables) {
   return { query: HubsDocument, variables: variables };
 }
+export const ChallengeCreatedDocument = gql`
+  subscription ChallengeCreated($hubID: UUID_NAMEID!) {
+    challengeCreated(hubID: $hubID) {
+      challenge {
+        ...ChallengeCard
+      }
+    }
+  }
+  ${ChallengeCardFragmentDoc}
+`;
+
+/**
+ * __useChallengeCreatedSubscription__
+ *
+ * To run a query within a React component, call `useChallengeCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCreatedSubscription({
+ *   variables: {
+ *      hubID: // value for 'hubID'
+ *   },
+ * });
+ */
+export function useChallengeCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ChallengeCreatedSubscription,
+    SchemaTypes.ChallengeCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ChallengeCreatedSubscription,
+    SchemaTypes.ChallengeCreatedSubscriptionVariables
+  >(ChallengeCreatedDocument, options);
+}
+export type ChallengeCreatedSubscriptionHookResult = ReturnType<typeof useChallengeCreatedSubscription>;
+export type ChallengeCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ChallengeCreatedSubscription>;
 export const OpportunityProviderDocument = gql`
   query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -9633,10 +9740,10 @@ export function refetchOpportunityProviderQuery(variables: SchemaTypes.Opportuni
 export const CreateOpportunityDocument = gql`
   mutation createOpportunity($input: CreateOpportunityInput!) {
     createOpportunity(opportunityData: $input) {
-      ...NewOpportunity
+      ...OpportunityCard
     }
   }
-  ${NewOpportunityFragmentDoc}
+  ${OpportunityCardFragmentDoc}
 `;
 export type CreateOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateOpportunityMutation,

@@ -391,6 +391,11 @@ export type ChallengeFieldPolicy = {
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ChallengeCreatedKeySpecifier = ('challenge' | 'hubID' | ChallengeCreatedKeySpecifier)[];
+export type ChallengeCreatedFieldPolicy = {
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ChallengeTemplateKeySpecifier = ('applications' | 'feedback' | 'name' | ChallengeTemplateKeySpecifier)[];
 export type ChallengeTemplateFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1103,6 +1108,11 @@ export type OpportunityFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
+export type OpportunityCreatedFieldPolicy = {
+  challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type OpportunityTemplateKeySpecifier = (
   | 'actorGroups'
   | 'applications'
@@ -1527,9 +1537,11 @@ export type SubscriptionKeySpecifier = (
   | 'calloutAspectCreated'
   | 'calloutMessageReceived'
   | 'canvasContentUpdated'
+  | 'challengeCreated'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
   | 'communicationUpdateMessageReceived'
+  | 'opportunityCreated'
   | 'profileVerifiedCredential'
   | SubscriptionKeySpecifier
 )[];
@@ -1538,9 +1550,11 @@ export type SubscriptionFieldPolicy = {
   calloutAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+  challengeCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];
@@ -1852,6 +1866,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);
     fields?: ChallengeFieldPolicy;
   };
+  ChallengeCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ChallengeCreatedKeySpecifier | (() => undefined | ChallengeCreatedKeySpecifier);
+    fields?: ChallengeCreatedFieldPolicy;
+  };
   ChallengeTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeTemplateKeySpecifier | (() => undefined | ChallengeTemplateKeySpecifier);
     fields?: ChallengeTemplateFieldPolicy;
@@ -2013,6 +2031,10 @@ export type StrictTypedTypePolicies = {
   Opportunity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OpportunityKeySpecifier | (() => undefined | OpportunityKeySpecifier);
     fields?: OpportunityFieldPolicy;
+  };
+  OpportunityCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OpportunityCreatedKeySpecifier | (() => undefined | OpportunityCreatedKeySpecifier);
+    fields?: OpportunityCreatedFieldPolicy;
   };
   OpportunityTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OpportunityTemplateKeySpecifier | (() => undefined | OpportunityTemplateKeySpecifier);

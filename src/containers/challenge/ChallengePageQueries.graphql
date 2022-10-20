@@ -60,36 +60,7 @@ fragment ChallengeProfile on Challenge {
     tags
   }
   opportunities {
-    id
-    nameID
-    displayName
-    metrics {
-      id
-      name
-      value
-    }
-    lifecycle {
-      id
-      state
-    }
-    context {
-      ...ContextDetails
-    }
-    projects {
-      id
-      nameID
-      displayName
-      description
-      lifecycle {
-        id
-        state
-      }
-    }
-    tagset {
-      id
-      name
-      tags
-    }
+    ...OpportunityCard
   }
 }
 
