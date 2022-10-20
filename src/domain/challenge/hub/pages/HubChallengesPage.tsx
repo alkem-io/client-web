@@ -43,8 +43,9 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
       if (!result) {
         return;
       }
-
-      navigate(buildChallengeUrl(hubNameId, result.nameID));
+      // delay the navigation so all other processes related to updating the cache,
+      // before closing the all subscriptions are completed
+      setTimeout(() => navigate(buildChallengeUrl(hubNameId, result.nameID)), 100);
     },
     [navigate, createChallenge, hubNameId]
   );

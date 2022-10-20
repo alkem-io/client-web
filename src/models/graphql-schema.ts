@@ -573,6 +573,14 @@ export type ChallengeOpportunitiesArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type ChallengeCreated = {
+  __typename?: 'ChallengeCreated';
+  /** The Challenge that has been created. */
+  challenge: Challenge;
+  /** The identifier for the Hub on which the Challenge was created. */
+  hubID: Scalars['UUID_NAMEID'];
+};
+
 export type ChallengeEventInput = {
   ID: Scalars['UUID'];
   eventName: Scalars['String'];
@@ -2352,6 +2360,14 @@ export type Opportunity = Searchable & {
   tagset?: Maybe<Tagset>;
 };
 
+export type OpportunityCreated = {
+  __typename?: 'OpportunityCreated';
+  /** The identifier for the Challenge on which the Opportunity was created. */
+  challengeID: Scalars['UUID'];
+  /** The Opportunity that has been created. */
+  opportunity: Opportunity;
+};
+
 export type OpportunityEventInput = {
   ID: Scalars['UUID'];
   eventName: Scalars['String'];
@@ -3064,12 +3080,16 @@ export type Subscription = {
   calloutMessageReceived: CalloutMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
+  /** Receive new Challenges created on the Hub. */
+  challengeCreated: ChallengeCreated;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
+  /** Receive new Opportunities created on the Challenge. */
+  opportunityCreated: OpportunityCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
 };
@@ -3090,6 +3110,10 @@ export type SubscriptionCanvasContentUpdatedArgs = {
   canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
 
+export type SubscriptionChallengeCreatedArgs = {
+  hubID: Scalars['UUID_NAMEID'];
+};
+
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
   discussionID: Scalars['UUID'];
 };
@@ -3100,6 +3124,10 @@ export type SubscriptionCommunicationDiscussionUpdatedArgs = {
 
 export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
   updatesIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionOpportunityCreatedArgs = {
+  challengeID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -8110,13 +8138,91 @@ export type ChallengeInfoFragment = {
 
 export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 
+export type OpportunitiesOnChallengeFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  opportunities?:
+    | Array<{
+        __typename?: 'Opportunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+        context?:
+          | {
+              __typename?: 'Context';
+              id: string;
+              tagline?: string | undefined;
+              background?: string | undefined;
+              vision?: string | undefined;
+              impact?: string | undefined;
+              who?: string | undefined;
+              location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+              references?:
+                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | undefined;
+              visuals?:
+                | Array<{
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }>
+                | undefined;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+            }
+          | undefined;
+        projects?:
+          | Array<{
+              __typename?: 'Project';
+              id: string;
+              nameID: string;
+              displayName: string;
+              description?: string | undefined;
+              lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            }>
+          | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
 export type CreateChallengeMutationVariables = Exact<{
   input: CreateChallengeOnHubInput;
 }>;
 
 export type CreateChallengeMutation = {
   __typename?: 'Mutation';
-  createChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+  createChallenge: {
+    __typename?: 'Challenge';
+    id: string;
+    displayName: string;
+    nameID: string;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          tagline?: string | undefined;
+          visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+        }
+      | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  };
 };
 
 export type DeleteChallengeMutationVariables = Exact<{
@@ -8511,6 +8617,73 @@ export type ChallengesQuery = {
   };
 };
 
+export type OpportunityCreatedSubscriptionVariables = Exact<{
+  challengeID: Scalars['UUID'];
+}>;
+
+export type OpportunityCreatedSubscription = {
+  __typename?: 'Subscription';
+  opportunityCreated: {
+    __typename?: 'OpportunityCreated';
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      displayName: string;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            tagline?: string | undefined;
+            background?: string | undefined;
+            vision?: string | undefined;
+            impact?: string | undefined;
+            who?: string | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+            references?:
+              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | undefined;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
+              | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+          }
+        | undefined;
+      projects?:
+        | Array<{
+            __typename?: 'Project';
+            id: string;
+            nameID: string;
+            displayName: string;
+            description?: string | undefined;
+            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+          }>
+        | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+  };
+};
+
 export type HubProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -8705,6 +8878,29 @@ export type AdminHubFragment = {
   displayName: string;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type ChallengesOnHubFragment = {
+  __typename?: 'Hub';
+  id: string;
+  challenges?:
+    | Array<{
+        __typename?: 'Challenge';
+        id: string;
+        displayName: string;
+        nameID: string;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        context?:
+          | {
+              __typename?: 'Context';
+              id: string;
+              tagline?: string | undefined;
+              visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+            }
+          | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
     | undefined;
 };
 
@@ -9181,6 +9377,33 @@ export type HubsQuery = {
   }>;
 };
 
+export type ChallengeCreatedSubscriptionVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCreatedSubscription = {
+  __typename?: 'Subscription';
+  challengeCreated: {
+    __typename?: 'ChallengeCreated';
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      displayName: string;
+      nameID: string;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            tagline?: string | undefined;
+            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+          }
+        | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+  };
+};
+
 export type OpportunityProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
@@ -9294,13 +9517,125 @@ export type OpportunityProviderFragment = {
 
 export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
 
+export type OpportunityCardFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  nameID: string;
+  displayName: string;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        background?: string | undefined;
+        vision?: string | undefined;
+        impact?: string | undefined;
+        who?: string | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+      }
+    | undefined;
+  projects?:
+    | Array<{
+        __typename?: 'Project';
+        id: string;
+        nameID: string;
+        displayName: string;
+        description?: string | undefined;
+        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+      }>
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+};
+
 export type CreateOpportunityMutationVariables = Exact<{
   input: CreateOpportunityInput;
 }>;
 
 export type CreateOpportunityMutation = {
   __typename?: 'Mutation';
-  createOpportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+  createOpportunity: {
+    __typename?: 'Opportunity';
+    id: string;
+    nameID: string;
+    displayName: string;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          tagline?: string | undefined;
+          background?: string | undefined;
+          vision?: string | undefined;
+          impact?: string | undefined;
+          who?: string | undefined;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
+          visuals?:
+            | Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>
+            | undefined;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+        }
+      | undefined;
+    projects?:
+      | Array<{
+          __typename?: 'Project';
+          id: string;
+          nameID: string;
+          displayName: string;
+          description?: string | undefined;
+          lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+        }>
+      | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  };
 };
 
 export type DeleteOpportunityMutationVariables = Exact<{
