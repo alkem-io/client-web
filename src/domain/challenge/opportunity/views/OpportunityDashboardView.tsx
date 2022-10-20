@@ -31,7 +31,7 @@ import DashboardUpdatesSection from '../../../shared/components/DashboardSection
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunity } from '../hooks/useOpportunity';
-import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import { ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 // TODO flat props
@@ -175,7 +175,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <ActivityLogSection activities={activities} />
+          <ActivitySection activities={activities} />
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}

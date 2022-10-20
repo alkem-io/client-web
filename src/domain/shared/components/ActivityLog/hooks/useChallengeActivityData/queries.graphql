@@ -1,0 +1,10 @@
+query challengesName($hubID: UUID_NAMEID!, $challengeIDs: [UUID!]) {
+  hub(ID: $hubID) {
+    id
+    challenges(IDs: $challengeIDs) {
+      id
+      nameID
+      displayName
+    }
+  }
+}

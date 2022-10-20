@@ -38,7 +38,7 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Discussion } from '../../../communication/discussion/models/discussion';
-import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import { ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
@@ -157,7 +157,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          {showActivity && <ActivityLogSection activities={activities} />}
+          {showActivity && <ActivitySection activities={activities} />}
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}

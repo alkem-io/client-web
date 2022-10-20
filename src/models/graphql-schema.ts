@@ -56,8 +56,10 @@ export enum ActivityEventType {
   CanvasCreated = 'CANVAS_CREATED',
   CardComment = 'CARD_COMMENT',
   CardCreated = 'CARD_CREATED',
+  ChallengeCreated = 'CHALLENGE_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
+  OpportunityCreated = 'OPPORTUNITY_CREATED',
 }
 
 export type ActivityLogInput = {
@@ -569,6 +571,7 @@ export type Challenge = Searchable & {
 };
 
 export type ChallengeOpportunitiesArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
@@ -1442,6 +1445,10 @@ export type HubGroupArgs = {
 
 export type HubGroupsWithTagArgs = {
   tag: Scalars['String'];
+};
+
+export type HubOpportunitiesArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
 
 export type HubOpportunityArgs = {
@@ -15790,6 +15797,34 @@ export type CanvasesNamesFromOpportunityQuery = {
           }
         | undefined;
     };
+  };
+};
+
+export type ChallengesNameQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+}>;
+
+export type ChallengesNameQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenges?: Array<{ __typename?: 'Challenge'; id: string; nameID: string; displayName: string }> | undefined;
+  };
+};
+
+export type OpportunitiesNameQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  opportunityIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+}>;
+
+export type OpportunitiesNameQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunities?: Array<{ __typename?: 'Opportunity'; id: string; nameID: string; displayName: string }> | undefined;
   };
 };
 
