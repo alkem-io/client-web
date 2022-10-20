@@ -8698,7 +8698,7 @@ export function refetchChallengesQuery(variables: SchemaTypes.ChallengesQueryVar
   return { query: ChallengesDocument, variables: variables };
 }
 export const OpportunityCreatedDocument = gql`
-  subscription OpportunityCreated($challengeID: UUID_NAMEID!) {
+  subscription OpportunityCreated($challengeID: UUID!) {
     opportunityCreated(challengeID: $challengeID) {
       opportunity {
         ...OpportunityCard

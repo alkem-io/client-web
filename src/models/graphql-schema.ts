@@ -578,7 +578,7 @@ export type ChallengeCreated = {
   /** The Challenge that has been created. */
   challenge: Challenge;
   /** The identifier for the Hub on which the Challenge was created. */
-  hubID: Scalars['String'];
+  hubID: Scalars['UUID_NAMEID'];
 };
 
 export type ChallengeEventInput = {
@@ -2363,7 +2363,7 @@ export type Opportunity = Searchable & {
 export type OpportunityCreated = {
   __typename?: 'OpportunityCreated';
   /** The identifier for the Challenge on which the Opportunity was created. */
-  challengeID: Scalars['String'];
+  challengeID: Scalars['UUID'];
   /** The Opportunity that has been created. */
   opportunity: Opportunity;
 };
@@ -3080,7 +3080,7 @@ export type Subscription = {
   calloutMessageReceived: CalloutMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
-  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  /** Receive new Challenges created on the Hub. */
   challengeCreated: ChallengeCreated;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
@@ -3088,7 +3088,7 @@ export type Subscription = {
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
-  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  /** Receive new Opportunities created on the Challenge. */
   opportunityCreated: OpportunityCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
@@ -3127,7 +3127,7 @@ export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
 };
 
 export type SubscriptionOpportunityCreatedArgs = {
-  challengeID: Scalars['UUID_NAMEID'];
+  challengeID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -8618,7 +8618,7 @@ export type ChallengesQuery = {
 };
 
 export type OpportunityCreatedSubscriptionVariables = Exact<{
-  challengeID: Scalars['UUID_NAMEID'];
+  challengeID: Scalars['UUID'];
 }>;
 
 export type OpportunityCreatedSubscription = {
