@@ -19,7 +19,11 @@ export const useAppendPaths = (initialPaths: Path[], ...pathDefs: PathDef[]) => 
 };
 
 export const useAppendPath = (paths: Path[], pathDef: PathDef) => {
-  return useMemo(() => [...paths, { value: '', ...pathDef, real: !!pathDef.value }], [paths, pathDef]);
+  return useMemo(
+    () => [...paths, { value: '', ...pathDef, real: !!pathDef.value }],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [paths, pathDef.name, pathDef.value]
+  );
 };
 
 export const useAppendBreadcrumb = (paths: Path[], pathDef: PathDef) => {
