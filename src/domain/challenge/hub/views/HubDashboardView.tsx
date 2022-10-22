@@ -19,7 +19,7 @@ import {
   AssociatedOrganizationDetailsFragment,
   Reference,
 } from '../../../../models/graphql-schema';
-import { buildHubUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { buildHubUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -100,11 +100,15 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string, calloutNameId: string) => {
-      const url = buildCanvasUrl({ hubNameId, calloutNameId, canvasNameId });
+      const url = buildCanvasUrl(calloutNameId, canvasNameId, { hubNameId });
       return buildLinkToCanvas(url);
     },
     [hubNameId, buildLinkToCanvas]
   );
+
+  const journeyLocation: JourneyLocation = {
+    hubNameId,
+  };
 
   const showActivity = (!activities && activityLoading) || !!activities;
 
@@ -156,7 +160,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          {showActivity && <ActivitySection activities={activities} />}
+          {showActivity && <ActivitySection activities={activities} journeyLocation={journeyLocation} />}
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}

@@ -15969,12 +15969,12 @@ export type ActivityLogCalloutCanvasCreatedFragment = {
   canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
 };
 
-export type ActivityLogChallengeCreatedResultFragment = {
+export type ActivityLogChallengeCreatedFragment = {
   __typename?: 'ActivityLogEntryChallengeCreated';
   challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 };
 
-export type ActivityLogOpportunityCreatedResultFragment = {
+export type ActivityLogOpportunityCreatedFragment = {
   __typename?: 'ActivityLogEntryOpportunityCreated';
   opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
 };

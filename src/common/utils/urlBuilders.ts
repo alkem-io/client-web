@@ -67,72 +67,59 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export const buildCalloutUrl = (
-  calloutNameId: string,
-  hubNameId: string,
-  challengeNameId?: string,
-  opportunityNameId?: string
-) => {
+export interface JourneyLocation {
+  hubNameId: string;
+  challengeNameId?: string;
+  opportunityNameId?: string;
+}
+
+export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation) => {
   const calloutUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}`;
-  if (challengeNameId) {
-    if (opportunityNameId) {
-      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${calloutUrl}`;
+  if (journeyLocation.challengeNameId) {
+    if (journeyLocation.opportunityNameId) {
+      return `${buildOpportunityUrl(
+        journeyLocation.hubNameId,
+        journeyLocation.challengeNameId,
+        journeyLocation.opportunityNameId
+      )}${calloutUrl}`;
     } else {
-      return `${buildChallengeUrl(hubNameId, challengeNameId)}${calloutUrl}`;
+      return `${buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId)}${calloutUrl}`;
     }
   } else {
-    return `${buildHubUrl(hubNameId)}${calloutUrl}`;
+    return `${buildHubUrl(journeyLocation.hubNameId)}${calloutUrl}`;
   }
 };
 
-interface buildAspectUrlParams {
-  hubNameId: string;
-  challengeNameId?: string;
-  opportunityNameId?: string;
-  calloutNameId: string;
-  aspectNameId: string;
-}
-export const buildAspectUrl = ({
-  hubNameId,
-  challengeNameId,
-  opportunityNameId,
-  calloutNameId,
-  aspectNameId,
-}: buildAspectUrlParams) => {
+export const buildAspectUrl = (calloutNameId: string, aspectNameId: string, journeyLocation: JourneyLocation) => {
   const aspectUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}/aspects/${aspectNameId}`;
-  if (challengeNameId) {
-    if (opportunityNameId) {
-      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${aspectUrl}`;
+  if (journeyLocation.challengeNameId) {
+    if (journeyLocation.opportunityNameId) {
+      return `${buildOpportunityUrl(
+        journeyLocation.hubNameId,
+        journeyLocation.challengeNameId,
+        journeyLocation.opportunityNameId
+      )}${aspectUrl}`;
     } else {
-      return `${buildChallengeUrl(hubNameId, challengeNameId)}${aspectUrl}`;
+      return `${buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId)}${aspectUrl}`;
     }
   } else {
-    return `${buildHubUrl(hubNameId)}${aspectUrl}`;
+    return `${buildHubUrl(journeyLocation.hubNameId)}${aspectUrl}`;
   }
 };
 
-interface buildCanvasUrlParams {
-  hubNameId: string;
-  challengeNameId?: string;
-  opportunityNameId?: string;
-  calloutNameId: string;
-  canvasNameId: string;
-}
-export const buildCanvasUrl = ({
-  hubNameId,
-  challengeNameId,
-  opportunityNameId,
-  calloutNameId,
-  canvasNameId,
-}: buildCanvasUrlParams) => {
+export const buildCanvasUrl = (calloutNameId: string, canvasNameId: string, journeyLocation: JourneyLocation) => {
   const canvasUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}/canvases/${canvasNameId}`;
-  if (challengeNameId) {
-    if (opportunityNameId) {
-      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${canvasUrl}`;
+  if (journeyLocation.challengeNameId) {
+    if (journeyLocation.opportunityNameId) {
+      return `${buildOpportunityUrl(
+        journeyLocation.hubNameId,
+        journeyLocation.challengeNameId,
+        journeyLocation.opportunityNameId
+      )}${canvasUrl}`;
     } else {
-      return `${buildChallengeUrl(hubNameId, challengeNameId)}${canvasUrl}`;
+      return `${buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId)}${canvasUrl}`;
     }
   } else {
-    return `${buildHubUrl(hubNameId)}${canvasUrl}`;
+    return `${buildHubUrl(journeyLocation.hubNameId)}${canvasUrl}`;
   }
 };

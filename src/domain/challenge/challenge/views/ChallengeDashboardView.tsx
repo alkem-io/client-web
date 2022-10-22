@@ -18,7 +18,7 @@ import {
 } from '../../../../containers/challenge/ChallengePageContainer';
 import { useConfig } from '../../../../hooks';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../../models/constants';
-import { buildChallengeUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
@@ -53,7 +53,10 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string, calloutNameId: string) => {
-      const url = buildCanvasUrl({ hubNameId, challengeNameId, calloutNameId, canvasNameId });
+      const url = buildCanvasUrl(calloutNameId, canvasNameId, {
+        hubNameId,
+        challengeNameId,
+      });
       return buildLinkToCanvas(url);
     },
     [hubNameId, challengeNameId, buildLinkToCanvas]
@@ -78,6 +81,11 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
+
+  const journeyLocation: JourneyLocation = {
+    hubNameId,
+    challengeNameId,
+  };
 
   if (loading || loadingChallengeContext) return <Loading />;
 
@@ -129,7 +137,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <ActivitySection activities={activities} />
+          <ActivitySection activities={activities} journeyLocation={journeyLocation} />
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}

@@ -43,10 +43,10 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
       ...ActivityLogCalloutDiscussionComment
     }
     ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogChallengeCreatedResult
+      ...ActivityLogChallengeCreated
     }
     ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogOpportunityCreatedResult
+      ...ActivityLogOpportunityCreated
     }
   }
 }
@@ -126,7 +126,7 @@ fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated
   }
 }
 
-fragment ActivityLogChallengeCreatedResult on ActivityLogEntryChallengeCreated {
+fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
   challenge {
     id
     nameID
@@ -134,7 +134,7 @@ fragment ActivityLogChallengeCreatedResult on ActivityLogEntryChallengeCreated {
   }
 }
 
-fragment ActivityLogOpportunityCreatedResult on ActivityLogEntryOpportunityCreated {
+fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
   opportunity {
     id
     nameID

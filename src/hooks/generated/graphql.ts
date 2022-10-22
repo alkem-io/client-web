@@ -1870,8 +1870,8 @@ export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
     }
   }
 `;
-export const ActivityLogChallengeCreatedResultFragmentDoc = gql`
-  fragment ActivityLogChallengeCreatedResult on ActivityLogEntryChallengeCreated {
+export const ActivityLogChallengeCreatedFragmentDoc = gql`
+  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     challenge {
       id
       nameID
@@ -1879,8 +1879,8 @@ export const ActivityLogChallengeCreatedResultFragmentDoc = gql`
     }
   }
 `;
-export const ActivityLogOpportunityCreatedResultFragmentDoc = gql`
-  fragment ActivityLogOpportunityCreatedResult on ActivityLogEntryOpportunityCreated {
+export const ActivityLogOpportunityCreatedFragmentDoc = gql`
+  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     opportunity {
       id
       nameID
@@ -18833,10 +18833,10 @@ export const ActivityLogOnCollaborationDocument = gql`
         ...ActivityLogCalloutDiscussionComment
       }
       ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreatedResult
+        ...ActivityLogChallengeCreated
       }
       ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreatedResult
+        ...ActivityLogOpportunityCreated
       }
     }
   }
@@ -18846,8 +18846,8 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutCardCommentFragmentDoc}
   ${ActivityLogCalloutCanvasCreatedFragmentDoc}
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedResultFragmentDoc}
-  ${ActivityLogOpportunityCreatedResultFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
 `;
 
 /**

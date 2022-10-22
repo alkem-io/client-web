@@ -19,7 +19,7 @@ import {
   Reference,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import { buildOpportunityUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { buildOpportunityUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -101,12 +101,10 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string, calloutNameId: string) => {
-      const url = buildCanvasUrl({
+      const url = buildCanvasUrl(calloutNameId, canvasNameId, {
         hubNameId,
         challengeNameId,
         opportunityNameId: entities.opportunity.nameID,
-        calloutNameId,
-        canvasNameId,
       });
       return buildLinkToCanvas(url);
     },
@@ -124,6 +122,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { id, collaboration, context } = opportunity;
   const { id: collaborationId } = collaboration ?? {};
   const references = context?.references;
+
+  const journeyLocation: JourneyLocation = {
+    hubNameId,
+    challengeNameId,
+    opportunityNameId: opportunity.nameID,
+  };
 
   const { loading } = state;
 
@@ -174,7 +178,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <ActivitySection activities={activities} />
+          <ActivitySection activities={activities} journeyLocation={journeyLocation} />
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}
