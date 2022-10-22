@@ -1,0 +1,121 @@
+query activityLogOnCollaboration($queryData: ActivityLogInput!) {
+  activityLogOnCollaboration(queryData: $queryData) {
+    collaborationID
+    triggeredBy {
+      id
+      nameID
+      displayName
+    }
+    createdDate
+    description
+    type
+    __typename
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutCardCreated {
+      ...ActivityLogCalloutCardCreated
+    }
+    ... on ActivityLogEntryCalloutCardComment {
+      ...ActivityLogCalloutCardComment
+    }
+    ... on ActivityLogEntryCalloutCanvasCreated {
+      ...ActivityLogCalloutCanvasCreated
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreatedResult
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreatedResult
+    }
+  }
+}
+
+fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
+      communityType
+      community {
+        id
+        displayName
+      }
+      user {
+        id
+        nameID
+        displayName
+      }
+    }
+fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
+      callout {
+        id
+        nameID
+        displayName
+      }
+    }
+
+fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
+  callout {
+    id
+    nameID
+    displayName
+  }
+  card {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
+  callout {
+    id
+    nameID
+    displayName
+  }
+  card {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
+  callout {
+    id
+    nameID
+    displayName
+  }
+  canvas {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogChallengeCreatedResult on ActivityLogEntryChallengeCreated {
+  challenge {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogOpportunityCreatedResult on ActivityLogEntryOpportunityCreated {
+  opportunity {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+  callout {
+    id
+    nameID
+    displayName
+  }
+}

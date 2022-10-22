@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Activity } from '../../../../models/graphql-schema';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
-import { ActivityComponent } from './ActivityComponent';
+import { ActivityComponent, ActivityLogResultType } from './ActivityComponent';
 
 export interface ActivityLogSectionProps {
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
 }
 
 export const ActivitySection: FC<ActivityLogSectionProps> = ({ activities }) => {

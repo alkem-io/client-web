@@ -1,6 +1,17 @@
 import React, { ComponentType, FC, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
-import { Activity, ActivityEventType } from '../../../../models/graphql-schema';
+import {
+  ActivityEventType,
+  ActivityLogCalloutCanvasCreatedFragment,
+  ActivityLogCalloutCardCommentFragment,
+  ActivityLogCalloutCardCreatedFragment,
+  ActivityLogCalloutDiscussionCommentFragment,
+  ActivityLogCalloutPublishedFragment,
+  ActivityLogChallengeCreatedResultFragment,
+  ActivityLogEntry,
+  ActivityLogMemberJoinedFragment,
+  ActivityLogOpportunityCreatedResultFragment,
+} from '../../../../models/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
 import {
   ActivityCardCommentCreatedView,
@@ -14,7 +25,6 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { useActivityToViewModel } from './hooks';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -29,26 +39,37 @@ const Root = styled(Box)(({ theme }) => ({
   },
 }));
 
+export type ActivityLogResult<T> = T & ActivityLogEntry;
+
+export type ActivityLogResultType = ActivityLogResult<
+  | ActivityLogMemberJoinedFragment
+  | ActivityLogCalloutCanvasCreatedFragment
+  | ActivityLogCalloutCardCreatedFragment
+  | ActivityLogCalloutCardCommentFragment
+  | ActivityLogCalloutDiscussionCommentFragment
+  | ActivityLogCalloutPublishedFragment
+  | ActivityLogChallengeCreatedResultFragment
+  | ActivityLogOpportunityCreatedResultFragment
+>;
+
 export interface ActivityLogComponentProps {
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
 }
 
 export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = [] }) => {
-  const { getActivityViewModel, loading } = useActivityToViewModel(activities);
-
   const display = useMemo(() => {
-    if (!activities || loading) {
+    if (!activities) {
       return null;
     }
 
     return (
       <>
         {activities.map(activity => (
-          <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
+          <ActivityViewChooser key={activity.id} {...activity} />
         ))}
       </>
     );
-  }, [activities, getActivityViewModel, loading]);
+  }, [activities]);
 
   return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };

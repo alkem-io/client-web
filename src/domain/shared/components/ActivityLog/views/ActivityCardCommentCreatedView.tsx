@@ -9,5 +9,5 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.card-comment-created');
 
-  return <ActivityBaseView action={action} {...props} />;
+  return <ActivityBaseView action={action} url={url} {...props} />;
 };

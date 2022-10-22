@@ -14,7 +14,6 @@ import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown'
 import { useHub, useChallenge } from '../../../../hooks';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
-  Activity,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
   Reference,
@@ -31,7 +30,7 @@ import DashboardUpdatesSection from '../../../shared/components/DashboardSection
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunity } from '../hooks/useOpportunity';
-import { ActivitySection } from '../../../shared/components/ActivityLog';
+import { ActivityLogResultType, ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 // TODO flat props
@@ -53,7 +52,7 @@ export interface OpportunityDashboardViewEntities {
   canvases: CanvasCard[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
 }
 
 export interface OpportunityDashboardViewActions {

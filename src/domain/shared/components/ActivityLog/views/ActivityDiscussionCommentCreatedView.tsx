@@ -9,5 +9,5 @@ export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentC
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.discussion-comment-created');
 
-  return <ActivityBaseView action={action} {...props} />;
+  return <ActivityBaseView action={action} url={url} {...props} />;
 };
