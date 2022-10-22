@@ -15679,34 +15679,6 @@ export type DeleteInnovationTemplateMutation = {
   deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
-export type ChallengesNameQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-}>;
-
-export type ChallengesNameQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenges?: Array<{ __typename?: 'Challenge'; id: string; nameID: string; displayName: string }> | undefined;
-  };
-};
-
-export type OpportunitiesNameQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  opportunityIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-}>;
-
-export type OpportunitiesNameQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunities?: Array<{ __typename?: 'Opportunity'; id: string; nameID: string; displayName: string }> | undefined;
-  };
-};
-
 export type ActivityLogOnCollaborationQueryVariables = Exact<{
   queryData: ActivityLogInput;
 }>;
@@ -15720,7 +15692,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutCanvasCreated';
@@ -15728,7 +15715,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
         canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
       }
@@ -15738,7 +15740,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
         card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
       }
@@ -15748,7 +15765,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
         card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
       }
@@ -15758,7 +15790,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
       }
     | {
@@ -15767,7 +15814,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
       }
     | {
@@ -15776,7 +15838,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
       }
     | {
@@ -15786,9 +15863,39 @@ export type ActivityLogOnCollaborationQuery = {
         description: string;
         type: ActivityEventType;
         communityType: string;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         community: { __typename?: 'Community'; id: string; displayName: string };
-        user: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        user: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
       }
     | {
         __typename: 'ActivityLogEntryOpportunityCreated';
@@ -15796,7 +15903,22 @@ export type ActivityLogOnCollaborationQuery = {
         createdDate: Date;
         description: string;
         type: ActivityEventType;
-        triggeredBy: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
         opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
       }
   >;
@@ -15806,7 +15928,22 @@ export type ActivityLogMemberJoinedFragment = {
   __typename?: 'ActivityLogEntryMemberJoined';
   communityType: string;
   community: { __typename?: 'Community'; id: string; displayName: string };
-  user: { __typename?: 'User'; id: string; nameID: string; displayName: string };
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type ActivityLogCalloutPublishedFragment = {

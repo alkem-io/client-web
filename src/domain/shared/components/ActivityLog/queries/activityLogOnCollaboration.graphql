@@ -5,6 +5,20 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
       id
       nameID
       displayName
+      firstName
+      lastName
+      profile {
+        avatar {
+          uri
+        }
+        tagsets {
+          tags
+        }
+        location {
+          city
+          country
+        }
+      }
     }
     createdDate
     description
@@ -38,24 +52,40 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
 }
 
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-      communityType
-      community {
-        id
-        displayName
+  communityType
+  community {
+    id
+    displayName
+  }
+  user {
+    id
+    nameID
+    displayName
+    nameID
+    displayName
+    firstName
+    lastName
+    profile {
+      avatar {
+        uri
       }
-      user {
-        id
-        nameID
-        displayName
+      tagsets {
+        tags
+      }
+      location {
+        city
+        country
       }
     }
+  }
+}
 fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
-      callout {
-        id
-        nameID
-        displayName
-      }
-    }
+  callout {
+    id
+    nameID
+    displayName
+  }
+}
 
 fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
   callout {
