@@ -21,13 +21,16 @@ export const useActivityOnCollaboration = (collaborationID: string): ActivityOnC
     const activityLogResult: ActivityLogResultType[] =
       activityLogData.activityLogOnCollaboration as ActivityLogResultType[];
 
-    const result = activityLogResult
-      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-      .slice(0, LATEST_ACTIVITIES_COUNT);
-    return result;
+    const resultSorted = activityLogResult.map(a => a).sort(sortFunction);
+    return resultSorted.slice(0, LATEST_ACTIVITIES_COUNT);
   }, [activityLogData]);
   return {
     activities: activities || [],
     loading: false,
   };
+};
+
+const sortFunction = (a: ActivityLogResultType, b: ActivityLogResultType) => {
+  const result = new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+  return result;
 };
