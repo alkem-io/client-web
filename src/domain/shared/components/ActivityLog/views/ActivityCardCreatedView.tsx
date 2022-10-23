@@ -11,7 +11,9 @@ export interface ActivityCardCreatedViewProps extends ActivityViewProps {
 
 export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.card-created');
+  const action = t('components.activity-log-view.actions.card-created', {
+    calloutDisplayName: props.callout.displayName,
+  });
   const url = buildAspectUrl(props.callout.nameID, props.card.nameID, props.journeyLocation);
 
   return <ActivityBaseView action={action} url={url} {...props} />;

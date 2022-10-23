@@ -476,9 +476,9 @@
       "actions": {
         "callout-published": "published a new $t(common.callout)",
         "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on a $t(common.aspect)",
-        "card-created": "added a $t(common.aspect) to '{{parentDisplayName}}'",
-        "discussion-comment-created": "commented",
+        "card-comment-created": "commented on $t(common.aspect) '{{cardDisplayName}}' ",
+        "card-created": "added a $t(common.aspect) to '{{calloutDisplayName}}'",
+        "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "joined",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)"
