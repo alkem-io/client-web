@@ -68,10 +68,10 @@ const journeyFilterConfig: FilterConfig = {
   },
 };
 
-export type ResultMetadataType = { score: number; terms: string[] };
-export type SearchResult<T> = T & ResultMetadataType;
+export type SearchResultMetadataType = { score: number; terms: string[] };
+export type SearchResult<T> = T & SearchResultMetadataType;
 
-export type ResultType = SearchResult<
+export type SearchResultType = SearchResult<
   | UserSearchResultFragment
   | OrganizationSearchResultFragment
   | HubSearchResultFragment
@@ -97,7 +97,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
-  const [results, setResults] = useState<ResultType[]>();
+  const [results, setResults] = useState<SearchResultType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   // todo only the value can be used instead
   const [contributorFilterValue, setContributorFilterValue] = useState<string[]>(contributorFilterConfig.all.value);
@@ -227,14 +227,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
 export { SearchPage };
 
-const toResultType = (query?: SearchQuery): ResultType[] => {
+const toResultType = (query?: SearchQuery): SearchResultType[] => {
   if (!query) {
     return [];
   }
 
   return (query.search || [])
-    .map<ResultType>(
-      ({ result, score, terms }) => ({ ...result, score: score || 0, terms: terms || [] } as ResultType),
+    .map<SearchResultType>(
+      ({ result, score, terms }) => ({ ...result, score: score || 0, terms: terms || [] } as SearchResultType),
       []
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
