@@ -13,14 +13,18 @@ export const useActivityOnCollaboration = (collaborationID: string): ActivityOnC
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,
   });
-  const activities: ActivityLogResultType[] | undefined = useMemo<ActivityLogResultType[] | undefined>(() => {
+  const activities = useMemo<ActivityLogResultType[] | undefined>(() => {
     if (!activityLogData) {
       return undefined;
     }
 
-    return [...activityLogData.activityLogOnCollaboration]
+    const activityLogResult: ActivityLogResultType[] =
+      activityLogData.activityLogOnCollaboration as ActivityLogResultType[];
+
+    const result = activityLogResult
       .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
       .slice(0, LATEST_ACTIVITIES_COUNT);
+    return result;
   }, [activityLogData]);
   return {
     activities: activities || [],
