@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, NameableEntity } from './ActivityBaseView';
+import { ActivityBaseView, ActivityBaseViewProps, NameableEntity } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
@@ -15,6 +15,13 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
     cardDisplayName: props.card.displayName,
   });
   const url = buildAspectUrl(props.callout.nameID, props.card.nameID, props.journeyLocation);
+  let description = t('components.activity-log-view.activity-description.card-comment-created', {
+    cardDisplayName: props.card.displayName,
+    comment: props.description,
+  });
+  description = description.replace(/&#39;/g, "'"); // hack to deal with old description strings
 
-  return <ActivityBaseView action={action} url={url} {...props} />;
+  const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
+
+  return <ActivityBaseView {...resultProps} />;
 };

@@ -84,6 +84,7 @@ fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
     id
     nameID
     displayName
+    type
   }
 }
 
@@ -97,6 +98,7 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
     id
     nameID
     displayName
+    type
   }
 }
 
@@ -131,6 +133,9 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     id
     nameID
     displayName
+    context {
+      tagline
+    }
   }
 }
 
@@ -139,6 +144,9 @@ fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     id
     nameID
     displayName
+    context {
+      tagline
+    }
   }
 }
 

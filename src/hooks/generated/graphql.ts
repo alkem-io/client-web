@@ -1825,6 +1825,7 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
       id
       nameID
       displayName
+      type
     }
   }
 `;
@@ -1839,6 +1840,7 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
       id
       nameID
       displayName
+      type
     }
   }
 `;

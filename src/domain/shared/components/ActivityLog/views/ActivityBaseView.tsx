@@ -40,7 +40,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
       <>
         {formattedTime}{' '}
         {author?.url ? (
-          <a href={author.url}>{author?.displayName ?? t('common.user')}</a>
+          <a href={author.url}>'{author?.displayName ?? t('common.user')}'</a>
         ) : (
           author?.displayName ?? t('common.user')
         )}{' '}

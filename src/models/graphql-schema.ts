@@ -15782,7 +15782,7 @@ export type ActivityLogOnCollaborationQuery = {
             | undefined;
         };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-        card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+        card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
       }
     | {
         __typename: 'ActivityLogEntryCalloutDiscussionComment';
@@ -15830,7 +15830,7 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
       }
     | {
         __typename: 'ActivityLogEntryChallengeCreated';
@@ -15948,13 +15948,13 @@ export type ActivityLogMemberJoinedFragment = {
 
 export type ActivityLogCalloutPublishedFragment = {
   __typename?: 'ActivityLogEntryCalloutPublished';
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
 };
 
 export type ActivityLogCalloutCardCreatedFragment = {
   __typename?: 'ActivityLogEntryCalloutCardCreated';
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
 };
 
 export type ActivityLogCalloutCardCommentFragment = {

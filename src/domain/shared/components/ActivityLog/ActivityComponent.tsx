@@ -86,10 +86,12 @@ const ActivityViewChooser = ({
   switch (activity.type) {
     case ActivityEventType.CalloutPublished:
       const activityCalloutPublished = activity as ActivityLogResult<ActivityLogCalloutPublishedFragment>;
+      const calloutType = `${activityCalloutPublished.callout.type}`.toLowerCase();
       return (
         <ActivityCalloutPublishedView
           callout={activityCalloutPublished.callout}
           author={author}
+          calloutType={calloutType}
           {...activity}
           {...rest}
         />
@@ -123,6 +125,7 @@ const ActivityViewChooser = ({
           callout={activityCalloutCardCreated.callout}
           card={activityCalloutCardCreated.card}
           author={author}
+          cardType={activityCalloutCardCreated.card.type}
           {...activity}
           {...rest}
         />
@@ -143,8 +146,9 @@ const ActivityViewChooser = ({
       const userAuthor = buildAuthorFromUser(activityMemberJoined.user);
       return (
         <ActivityMemberJoinedView
-          user2={userAuthor}
+          member={userAuthor}
           community={activityMemberJoined.community}
+          communityType={activityMemberJoined.communityType}
           author={author}
           {...activity}
           {...rest}

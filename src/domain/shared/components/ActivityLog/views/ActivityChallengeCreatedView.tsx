@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, NameableEntity } from './ActivityBaseView';
+import { ActivityBaseView, ActivityBaseViewProps, NameableEntity } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
@@ -12,6 +12,11 @@ export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps>
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.challenge-created');
   const url = buildChallengeUrl(props.journeyLocation.hubNameId, props.journeyLocation.challengeNameId!);
+  const description = t('components.activity-log-view.activity-description.challenge-created', {
+    displayName: props.challenge.displayName,
+  });
 
-  return <ActivityBaseView action={action} url={url} {...props} />;
+  const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
+
+  return <ActivityBaseView {...resultProps} />;
 };
