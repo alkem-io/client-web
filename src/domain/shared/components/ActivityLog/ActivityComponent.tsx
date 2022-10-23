@@ -175,8 +175,12 @@ const ActivityViewChooser = ({
 };
 
 const buildAuthorFromUser = (user: any): Author => {
-  const avatarURL = user.profile.avatar.url;
+  const avatarURL = user.profile.avatar.uri;
   const url = buildUserProfileUrl(user.nameID);
+  const tags: string[] = [];
+  for (const tagset of user.profile.tagsets) {
+    tags.push(tagset.tags);
+  }
   const result: Author = {
     id: user.id,
     displayName: user.displayName,
@@ -184,7 +188,7 @@ const buildAuthorFromUser = (user: any): Author => {
     lastName: user.lastName,
     avatarUrl: avatarURL,
     url: url,
-    tags: [],
+    tags: tags,
     city: user.profile.location.city,
     country: user.profile.location.country,
   };
