@@ -1,11 +1,11 @@
-mutation assignUserToOrganization($input: AssignOrganizationMemberInput!) {
+mutation assignUserToOrganization($input: AssignOrganizationAssociateInput!) {
   assignUserToOrganization(membershipData: $input) {
     id
     displayName
   }
 }
 
-mutation removeUserFromOrganization($input: RemoveOrganizationMemberInput!) {
+mutation removeUserFromOrganization($input: RemoveOrganizationAssociateInput!) {
   removeUserFromOrganization(membershipData: $input) {
     id
     displayName
@@ -26,10 +26,10 @@ mutation removeUserAsOrganizationAdmin($input: RemoveOrganizationAdminInput!) {
   }
 }
 
-query organizationMembers($id: UUID_NAMEID!) {
+query organizationAssociates($id: UUID_NAMEID!) {
   organization(ID: $id) {
     id
-    members {
+    associates {
       ...GroupMembers
     }
   }

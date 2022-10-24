@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '../../components/Community/EditMembersUsers';
-import OrganizationMembers from '../../../../../containers/organization/OrganizationMembers';
+import OrganizationMembers from '../../../../../containers/organization/OrganizationAssociates';
 import { useOrganization } from '../../../../../hooks';
 import { AuthorizationCredential } from '../../../../../models/graphql-schema';
-import { useOrganizationMembersQuery } from '../../../../../hooks/generated/graphql';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
+import { useOrganizationAssociatesQuery } from '../../../../../hooks/generated/graphql';
 
 export const OrganizationAdminAuthorizationView: FC = () => {
   const { organizationId } = useOrganization();
   const { t } = useTranslation();
 
-  const { data, loading } = useOrganizationMembersQuery({ variables: { id: organizationId } });
-  const orgMembers = data?.organization.members;
+  const { data, loading } = useOrganizationAssociatesQuery({ variables: { id: organizationId } });
+  const orgAssociates = data?.organization.associates;
 
   if (loading) {
     return <Loading />;
@@ -28,7 +28,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
       <OrganizationMembers
         entities={{
           organizationId,
-          parentMembers: orgMembers,
+          parentAssociates: orgAssociates,
           credential: AuthorizationCredential.OrganizationAdmin,
         }}
       >

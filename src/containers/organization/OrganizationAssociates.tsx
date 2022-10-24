@@ -15,31 +15,31 @@ import { Member } from '../../models/User';
 import { useAvailableMembersWithCredential } from '../../domain/community/community/useAvailableMembersWithCredential';
 import { AvailableMembersResults } from '../../domain/community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
-const organizationMemberCredential = AuthorizationCredential.OrganizationMember;
+const organizationAssociateCredential = AuthorizationCredential.OrganizationAssociate;
 const organizationAdminCredential = AuthorizationCredential.OrganizationAdmin;
 const organizationOwnerCredential = AuthorizationCredential.OrganizationOwner;
 
 export type AuthorizationCredentials =
-  | AuthorizationCredential.OrganizationMember
+  | AuthorizationCredential.OrganizationAssociate
   | AuthorizationCredential.OrganizationAdmin
   | AuthorizationCredential.OrganizationOwner;
 
-export interface OrganizationMembersProps {
+export interface OrganizationAssociatesProps {
   entities: {
     organizationId: Organization['id'];
-    parentMembers?: Member[];
+    parentAssociates?: Member[];
     credential: AuthorizationCredentials;
   };
   children: (
-    entities: OrganizationMembersEntities,
-    actions: OrganizationMembersActions,
-    state: OrganizationMembersState
+    entities: OrganizationAssociatesEntities,
+    actions: OrganizationAssociatesActions,
+    state: OrganizationAssociatesState
   ) => React.ReactNode;
 }
 
-export interface OrganizationMembersActions {
-  handleAssignMember: (memberId: string) => void;
-  handleRemoveMember: (memberId: string) => void;
+export interface OrganizationAssociatesActions {
+  handleAssignAssociate: (memberId: string) => void;
+  handleRemoveAssociate: (memberId: string) => void;
   handleAssignAdmin: (memberId: string) => void;
   handleRemoveAdmin: (memberId: string) => void;
   handleAssignOwner: (memberId: string) => void;
@@ -48,7 +48,7 @@ export interface OrganizationMembersActions {
   setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
-export interface OrganizationMembersState {
+export interface OrganizationAssociatesState {
   addingUser: boolean;
   removingUser: boolean;
   addingAdmin: boolean;
@@ -59,13 +59,13 @@ export interface OrganizationMembersState {
   hasMoreUsers: boolean | undefined;
 }
 
-export interface OrganizationMembersEntities {
+export interface OrganizationAssociatesEntities {
   availableMembers: UserDisplayNameFragment[];
   allMembers: Member[];
   currentMember?: Member;
 }
 
-export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, entities }) => {
+export const OrganizationMembers: FC<OrganizationAssociatesProps> = ({ children, entities }) => {
   const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
 
@@ -104,7 +104,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organizationMemberCredential, resourceID: entities.organizationId },
+            input: { type: organizationAssociateCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -124,7 +124,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
         },
         refetchQueries: [
           refetchUsersWithCredentialsQuery({
-            input: { type: organizationMemberCredential, resourceID: entities.organizationId },
+            input: { type: organizationAssociateCredential, resourceID: entities.organizationId },
           }),
         ],
         awaitRefetchQueries: true,
@@ -243,8 +243,8 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
       {children(
         { availableMembers, allMembers, currentMember },
         {
-          handleAssignMember,
-          handleRemoveMember,
+          handleAssignAssociate: handleAssignMember,
+          handleRemoveAssociate: handleRemoveMember,
           handleAssignAdmin,
           handleRemoveAdmin,
           handleAssignOwner,
