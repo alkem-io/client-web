@@ -1,28 +1,39 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useState } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Button, Grid } from '@mui/material';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 import { PageProps } from '../../../../../pages';
-import ListPage from '../../components/ListPage';
-import { SearchableListItem } from '../../components/SearchableList';
+import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
   refetchOpportunitiesQuery,
+  useCreateOpportunityMutation,
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
 } from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams, useNotification } from '../../../../../hooks';
+import { useApolloErrorHandler, useUrlParams, useNotification, useChallenge } from '../../../../../hooks';
 import { useHub } from '../../../../../hooks';
-import { useResolvedPath } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { ChallengeIcon } from '../../../../../common/icons/ChallengeIcon';
+import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
+import { CreateOpportunityForm } from '../../../../challenge/opportunity/forms/CreateOpportunityForm';
+import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilders';
+import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 
 interface OpportunityListProps extends PageProps {}
 
-export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
+export const OpportunityList: FC<OpportunityListProps> = () => {
   const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
   const { hubNameId } = useHub();
+  const { challengeId } = useChallenge();
   const { challengeNameId = '' } = useUrlParams();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
   });
@@ -56,8 +67,66 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
     });
   };
 
+  const [createOpportunity] = useCreateOpportunityMutation({
+    refetchQueries: [refetchOpportunitiesQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      notify(t('pages.admin.opportunity.notifications.opportunity-created'), 'success');
+    },
+    onError: handleError,
+  });
+
+  const handleCreate = useCallback(
+    async (value: JourneyFormValues) => {
+      const { data } = await createOpportunity({
+        variables: {
+          input: {
+            challengeID: challengeId,
+            displayName: value.displayName,
+            context: {
+              tagline: value.tagline,
+              vision: value.vision,
+            },
+            tags: value.tags,
+          },
+        },
+      });
+
+      if (!data?.createOpportunity) {
+        return;
+      }
+
+      navigate(buildAdminOpportunityUrl(hubNameId, challengeNameId, data?.createOpportunity.nameID));
+    },
+    [navigate, createOpportunity, hubNameId, challengeId, challengeNameId]
+  );
+
   if (loading) return <Loading text={'Loading hubs'} />;
 
-  return <ListPage data={opportunityList} paths={paths} newLink={`${url}/new`} onDelete={handleDelete} />;
+  return (
+    <>
+      <Grid container spacing={2} justifyContent="center">
+        <Grid container item xs={10}>
+          <Grid item xs={10} />
+          <Grid container item justifyContent="flex-end" xs={2}>
+            <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={() => setOpen(true)}>
+              {t('buttons.create')}
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid item xs={10}>
+          <SearchableList data={opportunityList} onDelete={handleDelete} />
+        </Grid>
+      </Grid>
+      <JourneyCreationDialog
+        open={open}
+        icon={<ChallengeIcon />}
+        journeyName={t('common.challenge')}
+        onClose={() => setOpen(false)}
+        OnCreate={handleCreate}
+        formComponent={CreateOpportunityForm}
+      />
+    </>
+  );
 };
 export default OpportunityList;
