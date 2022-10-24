@@ -25,11 +25,10 @@ const SearchBar = () => {
   const [value, setValue] = useState(getInitialValue);
 
   useLayoutEffect(() => {
-    if (match && query.get(SEARCH_TERMS_PARAM) === getSearchTerms(value)) {
-      return;
+    if (!match) {
+      setValue('');
     }
-    setValue('');
-  }, [match, query, value]);
+  }, [match]);
 
   const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
 
