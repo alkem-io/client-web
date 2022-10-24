@@ -1,25 +1,37 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
-import ListPage from '../../../../platform/admin/components/ListPage';
-import { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import Button from '@mui/material/Button';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+
+import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
   refetchChallengesWithCommunityQuery,
   useChallengesWithCommunityQuery,
+  useCreateChallengeMutation,
   useDeleteChallengeMutation,
 } from '../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
 import { useHub } from '../../../../../hooks';
-import { useTranslation } from 'react-i18next';
 import { PageProps } from '../../../../../pages/common';
+import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
+import { ChallengeIcon } from '../../../../../common/icons/ChallengeIcon';
+import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { buildAdminChallengeUrl } from '../../../../../common/utils/urlBuilders';
+import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
+import Box from '@mui/material/Box';
 
 interface ChallengeListProps extends PageProps {}
 
-export const ChallengeListView: FC<ChallengeListProps> = ({ paths }) => {
+export const ChallengeListView: FC<ChallengeListProps> = () => {
   const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
   const { hubNameId } = useHub();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
     variables: {
@@ -55,9 +67,65 @@ export const ChallengeListView: FC<ChallengeListProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading text={'Loading hubs'} />;
+  const [createChallenge] = useCreateChallengeMutation({
+    onCompleted: () => {
+      notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
+    },
+    onError: handleError,
+    refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
+    awaitRefetchQueries: true,
+  });
 
-  return <ListPage data={challengeList} paths={paths} newLink="new" onDelete={handleDelete} />;
+  const handleCreate = useCallback(
+    async (value: JourneyFormValues) => {
+      const { data } = await createChallenge({
+        variables: {
+          input: {
+            hubID: hubNameId,
+            displayName: value.displayName,
+            context: {
+              tagline: value.tagline,
+              vision: value.vision,
+            },
+            tags: value.tags,
+          },
+        },
+      });
+
+      if (!data?.createChallenge) {
+        return;
+      }
+
+      navigate(buildAdminChallengeUrl(hubNameId, data?.createChallenge.nameID));
+    },
+    [navigate, createChallenge, hubNameId]
+  );
+
+  if (loading) return <Loading text={'Loading challenges'} />;
+
+  return (
+    <>
+      <Box display="flex" flexDirection="column">
+        <Button
+          startIcon={<AddOutlinedIcon />}
+          variant="contained"
+          onClick={() => setOpen(true)}
+          sx={{ alignSelf: 'end', marginBottom: 2 }}
+        >
+          {t('buttons.create')}
+        </Button>
+        <SearchableList data={challengeList} onDelete={handleDelete} />
+      </Box>
+      <JourneyCreationDialog
+        open={open}
+        icon={<ChallengeIcon />}
+        journeyName={t('common.challenge')}
+        onClose={() => setOpen(false)}
+        OnCreate={handleCreate}
+        formComponent={CreateChallengeForm}
+      />
+    </>
+  );
 };
 
 export default ChallengeListView;
