@@ -2,7 +2,6 @@ import React, { FC, useCallback, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
@@ -22,6 +21,7 @@ import { ChallengeIcon } from '../../../../../common/icons/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildAdminChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
+import Box from '@mui/material/Box';
 
 interface ChallengeListProps extends PageProps {}
 
@@ -105,19 +105,17 @@ export const ChallengeListView: FC<ChallengeListProps> = () => {
 
   return (
     <>
-      <Grid container spacing={2} justifyContent="center">
-        <Grid container item xs={10}>
-          <Grid item xs={10} />
-          <Grid container item justifyContent="flex-end" xs={2}>
-            <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={() => setOpen(true)}>
-              {t('buttons.create')}
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid item xs={10}>
-          <SearchableList data={challengeList} onDelete={handleDelete} />
-        </Grid>
-      </Grid>
+      <Box display="flex" flexDirection="column">
+        <Button
+          startIcon={<AddOutlinedIcon />}
+          variant="contained"
+          onClick={() => setOpen(true)}
+          sx={{ alignSelf: 'end', marginBottom: 2 }}
+        >
+          {t('buttons.create')}
+        </Button>
+        <SearchableList data={challengeList} onDelete={handleDelete} />
+      </Box>
       <JourneyCreationDialog
         open={open}
         icon={<ChallengeIcon />}
