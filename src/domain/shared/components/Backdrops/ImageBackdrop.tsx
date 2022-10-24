@@ -58,8 +58,6 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const sx: TypographyProps['sx'] = { width: '100%', textAlign: 'center', ...messageSx };
-
   return (
     <>
       {show && (
@@ -68,7 +66,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
           {children}
           <Message>
             <FlexSpacer />
-            <Typography variant="h5" sx={sx}>
+            <Typography variant="h5" sx={messageSx} width="100%" textAlign="center">
               {t(`components.backdrop.${backdropMessage}` as const, {
                 blockName: t(`common.blocks.${blockName}` as const),
               })}
