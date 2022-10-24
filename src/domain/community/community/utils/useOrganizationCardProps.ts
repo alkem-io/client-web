@@ -22,7 +22,7 @@ export const toOrganizationCardProps = (
     avatar: org.profile.avatar?.uri,
     description: org.profile.description,
     role: roleName && t(roleName),
-    membersCount: getMetricCount(org.metrics ?? [], 'members'),
+    associatesCount: getMetricCount(org.metrics ?? [], 'members'),
     verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     url: buildOrganizationUrl(org.nameID),
   };
