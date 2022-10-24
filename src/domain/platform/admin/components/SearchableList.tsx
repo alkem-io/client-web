@@ -1,8 +1,7 @@
-import { FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
+import { Button, FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import WrapperButton from '../../../../common/components/core/WrapperButton';
 import IconButton from '../../../../common/components/core/IconButton';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
 import LoadingListItem from '../../../shared/components/SearchableList/LoadingListItem';
@@ -113,10 +112,9 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
         text={`Are you sure you want to remove: ${itemToRemove?.value}`}
       />
       {filteredData.length > limit && limit < 50 && (
-        <WrapperButton
-          onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}
-          text={t('components.searchableList.load-more')}
-        />
+        <Button onClick={() => setLimit(x => (x >= 50 ? x : x + 10))} variant="outlined" sx={{ alignSelf: 'start' }}>
+          {t('components.searchableList.load-more')}
+        </Button>
       )}
     </>
   );
