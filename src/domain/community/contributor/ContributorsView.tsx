@@ -156,11 +156,15 @@ const ContributorsView: FC<ContributorsViewProps> = ({
               src={USERS_GRAYED_OUT_IMAGE}
               backdropMessage={'login'}
               blockName={'all-contributing-users'}
-              messageSx={{
-                fontWeight: 'bold',
-                marginTop: theme => theme.spacing(10),
-                marginBottom: theme => theme.spacing(-10),
-              }}
+              messageSx={theme => ({
+                [theme.breakpoints.up('sm')]: {
+                  fontWeight: 'bold',
+                },
+                [theme.breakpoints.up('lg')]: {
+                  marginTop: theme.spacing(10),
+                  marginBottom: theme.spacing(-10),
+                },
+              })}
             />
           </Grid>
         )}
