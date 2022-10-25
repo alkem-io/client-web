@@ -3,6 +3,7 @@ import { ActivityBaseView, ActivityBaseViewProps, NameableEntity } from './Activ
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
+import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 
 export interface ActivityCardCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -15,11 +16,11 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
     cardDisplayName: props.card.displayName,
   });
   const url = buildAspectUrl(props.callout.nameID, props.card.nameID, props.journeyLocation);
-  let description = t('components.activity-log-view.activity-description.card-comment-created', {
+  const comment = replaceQuotesInOldDescription(props.description);
+  const description = t('components.activity-log-view.activity-description.card-comment-created', {
     cardDisplayName: props.card.displayName,
-    comment: props.description,
+    comment,
   });
-  description = description.replace(/&#39;/g, "'"); // hack to deal with old description strings
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
 
