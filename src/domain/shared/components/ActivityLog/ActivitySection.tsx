@@ -9,7 +9,7 @@ export interface ActivityLogSectionProps {
   journeyLocation: JourneyLocation;
 }
 
-export const ActivitySection: FC<ActivityLogSectionProps> = ({ ...rest }) => {
+export const ActivitySection: FC<ActivityLogSectionProps> = props => {
   const { t } = useTranslation();
 
   return (
@@ -18,7 +18,7 @@ export const ActivitySection: FC<ActivityLogSectionProps> = ({ ...rest }) => {
       navText={t('common.explore')}
       navLink="explore"
     >
-      <ActivityComponent {...rest} />
+      <ActivityComponent {...props} />
     </DashboardGenericSection>
   );
 };
