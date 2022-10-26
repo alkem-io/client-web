@@ -485,7 +485,7 @@
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "{{displayName}}",
+        "canvas-created": "[name] {{displayName}}",
         "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
         "card-created": "[{{cardType}}] - {{cardDisplayName}}",
         "discussion-comment-created": "{{comment}}",
