@@ -15688,6 +15688,7 @@ export type ActivityLogOnCollaborationQuery = {
   activityLogOnCollaboration: Array<
     | {
         __typename: 'ActivityLogEntryBase';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15711,6 +15712,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutCanvasCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15736,6 +15738,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutCardComment';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15761,6 +15764,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutCardCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15786,6 +15790,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutDiscussionComment';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15810,6 +15815,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutPublished';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15834,6 +15840,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryChallengeCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15854,10 +15861,17 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+        challenge: {
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+        };
       }
     | {
         __typename: 'ActivityLogEntryMemberJoined';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15899,6 +15913,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryOpportunityCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15919,7 +15934,13 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+        opportunity: {
+          __typename?: 'Opportunity';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+        };
       }
   >;
 };
@@ -15971,12 +15992,24 @@ export type ActivityLogCalloutCanvasCreatedFragment = {
 
 export type ActivityLogChallengeCreatedFragment = {
   __typename?: 'ActivityLogEntryChallengeCreated';
-  challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+  challenge: {
+    __typename?: 'Challenge';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+  };
 };
 
 export type ActivityLogOpportunityCreatedFragment = {
   __typename?: 'ActivityLogEntryOpportunityCreated';
-  opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+  opportunity: {
+    __typename?: 'Opportunity';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+  };
 };
 
 export type ActivityLogCalloutDiscussionCommentFragment = {
