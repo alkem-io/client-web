@@ -11,7 +11,7 @@ export interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
 export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps> = props => {
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.challenge-created');
-  const url = buildChallengeUrl(props.journeyLocation.hubNameId, props.journeyLocation.challengeNameId!);
+  const url = buildChallengeUrl(props.journeyLocation.hubNameId, props.challenge.nameID!);
   const description = t('components.activity-log-view.activity-description.challenge-created', {
     displayName: props.challenge.displayName,
   });
