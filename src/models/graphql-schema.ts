@@ -433,7 +433,7 @@ export type AssignOrganizationAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignOrganizationMemberInput = {
+export type AssignOrganizationAssociateInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -500,7 +500,7 @@ export enum AuthorizationCredential {
   OpportunityLead = 'OPPORTUNITY_LEAD',
   OpportunityMember = 'OPPORTUNITY_MEMBER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
-  OrganizationMember = 'ORGANIZATION_MEMBER',
+  OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
   UserGroupMember = 'USER_GROUP_MEMBER',
   UserSelfManagement = 'USER_SELF_MANAGEMENT',
@@ -1748,7 +1748,7 @@ export type Mutation = {
   assignUserAsOrganizationOwner: User;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
-  /** Assigns a User as a member of the specified Organization. */
+  /** Assigns a User as an associate of the specified Organization. */
   assignUserToOrganization: Organization;
   /** Reset the Authorization Policy on the specified Hub. */
   authorizationPolicyResetOnHub: Hub;
@@ -2043,7 +2043,7 @@ export type MutationAssignUserToGroupArgs = {
 };
 
 export type MutationAssignUserToOrganizationArgs = {
-  membershipData: AssignOrganizationMemberInput;
+  membershipData: AssignOrganizationAssociateInput;
 };
 
 export type MutationAuthorizationPolicyResetOnHubArgs = {
@@ -2351,7 +2351,7 @@ export type MutationRemoveUserFromGroupArgs = {
 };
 
 export type MutationRemoveUserFromOrganizationArgs = {
-  membershipData: RemoveOrganizationMemberInput;
+  membershipData: RemoveOrganizationAssociateInput;
 };
 
 export type MutationRevokeCredentialFromUserArgs = {
@@ -2552,6 +2552,8 @@ export type Organization = Groupable &
     __typename?: 'Organization';
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
+    /** All Users that are associated with this Organization. */
+    associates?: Maybe<Array<User>>;
     /** The Authorization for this Organization. */
     authorization?: Maybe<Authorization>;
     /** Organization contact email */
@@ -2567,8 +2569,6 @@ export type Organization = Groupable &
     id: Scalars['UUID'];
     /** Legal name - required if hosting an Hub */
     legalEntityName?: Maybe<Scalars['String']>;
-    /** All users that are members of this Organization. */
-    members?: Maybe<Array<User>>;
     /** Metrics about the activity within this Organization. */
     metrics?: Maybe<Array<Nvp>>;
     /** A name identifier of the entity, unique within a given scope. */
@@ -3083,7 +3083,7 @@ export type RemoveOrganizationAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveOrganizationMemberInput = {
+export type RemoveOrganizationAssociateInput = {
   organizationID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -7848,7 +7848,7 @@ export type EventOnOpportunityMutation = {
 };
 
 export type AssignUserToOrganizationMutationVariables = Exact<{
-  input: AssignOrganizationMemberInput;
+  input: AssignOrganizationAssociateInput;
 }>;
 
 export type AssignUserToOrganizationMutation = {
@@ -7857,7 +7857,7 @@ export type AssignUserToOrganizationMutation = {
 };
 
 export type RemoveUserFromOrganizationMutationVariables = Exact<{
-  input: RemoveOrganizationMemberInput;
+  input: RemoveOrganizationAssociateInput;
 }>;
 
 export type RemoveUserFromOrganizationMutation = {
@@ -7883,16 +7883,16 @@ export type RemoveUserAsOrganizationAdminMutation = {
   removeUserAsOrganizationAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type OrganizationMembersQueryVariables = Exact<{
+export type OrganizationAssociatesQueryVariables = Exact<{
   id: Scalars['UUID_NAMEID'];
 }>;
 
-export type OrganizationMembersQuery = {
+export type OrganizationAssociatesQuery = {
   __typename?: 'Query';
   organization: {
     __typename?: 'Organization';
     id: string;
-    members?:
+    associates?:
       | Array<{
           __typename?: 'User';
           id: string;
@@ -13841,7 +13841,7 @@ export type OrganizationInfoFragment = {
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   };
-  members?:
+  associates?:
     | Array<{
         __typename?: 'User';
         id: string;
@@ -13985,7 +13985,7 @@ export type OrganizationGroupQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    members?:
+    associates?:
       | Array<{
           __typename?: 'User';
           id: string;
@@ -14097,7 +14097,7 @@ export type OrganizationInfoQuery = {
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
     };
-    members?:
+    associates?:
       | Array<{
           __typename?: 'User';
           id: string;
@@ -15804,6 +15804,7 @@ export type ActivityLogOnCollaborationQuery = {
   activityLogOnCollaboration: Array<
     | {
         __typename: 'ActivityLogEntryBase';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15827,6 +15828,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutCanvasCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15852,6 +15854,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutCardComment';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15877,6 +15880,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutCardCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15902,6 +15906,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutDiscussionComment';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15926,6 +15931,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryCalloutPublished';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15950,6 +15956,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryChallengeCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -15970,10 +15977,17 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+        challenge: {
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+        };
       }
     | {
         __typename: 'ActivityLogEntryMemberJoined';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -16015,6 +16029,7 @@ export type ActivityLogOnCollaborationQuery = {
       }
     | {
         __typename: 'ActivityLogEntryOpportunityCreated';
+        id: string;
         collaborationID: string;
         createdDate: Date;
         description: string;
@@ -16035,7 +16050,13 @@ export type ActivityLogOnCollaborationQuery = {
               }
             | undefined;
         };
-        opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+        opportunity: {
+          __typename?: 'Opportunity';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+        };
       }
   >;
 };
@@ -16087,12 +16108,24 @@ export type ActivityLogCalloutCanvasCreatedFragment = {
 
 export type ActivityLogChallengeCreatedFragment = {
   __typename?: 'ActivityLogEntryChallengeCreated';
-  challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+  challenge: {
+    __typename?: 'Challenge';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+  };
 };
 
 export type ActivityLogOpportunityCreatedFragment = {
   __typename?: 'ActivityLogEntryOpportunityCreated';
-  opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+  opportunity: {
+    __typename?: 'Opportunity';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+  };
 };
 
 export type ActivityLogCalloutDiscussionCommentFragment = {

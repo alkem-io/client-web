@@ -64,7 +64,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = 
     return (
       <>
         {activities.map(activity => (
-          <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} />
+          <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} key={activity.id} />
         ))}
       </>
     );

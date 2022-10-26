@@ -113,7 +113,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   );
   const collaborationID = opportunity?.collaboration?.id;
 
-  const { activities } = useActivityOnCollaboration(collaborationID || '');
+  const { activities } = useActivityOnCollaboration(collaborationID);
 
   const permissions = useMemo(() => {
     const isAdmin = user?.isOpportunityAdmin(hubId, challengeId, opportunityId) || false;

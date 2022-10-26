@@ -1,5 +1,11 @@
-import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH } from '../../models/constants';
+import { AUTH_LOGIN_PATH, AUTH_REQUIRED_PATH } from '../../models/constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import {
+  CoreEntityIdTypes,
+  isChallengeId,
+  isChallengeOpportunityIds,
+  isHubId,
+} from '../../domain/shared/types/CoreEntityIds';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
 
@@ -67,59 +73,35 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
-export interface JourneyLocation {
-  hubNameId: string;
-  challengeNameId?: string;
-  opportunityNameId?: string;
-}
+export type JourneyLocation = CoreEntityIdTypes;
+
+const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
+  if (isHubId(journeyLocation)) {
+    return buildHubUrl(journeyLocation.hubNameId);
+  }
+  if (isChallengeId(journeyLocation)) {
+    return buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId);
+  }
+  if (isChallengeOpportunityIds(journeyLocation)) {
+    return buildOpportunityUrl(
+      journeyLocation.hubNameId,
+      journeyLocation.challengeNameId,
+      journeyLocation.opportunityNameId
+    );
+  }
+};
 
 export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation) => {
   const calloutUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}`;
-  if (journeyLocation.challengeNameId) {
-    if (journeyLocation.opportunityNameId) {
-      return `${buildOpportunityUrl(
-        journeyLocation.hubNameId,
-        journeyLocation.challengeNameId,
-        journeyLocation.opportunityNameId
-      )}${calloutUrl}`;
-    } else {
-      return `${buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId)}${calloutUrl}`;
-    }
-  } else {
-    return `${buildHubUrl(journeyLocation.hubNameId)}${calloutUrl}`;
-  }
+  return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;
 };
 
 export const buildAspectUrl = (calloutNameId: string, aspectNameId: string, journeyLocation: JourneyLocation) => {
   const aspectUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}/aspects/${aspectNameId}`;
-  if (journeyLocation.challengeNameId) {
-    if (journeyLocation.opportunityNameId) {
-      return `${buildOpportunityUrl(
-        journeyLocation.hubNameId,
-        journeyLocation.challengeNameId,
-        journeyLocation.opportunityNameId
-      )}${aspectUrl}`;
-    } else {
-      return `${buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId)}${aspectUrl}`;
-    }
-  } else {
-    return `${buildHubUrl(journeyLocation.hubNameId)}${aspectUrl}`;
-  }
+  return `${buildJourneyUrl(journeyLocation)}${aspectUrl}`;
 };
 
 export const buildCanvasUrl = (calloutNameId: string, canvasNameId: string, journeyLocation: JourneyLocation) => {
   const canvasUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}/canvases/${canvasNameId}`;
-  if (journeyLocation.challengeNameId) {
-    if (journeyLocation.opportunityNameId) {
-      return `${buildOpportunityUrl(
-        journeyLocation.hubNameId,
-        journeyLocation.challengeNameId,
-        journeyLocation.opportunityNameId
-      )}${canvasUrl}`;
-    } else {
-      return `${buildChallengeUrl(journeyLocation.hubNameId, journeyLocation.challengeNameId)}${canvasUrl}`;
-    }
-  } else {
-    return `${buildHubUrl(journeyLocation.hubNameId)}${canvasUrl}`;
-  }
+  return `${buildJourneyUrl(journeyLocation)}${canvasUrl}`;
 };

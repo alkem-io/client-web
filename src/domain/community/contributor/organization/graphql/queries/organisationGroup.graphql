@@ -1,7 +1,7 @@
 query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
   organization(ID: $organizationId) {
     id
-    members {
+    associates {
       ...GroupMembers
     }
     group(ID: $groupId) {

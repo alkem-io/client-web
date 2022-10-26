@@ -1303,6 +1303,7 @@ export type OpportunityTemplateFieldPolicy = {
 };
 export type OrganizationKeySpecifier = (
   | 'agent'
+  | 'associates'
   | 'authorization'
   | 'contactEmail'
   | 'displayName'
@@ -1311,7 +1312,6 @@ export type OrganizationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'legalEntityName'
-  | 'members'
   | 'metrics'
   | 'nameID'
   | 'preferences'
@@ -1322,6 +1322,7 @@ export type OrganizationKeySpecifier = (
 )[];
 export type OrganizationFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  associates?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1330,7 +1331,6 @@ export type OrganizationFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
-  members?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;

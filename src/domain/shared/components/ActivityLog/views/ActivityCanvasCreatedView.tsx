@@ -11,9 +11,11 @@ export interface ActivityCanvasCreatedViewProps extends ActivityViewProps {
 
 export const ActivityCanvasCreatedView: FC<ActivityCanvasCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.canvas-created');
+  const action = t('components.activity-log-view.actions.canvas-created', {
+    parentDisplayName: props.callout.displayName,
+  });
   const description = t('components.activity-log-view.activity-description.canvas-created', {
-    description: props.description,
+    displayName: `${props.canvas.displayName}`,
   });
   const url = buildCanvasUrl(props.callout.nameID, props.canvas.nameID, props.journeyLocation);
 

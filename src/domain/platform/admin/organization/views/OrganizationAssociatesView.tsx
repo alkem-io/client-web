@@ -1,21 +1,21 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '../../components/Community/EditMembersUsers';
-import OrganizationMembers from '../../../../../containers/organization/OrganizationMembers';
+import OrganizationAssociates from '../../../../../containers/organization/OrganizationAssociates';
 import { useOrganization } from '../../../../../hooks';
 import { AuthorizationCredential } from '../../../../../models/graphql-schema';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 
-export const OrganizationMembersView: FC = () => {
+export const OrganizationAssociatesView: FC = () => {
   const { organizationId } = useOrganization();
   const { t } = useTranslation();
 
   return (
     <DashboardGenericSection headerText={t('common.members')}>
-      <OrganizationMembers
+      <OrganizationAssociates
         entities={{
           organizationId,
-          credential: AuthorizationCredential.OrganizationMember,
+          credential: AuthorizationCredential.OrganizationAssociate,
         }}
       >
         {(entities, actions, state) => (
@@ -24,8 +24,8 @@ export const OrganizationMembersView: FC = () => {
             availableMembers={entities.availableMembers}
             updating={state.addingUser || state.removingUser}
             executorId={entities.currentMember?.id}
-            onAdd={actions.handleAssignMember}
-            onRemove={actions.handleRemoveMember}
+            onAdd={actions.handleAssignAssociate}
+            onRemove={actions.handleRemoveAssociate}
             fetchMore={actions.handleLoadMore}
             hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
@@ -33,9 +33,9 @@ export const OrganizationMembersView: FC = () => {
             onSearchTermChange={actions.setSearchTerm}
           />
         )}
-      </OrganizationMembers>
+      </OrganizationAssociates>
     </DashboardGenericSection>
   );
 };
 
-export default OrganizationMembersView;
+export default OrganizationAssociatesView;
