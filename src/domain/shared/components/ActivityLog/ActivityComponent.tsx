@@ -63,9 +63,10 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = 
   const display = useMemo(() => {
     return (
       <>
-        {activities.map(activity => (
-          <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} />
-        ))}
+        {activities.map(activity => {
+          const key = new Date(activity.createdDate).getTime();
+          return <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} key={key} />;
+        })}
       </>
     );
   }, [activities, journeyLocation]);
