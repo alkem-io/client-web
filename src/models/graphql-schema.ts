@@ -634,8 +634,8 @@ export type Canvas = {
   authorization?: Maybe<Authorization>;
   /** The checkout out state of this Canvas. */
   checkout?: Maybe<CanvasCheckout>;
-  /** The id of the user that created this Canvas */
-  createdBy: Scalars['UUID'];
+  /** The user that created this Canvas */
+  createdBy: User;
   createdDate: Scalars['DateTime'];
   /** The display name. */
   displayName: Scalars['String'];
@@ -643,7 +643,7 @@ export type Canvas = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The preview image for the Canvas. */
+  /** The preview image for this Canvas. */
   preview?: Maybe<Visual>;
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
@@ -13066,6 +13066,29 @@ export type MessageDetailsFragment = {
   message: string;
   timestamp: number;
   sender: { __typename?: 'User'; id: string };
+};
+
+export type MessageDetailsNewFragment = {
+  __typename?: 'Message';
+  id: string;
+  message: string;
+  timestamp: number;
+  sender: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    displayName: string;
+    lastName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type CommunityPageMembersFragment = {

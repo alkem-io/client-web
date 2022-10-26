@@ -19,3 +19,29 @@ fragment MessageDetails on Message {
   message
   timestamp
 }
+
+fragment MessageDetailsNew on Message {
+  id
+  sender {
+    id
+    nameID
+    firstName
+    displayName
+    lastName
+    profile {
+      avatar {
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
+      location {
+        city
+        country
+      }
+    }
+  }
+  message
+  timestamp
+}

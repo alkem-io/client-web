@@ -1299,6 +1299,33 @@ export const CommunityMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
+export const MessageDetailsNewFragmentDoc = gql`
+  fragment MessageDetailsNew on Message {
+    id
+    sender {
+      id
+      nameID
+      firstName
+      displayName
+      lastName
+      profile {
+        avatar {
+          uri
+        }
+        tagsets {
+          name
+          tags
+        }
+        location {
+          city
+          country
+        }
+      }
+    }
+    message
+    timestamp
+  }
+`;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
@@ -11573,15 +11600,11 @@ export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
       message {
-        id
-        message
-        sender {
-          id
-        }
-        timestamp
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
