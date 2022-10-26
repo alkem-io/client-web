@@ -149,14 +149,14 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const commentsId = aspect?.comments?.id;
   const _messages = useMemo(() => aspect?.comments?.messages ?? [], [aspect?.comments?.messages]);
-  const senders = _messages.map(x => x.sender);
+  const senders = _messages.map(x => x.sender.id);
   const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,
         body: x.message,
-        author: getAuthor(x.sender),
+        author: getAuthor(x.sender.id),
         createdAt: new Date(x.timestamp),
       })),
     [_messages, getAuthor]

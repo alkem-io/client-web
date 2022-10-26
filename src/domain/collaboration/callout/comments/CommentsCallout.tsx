@@ -39,14 +39,14 @@ const CommentsCallout = ({
 
   const commentsId = callout.comments.id;
   const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-  const senders = _messages.map(x => x.sender);
+  const senders = _messages.map(x => x.sender.id);
   const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,
         body: x.message,
-        author: getAuthor(x.sender),
+        author: getAuthor(x.sender.id),
         createdAt: new Date(x.timestamp),
       })),
     [_messages, getAuthor]

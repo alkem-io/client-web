@@ -21,7 +21,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-        const messageSenders = latestMessage?.sender ? [{ id: latestMessage?.sender }] : [];
+        const messageSenders = latestMessage?.sender.id ? [{ id: latestMessage?.sender.id }] : [];
 
         return (
           <DashboardGenericSection

@@ -82,7 +82,9 @@ export const VisualUriFragmentDoc = gql`
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
-    sender
+    sender {
+      id
+    }
     message
     timestamp
   }
@@ -11205,7 +11207,9 @@ export const PostCommentInAspectDocument = gql`
     sendComment(messageData: $messageData) {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }
@@ -11455,7 +11459,9 @@ export const AspectCommentsMessageReceivedDocument = gql`
       message {
         id
         message
-        sender
+        sender {
+          id
+        }
         timestamp
       }
     }
@@ -12255,7 +12261,9 @@ export const PostCommentInCalloutDocument = gql`
     sendMessageOnCallout(data: $data) {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }

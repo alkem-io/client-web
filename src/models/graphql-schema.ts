@@ -1543,8 +1543,8 @@ export type Message = {
   id: Scalars['MessageID'];
   /** The message being sent */
   message: Scalars['Markdown'];
-  /** The sender user ID */
-  sender: Scalars['UUID'];
+  /** The user that created this Aspect */
+  sender: User;
   /** The server timestamp in UTC */
   timestamp: Scalars['Float'];
 };
@@ -4330,9 +4330,9 @@ export type HubAspectQuery = {
                               | Array<{
                                   __typename?: 'Message';
                                   id: string;
-                                  sender: string;
                                   message: string;
                                   timestamp: number;
+                                  sender: { __typename?: 'User'; id: string };
                                 }>
                               | undefined;
                           }
@@ -4421,9 +4421,9 @@ export type ChallengeAspectQuery = {
                                 | Array<{
                                     __typename?: 'Message';
                                     id: string;
-                                    sender: string;
                                     message: string;
                                     timestamp: number;
+                                    sender: { __typename?: 'User'; id: string };
                                   }>
                                 | undefined;
                             }
@@ -4513,9 +4513,9 @@ export type OpportunityAspectQuery = {
                                 | Array<{
                                     __typename?: 'Message';
                                     id: string;
-                                    sender: string;
                                     message: string;
                                     timestamp: number;
+                                    sender: { __typename?: 'User'; id: string };
                                   }>
                                 | undefined;
                             }
@@ -4583,9 +4583,9 @@ export type AspectDashboardDataFragment = {
                       | Array<{
                           __typename?: 'Message';
                           id: string;
-                          sender: string;
                           message: string;
                           timestamp: number;
+                          sender: { __typename?: 'User'; id: string };
                         }>
                       | undefined;
                   }
@@ -4630,7 +4630,13 @@ export type AspectDashboardFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         messages?:
-          | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+          | Array<{
+              __typename?: 'Message';
+              id: string;
+              message: string;
+              timestamp: number;
+              sender: { __typename?: 'User'; id: string };
+            }>
           | undefined;
       }
     | undefined;
@@ -6305,9 +6311,9 @@ export type CommunityUpdatesQuery = {
                         | Array<{
                             __typename?: 'Message';
                             id: string;
-                            sender: string;
                             message: string;
                             timestamp: number;
+                            sender: { __typename?: 'User'; id: string };
                           }>
                         | undefined;
                     }
@@ -6325,7 +6331,13 @@ export type SendUpdateMutationVariables = Exact<{
 
 export type SendUpdateMutation = {
   __typename?: 'Mutation';
-  sendUpdate: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  sendUpdate: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: { __typename?: 'User'; id: string };
+  };
 };
 
 export type RemoveUpdateCommunityMutationVariables = Exact<{
@@ -6341,7 +6353,13 @@ export type CommunicationUpdateMessageReceivedSubscription = {
   communicationUpdateMessageReceived: {
     __typename?: 'CommunicationUpdateMessageReceived';
     updatesID: string;
-    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender: { __typename?: 'User'; id: string };
+    };
   };
 };
 
@@ -6620,9 +6638,9 @@ export type CommunityDiscussionQuery = {
                         | Array<{
                             __typename?: 'Message';
                             id: string;
-                            sender: string;
                             message: string;
                             timestamp: number;
+                            sender: { __typename?: 'User'; id: string };
                           }>
                         | undefined;
                       authorization?:
@@ -6683,7 +6701,13 @@ export type PostDiscussionCommentMutationVariables = Exact<{
 
 export type PostDiscussionCommentMutation = {
   __typename?: 'Mutation';
-  sendMessageToDiscussion: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  sendMessageToDiscussion: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: { __typename?: 'User'; id: string };
+  };
 };
 
 export type CreateDiscussionMutationVariables = Exact<{
@@ -6716,7 +6740,13 @@ export type CommunicationDiscussionMessageReceivedSubscription = {
   communicationDiscussionMessageReceived: {
     __typename?: 'CommunicationDiscussionMessageReceived';
     discussionID: string;
-    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender: { __typename?: 'User'; id: string };
+    };
   };
 };
 
@@ -10450,7 +10480,13 @@ export type PostCommentInAspectMutationVariables = Exact<{
 
 export type PostCommentInAspectMutation = {
   __typename?: 'Mutation';
-  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  sendComment: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: { __typename?: 'User'; id: string };
+  };
 };
 
 export type RemoveCommentFromAspectMutationVariables = Exact<{
@@ -10528,7 +10564,13 @@ export type AspectCommentsMessageReceivedSubscription = {
   __typename?: 'Subscription';
   aspectCommentsMessageReceived: {
     __typename?: 'AspectCommentsMessageReceived';
-    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender: { __typename?: 'User'; id: string };
+    };
   };
 };
 
@@ -10661,7 +10703,13 @@ export type CreateCalloutMutation = {
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           messages?:
-            | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            | Array<{
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender: { __typename?: 'User'; id: string };
+              }>
             | undefined;
         }
       | undefined;
@@ -10770,7 +10818,13 @@ export type PostCommentInCalloutMutationVariables = Exact<{
 
 export type PostCommentInCalloutMutation = {
   __typename?: 'Mutation';
-  sendMessageOnCallout: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  sendMessageOnCallout: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: { __typename?: 'User'; id: string };
+  };
 };
 
 export type RemoveCommentFromCalloutMutationVariables = Exact<{
@@ -10887,9 +10941,9 @@ export type HubCalloutsQuery = {
                         | Array<{
                             __typename?: 'Message';
                             id: string;
-                            sender: string;
                             message: string;
                             timestamp: number;
+                            sender: { __typename?: 'User'; id: string };
                           }>
                         | undefined;
                     }
@@ -11025,9 +11079,9 @@ export type ChallengeCalloutsQuery = {
                           | Array<{
                               __typename?: 'Message';
                               id: string;
-                              sender: string;
                               message: string;
                               timestamp: number;
+                              sender: { __typename?: 'User'; id: string };
                             }>
                           | undefined;
                       }
@@ -11164,9 +11218,9 @@ export type OpportunityCalloutsQuery = {
                           | Array<{
                               __typename?: 'Message';
                               id: string;
-                              sender: string;
                               message: string;
                               timestamp: number;
+                              sender: { __typename?: 'User'; id: string };
                             }>
                           | undefined;
                       }
@@ -11294,9 +11348,9 @@ export type HubCalloutQuery = {
                         | Array<{
                             __typename?: 'Message';
                             id: string;
-                            sender: string;
                             message: string;
                             timestamp: number;
+                            sender: { __typename?: 'User'; id: string };
                           }>
                         | undefined;
                     }
@@ -11431,9 +11485,9 @@ export type ChallengeCalloutQuery = {
                           | Array<{
                               __typename?: 'Message';
                               id: string;
-                              sender: string;
                               message: string;
                               timestamp: number;
+                              sender: { __typename?: 'User'; id: string };
                             }>
                           | undefined;
                       }
@@ -11569,9 +11623,9 @@ export type OpportunityCalloutQuery = {
                           | Array<{
                               __typename?: 'Message';
                               id: string;
-                              sender: string;
                               message: string;
                               timestamp: number;
+                              sender: { __typename?: 'User'; id: string };
                             }>
                           | undefined;
                       }
@@ -11747,7 +11801,13 @@ export type CalloutFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         messages?:
-          | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+          | Array<{
+              __typename?: 'Message';
+              id: string;
+              message: string;
+              timestamp: number;
+              sender: { __typename?: 'User'; id: string };
+            }>
           | undefined;
       }
     | undefined;
@@ -11765,7 +11825,13 @@ export type CalloutMessageReceivedSubscription = {
   calloutMessageReceived: {
     __typename?: 'CalloutMessageReceived';
     commentsID: string;
-    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender: { __typename?: 'User'; id: string };
+    };
   };
 };
 
@@ -12825,7 +12891,13 @@ export type CommunityMessagesFragment = {
               __typename?: 'Updates';
               id: string;
               messages?:
-                | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+                | Array<{
+                    __typename?: 'Message';
+                    id: string;
+                    message: string;
+                    timestamp: number;
+                    sender: { __typename?: 'User'; id: string };
+                  }>
                 | undefined;
             }
           | undefined;
@@ -12836,9 +12908,9 @@ export type CommunityMessagesFragment = {
 export type MessageDetailsFragment = {
   __typename?: 'Message';
   id: string;
-  sender: string;
   message: string;
   timestamp: number;
+  sender: { __typename?: 'User'; id: string };
 };
 
 export type CommunityPageMembersFragment = {
@@ -12991,9 +13063,9 @@ export type CommunityMessagesQuery = {
                         | Array<{
                             __typename?: 'Message';
                             id: string;
-                            sender: string;
                             message: string;
                             timestamp: number;
+                            sender: { __typename?: 'User'; id: string };
                           }>
                         | undefined;
                     }
@@ -15879,7 +15951,13 @@ export type CommentsWithMessagesFragment = {
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   messages?:
-    | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+    | Array<{
+        __typename?: 'Message';
+        id: string;
+        message: string;
+        timestamp: number;
+        sender: { __typename?: 'User'; id: string };
+      }>
     | undefined;
 };
 

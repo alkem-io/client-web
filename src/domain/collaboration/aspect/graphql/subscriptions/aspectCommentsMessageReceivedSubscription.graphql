@@ -3,7 +3,9 @@ subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     message {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }

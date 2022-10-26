@@ -71,7 +71,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       const update = await sendUpdate({
         variables: { msgData: { message, updatesID: updatesId } },
       });
-      return update.data?.sendUpdate;
+      return update.data?.sendUpdate as Message;
     },
     [sendUpdate, updatesId]
   );
@@ -93,9 +93,9 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     throw new Error('Not implemented');
   };
 
-  const messages = data?.hub.community?.communication?.updates?.messages || EMPTY;
+  const messages = (data?.hub.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
-  const { authors = EMPTY } = useAuthorsDetails(messages.map(m => m.sender));
+  const { authors = EMPTY } = useAuthorsDetails(messages.map(m => m.sender.id));
 
   return (
     <>
@@ -113,13 +113,17 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 };
 
 const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
-  Updates,
+  Updates & {
+    id;
+    messages: Message[];
+  },
   CommunicationUpdateMessageReceivedSubscription
 >({
   subscriptionDocument: CommunicationUpdateMessageReceivedDocument,
   updateSubEntity: (updates, subscriptionData) => {
     if (updates?.id === subscriptionData.communicationUpdateMessageReceived.updatesID) {
-      updates?.messages?.push(subscriptionData.communicationUpdateMessageReceived.message);
+      const message = subscriptionData.communicationUpdateMessageReceived.message as Message;
+      updates?.messages?.push(message);
     }
   },
 });
