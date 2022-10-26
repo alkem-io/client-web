@@ -8,7 +8,7 @@ interface ActivityOnCollaborationReturnType {
   loading: boolean;
 }
 
-export const useActivityOnCollaboration = (collaborationID: string): ActivityOnCollaborationReturnType => {
+export const useActivityOnCollaboration = (collaborationID: string | undefined): ActivityOnCollaborationReturnType => {
   const { data: activityLogData } = useActivityLogOnCollaborationQuery({
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,

@@ -73,7 +73,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
-  const { activities } = useActivityOnCollaboration(collaborationID || '');
+  const { activities } = useActivityOnCollaboration(collaborationID);
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
