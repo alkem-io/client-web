@@ -5,22 +5,13 @@ fragment CommunityMessages on Community {
     updates {
       id
       messages {
-        ...MessageDetailsUser
+        ...MessageDetails
       }
     }
   }
 }
 
 fragment MessageDetails on Message {
-  id
-  sender {
-    id
-  }
-  message
-  timestamp
-}
-
-fragment MessageDetailsUser on Message {
   id
   sender {
     id

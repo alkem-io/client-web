@@ -6931,7 +6931,24 @@ export type CommunityDiscussionQuery = {
                             id: string;
                             message: string;
                             timestamp: number;
-                            sender: { __typename?: 'User'; id: string };
+                            sender: {
+                              __typename?: 'User';
+                              id: string;
+                              nameID: string;
+                              firstName: string;
+                              displayName: string;
+                              lastName: string;
+                              profile?:
+                                | {
+                                    __typename?: 'Profile';
+                                    avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                                    tagsets?:
+                                      | Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }>
+                                      | undefined;
+                                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                                  }
+                                | undefined;
+                            };
                           }>
                         | undefined;
                       authorization?:
@@ -6997,7 +7014,22 @@ export type PostDiscussionCommentMutation = {
     id: string;
     message: string;
     timestamp: number;
-    sender: { __typename?: 'User'; id: string };
+    sender: {
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      firstName: string;
+      displayName: string;
+      lastName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          }
+        | undefined;
+    };
   };
 };
 
@@ -7036,7 +7068,22 @@ export type CommunicationDiscussionMessageReceivedSubscription = {
       id: string;
       message: string;
       timestamp: number;
-      sender: { __typename?: 'User'; id: string };
+      sender: {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        firstName: string;
+        displayName: string;
+        lastName: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            }
+          | undefined;
+      };
     };
   };
 };
@@ -13374,14 +13421,6 @@ export type CommunityMessagesFragment = {
 };
 
 export type MessageDetailsFragment = {
-  __typename?: 'Message';
-  id: string;
-  message: string;
-  timestamp: number;
-  sender: { __typename?: 'User'; id: string };
-};
-
-export type MessageDetailsUserFragment = {
   __typename?: 'Message';
   id: string;
   message: string;

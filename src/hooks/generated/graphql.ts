@@ -79,8 +79,8 @@ export const VisualUriFragmentDoc = gql`
     name
   }
 `;
-export const MessageDetailsUserFragmentDoc = gql`
-  fragment MessageDetailsUser on Message {
+export const MessageDetailsFragmentDoc = gql`
+  fragment MessageDetails on Message {
     id
     sender {
       id
@@ -149,12 +149,12 @@ export const AspectDashboardFragmentDoc = gql`
         myPrivileges
       }
       messages {
-        ...MessageDetailsUser
+        ...MessageDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export const AspectDashboardDataFragmentDoc = gql`
   fragment AspectDashboardData on Collaboration {
@@ -1145,10 +1145,10 @@ export const CommentsWithMessagesFragmentDoc = gql`
       myPrivileges
     }
     messages {
-      ...MessageDetailsUser
+      ...MessageDetails
     }
   }
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -1309,22 +1309,12 @@ export const CommunityMessagesFragmentDoc = gql`
       updates {
         id
         messages {
-          ...MessageDetailsUser
+          ...MessageDetails
         }
       }
     }
   }
-  ${MessageDetailsUserFragmentDoc}
-`;
-export const MessageDetailsFragmentDoc = gql`
-  fragment MessageDetails on Message {
-    id
-    sender {
-      id
-    }
-    message
-    timestamp
-  }
+  ${MessageDetailsFragmentDoc}
 `;
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
@@ -5004,14 +4994,14 @@ export const CommunityUpdatesDocument = gql`
           updates {
             id
             messages {
-              ...MessageDetailsUser
+              ...MessageDetails
             }
           }
         }
       }
     }
   }
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -5064,10 +5054,10 @@ export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpd
 export const SendUpdateDocument = gql`
   mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
     sendUpdate(messageData: $msgData) {
-      ...MessageDetailsUser
+      ...MessageDetails
     }
   }
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export type SendUpdateMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendUpdateMutation,
@@ -5156,11 +5146,11 @@ export const CommunicationUpdateMessageReceivedDocument = gql`
     communicationUpdateMessageReceived {
       updatesID
       message {
-        ...MessageDetailsUser
+        ...MessageDetails
       }
     }
   }
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -11600,11 +11590,11 @@ export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
       message {
-        ...MessageDetailsUser
+        ...MessageDetails
       }
     }
   }
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -13119,11 +13109,11 @@ export const CalloutMessageReceivedDocument = gql`
     calloutMessageReceived(calloutIDs: $calloutIDs) {
       commentsID
       message {
-        ...MessageDetailsUser
+        ...MessageDetails
       }
     }
   }
-  ${MessageDetailsUserFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
