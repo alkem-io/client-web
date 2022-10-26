@@ -261,8 +261,8 @@
           "order": 13,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
-          "name": "Organization Member",
+        "ORGANIZATION_ASSOCIATE": {
+          "name": "Organization Associate",
           "order": 14,
           "hidden": true
         },
@@ -963,7 +963,7 @@
             "description": "Here you can see the membership information."
           },
           "organizations": {
-            "description": "Here you can see the associated organizations that your user is related to."
+            "description": "Here you can see the organizations that your user is associated with."
           },
           "notifications": {
             "description": "Here you can edit your notifications preferences."

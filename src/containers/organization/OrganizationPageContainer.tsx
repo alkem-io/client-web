@@ -48,7 +48,7 @@ export interface OrganizationPageContainerProps
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
   const { organizationId, organizationNameId, loading, organization } = useOrganization();
 
-  const usersWithRoles = useUserCardRoleName((organization?.members || []) as User[], organizationId);
+  const usersWithRoles = useUserCardRoleName((organization?.associates || []) as User[], organizationId);
 
   const { data: membershipData, loading: orgMembershipLoading } = useRolesOrganizationQuery({
     variables: {

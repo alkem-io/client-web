@@ -15,7 +15,7 @@ export interface AssociatedOrganization {
   avatar?: string;
   description?: string;
   role?: string;
-  membersCount: number;
+  associatesCount: number;
   verified: boolean;
   url?: string;
   loading?: boolean;
@@ -39,7 +39,7 @@ export const mapToAssociatedOrganization = (
   return {
     nameID, // to be used as React key
     name: organization?.displayName,
-    membersCount: getMetricCount(organization?.metrics || [], 'members'),
+    associatesCount: getMetricCount(organization?.metrics || [], 'associates'),
     description: organization?.profile.description,
     avatar: organization?.profile.avatar?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
