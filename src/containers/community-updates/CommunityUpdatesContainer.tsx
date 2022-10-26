@@ -8,11 +8,11 @@ import {
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
 import {
-  Message,
-  Community,
-  Hub,
   CommunicationUpdateMessageReceivedSubscription,
-  Updates,
+  Community,
+  CommunityUpdatesQuery,
+  Hub,
+  Message,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
@@ -113,16 +113,13 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 };
 
 const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
-  Updates & {
-    id;
-    messages: Message[];
-  },
+  NonNullable<NonNullable<CommunityUpdatesQuery['hub']['community']>['communication']>['updates'],
   CommunicationUpdateMessageReceivedSubscription
 >({
   subscriptionDocument: CommunicationUpdateMessageReceivedDocument,
   updateSubEntity: (updates, subscriptionData) => {
     if (updates?.id === subscriptionData.communicationUpdateMessageReceived.updatesID) {
-      const message = subscriptionData.communicationUpdateMessageReceived.message as Message;
+      const { message } = subscriptionData.communicationUpdateMessageReceived;
       updates?.messages?.push(message);
     }
   },
