@@ -1,6 +1,11 @@
 query activityLogOnCollaboration($queryData: ActivityLogInput!) {
   activityLogOnCollaboration(queryData: $queryData) {
+    id
     collaborationID
+    createdDate
+    description
+    type
+    __typename
     triggeredBy {
       id
       nameID
@@ -8,22 +13,22 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
       firstName
       lastName
       profile {
+        id
         avatar {
+          id
           uri
         }
         tagsets {
+          id
           tags
         }
         location {
+          id
           city
           country
         }
       }
     }
-    createdDate
-    description
-    type
-    __typename
     ... on ActivityLogEntryMemberJoined {
       ...ActivityLogMemberJoined
     }
@@ -51,6 +56,62 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
   }
 }
 
+fragment ActivityLogOnCollaboration on ActivityLogEntry {
+  id
+  collaborationID
+  createdDate
+  description
+  type
+  __typename
+  triggeredBy {
+    id
+    nameID
+    displayName
+    firstName
+    lastName
+    profile {
+      id
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+  ... on ActivityLogEntryMemberJoined {
+    ...ActivityLogMemberJoined
+  }
+  ... on ActivityLogEntryCalloutPublished {
+    ...ActivityLogCalloutPublished
+  }
+  ... on ActivityLogEntryCalloutCardCreated {
+    ...ActivityLogCalloutCardCreated
+  }
+  ... on ActivityLogEntryCalloutCardComment {
+    ...ActivityLogCalloutCardComment
+  }
+  ... on ActivityLogEntryCalloutCanvasCreated {
+    ...ActivityLogCalloutCanvasCreated
+  }
+  ... on ActivityLogEntryCalloutDiscussionComment {
+    ...ActivityLogCalloutDiscussionComment
+  }
+  ... on ActivityLogEntryChallengeCreated {
+    ...ActivityLogChallengeCreated
+  }
+  ... on ActivityLogEntryOpportunityCreated {
+    ...ActivityLogOpportunityCreated
+  }
+}
+
 fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
   communityType
   community {
@@ -66,13 +127,17 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     firstName
     lastName
     profile {
+      id
       avatar {
+        id
         uri
       }
       tagsets {
+        id
         tags
       }
       location {
+        id
         city
         country
       }
@@ -134,6 +199,7 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     nameID
     displayName
     context {
+      id
       tagline
     }
   }
@@ -145,6 +211,7 @@ fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     nameID
     displayName
     context {
+      id
       tagline
     }
   }

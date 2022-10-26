@@ -1,0 +1,7 @@
+subscription activityCreated($collaborationID: UUID!) {
+  activityCreated(collaborationID: $collaborationID) {
+    activity {
+      ...ActivityLogOnCollaboration
+    }
+  }
+}
