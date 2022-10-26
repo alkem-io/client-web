@@ -44,7 +44,6 @@ export interface AspectDashboardViewProps {
   handleDeleteComment: (commentId: string, messageId: string) => void;
   aspectUrl: string;
   loading: boolean;
-  loadingCreator: boolean;
   error?: ApolloError;
 }
 
@@ -65,7 +64,7 @@ const isScrolledToBottom = ({
 
 const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { t } = useTranslation();
-  const { loading, loadingCreator, mode } = props;
+  const { loading, mode } = props;
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
@@ -111,12 +110,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
           bannerUrl={banner}
           alwaysShowBanner
           bannerOverlay={
-            <AuthorComponent
-              avatarSrc={creatorAvatar}
-              name={creatorName}
-              createdDate={createdDate}
-              loading={loadingCreator}
-            />
+            <AuthorComponent avatarSrc={creatorAvatar} name={creatorName} createdDate={createdDate} loading={loading} />
           }
           headerText={displayName}
           primaryAction={loading ? <Skeleton width={'30%'} /> : <TagLabel>{type}</TagLabel>}

@@ -3,7 +3,6 @@ import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
   MessageDetailsFragmentDoc,
-  useAspectCreatorQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
@@ -43,7 +42,6 @@ interface Provided {
   handlePostComment: (commentsId: string, message: string) => void;
   handleDeleteComment: (commentsId: string, messageId: string) => void;
   loading: boolean;
-  loadingCreator: boolean;
   error?: ApolloError;
   deletingComment?: boolean;
   postingComment?: boolean;
@@ -144,11 +142,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     opportunityCommentsSubscription,
   ].some(subscription => subscription.enabled);
 
-  const { data: creatorData, loading: loadingCreator } = useAspectCreatorQuery({
-    variables: { userId: aspect?.createdBy ?? '' },
-    skip: !aspect,
-  });
-  const creator = creatorData?.user;
+  const creator = aspect?.createdBy;
   const creatorAvatar = creator?.profile?.avatar?.uri;
   const creatorName = creator?.displayName;
   const createdDate = aspect?.createdDate.toString();
@@ -259,7 +253,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     handlePostComment,
     handleDeleteComment,
     loading,
-    loadingCreator,
     error,
     deletingComment,
     postingComment,

@@ -185,8 +185,8 @@ export type Aspect = {
   bannerNarrow?: Maybe<Visual>;
   /** The comments for this Aspect. */
   comments?: Maybe<Comments>;
-  /** The id of the user that created this Aspect */
-  createdBy: Scalars['UUID'];
+  /** The user that created this Aspect */
+  createdBy: User;
   createdDate: Scalars['DateTime'];
   /** The description of this aspect */
   description: Scalars['Markdown'];
@@ -4290,8 +4290,20 @@ export type HubAspectQuery = {
                       type: string;
                       displayName: string;
                       description: string;
-                      createdBy: string;
                       createdDate: Date;
+                      createdBy: {
+                        __typename?: 'User';
+                        id: string;
+                        displayName: string;
+                        profile?:
+                          | {
+                              __typename?: 'Profile';
+                              id: string;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                            }
+                          | undefined;
+                      };
                       banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -4369,8 +4381,20 @@ export type ChallengeAspectQuery = {
                         type: string;
                         displayName: string;
                         description: string;
-                        createdBy: string;
                         createdDate: Date;
+                        createdBy: {
+                          __typename?: 'User';
+                          id: string;
+                          displayName: string;
+                          profile?:
+                            | {
+                                __typename?: 'Profile';
+                                id: string;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                              }
+                            | undefined;
+                        };
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                         references?:
@@ -4449,8 +4473,20 @@ export type OpportunityAspectQuery = {
                         type: string;
                         displayName: string;
                         description: string;
-                        createdBy: string;
                         createdDate: Date;
+                        createdBy: {
+                          __typename?: 'User';
+                          id: string;
+                          displayName: string;
+                          profile?:
+                            | {
+                                __typename?: 'Profile';
+                                id: string;
+                                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                              }
+                            | undefined;
+                        };
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                         references?:
@@ -4513,8 +4549,20 @@ export type AspectDashboardDataFragment = {
               type: string;
               displayName: string;
               description: string;
-              createdBy: string;
               createdDate: Date;
+              createdBy: {
+                __typename?: 'User';
+                id: string;
+                displayName: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                    }
+                  | undefined;
+              };
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
@@ -4555,8 +4603,20 @@ export type AspectDashboardFragment = {
   type: string;
   displayName: string;
   description: string;
-  createdBy: string;
   createdDate: Date;
+  createdBy: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+  };
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   references?:
@@ -4574,22 +4634,6 @@ export type AspectDashboardFragment = {
           | undefined;
       }
     | undefined;
-};
-
-export type AspectCreatorQueryVariables = Exact<{
-  userId: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type AspectCreatorQuery = {
-  __typename?: 'Query';
-  user: {
-    __typename?: 'User';
-    id: string;
-    displayName: string;
-    profile?:
-      | { __typename?: 'Profile'; id: string; avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined }
-      | undefined;
-  };
 };
 
 export type UpdateAspectMutationVariables = Exact<{
