@@ -5,7 +5,7 @@ fragment CommunityMessages on Community {
     updates {
       id
       messages {
-        ...MessageDetailsNew
+        ...MessageDetailsUser
       }
     }
   }
@@ -20,7 +20,7 @@ fragment MessageDetails on Message {
   timestamp
 }
 
-fragment MessageDetailsNew on Message {
+fragment MessageDetailsUser on Message {
   id
   sender {
     id

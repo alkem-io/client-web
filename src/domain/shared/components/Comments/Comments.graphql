@@ -5,6 +5,6 @@ fragment CommentsWithMessages on Comments {
       myPrivileges
     }
     messages {
-      ...MessageDetailsNew
+      ...MessageDetailsUser
     }
 }

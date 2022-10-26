@@ -13381,7 +13381,7 @@ export type MessageDetailsFragment = {
   sender: { __typename?: 'User'; id: string };
 };
 
-export type MessageDetailsNewFragment = {
+export type MessageDetailsUserFragment = {
   __typename?: 'Message';
   id: string;
   message: string;

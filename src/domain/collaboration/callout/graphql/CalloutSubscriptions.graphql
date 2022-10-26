@@ -2,7 +2,7 @@ subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
   calloutMessageReceived(calloutIDs: $calloutIDs) {
     commentsID
     message {
-      ...MessageDetailsNew
+      ...MessageDetailsUser
     }
   }
 }
