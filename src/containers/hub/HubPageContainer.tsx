@@ -1,19 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../hooks';
-import {
-  useActivityLogOnCollaborationQuery,
-  useHubDashboardReferencesQuery,
-  useHubPageQuery,
-} from '../../hooks/generated/graphql';
+import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import {
-  Activity,
-  AuthorizationPrivilege,
-  ChallengeCardFragment,
-  HubPageFragment,
-  Reference,
-} from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment, Reference } from '../../models/graphql-schema';
 import getMetricCount from '../../domain/platform/metrics/utils/getMetricCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
@@ -28,7 +18,8 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../domain/collaboration/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
-import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
+import { ActivityLogResultType } from '../../domain/shared/components/ActivityLog';
+import { useActivityOnCollaboration } from '../../domain/shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -43,7 +34,7 @@ export interface HubContainerEntities {
   isMember: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
@@ -77,19 +68,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 
-  const { data: activityLogData, loading: activityLoading } = useActivityLogOnCollaborationQuery({
-    variables: { queryData: { collaborationID: collaborationID! } },
-    skip: !collaborationID,
-  });
-  const activities = useMemo(() => {
-    if (!activityLogData) {
-      return undefined;
-    }
-
-    return [...activityLogData.activityLogOnCollaboration]
-      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-      .slice(0, LATEST_ACTIVITIES_COUNT);
-  }, [activityLogData]);
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '');
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   const { user, isAuthenticated } = useUserContext();
