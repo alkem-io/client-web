@@ -1,6 +1,17 @@
-import React, { ComponentType, FC, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
-import { Activity, ActivityEventType } from '../../../../models/graphql-schema';
+import {
+  ActivityEventType,
+  ActivityLogCalloutCanvasCreatedFragment,
+  ActivityLogCalloutCardCommentFragment,
+  ActivityLogCalloutCardCreatedFragment,
+  ActivityLogCalloutDiscussionCommentFragment,
+  ActivityLogCalloutPublishedFragment,
+  ActivityLogChallengeCreatedFragment,
+  ActivityLogEntry,
+  ActivityLogMemberJoinedFragment,
+  ActivityLogOpportunityCreatedFragment,
+} from '../../../../models/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
 import {
   ActivityCardCommentCreatedView,
@@ -14,7 +25,8 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { useActivityToViewModel } from './hooks';
+import { Author } from '../AuthorAvatar/models/author';
+import { buildUserProfileUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -29,51 +41,160 @@ const Root = styled(Box)(({ theme }) => ({
   },
 }));
 
+export type ActivityLogResult<T> = T & ActivityLogEntry;
+
+export type ActivityLogResultType = ActivityLogResult<
+  | ActivityLogMemberJoinedFragment
+  | ActivityLogCalloutCanvasCreatedFragment
+  | ActivityLogCalloutCardCreatedFragment
+  | ActivityLogCalloutCardCommentFragment
+  | ActivityLogCalloutDiscussionCommentFragment
+  | ActivityLogCalloutPublishedFragment
+  | ActivityLogChallengeCreatedFragment
+  | ActivityLogOpportunityCreatedFragment
+>;
+
 export interface ActivityLogComponentProps {
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
+  journeyLocation: JourneyLocation;
 }
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = [] }) => {
-  const { getActivityViewModel, loading } = useActivityToViewModel(activities);
-
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = [], journeyLocation }) => {
   const display = useMemo(() => {
-    if (!activities || loading) {
-      return null;
-    }
-
     return (
       <>
         {activities.map(activity => (
-          <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
+          <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} />
         ))}
       </>
     );
-  }, [activities, getActivityViewModel, loading]);
+  }, [activities, journeyLocation]);
 
   return <Root>{display ?? <ActivityLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };
 
-interface ActivityViewChooserProps extends ActivityViewProps {
-  type: ActivityEventType;
+interface ActivityViewChooserProps {
+  activity: ActivityLogResultType;
+  journeyLocation: JourneyLocation;
 }
 
-const ActivityViewChooser = ({ type, ...rest }: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {
-  const lookup: Record<ActivityEventType, ComponentType<ActivityViewProps>> = {
-    [ActivityEventType.CalloutPublished]: ActivityCalloutPublishedView,
-    [ActivityEventType.CanvasCreated]: ActivityCanvasCreatedView,
-    [ActivityEventType.CardComment]: ActivityCardCommentCreatedView,
-    [ActivityEventType.CardCreated]: ActivityCardCreatedView,
-    [ActivityEventType.DiscussionComment]: ActivityDiscussionCommentCreatedView,
-    [ActivityEventType.MemberJoined]: ActivityMemberJoinedView,
-    [ActivityEventType.ChallengeCreated]: ActivityChallengeCreatedView,
-    [ActivityEventType.OpportunityCreated]: ActivityOpportunityCreatedView,
-  };
-
-  const ActivityView = lookup[type];
-
-  if (ActivityView === undefined) {
-    throw new Error(`Unable to choose a view for activity type: ${type}`);
+const ActivityViewChooser = ({
+  activity,
+  ...rest
+}: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {
+  const author = buildAuthorFromUser(activity.triggeredBy);
+  switch (activity.type) {
+    case ActivityEventType.CalloutPublished:
+      const activityCalloutPublished = activity as ActivityLogResult<ActivityLogCalloutPublishedFragment>;
+      const calloutType = `${activityCalloutPublished.callout.type}`.toLowerCase();
+      return (
+        <ActivityCalloutPublishedView
+          callout={activityCalloutPublished.callout}
+          author={author}
+          calloutType={calloutType}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.CanvasCreated:
+      const activityCalloutCanvasCreated = activity as ActivityLogResult<ActivityLogCalloutCanvasCreatedFragment>;
+      return (
+        <ActivityCanvasCreatedView
+          callout={activityCalloutCanvasCreated.callout}
+          canvas={activityCalloutCanvasCreated.canvas}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.CardComment:
+      const activityCalloutCardComment = activity as ActivityLogResult<ActivityLogCalloutCardCommentFragment>;
+      return (
+        <ActivityCardCommentCreatedView
+          callout={activityCalloutCardComment.callout}
+          card={activityCalloutCardComment.card}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.CardCreated:
+      const activityCalloutCardCreated = activity as ActivityLogResult<ActivityLogCalloutCardCreatedFragment>;
+      return (
+        <ActivityCardCreatedView
+          callout={activityCalloutCardCreated.callout}
+          card={activityCalloutCardCreated.card}
+          author={author}
+          cardType={activityCalloutCardCreated.card.type}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.DiscussionComment:
+      const activityCalloutDiscussionComment =
+        activity as ActivityLogResult<ActivityLogCalloutDiscussionCommentFragment>;
+      return (
+        <ActivityDiscussionCommentCreatedView
+          callout={activityCalloutDiscussionComment.callout}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.MemberJoined:
+      const activityMemberJoined = activity as ActivityLogResult<ActivityLogMemberJoinedFragment>;
+      const userAuthor = buildAuthorFromUser(activityMemberJoined.user);
+      return (
+        <ActivityMemberJoinedView
+          member={userAuthor}
+          community={activityMemberJoined.community}
+          communityType={activityMemberJoined.communityType}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.ChallengeCreated:
+      const activityChallengeCreated = activity as ActivityLogResult<ActivityLogChallengeCreatedFragment>;
+      return (
+        <ActivityChallengeCreatedView
+          challenge={activityChallengeCreated.challenge}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.OpportunityCreated:
+      const activityOpportunityCreated = activity as ActivityLogResult<ActivityLogOpportunityCreatedFragment>;
+      return (
+        <ActivityOpportunityCreatedView
+          opportunity={activityOpportunityCreated.opportunity}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
   }
+  throw new Error(`Unable to choose a view for activity type: ${activity.type}`);
+};
 
-  return <ActivityView {...rest} />;
+const buildAuthorFromUser = (user: any): Author => {
+  const avatarURL = user.profile.avatar.uri;
+  const url = buildUserProfileUrl(user.nameID);
+  const tags: string[] = [];
+  for (const tagset of user.profile.tagsets) {
+    tags.push(tagset.tags);
+  }
+  const result: Author = {
+    id: user.id,
+    displayName: user.displayName,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    avatarUrl: avatarURL,
+    url: url,
+    tags: tags,
+    city: user.profile.location.city,
+    country: user.profile.location.country,
+  };
+  return result;
 };

@@ -244,7 +244,11 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       },
     });
 
-  const aspectUrl = buildAspectUrl({ hubNameId, challengeNameId, opportunityNameId, calloutNameId, aspectNameId });
+  const aspectUrl = buildAspectUrl(calloutNameId, aspectNameId, {
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
+  });
 
   return renderComponentOrChildrenFn(rendered, {
     canReadComments,

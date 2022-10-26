@@ -18,9 +18,8 @@ import {
   ChallengeCardFragment,
   AssociatedOrganizationDetailsFragment,
   Reference,
-  Activity,
 } from '../../../../models/graphql-schema';
-import { buildHubUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { buildHubUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -38,7 +37,7 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Discussion } from '../../../communication/discussion/models/discussion';
-import { ActivitySection } from '../../../shared/components/ActivityLog';
+import { ActivityLogResultType, ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
@@ -63,7 +62,7 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   challengesReadAccess?: boolean;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
 }
 
@@ -101,11 +100,15 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string, calloutNameId: string) => {
-      const url = buildCanvasUrl({ hubNameId, calloutNameId, canvasNameId });
+      const url = buildCanvasUrl(calloutNameId, canvasNameId, { hubNameId });
       return buildLinkToCanvas(url);
     },
     [hubNameId, buildLinkToCanvas]
   );
+
+  const journeyLocation: JourneyLocation = {
+    hubNameId,
+  };
 
   const showActivity = (!activities && activityLoading) || !!activities;
 
@@ -157,7 +160,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          {showActivity && <ActivitySection activities={activities} />}
+          {showActivity && <ActivitySection activities={activities} journeyLocation={journeyLocation} />}
           {!!references && references.length > 0 && (
             <DashboardSection
               headerText={t('components.referenceSegment.title')}

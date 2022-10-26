@@ -1,1 +1,1 @@
-export * from './useActivityToViewModel';
+export * from './useActivityOnCollaboration';

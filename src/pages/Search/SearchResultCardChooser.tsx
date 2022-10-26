@@ -1,9 +1,9 @@
 import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import { ResultType } from './SearchPage';
+import { SearchResultType } from './SearchPage';
 import { useHydrateCard } from './hooks/useHydratedCard';
 
-const SearchResultCardChooser = ({ result }: { result: ResultType | undefined }): React.ReactElement | null => {
+const SearchResultCardChooser = ({ result }: { result: SearchResultType | undefined }): React.ReactElement | null => {
   const { hydrateHubCard, hydrateChallengeCard, hydrateOpportunityCard, hydrateUserCard, hydrateOrganizationCard } =
     useHydrateCard(result);
 
@@ -13,7 +13,7 @@ const SearchResultCardChooser = ({ result }: { result: ResultType | undefined })
     );
   }
 
-  const cardDict: Record<NonNullable<ResultType['__typename']>, React.ReactElement | null> = {
+  const cardDict: Record<NonNullable<SearchResultType['__typename']>, React.ReactElement | null> = {
     Hub: hydrateHubCard(),
     Challenge: hydrateChallengeCard(),
     Opportunity: hydrateOpportunityCard(),
