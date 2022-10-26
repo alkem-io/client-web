@@ -70,7 +70,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
     return state.matches('visible');
   });
 
-  const isBreakpointSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const isBreakpointSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   if (!loginVisible) {
     return null;
