@@ -1878,6 +1878,9 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
       id
       nameID
       displayName
+      context {
+        tagline
+      }
     }
   }
 `;
@@ -1887,6 +1890,9 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
       id
       nameID
       displayName
+      context {
+        tagline
+      }
     }
   }
 `;
@@ -18792,6 +18798,7 @@ export type DeleteInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
 export const ActivityLogOnCollaborationDocument = gql`
   query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     activityLogOnCollaboration(queryData: $queryData) {
+      id
       collaborationID
       triggeredBy {
         id
