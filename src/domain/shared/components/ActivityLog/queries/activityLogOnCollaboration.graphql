@@ -1,0 +1,159 @@
+query activityLogOnCollaboration($queryData: ActivityLogInput!) {
+  activityLogOnCollaboration(queryData: $queryData) {
+    collaborationID
+    triggeredBy {
+      id
+      nameID
+      displayName
+      firstName
+      lastName
+      profile {
+        avatar {
+          uri
+        }
+        tagsets {
+          tags
+        }
+        location {
+          city
+          country
+        }
+      }
+    }
+    createdDate
+    description
+    type
+    __typename
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutCardCreated {
+      ...ActivityLogCalloutCardCreated
+    }
+    ... on ActivityLogEntryCalloutCardComment {
+      ...ActivityLogCalloutCardComment
+    }
+    ... on ActivityLogEntryCalloutCanvasCreated {
+      ...ActivityLogCalloutCanvasCreated
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
+    }
+  }
+}
+
+fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
+  communityType
+  community {
+    id
+    displayName
+  }
+  user {
+    id
+    nameID
+    displayName
+    nameID
+    displayName
+    firstName
+    lastName
+    profile {
+      avatar {
+        uri
+      }
+      tagsets {
+        tags
+      }
+      location {
+        city
+        country
+      }
+    }
+  }
+}
+fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
+  callout {
+    id
+    nameID
+    displayName
+    type
+  }
+}
+
+fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
+  callout {
+    id
+    nameID
+    displayName
+  }
+  card {
+    id
+    nameID
+    displayName
+    type
+  }
+}
+
+fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
+  callout {
+    id
+    nameID
+    displayName
+  }
+  card {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
+  callout {
+    id
+    nameID
+    displayName
+  }
+  canvas {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+  challenge {
+    id
+    nameID
+    displayName
+    context {
+      tagline
+    }
+  }
+}
+
+fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+  opportunity {
+    id
+    nameID
+    displayName
+    context {
+      tagline
+    }
+  }
+}
+
+fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+  callout {
+    id
+    nameID
+    displayName
+  }
+}

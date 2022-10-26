@@ -31,26 +31,6 @@ export type Apm = {
   rumEnabled: Scalars['Boolean'];
 };
 
-export type Activity = {
-  __typename?: 'Activity';
-  /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID'];
-  /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime'];
-  /** The text details for this Activity. */
-  description: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The id of the parent of the entity within which the Activity was generated. */
-  parentID?: Maybe<Scalars['UUID']>;
-  /** The id of the entity that is associated with this Activity. */
-  resourceID: Scalars['UUID'];
-  /** The id of the user that triggered this Activity. */
-  triggeredBy: Scalars['UUID'];
-  /** The event type for this Activity. */
-  type: ActivityEventType;
-};
-
 export enum ActivityEventType {
   CalloutPublished = 'CALLOUT_PUBLISHED',
   CanvasCreated = 'CANVAS_CREATED',
@@ -61,6 +41,181 @@ export enum ActivityEventType {
   MemberJoined = 'MEMBER_JOINED',
   OpportunityCreated = 'OPPORTUNITY_CREATED',
 }
+
+export type ActivityLogEntry = {
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryBase = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryBase';
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutCanvasCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutCanvasCreated';
+  /** The Callout in which the Canvas was created. */
+  callout: Callout;
+  /** The Canvas that was created. */
+  canvas: Canvas;
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutCardComment = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutCardComment';
+  /** The Callout in which the Card was commented. */
+  callout: Callout;
+  /** The Card that was commented on. */
+  card: Aspect;
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutCardCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutCardCreated';
+  /** The Callout in which the Card was created. */
+  callout: Callout;
+  /** The Card that was created. */
+  card: Aspect;
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutDiscussionComment';
+  /** The Callout in which the comment was added. */
+  callout: Callout;
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryCalloutPublished';
+  /** The Callout that was published. */
+  callout: Callout;
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryChallengeCreated';
+  /** The Challenge that was created. */
+  challenge: Challenge;
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryMemberJoined';
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The community that was joined. */
+  community: Community;
+  /** The type of the the Community. */
+  communityType: Scalars['String'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+  /** The User that joined the Community. */
+  user: User;
+};
+
+export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryOpportunityCreated';
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The Opportunity that was created. */
+  opportunity: Opportunity;
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
 
 export type ActivityLogInput = {
   /** Display the activityLog results for the specified Collaboration. */
@@ -2663,7 +2818,7 @@ export type ProjectEventInput = {
 export type Query = {
   __typename?: 'Query';
   /** Retrieve the ActivityLog for the specified Collaboration */
-  activityLogOnCollaboration: Array<Activity>;
+  activityLogOnCollaboration: Array<ActivityLogEntry>;
   /** All Users that are members of a given room */
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
@@ -15640,308 +15795,309 @@ export type DeleteInnovationTemplateMutation = {
   deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
-export type CalloutsNamesFromHubQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+export type ActivityLogOnCollaborationQueryVariables = Exact<{
+  queryData: ActivityLogInput;
 }>;
 
-export type CalloutsNamesFromHubQuery = {
+export type ActivityLogOnCollaborationQuery = {
   __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
+  activityLogOnCollaboration: Array<
+    | {
+        __typename: 'ActivityLogEntryBase';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
           id: string;
-          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CalloutsNamesFromChallengeQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CalloutsNamesFromChallengeQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type CalloutsNamesFromOpportunityQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CalloutsNamesFromOpportunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      parentNameID?: string | undefined;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string; displayName: string }> | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type CardsNamesFromHubQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CardsNamesFromHubQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          callouts?:
-            | Array<{
-                __typename?: 'Callout';
-                id: string;
-                nameID: string;
-                displayName: string;
-                aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
-              }>
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
             | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CardsNamesFromChallengeQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CardsNamesFromChallengeQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type CardsNamesFromOpportunityQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CardsNamesFromOpportunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      parentNameID?: string | undefined;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type CanvasesNamesFromHubQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CanvasesNamesFromHubQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutCanvasCreated';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
           id: string;
-          callouts?:
-            | Array<{
-                __typename?: 'Callout';
-                id: string;
-                nameID: string;
-                displayName: string;
-                canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
-              }>
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
             | undefined;
+        };
+        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutCardComment';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutCardCreated';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutDiscussionComment';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutPublished';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
+      }
+    | {
+        __typename: 'ActivityLogEntryChallengeCreated';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+      }
+    | {
+        __typename: 'ActivityLogEntryMemberJoined';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        communityType: string;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        community: { __typename?: 'Community'; id: string; displayName: string };
+        user: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryOpportunityCreated';
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+      }
+  >;
+};
+
+export type ActivityLogMemberJoinedFragment = {
+  __typename?: 'ActivityLogEntryMemberJoined';
+  communityType: string;
+  community: { __typename?: 'Community'; id: string; displayName: string };
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
         }
       | undefined;
   };
 };
 
-export type CanvasesNamesFromChallengeQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CanvasesNamesFromChallengeQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
+export type ActivityLogCalloutPublishedFragment = {
+  __typename?: 'ActivityLogEntryCalloutPublished';
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
 };
 
-export type CanvasesNamesFromOpportunityQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-}>;
-
-export type CanvasesNamesFromOpportunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      parentNameID?: string | undefined;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
+export type ActivityLogCalloutCardCreatedFragment = {
+  __typename?: 'ActivityLogEntryCalloutCardCreated';
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
 };
 
-export type ChallengesNameQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-}>;
-
-export type ChallengesNameQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenges?: Array<{ __typename?: 'Challenge'; id: string; nameID: string; displayName: string }> | undefined;
-  };
+export type ActivityLogCalloutCardCommentFragment = {
+  __typename?: 'ActivityLogEntryCalloutCardComment';
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
 };
 
-export type OpportunitiesNameQueryVariables = Exact<{
-  hubID: Scalars['UUID_NAMEID'];
-  opportunityIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-}>;
+export type ActivityLogCalloutCanvasCreatedFragment = {
+  __typename?: 'ActivityLogEntryCalloutCanvasCreated';
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+};
 
-export type OpportunitiesNameQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunities?: Array<{ __typename?: 'Opportunity'; id: string; nameID: string; displayName: string }> | undefined;
-  };
+export type ActivityLogChallengeCreatedFragment = {
+  __typename?: 'ActivityLogEntryChallengeCreated';
+  challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+};
+
+export type ActivityLogOpportunityCreatedFragment = {
+  __typename?: 'ActivityLogEntryOpportunityCreated';
+  opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+};
+
+export type ActivityLogCalloutDiscussionCommentFragment = {
+  __typename?: 'ActivityLogEntryCalloutDiscussionComment';
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 
 export type CommentsWithMessagesFragment = {
@@ -15966,25 +16122,6 @@ export type PageInfoFragment = {
   startCursor?: string | undefined;
   endCursor?: string | undefined;
   hasNextPage: boolean;
-};
-
-export type ActivityLogOnCollaborationQueryVariables = Exact<{
-  queryData: ActivityLogInput;
-}>;
-
-export type ActivityLogOnCollaborationQuery = {
-  __typename?: 'Query';
-  activityLogOnCollaboration: Array<{
-    __typename?: 'Activity';
-    id: string;
-    type: ActivityEventType;
-    resourceID: string;
-    collaborationID: string;
-    createdDate: Date;
-    description: string;
-    triggeredBy: string;
-    parentID?: string | undefined;
-  }>;
 };
 
 export type HubPreferencesQueryVariables = Exact<{
