@@ -5,7 +5,7 @@ fragment CommunityMessages on Community {
     updates {
       id
       messages {
-        ...MessageDetails
+        ...MessageDetailsNew
       }
     }
   }

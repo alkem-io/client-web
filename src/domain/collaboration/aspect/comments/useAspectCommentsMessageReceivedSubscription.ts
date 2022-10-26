@@ -14,7 +14,8 @@ const useAspectCommentsMessageReceivedSubscription = createUseSubscriptionToSubE
   subscriptionDocument: AspectCommentsMessageReceivedDocument,
   getSubscriptionVariables: aspect => ({ aspectID: aspect.id }),
   updateSubEntity: (aspect, subscriptionData) => {
-    aspect?.comments?.messages?.push(subscriptionData.aspectCommentsMessageReceived.message);
+    const message = subscriptionData.aspectCommentsMessageReceived.message;
+    aspect?.comments?.messages?.push(message);
   },
 });
 

@@ -79,11 +79,28 @@ export const VisualUriFragmentDoc = gql`
     name
   }
 `;
-export const MessageDetailsFragmentDoc = gql`
-  fragment MessageDetails on Message {
+export const MessageDetailsNewFragmentDoc = gql`
+  fragment MessageDetailsNew on Message {
     id
     sender {
       id
+      nameID
+      firstName
+      displayName
+      lastName
+      profile {
+        avatar {
+          uri
+        }
+        tagsets {
+          name
+          tags
+        }
+        location {
+          city
+          country
+        }
+      }
     }
     message
     timestamp
@@ -132,12 +149,12 @@ export const AspectDashboardFragmentDoc = gql`
         myPrivileges
       }
       messages {
-        ...MessageDetails
+        ...MessageDetailsNew
       }
     }
   }
   ${VisualUriFragmentDoc}
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 export const AspectDashboardDataFragmentDoc = gql`
   fragment AspectDashboardData on Collaboration {
@@ -1128,10 +1145,10 @@ export const CommentsWithMessagesFragmentDoc = gql`
       myPrivileges
     }
     messages {
-      ...MessageDetails
+      ...MessageDetailsNew
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
@@ -1292,35 +1309,18 @@ export const CommunityMessagesFragmentDoc = gql`
       updates {
         id
         messages {
-          ...MessageDetails
+          ...MessageDetailsNew
         }
       }
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
-export const MessageDetailsNewFragmentDoc = gql`
-  fragment MessageDetailsNew on Message {
+export const MessageDetailsFragmentDoc = gql`
+  fragment MessageDetails on Message {
     id
     sender {
       id
-      nameID
-      firstName
-      displayName
-      lastName
-      profile {
-        avatar {
-          uri
-        }
-        tagsets {
-          name
-          tags
-        }
-        location {
-          city
-          country
-        }
-      }
     }
     message
     timestamp
@@ -5004,14 +5004,14 @@ export const CommunityUpdatesDocument = gql`
           updates {
             id
             messages {
-              ...MessageDetails
+              ...MessageDetailsNew
             }
           }
         }
       }
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 
 /**
@@ -5064,10 +5064,10 @@ export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpd
 export const SendUpdateDocument = gql`
   mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
     sendUpdate(messageData: $msgData) {
-      ...MessageDetails
+      ...MessageDetailsNew
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 export type SendUpdateMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendUpdateMutation,
@@ -5156,11 +5156,11 @@ export const CommunicationUpdateMessageReceivedDocument = gql`
     communicationUpdateMessageReceived {
       updatesID
       message {
-        ...MessageDetails
+        ...MessageDetailsNew
       }
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 
 /**
@@ -11600,11 +11600,11 @@ export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
       message {
-        ...MessageDetails
+        ...MessageDetailsNew
       }
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 
 /**
@@ -13119,11 +13119,11 @@ export const CalloutMessageReceivedDocument = gql`
     calloutMessageReceived(calloutIDs: $calloutIDs) {
       commentsID
       message {
-        ...MessageDetails
+        ...MessageDetailsNew
       }
     }
   }
-  ${MessageDetailsFragmentDoc}
+  ${MessageDetailsNewFragmentDoc}
 `;
 
 /**

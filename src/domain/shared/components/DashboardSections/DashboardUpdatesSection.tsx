@@ -4,10 +4,9 @@ import {
   CommunityUpdatesContainer,
   CommunityUpdatesContainerProps,
 } from '../../../../containers/community-updates/CommunityUpdatesContainer';
-import { AvatarsProvider } from '../../../../context/AvatarsProvider';
-import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import SingleUpdateView from '../../../communication/updates/views/SingleUpdateView';
 import DashboardGenericSection from './DashboardGenericSection';
+import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 
 export interface DashboardUpdatesSectionProps {
   entities: CommunityUpdatesContainerProps['entities'];
@@ -21,7 +20,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-        const messageSenders = latestMessage?.sender.id ? [{ id: latestMessage?.sender.id }] : [];
+        const latestMessageAuthor = latestMessage?.sender.id ? buildAuthorFromUser(latestMessage.sender) : undefined;
 
         return (
           <DashboardGenericSection
@@ -34,23 +33,12 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
             ) : !messages.length && !retrievingUpdateMessages ? (
               t('dashboard-updates-section.no-data')
             ) : (
-              <AvatarsProvider users={messageSenders}>
-                {populatedUsers => (
-                  <SingleUpdateView
-                    loading={retrievingUpdateMessages}
-                    author={{
-                      id: populatedUsers[0]?.id,
-                      displayName: populatedUsers[0]?.displayName,
-                      avatarUrl: populatedUsers[0]?.profile?.avatar?.uri ?? '',
-                      firstName: '',
-                      lastName: '',
-                      url: buildUserProfileUrl(populatedUsers[0]?.nameID),
-                    }}
-                    createdDate={new Date(latestMessage.timestamp)}
-                    content={latestMessage.message}
-                  />
-                )}
-              </AvatarsProvider>
+              <SingleUpdateView
+                loading={retrievingUpdateMessages}
+                author={latestMessageAuthor}
+                createdDate={new Date(latestMessage.timestamp)}
+                content={latestMessage.message}
+              />
             )}
           </DashboardGenericSection>
         );

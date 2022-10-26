@@ -11,7 +11,6 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Message } from '../../../domain/shared/components/Comments/models/message';
-import { useAuthorsDetails } from '../../../domain/communication/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -20,6 +19,7 @@ import {
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/collaboration/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
 import { buildAspectUrl } from '../../../common/utils/urlBuilders';
+import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -149,17 +149,15 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const commentsId = aspect?.comments?.id;
   const _messages = useMemo(() => aspect?.comments?.messages ?? [], [aspect?.comments?.messages]);
-  const senders = _messages.map(x => x.sender.id);
-  const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,
         body: x.message,
-        author: getAuthor(x.sender.id),
+        author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
       })),
-    [_messages, getAuthor]
+    [_messages]
   );
 
   const isAuthor = useCallback(

@@ -15,9 +15,9 @@ import {
   Message,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
-import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
 import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
+import { buildAuthorFromUser } from '../../common/utils/buildAuthorFromUser';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -95,8 +95,12 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const messages = (data?.hub.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
-  const { authors = EMPTY } = useAuthorsDetails(messages.map(m => m.sender.id));
-
+  const authors: Author[] = [];
+  for (const message of messages) {
+    if (message.sender) {
+      authors.push(buildAuthorFromUser(message.sender));
+    }
+  }
   return (
     <>
       {children(
