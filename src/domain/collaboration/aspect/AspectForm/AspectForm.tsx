@@ -146,7 +146,6 @@ const AspectForm: FC<AspectFormProps> = ({
               name="description"
               label={t('components.aspect-creation.info-step.description')}
               placeholder={t('components.aspect-creation.info-step.description-placeholder')}
-              tooltipLabel={t('components.aspect-creation.info-step.description-help-text')}
               required
               loading={loading}
               rows={7}
