@@ -1,28 +1,28 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ActivityLogResultType } from '../ActivityComponent';
-import { ActivityCreatedDocument, useActivityLogOnCollaborationQuery } from '../../../../../hooks/generated/graphql';
-import { LATEST_ACTIVITIES_COUNT } from '../../../../../models/constants/common.constants';
-import createUseSubscriptionToSubEntityHook from '../../../subscriptions/useSubscriptionToSubEntity';
 import {
-  ActivityCreatedSubscription,
-  ActivityCreatedSubscriptionVariables,
-  ActivityLogOnCollaborationFragment,
-} from '../../../../../models/graphql-schema';
+  useActivityCreatedSubscription,
+  useActivityLogOnCollaborationLazyQuery,
+  useActivityLogOnCollaborationQuery,
+} from '../../../../../hooks/generated/graphql';
+import { LATEST_ACTIVITIES_COUNT } from '../../../../../models/constants/common.constants';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 
-const useActivityOnCollaborationSubscription = createUseSubscriptionToSubEntityHook<
-  Array<ActivityLogOnCollaborationFragment>,
-  ActivityCreatedSubscription,
-  ActivityCreatedSubscriptionVariables
->({
-  subscriptionDocument: ActivityCreatedDocument,
-  updateSubEntity: (subEntity, { activityCreated }) => {
-    if (!subEntity) {
-      return;
-    }
-
-    subEntity.push(activityCreated.activity);
-  },
-});
+// todo: use when the subscription is working on the server
+// const useActivityOnCollaborationSubscription = createUseSubscriptionToSubEntityHook<
+//   Array<ActivityLogOnCollaborationFragment>,
+//   ActivityCreatedSubscription,
+//   ActivityCreatedSubscriptionVariables
+// >({
+//   subscriptionDocument: ActivityCreatedDocument,
+//   updateSubEntity: (subEntity, { activityCreated }) => {
+//     if (!subEntity) {
+//       return;
+//     }
+//
+//     subEntity.push(activityCreated.activity);
+//   },
+// });
 
 interface ActivityOnCollaborationReturnType {
   activities: ActivityLogResultType[] | undefined;
@@ -30,20 +30,34 @@ interface ActivityOnCollaborationReturnType {
 }
 
 export const useActivityOnCollaboration = (collaborationID: string | undefined): ActivityOnCollaborationReturnType => {
-  const { data: activityLogData, loading, subscribeToMore } = useActivityLogOnCollaborationQuery({
+  const handleError = useApolloErrorHandler();
+  const { data: activityLogData, loading } = useActivityLogOnCollaborationQuery({
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,
   });
 
-  useActivityOnCollaborationSubscription(
-    activityLogData,
-    activityLogData => activityLogData?.activityLogOnCollaboration,
-    subscribeToMore,
-    {
-      variables: { collaborationID: collaborationID! },
-      skip: !collaborationID
-    }
-  );
+  const [fetchActivityLog] = useActivityLogOnCollaborationLazyQuery();
+
+  useActivityCreatedSubscription({
+    shouldResubscribe: true,
+    skip: !collaborationID,
+    variables: { collaborationID: collaborationID! },
+    onSubscriptionData: async options => {
+      if (options.subscriptionData.error) {
+        handleError(options.subscriptionData.error);
+        return;
+      }
+
+      await fetchActivityLog({
+        variables: {
+          queryData: {
+            collaborationID: collaborationID!,
+          },
+        },
+        fetchPolicy: 'network-only',
+      });
+    },
+  });
 
   const activities = useMemo<ActivityLogResultType[] | undefined>(() => {
     if (!activityLogData) {
