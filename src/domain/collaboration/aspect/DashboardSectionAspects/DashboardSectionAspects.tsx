@@ -19,6 +19,10 @@ const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, as
   const headerText =
     typeof aspectsCount === 'undefined' ? t('common.aspects') : `${t('common.aspects')} (${aspectsCount})`;
 
+  if (aspects.length === 0) {
+    return null;
+  }
+
   return (
     <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink={EntityPageSection.Explore}>
       <CardsLayout

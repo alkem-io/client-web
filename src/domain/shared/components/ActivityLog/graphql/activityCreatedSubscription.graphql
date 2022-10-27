@@ -1,0 +1,63 @@
+subscription activityCreated($collaborationID: UUID!) {
+  activityCreated(collaborationID: $collaborationID) {
+    activity {
+      id
+    }
+  }
+}
+# use when subscription is working correctly on the server
+fragment ActivityLogOnCollaboration on ActivityLogEntry {
+  id
+  collaborationID
+  createdDate
+  description
+  type
+  __typename
+  triggeredBy {
+    id
+    nameID
+    displayName
+    firstName
+    lastName
+    profile {
+      id
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+  ... on ActivityLogEntryMemberJoined {
+    ...ActivityLogMemberJoined
+  }
+  ... on ActivityLogEntryCalloutPublished {
+    ...ActivityLogCalloutPublished
+  }
+  ... on ActivityLogEntryCalloutCardCreated {
+    ...ActivityLogCalloutCardCreated
+  }
+  ... on ActivityLogEntryCalloutCardComment {
+    ...ActivityLogCalloutCardComment
+  }
+  ... on ActivityLogEntryCalloutCanvasCreated {
+    ...ActivityLogCalloutCanvasCreated
+  }
+  ... on ActivityLogEntryCalloutDiscussionComment {
+    ...ActivityLogCalloutDiscussionComment
+  }
+  ... on ActivityLogEntryChallengeCreated {
+    ...ActivityLogChallengeCreated
+  }
+  ... on ActivityLogEntryOpportunityCreated {
+    ...ActivityLogOpportunityCreated
+  }
+}
