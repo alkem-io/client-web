@@ -129,7 +129,7 @@ const HubEditForm: FC<Props> = ({
             <Grid item xs={12}>
               <FormikSelect
                 title={t('components.editHubForm.host.title')}
-                name={'host'}
+                name="host"
                 values={organizations}
                 required
                 placeholder={t('components.editHubForm.host.title')}
