@@ -57,7 +57,7 @@ const useAsyncInterruptibleCallback = <Args extends unknown[], Result, Fn extend
 
     return Object.assign(interruptible, callback); // carrying extra properties such as flash/cancel on a debounced fn
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [depsValueFromObjectDeps, fn]);
+  }, [depsValueFromObjectDeps]);
 };
 
 export default useAsyncInterruptibleCallback;
