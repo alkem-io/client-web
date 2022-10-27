@@ -76,6 +76,8 @@
     }
   },
   "common": {
+    "permission": "Permisos",
+    "permissions": "Permisos",
     "error-generic": "Ocurrió un error mientras cargaba la información",
     "avatar": "Avatar",
     "inspiration": "Inspiración",
@@ -158,7 +160,7 @@
     "my-profile": "Mi perfil",
     "my-memberships": "Mis membresías",
     "profile": "Perfil",
-    "social": "Social",
+    "social": "Redes Sociales",
     "lifecycle": "Ciclo de vida",
     "home": "Inicio",
     "visuals": "Visuales",
@@ -304,18 +306,19 @@
   "callout": {
     "draftNotice": "BORRADOR - Este Callout solo es visible para administradores.",
     "delete-confirm-title": "¿Borrar Callout?",
-    "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados."
+    "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados.",
+    "state-permission": "Permitir a los miembros enviar nuevos [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
   },
   "journey-creation": {
     "dialog-title": "Crear {{entity}}"
   },
   "share-dialog": {
-    "title": "Copy the link below to share this {{entity}}",
-    "share-this": "Share this {{entity}}",
+    "title": "Copia el enlace de abajo para compartir este {{entity}}",
+    "share-this": "Compartir {{entity}}",
     "url": "URL",
-    "copy": "Copy",
-    "copied": "Copied!",
-    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "canvas-checkedout": "Por favor, primero haz clic en 'Guardar & Terminar de editar'"
   },
   "context": {
     "hub": {
@@ -471,12 +474,24 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "publicado nuevo Callout",
-        "canvas-created": "añadida nueva Pizarra - '{{parentDisplayName}}'",
-        "card-comment-created": "comentado en una Tarjeta",
-        "card-created": "añadido una nueva Tarjeta - '{{parentDisplayName}}'",
-        "discussion-comment-created": "comentado en un Debate - '{{parentDisplayName}}'",
-        "member-joined": "se ha unido"
+        "callout-published": "ha publicado un nuevo $t(common.callout)",
+        "canvas-created": "ha añadido un $t(common.canvas) a '{{parentDisplayName}}'",
+        "card-comment-created": "comentó sobre $t(common.aspect) '{{cardDisplayName}}'",
+        "card-created": "agregó una $t(common.aspect) a '{{calloutDisplayName}}'",
+        "discussion-comment-created": "comentó sobre '{{calloutDisplayName}}'",
+        "member-joined": "nuevo miembro",
+        "challenge-created": "creó un nuevo $t(common.challenge)",
+        "opportunity-created": "creó una nueva $t(common.opportunity)"
+      },
+      "activity-description": {
+        "callout-published": "[{{type}}] - {{displayName}}",
+        "canvas-created": "{{displayName}}",
+        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
+        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "discussion-comment-created": "{{comment}}",
+        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "challenge-created": "{{displayName}}",
+        "opportunity-created": "{{displayName}}"
       }
     },
     "lifecycle-visualizer": {
@@ -641,7 +656,7 @@
       }
     },
     "visualSegment": {
-      "title": "Visual",
+      "title": "Ilustración",
       "avatar": "Avatar",
       "banner": "Banner",
       "background": "Fondo"
@@ -844,7 +859,7 @@
     },
     "update-innovation-flow": {
       "template-label": {
-        "title": "Template"
+        "title": "Plantilla"
       }
     },
     "select-innovation-flow": {
@@ -852,12 +867,12 @@
     },
     "innovation-flow-template-segment": {
       "help-text": {
-        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
+        "title": "¡Cuidado! Al actualizar el Flujo de Innovación, el estado actual será (re)establecido al estado inicial del flujo seleccionado."
       }
     },
     "confirm-innovation-flow": {
       "description": {
-        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
+        "title": "¿Estás seguro de que quieres cambiar el flujo de innovación? Esto puede cambiar el conjunto de estados para este desafío/oportunidad y (re)establecerá el estado al primer estado del flujo de innovación seleccionado."
       }
     }
   },
@@ -880,7 +895,7 @@
     "feedback": "Feedback",
     "support": "Soporte",
     "about": "Acerca de",
-    "copyright": "© 2022 Alkemio Foundation"
+    "copyright": "© Alkemio Foundation"
   },
   "pages": {
     "generic": {
@@ -983,7 +998,7 @@
             "description": "Aquí puedes gestionar las Oportunidades de este desafío."
           },
           "innovation-flow": {
-            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
+            "description": "Aquí puedes cambiar el estado de este Desafío o elegir una Plantilla de Flujo diferente a seguir."
           }
         },
         "notifications": {
@@ -1022,7 +1037,7 @@
         },
         "sections": {
           "innovation-flow": {
-            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+            "description": "Aquí puedes cambiar el estado de esta Oportunidad o elegir una Plantilla de Flujo diferente a seguir."
           }
         }
       },
@@ -1159,6 +1174,9 @@
           "header": "Organizaciones",
           "subheader": "Las entidades que quieren traer la innovación."
         },
+        "contributors-section": {
+          "title": "Mira quién está conduciendo Desafíos en Alkemio"
+        },
         "footer": {
           "headline": "¿Quieres saber más? Visita nuestro sitio web, contáctanos o echa un ojo a nuestro repositorio en Github.",
           "links": {
@@ -1180,8 +1198,8 @@
     "hub": {
       "title": "Hub",
       "about-this-hub": "Acerca de este Hub",
-      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
-      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
+      "archived-hub-notice": "Este Hub está archivado. ¿Interesado en traerlo de vuelta a la vida? <contact>Haz clic aquí para contactar con Alkemio</contact>.",
+      "demo-hub-notice": "Este es un Hub de demostración. <alkemio>Haz clic aquí para colaborar en Hubs activos</alkemio>.",
       "application": {
         "title": "Formulario para unirse al {{entity}} \"{{name}}\"",
         "subheader": "Por favor contesta a estas preguntas, que se enviarán a la persona correspondiente de validar tu solicitud.",
@@ -1500,10 +1518,7 @@
     "edit": "Editar Innovation Flow"
   },
   "contributors-section": {
-    "title": "Colaboradores",
-    "subheader": "Progresar en los Desafíos requiere muchos tipos de contribuciones, de usuarios y de organizaciones. ¡Explora para ver quién está contribuyendo y dónde!",
-    "users-title": "Usuarios",
-    "organizations-title": "Organizaciones"
+    "title": "Colaboradores"
   },
   "contributions-view": {
     "no-data": "No hay {{name, lowercase}} disponibles"
