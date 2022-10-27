@@ -9,7 +9,7 @@ subscription activityCreated($collaborationID: UUID!) {
 fragment ActivityLogOnCollaboration on ActivityLogEntry {
   id
   collaborationID
-  #createdDate
+  createdDate
   description
   type
   __typename

@@ -15726,6 +15726,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryBase_Fragment = {
   __typename: 'ActivityLogEntryBase';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15751,6 +15752,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment = 
   __typename: 'ActivityLogEntryCalloutCanvasCreated';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15778,6 +15780,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment = {
   __typename: 'ActivityLogEntryCalloutCardComment';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15805,6 +15808,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
   __typename: 'ActivityLogEntryCalloutCardCreated';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15832,6 +15836,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragmen
   __typename: 'ActivityLogEntryCalloutDiscussionComment';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15858,6 +15863,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
   __typename: 'ActivityLogEntryCalloutPublished';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15884,6 +15890,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
   __typename: 'ActivityLogEntryChallengeCreated';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {
@@ -15916,6 +15923,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
   __typename: 'ActivityLogEntryMemberJoined';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   communityType: string;
@@ -15960,6 +15968,7 @@ type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
   __typename: 'ActivityLogEntryOpportunityCreated';
   id: string;
   collaborationID: string;
+  createdDate: Date;
   description: string;
   type: ActivityEventType;
   triggeredBy: {

@@ -1915,6 +1915,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
     collaborationID
+    createdDate
     description
     type
     __typename
