@@ -89,12 +89,10 @@ const AspectCard: FC<AspectCardProps> = ({
         url:
           hubNameId &&
           nameID &&
-          buildAspectUrl({
+          buildAspectUrl(calloutNameId, nameID, {
             hubNameId,
             challengeNameId,
             opportunityNameId,
-            calloutNameId,
-            aspectNameId: nameID,
           }),
         keepScroll: keepScroll,
       }}

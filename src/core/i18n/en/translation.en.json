@@ -261,8 +261,8 @@
           "order": 13,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
-          "name": "Organization Member",
+        "ORGANIZATION_ASSOCIATE": {
+          "name": "Organization Associate",
           "order": 14,
           "hidden": true
         },
@@ -461,12 +461,22 @@
       "actions": {
         "callout-published": "published a new $t(common.callout)",
         "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on a $t(common.aspect)",
-        "card-created": "added a $t(common.aspect) to '{{parentDisplayName}}'",
-        "discussion-comment-created": "commented",
-        "member-joined": "joined",
+        "card-comment-created": "commented on $t(common.aspect) '{{cardDisplayName}}'",
+        "card-created": "added a $t(common.aspect) to '{{calloutDisplayName}}'",
+        "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
+        "member-joined": "new member",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)"
+      },
+      "activity-description": {
+        "callout-published": "[{{type}}] - {{displayName}}",
+        "canvas-created": "[name] {{displayName}}",
+        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
+        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "discussion-comment-created": "{{comment}}",
+        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "challenge-created": "{{displayName}}",
+        "opportunity-created": "{{displayName}}"
       }
     },
     "lifecycle-visualizer": {
@@ -937,7 +947,7 @@
             "description": "Here you can see the membership information."
           },
           "organizations": {
-            "description": "Here you can see the associated organizations that your user is related to."
+            "description": "Here you can see the organizations that your user is associated with."
           },
           "notifications": {
             "description": "Here you can edit your notifications preferences."

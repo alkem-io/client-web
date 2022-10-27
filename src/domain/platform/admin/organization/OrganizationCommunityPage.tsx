@@ -3,7 +3,7 @@ import OrganizationAdminLayout from './OrganizationAdminLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { OrganizationGroupsView } from './views/OrganizationGroupsView';
-import OrganizationMembersView from './views/OrganizationMembersView';
+import OrganizationAssociatesView from './views/OrganizationAssociatesView';
 import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 
@@ -12,7 +12,7 @@ const OrganizationCommunityPage: FC<SettingsPageProps> = ({ paths }) => {
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Community}>
-      <OrganizationMembersView />
+      <OrganizationAssociatesView />
       <SectionSpacer />
       <OrganizationGroupsView />
     </OrganizationAdminLayout>

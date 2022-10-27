@@ -13,7 +13,7 @@ export interface OrganizationCardProps {
   avatar?: string;
   description?: string;
   role?: string;
-  membersCount?: number;
+  associatesCount?: number;
   verified?: boolean;
   loading?: boolean;
   url?: string;
@@ -48,7 +48,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   avatar,
   description,
   role,
-  membersCount,
+  associatesCount,
   verified,
   loading,
   url,
@@ -99,13 +99,13 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
         action={
           <Box display="flex" flexDirection="column" justifyContent="space-between">
             <Box display="flex">
-              <Typography sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Members'}</Typography>
+              <Typography sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Associates'}</Typography>
               {loading ? (
                 <Skeleton variant="circular">
-                  <CircleTag text={`${membersCount}`} color="primary" size="small" />
+                  <CircleTag text={`${associatesCount}`} color="primary" size="small" />
                 </Skeleton>
               ) : (
-                <CircleTag text={`${membersCount}`} color="primary" size="small" />
+                <CircleTag text={`${associatesCount}`} color="primary" size="small" />
               )}
             </Box>
             {loading ? (

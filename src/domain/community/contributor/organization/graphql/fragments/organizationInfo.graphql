@@ -31,9 +31,8 @@ fragment OrganizationInfo on Organization {
       city
     }
   }
-  members {
+  associates {
     id
-
     nameID
     displayName
     agent {

@@ -1,4 +1,4 @@
-import { ResultType, SearchResult } from '../SearchPage';
+import { SearchResultType, SearchResult } from '../SearchPage';
 import {
   ChallengeSearchResultFragment,
   HubSearchResultFragment,
@@ -198,7 +198,7 @@ const useHydrateOpportunityCard = (
   );
 };
 
-export const useHydrateCard = (result: ResultType | undefined) => {
+export const useHydrateCard = (result: SearchResultType | undefined) => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
 

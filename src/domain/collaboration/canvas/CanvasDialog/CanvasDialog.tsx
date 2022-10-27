@@ -135,12 +135,10 @@ const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolea
 
 const getCanvasShareUrl = (urlParams: UrlParams) => {
   if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
-  return buildCanvasUrl({
+  return buildCanvasUrl(urlParams.calloutNameId!, urlParams.canvasNameId!, {
     hubNameId: urlParams.hubNameId!,
     challengeNameId: urlParams.challengeNameId,
     opportunityNameId: urlParams.opportunityNameId,
-    calloutNameId: urlParams.calloutNameId!,
-    canvasNameId: urlParams.canvasNameId!,
   });
 };
 

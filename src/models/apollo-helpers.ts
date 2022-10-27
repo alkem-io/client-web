@@ -4,24 +4,199 @@ export type APMFieldPolicy = {
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ActivityKeySpecifier = (
+export type ActivityLogEntryKeySpecifier = (
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
-  | 'parentID'
-  | 'resourceID'
   | 'triggeredBy'
   | 'type'
-  | ActivityKeySpecifier
+  | ActivityLogEntryKeySpecifier
 )[];
-export type ActivityFieldPolicy = {
+export type ActivityLogEntryFieldPolicy = {
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentID?: FieldPolicy<any> | FieldReadFunction<any>;
-  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryBaseKeySpecifier = (
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryBaseKeySpecifier
+)[];
+export type ActivityLogEntryBaseFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryCalloutCanvasCreatedKeySpecifier = (
+  | 'callout'
+  | 'canvas'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutCanvasCreatedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutCanvasCreatedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  canvas?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryCalloutCardCommentKeySpecifier = (
+  | 'callout'
+  | 'card'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutCardCommentKeySpecifier
+)[];
+export type ActivityLogEntryCalloutCardCommentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryCalloutCardCreatedKeySpecifier = (
+  | 'callout'
+  | 'card'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutCardCreatedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutCardCreatedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryCalloutDiscussionCommentKeySpecifier = (
+  | 'callout'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutDiscussionCommentKeySpecifier
+)[];
+export type ActivityLogEntryCalloutDiscussionCommentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryCalloutPublishedKeySpecifier = (
+  | 'callout'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryCalloutPublishedKeySpecifier
+)[];
+export type ActivityLogEntryCalloutPublishedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryChallengeCreatedKeySpecifier = (
+  | 'challenge'
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryChallengeCreatedKeySpecifier
+)[];
+export type ActivityLogEntryChallengeCreatedFieldPolicy = {
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryMemberJoinedKeySpecifier = (
+  | 'collaborationID'
+  | 'community'
+  | 'communityType'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'triggeredBy'
+  | 'type'
+  | 'user'
+  | ActivityLogEntryMemberJoinedKeySpecifier
+)[];
+export type ActivityLogEntryMemberJoinedFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  community?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityType?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityLogEntryOpportunityCreatedKeySpecifier = (
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'opportunity'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityLogEntryOpportunityCreatedKeySpecifier
+)[];
+export type ActivityLogEntryOpportunityCreatedFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1128,6 +1303,7 @@ export type OpportunityTemplateFieldPolicy = {
 };
 export type OrganizationKeySpecifier = (
   | 'agent'
+  | 'associates'
   | 'authorization'
   | 'contactEmail'
   | 'displayName'
@@ -1136,7 +1312,6 @@ export type OrganizationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'legalEntityName'
-  | 'members'
   | 'metrics'
   | 'nameID'
   | 'preferences'
@@ -1147,6 +1322,7 @@ export type OrganizationKeySpecifier = (
 )[];
 export type OrganizationFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  associates?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1155,7 +1331,6 @@ export type OrganizationFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
-  members?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1741,9 +1916,69 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | APMKeySpecifier | (() => undefined | APMKeySpecifier);
     fields?: APMFieldPolicy;
   };
-  Activity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ActivityKeySpecifier | (() => undefined | ActivityKeySpecifier);
-    fields?: ActivityFieldPolicy;
+  ActivityLogEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActivityLogEntryKeySpecifier | (() => undefined | ActivityLogEntryKeySpecifier);
+    fields?: ActivityLogEntryFieldPolicy;
+  };
+  ActivityLogEntryBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActivityLogEntryBaseKeySpecifier | (() => undefined | ActivityLogEntryBaseKeySpecifier);
+    fields?: ActivityLogEntryBaseFieldPolicy;
+  };
+  ActivityLogEntryCalloutCanvasCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutCanvasCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutCanvasCreatedKeySpecifier);
+    fields?: ActivityLogEntryCalloutCanvasCreatedFieldPolicy;
+  };
+  ActivityLogEntryCalloutCardComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutCardCommentKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutCardCommentKeySpecifier);
+    fields?: ActivityLogEntryCalloutCardCommentFieldPolicy;
+  };
+  ActivityLogEntryCalloutCardCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutCardCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutCardCreatedKeySpecifier);
+    fields?: ActivityLogEntryCalloutCardCreatedFieldPolicy;
+  };
+  ActivityLogEntryCalloutDiscussionComment?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutDiscussionCommentKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutDiscussionCommentKeySpecifier);
+    fields?: ActivityLogEntryCalloutDiscussionCommentFieldPolicy;
+  };
+  ActivityLogEntryCalloutPublished?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryCalloutPublishedKeySpecifier
+      | (() => undefined | ActivityLogEntryCalloutPublishedKeySpecifier);
+    fields?: ActivityLogEntryCalloutPublishedFieldPolicy;
+  };
+  ActivityLogEntryChallengeCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryChallengeCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryChallengeCreatedKeySpecifier);
+    fields?: ActivityLogEntryChallengeCreatedFieldPolicy;
+  };
+  ActivityLogEntryMemberJoined?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryMemberJoinedKeySpecifier
+      | (() => undefined | ActivityLogEntryMemberJoinedKeySpecifier);
+    fields?: ActivityLogEntryMemberJoinedFieldPolicy;
+  };
+  ActivityLogEntryOpportunityCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryOpportunityCreatedKeySpecifier
+      | (() => undefined | ActivityLogEntryOpportunityCreatedKeySpecifier);
+    fields?: ActivityLogEntryOpportunityCreatedFieldPolicy;
   };
   Actor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorKeySpecifier | (() => undefined | ActorKeySpecifier);

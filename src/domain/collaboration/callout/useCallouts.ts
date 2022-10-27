@@ -10,8 +10,8 @@ import {
   CalloutType,
   CalloutVisibility,
   CanvasDetailsFragment,
-  ContributeTabAspectFragment,
   CommentsWithMessagesFragment,
+  ContributeTabAspectFragment,
 } from '../../../models/graphql-schema';
 import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
@@ -95,7 +95,13 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
       draft,
       editable,
       isSubscribedToComments,
-      url: buildCalloutUrl(callout.nameID, params.hubNameId ?? '', params.challengeNameId, params.opportunityNameId),
+      url:
+        params.hubNameId &&
+        buildCalloutUrl(callout.nameID, {
+          hubNameId: params.hubNameId,
+          challengeNameId: params.challengeNameId,
+          opportunityNameId: params.opportunityNameId,
+        }),
     } as TypedCallout;
   });
 

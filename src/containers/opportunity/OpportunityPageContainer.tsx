@@ -3,12 +3,11 @@ import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useOpportunity, useUserContext } from '../../hooks';
-import { useActivityLogOnCollaborationQuery, useOpportunityPageQuery } from '../../hooks/generated/graphql';
+import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
-  Activity,
   AuthorizationCredential,
   AuthorizationPrivilege,
   OpportunityPageFragment,
@@ -28,7 +27,8 @@ import {
 } from '../../domain/collaboration/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
 import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
-import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
+import { ActivityLogResultType } from '../../domain/shared/components/ActivityLog/ActivityComponent';
+import { useActivityOnCollaboration } from '../../domain/shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -64,7 +64,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
-  activities: Activity[] | undefined;
+  activities: ActivityLogResultType[] | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -113,19 +113,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   );
   const collaborationID = opportunity?.collaboration?.id;
 
-  const { data: activityLogData } = useActivityLogOnCollaborationQuery({
-    variables: { queryData: { collaborationID: collaborationID! } },
-    skip: !collaborationID,
-  });
-  const activities = useMemo(() => {
-    if (!activityLogData) {
-      return undefined;
-    }
-
-    return [...activityLogData.activityLogOnCollaboration]
-      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
-      .slice(0, LATEST_ACTIVITIES_COUNT);
-  }, [activityLogData]);
+  const { activities } = useActivityOnCollaboration(collaborationID);
 
   const permissions = useMemo(() => {
     const isAdmin = user?.isOpportunityAdmin(hubId, challengeId, opportunityId) || false;

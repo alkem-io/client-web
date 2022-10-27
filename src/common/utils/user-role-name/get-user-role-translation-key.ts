@@ -16,7 +16,7 @@ const adminRoles = [
 ];
 
 const memberRoles = [
-  AuthorizationCredential.OrganizationMember,
+  AuthorizationCredential.OrganizationAssociate,
   AuthorizationCredential.HubMember,
   AuthorizationCredential.ChallengeMember,
   AuthorizationCredential.OpportunityMember,
