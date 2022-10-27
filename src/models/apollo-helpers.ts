@@ -4,6 +4,34 @@ export type APMFieldPolicy = {
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityKeySpecifier = (
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'parentID'
+  | 'resourceID'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityKeySpecifier
+)[];
+export type ActivityFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentID?: FieldPolicy<any> | FieldReadFunction<any>;
+  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ActivityCreatedSubscriptionResultKeySpecifier = (
+  | 'activity'
+  | ActivityCreatedSubscriptionResultKeySpecifier
+)[];
+export type ActivityCreatedSubscriptionResultFieldPolicy = {
+  activity?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActivityLogEntryKeySpecifier = (
   | 'collaborationID'
   | 'createdDate'
@@ -1708,6 +1736,7 @@ export type ServiceMetadataFieldPolicy = {
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
+  | 'activityCreated'
   | 'aspectCommentsMessageReceived'
   | 'calloutAspectCreated'
   | 'calloutMessageReceived'
@@ -1721,6 +1750,7 @@ export type SubscriptionKeySpecifier = (
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
+  activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1915,6 +1945,17 @@ export type StrictTypedTypePolicies = {
   APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | APMKeySpecifier | (() => undefined | APMKeySpecifier);
     fields?: APMFieldPolicy;
+  };
+  Activity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActivityKeySpecifier | (() => undefined | ActivityKeySpecifier);
+    fields?: ActivityFieldPolicy;
+  };
+  ActivityCreatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityCreatedSubscriptionResultKeySpecifier
+      | (() => undefined | ActivityCreatedSubscriptionResultKeySpecifier);
+    fields?: ActivityCreatedSubscriptionResultFieldPolicy;
   };
   ActivityLogEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActivityLogEntryKeySpecifier | (() => undefined | ActivityLogEntryKeySpecifier);

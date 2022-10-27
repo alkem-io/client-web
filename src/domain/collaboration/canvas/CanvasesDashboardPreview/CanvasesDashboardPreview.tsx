@@ -32,28 +32,30 @@ const CanvasesDashboardPreview = ({
   const headerText =
     typeof canvasesCount === 'undefined' ? t('common.canvases') : `${t('common.canvases')} (${canvasesCount})`;
 
+  if (canvases.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      <DashboardGenericSection
-        headerText={headerText}
-        {...sectionProps}
-        navText={t('buttons.see-all')}
-        navLink={EntityPageSection.Explore}
-      >
-        <SimpleCardsList>
-          {canvases.map(canvas => (
-            <SimpleCard
-              key={canvas.id}
-              {...buildCanvasLink(canvas.nameID, canvas.calloutNameId)}
-              title={canvas.displayName}
-              imageUrl={canvas.preview?.uri}
-              iconComponent={WbIncandescentOutlined}
-            />
-          ))}
-        </SimpleCardsList>
-        {canvases.length === 0 && noItemsMessage && !loading && <Typography>{noItemsMessage}</Typography>}
-      </DashboardGenericSection>
-    </>
+    <DashboardGenericSection
+      headerText={headerText}
+      {...sectionProps}
+      navText={t('buttons.see-all')}
+      navLink={EntityPageSection.Explore}
+    >
+      <SimpleCardsList>
+        {canvases.map(canvas => (
+          <SimpleCard
+            key={canvas.id}
+            {...buildCanvasLink(canvas.nameID, canvas.calloutNameId)}
+            title={canvas.displayName}
+            imageUrl={canvas.preview?.uri}
+            iconComponent={WbIncandescentOutlined}
+          />
+        ))}
+      </SimpleCardsList>
+      {canvases.length === 0 && noItemsMessage && !loading && <Typography>{noItemsMessage}</Typography>}
+    </DashboardGenericSection>
   );
 };
 
