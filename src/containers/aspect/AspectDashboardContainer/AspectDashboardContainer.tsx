@@ -89,6 +89,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     variables: { hubNameId, challengeNameId: challengeNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const challengeAspect = getCardCallout(
     challengeData?.hub?.challenge?.collaboration?.callouts,
@@ -104,6 +105,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     variables: { hubNameId, opportunityNameId: opportunityNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const opportunityAspect = getCardCallout(
     opportunityData?.hub?.opportunity?.collaboration?.callouts,
