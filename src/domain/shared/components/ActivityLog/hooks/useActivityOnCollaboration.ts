@@ -34,6 +34,7 @@ export const useActivityOnCollaboration = (collaborationID: string | undefined):
   const { data: activityLogData, loading } = useActivityLogOnCollaborationQuery({
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,
+    fetchPolicy: 'cache-and-network',
   });
 
   const [fetchActivityLog] = useActivityLogOnCollaborationLazyQuery();

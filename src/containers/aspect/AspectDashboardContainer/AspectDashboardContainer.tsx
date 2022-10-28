@@ -74,6 +74,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     variables: { hubNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
     x => x.nameID === aspectNameId
