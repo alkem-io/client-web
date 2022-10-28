@@ -57,16 +57,19 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
   const { data: hubCalloutsData, loading: hubCalloutsLoading } = useHubCalloutsQuery({
     variables: isHubId(params) ? params : (params as never),
     skip: !isHubId(params),
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: challengeCalloutsData, loading: challengeCalloutsLoading } = useChallengeCalloutsQuery({
     variables: isChallengeId(params) ? params : (params as never),
     skip: !isChallengeId(params),
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: opportunityCalloutsData, loading: opportunityCalloutsLoading } = useOpportunityCalloutsQuery({
     variables: isOpportunityId(params) ? params : (params as never),
     skip: !isOpportunityId(params),
+    fetchPolicy: 'cache-and-network',
   });
 
   const collaboration = (
