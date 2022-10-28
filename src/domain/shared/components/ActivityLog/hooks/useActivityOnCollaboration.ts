@@ -71,7 +71,7 @@ export const useActivityOnCollaboration = (collaborationID: string | undefined):
     return resultSorted.slice(0, LATEST_ACTIVITIES_COUNT);
   }, [activityLogData]);
   return {
-    activities: activities || [],
+    activities,
     loading,
   };
 };
