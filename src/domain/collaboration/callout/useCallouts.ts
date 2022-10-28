@@ -58,18 +58,21 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     variables: isHubId(params) ? params : (params as never),
     fetchPolicy: 'cache-and-network',
     skip: !isHubId(params),
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: challengeCalloutsData, loading: challengeCalloutsLoading } = useChallengeCalloutsQuery({
     variables: isChallengeId(params) ? params : (params as never),
     fetchPolicy: 'cache-and-network',
     skip: !isChallengeId(params),
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: opportunityCalloutsData, loading: opportunityCalloutsLoading } = useOpportunityCalloutsQuery({
     variables: isOpportunityId(params) ? params : (params as never),
     fetchPolicy: 'cache-and-network',
     skip: !isOpportunityId(params),
+    fetchPolicy: 'cache-and-network',
   });
 
   const collaboration = (
