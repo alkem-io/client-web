@@ -1,19 +1,18 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import { CalloutState, CalloutType } from '../../../models/graphql-schema';
 import * as yup from 'yup';
-import { Grid, InputAdornment, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import FormRow from '../../shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
-import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
-import HelpButton from '../../../common/components/core/HelpButton';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
 import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
+import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
 
 type FormValueType = {
   displayName: string;
@@ -55,7 +54,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
   const initialValues: FormValueType = {
     displayName: callout?.displayName ?? '',
     description: callout?.description ?? '',
-    type: callout?.type ?? CalloutType.Card,
+    type: callout?.type ?? CalloutType.Comments,
     opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
     cardTemplate: callout?.cardTemplate ?? '',
   };
@@ -73,7 +72,9 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       .max(500, ({ max }) => t('common.field-max-length', { max })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    cardTemplate: yup.string().required(t('common.field-required')),
+    cardTemplate: yup
+      .string()
+      .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
   });
 
   const handleChange = (values: FormValueType) => {
@@ -86,28 +87,6 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
     };
     onChange?.(callout);
   };
-
-  const calloutTypeHelpText = useMemo(() => {
-    switch (callout?.type) {
-      case CalloutType.Card:
-        return t('components.callout-creation.info-step.type-cards-help');
-      case CalloutType.Canvas:
-        return t('components.callout-creation.info-step.type-canvases-help');
-      case CalloutType.Comments:
-        return t('components.callout-creation.info-step.type-comments-help');
-      default:
-        return '';
-    }
-  }, [callout, t]);
-
-  const calloutTypes = useMemo(
-    () => [
-      { id: CalloutType.Card, name: t('common.cards') },
-      { id: CalloutType.Canvas, name: t('common.canvases') },
-      { id: CalloutType.Comments, name: t('common.discussion') },
-    ],
-    [t]
-  );
 
   return (
     <Formik
@@ -132,28 +111,29 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
               maxLength={MID_TEXT_LENGTH}
               withCounter
             />
+            {!edit && (
+              <>
+                <SectionSpacer />
+                <FormRow>
+                  <CalloutTypeSelect name="type" disabled={edit} />
+                </FormRow>
+              </>
+            )}
+            {formikState.values.type === CalloutType.Card && (
+              <>
+                <SectionSpacer />
+                <FormRow>
+                  <CardTemplatesChooser name="cardTemplate" />
+                </FormRow>
+              </>
+            )}
             <SectionSpacer />
             <FormRow>
-              <FormikSelect
-                name="type"
-                disabled={edit}
-                title={t('components.callout-creation.callout-type-label')}
-                values={calloutTypes}
-                endAdornment={
-                  <InputAdornment position="start">
-                    <HelpButton helpText={calloutTypeHelpText} />
-                  </InputAdornment>
-                }
-              />
-            </FormRow>
-            {formikState.values.type === CalloutType.Card && (
-              <FormRow>
-                <CardTemplatesChooser name="cardTemplate" />
-              </FormRow>
-            )}
-            <FormRow>
-              <Typography>{t('common.permission')}</Typography>
-              <Typography variant="body2">{t('callout.permission-helptext')}</Typography>
+              {/* TODO: Add this color to pallete to match Formik labels */}
+              <Typography sx={{ color: '#00000099' }}>{t('common.permission')}</Typography>
+              <Typography sx={{ color: '#00000099' }} variant="body2">
+                {t('callout.permission-helptext')}
+              </Typography>
               <FormikSwitch name="opened" title={t('callout.state-permission')} />
             </FormRow>
           </Grid>

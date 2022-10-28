@@ -55,19 +55,21 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
 
   const handleSaveAsDraft = useCallback(async () => {
     let calloutCardTemplate: AspectTemplateFormSubmittedValues | undefined;
-    const referenceCardTemplate = templates.aspectTemplates.find(t => t.type === callout.cardTemplate);
-    if (referenceCardTemplate) {
-      calloutCardTemplate = {
-        defaultDescription: referenceCardTemplate.defaultDescription,
-        type: referenceCardTemplate.type,
-        info: {
-          description: referenceCardTemplate.info.description,
-          title: referenceCardTemplate.info.title,
-        },
-      };
-      if (referenceCardTemplate.info.tagset) calloutCardTemplate.info.tags = referenceCardTemplate.info.tagset.tags;
-      if (referenceCardTemplate.info.visual?.uri)
-        calloutCardTemplate.info.visualUri = referenceCardTemplate.info.visual.uri;
+    if (callout.type === CalloutType.Card) {
+      const referenceCardTemplate = templates.aspectTemplates.find(t => t.type === callout.cardTemplate);
+      if (referenceCardTemplate) {
+        calloutCardTemplate = {
+          defaultDescription: referenceCardTemplate.defaultDescription,
+          type: referenceCardTemplate.type,
+          info: {
+            description: referenceCardTemplate.info.description,
+            title: referenceCardTemplate.info.title,
+          },
+        };
+        if (referenceCardTemplate.info.tagset) calloutCardTemplate.info.tags = referenceCardTemplate.info.tagset.tags;
+        if (referenceCardTemplate.info.visual?.uri)
+          calloutCardTemplate.info.visualUri = referenceCardTemplate.info.visual.uri;
+      }
     }
 
     const newCallout: CalloutCreationType = {

@@ -100,6 +100,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           rows,
           maxLength: maxLength,
         }}
+        preview="edit"
       />
       {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
       <FormHelperText sx={{ width: '95%' }} error={isError}>
