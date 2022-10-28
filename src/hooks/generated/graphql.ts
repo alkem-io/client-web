@@ -896,6 +896,14 @@ export const HubInfoFragmentDoc = gql`
           id
           title
           description
+          tagset {
+            id
+            tags
+          }
+          visual {
+            id
+            uri
+          }
         }
       }
       canvasTemplates {

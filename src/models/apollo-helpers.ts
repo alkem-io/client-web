@@ -440,6 +440,7 @@ export type CalloutKeySpecifier = (
   | 'aspects'
   | 'authorization'
   | 'canvases'
+  | 'cardTemplate'
   | 'comments'
   | 'description'
   | 'displayName'
@@ -455,6 +456,7 @@ export type CalloutFieldPolicy = {
   aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   canvases?: FieldPolicy<any> | FieldReadFunction<any>;
+  cardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;

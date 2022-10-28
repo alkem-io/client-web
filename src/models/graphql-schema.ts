@@ -561,6 +561,8 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
+  /** The Aspect template associated with this Card Callout. */
+  cardTemplate?: Maybe<Array<AspectTemplate>>;
   /** The Comments object for this Callout. */
   comments?: Maybe<Comments>;
   /** The description of this Callout */
@@ -1083,6 +1085,15 @@ export type CreateAspectOnCalloutInput = {
   type: Scalars['String'];
 };
 
+export type CreateAspectTemplateInput = {
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription: Scalars['Markdown'];
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  /** The type of Aspects created from this Template. */
+  type: Scalars['String'];
+};
+
 export type CreateAspectTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription: Scalars['Markdown'];
@@ -1094,6 +1105,8 @@ export type CreateAspectTemplateOnTemplatesSetInput = {
 };
 
 export type CreateCalloutOnCollaborationInput = {
+  /** CardTemplate data for Card Callouts. */
+  cardTemplate?: InputMaybe<CreateAspectTemplateInput>;
   collaborationID: Scalars['UUID'];
   /** Callout description. */
   description: Scalars['Markdown'];
@@ -1294,6 +1307,7 @@ export type CreateTemplateInfoInput = {
   description: Scalars['Markdown'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   title: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateUserGroupInput = {
@@ -8921,7 +8935,14 @@ export type HubProviderQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
@@ -9012,7 +9033,14 @@ export type HubInfoFragment = {
           id: string;
           defaultDescription: string;
           type: string;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title: string;
+            description: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }>;
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';

@@ -8,6 +8,8 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../common/co
 import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
+import { useHub } from '../../../../hooks';
+import { AspectTemplateFormSubmittedValues } from '../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -15,6 +17,7 @@ export type CalloutCreationDialogFields = {
   templateId?: string;
   type?: CalloutType;
   state?: CalloutState;
+  cardTemplate?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -24,8 +27,20 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
 }
 
+export interface CalloutCardTemplateInfo {
+  description: string;
+  title: string;
+  tags?: string[];
+}
+export interface CalloutCardTemplate {
+  defaultDescription: string;
+  type: string;
+  info: CalloutCardTemplateInfo;
+}
+
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft, isCreating }) => {
   const { t } = useTranslation();
+  const { templates } = useHub();
 
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
@@ -39,12 +54,29 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
-    const newCallout = {
+    let calloutCardTemplate: AspectTemplateFormSubmittedValues | undefined;
+    const referenceCardTemplate = templates.aspectTemplates.find(t => t.type === callout.cardTemplate);
+    if (referenceCardTemplate) {
+      calloutCardTemplate = {
+        defaultDescription: referenceCardTemplate.defaultDescription,
+        type: referenceCardTemplate.type,
+        info: {
+          description: referenceCardTemplate.info.description,
+          title: referenceCardTemplate.info.title,
+        },
+      };
+      if (referenceCardTemplate.info.tagset) calloutCardTemplate.info.tags = referenceCardTemplate.info.tagset.tags;
+      if (referenceCardTemplate.info.visual?.uri)
+        calloutCardTemplate.info.visualUri = referenceCardTemplate.info.visual.uri;
+    }
+
+    const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,
       templateId: callout.templateId!,
       type: callout.type!,
       state: callout.state!,
+      cardTemplate: calloutCardTemplate,
     };
 
     const result = await onSaveAsDraft(newCallout);
@@ -52,7 +84,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft]);
+  }, [callout, onSaveAsDraft, templates.aspectTemplates]);
 
   const handleClose = useCallback(() => {
     onClose?.();

@@ -31,6 +31,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     displayName: string;
     description: string;
     type: CalloutType;
+    cardTemplate?: string;
     state: CalloutState;
     draft: boolean;
     editable?: boolean;

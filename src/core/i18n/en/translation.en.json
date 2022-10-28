@@ -507,6 +507,7 @@
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
+      "card-type-label": "Card type",
       "info-step": {
         "title": "Details",
         "description": "Description",

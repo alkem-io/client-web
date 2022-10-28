@@ -13,12 +13,14 @@ import HelpButton from '../../../common/components/core/HelpButton';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
+import AspectTypeFormField from '../aspect/AspectForm/AspectTypeFormField';
 
 type FormValueType = {
   displayName: string;
   description: string;
   type: CalloutType;
   opened: boolean;
+  cardTemplate?: string;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -28,6 +30,7 @@ export type CalloutFormInput = {
   description?: string;
   type?: CalloutType;
   state?: CalloutState;
+  cardTemplate?: string;
 };
 
 export type CalloutFormOutput = {
@@ -35,6 +38,7 @@ export type CalloutFormOutput = {
   description: string;
   type: CalloutType;
   state: CalloutState;
+  cardTemplate?: string;
 };
 
 export interface CalloutFormProps {
@@ -53,6 +57,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
     description: callout?.description ?? '',
     type: callout?.type ?? CalloutType.Card,
     opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
+    cardTemplate: callout?.cardTemplate ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -63,11 +68,12 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       .max(SMALL_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
     description: yup
       .string()
-      .required()
+      .required(t('common.field-required'))
       .min(3, ({ min }) => t('common.field-min-length', { min }))
       .max(500, ({ max }) => t('common.field-max-length', { max })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
+    cardTemplate: yup.string().required(t('common.field-required')),
   });
 
   const handleChange = (values: FormValueType) => {
@@ -76,11 +82,12 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       description: values.description,
       type: values.type,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
+      cardTemplate: values.cardTemplate,
     };
     onChange?.(callout);
   };
 
-  const helpText = useMemo(() => {
+  const calloutTypeHelpText = useMemo(() => {
     switch (callout?.type) {
       case CalloutType.Card:
         return t('components.callout-creation.info-step.type-cards-help');
@@ -134,11 +141,16 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
                 values={calloutTypes}
                 endAdornment={
                   <InputAdornment position="start">
-                    <HelpButton helpText={helpText} />
+                    <HelpButton helpText={calloutTypeHelpText} />
                   </InputAdornment>
                 }
               />
             </FormRow>
+            {formikState.values.type === CalloutType.Card && (
+              <FormRow>
+                <AspectTypeFormField name="cardTemplate" value={formikState.values.cardTemplate} />
+              </FormRow>
+            )}
             <FormRow>
               <Typography>{t('common.permission')}</Typography>
               <FormikSwitch name="opened" title={t('callout.state-permission')} />
