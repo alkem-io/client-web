@@ -12,6 +12,7 @@ import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { CalloutState } from '../../../../models/graphql-schema';
+import { Skeleton } from '@mui/material';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
@@ -64,15 +65,19 @@ const CanvasCallout = ({
             deps={[hubNameId, challengeNameId, opportunityNameId]}
             {...(canCreate ? { createButtonComponent } : {})}
           >
-            {canvas => (
-              <SimpleCard
-                key={canvas!.id}
-                {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
-                title={canvas!.displayName}
-                imageUrl={canvas!.preview?.uri}
-                iconComponent={WbIncandescentOutlined}
-              />
-            )}
+            {canvas =>
+              canvas ? (
+                <SimpleCard
+                  key={canvas.id}
+                  {...buildCanvasUrl(canvas.nameID, canvas.calloutNameId)}
+                  title={canvas.displayName}
+                  imageUrl={canvas.preview?.uri}
+                  iconComponent={WbIncandescentOutlined}
+                />
+              ) : (
+                <Skeleton />
+              )
+            }
           </CardsLayout>
         </CardsLayoutScroller>
       </CalloutLayout>
