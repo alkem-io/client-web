@@ -13,7 +13,7 @@ import HelpButton from '../../../common/components/core/HelpButton';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
-import AspectTypeFormField from '../aspect/AspectForm/AspectTypeFormField';
+import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
 
 type FormValueType = {
   displayName: string;
@@ -148,7 +148,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
             </FormRow>
             {formikState.values.type === CalloutType.Card && (
               <FormRow>
-                <AspectTypeFormField name="cardTemplate" value={formikState.values.cardTemplate} />
+                <CardTemplatesChooser name="cardTemplate" />
               </FormRow>
             )}
             <FormRow>

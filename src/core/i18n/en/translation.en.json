@@ -521,7 +521,8 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Choose a template  that you want to use for the Callout"
+        "card-template-label": "Card Template",
+        "no-card-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Create",
