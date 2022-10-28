@@ -307,7 +307,8 @@
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
-    "state-permission": "Allow members to submit new [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
+    "state-permission": "Accept new responses",
+    "permission-helptext": "Use the switch below to close this callout for new entries."
   },
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"

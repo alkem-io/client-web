@@ -153,6 +153,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
             )}
             <FormRow>
               <Typography>{t('common.permission')}</Typography>
+              <Typography variant="body2">{t('callout.permission-helptext')}</Typography>
               <FormikSwitch name="opened" title={t('callout.state-permission')} />
             </FormRow>
           </Grid>
