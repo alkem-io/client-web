@@ -49,18 +49,21 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     variables: { hubId },
     skip: !!(challengeId || opportunityId),
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
     variables: { hubId: hubId, challengeId },
     skip: !challengeId || !!opportunityId,
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasesQuery({
     variables: { hubId, opportunityId: opportunityId },
     skip: !opportunityId,
     errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
   });
 
   const callout =

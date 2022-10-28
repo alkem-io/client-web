@@ -55,9 +55,9 @@
     "edit-photo": "Редактирай снимка",
     "accept-all-cookies": "Приемам всички бисквитки",
     "confirm-choice": "Потвърдете избора",
-    "confirm": "Confirm",
-    "change-template": "Change template",
-    "change": "Change"
+    "confirm": "Потвърди",
+    "change-template": "Промени шаблона",
+    "change": "Промени"
   },
   "tooltips": {
     "click-more-info": "Натисни за повече информация",
@@ -76,6 +76,8 @@
     }
   },
   "common": {
+    "permission": "Достъп",
+    "permissions": "Достъп",
     "error-generic": "Възникна грешка при зареждането",
     "avatar": "Аватар",
     "inspiration": "Вдъхновение",
@@ -85,13 +87,13 @@
     "administration": "Администрация",
     "add": "Добави",
     "remove": "Премахни",
-    "callout": "Callout",
-    "canvas": "Canvas",
+    "callout": "Призив",
+    "canvas": "Платно",
     "canvases": "Платна",
     "comment": "Коментар",
     "comments": "Коментари",
-    "card": "Card",
-    "cards": "Cards",
+    "card": "Карта",
+    "cards": "Карти",
     "create": "Създай",
     "create-new": "Създай нов",
     "create-new-entity": "Създай ново {{entity}}",
@@ -106,7 +108,7 @@
     "aspect": "Аспект",
     "aspects": "Аспекти",
     "host": "Домакин",
-    "lead": "Lead",
+    "lead": "Лидер",
     "hub": "Хъб",
     "hubs": "Хъбове",
     "challenge": "Предизвикателство",
@@ -289,40 +291,41 @@
     },
     "blocks": {
       "users-contributing": "потребители, които допринасят",
-      "all-contributing-users": "all contributing users"
+      "all-contributing-users": "всички допринасящи потребители"
     }
   },
   "community": {
-    "leading-users": "Leading Users",
-    "member-users": "Member Users",
+    "leading-users": "Водещи Потребители",
+    "member-users": "Членове Потребители",
     "leading-organizations": "Водещи организации",
-    "member-organizations": "Member Organizations",
-    "leads": "Leads",
-    "members": "Members",
-    "host": "Host"
+    "member-organizations": "Членове Организации",
+    "leads": "Водещи",
+    "members": "Потребители",
+    "host": "Домакин"
   },
   "callout": {
-    "draftNotice": "DRAFT - This Callout is only visible for admins.",
-    "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted."
+    "draftNotice": "ЧЕРНОВА - Този призив е видим само за администратори.",
+    "delete-confirm-title": "Изтрий Призива?",
+    "delete-confirm-text": "Всички карти, платна и съобщения под този Призив също ще бъдат изтрити.",
+    "state-permission": "Позволете на потребителите да създават нови [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
   },
   "journey-creation": {
-    "dialog-title": "Create a new {{entity}}"
+    "dialog-title": "Създай ново {{entity}}"
   },
   "share-dialog": {
-    "title": "Copy the link below to share this {{entity}}",
-    "share-this": "Share this {{entity}}",
+    "title": "Копирай линка отдолу, за да споделиш този {{entity}}",
+    "share-this": "Сподели този {{entity}}",
     "url": "URL",
-    "copy": "Copy",
-    "copied": "Copied!",
-    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+    "copy": "Копирай",
+    "copied": "Копирано!",
+    "canvas-checkedout": "Моля, натисни първо \"Запази & спри промяната\""
   },
   "context": {
     "hub": {
       "tagline": {
-        "title": "Tagline",
+        "title": "Слоган",
         "tooltip": "",
-        "description": "Explain in one sentence what this Hub is about.",
+        "description": "Обяснете в едно изречение за какво се отнася този Hub.",
         "placeholder": ""
       },
       "background": {
@@ -332,9 +335,9 @@
         "placeholder": ""
       },
       "impact": {
-        "title": "Impact",
+        "title": "Влияние",
         "tooltip": "",
-        "description": "What will this Hub change? How will people and organizations be affected?",
+        "description": "Какво ще промени този Hub? Как ще повлияе това на хората и организациите?",
         "placeholder": ""
       },
       "vision": {
@@ -352,7 +355,7 @@
     },
     "challenge": {
       "displayName": {
-        "title": "Title",
+        "title": "Заглавие",
         "description": "Try to keep it short, descriptive and engaging",
         "placeholder": ""
       },
@@ -363,7 +366,7 @@
         "placeholder": ""
       },
       "background": {
-        "title": "Current Reality",
+        "title": "Текуща реалност",
         "tooltip": "",
         "description": "Give a brief impression of the current state of the challenge. Think of the what, where, when and who.",
         "placeholder": ""
@@ -375,7 +378,7 @@
         "placeholder": ""
       },
       "vision": {
-        "title": "Future Vision",
+        "title": "Бъдеща визия",
         "tooltip": "",
         "description": "What does success look like? What should a solution to this Challenge comprise?",
         "placeholder": ""
@@ -387,19 +390,19 @@
         "placeholder": ""
       },
       "tags": {
-        "title": "Tags",
+        "title": "Етикети",
         "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
         "placeholder": ""
       }
     },
     "opportunity": {
       "displayName": {
-        "title": "Title",
+        "title": "Заглавие",
         "description": "Try to keep it short, descriptive and engaging",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Tagline",
+        "title": "Слоган",
         "tooltip": "",
         "description": "In one sentence, explain what this opportunity is about. Think of what and what for. ",
         "placeholder": ""
@@ -411,7 +414,7 @@
         "placeholder": ""
       },
       "impact": {
-        "title": "Impact",
+        "title": "Влияние",
         "tooltip": "",
         "description": "What will this Opportunity change? How will people and organizations be affected, for good or bad?",
         "placeholder": ""
@@ -471,12 +474,24 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new Callout",
-        "canvas-created": "added a new Canvas",
-        "card-comment-created": "commented on a Card",
-        "card-created": "added a new Card",
-        "discussion-comment-created": "commented on a Discussion",
-        "member-joined": "joined"
+        "callout-published": "публикува нов $t(common.callout)",
+        "canvas-created": "добави нов $t(common.canvas) към '{{parentDisplayName}}'",
+        "card-comment-created": "коментира на $t(common.aspect) '{{cardDisplayName}}'",
+        "card-created": "добави нов $t(common.aspect) към '{{calloutDisplayName}}'",
+        "discussion-comment-created": "коментира на '{{calloutDisplayName}}'",
+        "member-joined": "нов член",
+        "challenge-created": "създаде нов $t(common.challenge)",
+        "opportunity-created": "създаде нов $t(common.opportunity)"
+      },
+      "activity-description": {
+        "callout-published": "[{{type}}] - {{displayName}}",
+        "canvas-created": "{{displayName}}",
+        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
+        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "discussion-comment-created": "{{comment}}",
+        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "challenge-created": "{{displayName}}",
+        "opportunity-created": "{{displayName}}"
       }
     },
     "lifecycle-visualizer": {
@@ -503,13 +518,13 @@
         "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
       },
       "template-step": {
-        "title": "Templates",
-        "no-templates": "No templates available",
-        "card-template-label": "Choose a template  that you want to use for the Callout"
+        "title": "Шаблони",
+        "no-templates": "Няма налични шаблони",
+        "card-template-label": "Изберете шаблок, който да използвате за този Призив"
       },
       "create-step": {
-        "title": "Create",
-        "card-template-label": "Choose Card template"
+        "title": "Създай",
+        "card-template-label": "Изберете шаблон на Картата"
       }
     },
     "aspect-creation": {
@@ -532,10 +547,10 @@
         "unique-name-validation-text": "${path} е вече използван в друг аспект"
       },
       "create-step": {
-        "title": "Create",
-        "type": "Type",
-        "name": "Name",
-        "description": "Description",
+        "title": "Създай",
+        "type": "Тип",
+        "name": "Име",
+        "description": "Описание",
         "links": "Relevant Links",
         "explanation": "By completing this step the Card will be created and you will have the option to add visuals."
       },
@@ -1159,6 +1174,9 @@
           "header": "Организации",
           "subheader": "Лицата, които искат да създават иновации."
         },
+        "contributors-section": {
+          "title": "See who is driving Challenges on Alkemio"
+        },
         "footer": {
           "headline": "Още за Alkemio? Посетете нашия уебсайт, свържете се с нас или разгледайте нашето хранилище в Github",
           "links": {
@@ -1500,10 +1518,7 @@
     "edit": "Edit Innovation flow"
   },
   "contributors-section": {
-    "title": "Сътрудници",
-    "subheader": "Прогресът в Предизвикателствата има нужда от различни видове принос, от потребители и организации. Разгледайте информация за това кой къде допринася.",
-    "users-title": "Потребители",
-    "organizations-title": "Организации"
+    "title": "Сътрудници"
   },
   "contributions-view": {
     "no-data": "Няма {{name, lowercase}} налични"
