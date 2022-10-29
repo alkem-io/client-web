@@ -1,46 +1,50 @@
 query search($searchData: SearchInput!) {
   search(searchData: $searchData) {
+    id
     score
     terms
-    result {
-      ... on User {
-        ...UserSearchResult
-      }
-      ... on Organization {
-        ...OrganizationSearchResult
-      }
-      ... on Hub {
-        ...HubSearchResult
-      }
-      ... on Challenge {
-        ...ChallengeSearchResult
-      }
-      ... on Opportunity {
-        ...OpportunitySearchResult
-      }
+    type
+    ... on SearchResultHub {
+      ...SearchResultHub
+    }
+    ... on SearchResultChallenge {
+      ...SearchResultChallenge
+    }
+    ... on SearchResultOpportunity {
+      ...SearchResultOpportunity
+    }
+    ... on SearchResultUser {
+      ...SearchResultUser
+    }
+    ... on SearchResultOrganization {
+      ...SearchResultOrganization
     }
   }
 }
 
-fragment UserSearchResult on User {
-  id
-  nameID
-  displayName
-  profile {
-    ...ProfileSearchResult
+fragment SearchResultUser on SearchResultUser {
+  user {
+    id
+    nameID
+    displayName
+    profile {
+      ...SearchResultProfile
+    }
   }
 }
 
-fragment OrganizationSearchResult on Organization {
-  id
-  nameID
-  displayName
-  profile_: profile {
-    ...ProfileSearchResult
+fragment SearchResultOrganization on SearchResultOrganization {
+  organization {
+    id
+    nameID
+    displayName
+    profile {
+      ...SearchResultProfile
+    }
   }
 }
 
-fragment ProfileSearchResult on Profile {
+fragment SearchResultProfile on Profile {
   id
   location {
     id
@@ -56,62 +60,82 @@ fragment ProfileSearchResult on Profile {
   }
 }
 
-fragment HubSearchResult on Hub {
-  id
-  nameID
-  displayName
-  context {
+fragment SearchResultHub on SearchResultHub {
+  hub {
     id
-    tagline
-    visuals {
-      ...VisualUri
+    nameID
+    displayName
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
     }
-  }
-  tagset {
-    id
-    tags
+    tagset {
+      id
+      tags
+    }
   }
 }
 
-fragment ChallengeSearchResult on Challenge {
-  id
-  nameID
-  displayName
-  hubID
-  context {
-    id
-    tagline
-    visuals {
-      ...VisualUri
-    }
-  }
-  tagset {
-    id
-    tags
-  }
-}
-
-
-fragment OpportunitySearchResult on Opportunity {
-  id
-  nameID
-  displayName
-  context {
-    id
-    tagline
-    visuals {
-      ...VisualUri
-    }
-  }
-  tagset {
-    id
-    tags
-  }
+fragment SearchResultChallenge on SearchResultChallenge {
   challenge {
     id
     nameID
     displayName
     hubID
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+  hub {
+    id
+    nameID
+    displayName
+  }
+}
+
+fragment SearchResultOpportunity on SearchResultOpportunity {
+  opportunity {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+    challenge {
+      id
+      nameID
+      displayName
+      hubID
+    }
+  }
+  challenge {
+    id
+    nameID
+    displayName
+  }
+  hub {
+    id
+    nameID
+    displayName
   }
 }
 

@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../models/container';
-import { ChallengeExplorerSearchResultFragment } from '../../../../models/graphql-schema';
 import {
   useChallengeExplorerDataQuery,
   useChallengeExplorerPageQuery,
@@ -10,6 +9,7 @@ import {
 import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualBannerNarrow } from '../../../../common/utils/visuals.utils';
+import { SearchResultChallengeFragment } from '../../../../models/graphql-schema';
 
 export type SimpleChallenge = {
   id: string;
@@ -137,10 +137,10 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
 
   // Obtain the data of the challenges returned by the search
   const hubIDsSearch = rawSearchResults?.search.map(
-    result => (result.result as ChallengeExplorerSearchResultFragment)?.hubID
+    result => (result as SearchResultChallengeFragment)?.challenge.hubID
   );
   const challengesIDsSearch = rawSearchResults?.search.map(
-    result => (result.result as ChallengeExplorerSearchResultFragment)?.id
+    result => (result as SearchResultChallengeFragment)?.challenge.id
   );
 
   const { data: searchResultsData, loading: loadingSearchResultsData } = useChallengeExplorerDataQuery({
@@ -167,8 +167,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         tags: ch.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
         matchedTerms:
-          rawSearchResults?.search.find(r => (r.result as ChallengeExplorerSearchResultFragment)?.id === ch.id)
-            ?.terms || [],
+          rawSearchResults?.search.find(r => (r as SearchResultChallengeFragment)?.challenge.id === ch.id)?.terms || [],
       })) || []
   );
 

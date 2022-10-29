@@ -9,12 +9,14 @@ import Section, { Header as SectionHeader, SubHeader } from '../../common/compon
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import {
-  ChallengeSearchResultFragment,
-  HubSearchResultFragment,
-  OpportunitySearchResultFragment,
-  OrganizationSearchResultFragment,
   SearchQuery,
-  UserSearchResultFragment,
+  SearchResultUserFragment,
+  SearchResultOrganizationFragment,
+  SearchResultHubFragment,
+  SearchResultChallengeFragment,
+  SearchResultOpportunityFragment,
+  SearchResult,
+  SearchResultType,
 } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 import { RouterLink } from '../../common/components/core/RouterLink';
@@ -68,15 +70,14 @@ const journeyFilterConfig: FilterConfig = {
   },
 };
 
-export type SearchResultMetadataType = { score: number; terms: string[] };
-export type SearchResult<T> = T & SearchResultMetadataType;
+export type SearchResultT<T> = T & SearchResult;
 
-export type SearchResultType = SearchResult<
-  | UserSearchResultFragment
-  | OrganizationSearchResultFragment
-  | HubSearchResultFragment
-  | ChallengeSearchResultFragment
-  | OpportunitySearchResultFragment
+export type SearchResultMetaType = SearchResultT<
+  | SearchResultUserFragment
+  | SearchResultOrganizationFragment
+  | SearchResultHubFragment
+  | SearchResultChallengeFragment
+  | SearchResultOpportunityFragment
 >;
 
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
@@ -97,7 +98,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
-  const [results, setResults] = useState<SearchResultType[]>();
+  const [results, setResults] = useState<SearchResultMetaType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   // todo only the value can be used instead
   const [contributorFilterValue, setContributorFilterValue] = useState<string[]>(contributorFilterConfig.all.value);
@@ -176,9 +177,10 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [journeyResults, contributorResults] = useMemo(
     () => [
       results?.filter(
-        ({ __typename }) => __typename === 'Hub' || __typename === 'Challenge' || __typename === 'Opportunity'
+        ({ type }) =>
+          type === SearchResultType.Hub || type === SearchResultType.Challenge || type === SearchResultType.Opportunity
       ),
-      results?.filter(({ __typename }) => __typename === 'User' || __typename === 'Organization'),
+      results?.filter(({ type }) => type === SearchResultType.User || type === SearchResultType.Organization),
     ],
     [results]
   );
@@ -227,14 +229,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
 export { SearchPage };
 
-const toResultType = (query?: SearchQuery): SearchResultType[] => {
+const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
   if (!query) {
     return [];
   }
 
   return (query.search || [])
-    .map<SearchResultType>(
-      ({ result, score, terms }) => ({ ...result, score: score || 0, terms: terms || [] } as SearchResultType),
+    .map<SearchResultMetaType>(
+      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
       []
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
