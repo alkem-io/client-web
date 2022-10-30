@@ -4,10 +4,7 @@ import { buildUserProfileUrl } from './urlBuilders';
 export const buildAuthorFromUser = (user: any): Author => {
   const avatarURL = user.profile.avatar.uri;
   const url = buildUserProfileUrl(user.nameID);
-  const tags: string[] = [];
-  for (const tagset of user.profile.tagsets) {
-    tags.push(tagset.tags);
-  }
+  const tags = user.profile.tagsets.map(tagset => tagset.tags);
   const result: Author = {
     id: user.id,
     displayName: user.displayName,
