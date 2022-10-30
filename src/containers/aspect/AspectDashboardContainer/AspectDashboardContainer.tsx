@@ -52,8 +52,8 @@ export type AspectDashboardContainerProps = ContainerPropsWithProvided<EntityIds
 const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   hubNameId,
   aspectNameId,
-  challengeNameId = '',
-  opportunityNameId = '',
+  challengeNameId,
+  opportunityNameId,
   calloutNameId = '',
   ...rendered
 }) => {
@@ -72,6 +72,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     variables: { hubNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
     x => x.nameID === aspectNameId
@@ -83,9 +84,10 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: challengeError,
     subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId, calloutNameId },
+    variables: { hubNameId, challengeNameId: challengeNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const challengeAspect = getCardCallout(
     challengeData?.hub?.challenge?.collaboration?.callouts,
@@ -98,9 +100,10 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: opportunityError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId, calloutNameId },
+    variables: { hubNameId, opportunityNameId: opportunityNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const opportunityAspect = getCardCallout(
     opportunityData?.hub?.opportunity?.collaboration?.callouts,

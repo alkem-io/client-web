@@ -59,8 +59,12 @@ export interface ActivityLogComponentProps {
   journeyLocation: JourneyLocation;
 }
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = [], journeyLocation }) => {
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation }) => {
   const display = useMemo(() => {
+    if (!activities) {
+      return null;
+    }
+
     return (
       <>
         {activities.map(activity => (
