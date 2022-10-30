@@ -1280,7 +1280,6 @@ export type NVPFieldPolicy = {
 };
 export type OpportunityKeySpecifier = (
   | 'authorization'
-  | 'challenge'
   | 'collaboration'
   | 'community'
   | 'context'
@@ -1289,7 +1288,6 @@ export type OpportunityKeySpecifier = (
   | 'lifecycle'
   | 'metrics'
   | 'nameID'
-  | 'parentId'
   | 'parentNameID'
   | 'projects'
   | 'tagset'
@@ -1297,7 +1295,6 @@ export type OpportunityKeySpecifier = (
 )[];
 export type OpportunityFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1306,7 +1303,6 @@ export type OpportunityFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentId?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;

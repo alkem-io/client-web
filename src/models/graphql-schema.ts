@@ -2523,8 +2523,6 @@ export type Opportunity = {
   __typename?: 'Opportunity';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The parent Challenge of the Opportunity */
-  challenge?: Maybe<Challenge>;
   /** The collaboration for the Opportunity. */
   collaboration?: Maybe<Collaboration>;
   /** The community for the Opportunity. */
@@ -2541,8 +2539,6 @@ export type Opportunity = {
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The parent entity (challenge) ID. */
-  parentId?: Maybe<Scalars['String']>;
   /** The parent entity name (challenge) ID. */
   parentNameID?: Maybe<Scalars['String']>;
   /** The set of projects within the context of this Opportunity */
@@ -4484,7 +4480,6 @@ export type OpportunityContributionDetailsQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      parentId?: string | undefined;
       parentNameID?: string | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       context?:
@@ -8335,7 +8330,13 @@ export type ChallengeExplorerSearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
-        hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+        hub: {
+          __typename?: 'Hub';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+        };
       }
     | { __typename?: 'SearchResultHub'; id: string; type: SearchResultType; terms: Array<string> }
     | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }
@@ -12307,12 +12308,7 @@ export type OpportunityNameIdQuery = {
     __typename?: 'Hub';
     id: string;
     nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
-    };
+    opportunity: { __typename?: 'Opportunity'; id: string; nameID: string; parentNameID?: string | undefined };
   };
 };
 
@@ -16551,7 +16547,13 @@ export type SearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
-        hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+        hub: {
+          __typename?: 'Hub';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+        };
       }
     | {
         __typename?: 'SearchResultHub';
@@ -16595,9 +16597,6 @@ export type SearchQuery = {
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-          challenge?:
-            | { __typename?: 'Challenge'; id: string; nameID: string; displayName: string; hubID: string }
-            | undefined;
         };
         challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
         hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
@@ -16728,7 +16727,13 @@ export type SearchResultChallengeFragment = {
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   };
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+  };
 };
 
 export type SearchResultOpportunityFragment = {
@@ -16747,9 +16752,6 @@ export type SearchResultOpportunityFragment = {
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    challenge?:
-      | { __typename?: 'Challenge'; id: string; nameID: string; displayName: string; hubID: string }
-      | undefined;
   };
   challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
   hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };

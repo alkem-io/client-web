@@ -101,6 +101,9 @@ fragment SearchResultChallenge on SearchResultChallenge {
     id
     nameID
     displayName
+    context {
+      tagline
+    }
   }
 }
 
@@ -119,12 +122,6 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
     tagset {
       id
       tags
-    }
-    challenge {
-      id
-      nameID
-      displayName
-      hubID
     }
   }
   challenge {

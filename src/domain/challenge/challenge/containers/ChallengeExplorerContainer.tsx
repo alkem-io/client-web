@@ -10,6 +10,7 @@ import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualBannerNarrow } from '../../../../common/utils/visuals.utils';
 import { SearchResultChallengeFragment } from '../../../../models/graphql-schema';
+import { SearchResultT } from '../../../../pages/Search/SearchPage';
 
 export type SimpleChallenge = {
   id: string;
@@ -135,26 +136,12 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     skip: !searchTerms.length,
   });
 
-  // Obtain the data of the challenges returned by the search
-  const hubIDsSearch = rawSearchResults?.search.map(
-    result => (result as SearchResultChallengeFragment)?.challenge.hubID
-  );
-  const challengesIDsSearch = rawSearchResults?.search.map(
-    result => (result as SearchResultChallengeFragment)?.challenge.id
-  );
-
-  const { data: searchResultsData, loading: loadingSearchResultsData } = useChallengeExplorerDataQuery({
-    onError: handleError,
-    variables: {
-      hubIDs: hubIDsSearch,
-      challengeIDs: challengesIDsSearch,
-    },
-    skip: !hubIDsSearch?.length || !challengesIDsSearch?.length,
-  });
-
-  const searchResults: SimpleChallengeWithSearchTerms[] | undefined = searchResultsData?.hubs?.flatMap(
-    hub =>
-      hub.challenges?.map<SimpleChallengeWithSearchTerms>(ch => ({
+  const searchResults: SimpleChallengeWithSearchTerms[] | undefined =
+    rawSearchResults?.search?.flatMap(result => {
+      const entry = result as SearchResultT<SearchResultChallengeFragment>;
+      const ch = entry.challenge;
+      const hub = entry.hub;
+      return {
         id: ch.id,
         nameID: ch.nameID,
         hubId: hub.id,
@@ -166,10 +153,9 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         tagline: ch.context?.tagline || '',
         tags: ch.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
-        matchedTerms:
-          rawSearchResults?.search.find(r => (r as SearchResultChallengeFragment)?.challenge.id === ch.id)?.terms || [],
-      })) || []
-  );
+        matchedTerms: entry.terms,
+      };
+    }) || [];
 
   const provided = {
     isAuthenticated,
@@ -180,7 +166,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   };
 
   const loading = loadingUser || loadingUserData || loadingChallengeData;
-  const loadingSearch = loadingSearchResults || loadingSearchResultsData;
+  const loadingSearch = loadingSearchResults;
 
   return <>{children(provided, { loading, loadingSearch, error }, {})}</>;
 };

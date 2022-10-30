@@ -2058,6 +2058,9 @@ export const SearchResultChallengeFragmentDoc = gql`
       id
       nameID
       displayName
+      context {
+        tagline
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -2078,12 +2081,6 @@ export const SearchResultOpportunityFragmentDoc = gql`
       tagset {
         id
         tags
-      }
-      challenge {
-        id
-        nameID
-        displayName
-        hubID
       }
     }
     challenge {
@@ -3527,7 +3524,6 @@ export const OpportunityContributionDetailsDocument = gql`
         id
         nameID
         displayName
-        parentId
         parentNameID
         tagset {
           id
@@ -13867,10 +13863,7 @@ export const OpportunityNameIdDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         nameID
-        challenge {
-          id
-          nameID
-        }
+        parentNameID
       }
     }
   }
