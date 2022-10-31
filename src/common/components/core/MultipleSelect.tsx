@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 
 import WrapperTypography from './WrapperTypography';
 import { uniqBy } from 'lodash';
@@ -13,13 +13,6 @@ const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
     position: 'relative',
     marginTop: -3,
-  },
-  label: {
-    width: '100%',
-    position: 'relative',
-    fontSize: '0.9vw',
-    whiteSpace: 'nowrap',
-    color: theme.palette.neutral.main,
   },
   selectContainer: {
     position: 'relative',
@@ -74,11 +67,12 @@ const useMultipleSelectStyles = makeStyles(theme => ({
     display: 'flex',
     width: 'fit-content',
     alignItems: 'center',
-    margin: '0 10px 0 0',
+    margin: '1px 10px 1px 0',
     borderRadius: theme.spacing(5),
     flexShrink: 0,
     overflowX: 'auto',
     transition: 'background-color 0.25s',
+    whiteSpace: 'nowrap',
     textTransform: 'uppercase',
     '& > span': {
       fontSize: 14,
@@ -105,9 +99,10 @@ const useMultipleSelectStyles = makeStyles(theme => ({
   flexCenterContainer: {
     display: 'flex',
     alignItems: 'center',
+    flex: 1,
   },
   searchButton: {
-    padding: '10px',
+    flex: 0,
   },
   suggestionsTitle: {
     marginTop: theme.spacing(3),
@@ -118,6 +113,7 @@ const useMultipleSelectStyles = makeStyles(theme => ({
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
+    justifyContent: 'space-around',
   },
   suggestionElement: {
     display: 'flex',
@@ -143,7 +139,10 @@ const useMultipleSelectStyles = makeStyles(theme => ({
     },
   },
   input: {
-    width: 320,
+    width: '90%',
+    [theme.breakpoints.up('md')]: {
+      width: 320,
+    },
     border: 'none',
     height: 35,
     padding: '0 15px',
@@ -178,7 +177,6 @@ interface MultipleSelectProps {
   allowUnknownValues?: boolean;
   defaultValue?: Array<MultiSelectElement>;
   disabled?: boolean;
-  label?: string;
   onTop?: boolean;
   height?: number;
   minLength?: number;
@@ -190,6 +188,35 @@ const filterEmptyValues = (values: MultiSelectElement[] | undefined) => {
       ?.map(item => ({ name: item?.name?.trim(), id: item?.id }))
       .filter(item => item && item.name && item.name.length > 0) || [];
   return uniqBy(filtered, item => item.name);
+};
+
+interface SelectedElementsProps {
+  selectedElements: MultiSelectElement[];
+  disabled?: boolean;
+  handleRemove: (e: React.MouseEvent, selectedElement: MultiSelectElement) => void;
+  sx: BoxProps['sx'];
+}
+
+const SelectedElements: FC<SelectedElementsProps> = ({ selectedElements, sx, disabled, handleRemove }) => {
+  const styles = useMultipleSelectStyles();
+  return (
+    <Box sx={{ flex: 0, ...sx }}>
+      <Box className={styles.elements} sx={{ flexWrap: { xs: 'wrap', lg: 'nowrap' } }}>
+        {selectedElements.map((selectedEl, index) => (
+          <div key={`${selectedEl.name}${index}`} className={clsx(styles.selectedElement, disabled && styles.disabled)}>
+            <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
+              {selectedEl.name}
+            </WrapperTypography>
+            {!disabled && (
+              <div className={styles.removeIcon} onClick={e => handleRemove(e, selectedEl)}>
+                <WrapperTypography weight={'boldLight'}>X</WrapperTypography>
+              </div>
+            )}
+          </div>
+        ))}
+      </Box>
+    </Box>
+  );
 };
 
 const MultipleSelect: FC<MultipleSelectProps> = ({
@@ -320,29 +347,22 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
               />
             </Tooltip>
           </section>
-          <Box sx={{ display: 'flex' }}>
-            <div className={styles.elements}>
-              {selectedElements.map((selectedEl, index) => (
-                <div
-                  key={`${selectedEl.name}${index}`}
-                  className={clsx(styles.selectedElement, disabled && styles.disabled)}
-                >
-                  <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
-                    {selectedEl.name}
-                  </WrapperTypography>
-                  {!disabled && (
-                    <div className={styles.removeIcon} onClick={e => handleRemove(e, selectedEl)}>
-                      <WrapperTypography weight={'boldLight'}>X</WrapperTypography>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <IconButton onClick={() => handleSearch()} disabled={isDisabled}>
-              <SearchIcon color="primary" />
-            </IconButton>
-          </Box>
+          <SelectedElements
+            selectedElements={selectedElements}
+            disabled={disabled}
+            handleRemove={handleRemove}
+            sx={{ display: { xs: 'none', lg: 'block' } }}
+          />
+          <IconButton onClick={() => handleSearch()} disabled={isDisabled} className={styles.searchButton}>
+            <SearchIcon color="primary" />
+          </IconButton>
         </div>
+        <SelectedElements
+          selectedElements={selectedElements}
+          disabled={disabled}
+          handleRemove={handleRemove}
+          sx={{ marginTop: theme => theme.spacing(2), display: { xs: 'block', lg: 'none' } }}
+        />
         <WrapperTypography color={'neutralMedium'} className={styles.suggestionsTitle}>
           {isNoMatches ? 'no suggestions' : 'search suggestions'}
         </WrapperTypography>
@@ -357,6 +377,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
               </div>
             );
           })}
+          <div style={{ flex: 1 }} />
         </div>
       </div>
     </>
