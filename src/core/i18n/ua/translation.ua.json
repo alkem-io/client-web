@@ -7,7 +7,7 @@
   },
   "cookie": {
     "consent": "Цей сайт використовує cookie файли для належної роботи, відповідно до нашої політики конфіденційності",
-    "settings": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
+    "settings": "Відвідавши сайт, інформація може зберігатися у вашому браузері у вигляді файлів cookie. Ця інформація може бути про вас, ваші налаштування і ваш пристрій. Здебільшого, ця інформація використовується для того, щоб цей веб-сайт працював якомога краще. Деякі веб-сайти використовують її для маркетингових цілей. Оскільки Alkemio не дозволяє жодної реклами на своєму веб-сайті, ми виділяємо лише два типи файлів cookie.",
     "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
     "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience."
   },
@@ -76,6 +76,8 @@
     }
   },
   "common": {
+    "permission": "Permission",
+    "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
     "avatar": "Аватар",
     "inspiration": "Inspiration",
@@ -304,7 +306,8 @@
   "callout": {
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted."
+    "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
+    "state-permission": "Allow members to submit new [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
   },
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
@@ -471,12 +474,24 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new Callout",
-        "canvas-created": "added a new Canvas",
-        "card-comment-created": "commented on a Card",
-        "card-created": "added a new Card",
-        "discussion-comment-created": "commented on a Discussion",
-        "member-joined": "joined"
+        "callout-published": "published a new $t(common.callout)",
+        "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
+        "card-comment-created": "commented on $t(common.aspect) '{{cardDisplayName}}'",
+        "card-created": "added a $t(common.aspect) to '{{calloutDisplayName}}'",
+        "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
+        "member-joined": "new member",
+        "challenge-created": "created a new $t(common.challenge)",
+        "opportunity-created": "created a new $t(common.opportunity)"
+      },
+      "activity-description": {
+        "callout-published": "[{{type}}] - {{displayName}}",
+        "canvas-created": "{{displayName}}",
+        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
+        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "discussion-comment-created": "{{comment}}",
+        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "challenge-created": "{{displayName}}",
+        "opportunity-created": "{{displayName}}"
       }
     },
     "lifecycle-visualizer": {
@@ -1159,6 +1174,9 @@
           "header": "Організації",
           "subheader": "Угрупування, що бажають вносити іновації."
         },
+        "contributors-section": {
+          "title": "See who is driving Challenges on Alkemio"
+        },
         "footer": {
           "headline": "У цьому розділі показано центри, членом яких ви є. Докладніше про Alkemio? Відвідайте наш веб-сайт, зв’яжіться з нами або подивіться на наше сховище Github",
           "links": {
@@ -1500,10 +1518,7 @@
     "edit": "Edit Innovation flow"
   },
   "contributors-section": {
-    "title": "Контрибʼютори",
-    "subheader": "Для прогресу у Випробуванні необхідно багато різних внесків, від користувачів та Організацій. Дізнайтесь, хто вже вклав свій внесок!",
-    "users-title": "Користувачі",
-    "organizations-title": "Організації"
+    "title": "Контрибʼютори"
   },
   "contributions-view": {
     "no-data": "{{name, lowercase}} недоступно"

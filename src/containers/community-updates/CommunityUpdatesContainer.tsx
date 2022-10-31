@@ -8,16 +8,16 @@ import {
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
 import {
-  Message,
-  Community,
-  Hub,
   CommunicationUpdateMessageReceivedSubscription,
-  Updates,
+  Community,
+  CommunityUpdatesQuery,
+  Hub,
+  Message,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
-import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
 import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
+import { buildAuthorFromUser } from '../../common/utils/buildAuthorFromUser';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -71,7 +71,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       const update = await sendUpdate({
         variables: { msgData: { message, updatesID: updatesId } },
       });
-      return update.data?.sendUpdate;
+      return update.data?.sendUpdate as Message;
     },
     [sendUpdate, updatesId]
   );
@@ -93,10 +93,14 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     throw new Error('Not implemented');
   };
 
-  const messages = data?.hub.community?.communication?.updates?.messages || EMPTY;
+  const messages = (data?.hub.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
-  const { authors = EMPTY } = useAuthorsDetails(messages.map(m => m.sender));
-
+  const authors: Author[] = [];
+  for (const message of messages) {
+    if (message.sender) {
+      authors.push(buildAuthorFromUser(message.sender));
+    }
+  }
   return (
     <>
       {children(
@@ -113,13 +117,14 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 };
 
 const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
-  Updates,
+  NonNullable<NonNullable<CommunityUpdatesQuery['hub']['community']>['communication']>['updates'],
   CommunicationUpdateMessageReceivedSubscription
 >({
   subscriptionDocument: CommunicationUpdateMessageReceivedDocument,
   updateSubEntity: (updates, subscriptionData) => {
     if (updates?.id === subscriptionData.communicationUpdateMessageReceived.updatesID) {
-      updates?.messages?.push(subscriptionData.communicationUpdateMessageReceived.message);
+      const { message } = subscriptionData.communicationUpdateMessageReceived;
+      updates?.messages?.push(message);
     }
   },
 });

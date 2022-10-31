@@ -3,7 +3,6 @@ import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
   MessageDetailsFragmentDoc,
-  useAspectCreatorQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
@@ -12,7 +11,6 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Message } from '../../../domain/shared/components/Comments/models/message';
-import { useAuthorsDetails } from '../../../domain/communication/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -21,6 +19,7 @@ import {
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/collaboration/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
 import { buildAspectUrl } from '../../../common/utils/urlBuilders';
+import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -43,7 +42,6 @@ interface Provided {
   handlePostComment: (commentsId: string, message: string) => void;
   handleDeleteComment: (commentsId: string, messageId: string) => void;
   loading: boolean;
-  loadingCreator: boolean;
   error?: ApolloError;
   deletingComment?: boolean;
   postingComment?: boolean;
@@ -54,8 +52,8 @@ export type AspectDashboardContainerProps = ContainerPropsWithProvided<EntityIds
 const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   hubNameId,
   aspectNameId,
-  challengeNameId = '',
-  opportunityNameId = '',
+  challengeNameId,
+  opportunityNameId,
   calloutNameId = '',
   ...rendered
 }) => {
@@ -74,6 +72,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     variables: { hubNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
     x => x.nameID === aspectNameId
@@ -85,9 +84,10 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: challengeError,
     subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId, calloutNameId },
+    variables: { hubNameId, challengeNameId: challengeNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const challengeAspect = getCardCallout(
     challengeData?.hub?.challenge?.collaboration?.callouts,
@@ -100,9 +100,10 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: opportunityError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId, calloutNameId },
+    variables: { hubNameId, opportunityNameId: opportunityNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
+    fetchPolicy: 'cache-and-network',
   });
   const opportunityAspect = getCardCallout(
     opportunityData?.hub?.opportunity?.collaboration?.callouts,
@@ -144,28 +145,22 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     opportunityCommentsSubscription,
   ].some(subscription => subscription.enabled);
 
-  const { data: creatorData, loading: loadingCreator } = useAspectCreatorQuery({
-    variables: { userId: aspect?.createdBy ?? '' },
-    skip: !aspect,
-  });
-  const creator = creatorData?.user;
+  const creator = aspect?.createdBy;
   const creatorAvatar = creator?.profile?.avatar?.uri;
   const creatorName = creator?.displayName;
   const createdDate = aspect?.createdDate.toString();
 
   const commentsId = aspect?.comments?.id;
   const _messages = useMemo(() => aspect?.comments?.messages ?? [], [aspect?.comments?.messages]);
-  const senders = _messages.map(x => x.sender);
-  const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,
         body: x.message,
-        author: getAuthor(x.sender),
+        author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
       })),
-    [_messages, getAuthor]
+    [_messages]
   );
 
   const isAuthor = useCallback(
@@ -263,7 +258,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     handlePostComment,
     handleDeleteComment,
     loading,
-    loadingCreator,
     error,
     deletingComment,
     postingComment,

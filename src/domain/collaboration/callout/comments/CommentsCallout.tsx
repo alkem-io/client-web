@@ -9,10 +9,10 @@ import {
   usePostCommentInCalloutMutation,
   useRemoveCommentFromCalloutMutation,
 } from '../../../../hooks/generated/graphql';
-import { useAuthorsDetails } from '../../../communication/communication/useAuthorsDetails';
 import { Message } from '../../../shared/components/Comments/models/message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../models/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
+import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -39,17 +39,15 @@ const CommentsCallout = ({
 
   const commentsId = callout.comments.id;
   const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-  const senders = _messages.map(x => x.sender);
-  const { getAuthor } = useAuthorsDetails(senders);
   const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,
         body: x.message,
-        author: getAuthor(x.sender),
+        author: x?.sender.id ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
       })),
-    [_messages, getAuthor]
+    [_messages]
   );
 
   const isAuthor = useCallback(
