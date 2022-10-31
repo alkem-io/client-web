@@ -16,7 +16,8 @@ const useCalloutMessageReceivedSubscriptionOnExplorePage = calloutIDs =>
     getSubscriptionVariables: () => ({ calloutIDs }),
     updateSubEntity: (subEntity, subscriptionData) => {
       if (subEntity) {
-        subEntity.comments?.messages?.push(subscriptionData.calloutMessageReceived.message);
+        const message = subscriptionData.calloutMessageReceived.message;
+        subEntity.comments?.messages?.push(message);
       }
     },
   });
