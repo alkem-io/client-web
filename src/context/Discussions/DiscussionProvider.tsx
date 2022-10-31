@@ -84,7 +84,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const senders = useMemo(() => {
     if (!discussionData) return [];
-    return uniq([...(discussionData.messages?.map(m => m.sender) || []), discussionData.createdBy]);
+    return uniq([...(discussionData.messages?.map(m => m.sender.id) || []), discussionData.createdBy]);
   }, [discussionData]);
 
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
@@ -106,7 +106,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       comments: sortedMessages.map<Comment>(m => ({
         id: m.id,
         body: m.message,
-        author: getAuthor(m.sender),
+        author: getAuthor(m.sender.id),
         createdAt: new Date(m.timestamp),
       })),
     } as Discussion);

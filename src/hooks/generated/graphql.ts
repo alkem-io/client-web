@@ -82,7 +82,26 @@ export const VisualUriFragmentDoc = gql`
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
-    sender
+    sender {
+      id
+      nameID
+      firstName
+      displayName
+      lastName
+      profile {
+        avatar {
+          uri
+        }
+        tagsets {
+          name
+          tags
+        }
+        location {
+          city
+          country
+        }
+      }
+    }
     message
     timestamp
   }
@@ -94,7 +113,20 @@ export const AspectDashboardFragmentDoc = gql`
     type
     displayName
     description
-    createdBy
+    createdBy {
+      id
+      displayName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          tags
+        }
+      }
+    }
     createdDate
     banner {
       ...VisualUri
@@ -3903,65 +3935,6 @@ export type OpportunityAspectQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityAspectQuery(variables: SchemaTypes.OpportunityAspectQueryVariables) {
   return { query: OpportunityAspectDocument, variables: variables };
-}
-export const AspectCreatorDocument = gql`
-  query AspectCreator($userId: UUID_NAMEID_EMAIL!) {
-    user(ID: $userId) {
-      id
-      displayName
-      profile {
-        id
-        avatar {
-          id
-          uri
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useAspectCreatorQuery__
- *
- * To run a query within a React component, call `useAspectCreatorQuery` and pass it any options that fit your needs.
- * When your component renders, `useAspectCreatorQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAspectCreatorQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useAspectCreatorQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>(
-    AspectCreatorDocument,
-    options
-  );
-}
-export function useAspectCreatorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>(
-    AspectCreatorDocument,
-    options
-  );
-}
-export type AspectCreatorQueryHookResult = ReturnType<typeof useAspectCreatorQuery>;
-export type AspectCreatorLazyQueryHookResult = ReturnType<typeof useAspectCreatorLazyQuery>;
-export type AspectCreatorQueryResult = Apollo.QueryResult<
-  SchemaTypes.AspectCreatorQuery,
-  SchemaTypes.AspectCreatorQueryVariables
->;
-export function refetchAspectCreatorQuery(variables: SchemaTypes.AspectCreatorQueryVariables) {
-  return { query: AspectCreatorDocument, variables: variables };
 }
 export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
@@ -11455,7 +11428,9 @@ export const PostCommentInAspectDocument = gql`
     sendComment(messageData: $messageData) {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }
@@ -11703,13 +11678,11 @@ export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
       message {
-        id
-        message
-        sender
-        timestamp
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -12505,7 +12478,9 @@ export const PostCommentInCalloutDocument = gql`
     sendMessageOnCallout(data: $data) {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }
