@@ -67,3 +67,89 @@ query CanvasTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
     }
   }
 }
+
+query HubCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    collaboration {
+      id
+      callouts(IDs: [$calloutId]) {
+        id
+        cardTemplate {
+          id
+          type
+          defaultDescription
+          info {
+            tagset {
+              id
+              tags
+            }
+            visual {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}
+query ChallengeCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutId]) {
+          id
+          cardTemplate {
+            id
+            type
+            defaultDescription
+            info {
+              tagset {
+                id
+                tags
+              }
+              visual {
+                id
+                uri
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+query OpportunityCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutId]) {
+          id
+          cardTemplate {
+            id
+            type
+            defaultDescription
+            info {
+              tagset {
+                id
+                tags
+              }
+              visual {
+                id
+                uri
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -107,11 +107,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
-        {onClose && (
-          <Button onClick={onClose} variant="outlined">
-            {t('buttons.cancel')}
-          </Button>
-        )}
+        {onClose && <Button onClick={onClose}>{t('buttons.cancel')}</Button>}
 
         <LoadingButton
           loading={isCreating}

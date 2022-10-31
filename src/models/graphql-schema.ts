@@ -562,7 +562,7 @@ export type Callout = {
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
   /** The Aspect template associated with this Card Callout. */
-  cardTemplate?: Maybe<Array<AspectTemplate>>;
+  cardTemplate?: Maybe<AspectTemplate>;
   /** The Comments object for this Callout. */
   comments?: Maybe<Comments>;
   /** The description of this Callout */
@@ -1083,6 +1083,7 @@ export type CreateAspectOnCalloutInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateAspectTemplateInput = {
@@ -10769,6 +10770,130 @@ export type CanvasTemplateValueQuery = {
           canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
         }
       | undefined;
+  };
+};
+
+export type HubCalloutCardTemplateQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCalloutCardTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                cardTemplate?:
+                  | {
+                      __typename?: 'AspectTemplate';
+                      id: string;
+                      type: string;
+                      defaultDescription: string;
+                      info: {
+                        __typename?: 'TemplateInfo';
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeCalloutCardTemplateQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCalloutCardTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityCalloutCardTemplateQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCalloutCardTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 
