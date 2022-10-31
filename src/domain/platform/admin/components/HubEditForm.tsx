@@ -7,7 +7,7 @@ import { Context, Reference, Tagset } from '../../../../models/graphql-schema';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
-import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
+import FormikAutocomplete from '../../../../common/components/composite/forms/FormikAutocomplete';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
@@ -127,9 +127,9 @@ const HubEditForm: FC<Props> = ({
           <Grid container spacing={2}>
             <NameSegment disabled={isEdit} required={!isEdit} />
             <Grid item xs={12}>
-              <FormikSelect
+              <FormikAutocomplete
                 title={t('components.editHubForm.host.title')}
-                name={'host'}
+                name="host"
                 values={organizations}
                 required
                 placeholder={t('components.editHubForm.host.title')}
