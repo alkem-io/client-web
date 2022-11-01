@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ComponentType, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   BoxProps,
@@ -16,14 +16,24 @@ import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useField } from 'formik';
-import { makeStyles } from '@mui/styles';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 import { markdownToDraft, draftToMarkdown } from './tools/markdown-draft-js';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';
+import { ToolbarConfiguration, ToolbarTranslationKeys } from './FormikMarkdownField/toolbar.configuration';
 
-const useStyle = makeStyles(theme => ({
-  toolbar: {
+const EditorWrapper = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  // Editor styles:
+  '& .rdw-editor-main': {
+    padding: theme.spacing(0, 2),
+    minHeight: theme.spacing(30),
+    '& > div': {
+      marginTop: theme.spacing(-2),
+    },
+  },
+  // Toolbar styles:
+  '& .rdw-editor-toolbar': {
     width: '100%',
     padding: theme.spacing(2, 0.5, 1, 0.5),
     '& .rdw-option-wrapper': {
@@ -33,29 +43,21 @@ const useStyle = makeStyles(theme => ({
     '& .rdw-dropdown-wrapper': {
       height: theme.spacing(4),
     },
-    // Links target not supported by Markdown
-    '& .rdw-link-modal-target-option': {
-      display: 'none',
-    },
-    // Image size is not supported by Markdown
-    '& .rdw-image-modal-size': {
-      display: 'none',
-    },
     '& .rdw-emoji-modal': {
-      width: 290,
+      width: 280,
     },
     '& .rdw-emoji-icon': {
-      fontSize: '24px',
+      fontSize: 24,
       margin: 4,
     },
-  },
-  editor: {
-    width: '100%',
-    maxWidth: '100%',
-    padding: theme.spacing(0, 2),
-    minHeight: theme.spacing(25),
-    '& > div': {
-      marginTop: theme.spacing(-2),
+    // Unsupported by Markdown:
+    '& .rdw-link-modal-target-option': {
+      // Links target
+      display: 'none',
+    },
+    '& .rdw-image-modal-size': {
+      // Image size
+      display: 'none',
     },
   },
 }));
@@ -87,15 +89,17 @@ const FieldContainer = styled(({ isFocused, ...rest }: FieldContainerProps) => <
   }
 `;
 
+// Helper overlays to show that the editor is disabled or loading
 const DisabledOverlay = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: 0,
   width: '100%',
   height: '100%',
-  background: hexToRGBA(theme.palette.grey[400], 0.2),
+  background: hexToRGBA(theme.palette.grey[400], 0.2), // TODO: get this gray from the Skeleton
   zIndex: 1,
 }));
+
 const LoadingOverlay = styled(Skeleton)(() => ({
   position: 'absolute',
   top: 0,
@@ -105,84 +109,6 @@ const LoadingOverlay = styled(Skeleton)(() => ({
   transform: 'none',
   zIndex: 1,
 }));
-
-// Image uploading
-// TODO: Handle image upload
-const handleImageUpload = () => {
-  let promise = new Promise(function (resolve, _reject) {
-    setTimeout(() => {
-      resolve({ data: { link: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png' } });
-    }, 1000);
-  });
-  return promise;
-};
-
-// Editor Toolbar:
-// https://jpuri.github.io/react-draft-wysiwyg/#/docs
-const toolbar = {
-  options: ['inline', 'blockType', 'list', 'link', 'emoji', 'image'],
-  blockType: {
-    options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Blockquote', 'Code'],
-  },
-  inline: {
-    // Markdown doesn't support 'underline', strikethrough removed
-    options: ['bold', 'italic'],
-  },
-  list: {
-    options: ['unordered', 'ordered'],
-  },
-  link: {
-    showOpenOptionOnHover: true,
-    options: ['link'],
-  },
-  emoji: {},
-  image: {
-    urlEnabled: true,
-    uploadEnabled: true,
-    alignmentEnabled: false,
-    uploadCallback: handleImageUpload,
-    previewImage: true,
-    inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
-    alt: { present: false, mandatory: false },
-    defaultSize: false,
-  },
-};
-
-const toolbarTranslationKeys = [
-  'blocktype.h1',
-  'blocktype.h2',
-  'blocktype.h3',
-  'blocktype.h4',
-  'blocktype.h5',
-  'blocktype.h6',
-  'blocktype.blockquote',
-  'blocktype.code',
-  'blocktype.blocktype',
-  'blocktype.normal',
-  'emoji.emoji',
-  'history.history',
-  'history.undo',
-  'history.redo',
-  'image.image',
-  'image.fileUpload',
-  'image.byURL',
-  'image.dropFileText',
-  'inline.bold',
-  'inline.italic',
-  'inline.strikethrough',
-  'inline.monospace',
-  'link.linkTitle',
-  'link.linkTarget',
-  'link.linkTargetOption',
-  'link.link',
-  'link.unlink',
-  'list.list',
-  'list.unordered',
-  'list.ordered',
-  'list.indent',
-  'list.outdent',
-  'remove.remove',
-] as const;
 
 interface MarkdownFieldProps extends InputProps {
   title?: string;
@@ -212,7 +138,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
   const { t, i18n } = useTranslation();
-  const styles = useStyle();
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
   const editorRef = useRef<HTMLElement>();
@@ -235,6 +160,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const [editorState, setEditorState] = useState(() => {
     return EditorState.createWithContent(convertFromRaw(markdownToDraft(field.value)));
   });
+  const [textLength, setTextLength] = useState(0);
 
   useEffect(() => {
     setEditorState(EditorState.createWithContent(convertFromRaw(markdownToDraft(meta.initialValue))));
@@ -246,12 +172,16 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     helper.setValue(currentMd);
   };
 
+  useEffect(() => {
+    setTextLength(editorState.getCurrentContent().getPlainText().length);
+  }, [editorState]);
+
   // Toolbar translations:
   // See https://jpuri.github.io/react-draft-wysiwyg/#/docs
   // And https://github.com/jpuri/react-draft-wysiwyg/blob/master/src/i18n/en.js
   const toolbarTranslations = useMemo(() => {
     const initialValue = {};
-    const toolbarTranslated = toolbarTranslationKeys.reduce((obj, item) => {
+    const toolbarTranslated = ToolbarTranslationKeys.reduce((obj, item) => {
       return {
         ...obj,
         [`components.controls.${item}`]: t(`common.wysiwyg-editor.toolbar.${item}` as const),
@@ -283,6 +213,20 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     //field.onBlur(evt);
   };
 
+  // Image Upload
+  const handleImageUpload = useCallback(() => {
+    let promise = new Promise(function (resolve, _reject) {
+      setTimeout(() => {
+        resolve({
+          data: { link: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png' },
+        });
+      }, 1000);
+    });
+    return promise;
+  }, []);
+  const toolbar = ToolbarConfiguration;
+  toolbar.image.uploadCallback = handleImageUpload;
+
   return (
     <FormGroup>
       <FormControl required={required} disabled={disabled} variant="outlined" fullWidth>
@@ -292,27 +236,28 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
               {title}
             </InputLabelComponent>
           )}
-          <Editor
-            wrapperId={`markdown-${name}`}
-            editorRef={ref => (editorRef.current = ref as HTMLElement)}
-            editorState={editorState}
-            onEditorStateChange={onEditorStateChange}
-            toolbarClassName={styles.toolbar}
-            editorClassName={clsx('form-control', styles.editor, validClass, invalidClass)}
-            placeholder={!title ? placeholder : undefined}
-            readOnly={readOnly || disabled}
-            onBlur={handleOnBlur}
-            onFocus={handleOnFocus}
-            toolbar={toolbar}
-            localization={{
-              translations: toolbarTranslations,
-            }}
-          />
-          {disabled && <DisabledOverlay />}
-          {loading && <LoadingOverlay />}
+          <EditorWrapper>
+            <Editor
+              wrapperId={`markdown-${name}`}
+              editorRef={ref => (editorRef.current = ref as HTMLElement)}
+              editorState={editorState}
+              onEditorStateChange={onEditorStateChange}
+              editorClassName={clsx('form-control', validClass, invalidClass)}
+              placeholder={!title ? placeholder : undefined}
+              readOnly={readOnly || disabled}
+              onBlur={handleOnBlur}
+              onFocus={handleOnFocus}
+              toolbar={toolbar}
+              localization={{
+                translations: toolbarTranslations,
+              }}
+            />
+            {disabled && <DisabledOverlay />}
+            {loading && <LoadingOverlay />}
+          </EditorWrapper>
         </FieldContainer>
       </FormControl>
-      {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
+      {withCounter && <CharacterCounter count={textLength} maxLength={maxLength} />}
       <FormHelperText sx={{ width: '95%' }} error={isError}>
         {helperText}
       </FormHelperText>
