@@ -9,7 +9,7 @@ import SectionHeader from '../../../shared/components/Section/SectionHeader';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 
-interface DashboardContributingUsersProps {
+export interface DashboardContributingUsersProps {
   headerText: string;
   users: WithId<ContributorCardProps>[] | undefined;
   usersCount: number | undefined;

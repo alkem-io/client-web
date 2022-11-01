@@ -15,6 +15,7 @@ const CommunityContributorsAccordion = ({
   usersCount,
   noOrganizationsView,
   loading,
+  usersComponent,
   ...accordionProps
 }: CommunityContributorsAccordionProps) => {
   return (
@@ -27,6 +28,7 @@ const CommunityContributorsAccordion = ({
           usersCount,
           noOrganizationsView,
           loading,
+          usersComponent,
         }}
       />
     </Accordion>
