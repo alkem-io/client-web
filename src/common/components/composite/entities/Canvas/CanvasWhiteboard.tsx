@@ -134,9 +134,8 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
               <div className="ToolIcon__label">Save to Alkemio</div>
             </button>
           </Box>
-          // eslint-disable-next-line react-hooks/exhaustive-deps
         ),
-      [data, actions.onUpdate]
+      [data, actions, styles.excalidrawAlkemioBackground]
     );
 
     // This needs to be removed in case it crashes the export window
