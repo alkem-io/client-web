@@ -9,14 +9,15 @@ import { useField } from 'formik';
 
 interface CardTemplatesChooserProps {
   name: string;
+  editMode?: boolean;
 }
 
-export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name }) => {
+export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, editMode = false }) => {
   const { templates } = useHub();
   const [field, , helpers] = useField(name);
 
   const cardTemplatesTypeList = useMemo(
-    () => templates.aspectTemplates.map(template => ({ type: template.type })),
+    () => templates.aspectTemplates.map(template => ({ type: template.type, title: template.info.title })),
     [templates.aspectTemplates]
   );
 
@@ -40,6 +41,11 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name }) =>
       <Typography sx={{ color: '#00000099' }}>
         {t('components.callout-creation.template-step.card-template-label')}
       </Typography>
+      {editMode && (
+        <Typography sx={{ color: '#00000099' }} variant="body2">
+          {t('components.callout-edit.type-edit-help-text')}
+        </Typography>
+      )}
       <Grid container spacing={4}>
         <Grid item xs={6}>
           <Box display="flex" flexDirection="column">

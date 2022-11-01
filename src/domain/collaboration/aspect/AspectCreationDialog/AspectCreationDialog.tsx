@@ -6,11 +6,7 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
 import { CreateAspectOnCalloutInput, Scalars } from '../../../../models/graphql-schema';
-import {
-  useHubCalloutCardTemplateQuery,
-  useChallengeCalloutCardTemplateQuery,
-  useOpportunityCalloutCardTemplateQuery,
-} from '../../../../hooks/generated/graphql';
+import { useCalloutCardTemplate } from '../../callout/hooks/useCalloutCardTemplate';
 
 export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
@@ -57,59 +53,12 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   const [aspect, setAspect] = useState<AspectCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
 
-  const { data: hubCalloutsCardTemplates } = useHubCalloutCardTemplateQuery({
-    variables: { hubId: hubNameId, calloutId: calloutId },
-    skip: !hubNameId || !!(challengeNameId || opportunityNameId),
+  const { cardTemplate } = useCalloutCardTemplate({
+    calloutNameId: calloutId,
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
   });
-  const { data: challengeCalloutsCardTemplates } = useChallengeCalloutCardTemplateQuery({
-    variables: { hubId: hubNameId, calloutId: calloutId, challengeNameId },
-    skip: !challengeNameId || !hubNameId,
-  });
-  const { data: opportunityCalloutsCardTemplates } = useOpportunityCalloutCardTemplateQuery({
-    variables: { hubId: hubNameId, calloutId: calloutId, opportunityNameId },
-    skip: !opportunityNameId || !hubNameId,
-  });
-
-  let cardTemplate: CardCreationCardTemplate | undefined;
-  if (hubCalloutsCardTemplates && hubCalloutsCardTemplates.hub.collaboration?.callouts) {
-    const parentCallout = hubCalloutsCardTemplates.hub.collaboration.callouts[0];
-    if (parentCallout) {
-      cardTemplate = {
-        type: parentCallout?.cardTemplate?.type,
-        defaultDescription: parentCallout?.cardTemplate?.defaultDescription,
-        info: {
-          tags: parentCallout?.cardTemplate?.info.tagset?.tags,
-          visualUri: parentCallout?.cardTemplate?.info.visual?.uri,
-        },
-      };
-    }
-  }
-  if (challengeCalloutsCardTemplates && challengeCalloutsCardTemplates.hub.challenge.collaboration?.callouts) {
-    const parentCallout = challengeCalloutsCardTemplates.hub.challenge.collaboration.callouts[0];
-    if (parentCallout) {
-      cardTemplate = {
-        type: parentCallout?.cardTemplate?.type,
-        defaultDescription: parentCallout?.cardTemplate?.defaultDescription,
-        info: {
-          tags: parentCallout?.cardTemplate?.info.tagset?.tags,
-          visualUri: parentCallout?.cardTemplate?.info.visual?.uri,
-        },
-      };
-    }
-  }
-  if (opportunityCalloutsCardTemplates && opportunityCalloutsCardTemplates.hub.opportunity.collaboration?.callouts) {
-    const parentCallout = opportunityCalloutsCardTemplates.hub.opportunity.collaboration.callouts[0];
-    if (parentCallout) {
-      cardTemplate = {
-        type: parentCallout?.cardTemplate?.type,
-        defaultDescription: parentCallout?.cardTemplate?.defaultDescription,
-        info: {
-          tags: parentCallout?.cardTemplate?.info.tagset?.tags,
-          visualUri: parentCallout?.cardTemplate?.info.visual?.uri,
-        },
-      };
-    }
-  }
 
   const handleClose = () => {
     setAspect({});

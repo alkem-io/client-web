@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
   selected: {
     backgroundColor: theme.palette.background.default,
   },
+  buttonEditMode: {
+    pointerEvents: 'none',
+  },
 }));
 
 interface CalloutTypeSelectProps {
@@ -58,7 +61,7 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled =
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const handleButtonClick = (value: CalloutType) => helpers.setValue(value);
+  const handleButtonClick = (value: CalloutType) => !disabled && helpers.setValue(value);
 
   return (
     <>
@@ -67,10 +70,13 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled =
       <Box p={1} />
       <Box display="flex" gap={2}>
         <IconButton
-          className={clsx(styles.buttonStyles, field.value === CalloutType.Comments && styles.selectedButton)}
+          className={clsx(
+            styles.buttonStyles,
+            field.value === CalloutType.Comments && styles.selectedButton,
+            disabled && styles.buttonEditMode
+          )}
           aria-label="comments"
           onClick={() => handleButtonClick(CalloutType.Comments)}
-          disabled={disabled}
         >
           <Box className={clsx(styles.boxStyles)}>
             <ForumOutlinedIcon
@@ -84,10 +90,13 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled =
           </Box>
         </IconButton>
         <IconButton
-          className={clsx(styles.buttonStyles, field.value === CalloutType.Card && styles.selectedButton)}
+          className={clsx(
+            styles.buttonStyles,
+            field.value === CalloutType.Card && styles.selectedButton,
+            disabled && styles.buttonEditMode
+          )}
           aria-label="card"
           onClick={() => handleButtonClick(CalloutType.Card)}
-          disabled={disabled}
         >
           <Box className={clsx(styles.boxStyles)}>
             <BallotOutlinedIcon
@@ -99,10 +108,13 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled =
           </Box>
         </IconButton>
         <IconButton
-          className={clsx(styles.buttonStyles, field.value === CalloutType.Canvas && styles.selectedButton)}
+          className={clsx(
+            styles.buttonStyles,
+            field.value === CalloutType.Canvas && styles.selectedButton,
+            disabled && styles.buttonEditMode
+          )}
           aria-label="canvas"
           onClick={() => handleButtonClick(CalloutType.Canvas)}
-          disabled={disabled}
         >
           <Box className={clsx(styles.boxStyles)}>
             <ModeOutlinedIcon

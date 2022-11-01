@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
 
 export interface CardTemplatesListItemType {
   type: string;
+  title: string;
 }
 
 interface CanvasListItemProps extends ListItemButtonProps {
@@ -39,7 +40,7 @@ export const CardTemplateListItem: FC<CanvasListItemProps> = ({ cardTemplate, is
 
   return (
     <ListItemButton {...rest} className={clsx(isSelected && styles.active)}>
-      <ListItemText primary={cardTemplate.type} />
+      <ListItemText primary={cardTemplate.title} />
     </ListItemButton>
   );
 };

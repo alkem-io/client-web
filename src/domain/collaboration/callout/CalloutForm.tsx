@@ -19,7 +19,7 @@ type FormValueType = {
   description: string;
   type: CalloutType;
   opened: boolean;
-  cardTemplate?: string;
+  cardTemplateType?: string;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -29,7 +29,7 @@ export type CalloutFormInput = {
   description?: string;
   type?: CalloutType;
   state?: CalloutState;
-  cardTemplate?: string;
+  cardTemplateType?: string;
 };
 
 export type CalloutFormOutput = {
@@ -37,18 +37,18 @@ export type CalloutFormOutput = {
   description: string;
   type: CalloutType;
   state: CalloutState;
-  cardTemplate?: string;
+  cardTemplateType?: string;
 };
 
 export interface CalloutFormProps {
   callout?: CalloutFormInput;
-  edit?: boolean;
+  editMode?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
 }
 
-const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, onStatusChanged, children }) => {
+const CalloutForm: FC<CalloutFormProps> = ({ callout, editMode = false, onChange, onStatusChanged, children }) => {
   const { t } = useTranslation();
 
   const initialValues: FormValueType = {
@@ -56,7 +56,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
     description: callout?.description ?? '',
     type: callout?.type ?? CalloutType.Comments,
     opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-    cardTemplate: callout?.cardTemplate ?? '',
+    cardTemplateType: callout?.cardTemplateType ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -72,7 +72,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       .max(500, ({ max }) => t('common.field-max-length', { max })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    cardTemplate: yup
+    cardTemplateType: yup
       .string()
       .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
   });
@@ -83,7 +83,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       description: values.description,
       type: values.type,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      cardTemplate: values.cardTemplate,
+      cardTemplateType: values.cardTemplateType,
     };
     onChange?.(callout);
   };
@@ -111,19 +111,17 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
               maxLength={MID_TEXT_LENGTH}
               withCounter
             />
-            {!edit && (
-              <>
-                <SectionSpacer />
-                <FormRow>
-                  <CalloutTypeSelect name="type" disabled={edit} />
-                </FormRow>
-              </>
-            )}
+            <>
+              <SectionSpacer />
+              <FormRow>
+                <CalloutTypeSelect name="type" disabled={editMode} />
+              </FormRow>
+            </>
             {formikState.values.type === CalloutType.Card && (
               <>
                 <SectionSpacer />
                 <FormRow>
-                  <CardTemplatesChooser name="cardTemplate" />
+                  <CardTemplatesChooser name="cardTemplateType" editMode={editMode} />
                 </FormRow>
               </>
             )}

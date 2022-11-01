@@ -10,6 +10,8 @@ import ConfirmationDialog, {
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
+import { useCalloutCardTemplate } from '../../hooks/useCalloutCardTemplate';
+import { useUrlParams } from '../../../../../hooks';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -22,10 +24,17 @@ export interface CalloutEditDialogProps {
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, onClose, onDelete, onCalloutEdit }) => {
   const { t } = useTranslation();
-
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const [newCallout, setNewCallout] = useState<CalloutFormOutput>(callout);
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { cardTemplate } = useCalloutCardTemplate({
+    calloutNameId: callout.id,
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
+  });
+  const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: cardTemplate?.type };
+  const [newCallout, setNewCallout] = useState<CalloutFormOutput>(initialValues);
   const handleStatusChanged = (valid: boolean) => setValid(valid);
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {
@@ -70,7 +79,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, o
           </Box>
         </DialogTitle>
         <DialogContent dividers>
-          <CalloutForm callout={callout} edit onStatusChanged={handleStatusChanged} onChange={handleChange} />
+          <CalloutForm callout={initialValues} editMode onStatusChanged={handleStatusChanged} onChange={handleChange} />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
           <LoadingButton

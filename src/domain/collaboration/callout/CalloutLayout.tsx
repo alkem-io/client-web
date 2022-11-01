@@ -4,7 +4,6 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import {
-  AspectTemplate,
   Authorization,
   AuthorizationPrivilege,
   Callout,
@@ -32,7 +31,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     displayName: string;
     description: string;
     type: CalloutType;
-    cardTemplate?: AspectTemplate;
     state: CalloutState;
     draft: boolean;
     editable?: boolean;
@@ -77,7 +75,6 @@ const CalloutLayout = ({
     await onVisibilityChange(callout.id, visibility);
     setVisDialogOpen(false);
   };
-  //
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
     setSettingsAnchorEl(null);

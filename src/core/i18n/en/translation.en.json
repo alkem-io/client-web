@@ -530,6 +530,9 @@
         "card-template-label": "Choose Card template"
       }
     },
+    "callout-edit": {
+      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+    },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {

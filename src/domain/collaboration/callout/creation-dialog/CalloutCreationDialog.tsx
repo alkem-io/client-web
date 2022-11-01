@@ -17,7 +17,7 @@ export type CalloutCreationDialogFields = {
   templateId?: string;
   type?: CalloutType;
   state?: CalloutState;
-  cardTemplate?: string;
+  cardTemplateType?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -56,7 +56,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
   const handleSaveAsDraft = useCallback(async () => {
     let calloutCardTemplate: AspectTemplateFormSubmittedValues | undefined;
     if (callout.type === CalloutType.Card) {
-      const referenceCardTemplate = templates.aspectTemplates.find(t => t.type === callout.cardTemplate);
+      const referenceCardTemplate = templates.aspectTemplates.find(t => t.type === callout.cardTemplateType);
       if (referenceCardTemplate) {
         calloutCardTemplate = {
           defaultDescription: referenceCardTemplate.defaultDescription,
