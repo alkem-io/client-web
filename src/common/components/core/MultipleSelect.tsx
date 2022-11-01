@@ -8,6 +8,7 @@ import Box, { BoxProps } from '@mui/material/Box';
 
 import WrapperTypography from './WrapperTypography';
 import { uniqBy } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
@@ -62,6 +63,10 @@ const useMultipleSelectStyles = makeStyles(theme => ({
   elements: {
     display: 'flex',
     boxSizing: 'border-box',
+    flexWrap: 'wrap',
+    [theme.breakpoints.up('lg')]: {
+      flexWrap: 'nowrap',
+    },
   },
   selectedElement: {
     display: 'flex',
@@ -200,8 +205,8 @@ interface SelectedElementsProps {
 const SelectedElements: FC<SelectedElementsProps> = ({ selectedElements, sx, disabled, handleRemove }) => {
   const styles = useMultipleSelectStyles();
   return (
-    <Box sx={{ flex: 0, ...sx }}>
-      <Box className={styles.elements} sx={{ flexWrap: { xs: 'wrap', lg: 'nowrap' } }}>
+    <Box flex={0} sx={sx}>
+      <Box className={styles.elements}>
         {selectedElements.map((selectedEl, index) => (
           <div key={`${selectedEl.name}${index}`} className={clsx(styles.selectedElement, disabled && styles.disabled)}>
             <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
@@ -229,6 +234,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   disabled,
   minLength = 2,
 }) => {
+  const { t } = useTranslation();
   const select = useRef<HTMLDivElement>(document.createElement('div'));
   const input = useRef<HTMLInputElement>(document.createElement('input'));
   const [elements, setElements] = useState<Array<MultiSelectElement>>(_elements || []);
@@ -364,7 +370,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           sx={{ marginTop: theme => theme.spacing(2), display: { xs: 'block', lg: 'none' } }}
         />
         <WrapperTypography color={'neutralMedium'} className={styles.suggestionsTitle}>
-          {isNoMatches ? 'no suggestions' : 'search suggestions'}
+          {isNoMatches ? t('pages.search.no-suggestions') : t('pages.search.search-suggestions')}
         </WrapperTypography>
 
         <div className={styles.suggestions}>
@@ -377,7 +383,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
               </div>
             );
           })}
-          <div style={{ flex: 1 }} />
+          <Box flex={1} />
         </div>
       </div>
     </>
