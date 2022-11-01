@@ -360,13 +360,15 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             ref={excalidrawApiRef}
             options={{
               viewModeEnabled: !options.canEdit,
-              UIOptions: options.canEdit
-                ? undefined
-                : {
-                    canvasActions: {
-                      export: false,
-                    },
-                  },
+              UIOptions: {
+                canvasActions: {
+                  export: options.canEdit
+                    ? {
+                        saveFileToDisk: true,
+                      }
+                    : false,
+                },
+              },
             }}
             actions={{
               onUpdate: state => {
