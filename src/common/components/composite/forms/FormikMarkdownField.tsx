@@ -17,10 +17,10 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useField } from 'formik';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
-import { markdownToDraft, draftToMarkdown } from './tools/markdown-draft-js';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';
 import { ToolbarConfiguration, ToolbarTranslationKeys } from './FormikMarkdownField/toolbar.configuration';
+import { markdownToDraft, draftToMarkdown } from 'markdown-draft-js';
 
 const EditorWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -238,7 +238,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           )}
           <EditorWrapper>
             <Editor
-              wrapperId={`markdown-${name}`}
               editorRef={ref => (editorRef.current = ref as HTMLElement)}
               editorState={editorState}
               onEditorStateChange={onEditorStateChange}
