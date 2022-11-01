@@ -35,7 +35,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
     <Grid container spacing={3} columns={1}>
       {organizations?.map(org => (
         <Grid key={org.id} item xs={1}>
-          <OrganizationCard {...org} />
+          <OrganizationCard {...org} transparent />
         </Grid>
       ))}
     </Grid>
