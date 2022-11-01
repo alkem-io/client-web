@@ -1322,6 +1322,7 @@
         "check-in": "Check-in",
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",
+        "export-as-json": "Export to disk as JSON",
         "save": "Save",
         "delete": "Delete"
       },

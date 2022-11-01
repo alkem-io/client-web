@@ -1,8 +1,6 @@
 import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
-import { ArrowDropDown, Save } from '@mui/icons-material';
-import LockClockIcon from '@mui/icons-material/LockClock';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { ArrowDropDown, Save, LockClock, Delete, FileDownload } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
   Box,
@@ -33,11 +31,12 @@ import { DialogContent, DialogTitle } from '../../../../common/components/core/d
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import CanvasListItemState from '../CanvasList/CanvasListItemState';
 import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
-import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
+import getCanvasBannerCardDimensions, { BannerCardParams } from '../utils/getCanvasBannerCardDimensions';
 import { useUrlParams } from '../../../../hooks';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import UrlParams from '../../../../core/routing/url-params';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import downloadText from '../../../shared/utils/downloadText';
 
 interface CanvasDialogProps {
   entities: {
@@ -88,7 +87,7 @@ type Option = {
   icon: JSX.Element;
 };
 
-type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'checkout' | 'delete';
+type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'export-as-json' | 'checkout' | 'delete';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
@@ -105,15 +104,20 @@ const canvasOptions: Record<CanvasOptionTypes, Option> = {
       canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
     icon: <Save />,
   },
+  'export-as-json': {
+    titleId: 'pages.canvas.state-actions.export-as-json',
+    enabledWhen: () => true,
+    icon: <FileDownload />,
+  },
   checkout: {
     titleId: 'pages.canvas.state-actions.check-out',
     enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
-    icon: <LockClockIcon />,
+    icon: <LockClock />,
   },
   delete: {
     titleId: 'pages.canvas.state-actions.delete',
     enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
-    icon: <DeleteIcon />,
+    icon: <Delete />,
   },
 };
 
@@ -179,22 +183,37 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     return { appState, elements, files };
   };
 
-  const handleUpdate = async (canvas: Canvas, state: RelevantExcalidrawState | undefined) => {
-    if (!state) {
-      return;
-    }
-
-    const { appState, elements, files } = state;
+  const getCanvasPreviewImage = async (
+    canvasState: RelevantExcalidrawState,
+    bannerCardParams: BannerCardParams | undefined
+  ) => {
+    const { appState, elements, files } = canvasState;
 
     const previewImage = await exportToBlob({
       appState,
       elements,
       files: files ?? null,
-      getDimensions: getCanvasBannerCardDimensions(canvas.preview),
+      getDimensions: getCanvasBannerCardDimensions(bannerCardParams),
       mimeType: 'image/png',
     });
 
-    const value = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    return previewImage;
+  };
+
+  const serializeCanvasAsJSON = (canvasState: RelevantExcalidrawState) => {
+    const { appState, elements, files } = canvasState;
+
+    return serializeAsJSON(elements, appState, files ?? {}, 'local');
+  };
+
+  const handleUpdate = async (canvas: Canvas, state: RelevantExcalidrawState | undefined) => {
+    if (!state) {
+      return;
+    }
+
+    const previewImage = await getCanvasPreviewImage(state, canvas.preview);
+
+    const value = serializeCanvasAsJSON(state);
 
     return actions.onUpdate(
       {
@@ -205,7 +224,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     );
   };
 
-  const actionMap: { [key in keyof typeof canvasOptions]: (canvas) => void } = {
+  const actionMap: { [key in keyof typeof canvasOptions]: (canvas: Canvas) => void } = {
     'save-and-checkin': async canvas => {
       const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
 
@@ -218,6 +237,17 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
       const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
 
       await handleUpdate(canvas, state);
+    },
+    'export-as-json': async canvas => {
+      const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
+
+      if (!state) {
+        throw new Error("Canvas isn't ready yet.");
+      }
+
+      const jsonValue = serializeCanvasAsJSON(state);
+
+      downloadText(`${canvas.nameID}.json`, jsonValue, 'text/json');
     },
     delete: c => actions.onDelete(c),
   };
@@ -283,7 +313,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                   <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
                     <LoadingButton
                       startIcon={canvasOptions[selectedOption].icon}
-                      onClick={() => actionMap[selectedOption](canvas)}
+                      onClick={() => actionMap[selectedOption](canvas!)}
                       loadingPosition="start"
                       variant="contained"
                       loading={state?.changingCanvasLockState || state?.updatingCanvas}

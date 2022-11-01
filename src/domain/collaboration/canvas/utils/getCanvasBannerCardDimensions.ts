@@ -1,4 +1,4 @@
-interface BannerCardParams {
+export interface BannerCardParams {
   maxWidth: number;
   maxHeight: number;
   minWidth: number;
