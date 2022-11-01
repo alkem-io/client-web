@@ -25,8 +25,8 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { Author } from '../AuthorAvatar/models/author';
-import { buildUserProfileUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -59,8 +59,12 @@ export interface ActivityLogComponentProps {
   journeyLocation: JourneyLocation;
 }
 
-export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities = [], journeyLocation }) => {
+export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation }) => {
   const display = useMemo(() => {
+    if (!activities) {
+      return null;
+    }
+
     return (
       <>
         {activities.map(activity => (
@@ -176,25 +180,4 @@ const ActivityViewChooser = ({
       );
   }
   throw new Error(`Unable to choose a view for activity type: ${activity.type}`);
-};
-
-const buildAuthorFromUser = (user: any): Author => {
-  const avatarURL = user.profile.avatar.uri;
-  const url = buildUserProfileUrl(user.nameID);
-  const tags: string[] = [];
-  for (const tagset of user.profile.tagsets) {
-    tags.push(tagset.tags);
-  }
-  const result: Author = {
-    id: user.id,
-    displayName: user.displayName,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    avatarUrl: avatarURL,
-    url: url,
-    tags: tags,
-    city: user.profile.location.city,
-    country: user.profile.location.country,
-  };
-  return result;
 };

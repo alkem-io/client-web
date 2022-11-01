@@ -26,6 +26,7 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  * just mutate the cache data directly by leveraging property assignments, array.push(), etc.; immutability / producing new
  * structures is ensured/handled by 'immer'.
  */
+// todo rename createUseSubscriptionToParentQuery
 const createUseSubscriptionToSubEntityHook =
   <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables = undefined>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
@@ -34,7 +35,7 @@ const createUseSubscriptionToSubEntityHook =
     parentEntity: QueryData | undefined,
     getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null, // Some queries give nulls when the type actually says undefined.
     subscribeToMore: SubscribeToMore<QueryData>,
-    subscriptionOptions: Options = { skip: false }
+    subscriptionOptions: Options<SubEntitySubscriptionVariables> = { skip: false }
   ) => {
     const subEntity = getSubEntity(parentEntity) ?? undefined;
 

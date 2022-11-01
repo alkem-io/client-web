@@ -82,7 +82,26 @@ export const VisualUriFragmentDoc = gql`
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
-    sender
+    sender {
+      id
+      nameID
+      firstName
+      displayName
+      lastName
+      profile {
+        avatar {
+          uri
+        }
+        tagsets {
+          name
+          tags
+        }
+        location {
+          city
+          country
+        }
+      }
+    }
     message
     timestamp
   }
@@ -94,7 +113,20 @@ export const AspectDashboardFragmentDoc = gql`
     type
     displayName
     description
-    createdBy
+    createdBy {
+      id
+      displayName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          tags
+        }
+      }
+    }
     createdDate
     banner {
       ...VisualUri
@@ -1813,13 +1845,17 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       firstName
       lastName
       profile {
+        id
         avatar {
+          id
           uri
         }
         tagsets {
+          id
           tags
         }
         location {
+          id
           city
           country
         }
@@ -1880,6 +1916,15 @@ export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
     }
   }
 `;
+export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+    callout {
+      id
+      nameID
+      displayName
+    }
+  }
+`;
 export const ActivityLogChallengeCreatedFragmentDoc = gql`
   fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     challenge {
@@ -1887,6 +1932,7 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
       nameID
       displayName
       context {
+        id
         tagline
       }
     }
@@ -1899,19 +1945,76 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
       nameID
       displayName
       context {
+        id
         tagline
       }
     }
   }
 `;
-export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
-    callout {
+export const ActivityLogOnCollaborationFragmentDoc = gql`
+  fragment ActivityLogOnCollaboration on ActivityLogEntry {
+    id
+    collaborationID
+    createdDate
+    description
+    type
+    __typename
+    triggeredBy {
       id
       nameID
       displayName
+      firstName
+      lastName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutCardCreated {
+      ...ActivityLogCalloutCardCreated
+    }
+    ... on ActivityLogEntryCalloutCardComment {
+      ...ActivityLogCalloutCardComment
+    }
+    ... on ActivityLogEntryCalloutCanvasCreated {
+      ...ActivityLogCalloutCanvasCreated
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
     }
   }
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutCardCreatedFragmentDoc}
+  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
 `;
 export const ProfileSearchResultFragmentDoc = gql`
   fragment ProfileSearchResult on Profile {
@@ -3825,65 +3928,6 @@ export type OpportunityAspectQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityAspectQuery(variables: SchemaTypes.OpportunityAspectQueryVariables) {
   return { query: OpportunityAspectDocument, variables: variables };
-}
-export const AspectCreatorDocument = gql`
-  query AspectCreator($userId: UUID_NAMEID_EMAIL!) {
-    user(ID: $userId) {
-      id
-      displayName
-      profile {
-        id
-        avatar {
-          id
-          uri
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useAspectCreatorQuery__
- *
- * To run a query within a React component, call `useAspectCreatorQuery` and pass it any options that fit your needs.
- * When your component renders, `useAspectCreatorQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAspectCreatorQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useAspectCreatorQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>(
-    AspectCreatorDocument,
-    options
-  );
-}
-export function useAspectCreatorLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>(
-    AspectCreatorDocument,
-    options
-  );
-}
-export type AspectCreatorQueryHookResult = ReturnType<typeof useAspectCreatorQuery>;
-export type AspectCreatorLazyQueryHookResult = ReturnType<typeof useAspectCreatorLazyQuery>;
-export type AspectCreatorQueryResult = Apollo.QueryResult<
-  SchemaTypes.AspectCreatorQuery,
-  SchemaTypes.AspectCreatorQueryVariables
->;
-export function refetchAspectCreatorQuery(variables: SchemaTypes.AspectCreatorQueryVariables) {
-  return { query: AspectCreatorDocument, variables: variables };
 }
 export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
@@ -11375,7 +11419,9 @@ export const PostCommentInAspectDocument = gql`
     sendComment(messageData: $messageData) {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }
@@ -11623,13 +11669,11 @@ export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
       message {
-        id
-        message
-        sender
-        timestamp
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -12682,7 +12726,9 @@ export const PostCommentInCalloutDocument = gql`
     sendMessageOnCallout(data: $data) {
       id
       message
-      sender
+      sender {
+        id
+      }
       timestamp
     }
   }
@@ -19060,11 +19106,55 @@ export type DeleteInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.DeleteInnovationTemplateMutation,
   SchemaTypes.DeleteInnovationTemplateMutationVariables
 >;
+export const ActivityCreatedDocument = gql`
+  subscription activityCreated($collaborationID: UUID!) {
+    activityCreated(collaborationID: $collaborationID) {
+      activity {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useActivityCreatedSubscription__
+ *
+ * To run a query within a React component, call `useActivityCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityCreatedSubscription({
+ *   variables: {
+ *      collaborationID: // value for 'collaborationID'
+ *   },
+ * });
+ */
+export function useActivityCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ActivityCreatedSubscription,
+    SchemaTypes.ActivityCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ActivityCreatedSubscription,
+    SchemaTypes.ActivityCreatedSubscriptionVariables
+  >(ActivityCreatedDocument, options);
+}
+export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
+export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
 export const ActivityLogOnCollaborationDocument = gql`
   query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     activityLogOnCollaboration(queryData: $queryData) {
       id
       collaborationID
+      createdDate
+      description
+      type
+      __typename
       triggeredBy {
         id
         nameID
@@ -19072,22 +19162,22 @@ export const ActivityLogOnCollaborationDocument = gql`
         firstName
         lastName
         profile {
+          id
           avatar {
+            id
             uri
           }
           tagsets {
+            id
             tags
           }
           location {
+            id
             city
             country
           }
         }
       }
-      createdDate
-      description
-      type
-      __typename
       ... on ActivityLogEntryMemberJoined {
         ...ActivityLogMemberJoined
       }
