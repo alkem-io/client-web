@@ -5,16 +5,16 @@ import { useHubCommunityContributorsQuery } from '../../../../hooks/generated/gr
 import { useTranslation } from 'react-i18next';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
-import ContributingUsers from '../CommunityContributors/ContributingUsers';
 import useSearchAcrossMultipleLists from '../../../shared/utils/useSearchAcrossMultipleLists';
 import { userCardValueGetter } from '../../../../common/components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { organizationCardValueGetter } from './ChallengeCommunityView';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
-import useUserCardProps from '../utils/useUserCardProps';
 import ContributingOrganizations from '../CommunityContributors/ContributingOrganizations';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import SectionHeader from '../../../shared/components/Section/SectionHeader';
+import LeadUserCard from '../LeadUserCard/LeadUserCard';
+import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 
 const HubCommunityView: FC = () => {
   const { hubId } = useHub();
@@ -47,7 +47,17 @@ const HubCommunityView: FC = () => {
 
   const hostOrganization = useMemo(() => host && user && toOrganizationCardProps(host, user, t), [host, user, t]);
 
-  const leadUserCards = useUserCardProps(leadUsers, hubId);
+  const leadUserCards = useMemo(() => {
+    return leadUsers?.map(user => ({
+      id: user.id,
+      userUrl: buildUserProfileUrl(user.nameID),
+      fullName: user.displayName,
+      city: user.profile?.location?.city,
+      country: user.profile?.location?.country,
+      avatarUrl: user.profile?.avatar?.uri,
+      tags: user.profile?.tagsets?.flatMap(({ tags }) => tags),
+    }));
+  }, [leadUsers]);
 
   return (
     <>
@@ -61,7 +71,9 @@ const HubCommunityView: FC = () => {
         <SectionSpacer />
         <SectionHeader text={t('community.leading-users')} />
         <SectionSpacer />
-        <ContributingUsers users={leadUserCards} loading={loading} />
+        {leadUserCards?.map(user => (
+          <LeadUserCard key={user.id} {...user} />
+        ))}
       </DashboardGenericSection>
       <CommunityContributorsSection
         resourceId={hubId}
