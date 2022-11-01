@@ -52,7 +52,20 @@ fragment AspectDashboard on Aspect {
   type
   displayName
   description
-  createdBy
+  createdBy {
+    id
+    displayName
+    profile {
+      id
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        tags
+      }
+    }
+  }
   createdDate
   banner {
     ...VisualUri
@@ -80,16 +93,3 @@ fragment AspectDashboard on Aspect {
   }
 }
 
-query AspectCreator($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
-    id
-    displayName
-    profile {
-      id
-      avatar {
-        id
-        uri
-      }
-    }
-  }
-}
