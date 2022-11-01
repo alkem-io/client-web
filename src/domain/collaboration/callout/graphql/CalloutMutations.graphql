@@ -23,7 +23,9 @@ mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
   sendMessageOnCallout(data: $data) {
     id
     message
-    sender
+    sender {
+      id
+    }
     timestamp
   }
 }
