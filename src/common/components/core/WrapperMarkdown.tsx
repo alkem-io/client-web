@@ -5,7 +5,6 @@ import rehypeRaw from 'rehype-raw';
 import remarkGithub from 'remark-github';
 import emoji from 'remark-emoji';
 import { Box, BoxProps } from '@mui/material';
-import { unescapeEmojis } from '../composite/forms/tools/markdown-draft-js/emojis-handler';
 const createComponentWithInheritedWidth = (tagName: BoxProps['component']) => {
   const ReactMDNodeImplementation: FC<{ node: any }> = ({ node, ...props }) => {
     return <Box component={tagName} maxWidth="100%" {...props} />;
@@ -27,9 +26,8 @@ const allowedNodeTypes = ['iframe'] as const;
 
 export interface MarkdownProps extends ReactMarkdownOptions {}
 
-export const WrapperMarkdown: FC<MarkdownProps> = ({ children, ...rest }: MarkdownProps) => {
+export const WrapperMarkdown: FC<MarkdownProps> = (props: MarkdownProps) => {
   // wrap this here, so that we don't have to include the gfm all the time
-  const content = unescapeEmojis(children);
   return (
     <ReactMarkdown
       components={components}
@@ -39,10 +37,8 @@ export const WrapperMarkdown: FC<MarkdownProps> = ({ children, ...rest }: Markdo
         [emoji, { padSpaceAfter: false, emoticon: true }],
       ]}
       rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}
-      {...rest}
-    >
-      {content}
-    </ReactMarkdown>
+      {...props}
+    />
   );
 };
 

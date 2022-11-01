@@ -455,7 +455,7 @@ function draftToMarkdown(rawDraftObject, options) {
   });
   orderedListNumber = {}; // See variable definitions at the top of the page to see why we have to do this sad hack.
 
-  return escapeEmojis(markdownString);
+  return markdownString; //!! escapeEmojis();
 }
 
 export default draftToMarkdown;

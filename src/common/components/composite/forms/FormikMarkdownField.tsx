@@ -20,16 +20,33 @@ import { makeStyles } from '@mui/styles';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 import { markdownToDraft, draftToMarkdown } from './tools/markdown-draft-js';
 import hexToRGBA from '../../../utils/hexToRGBA';
+import { useTranslation } from 'react-i18next';
 
 const useStyle = makeStyles(theme => ({
   toolbar: {
     width: '100%',
+    padding: theme.spacing(2, 0.5, 1, 0.5),
     '& .rdw-option-wrapper': {
       height: theme.spacing(4),
       width: theme.spacing(4),
     },
     '& .rdw-dropdown-wrapper': {
       height: theme.spacing(4),
+    },
+    // Links target not supported by Markdown
+    '& .rdw-link-modal-target-option': {
+      display: 'none',
+    },
+    // Image size is not supported by Markdown
+    '& .rdw-image-modal-size': {
+      display: 'none',
+    },
+    '& .rdw-emoji-modal': {
+      width: 290,
+    },
+    '& .rdw-emoji-icon': {
+      fontSize: '24px',
+      margin: 4,
     },
   },
   editor: {
@@ -103,31 +120,69 @@ const handleImageUpload = () => {
 // Editor Toolbar:
 // https://jpuri.github.io/react-draft-wysiwyg/#/docs
 const toolbar = {
-  options: ['inline', 'blockType', 'list', 'link', 'emoji', 'image', 'history'],
-  inline: {
-    // markdown doesn't support 'underline'
-    options: ['bold', 'italic', 'strikethrough'],
-  },
+  options: ['inline', 'blockType', 'list', 'link', 'emoji', 'image'],
   blockType: {
     options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Blockquote', 'Code'],
   },
+  inline: {
+    // Markdown doesn't support 'underline', strikethrough removed
+    options: ['bold', 'italic'],
+  },
+  list: {
+    options: ['unordered', 'ordered'],
+  },
+  link: {
+    showOpenOptionOnHover: true,
+    options: ['link'],
+  },
+  emoji: {},
   image: {
     urlEnabled: true,
     uploadEnabled: true,
-    alignmentEnabled: true,
+    alignmentEnabled: false,
     uploadCallback: handleImageUpload,
     previewImage: true,
-    inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/webp',
-    alt: { present: true, mandatory: false },
-    defaultSize: {
-      height: 'auto',
-      width: 'auto',
-    },
-  },
-  history: {
-    inDropdown: true,
+    inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
+    alt: { present: false, mandatory: false },
+    defaultSize: false,
   },
 };
+
+const toolbarTranslationKeys = [
+  'blocktype.h1',
+  'blocktype.h2',
+  'blocktype.h3',
+  'blocktype.h4',
+  'blocktype.h5',
+  'blocktype.h6',
+  'blocktype.blockquote',
+  'blocktype.code',
+  'blocktype.blocktype',
+  'blocktype.normal',
+  'emoji.emoji',
+  'history.history',
+  'history.undo',
+  'history.redo',
+  'image.image',
+  'image.fileUpload',
+  'image.byURL',
+  'image.dropFileText',
+  'inline.bold',
+  'inline.italic',
+  'inline.strikethrough',
+  'inline.monospace',
+  'link.linkTitle',
+  'link.linkTarget',
+  'link.linkTargetOption',
+  'link.link',
+  'link.unlink',
+  'list.list',
+  'list.unordered',
+  'list.ordered',
+  'list.indent',
+  'list.outdent',
+  'remove.remove',
+] as const;
 
 interface MarkdownFieldProps extends InputProps {
   title?: string;
@@ -156,6 +211,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   loading,
   inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
+  const { t, i18n } = useTranslation();
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
@@ -189,18 +245,31 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     const currentMd = draftToMarkdown(convertToRaw(newEditorState.getCurrentContent()), {});
     helper.setValue(currentMd);
   };
+
+  // Toolbar translations:
+  // See https://jpuri.github.io/react-draft-wysiwyg/#/docs
+  // And https://github.com/jpuri/react-draft-wysiwyg/blob/master/src/i18n/en.js
+  const toolbarTranslations = useMemo(() => {
+    const initialValue = {};
+    const toolbarTranslated = toolbarTranslationKeys.reduce((obj, item) => {
+      return {
+        ...obj,
+        [`components.controls.${item}`]: t(`common.wysiwyg-editor.toolbar.${item}` as const),
+      };
+    }, initialValue);
+
+    return {
+      ...toolbarTranslated,
+      'generic.add': t('common.wysiwyg-editor.generic.add'),
+      'generic.cancel': t('common.wysiwyg-editor.generic.cancel'),
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t, i18n.language]);
+
   // TODO: implement maxLength
   // https://github.com/facebook/draft-js/issues/119
   // https://github.com/jpuri/react-draft-wysiwyg/issues/782
-
-  // TODO: Localization
-  /* https://jpuri.github.io/react-draft-wysiwyg/#/docs
-    https://github.com/jpuri/react-draft-wysiwyg/blob/master/src/i18n/en.js
-    localization={{
-      locale: 'ko', // locale: This can be used to pass locale. Editor has support builtin for lcoales: en, fr, zh, ru, pt, ko, it, nl, de, da, zh_tw, pl, es.
-      translations: This can be used to override the default translations od add new ones for locales not already supported. It should be an object similar to this.
-    }}
-  */
 
   const [isFocused, setFocus] = useState(false);
   const handleOnFocus = () => {
@@ -235,6 +304,9 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
             onBlur={handleOnBlur}
             onFocus={handleOnFocus}
             toolbar={toolbar}
+            localization={{
+              translations: toolbarTranslations,
+            }}
           />
           {disabled && <DisabledOverlay />}
           {loading && <LoadingOverlay />}
