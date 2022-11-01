@@ -1,10 +1,10 @@
 import { Excalidraw } from '@excalidraw/excalidraw';
 import { ExportedDataState, ImportedDataState } from '@excalidraw/excalidraw/types/data/types';
-import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/types/types';
+import { ExcalidrawAPIRefValue, ExcalidrawProps, ExportOpts } from '@excalidraw/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { debounce } from 'lodash';
+import { debounce, merge } from 'lodash';
 import React, { forwardRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../../hooks/useCombinedRefs';
@@ -107,43 +107,55 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       };
     }, [handleScroll]);
 
+    const renderCustomUI = useMemo<ExportOpts['renderCustomUI']>(
+      () => (exportedElements, appState) =>
+        (
+          <Box className={'Card'}>
+            <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
+              <BackupIcon />
+            </Box>
+            <h2>Save to the Alkemio</h2>
+            <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
+            <button
+              className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
+              title="Save to Alkemio"
+              aria-label="Save to Alkemio"
+              type="button"
+              onClick={async () => {
+                if (actions.onUpdate) {
+                  await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
+                  const element = document.body.getElementsByClassName('Modal__close')[0];
+                  ReactDOM.findDOMNode(element)?.dispatchEvent(
+                    new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
+                  );
+                }
+              }}
+            >
+              <div className="ToolIcon__label">Save to Alkemio</div>
+            </button>
+          </Box>
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+        ),
+      [data, actions.onUpdate]
+    );
+
     // This needs to be removed in case it crashes the export window
     // We already have a Save button
-    const UIOptions: ExcalidrawProps['UIOptions'] = {
-      canvasActions: {
-        export: {
-          saveFileToDisk: false,
-          renderCustomUI: (exportedElements, appState) => (
-            <Box className={'Card'}>
-              <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
-                <BackupIcon />
-              </Box>
-              <h2>Save to the Alkemio</h2>
-              <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
-              <button
-                className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
-                title="Save to Alkemio"
-                aria-label="Save to Alkemio"
-                type="button"
-                onClick={async () => {
-                  if (actions.onUpdate) {
-                    await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-                    const element = document.body.getElementsByClassName('Modal__close')[0];
-                    ReactDOM.findDOMNode(element)?.dispatchEvent(
-                      new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                    );
-                  }
-                }}
-              >
-                <div className="ToolIcon__label">Save to Alkemio</div>
-              </button>
-            </Box>
-          ),
+    const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
+      () => ({
+        canvasActions: {
+          export: {
+            saveFileToDisk: false,
+            renderCustomUI,
+          },
         },
-      },
-    };
+      }),
+      [renderCustomUI]
+    );
 
     const { UIOptions: externalUIOptions, ...restOptions } = options || {};
+
+    const mergedUIOptions = useMemo(() => merge(UIOptions, externalUIOptions), [UIOptions, externalUIOptions]);
 
     return (
       <div className={styles.container}>
@@ -152,10 +164,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
             key={canvas.id} // initializing a fresh Excalidraw for each canvas
             ref={combinedRef}
             initialData={data}
-            UIOptions={{
-              ...UIOptions,
-              ...externalUIOptions,
-            }}
+            UIOptions={mergedUIOptions}
             isCollaborating={false}
             gridModeEnabled
             viewModeEnabled
