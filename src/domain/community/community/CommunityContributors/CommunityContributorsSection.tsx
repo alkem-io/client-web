@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import NoOrganizations from './NoOrganizations';
 import { Contributors, ContributorType } from './types';
 import { PossiblyUndefinedProps } from '../../../shared/types/PossiblyUndefinedProps';
+import DashboardContributingUsers from '../EntityDashboardContributorsSection/DashboardContributingUsers';
+import DashboardLeads from '../EntityDashboardContributorsSection/DashboardLeads';
 
 interface CommunityContributorsSectionProps extends PossiblyUndefinedProps<Contributors> {
   resourceId: string | undefined;
@@ -49,6 +51,7 @@ const CommunityContributorsSection = ({
       noOrganizationsView={<NoOrganizations type={contributorType} />}
       sx={accordionStyle}
       summarySx={accordionSummaryStyle}
+      usersComponent={contributorType === 'leading' ? DashboardLeads : DashboardContributingUsers}
     />
   );
 };

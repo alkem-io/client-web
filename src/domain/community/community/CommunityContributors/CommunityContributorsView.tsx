@@ -1,18 +1,21 @@
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { styled } from '@mui/styles';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
 import { ContributingUsersProps } from './ContributingUsers';
-import DashboardContributingUsers from '../EntityDashboardContributorsSection/DashboardContributingUsers';
+import DashboardContributingUsers, {
+  DashboardContributingUsersProps,
+} from '../EntityDashboardContributorsSection/DashboardContributingUsers';
 import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
 
 export interface CommunityContributorsViewProps extends ContributingOrganizationsProps, ContributingUsersProps {
   loading?: boolean;
   organizationsCount: number | undefined;
   usersCount: number | undefined;
+  usersComponent?: ComponentType<DashboardContributingUsersProps>;
 }
 
 const SubSectionHeading = styled(props => <Typography variant="h3" {...props} />)(({ theme }) => ({
@@ -27,6 +30,7 @@ const CommunityContributorsView = ({
   usersCount,
   noOrganizationsView,
   loading,
+  usersComponent: UsersComponent = DashboardContributingUsers,
 }: CommunityContributorsViewProps) => {
   const { t } = useTranslation();
 
@@ -39,7 +43,7 @@ const CommunityContributorsView = ({
         noOrganizationsView={noOrganizationsView}
       />
       <SectionSpacer />
-      <DashboardContributingUsers
+      <UsersComponent
         headerText={t('common.users')}
         users={users?.map(mapUserCardPropsToContributorCardProps)}
         usersCount={usersCount}
