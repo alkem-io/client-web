@@ -55,8 +55,8 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
       description: callout?.description ?? '',
       type: callout?.type ?? CalloutType.Card,
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [callout?.id]
   );
 

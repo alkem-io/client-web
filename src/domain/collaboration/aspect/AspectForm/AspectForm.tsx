@@ -89,8 +89,8 @@ const AspectForm: FC<AspectFormProps> = ({
       aspectNames: aspectNames ?? [],
       type: aspect?.type ?? '',
       references: aspect?.references ?? [],
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [aspect?.id]
   );
 
