@@ -54,7 +54,6 @@ query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_
       id
       nameID
       displayName
-      parentId
       parentNameID
       tagset {
         id
