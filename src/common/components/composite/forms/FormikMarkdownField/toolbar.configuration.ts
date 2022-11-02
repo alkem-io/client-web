@@ -19,9 +19,9 @@ export const ToolbarConfiguration = {
   emoji: {},
   image: {
     urlEnabled: true,
-    uploadEnabled: true,
+    uploadEnabled: false,
     alignmentEnabled: false,
-    uploadCallback: () => {}, // Pending
+    uploadCallback: () => {}, // Pending to set this on the component
     previewImage: true,
     inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
     alt: { present: false, mandatory: false },
