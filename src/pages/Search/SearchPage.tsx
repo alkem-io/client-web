@@ -1,11 +1,11 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
-import { Box } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import HelpOutline from '@mui/icons-material/HelpOutline';
 import MultipleSelect, { MultiSelectElement } from '../../common/components/core/MultipleSelect';
-import Section, { Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
+import { SubHeader } from '../../common/components/core/Section';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import {
@@ -185,20 +185,41 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   return (
     <>
-      <Section hideDetails avatar={<HelpOutline color="primary" sx={{ fontSize: 120 }} />}>
-        <SectionHeader text={t('pages.search.header')} />
-        <Box marginBottom={2}>
+      <Grid container padding={{ xs: 0, sm: 2, md: 8 }}>
+        <Grid
+          item
+          textAlign={'center'}
+          marginBottom={4}
+          display={'flex'}
+          justifyContent={'center'}
+          alignItems={'middle'}
+          xs={12}
+          md={4}
+        >
+          <HelpOutline color="primary" sx={{ fontSize: { xs: 80, sm: 100, md: 130 } }} />
+        </Grid>
+        <Grid
+          item
+          sx={{ display: 'table-cell', verticalAlign: 'middle', textAlign: { xs: 'center', md: 'left' } }}
+          marginBottom={2}
+          xs={12}
+          md={8}
+        >
+          <Typography variant={'h2'} sx={{ textTransform: 'uppercase' }}>
+            {t('pages.search.header')}
+          </Typography>
           <SubHeader text={t('pages.search.alternativesubheader')} />
-        </Box>
-        <MultipleSelect
-          label={'search for skills'}
-          onChange={handleTermChange}
-          defaultValue={termsFromQuery}
-          elements={tags}
-          allowUnknownValues
-          minLength={2}
-        />
-      </Section>
+        </Grid>
+        <Grid item xs={12}>
+          <MultipleSelect
+            onChange={handleTermChange}
+            defaultValue={termsFromQuery}
+            elements={tags}
+            allowUnknownValues
+            minLength={2}
+          />
+        </Grid>
+      </Grid>
       {!isAuthenticated && (
         <Box display="flex" justifyContent="center" paddingBottom={2}>
           <Link component={RouterLink} to={AUTH_LOGIN_PATH}>
