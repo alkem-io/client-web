@@ -1124,7 +1124,9 @@
       },
       "no-results": "No results",
       "more-results": "There are more search results. Please use more specific search criteria to narrow down the results",
-      "user-not-logged": "Login or Register to include users in your search results"
+      "user-not-logged": "Login or Register to include users in your search results",
+      "search-suggestions": "Search suggestions",
+      "no-suggestions": "No suggestions"
     },
     "challenge-explorer": {
       "search": {
