@@ -206,11 +206,9 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     setFocus(true);
   };
 
-  const handleOnBlur = _evt => {
+  const handleOnBlur = () => {
     setFocus(false);
-    // TODO: This gives a Warning, and I don't know why
-    // It's useful to call onBlur to trigger field validation
-    //field.onBlur(evt);
+    field.onBlur(name);
   };
 
   // Image Upload
