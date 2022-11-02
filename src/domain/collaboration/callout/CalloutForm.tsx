@@ -24,6 +24,7 @@ type FormValueType = {
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
 export type CalloutFormInput = {
+  id?: string;
   displayName?: string;
   description?: string;
   type?: CalloutType;
@@ -48,12 +49,16 @@ export interface CalloutFormProps {
 const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, onStatusChanged, children }) => {
   const { t } = useTranslation();
 
-  const initialValues: FormValueType = {
-    displayName: callout?.displayName ?? '',
-    description: callout?.description ?? '',
-    type: callout?.type ?? CalloutType.Card,
-    opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-  };
+  const initialValues: FormValueType = useMemo(
+    () => ({
+      displayName: callout?.displayName ?? '',
+      description: callout?.description ?? '',
+      type: callout?.type ?? CalloutType.Card,
+      opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }),
+    [callout?.id]
+  );
 
   const validationSchema = yup.object().shape({
     displayName: yup

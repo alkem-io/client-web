@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
@@ -29,7 +29,9 @@ type FormValueType = {
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] };
+type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] } & {
+  id?: string;
+};
 export type AspectFormOutput = {
   displayName: string;
   description: string;
@@ -79,14 +81,18 @@ const AspectForm: FC<AspectFormProps> = ({
     return aspect.description ?? descriptionTemplate ?? '';
   };
 
-  const initialValues: FormValueType = {
-    name: aspect?.displayName ?? '',
-    description: getDescriptionValue(),
-    tagsets,
-    aspectNames: aspectNames ?? [],
-    type: aspect?.type ?? '',
-    references: aspect?.references ?? [],
-  };
+  const initialValues: FormValueType = useMemo(
+    () => ({
+      name: aspect?.displayName ?? '',
+      description: getDescriptionValue(),
+      tagsets,
+      aspectNames: aspectNames ?? [],
+      type: aspect?.type ?? '',
+      references: aspect?.references ?? [],
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }),
+    [aspect?.id]
+  );
 
   const uniqueNameValidator = yup
     .string()

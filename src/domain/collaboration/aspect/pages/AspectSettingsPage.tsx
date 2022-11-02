@@ -27,6 +27,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
 
   const toAspectFormInput = (aspect?: AspectSettingsFragment): AspectFormInput | undefined =>
     aspect && {
+      id: aspect.id,
       nameID: aspect.nameID,
       type: aspect.type,
       description: aspect.description,
