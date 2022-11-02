@@ -54,7 +54,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   });
   if (opportunityID) {
     const hubNameId = _opportunityNameId?.hub.nameID || '';
-    const challengeNameId = _opportunityNameId?.hub.opportunity.challenge?.nameID || '';
+    const challengeNameId = _opportunityNameId?.hub.opportunity.parentNameID || '';
     const opportunityNameId = _opportunityNameId?.hub.opportunity.nameID || '';
     url = buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
   }
