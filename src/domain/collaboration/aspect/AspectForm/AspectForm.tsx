@@ -16,7 +16,7 @@ import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInp
 import FormRow from '../../../shared/layout/FormLayout';
 import AspectTypeFormField from './AspectTypeFormField';
 import { displayNameValidator } from '../../../../common/utils/validator';
-import { LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 type FormValueType = {
   name: string;
@@ -149,7 +149,7 @@ const AspectForm: FC<AspectFormProps> = ({
               required
               loading={loading}
               rows={7}
-              maxLength={LONG_TEXT_LENGTH}
+              maxLength={MARKDOWN_TEXT_LENGTH}
               withCounter
             />
             <SectionSpacer />

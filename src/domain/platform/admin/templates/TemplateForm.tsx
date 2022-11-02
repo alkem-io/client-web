@@ -11,7 +11,7 @@ import VisualUpload from '../../../../common/components/composite/common/VisualU
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
-import { LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 const InputLabelSmall = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => (
   <InputLabel ref={ref} shrink {...props} sx={{ marginTop: '-0.5rem' }} />
@@ -88,7 +88,7 @@ const TemplateForm = <Values extends {}>({
                   name="description"
                   title={t('common.description')}
                   inputLabelComponent={InputLabelSmall}
-                  maxLength={LONG_TEXT_LENGTH}
+                  maxLength={MARKDOWN_TEXT_LENGTH}
                   withCounter
                 />
                 <TagsetField
