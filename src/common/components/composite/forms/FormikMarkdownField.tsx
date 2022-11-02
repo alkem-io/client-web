@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ComponentType, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ComponentType, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxProps,
@@ -96,7 +96,7 @@ const DisabledOverlay = styled(Box)(({ theme }) => ({
   left: 0,
   width: '100%',
   height: '100%',
-  background: hexToRGBA(theme.palette.grey[400], 0.2), // TODO: get this gray from the Skeleton
+  background: hexToRGBA(theme.palette.grey[400], 0.2),
   zIndex: 1,
 }));
 
@@ -140,7 +140,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const { t, i18n } = useTranslation();
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
-  const editorRef = useRef<HTMLElement>();
 
   // TODO: Check if these are still working:
   const validClass = useMemo(() => (!isError && meta.touched ? 'is-valid' : undefined), [meta, isError]);
@@ -148,6 +147,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     () => (required && isError && meta.touched ? 'is-invalid' : undefined),
     [meta, required, isError]
   );
+
   const helperText = useMemo(() => {
     if (!isError) {
       return _helperText;
@@ -236,7 +236,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           )}
           <EditorWrapper>
             <Editor
-              editorRef={ref => (editorRef.current = ref as HTMLElement)}
               editorState={editorState}
               onEditorStateChange={onEditorStateChange}
               editorClassName={clsx('form-control', validClass, invalidClass)}
