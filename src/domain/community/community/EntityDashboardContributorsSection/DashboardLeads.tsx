@@ -14,11 +14,15 @@ interface DashboardLeadsProps {
 }
 
 const DashboardLeads = ({ users, usersCount, headerText }: DashboardLeadsProps) => {
+  // TODO re-mapping to be removed when addressing https://github.com/alkem-io/client-web/issues/2819
   const remappedUsers = useMemo<(LeadUserCardProps & Identifiable)[] | undefined>(() => {
-    return users?.map(({ displayName, avatar, url, ...user }) => ({
+    return users?.map(({ displayName, avatar, url, tooltip, ...user }) => ({
       fullName: displayName,
       avatarUrl: avatar,
       userUrl: url,
+      country: tooltip?.country,
+      city: tooltip?.city,
+      tags: tooltip?.tags,
       ...user,
     }));
   }, [users]);
