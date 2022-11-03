@@ -11,6 +11,28 @@ import clsx from 'clsx';
 
 const iconButtonSides = 105;
 
+// const MarqueeItems = styled(
+//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+//   ({ animate, ...rest }: { animate: boolean } & BoxProps) => <Box {...rest} />
+// )(
+//   ({ theme, animate }) =>
+//     css`
+//       animation: ${animate ? 'marquee 10s linear infinite' : 'none'};
+//       margin-bottom: ${theme.spacing(2)};
+//     `
+// );
+// <MarqueeItems animate={isMobile} />;
+
+// interface StyledButtonProps {
+//   selected?: boolean;
+// }
+// const StyledButton = styled(IconButton)(() => ({
+//   width: iconButtonSides,
+//   height: iconButtonSides,
+//   border: '1px solid #B3B3B3',
+//   borderRadius: 5,
+// }));
+
 const useStyles = makeStyles(theme => ({
   buttonStyles: {
     width: iconButtonSides,

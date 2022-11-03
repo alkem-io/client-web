@@ -26,10 +26,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, o
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const { cardTemplate } = useCalloutCardTemplate({
     calloutNameId: callout.id,
-    hubNameId,
+    hubNameId: hubNameId!,
     challengeNameId,
     opportunityNameId,
   });
