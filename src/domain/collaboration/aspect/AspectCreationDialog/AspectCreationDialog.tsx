@@ -7,6 +7,7 @@ import { DialogContent, DialogTitle } from '../../../../common/components/core/d
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
 import { CreateAspectOnCalloutInput, Scalars } from '../../../../models/graphql-schema';
 import { useCalloutCardTemplate } from '../../callout/hooks/useCalloutCardTemplate';
+import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 
 export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
@@ -17,14 +18,14 @@ export interface EntityIds {
   opportunityNameId?: Scalars['UUID_NAMEID'];
 }
 
-export interface AspectCreationDialogProps extends EntityIds {
+export type AspectCreationDialogProps = {
   open: boolean;
   aspectNames: string[];
   onClose: () => void;
   onCreate: (aspect: AspectCreationOutput) => Promise<{ nameID: string } | undefined>;
   calloutDisplayName: string;
   calloutId: string;
-}
+} & CoreEntityIdTypes;
 
 export interface CardCreationCardTemplateInfo {
   tags: string[] | undefined;

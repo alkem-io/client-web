@@ -167,7 +167,6 @@ const AspectCallout = ({
         onCreate={onCreate}
         aspectNames={aspectNames}
         calloutDisplayName={callout.displayName}
-        calloutNameId={callout.id}
         hubNameId={hubNameId!}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
