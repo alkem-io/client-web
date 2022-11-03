@@ -5,18 +5,12 @@ import { Box, Button, DialogActions } from '@mui/material';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
-import { CreateAspectOnCalloutInput, Scalars } from '../../../../models/graphql-schema';
+import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
 import { useCalloutCardTemplate } from '../../callout/hooks/useCalloutCardTemplate';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 
 export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
-export interface EntityIds {
-  calloutNameId: Scalars['UUID_NAMEID'];
-  hubNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: Scalars['UUID_NAMEID'];
-  opportunityNameId?: Scalars['UUID_NAMEID'];
-}
 
 export type AspectCreationDialogProps = {
   open: boolean;
