@@ -90,7 +90,6 @@
     "remark-emoji": "^3.0.2",
     "remark-gfm": "^3.0.1",
     "remark-github": "^11.2.4",
-    "remarkable": "^2.0.1",
     "replace-special-characters": "^1.2.5",
     "subscriptions-transport-ws": "^0.11.0",
     "typescript": "~4.1.3",
