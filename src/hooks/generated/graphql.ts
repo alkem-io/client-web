@@ -11777,12 +11777,12 @@ export function refetchCanvasTemplateValueQuery(variables: SchemaTypes.CanvasTem
   return { query: CanvasTemplateValueDocument, variables: variables };
 }
 export const HubCalloutCardTemplateDocument = gql`
-  query HubCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
+  query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
       id
       collaboration {
         id
-        callouts(IDs: [$calloutId]) {
+        callouts(IDs: [$calloutNameId]) {
           id
           cardTemplate {
             id
@@ -11817,8 +11817,8 @@ export const HubCalloutCardTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useHubCalloutCardTemplateQuery({
  *   variables: {
- *      hubId: // value for 'hubId'
- *      calloutId: // value for 'calloutId'
+ *      hubNameId: // value for 'hubNameId'
+ *      calloutNameId: // value for 'calloutNameId'
  *   },
  * });
  */
@@ -11856,14 +11856,18 @@ export function refetchHubCalloutCardTemplateQuery(variables: SchemaTypes.HubCal
   return { query: HubCalloutCardTemplateDocument, variables: variables };
 }
 export const ChallengeCalloutCardTemplateDocument = gql`
-  query ChallengeCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
+  query ChallengeCalloutCardTemplate(
+    $hubNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
         collaboration {
           id
-          callouts(IDs: [$calloutId]) {
+          callouts(IDs: [$calloutNameId]) {
             id
             cardTemplate {
               id
@@ -11899,8 +11903,8 @@ export const ChallengeCalloutCardTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCalloutCardTemplateQuery({
  *   variables: {
- *      hubId: // value for 'hubId'
- *      calloutId: // value for 'calloutId'
+ *      hubNameId: // value for 'hubNameId'
+ *      calloutNameId: // value for 'calloutNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *   },
  * });
@@ -11944,17 +11948,17 @@ export function refetchChallengeCalloutCardTemplateQuery(
 }
 export const OpportunityCalloutCardTemplateDocument = gql`
   query OpportunityCalloutCardTemplate(
-    $hubId: UUID_NAMEID!
-    $calloutId: UUID_NAMEID!
+    $hubNameId: UUID_NAMEID!
+    $calloutNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
   ) {
-    hub(ID: $hubId) {
+    hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
         id
         collaboration {
           id
-          callouts(IDs: [$calloutId]) {
+          callouts(IDs: [$calloutNameId]) {
             id
             cardTemplate {
               id
@@ -11990,8 +11994,8 @@ export const OpportunityCalloutCardTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityCalloutCardTemplateQuery({
  *   variables: {
- *      hubId: // value for 'hubId'
- *      calloutId: // value for 'calloutId'
+ *      hubNameId: // value for 'hubNameId'
+ *      calloutNameId: // value for 'calloutNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *   },
  * });

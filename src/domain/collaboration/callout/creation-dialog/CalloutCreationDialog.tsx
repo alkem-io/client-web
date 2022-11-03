@@ -9,7 +9,7 @@ import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import { useHub } from '../../../../hooks';
-import { createCardTemplateFromTemplateSet } from '../utils/getCardTemplateFromTemplateSet';
+import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
 
 export type CalloutCreationDialogFields = {
   description?: string;

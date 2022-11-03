@@ -3031,7 +3031,7 @@ export type RelayPaginatedUser = {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization?: Maybe<Authorization>;
+  authorization: Authorization;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -3817,7 +3817,7 @@ export type User = {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization?: Maybe<Authorization>;
+  authorization: Authorization;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -11025,8 +11025,8 @@ export type CanvasTemplateValueQuery = {
 };
 
 export type HubCalloutCardTemplateQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
 }>;
 
 export type HubCalloutCardTemplateQuery = {
@@ -11063,8 +11063,8 @@ export type HubCalloutCardTemplateQuery = {
 };
 
 export type ChallengeCalloutCardTemplateQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
 }>;
 
@@ -11106,8 +11106,8 @@ export type ChallengeCalloutCardTemplateQuery = {
 };
 
 export type OpportunityCalloutCardTemplateQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
 }>;
 

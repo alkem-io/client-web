@@ -68,12 +68,12 @@ query CanvasTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
   }
 }
 
-query HubCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
     id
     collaboration {
       id
-      callouts(IDs: [$calloutId]) {
+      callouts(IDs: [$calloutNameId]) {
         id
         cardTemplate {
           id
@@ -94,14 +94,18 @@ query HubCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
     }
   }
 }
-query ChallengeCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query ChallengeCalloutCardTemplate(
+  $hubNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+) {
+  hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
       collaboration {
         id
-        callouts(IDs: [$calloutId]) {
+        callouts(IDs: [$calloutNameId]) {
           id
           cardTemplate {
             id
@@ -124,14 +128,18 @@ query ChallengeCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID
   }
 }
 
-query OpportunityCalloutCardTemplate($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
+query OpportunityCalloutCardTemplate(
+  $hubNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+) {
+  hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
       collaboration {
         id
-        callouts(IDs: [$calloutId]) {
+        callouts(IDs: [$calloutNameId]) {
           id
           cardTemplate {
             id
