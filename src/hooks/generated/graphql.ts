@@ -814,12 +814,6 @@ export const MyPrivilegesFragmentDoc = gql`
     myPrivileges
   }
 `;
-export const ChallengeExplorerSearchResultFragmentDoc = gql`
-  fragment ChallengeExplorerSearchResult on Challenge {
-    id
-    hubID
-  }
-`;
 export const ChallengeInfoFragmentDoc = gql`
   fragment ChallengeInfo on Challenge {
     id
@@ -2008,8 +2002,8 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
 `;
-export const ProfileSearchResultFragmentDoc = gql`
-  fragment ProfileSearchResult on Profile {
+export const SearchResultProfileFragmentDoc = gql`
+  fragment SearchResultProfile on Profile {
     id
     location {
       id
@@ -2026,88 +2020,110 @@ export const ProfileSearchResultFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const UserSearchResultFragmentDoc = gql`
-  fragment UserSearchResult on User {
-    id
-    nameID
-    displayName
-    profile {
-      ...ProfileSearchResult
-    }
-  }
-  ${ProfileSearchResultFragmentDoc}
-`;
-export const OrganizationSearchResultFragmentDoc = gql`
-  fragment OrganizationSearchResult on Organization {
-    id
-    nameID
-    displayName
-    profile_: profile {
-      ...ProfileSearchResult
-    }
-  }
-  ${ProfileSearchResultFragmentDoc}
-`;
-export const HubSearchResultFragmentDoc = gql`
-  fragment HubSearchResult on Hub {
-    id
-    nameID
-    displayName
-    context {
+export const SearchResultUserFragmentDoc = gql`
+  fragment SearchResultUser on SearchResultUser {
+    user {
       id
-      tagline
-      visuals {
-        ...VisualUri
+      nameID
+      displayName
+      profile {
+        ...SearchResultProfile
       }
     }
-    tagset {
+  }
+  ${SearchResultProfileFragmentDoc}
+`;
+export const SearchResultOrganizationFragmentDoc = gql`
+  fragment SearchResultOrganization on SearchResultOrganization {
+    organization {
       id
-      tags
+      nameID
+      displayName
+      profile {
+        ...SearchResultProfile
+      }
+    }
+  }
+  ${SearchResultProfileFragmentDoc}
+`;
+export const SearchResultHubFragmentDoc = gql`
+  fragment SearchResultHub on SearchResultHub {
+    hub {
+      id
+      nameID
+      displayName
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
     }
   }
   ${VisualUriFragmentDoc}
 `;
-export const ChallengeSearchResultFragmentDoc = gql`
-  fragment ChallengeSearchResult on Challenge {
-    id
-    nameID
-    displayName
-    hubID
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      tags
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const OpportunitySearchResultFragmentDoc = gql`
-  fragment OpportunitySearchResult on Opportunity {
-    id
-    nameID
-    displayName
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      tags
-    }
+export const SearchResultChallengeFragmentDoc = gql`
+  fragment SearchResultChallenge on SearchResultChallenge {
     challenge {
       id
       nameID
       displayName
       hubID
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    hub {
+      id
+      nameID
+      displayName
+      context {
+        tagline
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SearchResultOpportunityFragmentDoc = gql`
+  fragment SearchResultOpportunity on SearchResultOpportunity {
+    opportunity {
+      id
+      nameID
+      displayName
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    challenge {
+      id
+      nameID
+      displayName
+    }
+    hub {
+      id
+      nameID
+      displayName
     }
   }
   ${VisualUriFragmentDoc}
@@ -3540,7 +3556,6 @@ export const OpportunityContributionDetailsDocument = gql`
         id
         nameID
         displayName
-        parentId
         parentNameID
         tagset {
           id
@@ -7757,13 +7772,15 @@ export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.Challen
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      result {
-        ...ChallengeExplorerSearchResult
-      }
+      id
+      type
       terms
+      ... on SearchResultChallenge {
+        ...SearchResultChallenge
+      }
     }
   }
-  ${ChallengeExplorerSearchResultFragmentDoc}
+  ${SearchResultChallengeFragmentDoc}
 `;
 
 /**
@@ -13821,10 +13838,7 @@ export const OpportunityNameIdDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         nameID
-        challenge {
-          id
-          nameID
-        }
+        parentNameID
       }
     }
   }
@@ -19114,32 +19128,32 @@ export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
+      id
       score
       terms
-      result {
-        ... on User {
-          ...UserSearchResult
-        }
-        ... on Organization {
-          ...OrganizationSearchResult
-        }
-        ... on Hub {
-          ...HubSearchResult
-        }
-        ... on Challenge {
-          ...ChallengeSearchResult
-        }
-        ... on Opportunity {
-          ...OpportunitySearchResult
-        }
+      type
+      ... on SearchResultHub {
+        ...SearchResultHub
+      }
+      ... on SearchResultChallenge {
+        ...SearchResultChallenge
+      }
+      ... on SearchResultOpportunity {
+        ...SearchResultOpportunity
+      }
+      ... on SearchResultUser {
+        ...SearchResultUser
+      }
+      ... on SearchResultOrganization {
+        ...SearchResultOrganization
       }
     }
   }
-  ${UserSearchResultFragmentDoc}
-  ${OrganizationSearchResultFragmentDoc}
-  ${HubSearchResultFragmentDoc}
-  ${ChallengeSearchResultFragmentDoc}
-  ${OpportunitySearchResultFragmentDoc}
+  ${SearchResultHubFragmentDoc}
+  ${SearchResultChallengeFragmentDoc}
+  ${SearchResultOpportunityFragmentDoc}
+  ${SearchResultUserFragmentDoc}
+  ${SearchResultOrganizationFragmentDoc}
 `;
 
 /**
