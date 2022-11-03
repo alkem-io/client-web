@@ -1,20 +1,22 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
-import { Box } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import HelpOutline from '@mui/icons-material/HelpOutline';
 import MultipleSelect, { MultiSelectElement } from '../../common/components/core/MultipleSelect';
-import Section, { Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
+import { SubHeader } from '../../common/components/core/Section';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import {
-  ChallengeSearchResultFragment,
-  HubSearchResultFragment,
-  OpportunitySearchResultFragment,
-  OrganizationSearchResultFragment,
   SearchQuery,
-  UserSearchResultFragment,
+  SearchResultUserFragment,
+  SearchResultOrganizationFragment,
+  SearchResultHubFragment,
+  SearchResultChallengeFragment,
+  SearchResultOpportunityFragment,
+  SearchResult,
+  SearchResultType,
 } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 import { RouterLink } from '../../common/components/core/RouterLink';
@@ -68,15 +70,14 @@ const journeyFilterConfig: FilterConfig = {
   },
 };
 
-export type SearchResultMetadataType = { score: number; terms: string[] };
-export type SearchResult<T> = T & SearchResultMetadataType;
+export type SearchResultT<T> = T & SearchResult;
 
-export type SearchResultType = SearchResult<
-  | UserSearchResultFragment
-  | OrganizationSearchResultFragment
-  | HubSearchResultFragment
-  | ChallengeSearchResultFragment
-  | OpportunitySearchResultFragment
+export type SearchResultMetaType = SearchResultT<
+  | SearchResultUserFragment
+  | SearchResultOrganizationFragment
+  | SearchResultHubFragment
+  | SearchResultChallengeFragment
+  | SearchResultOpportunityFragment
 >;
 
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
@@ -97,7 +98,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
-  const [results, setResults] = useState<SearchResultType[]>();
+  const [results, setResults] = useState<SearchResultMetaType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   // todo only the value can be used instead
   const [contributorFilterValue, setContributorFilterValue] = useState<string[]>(contributorFilterConfig.all.value);
@@ -176,29 +177,51 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [journeyResults, contributorResults] = useMemo(
     () => [
       results?.filter(
-        ({ __typename }) => __typename === 'Hub' || __typename === 'Challenge' || __typename === 'Opportunity'
+        ({ type }) =>
+          type === SearchResultType.Hub || type === SearchResultType.Challenge || type === SearchResultType.Opportunity
       ),
-      results?.filter(({ __typename }) => __typename === 'User' || __typename === 'Organization'),
+      results?.filter(({ type }) => type === SearchResultType.User || type === SearchResultType.Organization),
     ],
     [results]
   );
 
   return (
     <>
-      <Section hideDetails avatar={<HelpOutline color="primary" sx={{ fontSize: 120 }} />}>
-        <SectionHeader text={t('pages.search.header')} />
-        <Box marginBottom={2}>
+      <Grid container padding={{ xs: 0, sm: 2, md: 8 }}>
+        <Grid
+          item
+          textAlign={'center'}
+          marginBottom={4}
+          display={'flex'}
+          justifyContent={'center'}
+          alignItems={'middle'}
+          xs={12}
+          md={4}
+        >
+          <HelpOutline color="primary" sx={{ fontSize: { xs: 80, sm: 100, md: 130 } }} />
+        </Grid>
+        <Grid
+          item
+          sx={{ display: 'table-cell', verticalAlign: 'middle', textAlign: { xs: 'center', md: 'left' } }}
+          marginBottom={2}
+          xs={12}
+          md={8}
+        >
+          <Typography variant={'h2'} sx={{ textTransform: 'uppercase' }}>
+            {t('pages.search.header')}
+          </Typography>
           <SubHeader text={t('pages.search.alternativesubheader')} />
-        </Box>
-        <MultipleSelect
-          label={'search for skills'}
-          onChange={handleTermChange}
-          defaultValue={termsFromQuery}
-          elements={tags}
-          allowUnknownValues
-          minLength={2}
-        />
-      </Section>
+        </Grid>
+        <Grid item xs={12}>
+          <MultipleSelect
+            onChange={handleTermChange}
+            defaultValue={termsFromQuery}
+            elements={tags}
+            allowUnknownValues
+            minLength={2}
+          />
+        </Grid>
+      </Grid>
       {!isAuthenticated && (
         <Box display="flex" justifyContent="center" paddingBottom={2}>
           <Link component={RouterLink} to={AUTH_LOGIN_PATH}>
@@ -227,14 +250,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
 export { SearchPage };
 
-const toResultType = (query?: SearchQuery): SearchResultType[] => {
+const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
   if (!query) {
     return [];
   }
 
   return (query.search || [])
-    .map<SearchResultType>(
-      ({ result, score, terms }) => ({ ...result, score: score || 0, terms: terms || [] } as SearchResultType),
+    .map<SearchResultMetaType>(
+      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
       []
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));

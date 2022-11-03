@@ -1280,7 +1280,6 @@ export type NVPFieldPolicy = {
 };
 export type OpportunityKeySpecifier = (
   | 'authorization'
-  | 'challenge'
   | 'collaboration'
   | 'community'
   | 'context'
@@ -1289,7 +1288,6 @@ export type OpportunityKeySpecifier = (
   | 'lifecycle'
   | 'metrics'
   | 'nameID'
-  | 'parentId'
   | 'parentNameID'
   | 'projects'
   | 'tagset'
@@ -1297,7 +1295,6 @@ export type OpportunityKeySpecifier = (
 )[];
 export type OpportunityFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1306,7 +1303,6 @@ export type OpportunityFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentId?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1714,15 +1710,93 @@ export type RolesResultOrganizationFieldPolicy = {
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchResultEntryKeySpecifier = ('result' | 'score' | 'terms' | SearchResultEntryKeySpecifier)[];
-export type SearchResultEntryFieldPolicy = {
-  result?: FieldPolicy<any> | FieldReadFunction<any>;
+export type SearchResultKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultKeySpecifier)[];
+export type SearchResultFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchableKeySpecifier = ('id' | SearchableKeySpecifier)[];
-export type SearchableFieldPolicy = {
+export type SearchResultBaseKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultBaseKeySpecifier)[];
+export type SearchResultBaseFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultChallengeKeySpecifier = (
+  | 'challenge'
+  | 'hub'
+  | 'id'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | SearchResultChallengeKeySpecifier
+)[];
+export type SearchResultChallengeFieldPolicy = {
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  hub?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultHubKeySpecifier = ('hub' | 'id' | 'score' | 'terms' | 'type' | SearchResultHubKeySpecifier)[];
+export type SearchResultHubFieldPolicy = {
+  hub?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultOpportunityKeySpecifier = (
+  | 'challenge'
+  | 'hub'
+  | 'id'
+  | 'opportunity'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | SearchResultOpportunityKeySpecifier
+)[];
+export type SearchResultOpportunityFieldPolicy = {
+  challenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  hub?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultOrganizationKeySpecifier = (
+  | 'id'
+  | 'organization'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | SearchResultOrganizationKeySpecifier
+)[];
+export type SearchResultOrganizationFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultUserKeySpecifier = (
+  | 'id'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | 'user'
+  | SearchResultUserKeySpecifier
+)[];
+export type SearchResultUserFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
@@ -2426,13 +2500,33 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | RolesResultOrganizationKeySpecifier | (() => undefined | RolesResultOrganizationKeySpecifier);
     fields?: RolesResultOrganizationFieldPolicy;
   };
-  SearchResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultEntryKeySpecifier | (() => undefined | SearchResultEntryKeySpecifier);
-    fields?: SearchResultEntryFieldPolicy;
+  SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);
+    fields?: SearchResultFieldPolicy;
   };
-  Searchable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchableKeySpecifier | (() => undefined | SearchableKeySpecifier);
-    fields?: SearchableFieldPolicy;
+  SearchResultBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultBaseKeySpecifier | (() => undefined | SearchResultBaseKeySpecifier);
+    fields?: SearchResultBaseFieldPolicy;
+  };
+  SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);
+    fields?: SearchResultChallengeFieldPolicy;
+  };
+  SearchResultHub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultHubKeySpecifier | (() => undefined | SearchResultHubKeySpecifier);
+    fields?: SearchResultHubFieldPolicy;
+  };
+  SearchResultOpportunity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultOpportunityKeySpecifier | (() => undefined | SearchResultOpportunityKeySpecifier);
+    fields?: SearchResultOpportunityFieldPolicy;
+  };
+  SearchResultOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultOrganizationKeySpecifier | (() => undefined | SearchResultOrganizationKeySpecifier);
+    fields?: SearchResultOrganizationFieldPolicy;
+  };
+  SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
+    fields?: SearchResultUserFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);
