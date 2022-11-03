@@ -111,12 +111,10 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, editMode = false, onChange
               maxLength={MID_TEXT_LENGTH}
               withCounter
             />
-            <>
-              <SectionSpacer />
-              <FormRow>
-                <CalloutTypeSelect name="type" disabled={editMode} />
-              </FormRow>
-            </>
+            <SectionSpacer />
+            <FormRow>
+              <CalloutTypeSelect name="type" disabled={editMode} />
+            </FormRow>
             {formikState.values.type === CalloutType.Card && (
               <>
                 <SectionSpacer />

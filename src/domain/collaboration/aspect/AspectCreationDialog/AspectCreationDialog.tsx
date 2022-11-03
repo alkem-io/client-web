@@ -15,10 +15,9 @@ export interface EntityIds {
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId?: Scalars['UUID_NAMEID'];
   opportunityNameId?: Scalars['UUID_NAMEID'];
-  aspectNameId?: Scalars['UUID_NAMEID'];
 }
 
-export interface AspectCreationDialogProps extends Omit<EntityIds, 'aspectNameId'> {
+export interface AspectCreationDialogProps extends EntityIds {
   open: boolean;
   aspectNames: string[];
   onClose: () => void;
@@ -44,9 +43,9 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   onClose,
   onCreate,
   calloutDisplayName,
-  hubNameId = '',
-  challengeNameId = '',
-  opportunityNameId = '',
+  hubNameId,
+  challengeNameId,
+  opportunityNameId,
   calloutId,
 }) => {
   const { t } = useTranslation();

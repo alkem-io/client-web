@@ -9,7 +9,7 @@ import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import { useHub } from '../../../../hooks';
-import { AspectTemplateFormSubmittedValues } from '../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
+import { createCardTemplateFromTemplateSet } from '../utils/getCardTemplateFromTemplateSet';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -54,24 +54,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
-    let calloutCardTemplate: AspectTemplateFormSubmittedValues | undefined;
-    if (callout.type === CalloutType.Card) {
-      const referenceCardTemplate = templates.aspectTemplates.find(t => t.type === callout.cardTemplateType);
-      if (referenceCardTemplate) {
-        calloutCardTemplate = {
-          defaultDescription: referenceCardTemplate.defaultDescription,
-          type: referenceCardTemplate.type,
-          info: {
-            description: referenceCardTemplate.info.description,
-            title: referenceCardTemplate.info.title,
-          },
-        };
-        if (referenceCardTemplate.info.tagset) calloutCardTemplate.info.tags = referenceCardTemplate.info.tagset.tags;
-        if (referenceCardTemplate.info.visual?.uri)
-          calloutCardTemplate.info.visualUri = referenceCardTemplate.info.visual.uri;
-      }
-    }
-
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.aspectTemplates);
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,

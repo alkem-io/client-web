@@ -30,7 +30,7 @@ export const useCalloutCardTemplate = (params: CalloutCardTemplateParams): UseCa
   });
   const { data: challengeCalloutsCardTemplates } = useChallengeCalloutCardTemplateQuery({
     variables: { hubId: hubNameId, calloutId: calloutNameId, challengeNameId },
-    skip: !challengeNameId || !hubNameId,
+    skip: !challengeNameId || !hubNameId || !!opportunityNameId,
     onError: handleError,
   });
   const { data: opportunityCalloutsCardTemplates } = useOpportunityCalloutCardTemplateQuery({
@@ -40,7 +40,7 @@ export const useCalloutCardTemplate = (params: CalloutCardTemplateParams): UseCa
   });
 
   let cardTemplate: CardCreationCardTemplate | undefined;
-  if (hubCalloutsCardTemplates && hubCalloutsCardTemplates.hub.collaboration?.callouts) {
+  if (hubCalloutsCardTemplates?.hub.collaboration?.callouts) {
     const parentCallout = hubCalloutsCardTemplates.hub.collaboration.callouts[0];
     if (parentCallout) {
       cardTemplate = {
@@ -53,7 +53,7 @@ export const useCalloutCardTemplate = (params: CalloutCardTemplateParams): UseCa
       };
     }
   }
-  if (challengeCalloutsCardTemplates && challengeCalloutsCardTemplates.hub.challenge.collaboration?.callouts) {
+  if (challengeCalloutsCardTemplates?.hub.challenge.collaboration?.callouts) {
     const parentCallout = challengeCalloutsCardTemplates.hub.challenge.collaboration.callouts[0];
     if (parentCallout) {
       cardTemplate = {
@@ -66,7 +66,7 @@ export const useCalloutCardTemplate = (params: CalloutCardTemplateParams): UseCa
       };
     }
   }
-  if (opportunityCalloutsCardTemplates && opportunityCalloutsCardTemplates.hub.opportunity.collaboration?.callouts) {
+  if (opportunityCalloutsCardTemplates?.hub.opportunity.collaboration?.callouts) {
     const parentCallout = opportunityCalloutsCardTemplates.hub.opportunity.collaboration.callouts[0];
     if (parentCallout) {
       cardTemplate = {
