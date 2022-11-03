@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -19,13 +19,6 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, edit
   const cardTemplatesTypeList = useMemo(
     () => templates.aspectTemplates.map(template => ({ type: template.type, title: template.info.title })),
     [templates.aspectTemplates]
-  );
-
-  const onSelectCardTemplate = useCallback(
-    (value: string) => {
-      helpers.setValue(value);
-    },
-    [helpers]
   );
 
   const selectedTemplate = useMemo(
@@ -55,7 +48,7 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, edit
                 selectedCardTemplateType: selectedTemplate?.type,
               }}
               actions={{
-                onSelect: onSelectCardTemplate,
+                onSelect: helpers.setValue,
               }}
             />
           </Box>
