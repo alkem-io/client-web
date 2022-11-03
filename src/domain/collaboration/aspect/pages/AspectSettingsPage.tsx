@@ -84,6 +84,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
               onChange={setAspect}
               onAddReference={actions.handleAddReference}
               onRemoveReference={actions.handleRemoveReference}
+              tags={aspect?.tags}
             >
               {({ isValid }) => {
                 const saveDisabled = btnDisabled || !isValid;

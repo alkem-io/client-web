@@ -88,6 +88,7 @@ const AspectCallout = ({
           description: aspect.description,
           type: aspect.type,
           tags: aspect.tags,
+          visualUri: aspect.visualUri,
         },
       },
       optimisticResponse: {
@@ -106,12 +107,12 @@ const AspectCallout = ({
           banner: {
             id: '-1',
             name: '',
-            uri: '',
+            uri: aspect.visualUri ?? '',
           },
           bannerNarrow: {
             id: '-1',
             name: '',
-            uri: '',
+            uri: aspect.visualUri ?? '',
           },
         },
       },
@@ -165,10 +166,11 @@ const AspectCallout = ({
         onClose={handleCreateDialogClosed}
         onCreate={onCreate}
         aspectNames={aspectNames}
-        calloutNameId={callout.id}
+        calloutDisplayName={callout.displayName}
         hubNameId={hubNameId!}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
+        calloutId={callout.id}
       />
     </>
   );

@@ -307,7 +307,8 @@
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
-    "state-permission": "Allow members to submit new [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
+    "state-permission": "Accept new responses",
+    "permission-helptext": "Use the switch below to close this callout for new entries."
   },
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
@@ -507,6 +508,7 @@
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
+      "card-type-label": "Card type",
       "info-step": {
         "title": "Details",
         "description": "Description",
@@ -520,27 +522,30 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Choose a template  that you want to use for the Callout"
+        "card-template-label": "Card Template",
+        "no-card-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Create",
         "card-template-label": "Choose Card template"
       }
     },
+    "callout-edit": {
+      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+    },
     "aspect-creation": {
-      "title": "Create a new Card",
+      "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
         "label": "Card Type",
-        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share.",
-        "type-help-text": "Card allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of Card types that are available in this context is fixed. Please choose the Card type that best matches the context you wish to share."
+        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
         "description": "Please share the details",
         "description-placeholder": "A description for this Card",
-        "description-help-text": "Add here the key information about the aspCardect. Why is it relevant? How does it relate?",
+        "description-help-text": "Add here the key information about the $t(common.card). Why is it relevant? How does it relate?",
         "tags-help-text": "Add free form tags to help quickly convey the key information about the Card. Good tags also help make the Card easier to find in searches.",
         "name-help-text": "A descriptive name for this Card.",
         "name-id-help-text": "Name ID help text",

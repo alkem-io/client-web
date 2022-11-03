@@ -35,6 +35,14 @@ fragment HubInfo on Hub {
         id
         title
         description
+        tagset {
+          id
+          tags
+        }
+        visual {
+          id
+          uri
+        }
       }
     }
     canvasTemplates {

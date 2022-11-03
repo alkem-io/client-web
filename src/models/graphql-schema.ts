@@ -587,6 +587,8 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
+  /** The Aspect template associated with this Card Callout. */
+  cardTemplate?: Maybe<AspectTemplate>;
   /** The Comments object for this Callout. */
   comments?: Maybe<Comments>;
   /** The description of this Callout */
@@ -1108,6 +1110,16 @@ export type CreateAspectOnCalloutInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateAspectTemplateInput = {
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription: Scalars['Markdown'];
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  /** The type of Aspects created from this Template. */
+  type: Scalars['String'];
 };
 
 export type CreateAspectTemplateOnTemplatesSetInput = {
@@ -1121,6 +1133,8 @@ export type CreateAspectTemplateOnTemplatesSetInput = {
 };
 
 export type CreateCalloutOnCollaborationInput = {
+  /** CardTemplate data for Card Callouts. */
+  cardTemplate?: InputMaybe<CreateAspectTemplateInput>;
   collaborationID: Scalars['UUID'];
   /** Callout description. */
   description: Scalars['Markdown'];
@@ -1321,6 +1335,7 @@ export type CreateTemplateInfoInput = {
   description: Scalars['Markdown'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   title: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateUserGroupInput = {
@@ -3016,7 +3031,7 @@ export type RelayPaginatedUser = {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization?: Maybe<Authorization>;
+  authorization: Authorization;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -3802,7 +3817,7 @@ export type User = {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization?: Maybe<Authorization>;
+  authorization: Authorization;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -9319,7 +9334,14 @@ export type HubProviderQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
@@ -9410,7 +9432,14 @@ export type HubInfoFragment = {
           id: string;
           defaultDescription: string;
           type: string;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title: string;
+            description: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }>;
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';
@@ -10596,180 +10625,6 @@ export type OpportunityWithActivityQuery = {
   };
 };
 
-export type HubAspectVisualsQueryVariables = Exact<{
-  calloutNameId: Scalars['UUID_NAMEID'];
-  hubNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubAspectVisualsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          callouts?:
-            | Array<{
-                __typename?: 'Callout';
-                id: string;
-                type: CalloutType;
-                aspects?:
-                  | Array<{
-                      __typename?: 'Aspect';
-                      id: string;
-                      nameID: string;
-                      bannerNarrow?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                          }
-                        | undefined;
-                    }>
-                  | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type ChallengeAspectVisualsQueryVariables = Exact<{
-  calloutNameId: Scalars['UUID_NAMEID'];
-  hubNameId: Scalars['UUID_NAMEID'];
-  challengeNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeAspectVisualsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  type: CalloutType;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        bannerNarrow?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type OpportunityAspectVisualsQueryVariables = Exact<{
-  calloutNameId: Scalars['UUID_NAMEID'];
-  hubNameId: Scalars['UUID_NAMEID'];
-  opportunityNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityAspectVisualsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  type: CalloutType;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        bannerNarrow?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type AspectVisualsFragment = {
-  __typename?: 'Aspect';
-  id: string;
-  nameID: string;
-  bannerNarrow?:
-    | {
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-      }
-    | undefined;
-};
-
 export type HubAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -11166,6 +11021,130 @@ export type CanvasTemplateValueQuery = {
           canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
         }
       | undefined;
+  };
+};
+
+export type HubCalloutCardTemplateQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCalloutCardTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                cardTemplate?:
+                  | {
+                      __typename?: 'AspectTemplate';
+                      id: string;
+                      type: string;
+                      defaultDescription: string;
+                      info: {
+                        __typename?: 'TemplateInfo';
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeCalloutCardTemplateQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCalloutCardTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityCalloutCardTemplateQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCalloutCardTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 
