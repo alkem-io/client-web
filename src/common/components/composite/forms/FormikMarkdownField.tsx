@@ -141,7 +141,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
 
-  // TODO: Check if these are still working:
   const validClass = useMemo(() => (!isError && meta.touched ? 'is-valid' : undefined), [meta, isError]);
   const invalidClass = useMemo(
     () => (required && isError && meta.touched ? 'is-invalid' : undefined),
@@ -212,7 +211,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     field.onBlur(name);
   };
 
-  // Image Upload
+  // TODO: Image Upload
   const handleImageUpload = useCallback(() => {
     let promise = new Promise(function (resolve, _reject) {
       setTimeout(() => {
