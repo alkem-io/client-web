@@ -56,14 +56,14 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   );
   const { submitForm } = useFormikContext();
 
-  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = event => {
-    if (submitOnReturnKey) {
-      if (event.key === 'Enter' && event.shiftKey === false) {
-        event.preventDefault();
-        submitForm();
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> | undefined = submitOnReturnKey
+    ? event => {
+        if (event.key === 'Enter' && event.shiftKey === false) {
+          event.preventDefault();
+          !disabled && submitForm();
+        }
       }
-    }
-  };
+    : undefined;
 
   return (
     <FormGroup sx={{ paddingBottom: theme => theme.spacing(1) }}>
@@ -75,6 +75,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           name={field.name}
           onChange={e => helper.setValue(e.target.value)}
           onKeyDown={onKeyDown}
+          disabled={disabled}
           endAdornment={
             <InputAdornment position="end">
               <IconButton aria-label="post comment" size={'small'} type="submit" disabled={disabled}>

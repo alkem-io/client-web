@@ -1,9 +1,9 @@
-import React, { useCallback, useLayoutEffect, useState, useMemo } from 'react';
+import React, { forwardRef, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
-import { Box, InputAdornment, useTheme } from '@mui/material';
+import { Box, BoxProps, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import { useQueryParams } from '../../../../../hooks';
@@ -12,9 +12,8 @@ import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../../models/constant
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.split(' ').join(',');
 
-const SearchBar = () => {
+const SearchBar = forwardRef<typeof Box, BoxProps>((props, ref) => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const navigate = useNavigate();
   const match = useMatch(SEARCH_ROUTE);
   const query = useQueryParams();
@@ -64,21 +63,7 @@ const SearchBar = () => {
   }, [match, isTermValid, value, navigate]);
 
   return (
-    <Box
-      flexGrow={1}
-      justifyContent="center"
-      sx={{
-        display: {
-          xs: 'none',
-          md: 'block',
-        },
-        width: {
-          md: theme.spacing(15),
-          lg: theme.spacing(35),
-          xl: theme.spacing(42),
-        },
-      }}
-    >
+    <Box ref={ref} flexGrow={1} justifyContent="center" {...props}>
       <TextField
         value={value}
         onChange={handleValueChange}
@@ -106,5 +91,6 @@ const SearchBar = () => {
       />
     </Box>
   );
-};
+});
+
 export default SearchBar;
