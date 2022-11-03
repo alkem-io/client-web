@@ -3,7 +3,8 @@
 export const ToolbarConfiguration = {
   options: ['inline', 'blockType', 'list', 'link', 'emoji', 'image'],
   blockType: {
-    options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Blockquote', 'Code'],
+    // 'Code' and 'Blockquote' are not well supported by our Markdown renderer
+    options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
   },
   inline: {
     // Markdown doesn't support 'underline', strikethrough removed
