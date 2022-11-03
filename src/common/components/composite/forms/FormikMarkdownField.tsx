@@ -20,7 +20,7 @@ import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';
 import { ToolbarConfiguration, ToolbarTranslationKeys } from './FormikMarkdownField/toolbar.configuration';
-import { markdownToDraft, draftToMarkdown } from 'markdown-draft-js';
+import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
 
 const EditorWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -158,17 +158,18 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   // Handle editor state and sync with formik field:
   const [editorState, setEditorState] = useState(() => {
-    return EditorState.createWithContent(convertFromRaw(markdownToDraft(field.value)));
+    if (!field?.value) return EditorState.createEmpty();
+    return EditorState.createWithContent(convertFromRaw(mdToDraftjs(field.value)));
   });
   const [textLength, setTextLength] = useState(0);
 
   useEffect(() => {
-    setEditorState(EditorState.createWithContent(convertFromRaw(markdownToDraft(meta.initialValue))));
+    setEditorState(EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue))));
   }, [meta.initialValue]);
 
   const onEditorStateChange = newEditorState => {
     setEditorState(newEditorState);
-    const currentMd = draftToMarkdown(convertToRaw(newEditorState.getCurrentContent()), {});
+    const currentMd = draftjsToMd(convertToRaw(newEditorState.getCurrentContent()));
     helper.setValue(currentMd);
   };
 
