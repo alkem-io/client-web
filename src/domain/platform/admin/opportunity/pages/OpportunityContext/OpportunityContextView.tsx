@@ -27,7 +27,7 @@ const OpportunityContextView: FC = () => {
     awaitRefetchQueries: true,
   });
 
-  const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
+  const { data: opportunityProfile, loading } = useOpportunityProfileInfoQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     skip: false,
   });
@@ -55,6 +55,7 @@ const OpportunityContextView: FC = () => {
       <ContextForm
         contextSegment={OpportunityContextSegment}
         context={opportunity?.context as Context}
+        loading={loading || isUpdating}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

@@ -54,7 +54,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
     awaitRefetchQueries: true,
   });
 
-  const { data: challengeProfile } = useChallengeProfileInfoQuery({
+  const { data: challengeProfile, loading } = useChallengeProfileInfoQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
@@ -69,7 +69,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   const challenge = challengeProfile?.hub?.challenge;
   const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
-  const isLoading = isCreating || isUpdating;
+  const isLoading = loading || isCreating || isUpdating;
 
   const currentPaths = useMemo(
     () => [...paths, { name: challengeId ? 'edit' : 'new', real: false }],
@@ -130,6 +130,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         innovationFlowTemplates={filteredInnovationFlowTemplates}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
+        loading={isLoading}
       />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton

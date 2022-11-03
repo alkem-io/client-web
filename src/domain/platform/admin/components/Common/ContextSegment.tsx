@@ -14,9 +14,11 @@ export const contextSegmentSchema = yup.object().shape({
   who: yup.string(),
 });
 
-export interface ContextSegmentProps {}
+export interface ContextSegmentProps {
+  loading?: boolean;
+}
 
-export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ contextType }) => {
+export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ loading, contextType }) => {
   const { t } = useTranslation();
 
   return (
@@ -27,6 +29,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         helperText={t(`context.${contextType}.vision.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
       <SectionSpacer />
@@ -36,6 +39,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         helperText={t(`context.${contextType}.background.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
       <SectionSpacer />
@@ -45,6 +49,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         helperText={t(`context.${contextType}.impact.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
       <SectionSpacer />
@@ -54,6 +59,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         helperText={t(`context.${contextType}.who.description` as const)}
         rows={10}
         maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
     </>

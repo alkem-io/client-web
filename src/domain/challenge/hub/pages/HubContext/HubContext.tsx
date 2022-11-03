@@ -64,6 +64,7 @@ export const HubContext: FC = () => {
           organizations={organizations}
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}
+          loading={isLoading}
         />
       </Grid>
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
