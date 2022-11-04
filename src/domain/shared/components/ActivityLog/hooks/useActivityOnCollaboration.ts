@@ -32,7 +32,7 @@ interface ActivityOnCollaborationReturnType {
 export const useActivityOnCollaboration = (collaborationID: string | undefined): ActivityOnCollaborationReturnType => {
   const handleError = useApolloErrorHandler();
   const { data: activityLogData, loading } = useActivityLogOnCollaborationQuery({
-    variables: { queryData: { collaborationID: collaborationID! } },
+    variables: { queryData: { collaborationID: collaborationID!, limit: LATEST_ACTIVITIES_COUNT } },
     skip: !collaborationID,
     fetchPolicy: 'cache-and-network',
   });
@@ -53,6 +53,7 @@ export const useActivityOnCollaboration = (collaborationID: string | undefined):
         variables: {
           queryData: {
             collaborationID: collaborationID!,
+            limit: LATEST_ACTIVITIES_COUNT,
           },
         },
         fetchPolicy: 'network-only',
@@ -65,17 +66,10 @@ export const useActivityOnCollaboration = (collaborationID: string | undefined):
       return undefined;
     }
 
-    const activityLogResult: ActivityLogResultType[] =
-      activityLogData.activityLogOnCollaboration as ActivityLogResultType[];
-
-    const resultSorted = activityLogResult.map(a => a).sort(sortFunction);
-    return resultSorted.slice(0, LATEST_ACTIVITIES_COUNT);
+    return activityLogData.activityLogOnCollaboration as ActivityLogResultType[];
   }, [activityLogData]);
   return {
     activities,
     loading,
   };
 };
-
-const sortFunction = (a: ActivityLogResultType, b: ActivityLogResultType) =>
-  new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
