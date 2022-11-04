@@ -47,7 +47,7 @@ interface LifecycleTemplate {
   info: LifecycleTemplateInfo;
 }
 
-interface Props {
+interface ProfileFormWithContextProps {
   context?: Context;
   journeyType: JourneyType;
   contextSegment: ElementType<ContextSegmentProps>;
@@ -59,9 +59,10 @@ interface Props {
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
+  loading?: boolean;
 }
 // TODO: Should be renamed. Maybe 'ContextForm'
-const ProfileFormWithContext: FC<Props> = ({
+const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
   context,
   journeyType,
   contextSegment: ContextSegment,
@@ -73,6 +74,7 @@ const ProfileFormWithContext: FC<Props> = ({
   wireSubmit,
   isEdit,
   contextOnly = false,
+  loading,
 }) => {
   const { t } = useTranslation();
   const tagsets = useMemo(() => {
@@ -154,7 +156,7 @@ const ProfileFormWithContext: FC<Props> = ({
               </>
             )}
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
-            <ContextSegment />
+            <ContextSegment loading={loading} />
 
             {!contextOnly && (
               <>

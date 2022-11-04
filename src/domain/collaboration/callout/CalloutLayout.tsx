@@ -75,7 +75,6 @@ const CalloutLayout = ({
     await onVisibilityChange(callout.id, visibility);
     setVisDialogOpen(false);
   };
-  //
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
     setSettingsAnchorEl(null);
