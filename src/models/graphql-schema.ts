@@ -3016,7 +3016,7 @@ export type RelayPaginatedUser = {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization?: Maybe<Authorization>;
+  authorization: Authorization;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -3802,7 +3802,7 @@ export type User = {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization?: Maybe<Authorization>;
+  authorization: Authorization;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -11068,6 +11068,36 @@ export type AspectCommentsMessageReceivedSubscription = {
   };
 };
 
+export type PostCommentInCalloutMutationVariables = Exact<{
+  data: SendMessageOnCalloutInput;
+}>;
+
+export type PostCommentInCalloutMutation = {
+  __typename?: 'Mutation';
+  sendMessageOnCallout: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: {
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      firstName: string;
+      displayName: string;
+      lastName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -11318,21 +11348,6 @@ export type CreateAspectFromContributeTabMutation = {
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-};
-
-export type PostCommentInCalloutMutationVariables = Exact<{
-  data: SendMessageOnCalloutInput;
-}>;
-
-export type PostCommentInCalloutMutation = {
-  __typename?: 'Mutation';
-  sendMessageOnCallout: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender: { __typename?: 'User'; id: string };
   };
 };
 
