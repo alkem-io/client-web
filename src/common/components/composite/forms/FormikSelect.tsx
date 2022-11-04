@@ -72,7 +72,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   }, [isError, meta.error, _helperText, name, tErr]);
 
   return (
-    <FormControl required={required} disabled={disabled} fullWidth>
+    <FormControl required={required} disabled={disabled} fullWidth error={isError}>
       {title && <InputLabel shrink>{title}</InputLabel>}
       <Select
         name={name}

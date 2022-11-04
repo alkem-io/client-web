@@ -14,7 +14,6 @@ import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import FormRow from '../../../shared/layout/FormLayout';
-import AspectTypeFormField from './AspectTypeFormField';
 import { displayNameValidator } from '../../../../common/utils/validator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
@@ -44,6 +43,7 @@ export interface AspectFormProps {
   aspectNames?: string[];
   edit?: boolean;
   descriptionTemplate?: string;
+  tags: string[] | undefined;
   loading?: boolean;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
@@ -56,6 +56,7 @@ const AspectForm: FC<AspectFormProps> = ({
   aspect,
   aspectNames,
   descriptionTemplate,
+  tags,
   edit = false,
   loading,
   onChange,
@@ -70,7 +71,7 @@ const AspectForm: FC<AspectFormProps> = ({
     {
       id: '-1',
       name: 'default',
-      tags: aspect?.tags ?? [],
+      tags: tags ?? [],
     },
   ];
 
@@ -136,16 +137,13 @@ const AspectForm: FC<AspectFormProps> = ({
         <>
           <Grid container spacing={2}>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-            <FormRow cols={2}>
+            <FormRow>
               <FormikInputField
                 name={'name'}
                 title={t('common.title')}
                 required
                 placeholder={t('components.aspect-creation.info-step.name-help-text')}
               />
-            </FormRow>
-            <FormRow cols={2}>
-              <AspectTypeFormField name="type" value={formikState.values.type} />
             </FormRow>
             <SectionSpacer />
             <MarkdownInput
