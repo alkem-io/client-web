@@ -11491,6 +11491,54 @@ export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
 >;
 export type AspectCommentsMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
+export const PostCommentInCalloutDocument = gql`
+  mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
+    sendMessageOnCallout(data: $data) {
+      ...MessageDetails
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+export type PostCommentInCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.PostCommentInCalloutMutation,
+  SchemaTypes.PostCommentInCalloutMutationVariables
+>;
+
+/**
+ * __usePostCommentInCalloutMutation__
+ *
+ * To run a mutation, you first call `usePostCommentInCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostCommentInCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postCommentInCalloutMutation, { data, loading, error }] = usePostCommentInCalloutMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function usePostCommentInCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.PostCommentInCalloutMutation,
+    SchemaTypes.PostCommentInCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.PostCommentInCalloutMutation,
+    SchemaTypes.PostCommentInCalloutMutationVariables
+  >(PostCommentInCalloutDocument, options);
+}
+export type PostCommentInCalloutMutationHookResult = ReturnType<typeof usePostCommentInCalloutMutation>;
+export type PostCommentInCalloutMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInCalloutMutation>;
+export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.PostCommentInCalloutMutation,
+  SchemaTypes.PostCommentInCalloutMutationVariables
+>;
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -12506,58 +12554,6 @@ export type CreateAspectFromContributeTabMutationResult =
 export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectFromContributeTabMutation,
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
->;
-export const PostCommentInCalloutDocument = gql`
-  mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
-    sendMessageOnCallout(data: $data) {
-      id
-      message
-      sender {
-        id
-      }
-      timestamp
-    }
-  }
-`;
-export type PostCommentInCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostCommentInCalloutMutation,
-  SchemaTypes.PostCommentInCalloutMutationVariables
->;
-
-/**
- * __usePostCommentInCalloutMutation__
- *
- * To run a mutation, you first call `usePostCommentInCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostCommentInCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postCommentInCalloutMutation, { data, loading, error }] = usePostCommentInCalloutMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function usePostCommentInCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.PostCommentInCalloutMutation,
-    SchemaTypes.PostCommentInCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.PostCommentInCalloutMutation,
-    SchemaTypes.PostCommentInCalloutMutationVariables
-  >(PostCommentInCalloutDocument, options);
-}
-export type PostCommentInCalloutMutationHookResult = ReturnType<typeof usePostCommentInCalloutMutation>;
-export type PostCommentInCalloutMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInCalloutMutation>;
-export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostCommentInCalloutMutation,
-  SchemaTypes.PostCommentInCalloutMutationVariables
 >;
 export const RemoveCommentFromCalloutDocument = gql`
   mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {

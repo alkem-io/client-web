@@ -6,7 +6,6 @@ import useProfileStyles from './useProfileStyles';
 interface MarkdownInputFieldProps {
   name: string;
   label: string;
-  tooltipLabel?: string;
   placeholder?: string;
   rows?: number;
   disabled?: boolean;
@@ -20,7 +19,6 @@ interface MarkdownInputFieldProps {
 const MarkdownInput: FC<MarkdownInputFieldProps> = ({
   name,
   label,
-  tooltipLabel,
   placeholder,
   rows,
   disabled = false,
@@ -37,7 +35,6 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
       <FormikMarkdownField
         name={name}
         title={label}
-        tooltipTitle={tooltipLabel}
         placeholder={placeholder || label}
         className={styles.field}
         disabled={disabled}

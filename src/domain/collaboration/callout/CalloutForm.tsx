@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import { CalloutState, CalloutType } from '../../../models/graphql-schema';
 import * as yup from 'yup';
@@ -25,6 +25,7 @@ type FormValueType = {
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
 export type CalloutFormInput = {
+  id?: string;
   displayName?: string;
   description?: string;
   type?: CalloutType;
@@ -51,13 +52,17 @@ export interface CalloutFormProps {
 const CalloutForm: FC<CalloutFormProps> = ({ callout, editMode = false, onChange, onStatusChanged, children }) => {
   const { t } = useTranslation();
 
-  const initialValues: FormValueType = {
-    displayName: callout?.displayName ?? '',
-    description: callout?.description ?? '',
-    type: callout?.type ?? CalloutType.Comments,
-    opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-    cardTemplateType: callout?.cardTemplateType ?? '',
-  };
+  const initialValues: FormValueType = useMemo(
+    () => ({
+      displayName: callout?.displayName ?? '',
+      description: callout?.description ?? '',
+      type: callout?.type ?? CalloutType.Comments,
+      opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
+      cardTemplateType: callout?.cardTemplateType ?? '',
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [callout?.id]
+  );
 
   const validationSchema = yup.object().shape({
     displayName: yup

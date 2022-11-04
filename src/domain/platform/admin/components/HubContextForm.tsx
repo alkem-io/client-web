@@ -12,7 +12,7 @@ import { tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
 import { HubContextSegment } from '../hub/HubContextSegment';
 
-interface Props {
+interface HubEditFormProps {
   context?: Context;
   name?: string;
   nameID?: string;
@@ -23,6 +23,7 @@ interface Props {
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
+  loading: boolean;
 }
 
 export interface HubEditFormValuesType {
@@ -41,7 +42,16 @@ export interface HubEditFormValuesType {
   tagsets: Tagset[];
 }
 
-const HubEditForm: FC<Props> = ({ context, name, nameID, hostID, tagset, onSubmit, wireSubmit }) => {
+const HubEditForm: FC<HubEditFormProps> = ({
+  context,
+  name,
+  nameID,
+  hostID,
+  tagset,
+  onSubmit,
+  wireSubmit,
+  loading,
+}) => {
   const { t } = useTranslation();
 
   const tagsets = useMemo(() => {
@@ -106,7 +116,7 @@ const HubEditForm: FC<Props> = ({ context, name, nameID, hostID, tagset, onSubmi
           isSubmitWired = true;
         }
 
-        return <HubContextSegment />;
+        return <HubContextSegment loading={loading} />;
       }}
     </Formik>
   );
