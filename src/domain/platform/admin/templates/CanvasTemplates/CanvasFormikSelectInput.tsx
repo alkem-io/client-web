@@ -2,7 +2,7 @@ import { Identifiable } from '../../../../shared/types/Identifiable';
 import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import { SelectInputProps } from '@mui/material/Select/SelectInput';
 import { useField } from 'formik';
-import React, { MouseEventHandler, useMemo, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import CanvasValueContainer from '../../../../../containers/canvas/CanvasValueContainer';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import TranslationKey from '../../../../../types/TranslationKey';
@@ -36,6 +36,16 @@ const CanvasFormikSelectInput = ({ label, name, canvases, getParentCalloutId }: 
     setCanvasId(canvas?.id);
   };
 
+  const onCanvasValueLoaded = useCallback(
+    canvas => {
+      helpers.setValue(canvas?.value);
+    },
+    // TODO: Looks like Formik is generating a new set of [field, meta, helpers] every time we get here.
+    // It may require a rearchitecturing of the CanvasValueContainer. For now we just disable linting
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const hasValidationError = meta.touched && Boolean(meta.error);
 
   const canvasFromTemplate = useMemo(() => {
@@ -48,11 +58,7 @@ const CanvasFormikSelectInput = ({ label, name, canvases, getParentCalloutId }: 
   const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 
   return (
-    <CanvasValueContainer
-      canvasId={canvasId}
-      calloutId={calloutId}
-      onCanvasValueLoaded={canvas => helpers.setValue(canvas?.value)}
-    >
+    <CanvasValueContainer canvasId={canvasId} calloutId={calloutId} onCanvasValueLoaded={onCanvasValueLoaded}>
       {({ canvas: loadedCanvas }) => {
         const showWhiteboard = Boolean(loadedCanvas || field.value);
         return (

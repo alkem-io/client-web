@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ComponentType, FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   BoxProps,
@@ -7,7 +7,6 @@ import {
   FormGroup,
   FormHelperText,
   InputLabel,
-  InputLabelProps,
   InputProps,
   Skeleton,
   styled,
@@ -120,7 +119,6 @@ interface MarkdownFieldProps extends InputProps {
   withCounter?: boolean;
   helperText?: string;
   loading?: boolean;
-  inputLabelComponent?: ComponentType<InputLabelProps>;
 }
 
 export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
@@ -134,7 +132,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   withCounter = false,
   helperText: _helperText,
   loading,
-  inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
   const { t, i18n } = useTranslation();
   const [field, meta, helper] = useField(name);
@@ -163,7 +160,11 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const textLength = editorState.getCurrentContent().getPlainText().length;
 
   useEffect(() => {
-    setEditorState(EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue))));
+    if (!meta?.initialValue) {
+      setEditorState(EditorState.createEmpty());
+    } else {
+      setEditorState(EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue))));
+    }
   }, [meta.initialValue]);
 
   const onEditorStateChange = newEditorState => {
@@ -233,9 +234,9 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
       <FormControl required={required} disabled={disabled} variant="outlined" fullWidth>
         <FieldContainer isFocused={isFocused}>
           {title && (
-            <InputLabelComponent required={required} shrink={isFocused || !!field.value}>
+            <InputLabel required={required} shrink={isFocused || !!field.value}>
               {title}
-            </InputLabelComponent>
+            </InputLabel>
           )}
           <EditorWrapper>
             <Editor

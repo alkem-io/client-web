@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import CanvasTemplateForm, { CanvasTemplateFormSubmittedValues, CanvasTemplateFormValues } from './CanvasTemplateForm';
 import Dialog from '@mui/material/Dialog';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DialogProps } from '@mui/material';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
 import { CanvasDetailsFragment } from '../../../../../models/graphql-schema';
@@ -23,7 +23,7 @@ const CreateCanvasTemplateDialog = ({
 }: CreateCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
 
-  const values: Partial<CanvasTemplateFormValues> = {};
+  const values: Partial<CanvasTemplateFormValues> = useMemo(() => ({}), []);
 
   return (
     <Dialog
