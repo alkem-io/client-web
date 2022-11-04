@@ -85,8 +85,8 @@ const useGetOrSetApmCookie = (): string | undefined => {
 const useUserObject = () => {
   const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
   const user = userMetadata?.user;
-  // todo make lazy cb
   const cookieId = useGetOrSetApmCookie() ?? APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED;
+
   return useMemo<UserObject>(() => {
     if (userLoading) {
       return {};
@@ -102,19 +102,18 @@ const useUserObject = () => {
 const useCustomContext = () => {
   const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
   const user = userMetadata?.user;
-  // todo make with lazy cb
   const { data: userIpData, loading: userIpLoading, error: userIpError } = useUserIp();
 
   return useMemo<ApmCustomContext>(() => {
     const context: ApmCustomContext = {};
 
-    const userIp = userIpData?.IPv4 ?? '88.203.192.145';
+    const userIp = userIpData?.IPv4;
 
     if (!userIpLoading) {
       context.ip = userIp;
       context.location = {
-        lat: userIpData?.latitude ?? 43.2167,
-        lon: userIpData?.longitude ?? 27.9167,
+        lat: userIpData?.latitude,
+        lon: userIpData?.longitude,
       };
     }
 
