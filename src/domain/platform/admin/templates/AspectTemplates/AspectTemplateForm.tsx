@@ -1,18 +1,13 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import { InputLabel, InputLabelProps } from '@mui/material';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
 import { CreateTemplateInfoInput, Visual } from '../../../../../models/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import TemplateForm from '../TemplateForm';
-
-const InputLabelSmall = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => (
-  <InputLabel ref={ref} shrink {...props} sx={{ marginTop: '-0.5rem' }} />
-));
 
 export interface AspectTemplateFormValues {
   title: string;
@@ -58,7 +53,6 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
         <FormikMarkdownField
           name="defaultDescription"
           title={t('aspect-templates.default-description')}
-          inputLabelComponent={InputLabelSmall}
           maxLength={LONG_MARKDOWN_TEXT_LENGTH}
           withCounter
         />
