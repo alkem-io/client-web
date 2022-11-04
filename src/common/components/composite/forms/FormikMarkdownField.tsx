@@ -69,7 +69,6 @@ const EditorWrapper = styled(Box)(({ theme }) => ({
 interface FieldContainerProps extends BoxProps {
   isFocused: boolean;
 }
-// TODO: Read these styles from somewhere else? How can I check if the TextInputs for example have rounded corners in the theme
 const FieldContainer = styled(({ isFocused, ...rest }: FieldContainerProps) => <Box {...rest} />)`
   position: relative;
   border-style: solid;
@@ -213,7 +212,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     let promise = new Promise(function (resolve, _reject) {
       setTimeout(() => {
         resolve({
-          data: { link: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png' },
+          // Url returned by the image storage service:
+          data: { link: 'https://alkem.io/alkemio-banner/alkemio-banner-xl.png' },
         });
       }, 1000);
     });
