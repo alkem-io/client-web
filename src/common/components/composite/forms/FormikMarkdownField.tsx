@@ -160,7 +160,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     if (!field?.value) return EditorState.createEmpty();
     return EditorState.createWithContent(convertFromRaw(mdToDraftjs(field.value)));
   });
-  const [textLength, setTextLength] = useState(0);
+
+  const textLength = editorState.getCurrentContent().getPlainText().length;
 
   useEffect(() => {
     setEditorState(EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue))));
@@ -171,10 +172,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     const currentMd = draftjsToMd(convertToRaw(newEditorState.getCurrentContent()));
     helper.setValue(currentMd);
   };
-
-  useEffect(() => {
-    setTextLength(editorState.getCurrentContent().getPlainText().length);
-  }, [editorState]);
 
   // Toolbar translations:
   // See https://jpuri.github.io/react-draft-wysiwyg/#/docs
@@ -222,8 +219,14 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     });
     return promise;
   }, []);
-  const toolbar = ToolbarConfiguration;
-  toolbar.image.uploadCallback = handleImageUpload;
+
+  const toolbar = {
+    ...ToolbarConfiguration,
+    image: {
+      ...ToolbarConfiguration.image,
+      uploadCallback: handleImageUpload,
+    },
+  };
 
   return (
     <FormGroup>
