@@ -7,7 +7,7 @@ import FormikInputField from '../../../../../common/components/composite/forms/F
 import { CreateTemplateInfoInput, Visual } from '../../../../../models/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
-import { VERY_LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import TemplateForm from '../TemplateForm';
 
 const InputLabelSmall = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => (
@@ -59,7 +59,7 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
           name="defaultDescription"
           title={t('aspect-templates.default-description')}
           inputLabelComponent={InputLabelSmall}
-          maxLength={VERY_LONG_TEXT_LENGTH}
+          maxLength={LONG_MARKDOWN_TEXT_LENGTH}
           withCounter
         />
       </TemplateFormRows>
