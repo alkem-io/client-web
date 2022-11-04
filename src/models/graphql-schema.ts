@@ -246,6 +246,8 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
 export type ActivityLogInput = {
   /** Display the activityLog results for the specified Collaboration. */
   collaborationID: Scalars['UUID'];
+  /** The number of ActivityLog entries to return; if omitted return all. */
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type Actor = {
