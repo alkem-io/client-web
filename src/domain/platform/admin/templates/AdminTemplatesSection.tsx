@@ -1,5 +1,5 @@
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { Button, DialogProps } from '@mui/material';
+import { Box, Button, DialogProps } from '@mui/material';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
+import ImportTemplatesDialog, { TemplateType } from './ImportTemplates/ImportTemplatesDialog';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;
@@ -105,9 +106,12 @@ const AdminTemplatesSection = <
   const { t } = useTranslation();
 
   const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
+  const [isImportTemplatesDialogOpen, setIsImportTemplatesDialogOpen] = useState(false);
 
   const openCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(true), []);
-  const closeCreateAspectTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(false), []);
+  const openImportTemplateDialog = useCallback(() => setIsImportTemplatesDialogOpen(true), []);
+  const closeCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(false), []);
+  const closeImportTemplatesDialog = useCallback(() => setIsImportTemplatesDialogOpen(false), []);
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
@@ -143,7 +147,11 @@ const AdminTemplatesSection = <
       },
       refetchQueries,
     });
-    closeCreateAspectTemplateDialog();
+    closeCreateTemplateDialog();
+  };
+
+  const handleImportTemplates = async (values: any) => {
+    console.log('OIMOPRT TEMPLATE', values);
   };
 
   const selectedTemplate = templateId ? templates?.find(({ id }) => id === templateId) : undefined;
@@ -177,9 +185,19 @@ const AdminTemplatesSection = <
       <DashboardGenericSection
         headerText={headerText}
         primaryAction={
-          <Button variant="outlined" onClick={openCreateTemplateDialog}>
-            {t('common.create-new')}
-          </Button>
+          <Box>
+            <Button
+              variant="outlined"
+              onClick={openImportTemplateDialog}
+              sx={{ marginRight: theme => theme.spacing(1) }}
+            >
+              {t('buttons.import')}
+            </Button>
+            &nbsp;
+            <Button variant="outlined" onClick={openCreateTemplateDialog}>
+              {t('common.create-new')}
+            </Button>
+          </Box>
         }
       >
         <SimpleCardsList>
@@ -196,8 +214,15 @@ const AdminTemplatesSection = <
       <CreateTemplateDialog
         {...dialogProps}
         open={isCreateTemplateDialogOpen}
-        onClose={closeCreateAspectTemplateDialog}
+        onClose={closeCreateTemplateDialog}
         onSubmit={handleAspectTemplateCreation}
+      />
+      <ImportTemplatesDialog
+        {...dialogProps}
+        open={isImportTemplatesDialogOpen}
+        onClose={closeImportTemplatesDialog}
+        onSelect={handleImportTemplates}
+        templateType={TemplateType.Canvas}
       />
       {selectedTemplate && (
         <EditTemplateDialog
