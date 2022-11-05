@@ -17,7 +17,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
   return (
     <>
       <PageBanner title={t('common.administration')} />
-      <HeaderNavigationTabs value={currentTab}>
+      <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Hub}>
         {adminTabs.map(tab => {
           return (
             <HeaderNavigationTab key={tab.route} label={getTabLabel(tab.section)} value={tab.section} to={tab.route} />
