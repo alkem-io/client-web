@@ -7,7 +7,7 @@ import { TemplateInfoFragment } from '../../../../models/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler } from '../../../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -105,6 +105,9 @@ const AdminTemplatesSection = <
   const onError = useApolloErrorHandler();
   const { t } = useTranslation();
 
+  const { user: userMetadata } = useUserContext();
+  const userIsPlatformAdmin = userMetadata?.permissions.isPlatformAdmin;
+
   const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
   const [isImportTemplatesDialogOpen, setIsImportTemplatesDialogOpen] = useState(false);
 
@@ -186,13 +189,15 @@ const AdminTemplatesSection = <
         headerText={headerText}
         primaryAction={
           <Box>
-            <Button
-              variant="outlined"
-              onClick={openImportTemplateDialog}
-              sx={{ marginRight: theme => theme.spacing(1) }}
-            >
-              {t('buttons.import')}
-            </Button>
+            {userIsPlatformAdmin && (
+              <Button
+                variant="outlined"
+                onClick={openImportTemplateDialog}
+                sx={{ marginRight: theme => theme.spacing(1) }}
+              >
+                {t('buttons.import')}
+              </Button>
+            )}
             &nbsp;
             <Button variant="outlined" onClick={openCreateTemplateDialog}>
               {t('common.create-new')}
