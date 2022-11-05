@@ -1455,8 +1455,9 @@ export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type DeleteLifecycleTemplateInput = {
+export type DeleteLifecycleTemplateOnTemplatesSetInput = {
   ID: Scalars['UUID'];
+  templatesSetID: Scalars['UUID'];
 };
 
 export type DeleteOpportunityInput = {
@@ -2316,7 +2317,7 @@ export type MutationDeleteInnovationPackArgs = {
 };
 
 export type MutationDeleteLifecycleTemplateArgs = {
-  deleteData: DeleteLifecycleTemplateInput;
+  deleteData: DeleteLifecycleTemplateOnTemplatesSetInput;
 };
 
 export type MutationDeleteOpportunityArgs = {
@@ -3558,6 +3559,8 @@ export type TemplatesSet = {
   lifecycleTemplate?: Maybe<LifecycleTemplate>;
   /** The LifecycleTemplates in this TemplatesSet. */
   lifecycleTemplates: Array<LifecycleTemplate>;
+  /** The policy for this TemplatesSet. */
+  policy?: Maybe<TemplatesSetPolicy>;
 };
 
 export type TemplatesSetAspectTemplateArgs = {
@@ -3570,6 +3573,11 @@ export type TemplatesSetCanvasTemplateArgs = {
 
 export type TemplatesSetLifecycleTemplateArgs = {
   ID: Scalars['UUID'];
+};
+
+export type TemplatesSetPolicy = {
+  __typename?: 'TemplatesSetPolicy';
+  minInnovationFlow: Scalars['Float'];
 };
 
 export type UpdateActorInput = {
@@ -16375,9 +16383,87 @@ export type InnovationPacksQuery = {
       templates?:
         | {
             __typename?: 'TemplatesSet';
-            canvasTemplates: Array<{ __typename?: 'CanvasTemplate'; id: string }>;
-            aspectTemplates: Array<{ __typename?: 'AspectTemplate'; id: string }>;
-            lifecycleTemplates: Array<{ __typename?: 'LifecycleTemplate'; id: string }>;
+            id: string;
+            aspectTemplates: Array<{
+              __typename?: 'AspectTemplate';
+              id: string;
+              defaultDescription: string;
+              type: string;
+              info: {
+                __typename?: 'TemplateInfo';
+                id: string;
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
+            }>;
+            canvasTemplates: Array<{
+              __typename?: 'CanvasTemplate';
+              id: string;
+              value: string;
+              info: {
+                __typename?: 'TemplateInfo';
+                id: string;
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
+            }>;
+            lifecycleTemplates: Array<{
+              __typename?: 'LifecycleTemplate';
+              id: string;
+              definition: string;
+              type: LifecycleType;
+              info: {
+                __typename?: 'TemplateInfo';
+                id: string;
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
+            }>;
           }
         | undefined;
     }>;
@@ -16409,6 +16495,7 @@ export type CreateInnovationTemplateMutation = {
 
 export type DeleteInnovationTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
+  templatesSetId: Scalars['UUID'];
 }>;
 
 export type DeleteInnovationTemplateMutation = {

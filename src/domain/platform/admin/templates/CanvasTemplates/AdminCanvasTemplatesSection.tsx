@@ -18,6 +18,7 @@ import CreateCanvasTemplateDialog, { CreateCanvasTemplateDialogProps } from './C
 import CanvasTemplatePreview from './CanvasTemplatePreview';
 import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
+import { InnovationPack } from '../InnovationPacks/InnovationPack';
 
 interface AdminCanvasTemplatesSectionProps {
   templateId: string | undefined;
@@ -30,6 +31,8 @@ interface AdminCanvasTemplatesSectionProps {
   loadCanvases: () => void;
   canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
+  loadInnovationPacks: () => void;
+  innovationPacks: InnovationPack[];
 }
 
 const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: AdminCanvasTemplatesSectionProps) => {

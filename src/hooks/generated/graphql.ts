@@ -18738,19 +18738,23 @@ export const InnovationPacksDocument = gql`
         }
         displayName
         templates {
-          canvasTemplates {
-            id
-          }
+          id
           aspectTemplates {
-            id
+            ...AdminAspectTemplate
+          }
+          canvasTemplates {
+            ...AdminCanvasTemplate
           }
           lifecycleTemplates {
-            id
+            ...AdminLifecycleTemplate
           }
         }
       }
     }
   }
+  ${AdminAspectTemplateFragmentDoc}
+  ${AdminCanvasTemplateFragmentDoc}
+  ${AdminLifecycleTemplateFragmentDoc}
 `;
 
 /**
@@ -18908,8 +18912,8 @@ export type CreateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.CreateInnovationTemplateMutationVariables
 >;
 export const DeleteInnovationTemplateDocument = gql`
-  mutation deleteInnovationTemplate($templateId: UUID!) {
-    deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
+  mutation deleteInnovationTemplate($templateId: UUID!, $templatesSetId: UUID!) {
+    deleteLifecycleTemplate(deleteData: { ID: $templateId, templatesSetID: $templatesSetId }) {
       id
     }
   }
@@ -18933,6 +18937,7 @@ export type DeleteInnovationTemplateMutationFn = Apollo.MutationFunction<
  * const [deleteInnovationTemplateMutation, { data, loading, error }] = useDeleteInnovationTemplateMutation({
  *   variables: {
  *      templateId: // value for 'templateId'
+ *      templatesSetId: // value for 'templatesSetId'
  *   },
  * });
  */

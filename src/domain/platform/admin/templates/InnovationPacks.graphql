@@ -10,14 +10,15 @@ query InnovationPacks {
       }
       displayName
       templates {
-        canvasTemplates{
-          id
+        id
+        aspectTemplates {
+          ...AdminAspectTemplate
         }
-        aspectTemplates{
-          id
+        canvasTemplates {
+          ...AdminCanvasTemplate
         }
-        lifecycleTemplates{
-          id
+        lifecycleTemplates {
+          ...AdminLifecycleTemplate
         }
       }
     }

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   DialogProps,
   DialogContent,
@@ -12,44 +12,35 @@ import {
   Button,
   Collapse,
 } from '@mui/material';
-import { useInnovationPacksQuery } from '../../../../../hooks/generated/graphql';
 import FolderIcon from '@mui/icons-material/Folder';
 import FileIcon from '@mui/icons-material/FileOpenOutlined';
 import { DialogActions, DialogTitle } from '../../../../../common/components/core/dialog';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-
-export enum TemplateType {
-  Canvas = 'canvas',
-  Card = 'aspect',
-  Lifecycle = 'lifecycle',
-}
+import { InnovationPack, InnovationPackTemplatesData } from './InnovationPack';
 
 export interface ImportTemplatesDialogProps {
-  templateType: TemplateType;
+  innovationPacks: InnovationPack[];
   open: boolean;
   onClose: DialogProps['onClose'];
-  //onSelect: (templates: InnovationPacksQuery['library']['innovationPacks']['templates']) => void;
-  onSelect: (templates: any) => void; //!!TODO: Not any
+  onSelectTemplate: (template: InnovationPackTemplatesData) => void;
+  loading?: boolean;
 }
 
-const ImportTemplatesDialog = ({ open, onClose, templateType, onSelect }: ImportTemplatesDialogProps) => {
+const ImportTemplatesDialog = ({ innovationPacks, loading, open, onClose, onSelectTemplate }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
 
-  // TODO: Rename to Innovat<I>onPack
-  const templatesHelperText = (pack: any) => {
-    //!!TODO: Not any
-    if (!pack) return '';
-    return t('pages.admin.generic.sections.templates.import-innovation-packs.helpText', {
-      organizationName: pack.provider?.displayName,
-      cardsCount: pack.templates?.aspectTemplates?.length,
-      canvasesCount: pack.templates?.canvasTemplates?.length,
-      innovationFlowsCount: pack.templates?.lifecycleTemplates?.length,
-    });
-  };
+  const [foldersState, setFoldersState] = useState<string[]>([]);
+  const isFolderOpen = (id: string) => foldersState.includes(id);
 
-  const { data, loading } = useInnovationPacksQuery();
-  const packs = data?.library.innovationPacks;
-  console.log(data);
+  const onClickOnFolder = (id: string) => {
+    if (isFolderOpen(id)) {
+      setFoldersState(foldersState.filter(f => f !== id));
+    } else {
+      setFoldersState([...foldersState, id]);
+    }
+  }
+  // TODO: Rename to Innovat<I>onPack
+
   const handleClose = () => (onClose ? onClose({}, 'escapeKeyDown') : undefined);
 
   return (
@@ -64,29 +55,29 @@ const ImportTemplatesDialog = ({ open, onClose, templateType, onSelect }: Import
       </DialogTitle>
       <DialogContent>
         {loading && <Skeleton variant="rectangular" />}
-        {!loading && packs && (
+        {!loading && innovationPacks && (
           <>
             <List>
-              {packs.map(pack => {
-                const open = true; //!! TODO: useState
-                const templates = pack.templates![`${templateType}Templates` as const]; //!! TODO get templateType well
+              {innovationPacks.map(pack => {
+                const open = isFolderOpen(pack.id);
+                const templates = pack.templates as InnovationPackTemplatesData[];
                 return (
                   <>
-                    <ListItemButton onClick={() => onSelect(pack.templates!)}>
+                    <ListItemButton onClick={() => onClickOnFolder(pack.id)}>
                       <ListItemIcon>
                         <FolderIcon />
                       </ListItemIcon>
-                      <ListItemText primary={pack.displayName} secondary={templatesHelperText(pack)} />
+                      <ListItemText primary={pack.displayName} secondary={pack.provider?.displayName} />
                       {open ? <ExpandLess /> : <ExpandMore />}
                     </ListItemButton>
                     <Collapse in={open} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
-                        {(templates as any[]).map(t => (
-                          <ListItemButton sx={{ pl: 4 }}>
+                        {templates.map(t => (
+                          <ListItemButton sx={{ pl: 4 }} onClick={() => onSelectTemplate(t)}>
                             <ListItemIcon>
                               <FileIcon />
                             </ListItemIcon>
-                            <ListItemText primary={t.id} />
+                            <ListItemText primary={t.info.title} />
                           </ListItemButton>
                         ))}
                       </List>
