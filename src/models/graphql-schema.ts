@@ -1455,9 +1455,8 @@ export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type DeleteLifecycleTemplateOnTemplatesSetInput = {
+export type DeleteLifecycleTemplateInput = {
   ID: Scalars['UUID'];
-  templatesSetID: Scalars['UUID'];
 };
 
 export type DeleteOpportunityInput = {
@@ -2317,7 +2316,7 @@ export type MutationDeleteInnovationPackArgs = {
 };
 
 export type MutationDeleteLifecycleTemplateArgs = {
-  deleteData: DeleteLifecycleTemplateOnTemplatesSetInput;
+  deleteData: DeleteLifecycleTemplateInput;
 };
 
 export type MutationDeleteOpportunityArgs = {
@@ -16495,7 +16494,6 @@ export type CreateInnovationTemplateMutation = {
 
 export type DeleteInnovationTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
-  templatesSetId: Scalars['UUID'];
 }>;
 
 export type DeleteInnovationTemplateMutation = {

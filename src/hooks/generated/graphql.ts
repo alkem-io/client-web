@@ -18912,8 +18912,8 @@ export type CreateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.CreateInnovationTemplateMutationVariables
 >;
 export const DeleteInnovationTemplateDocument = gql`
-  mutation deleteInnovationTemplate($templateId: UUID!, $templatesSetId: UUID!) {
-    deleteLifecycleTemplate(deleteData: { ID: $templateId, templatesSetID: $templatesSetId }) {
+  mutation deleteInnovationTemplate($templateId: UUID!) {
+    deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
       id
     }
   }
@@ -18937,7 +18937,6 @@ export type DeleteInnovationTemplateMutationFn = Apollo.MutationFunction<
  * const [deleteInnovationTemplateMutation, { data, loading, error }] = useDeleteInnovationTemplateMutation({
  *   variables: {
  *      templateId: // value for 'templateId'
- *      templatesSetId: // value for 'templatesSetId'
  *   },
  * });
  */

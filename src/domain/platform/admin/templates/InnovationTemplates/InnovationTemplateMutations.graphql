@@ -21,8 +21,8 @@ mutation createInnovationTemplate(
   }
 }
 
-mutation deleteInnovationTemplate($templateId: UUID!, $templatesSetId: UUID!) {
-  deleteLifecycleTemplate(deleteData: { ID: $templateId, templatesSetID: $templatesSetId }) {
+mutation deleteInnovationTemplate($templateId: UUID!) {
+  deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
     id
   }
 }
