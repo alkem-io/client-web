@@ -30,10 +30,10 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       id: aspect.id,
       nameID: aspect.nameID,
       type: aspect.type,
-      description: aspect.description,
+      description: aspect.profile?.description!,
       displayName: aspect.displayName,
-      tags: aspect?.tagset?.tags,
-      references: aspect?.references,
+      tags: aspect?.profile?.tagset?.tags,
+      references: aspect?.profile?.references,
     };
 
   const aspectIndex = resolved.pathname.indexOf('/aspects');
@@ -70,7 +70,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
               id: entities.aspect.id,
               displayName: aspect.displayName,
               type: aspect.type,
-              description: aspect.description,
+              description: aspect.profile.description,
               tags: aspect.tags,
               references: aspect.references,
             });

@@ -62,9 +62,9 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   const handleCreate = async () => {
     await onCreate({
       displayName: aspect?.displayName ?? '',
-      description: aspect?.description ?? '',
+      description: aspect?.profile?.description ?? '',
       type: cardTemplate?.type ?? '',
-      tags: aspect?.tags ?? [],
+      tags: aspect?.profile?.tags ?? [],
       visualUri: cardTemplate?.info?.visualUri,
     });
     handleClose();

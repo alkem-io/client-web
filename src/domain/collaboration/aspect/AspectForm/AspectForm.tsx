@@ -79,7 +79,7 @@ const AspectForm: FC<AspectFormProps> = ({
     if (!aspect) {
       return '';
     }
-    return aspect.description ?? descriptionTemplate ?? '';
+    return aspect.profile?.description ?? descriptionTemplate ?? '';
   };
 
   const initialValues: FormValueType = useMemo(

@@ -97,7 +97,7 @@ const AspectCallout = ({
           id: '',
           nameID: '',
           displayName: aspect.displayName ?? '',
-          description: aspect.description,
+          description: aspect.profile.description,
           type: aspect.type,
           tagset: {
             id: '-1',
