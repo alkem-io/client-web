@@ -128,15 +128,17 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
         input: {
           ID: aspect.id,
           displayName: aspect.displayName,
-          description: aspect.profile?.description || '',
+          profileData: {
+            description: aspect.profile?.description || '',
+            references: aspect.references?.map(x => ({
+              ID: x.id ?? '',
+              name: x.name,
+              description: x.description,
+              uri: x.uri,
+            })),
+            tags: aspect.tags,
+          },
           type: aspect.type,
-          tags: aspect.tags,
-          references: aspect.references?.map(x => ({
-            ID: x.id ?? '',
-            name: x.name,
-            description: x.description,
-            uri: x.uri,
-          })),
         },
       },
     });

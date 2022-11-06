@@ -1141,7 +1141,6 @@ export type MutationKeySpecifier = (
   | 'updateCalloutVisibility'
   | 'updateCanvas'
   | 'updateCanvasTemplate'
-  | 'updateCardProfile'
   | 'updateChallenge'
   | 'updateChallengeInnovationFlow'
   | 'updateDiscussion'
@@ -1278,7 +1277,6 @@ export type MutationFieldPolicy = {
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateCardProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallengeInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;

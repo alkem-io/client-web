@@ -2023,8 +2023,6 @@ export type Mutation = {
   updateCanvas: Canvas;
   /** Updates the specified CanvasTemplate. */
   updateCanvasTemplate: CanvasTemplate;
-  /** Updates the specified CardProfile. */
-  updateCardProfile: CardProfile;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
   /** Updates the Innovation Flow on the specified Challenge. */
@@ -2503,10 +2501,6 @@ export type MutationUpdateCanvasArgs = {
 
 export type MutationUpdateCanvasTemplateArgs = {
   canvasTemplateInput: UpdateCanvasTemplateInput;
-};
-
-export type MutationUpdateCardProfileArgs = {
-  cardProfileData: UpdateCardProfileInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -3635,7 +3629,6 @@ export type UpdateCanvasTemplateInput = {
 };
 
 export type UpdateCardProfileInput = {
-  ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the tags on the Aspect. */

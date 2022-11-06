@@ -30,9 +30,11 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       id: aspect.id,
       nameID: aspect.nameID,
       type: aspect.type,
-      description: aspect.profile?.description!,
+      profileData: {
+        description: aspect.profile?.description!,
+        tags: aspect?.profile?.tagset?.tags,
+      },
       displayName: aspect.displayName,
-      tags: aspect?.profile?.tagset?.tags,
       references: aspect?.profile?.references,
     };
 
@@ -70,9 +72,11 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
               id: entities.aspect.id,
               displayName: aspect.displayName,
               type: aspect.type,
-              description: aspect.profile.description,
-              tags: aspect.tags,
-              references: aspect.references,
+              profile: {
+                description: aspect.description,
+                tags: aspect.tags,
+                references: aspect.references || [],
+              },
             });
           };
 

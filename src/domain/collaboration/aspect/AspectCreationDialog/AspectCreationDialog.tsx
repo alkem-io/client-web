@@ -62,9 +62,11 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   const handleCreate = async () => {
     await onCreate({
       displayName: aspect?.displayName ?? '',
-      description: aspect?.profile?.description ?? '',
+      profileData: {
+        description: aspect?.profileData?.description ?? '',
+        tags: aspect?.profileData?.tags ?? [],
+      },
       type: cardTemplate?.type ?? '',
-      tags: aspect?.profile?.tags ?? [],
       visualUri: cardTemplate?.info?.visualUri,
     });
     handleClose();
@@ -72,7 +74,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
 
   const handleFormChange = (newAspect: AspectFormOutput) => setAspect({ ...aspect, ...newAspect });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
-  const tags = aspect?.tags ?? cardTemplate?.info?.tags;
+  const tags = aspect?.profileData?.tags ?? cardTemplate?.info?.tags;
 
   const renderButtons = () => {
     return (
