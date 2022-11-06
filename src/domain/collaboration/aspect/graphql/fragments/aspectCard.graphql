@@ -3,16 +3,18 @@ fragment AspectCard on Aspect {
   nameID
   displayName
   type
-  description
   banner {
     ...VisualUri
   }
   bannerNarrow {
     ...VisualUri
   }
-  tagset {
-    id
-    name
-    tags
+  profile {
+    description
+    tagset {
+      id
+      name
+      tags
+    }
   }
 }

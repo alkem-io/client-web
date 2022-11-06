@@ -68,7 +68,6 @@ fragment AspectSettings on Aspect {
   id
   nameID
   displayName
-  description
   type
   authorization {
     id
@@ -80,15 +79,18 @@ fragment AspectSettings on Aspect {
   bannerNarrow {
     ...VisualFull
   }
-  tagset {
-    id
-    name
-    tags
-  }
-  references {
-    id
-    name
-    uri
+  profile {
     description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
   }
 }

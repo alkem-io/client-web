@@ -112,7 +112,6 @@ export const AspectDashboardFragmentDoc = gql`
     nameID
     type
     displayName
-    description
     createdBy {
       id
       displayName
@@ -131,16 +130,19 @@ export const AspectDashboardFragmentDoc = gql`
     banner {
       ...VisualUri
     }
-    tagset {
-      id
-      name
-      tags
-    }
-    references {
-      id
-      name
-      uri
+    profile {
       description
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
     comments {
       id
@@ -191,7 +193,6 @@ export const AspectSettingsFragmentDoc = gql`
     id
     nameID
     displayName
-    description
     type
     authorization {
       id
@@ -203,16 +204,19 @@ export const AspectSettingsFragmentDoc = gql`
     bannerNarrow {
       ...VisualFull
     }
-    tagset {
-      id
-      name
-      tags
-    }
-    references {
-      id
-      name
-      uri
+    profile {
       description
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
   }
   ${VisualFullFragmentDoc}
@@ -299,17 +303,19 @@ export const AspectCardFragmentDoc = gql`
     nameID
     displayName
     type
-    description
     banner {
       ...VisualUri
     }
     bannerNarrow {
       ...VisualUri
     }
-    tagset {
-      id
-      name
-      tags
+    profile {
+      description
+      tagset {
+        id
+        name
+        tags
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -3938,20 +3944,22 @@ export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
     updateAspect(aspectData: $input) {
       id
-      description
       displayName
       type
-      tagset {
-        id
-        name
-        tags
-      }
-      references {
-        id
-        name
+      profile {
         description
-        name
-        uri
+        tagset {
+          id
+          name
+          tags
+        }
+        references {
+          id
+          name
+          description
+          name
+          uri
+        }
       }
     }
   }
@@ -11299,12 +11307,14 @@ export const CreateAspectDocument = gql`
       id
       nameID
       displayName
-      description
       type
-      tagset {
-        id
-        name
-        tags
+      profile {
+        description
+        tagset {
+          id
+          name
+          tags
+        }
       }
       banner {
         ...VisualUri
@@ -11353,9 +11363,9 @@ export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectMutation,
   SchemaTypes.CreateAspectMutationVariables
 >;
-export const CreateReferenceOnAspectDocument = gql`
-  mutation createReferenceOnAspect($referenceInput: CreateReferenceOnAspectInput!) {
-    createReferenceOnAspect(referenceData: $referenceInput) {
+export const CreateReferenceOnCardProfileDocument = gql`
+  mutation createReferenceOnCardProfile($referenceInput: CreateReferenceOnCardProfileInput!) {
+    createReferenceOnCardProfile(referenceData: $referenceInput) {
       id
       name
       uri
@@ -11363,45 +11373,46 @@ export const CreateReferenceOnAspectDocument = gql`
     }
   }
 `;
-export type CreateReferenceOnAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateReferenceOnAspectMutation,
-  SchemaTypes.CreateReferenceOnAspectMutationVariables
+export type CreateReferenceOnCardProfileMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateReferenceOnCardProfileMutation,
+  SchemaTypes.CreateReferenceOnCardProfileMutationVariables
 >;
 
 /**
- * __useCreateReferenceOnAspectMutation__
+ * __useCreateReferenceOnCardProfileMutation__
  *
- * To run a mutation, you first call `useCreateReferenceOnAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateReferenceOnAspectMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateReferenceOnCardProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReferenceOnCardProfileMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createReferenceOnAspectMutation, { data, loading, error }] = useCreateReferenceOnAspectMutation({
+ * const [createReferenceOnCardProfileMutation, { data, loading, error }] = useCreateReferenceOnCardProfileMutation({
  *   variables: {
  *      referenceInput: // value for 'referenceInput'
  *   },
  * });
  */
-export function useCreateReferenceOnAspectMutation(
+export function useCreateReferenceOnCardProfileMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateReferenceOnAspectMutation,
-    SchemaTypes.CreateReferenceOnAspectMutationVariables
+    SchemaTypes.CreateReferenceOnCardProfileMutation,
+    SchemaTypes.CreateReferenceOnCardProfileMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.CreateReferenceOnAspectMutation,
-    SchemaTypes.CreateReferenceOnAspectMutationVariables
-  >(CreateReferenceOnAspectDocument, options);
+    SchemaTypes.CreateReferenceOnCardProfileMutation,
+    SchemaTypes.CreateReferenceOnCardProfileMutationVariables
+  >(CreateReferenceOnCardProfileDocument, options);
 }
-export type CreateReferenceOnAspectMutationHookResult = ReturnType<typeof useCreateReferenceOnAspectMutation>;
-export type CreateReferenceOnAspectMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnAspectMutation>;
-export type CreateReferenceOnAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateReferenceOnAspectMutation,
-  SchemaTypes.CreateReferenceOnAspectMutationVariables
+export type CreateReferenceOnCardProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnCardProfileMutation>;
+export type CreateReferenceOnCardProfileMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateReferenceOnCardProfileMutation>;
+export type CreateReferenceOnCardProfileMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateReferenceOnCardProfileMutation,
+  SchemaTypes.CreateReferenceOnCardProfileMutationVariables
 >;
 export const DeleteAspectDocument = gql`
   mutation deleteAspect($input: DeleteAspectInput!) {
@@ -12495,12 +12506,14 @@ export const CreateAspectFromContributeTabDocument = gql`
       id
       nameID
       displayName
-      description
       type
-      tagset {
-        id
-        name
-        tags
+      profile {
+        description
+        tagset {
+          id
+          name
+          tags
+        }
       }
       banner {
         ...VisualUri

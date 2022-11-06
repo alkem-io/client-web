@@ -51,7 +51,6 @@ fragment AspectDashboard on Aspect {
   nameID
   type
   displayName
-  description
   createdBy {
     id
     displayName
@@ -70,16 +69,19 @@ fragment AspectDashboard on Aspect {
   banner {
     ...VisualUri
   }
-  tagset {
-    id
-    name
-    tags
-  }
-  references {
-    id
-    name
-    uri
+  profile {
     description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
   }
   comments {
     id
