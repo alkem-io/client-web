@@ -275,6 +275,11 @@
           "name": "User Group Member",
           "order": 16,
           "hidden": true
+        },
+        "INNOVATION_PACK_PROVIDER": {
+          "name": "Innovation Pack Provider",
+          "order": 17,
+          "hidden": true
         }
       },
       "edit-mode": {
