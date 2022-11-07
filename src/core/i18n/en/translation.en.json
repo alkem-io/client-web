@@ -992,7 +992,7 @@
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import-innovation-packs": {
-              "title": "Import an Innovation Pack"
+              "title": "Import from an Innovation Pack"
             }
           },
           "my-profile": {
