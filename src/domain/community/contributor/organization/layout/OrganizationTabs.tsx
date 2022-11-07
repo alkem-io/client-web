@@ -22,6 +22,7 @@ const OrganizationTabs = (props: EntityTabsProps) => {
       {({ permissions }) => (
         <HeaderNavigationTabs
           value={props.currentTab}
+          defaultTab={routes.profile}
           showSettings={permissions.canEdit}
           settingsUrl={buildAdminOrganizationUrl(organizationNameId)}
         >

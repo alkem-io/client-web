@@ -77,7 +77,8 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
                     name="post"
                     title={title}
                     placeholder={placeholder}
-                    disabled={disabled || isSubmitting}
+                    disabled={disabled}
+                    submitting={isSubmitting}
                     maxLength={maxLength}
                     submitOnReturnKey
                     withCounter

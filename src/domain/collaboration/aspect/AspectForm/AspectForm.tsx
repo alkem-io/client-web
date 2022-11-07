@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
@@ -14,9 +14,8 @@ import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import FormRow from '../../../shared/layout/FormLayout';
-import AspectTypeFormField from './AspectTypeFormField';
 import { displayNameValidator } from '../../../../common/utils/validator';
-import { LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 type FormValueType = {
   name: string;
@@ -29,7 +28,9 @@ type FormValueType = {
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] };
+type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] } & {
+  id?: string;
+};
 export type AspectFormOutput = {
   displayName: string;
   description: string;
@@ -42,6 +43,7 @@ export interface AspectFormProps {
   aspectNames?: string[];
   edit?: boolean;
   descriptionTemplate?: string;
+  tags: string[] | undefined;
   loading?: boolean;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
@@ -54,6 +56,7 @@ const AspectForm: FC<AspectFormProps> = ({
   aspect,
   aspectNames,
   descriptionTemplate,
+  tags,
   edit = false,
   loading,
   onChange,
@@ -68,7 +71,7 @@ const AspectForm: FC<AspectFormProps> = ({
     {
       id: '-1',
       name: 'default',
-      tags: aspect?.tags ?? [],
+      tags: tags ?? [],
     },
   ];
 
@@ -79,14 +82,18 @@ const AspectForm: FC<AspectFormProps> = ({
     return aspect.description ?? descriptionTemplate ?? '';
   };
 
-  const initialValues: FormValueType = {
-    name: aspect?.displayName ?? '',
-    description: getDescriptionValue(),
-    tagsets,
-    aspectNames: aspectNames ?? [],
-    type: aspect?.type ?? '',
-    references: aspect?.references ?? [],
-  };
+  const initialValues: FormValueType = useMemo(
+    () => ({
+      name: aspect?.displayName ?? '',
+      description: getDescriptionValue(),
+      tagsets,
+      aspectNames: aspectNames ?? [],
+      type: aspect?.type ?? '',
+      references: aspect?.references ?? [],
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [aspect?.id]
+  );
 
   const uniqueNameValidator = yup
     .string()
@@ -130,7 +137,7 @@ const AspectForm: FC<AspectFormProps> = ({
         <>
           <Grid container spacing={2}>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-            <FormRow cols={2}>
+            <FormRow>
               <FormikInputField
                 name={'name'}
                 title={t('common.title')}
@@ -138,19 +145,15 @@ const AspectForm: FC<AspectFormProps> = ({
                 placeholder={t('components.aspect-creation.info-step.name-help-text')}
               />
             </FormRow>
-            <FormRow cols={2}>
-              <AspectTypeFormField name="type" value={formikState.values.type} />
-            </FormRow>
             <SectionSpacer />
             <MarkdownInput
               name="description"
               label={t('components.aspect-creation.info-step.description')}
               placeholder={t('components.aspect-creation.info-step.description-placeholder')}
-              tooltipLabel={t('components.aspect-creation.info-step.description-help-text')}
               required
               loading={loading}
               rows={7}
-              maxLength={LONG_TEXT_LENGTH}
+              maxLength={MARKDOWN_TEXT_LENGTH}
               withCounter
             />
             <SectionSpacer />

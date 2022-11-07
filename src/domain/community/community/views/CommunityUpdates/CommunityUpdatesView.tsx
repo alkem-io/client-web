@@ -38,7 +38,7 @@ import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOff
 import { useNotification } from '../../../../../hooks';
 import { Message } from '../../../../../models/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -160,7 +160,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                       rows={30}
                       label=""
                       required
-                      maxLength={LONG_TEXT_LENGTH}
+                      maxLength={MARKDOWN_TEXT_LENGTH}
                       withCounter
                     />
                   </Grid>

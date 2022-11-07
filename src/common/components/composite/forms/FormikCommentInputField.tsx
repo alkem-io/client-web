@@ -8,6 +8,7 @@ import {
   InputAdornment,
   InputProps,
   OutlinedInput,
+  OutlinedInputProps,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { useField, useFormikContext } from 'formik';
@@ -34,6 +35,7 @@ interface CommentInputField extends InputProps {
   name: string;
   required?: boolean;
   disabled?: boolean;
+  submitting?: boolean;
   maxLength?: number;
   withCounter?: boolean;
   submitOnReturnKey?: boolean;
@@ -43,6 +45,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   name,
   required = false,
   disabled = false,
+  submitting = false,
   maxLength,
   withCounter = false,
   submitOnReturnKey = false,
@@ -56,14 +59,16 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   );
   const { submitForm } = useFormikContext();
 
-  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = event => {
-    if (submitOnReturnKey) {
-      if (event.key === 'Enter' && event.shiftKey === false) {
-        event.preventDefault();
-        submitForm();
+  const inactive = disabled || submitting;
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> | undefined = submitOnReturnKey
+    ? event => {
+        if (event.key === 'Enter' && event.shiftKey === false) {
+          event.preventDefault();
+          !inactive && submitForm();
+        }
       }
-    }
-  };
+    : undefined;
 
   return (
     <FormGroup sx={{ paddingBottom: theme => theme.spacing(1) }}>
@@ -75,9 +80,11 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           name={field.name}
           onChange={e => helper.setValue(e.target.value)}
           onKeyDown={onKeyDown}
+          readOnly={inactive}
+          color={inactive ? ('neutralMedium' as OutlinedInputProps['color']) : 'primary'}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton aria-label="post comment" size={'small'} type="submit" disabled={disabled}>
+              <IconButton aria-label="post comment" size={'small'} type="submit" disabled={inactive}>
                 <SendIcon />
               </IconButton>
             </InputAdornment>

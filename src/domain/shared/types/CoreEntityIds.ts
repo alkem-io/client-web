@@ -12,10 +12,13 @@ export interface CoreEntityIdTypes {
 
 export type OptionalCoreEntityIds = Partial<CoreEntityIdTypes>;
 
-type HubIdHolder = Required<CoreEntityIdTypes, 'hubNameId'>;
-type ChallengeIdHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'challengeNameId'>;
-type OpportunityIdHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'opportunityNameId'>;
-type ChallengeOpportunityIdsHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'challengeNameId' | 'opportunityNameId'>;
+export type HubIdHolder = Required<CoreEntityIdTypes, 'hubNameId'>;
+export type ChallengeIdHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'challengeNameId'>;
+export type OpportunityIdHolder = Required<CoreEntityIdTypes, 'hubNameId' | 'opportunityNameId'>;
+export type ChallengeOpportunityIdsHolder = Required<
+  CoreEntityIdTypes,
+  'hubNameId' | 'challengeNameId' | 'opportunityNameId'
+>;
 
 export const isHubId = (ids: OptionalCoreEntityIds): ids is HubIdHolder =>
   typeof ids.challengeNameId === 'undefined' && typeof ids.opportunityNameId === 'undefined';

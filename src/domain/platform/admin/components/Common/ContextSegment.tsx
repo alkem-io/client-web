@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import { JourneyType } from '../../../../challenge/JourneyType';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import MarkdownInput from './MarkdownInput';
 
 export const contextSegmentSchema = yup.object().shape({
@@ -13,9 +14,11 @@ export const contextSegmentSchema = yup.object().shape({
   who: yup.string(),
 });
 
-export interface ContextSegmentProps {}
+export interface ContextSegmentProps {
+  loading?: boolean;
+}
 
-export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ contextType }) => {
+export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ loading, contextType }) => {
   const { t } = useTranslation();
 
   return (
@@ -23,37 +26,40 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
       <MarkdownInput
         name="vision"
         label={t(`context.${contextType}.vision.title` as const)}
-        tooltipLabel={t(`context.${contextType}.vision.tooltip` as const)}
         helperText={t(`context.${contextType}.vision.description` as const)}
         rows={10}
-        maxLength={LONG_TEXT_LENGTH}
+        maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
+      <SectionSpacer />
       <MarkdownInput
         name="background"
         label={t(`context.${contextType}.background.title` as const)}
-        tooltipLabel={t(`context.${contextType}.background.tooltip` as const)}
         helperText={t(`context.${contextType}.background.description` as const)}
         rows={10}
-        maxLength={LONG_TEXT_LENGTH}
+        maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
+      <SectionSpacer />
       <MarkdownInput
         name="impact"
         label={t(`context.${contextType}.impact.title` as const)}
-        tooltipLabel={t(`context.${contextType}.impact.tooltip` as const)}
         helperText={t(`context.${contextType}.impact.description` as const)}
         rows={10}
-        maxLength={LONG_TEXT_LENGTH}
+        maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
+      <SectionSpacer />
       <MarkdownInput
         name="who"
         label={t(`context.${contextType}.who.title` as const)}
-        tooltipLabel={t(`context.${contextType}.who.tooltip` as const)}
         helperText={t(`context.${contextType}.who.description` as const)}
         rows={10}
-        maxLength={LONG_TEXT_LENGTH}
+        maxLength={MARKDOWN_TEXT_LENGTH}
+        loading={loading}
         withCounter
       />
     </>

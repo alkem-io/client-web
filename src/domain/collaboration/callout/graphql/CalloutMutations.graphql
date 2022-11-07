@@ -19,17 +19,6 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
   }
 }
 
-mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
-  sendMessageOnCallout(data: $data) {
-    id
-    message
-    sender {
-      id
-    }
-    timestamp
-  }
-}
-
 mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
   removeComment(messageData: $messageData)
 }
