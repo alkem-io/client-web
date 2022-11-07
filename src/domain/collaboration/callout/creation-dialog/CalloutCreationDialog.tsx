@@ -8,6 +8,8 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../common/co
 import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
+import { useHub } from '../../../../hooks';
+import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -15,6 +17,7 @@ export type CalloutCreationDialogFields = {
   templateId?: string;
   type?: CalloutType;
   state?: CalloutState;
+  cardTemplateType?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -24,8 +27,20 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
 }
 
+export interface CalloutCardTemplateInfo {
+  description: string;
+  title: string;
+  tags?: string[];
+}
+export interface CalloutCardTemplate {
+  defaultDescription: string;
+  type: string;
+  info: CalloutCardTemplateInfo;
+}
+
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft, isCreating }) => {
   const { t } = useTranslation();
+  const { templates } = useHub();
 
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
@@ -39,12 +54,14 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
-    const newCallout = {
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.aspectTemplates);
+    const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,
       templateId: callout.templateId!,
       type: callout.type!,
       state: callout.state!,
+      cardTemplate: calloutCardTemplate,
     };
 
     const result = await onSaveAsDraft(newCallout);
@@ -52,7 +69,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft]);
+  }, [callout, onSaveAsDraft, templates.aspectTemplates]);
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -73,11 +90,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
-        {onClose && (
-          <Button onClick={onClose} variant="outlined">
-            {t('buttons.cancel')}
-          </Button>
-        )}
+        {onClose && <Button onClick={onClose}>{t('buttons.cancel')}</Button>}
 
         <LoadingButton
           loading={isCreating}

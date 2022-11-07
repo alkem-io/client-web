@@ -1,10 +1,10 @@
 fragment CommentsWithMessages on Comments {
+  id
+  authorization {
     id
-    authorization {
-      id
-      myPrivileges
-    }
-    messages {
-      ...MessageDetails
-    }
+    myPrivileges
+  }
+  messages {
+    ...MessageDetails
+  }
 }

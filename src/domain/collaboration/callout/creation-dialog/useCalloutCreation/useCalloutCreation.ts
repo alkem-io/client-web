@@ -8,6 +8,7 @@ import {
 } from '../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
 import { CalloutState, CalloutType } from '../../../../../models/graphql-schema';
+import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 
 export type CalloutCreationType = {
   description: string;
@@ -15,6 +16,7 @@ export type CalloutCreationType = {
   templateId: string;
   type: CalloutType;
   state: CalloutState;
+  cardTemplate?: AspectTemplateFormSubmittedValues;
 };
 
 interface CalloutCreationUtils {
@@ -110,6 +112,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
             displayName: callout.displayName,
             type: callout.type,
             state: callout.state,
+            cardTemplate: callout.cardTemplate,
           },
         },
       });

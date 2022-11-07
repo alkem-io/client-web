@@ -468,6 +468,7 @@ export type CalloutKeySpecifier = (
   | 'aspects'
   | 'authorization'
   | 'canvases'
+  | 'cardTemplate'
   | 'comments'
   | 'description'
   | 'displayName'
@@ -483,6 +484,7 @@ export type CalloutFieldPolicy = {
   aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   canvases?: FieldPolicy<any> | FieldReadFunction<any>;
+  cardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -959,6 +961,29 @@ export type HubAspectTemplateFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InnovatonPackKeySpecifier = (
+  | 'authorization'
+  | 'displayName'
+  | 'id'
+  | 'nameID'
+  | 'provider'
+  | 'templates'
+  | InnovatonPackKeySpecifier
+)[];
+export type InnovatonPackFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  templates?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LibraryKeySpecifier = ('authorization' | 'id' | 'innovationPacks' | LibraryKeySpecifier)[];
+export type LibraryFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LifecycleKeySpecifier = (
   | 'id'
   | 'machineDef'
@@ -1029,6 +1054,7 @@ export type MutationKeySpecifier = (
   | 'assignUserToGroup'
   | 'assignUserToOrganization'
   | 'authorizationPolicyResetOnHub'
+  | 'authorizationPolicyResetOnLibrary'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
@@ -1050,6 +1076,7 @@ export type MutationKeySpecifier = (
   | 'createGroupOnCommunity'
   | 'createGroupOnOrganization'
   | 'createHub'
+  | 'createInnovationPackOnLibrary'
   | 'createLifecycleTemplate'
   | 'createOpportunity'
   | 'createOrganization'
@@ -1072,6 +1099,7 @@ export type MutationKeySpecifier = (
   | 'deleteCollaboration'
   | 'deleteDiscussion'
   | 'deleteHub'
+  | 'deleteInnovationPack'
   | 'deleteLifecycleTemplate'
   | 'deleteOpportunity'
   | 'deleteOrganization'
@@ -1125,6 +1153,7 @@ export type MutationKeySpecifier = (
   | 'updateEcosystemModel'
   | 'updateHub'
   | 'updateHubVisibility'
+  | 'updateInnovationPack'
   | 'updateLifecycleTemplate'
   | 'updateOpportunity'
   | 'updateOpportunityInnovationFlow'
@@ -1161,6 +1190,7 @@ export type MutationFieldPolicy = {
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1182,6 +1212,7 @@ export type MutationFieldPolicy = {
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  createInnovationPackOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   createLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1204,6 +1235,7 @@ export type MutationFieldPolicy = {
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1257,6 +1289,7 @@ export type MutationFieldPolicy = {
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunityInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1517,6 +1550,7 @@ export type QueryKeySpecifier = (
   | 'getSupportedVerifiedCredentialMetadata'
   | 'hub'
   | 'hubs'
+  | 'library'
   | 'me'
   | 'meHasProfile'
   | 'metadata'
@@ -1543,6 +1577,7 @@ export type QueryFieldPolicy = {
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1891,6 +1926,7 @@ export type TemplatesSetKeySpecifier = (
   | 'id'
   | 'lifecycleTemplate'
   | 'lifecycleTemplates'
+  | 'policy'
   | TemplatesSetKeySpecifier
 )[];
 export type TemplatesSetFieldPolicy = {
@@ -1902,6 +1938,11 @@ export type TemplatesSetFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycleTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  policy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type TemplatesSetPolicyKeySpecifier = ('minInnovationFlow' | TemplatesSetPolicyKeySpecifier)[];
+export type TemplatesSetPolicyFieldPolicy = {
+  minInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UpdatesKeySpecifier = ('authorization' | 'id' | 'messages' | UpdatesKeySpecifier)[];
 export type UpdatesFieldPolicy = {
@@ -2350,6 +2391,14 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
     fields?: HubAspectTemplateFieldPolicy;
   };
+  InnovatonPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InnovatonPackKeySpecifier | (() => undefined | InnovatonPackKeySpecifier);
+    fields?: InnovatonPackFieldPolicy;
+  };
+  Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);
+    fields?: LibraryFieldPolicy;
+  };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
@@ -2559,6 +2608,10 @@ export type StrictTypedTypePolicies = {
   TemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplatesSetKeySpecifier | (() => undefined | TemplatesSetKeySpecifier);
     fields?: TemplatesSetFieldPolicy;
+  };
+  TemplatesSetPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TemplatesSetPolicyKeySpecifier | (() => undefined | TemplatesSetPolicyKeySpecifier);
+    fields?: TemplatesSetPolicyFieldPolicy;
   };
   Updates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UpdatesKeySpecifier | (() => undefined | UpdatesKeySpecifier);

@@ -18,7 +18,11 @@ const CounterText = styled(Typography)(() => ({
 }));
 
 const getText = (count: number, separator: string, maxLength?: number) => {
-  return `${count}${maxLength !== undefined ? separator + maxLength : ''}`;
+  if (maxLength && count > maxLength) {
+    return <Typography color="red">{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;
+  } else {
+    return <Typography>{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;
+  }
 };
 
 export const CharacterCounter: FC<CharacterCounterProps> = ({ count = 0, separator = ' / ', maxLength, ...rest }) => {

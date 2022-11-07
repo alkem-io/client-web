@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
@@ -7,6 +7,7 @@ import {
   refetchHubTemplatesQuery,
   useHubCanvasesLazyQuery,
   useHubTemplatesQuery,
+  useInnovationPacksLazyQuery,
 } from '../../../../hooks/generated/graphql';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
@@ -50,6 +51,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     variables: { hubId },
   });
 
+  const [loadInnovationPacks, { data: innovationPacks }] = useInnovationPacksLazyQuery();
+
   const {
     aspectTemplates,
     canvasTemplates,
@@ -69,6 +72,36 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     [hubCanvasesData?.hub.collaboration?.callouts]
   );
 
+  const aspectInnovationPacks = useMemo(() => {
+    if (!innovationPacks) return [];
+    return innovationPacks?.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.aspectTemplates.length > 0)
+      .map(pack => ({
+        ...pack,
+        templates: pack.templates?.aspectTemplates || [],
+      }));
+  }, [innovationPacks]);
+
+  const canvasInnovationPacks = useMemo(() => {
+    if (!innovationPacks) return [];
+    return innovationPacks?.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.canvasTemplates.length > 0)
+      .map(pack => ({
+        ...pack,
+        templates: pack.templates?.canvasTemplates || [],
+      }));
+  }, [innovationPacks]);
+
+  const lifecycleInnovationPacks = useMemo(() => {
+    if (!innovationPacks) return [];
+    return innovationPacks?.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.lifecycleTemplates.length > 0)
+      .map(pack => ({
+        ...pack,
+        templates: pack.templates?.lifecycleTemplates || [],
+      }));
+  }, [innovationPacks]);
+
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       <AdminAspectTemplatesSection
@@ -79,6 +112,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
         edit={edit}
+        loadInnovationPacks={loadInnovationPacks}
+        innovationPacks={aspectInnovationPacks}
       />
       <SectionSpacer />
       <AdminCanvasTemplatesSection
@@ -92,6 +127,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         loadCanvases={loadCanvases}
         canvases={canvases}
         getParentCalloutId={findParentCalloutId}
+        loadInnovationPacks={loadInnovationPacks}
+        innovationPacks={canvasInnovationPacks}
       />
       <SectionSpacer />
       <AdminInnovationTemplatesSection
@@ -102,6 +139,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
         edit={edit}
+        loadInnovationPacks={loadInnovationPacks}
+        innovationPacks={lifecycleInnovationPacks}
       />
     </HubSettingsLayout>
   );
