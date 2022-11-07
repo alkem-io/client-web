@@ -27,7 +27,7 @@ const ChallengeContextView: FC = () => {
     awaitRefetchQueries: true,
   });
 
-  const { data: challengeProfile } = useChallengeProfileInfoQuery({
+  const { data: challengeProfile, loading } = useChallengeProfileInfoQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
     skip: false,
   });
@@ -51,6 +51,7 @@ const ChallengeContextView: FC = () => {
       <ContextForm
         contextSegment={ChallengeContextSegment}
         context={challenge?.context}
+        loading={loading || isUpdating}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

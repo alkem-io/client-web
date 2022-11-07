@@ -11,14 +11,21 @@ export interface ContextFormValues {
   who: string;
 }
 
-interface Props {
+interface ContextFormProps {
   context?: Context;
   onSubmit: (formData: ContextFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextSegment: ElementType<ContextSegmentProps>;
+  loading: boolean;
 }
 
-export const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit, contextSegment: ContextSegment }) => {
+export const ContextForm: FC<ContextFormProps> = ({
+  context,
+  onSubmit,
+  wireSubmit,
+  loading,
+  contextSegment: ContextSegment,
+}) => {
   const initialValues: ContextFormValues = {
     background: context?.background || '',
     impact: context?.impact || '',
@@ -51,7 +58,7 @@ export const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit, contextS
           isSubmitWired = true;
         }
 
-        return <ContextSegment />;
+        return <ContextSegment loading={loading} />;
       }}
     </Formik>
   );

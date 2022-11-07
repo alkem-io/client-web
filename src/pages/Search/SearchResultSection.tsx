@@ -2,13 +2,13 @@ import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, useMemo, useState } from 'react';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { EntityFilter } from './EntityFilter';
-import { SearchResultType } from './SearchPage';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
+import { SearchResultMetaType } from './SearchPage';
 
 interface ResultSectionProps {
   title: string;
-  results: SearchResultType[] | undefined;
+  results: SearchResultMetaType[] | undefined;
   filterConfig: FilterConfig;
   onFilterChange: (value: FilterDefinition['value']) => void;
   loading?: boolean;

@@ -61,7 +61,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
     awaitRefetchQueries: true,
   });
 
-  const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
+  const { data: opportunityProfile, loading } = useOpportunityProfileInfoQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     skip: mode === FormMode.create,
   });
@@ -76,7 +76,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const opportunity = opportunityProfile?.hub?.opportunity;
   const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
 
-  const isLoading = isCreating || isUpdating;
+  const isLoading = loading || isCreating || isUpdating;
 
   const currentPaths = useMemo(
     () => [...paths, { name: opportunityId ? 'edit' : 'new', real: false }],
@@ -137,6 +137,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
+        loading={isLoading}
       />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton disabled={isLoading} color="primary" onClick={() => submitWired()}>

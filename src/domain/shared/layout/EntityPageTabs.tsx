@@ -34,6 +34,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
     <>
       <HeaderNavigationTabs
         value={currentTab}
+        defaultTab={EntityPageSection.Dashboard}
         aria-label={`${entityTypeName} tabs`}
         showSettings={showSettings}
         settingsUrl={settingsUrl}

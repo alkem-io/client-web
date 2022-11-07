@@ -13,7 +13,26 @@ fragment CommunityMessages on Community {
 
 fragment MessageDetails on Message {
   id
-  sender
+  sender {
+    id
+    nameID
+    firstName
+    displayName
+    lastName
+    profile {
+      avatar {
+        uri
+      }
+      tagsets {
+        name
+        tags
+      }
+      location {
+        city
+        country
+      }
+    }
+  }
   message
   timestamp
 }

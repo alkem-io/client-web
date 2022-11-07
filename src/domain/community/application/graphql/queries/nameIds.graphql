@@ -23,10 +23,7 @@ query opportunityNameId($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     opportunity(ID: $opportunityId) {
       id
       nameID
-      challenge {
-        id
-        nameID
-      }
+      parentNameID
     }
   }
 }

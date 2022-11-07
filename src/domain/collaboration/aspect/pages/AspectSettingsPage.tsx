@@ -27,6 +27,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
 
   const toAspectFormInput = (aspect?: AspectSettingsFragment): AspectFormInput | undefined =>
     aspect && {
+      id: aspect.id,
       nameID: aspect.nameID,
       type: aspect.type,
       description: aspect.description,
@@ -84,6 +85,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
               onChange={setAspect}
               onAddReference={actions.handleAddReference}
               onRemoveReference={actions.handleRemoveReference}
+              tags={aspect?.tags}
             >
               {({ isValid }) => {
                 const saveDisabled = btnDisabled || !isValid;

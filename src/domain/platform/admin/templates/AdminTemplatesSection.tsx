@@ -1,5 +1,5 @@
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { Button, DialogProps } from '@mui/material';
+import { Box, Button, DialogProps } from '@mui/material';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,11 +7,13 @@ import { TemplateInfoFragment } from '../../../../models/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler } from '../../../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
+import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
+import { InnovationPack, InnovationPackTemplatesData } from './InnovationPacks/InnovationPack';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;
@@ -62,13 +64,15 @@ type AdminAspectTemplatesSectionProps<
   refetchQueries: InternalRefetchQueriesInclude;
   buildTemplateLink: (aspect: T) => LinkWithState;
   edit?: boolean;
+  loadInnovationPacks: () => void;
+  innovationPacks: InnovationPack[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
   useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues> & { templateId: string }, UpdateM>;
-  useDeleteTemplateMutation: MutationHook<{ templateId: string }, DeleteM>;
+  useDeleteTemplateMutation: MutationHook<any, DeleteM>;  //!! TODO: { templateId: string, templatesSetId?: string }
 };
 
 const AdminTemplatesSection = <
@@ -87,6 +91,8 @@ const AdminTemplatesSection = <
   onCloseTemplateDialog,
   refetchQueries,
   edit = false,
+  loadInnovationPacks,
+  innovationPacks,
   useCreateTemplateMutation,
   useUpdateTemplateMutation,
   useDeleteTemplateMutation,
@@ -104,10 +110,16 @@ const AdminTemplatesSection = <
   const onError = useApolloErrorHandler();
   const { t } = useTranslation();
 
+  const { user: userMetadata } = useUserContext();
+  const userIsPlatformAdmin = userMetadata?.permissions.isPlatformAdmin;
+
   const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
+  const [isImportTemplatesDialogOpen, setIsImportTemplatesDialogOpen] = useState(false);
 
   const openCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(true), []);
-  const closeCreateAspectTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(false), []);
+  const openImportTemplateDialog = useCallback(() => { loadInnovationPacks(); setIsImportTemplatesDialogOpen(true); }, [loadInnovationPacks]);
+  const closeCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(false), []);
+  const closeImportTemplatesDialog = useCallback(() => setIsImportTemplatesDialogOpen(false), []);
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
@@ -143,7 +155,34 @@ const AdminTemplatesSection = <
       },
       refetchQueries,
     });
-    closeCreateAspectTemplateDialog();
+    closeCreateTemplateDialog();
+  };
+
+  const handleImportTemplate = async (template: InnovationPackTemplatesData) => {
+    if (!templatesSetId) {
+      throw new TypeError('TemplatesSet ID not loaded.');
+    }
+
+    // Deconstruct and rebuild template information from the InnovationPack template downloaded:
+    const { id, info, ...templateData} = template;
+    const { id: infoId, ...infoData } = info;
+    const values: SubmittedValues = {
+      ...templateData as any,
+      info: {
+        title: infoData.title,
+        tags: infoData.tagset?.tags,
+        description: infoData.description,
+      }
+    };
+
+    await createAspectTemplate({
+      variables: {
+        templatesSetId,
+        ...values,
+      },
+      refetchQueries,
+    });
+    closeImportTemplatesDialog();
   };
 
   const selectedTemplate = templateId ? templates?.find(({ id }) => id === templateId) : undefined;
@@ -165,6 +204,7 @@ const AdminTemplatesSection = <
     await deleteAspectTemplate({
       variables: {
         templateId: deletingTemplateId,
+        templatesSetId: templatesSetId!
       },
       refetchQueries,
     });
@@ -177,9 +217,21 @@ const AdminTemplatesSection = <
       <DashboardGenericSection
         headerText={headerText}
         primaryAction={
-          <Button variant="outlined" onClick={openCreateTemplateDialog}>
-            {t('common.create-new')}
-          </Button>
+          <Box>
+            {userIsPlatformAdmin && (
+              <Button
+                variant="outlined"
+                onClick={openImportTemplateDialog}
+                sx={{ marginRight: theme => theme.spacing(1) }}
+              >
+                {t('buttons.import')}
+              </Button>
+            )}
+            &nbsp;
+            <Button variant="outlined" onClick={openCreateTemplateDialog}>
+              {t('common.create-new')}
+            </Button>
+          </Box>
         }
       >
         <SimpleCardsList>
@@ -196,8 +248,15 @@ const AdminTemplatesSection = <
       <CreateTemplateDialog
         {...dialogProps}
         open={isCreateTemplateDialogOpen}
-        onClose={closeCreateAspectTemplateDialog}
+        onClose={closeCreateTemplateDialog}
         onSubmit={handleAspectTemplateCreation}
+      />
+      <ImportTemplatesDialog
+        {...dialogProps}
+        open={isImportTemplatesDialogOpen}
+        onClose={closeImportTemplatesDialog}
+        onSelectTemplate={handleImportTemplate}
+        innovationPacks={innovationPacks}
       />
       {selectedTemplate && (
         <EditTemplateDialog

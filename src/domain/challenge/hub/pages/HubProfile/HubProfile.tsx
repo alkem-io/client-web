@@ -10,6 +10,7 @@ import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container } from '@mui/material';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import { sortBy } from 'lodash';
 
 export const HubProfile: FC = () => {
   const { t } = useTranslation();
@@ -49,6 +50,8 @@ export const HubProfile: FC = () => {
     });
   };
 
+  const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
+
   let submitWired;
   return (
     <Container maxWidth="xl">
@@ -59,7 +62,7 @@ export const HubProfile: FC = () => {
         hostID={hub.hostId}
         tagset={hub.tagset}
         context={hub.context}
-        organizations={organizations}
+        organizations={organizationsSorted}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

@@ -25,6 +25,7 @@ const UserTabs = (props: EntityTabsProps) => {
   return (
     <HeaderNavigationTabs
       value={props.currentTab}
+      defaultTab={routes.profile}
       showSettings={isCurrentUser}
       settingsUrl={buildUserProfileSettingsUrl(userNameId)}
     >

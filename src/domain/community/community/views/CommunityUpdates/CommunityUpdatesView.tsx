@@ -38,7 +38,7 @@ import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOff
 import { useNotification } from '../../../../../hooks';
 import { Message } from '../../../../../models/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -160,7 +160,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                       rows={30}
                       label=""
                       required
-                      maxLength={LONG_TEXT_LENGTH}
+                      maxLength={MARKDOWN_TEXT_LENGTH}
                       withCounter
                     />
                   </Grid>
@@ -214,7 +214,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
           const removed = removedMessageId === m.id && state.removingMessage;
-          const member = memberMap[m.sender];
+          const member = memberMap[m.sender.id];
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
               <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>
