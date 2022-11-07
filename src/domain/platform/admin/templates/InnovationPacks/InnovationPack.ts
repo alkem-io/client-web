@@ -8,32 +8,5 @@ export type InnovationPackTemplatesData =
   Pick<InnovationPackTemplates['canvasTemplates'][number], 'id' | 'value' | 'info'> |
   Pick<InnovationPackTemplates['lifecycleTemplates'][number], 'id' | 'definition' | 'type' | 'info'>;
 
-
-/**
- * Build a type based on the return of InnovationPacksQuery that looks like:
-  {
-      id: string;
-      nameID: string;
-      displayName: string;
-      provider?: { __typename?: 'Organization'; id: string; nameID: string; displayName: string } | undefined;
-      templates?: Array<{
-              __typename?: 'AspectTemplate' | 'CanvasTemplate' | 'LifecycleTemplate';
-              id: string;
-              defaultDescription: string;
-              type: string;
-              info: {
-                __typename?: 'TemplateInfo';
-                id: string;
-                title: string;
-                description: string;
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                visual?: ...
-              };
-            }>;
-      }>;
-    }
- *
- */
-
 export type InnovationPack = InnovationPackInfo & { templates: InnovationPackTemplatesData[] };
 
