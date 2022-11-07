@@ -9,6 +9,7 @@ import { useUserIp } from './useUserIp';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../domain/platform/cookies/useAlkemioCookies';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
+const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
@@ -73,7 +74,7 @@ const useGetOrSetApmCookie = (): string | undefined => {
 
     const userApmId = `${APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX}-${uuidv4()}`;
     setCookie(APM_CLIENT_TRACK_COOKIE, userApmId, {
-      expires: new Date(2147483647 * 1000), // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
+      expires: new Date(APM_CLIENT_TRACK_COOKIE_EXPIRY),
       path: '/',
       sameSite: 'strict',
     });
