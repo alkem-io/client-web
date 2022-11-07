@@ -26,7 +26,13 @@ export interface ImportTemplatesDialogProps {
   loading?: boolean;
 }
 
-const ImportTemplatesDialog = ({ innovationPacks, loading, open, onClose, onSelectTemplate }: ImportTemplatesDialogProps) => {
+const ImportTemplatesDialog = ({
+  innovationPacks,
+  loading,
+  open,
+  onClose,
+  onSelectTemplate,
+}: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
 
   const [foldersState, setFoldersState] = useState<string[]>([]);
@@ -38,7 +44,7 @@ const ImportTemplatesDialog = ({ innovationPacks, loading, open, onClose, onSele
     } else {
       setFoldersState([...foldersState, id]);
     }
-  }
+  };
   // TODO: Rename to Innovat<I>onPack
 
   const handleClose = () => (onClose ? onClose({}, 'escapeKeyDown') : undefined);

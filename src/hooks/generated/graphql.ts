@@ -82,6 +82,8 @@ export const VisualUriFragmentDoc = gql`
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
+    message
+    timestamp
     sender {
       id
       nameID
@@ -89,21 +91,23 @@ export const MessageDetailsFragmentDoc = gql`
       displayName
       lastName
       profile {
+        id
         avatar {
+          id
           uri
         }
         tagsets {
+          id
           name
           tags
         }
         location {
+          id
           city
           country
         }
       }
     }
-    message
-    timestamp
   }
 `;
 export const AspectDashboardFragmentDoc = gql`
@@ -13227,11 +13231,19 @@ export const CalloutMessageReceivedDocument = gql`
     calloutMessageReceived(calloutIDs: $calloutIDs) {
       commentsID
       message {
-        ...MessageDetails
+        id
+        sender {
+          id
+          nameID
+          firstName
+          displayName
+          lastName
+        }
+        message
+        timestamp
       }
     }
   }
-  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -13265,6 +13277,86 @@ export function useCalloutMessageReceivedSubscription(
 export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
 export type CalloutMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
+export const UserProfileOnCalloutMessageReceivedDocument = gql`
+  query userProfileOnCalloutMessageReceived($userId: UUID_NAMEID_EMAIL!) {
+    user(ID: $userId) {
+      id
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          name
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserProfileOnCalloutMessageReceivedQuery__
+ *
+ * To run a query within a React component, call `useUserProfileOnCalloutMessageReceivedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserProfileOnCalloutMessageReceivedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserProfileOnCalloutMessageReceivedQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserProfileOnCalloutMessageReceivedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQuery,
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQuery,
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQueryVariables
+  >(UserProfileOnCalloutMessageReceivedDocument, options);
+}
+export function useUserProfileOnCalloutMessageReceivedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQuery,
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQuery,
+    SchemaTypes.UserProfileOnCalloutMessageReceivedQueryVariables
+  >(UserProfileOnCalloutMessageReceivedDocument, options);
+}
+export type UserProfileOnCalloutMessageReceivedQueryHookResult = ReturnType<
+  typeof useUserProfileOnCalloutMessageReceivedQuery
+>;
+export type UserProfileOnCalloutMessageReceivedLazyQueryHookResult = ReturnType<
+  typeof useUserProfileOnCalloutMessageReceivedLazyQuery
+>;
+export type UserProfileOnCalloutMessageReceivedQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserProfileOnCalloutMessageReceivedQuery,
+  SchemaTypes.UserProfileOnCalloutMessageReceivedQueryVariables
+>;
+export function refetchUserProfileOnCalloutMessageReceivedQuery(
+  variables: SchemaTypes.UserProfileOnCalloutMessageReceivedQueryVariables
+) {
+  return { query: UserProfileOnCalloutMessageReceivedDocument, variables: variables };
+}
 export const CalloutAspectCreatedDocument = gql`
   subscription CalloutAspectCreated($calloutID: UUID!) {
     calloutAspectCreated(calloutID: $calloutID) {
