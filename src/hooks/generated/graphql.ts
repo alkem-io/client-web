@@ -18725,6 +18725,80 @@ export type HubTemplatesQueryResult = Apollo.QueryResult<
 export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
   return { query: HubTemplatesDocument, variables: variables };
 }
+export const InnovationPacksDocument = gql`
+  query InnovationPacks {
+    library {
+      innovationPacks {
+        id
+        nameID
+        provider {
+          id
+          nameID
+          displayName
+        }
+        displayName
+        templates {
+          id
+          aspectTemplates {
+            ...AdminAspectTemplate
+          }
+          canvasTemplates {
+            ...AdminCanvasTemplate
+          }
+          lifecycleTemplates {
+            ...AdminLifecycleTemplate
+          }
+        }
+      }
+    }
+  }
+  ${AdminAspectTemplateFragmentDoc}
+  ${AdminCanvasTemplateFragmentDoc}
+  ${AdminLifecycleTemplateFragmentDoc}
+`;
+
+/**
+ * __useInnovationPacksQuery__
+ *
+ * To run a query within a React component, call `useInnovationPacksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPacksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPacksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationPacksQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>(
+    InnovationPacksDocument,
+    options
+  );
+}
+export function useInnovationPacksLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>(
+    InnovationPacksDocument,
+    options
+  );
+}
+export type InnovationPacksQueryHookResult = ReturnType<typeof useInnovationPacksQuery>;
+export type InnovationPacksLazyQueryHookResult = ReturnType<typeof useInnovationPacksLazyQuery>;
+export type InnovationPacksQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPacksQuery,
+  SchemaTypes.InnovationPacksQueryVariables
+>;
+export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPacksQueryVariables) {
+  return { query: InnovationPacksDocument, variables: variables };
+}
 export const UpdateInnovationTemplateDocument = gql`
   mutation updateInnovationTemplate(
     $templateId: UUID!

@@ -48,15 +48,22 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 export interface NavigationTabsProps extends TabsProps {
   showSettings?: boolean;
   settingsUrl?: string;
+  defaultTab: TabsProps['value'];
 }
 
 const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
   value,
+  defaultTab,
   'aria-label': ariaLabel,
   showSettings = false,
   settingsUrl = '',
   children,
 }) => {
+  // If cannot show Settings tab show the default tab.
+  if (!showSettings && value === 'settings') {
+    value = defaultTab;
+  }
+
   return (
     <Root>
       <StyledTabs

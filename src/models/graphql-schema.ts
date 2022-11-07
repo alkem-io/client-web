@@ -524,6 +524,7 @@ export enum AuthorizationCredential {
   HubAdmin = 'HUB_ADMIN',
   HubHost = 'HUB_HOST',
   HubMember = 'HUB_MEMBER',
+  InnovationPackProvider = 'INNOVATION_PACK_PROVIDER',
   OpportunityAdmin = 'OPPORTUNITY_ADMIN',
   OpportunityLead = 'OPPORTUNITY_LEAD',
   OpportunityMember = 'OPPORTUNITY_MEMBER',
@@ -1225,6 +1226,15 @@ export type CreateHubInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateInnovationPackOnLibraryInput = {
+  /** The display name for the entity. */
+  displayName: Scalars['String'];
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
+  /** The provider Organization for the InnovationPack */
+  providerID: Scalars['UUID_NAMEID'];
+};
+
 export type CreateLifecycleTemplateOnTemplatesSetInput = {
   /** The XState definition for this LifecycleTemplate. */
   definition: Scalars['LifecycleDefinition'];
@@ -1438,6 +1448,10 @@ export type DeleteDiscussionInput = {
 };
 
 export type DeleteHubInput = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteInnovationPackInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
@@ -1693,6 +1707,32 @@ export enum HubVisibility {
   Demo = 'DEMO',
 }
 
+export type InnovatonPack = {
+  __typename?: 'InnovatonPack';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The InnovationPack provider. */
+  provider?: Maybe<Organization>;
+  /** The templates in use by this InnovationPack */
+  templates?: Maybe<TemplatesSet>;
+};
+
+export type Library = {
+  __typename?: 'Library';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Platform level library. */
+  innovationPacks: Array<InnovatonPack>;
+};
+
 export type Lifecycle = {
   __typename?: 'Lifecycle';
   /** The ID of the entity */
@@ -1797,6 +1837,8 @@ export type Mutation = {
   assignUserToOrganization: Organization;
   /** Reset the Authorization Policy on the specified Hub. */
   authorizationPolicyResetOnHub: Hub;
+  /** Reset the Authorization Policy on the specified Library. */
+  authorizationPolicyResetOnLibrary: Library;
   /** Reset the Authorization Policy on the specified Organization. */
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization policy on the specified User. */
@@ -1839,6 +1881,8 @@ export type Mutation = {
   createGroupOnOrganization: UserGroup;
   /** Creates a new Hub. */
   createHub: Hub;
+  /** Create a new InnovatonPack on the Library. */
+  createInnovationPackOnLibrary: InnovatonPack;
   /** Creates a new LifecycleTemplate on the specified TemplatesSet. */
   createLifecycleTemplate: LifecycleTemplate;
   /** Creates a new Opportunity within the parent Challenge. */
@@ -1883,6 +1927,8 @@ export type Mutation = {
   deleteDiscussion: Discussion;
   /** Deletes the specified Hub. */
   deleteHub: Hub;
+  /** Deletes the specified InnovationPack. */
+  deleteInnovationPack: InnovatonPack;
   /** Deletes the specified LifecycleTemplate. */
   deleteLifecycleTemplate: LifecycleTemplate;
   /** Deletes the specified Opportunity. */
@@ -1989,6 +2035,8 @@ export type Mutation = {
   updateHub: Hub;
   /** Update the visibility of the specified Hub. */
   updateHubVisibility: Hub;
+  /** Updates the InnovationPack. */
+  updateInnovationPack: InnovatonPack;
   /** Updates the specified LifecycleTemplate. */
   updateLifecycleTemplate: LifecycleTemplate;
   /** Updates the specified Opportunity. */
@@ -2175,6 +2223,10 @@ export type MutationCreateHubArgs = {
   hubData: CreateHubInput;
 };
 
+export type MutationCreateInnovationPackOnLibraryArgs = {
+  packData: CreateInnovationPackOnLibraryInput;
+};
+
 export type MutationCreateLifecycleTemplateArgs = {
   lifecycleTemplateInput: CreateLifecycleTemplateOnTemplatesSetInput;
 };
@@ -2257,6 +2309,10 @@ export type MutationDeleteDiscussionArgs = {
 
 export type MutationDeleteHubArgs = {
   deleteData: DeleteHubInput;
+};
+
+export type MutationDeleteInnovationPackArgs = {
+  deleteData: DeleteInnovationPackInput;
 };
 
 export type MutationDeleteLifecycleTemplateArgs = {
@@ -2469,6 +2525,10 @@ export type MutationUpdateHubArgs = {
 
 export type MutationUpdateHubVisibilityArgs = {
   visibilityData: UpdateHubVisibilityInput;
+};
+
+export type MutationUpdateInnovationPackArgs = {
+  innovationPackData: UpdateInnovationPackInput;
 };
 
 export type MutationUpdateLifecycleTemplateArgs = {
@@ -2875,6 +2935,8 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
+  /** Alkemio Library */
+  library: Library;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3496,6 +3558,8 @@ export type TemplatesSet = {
   lifecycleTemplate?: Maybe<LifecycleTemplate>;
   /** The LifecycleTemplates in this TemplatesSet. */
   lifecycleTemplates: Array<LifecycleTemplate>;
+  /** The policy for this TemplatesSet. */
+  policy?: Maybe<TemplatesSetPolicy>;
 };
 
 export type TemplatesSetAspectTemplateArgs = {
@@ -3508,6 +3572,11 @@ export type TemplatesSetCanvasTemplateArgs = {
 
 export type TemplatesSetLifecycleTemplateArgs = {
   ID: Scalars['UUID'];
+};
+
+export type TemplatesSetPolicy = {
+  __typename?: 'TemplatesSetPolicy';
+  minInnovationFlow: Scalars['Float'];
 };
 
 export type UpdateActorInput = {
@@ -3661,6 +3730,17 @@ export type UpdateHubVisibilityInput = {
   hubID: Scalars['String'];
   /** Visibility of the Hub. */
   visibility: HubVisibility;
+};
+
+export type UpdateInnovationPackInput = {
+  /** The ID or NameID of the InnovationPack. */
+  ID: Scalars['UUID_NAMEID'];
+  /** The display name for this entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** Update the provider Organization for the InnovationPack. */
+  providerOrgID?: InputMaybe<Scalars['UUID_NAMEID']>;
 };
 
 export type UpdateLifecycleTemplateInput = {
@@ -16285,6 +16365,108 @@ export type TemplateInfoFragment = {
         minWidth: number;
       }
     | undefined;
+};
+
+export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationPacksQuery = {
+  __typename?: 'Query';
+  library: {
+    __typename?: 'Library';
+    innovationPacks: Array<{
+      __typename?: 'InnovatonPack';
+      id: string;
+      nameID: string;
+      displayName: string;
+      provider?: { __typename?: 'Organization'; id: string; nameID: string; displayName: string } | undefined;
+      templates?:
+        | {
+            __typename?: 'TemplatesSet';
+            id: string;
+            aspectTemplates: Array<{
+              __typename?: 'AspectTemplate';
+              id: string;
+              defaultDescription: string;
+              type: string;
+              info: {
+                __typename?: 'TemplateInfo';
+                id: string;
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
+            }>;
+            canvasTemplates: Array<{
+              __typename?: 'CanvasTemplate';
+              id: string;
+              value: string;
+              info: {
+                __typename?: 'TemplateInfo';
+                id: string;
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
+            }>;
+            lifecycleTemplates: Array<{
+              __typename?: 'LifecycleTemplate';
+              id: string;
+              definition: string;
+              type: LifecycleType;
+              info: {
+                __typename?: 'TemplateInfo';
+                id: string;
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
+            }>;
+          }
+        | undefined;
+    }>;
+  };
 };
 
 export type UpdateInnovationTemplateMutationVariables = Exact<{

@@ -57,7 +57,8 @@
     "confirm-choice": "Confirm Choice",
     "confirm": "Confirm",
     "change-template": "Change template",
-    "change": "Change"
+    "change": "Change",
+    "import": "Import..."
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -274,6 +275,11 @@
         "USER_GROUP_MEMBER": {
           "name": "User Group Member",
           "order": 16,
+          "hidden": true
+        },
+        "INNOVATION_PACK_PROVIDER": {
+          "name": "Innovation Pack Provider",
+          "order": 17,
           "hidden": true
         }
       },
@@ -984,7 +990,10 @@
             "aspect-templates": "Card Templates",
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
+            "import-innovation-packs": {
+              "title": "Import from an Innovation Pack"
+            }
           },
           "my-profile": {
             "description": "Here you can edit your profile details."
