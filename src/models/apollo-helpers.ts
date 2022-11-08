@@ -344,6 +344,7 @@ export type AspectKeySpecifier = (
   | 'authorization'
   | 'banner'
   | 'bannerNarrow'
+  | 'callout'
   | 'comments'
   | 'createdBy'
   | 'createdDate'
@@ -360,6 +361,7 @@ export type AspectFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   banner?: FieldPolicy<any> | FieldReadFunction<any>;
   bannerNarrow?: FieldPolicy<any> | FieldReadFunction<any>;
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1118,6 +1120,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToUser'
   | 'joinCommunity'
   | 'messageUser'
+  | 'moveAspectToCallout'
   | 'removeComment'
   | 'removeMessageFromDiscussion'
   | 'removeOrganizationAsCommunityLead'
@@ -1254,6 +1257,7 @@ export type MutationFieldPolicy = {
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveAspectToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
