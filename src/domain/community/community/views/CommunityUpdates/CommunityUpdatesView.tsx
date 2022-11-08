@@ -36,13 +36,13 @@ import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../hooks';
-import { Message } from '../../../../../models/graphql-schema';
+import { MessageDetailsFragment } from '../../../../../models/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 
 export interface CommunityUpdatesViewProps {
   entities: {
-    messages: Message[];
+    messages: MessageDetailsFragment[];
     authors: Author[];
   };
   state: {
@@ -51,7 +51,7 @@ export interface CommunityUpdatesViewProps {
     removingMessage: boolean;
   };
   actions?: {
-    onSubmit?: (message: string) => Promise<Message | undefined>;
+    onSubmit?: (message: string) => Promise<MessageDetailsFragment | undefined>;
     onRemove?: (messageId: string) => Promise<string | undefined>;
   };
   options?: {

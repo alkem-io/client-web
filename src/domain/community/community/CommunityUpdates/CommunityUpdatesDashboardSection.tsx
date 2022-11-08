@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import { Message } from '../../../../models/graphql-schema';
+import { MessageDetailsFragment } from '../../../../models/graphql-schema';
 import { Box } from '@mui/material';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
@@ -14,7 +14,7 @@ const UPDATES_CONTAINER_HEIGHT = 300;
 export type SearchableUserCardProps = UserCardProps;
 
 export interface CommunityUpdatesDashboardSectionProps {
-  messages?: Message[];
+  messages?: MessageDetailsFragment[];
   messagesLoading: boolean;
   authors?: Author[];
 }
