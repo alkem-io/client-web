@@ -12702,29 +12702,17 @@ export type CalloutMessageReceivedSubscription = {
         firstName: string;
         displayName: string;
         lastName: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            }
+          | undefined;
       };
     };
-  };
-};
-
-export type UserProfileOnCalloutMessageReceivedQueryVariables = Exact<{
-  userId: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type UserProfileOnCalloutMessageReceivedQuery = {
-  __typename?: 'Query';
-  user: {
-    __typename?: 'User';
-    id: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-        }
-      | undefined;
   };
 };
 
