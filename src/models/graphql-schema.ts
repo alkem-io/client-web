@@ -5181,7 +5181,6 @@ export type HubAspectSettingsQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
-                displayName: string;
                 type: CalloutType;
                 aspects?:
                   | Array<{
@@ -5269,7 +5268,6 @@ export type ChallengeAspectSettingsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
-                  displayName: string;
                   type: CalloutType;
                   aspects?:
                     | Array<{
@@ -5358,7 +5356,6 @@ export type OpportunityAspectSettingsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
-                  displayName: string;
                   type: CalloutType;
                   aspects?:
                     | Array<{
@@ -5471,7 +5468,6 @@ export type AspectSettingsFragment = {
 export type AspectSettingsCalloutFragment = {
   __typename?: 'Callout';
   id: string;
-  displayName: string;
   type: CalloutType;
   aspects?:
     | Array<{

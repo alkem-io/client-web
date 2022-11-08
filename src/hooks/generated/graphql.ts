@@ -224,7 +224,6 @@ export const AspectSettingsFragmentDoc = gql`
 export const AspectSettingsCalloutFragmentDoc = gql`
   fragment AspectSettingsCallout on Callout {
     id
-    displayName
     type
     aspects(IDs: [$aspectNameId]) {
       ...AspectSettings

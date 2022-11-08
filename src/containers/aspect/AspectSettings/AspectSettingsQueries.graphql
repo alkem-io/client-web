@@ -71,7 +71,6 @@ fragment AspectSettings on Aspect {
 
 fragment AspectSettingsCallout on Callout {
   id
-  displayName
   type
   aspects(IDs: [$aspectNameId]) {
     ...AspectSettings

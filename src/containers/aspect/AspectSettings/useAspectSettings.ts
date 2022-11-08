@@ -68,8 +68,6 @@ const useAspectSettings: ContainerHook<
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const parentCalloutFromHub = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId);
-  const hubAspect = parentCalloutFromHub?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: challengeData,
@@ -80,11 +78,6 @@ const useAspectSettings: ContainerHook<
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const parentCalloutFromChallenge = getCardCallout(
-    challengeData?.hub?.challenge?.collaboration?.callouts,
-    aspectNameId
-  );
-  const challengeAspect = parentCalloutFromChallenge?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -95,11 +88,6 @@ const useAspectSettings: ContainerHook<
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const parentCalloutFromOpportunity = getCardCallout(
-    opportunityData?.hub?.opportunity?.collaboration?.callouts,
-    aspectNameId
-  );
-  const opportunityAspect = parentCalloutFromOpportunity?.aspects?.find(x => x.nameID === aspectNameId);
 
   const collaborationCallouts =
     hubData?.hub?.collaboration?.callouts ??
@@ -110,7 +98,7 @@ const useAspectSettings: ContainerHook<
   const parentCallout = getCardCallout(collaborationCallouts, aspectNameId);
   const parentCalloutAspectNames = parentCallout?.aspectNames?.map(x => x.displayName);
 
-  const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
+  const aspect = parentCallout?.aspects?.find(x => x.nameID === aspectNameId);
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
