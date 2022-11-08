@@ -12,7 +12,7 @@ import {
   Community,
   CommunityUpdatesQuery,
   Hub,
-  MessageDetailsFragment,
+  Message,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
@@ -33,7 +33,7 @@ export interface CommunityUpdatesContainerProps {
 
 export interface CommunityUpdatesActions {
   onLoadMore: () => void; // TODO will be implemented in a separate issue
-  onSubmit: (message: string, communityId: Community['id']) => Promise<MessageDetailsFragment | undefined>;
+  onSubmit: (message: string, communityId: Community['id']) => Promise<Message | undefined>;
   onRemove: (messageId: string, communityId: Community['id']) => Promise<string | undefined>;
 }
 
@@ -44,7 +44,7 @@ export interface CommunityUpdatesState {
 }
 
 export interface CommunityUpdatesEntities {
-  messages: MessageDetailsFragment[];
+  messages: Message[];
   authors: Author[];
 }
 
@@ -71,7 +71,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
       const update = await sendUpdate({
         variables: { msgData: { message, updatesID: updatesId } },
       });
-      return update.data?.sendUpdate;
+      return update.data?.sendUpdate as Message;
     },
     [sendUpdate, updatesId]
   );
@@ -93,7 +93,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     throw new Error('Not implemented');
   };
 
-  const messages = (data?.hub.community?.communication?.updates?.messages) || EMPTY;
+  const messages = (data?.hub.community?.communication?.updates?.messages as Message[]) || EMPTY;
 
   const authors: Author[] = [];
   for (const message of messages) {
