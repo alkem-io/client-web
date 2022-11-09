@@ -221,6 +221,20 @@ export const AspectSettingsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
+export const AspectSettingsCalloutFragmentDoc = gql`
+  fragment AspectSettingsCallout on Callout {
+    id
+    type
+    aspects(IDs: [$aspectNameId]) {
+      ...AspectSettings
+    }
+    aspectNames: aspects {
+      id
+      displayName
+    }
+  }
+  ${AspectSettingsFragmentDoc}
+`;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
     id
@@ -4019,20 +4033,12 @@ export const HubAspectSettingsDocument = gql`
       collaboration {
         id
         callouts(IDs: [$calloutNameId]) {
-          id
-          type
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectSettings
-          }
-          aspectNames: aspects {
-            id
-            displayName
-          }
+          ...AspectSettingsCallout
         }
       }
     }
   }
-  ${AspectSettingsFragmentDoc}
+  ${AspectSettingsCalloutFragmentDoc}
 `;
 
 /**
@@ -4097,21 +4103,13 @@ export const ChallengeAspectSettingsDocument = gql`
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
-            id
-            type
-            aspects(IDs: [$aspectNameId]) {
-              ...AspectSettings
-            }
-            aspectNames: aspects {
-              id
-              displayName
-            }
+            ...AspectSettingsCallout
           }
         }
       }
     }
   }
-  ${AspectSettingsFragmentDoc}
+  ${AspectSettingsCalloutFragmentDoc}
 `;
 
 /**
@@ -4180,21 +4178,13 @@ export const OpportunityAspectSettingsDocument = gql`
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
-            id
-            type
-            aspects(IDs: [$aspectNameId]) {
-              ...AspectSettings
-            }
-            aspectNames: aspects {
-              id
-              displayName
-            }
+            ...AspectSettingsCallout
           }
         }
       }
     }
   }
-  ${AspectSettingsFragmentDoc}
+  ${AspectSettingsCalloutFragmentDoc}
 `;
 
 /**
@@ -11465,6 +11455,59 @@ export type DeleteAspectMutationResult = Apollo.MutationResult<SchemaTypes.Delet
 export type DeleteAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectMutation,
   SchemaTypes.DeleteAspectMutationVariables
+>;
+export const MoveAspectToCalloutDocument = gql`
+  mutation MoveAspectToCallout($aspectId: UUID!, $calloutId: UUID!) {
+    moveAspectToCallout(moveAspectData: { aspectID: $aspectId, calloutID: $calloutId }) {
+      id
+      nameID
+      callout {
+        id
+        nameID
+      }
+    }
+  }
+`;
+export type MoveAspectToCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveAspectToCalloutMutation,
+  SchemaTypes.MoveAspectToCalloutMutationVariables
+>;
+
+/**
+ * __useMoveAspectToCalloutMutation__
+ *
+ * To run a mutation, you first call `useMoveAspectToCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveAspectToCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveAspectToCalloutMutation, { data, loading, error }] = useMoveAspectToCalloutMutation({
+ *   variables: {
+ *      aspectId: // value for 'aspectId'
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useMoveAspectToCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MoveAspectToCalloutMutation,
+    SchemaTypes.MoveAspectToCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MoveAspectToCalloutMutation, SchemaTypes.MoveAspectToCalloutMutationVariables>(
+    MoveAspectToCalloutDocument,
+    options
+  );
+}
+export type MoveAspectToCalloutMutationHookResult = ReturnType<typeof useMoveAspectToCalloutMutation>;
+export type MoveAspectToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MoveAspectToCalloutMutation>;
+export type MoveAspectToCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveAspectToCalloutMutation,
+  SchemaTypes.MoveAspectToCalloutMutationVariables
 >;
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {

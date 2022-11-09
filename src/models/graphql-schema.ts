@@ -366,6 +366,8 @@ export type Aspect = {
   banner?: Maybe<Visual>;
   /** The narrow banner visual for this Aspect. */
   bannerNarrow?: Maybe<Visual>;
+  /** The parent Callout of the Aspect */
+  callout?: Maybe<Callout>;
   /** The comments for this Aspect. */
   comments?: Maybe<Comments>;
   /** The user that created this Aspect */
@@ -574,6 +576,7 @@ export enum AuthorizationPrivilege {
   Delete = 'DELETE',
   Grant = 'GRANT',
   GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
+  MoveCard = 'MOVE_CARD',
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
   ReadUsers = 'READ_USERS',
@@ -1797,6 +1800,13 @@ export type Metadata = {
   services: Array<ServiceMetadata>;
 };
 
+export type MoveAspectInput = {
+  /** ID of the Aspect to move. */
+  aspectID: Scalars['UUID'];
+  /** ID of the Callout to move the Aspect to. */
+  calloutID: Scalars['UUID'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Ensure all community members are registered for communications. */
@@ -1965,6 +1975,8 @@ export type Mutation = {
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
+  /** Moves the specified Aspect to another Callout. */
+  moveAspectToCallout: Aspect;
   /** Removes a comment message. */
   removeComment: Scalars['MessageID'];
   /** Removes a message from the specified Discussion. */
@@ -2385,6 +2397,10 @@ export type MutationJoinCommunityArgs = {
 
 export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
+};
+
+export type MutationMoveAspectToCalloutArgs = {
+  moveAspectData: MoveAspectInput;
 };
 
 export type MutationRemoveCommentArgs = {
@@ -5459,6 +5475,58 @@ export type AspectSettingsFragment = {
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
     | undefined;
+};
+
+export type AspectSettingsCalloutFragment = {
+  __typename?: 'Callout';
+  id: string;
+  type: CalloutType;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        description: string;
+        type: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
+        bannerNarrow?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
+      }>
+    | undefined;
+  aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
 };
 
 export type CanvasDetailsFragment = {
@@ -11017,6 +11085,21 @@ export type DeleteAspectMutationVariables = Exact<{
 }>;
 
 export type DeleteAspectMutation = { __typename?: 'Mutation'; deleteAspect: { __typename?: 'Aspect'; id: string } };
+
+export type MoveAspectToCalloutMutationVariables = Exact<{
+  aspectId: Scalars['UUID'];
+  calloutId: Scalars['UUID'];
+}>;
+
+export type MoveAspectToCalloutMutation = {
+  __typename?: 'Mutation';
+  moveAspectToCallout: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    callout?: { __typename?: 'Callout'; id: string; nameID: string } | undefined;
+  };
+};
 
 export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
   aspectID: Scalars['UUID'];
