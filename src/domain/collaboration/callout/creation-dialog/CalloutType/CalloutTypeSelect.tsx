@@ -24,13 +24,13 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled =
       <Typography sx={{ color: '#00000099' }}>{t('components.callout-creation.callout-type-label')}</Typography>
       <Box p={1} />
       <RadioButtonGroup value={field.value} disabled={disabled} onChange={helpers.setValue}>
-        <RadioButton value={CalloutType.Comments} iconComponent={ForumOutlinedIcon}>
+        <RadioButton key={CalloutType.Comments} value={CalloutType.Comments} iconComponent={ForumOutlinedIcon}>
           {t('common.discussion')}
         </RadioButton>
-        <RadioButton value={CalloutType.Card} iconComponent={BallotOutlinedIcon}>
+        <RadioButton key={CalloutType.Card} value={CalloutType.Card} iconComponent={BallotOutlinedIcon}>
           {t('common.cards')}
         </RadioButton>
-        <RadioButton value={CalloutType.Canvas} iconComponent={ModeOutlinedIcon}>
+        <RadioButton key={CalloutType.Canvas} value={CalloutType.Canvas} iconComponent={ModeOutlinedIcon}>
           {t('common.canvases')}
         </RadioButton>
       </RadioButtonGroup>
