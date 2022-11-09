@@ -12,14 +12,15 @@ export interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewP
 export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentCreatedViewProps> = props => {
   const { t } = useTranslation();
 
-  const comment = replaceQuotesInOldDescription(props.description);
-
   const action = t('components.activity-log-view.actions.discussion-comment-created', {
     calloutDisplayName: props.callout.displayName,
   });
-  const description = t('components.activity-log-view.activity-description.discussion-comment-created', {
+  const comment = props.description;
+  const descriptionRaw = t('components.activity-log-view.activity-description.discussion-comment-created', {
     comment,
   });
+  const description = replaceQuotesInOldDescription(descriptionRaw);
+
   const url = buildCalloutUrl(props.callout.nameID, props.journeyLocation);
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
