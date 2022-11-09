@@ -6,8 +6,8 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
 import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
-import { useCalloutCardTemplate } from '../../callout/hooks/useCalloutCardTemplate';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
+import { CalloutCardTemplate } from '../../callout/creation-dialog/CalloutCreationDialog';
 
 export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
@@ -19,6 +19,7 @@ export type AspectCreationDialogProps = {
   onCreate: (aspect: AspectCreationOutput) => Promise<{ nameID: string } | undefined>;
   calloutDisplayName: string;
   calloutId: string;
+  cardTemplate: CalloutCardTemplate | undefined;
 } & CoreEntityIdTypes;
 
 export interface CardCreationCardTemplateInfo {
@@ -38,21 +39,11 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   onClose,
   onCreate,
   calloutDisplayName,
-  hubNameId,
-  challengeNameId,
-  opportunityNameId,
-  calloutId,
+  cardTemplate,
 }) => {
   const { t } = useTranslation();
   const [aspect, setAspect] = useState<AspectCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
-
-  const { cardTemplate } = useCalloutCardTemplate({
-    calloutNameId: calloutId,
-    hubNameId,
-    challengeNameId,
-    opportunityNameId,
-  });
 
   const handleClose = () => {
     setAspect({});
@@ -65,7 +56,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
       description: aspect?.description ?? '',
       type: cardTemplate?.type ?? '',
       tags: aspect?.tags ?? [],
-      visualUri: cardTemplate?.info?.visualUri,
+      visualUri: cardTemplate?.info?.visual?.uri,
     });
     handleClose();
   };

@@ -18,6 +18,7 @@ import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/Callo
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
+import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
 
 export interface CalloutLayoutEvents {
   onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
@@ -36,6 +37,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     editable?: boolean;
     authorization?: Authorization;
     url: string;
+    cardTemplate?: CalloutCardTemplate;
   };
 }
 
