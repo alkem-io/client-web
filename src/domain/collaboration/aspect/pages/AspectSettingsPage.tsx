@@ -85,7 +85,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       return;
     }
 
-    actions.handleDelete(entities.aspect.id);
+    await actions.handleDelete(entities.aspect.id);
     navigate(contributeUrl);
   };
 
