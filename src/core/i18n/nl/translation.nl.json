@@ -57,7 +57,8 @@
     "confirm-choice": "Bevestig keuze",
     "confirm": "Bevestig",
     "change-template": "Verander template",
-    "change": "Verander"
+    "change": "Verander",
+    "import": "Import..."
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -261,8 +262,8 @@
           "order": 13,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
-          "name": "Organisatie Lid",
+        "ORGANIZATION_ASSOCIATE": {
+          "name": "Organization Associate",
           "order": 14,
           "hidden": true
         },
@@ -274,6 +275,11 @@
         "USER_GROUP_MEMBER": {
           "name": "Lid Gebruikersgroep",
           "order": 16,
+          "hidden": true
+        },
+        "INNOVATION_PACK_PROVIDER": {
+          "name": "Innovation Pack Provider",
+          "order": 17,
           "hidden": true
         }
       },
@@ -292,6 +298,47 @@
     "blocks": {
       "users-contributing": "gebruikers die bijdragen",
       "all-contributing-users": "alle gebruikers die een bijdrage leveren"
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Header 1",
+        "blocktype.h2": "Header 2",
+        "blocktype.h3": "Header 3",
+        "blocktype.h4": "Header 4",
+        "blocktype.h5": "Header 5",
+        "blocktype.h6": "Header 6",
+        "blocktype.blockquote": "Blockquote",
+        "blocktype.code": "Code",
+        "blocktype.blocktype": "Block Type",
+        "blocktype.normal": "Normal",
+        "emoji.emoji": "Emoticons",
+        "history.history": "History",
+        "history.undo": "Undo",
+        "history.redo": "Redo",
+        "image.image": "Visuals",
+        "image.fileUpload": "Upload File",
+        "image.byURL": "Paste URL",
+        "image.dropFileText": "Drop the file or click to upload",
+        "inline.bold": "Bold",
+        "inline.italic": "Italic",
+        "inline.strikethrough": "Strikethrough",
+        "inline.monospace": "Monospace",
+        "link.linkTitle": "Link Title",
+        "link.linkTarget": "URL",
+        "link.linkTargetOption": "Open link in new window",
+        "link.link": "Link",
+        "link.unlink": "Remove Link",
+        "list.list": "List",
+        "list.unordered": "Unordered List",
+        "list.ordered": "Ordered List",
+        "list.indent": "Indent",
+        "list.outdent": "Remove indent",
+        "remove.remove": "Remove"
+      }
     }
   },
   "community": {
@@ -307,7 +354,8 @@
     "draftNotice": "Voorlopige versie - Deze Callout is alleen zichtbaar voor Beheerders",
     "delete-confirm-title": "Callout verwijderen?",
     "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd.",
-    "state-permission": "Leden toestaan om nieuwe [$t(common.cards) / $t(common.canvases) / $t(common.comments)] in te dienen"
+    "state-permission": "Accept new responses",
+    "permission-helptext": "Use the switch below to close this callout for new entries."
   },
   "journey-creation": {
     "dialog-title": "Maak nieuwe {{entity}} aan"
@@ -324,31 +372,26 @@
     "hub": {
       "tagline": {
         "title": "Tagline",
-        "tooltip": "",
         "description": "Leg in één zin uit waar deze Hub over gaat.",
         "placeholder": ""
       },
       "background": {
         "title": "Achtergrond",
-        "tooltip": "",
         "description": "Geef een korte omschrijving waar de behoefte voor deze Hub vandaan komt en hoe de Hub is ontstaan.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "",
         "description": "Wat zal deze Hub veranderen? Wat is de impact voor individuen en organisaties?",
         "placeholder": ""
       },
       "vision": {
         "title": "Waar gaat deze community over?",
-        "tooltip": "",
         "description": "Wat is het referentiekader voor deze Hub?",
         "placeholder": ""
       },
       "who": {
         "title": "Wie moeten erbij betrokken worden?",
-        "tooltip": "",
         "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
         "placeholder": ""
       }
@@ -361,31 +404,26 @@
       },
       "tagline": {
         "title": "Challenge Statement",
-        "tooltip": "",
         "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met 'Hoe kunnen we...?'",
         "placeholder": ""
       },
       "background": {
         "title": "Huidige realiteit",
-        "tooltip": "",
         "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan de 'wat, waar, wanneer en wie'.",
         "placeholder": ""
       },
       "impact": {
         "title": "Extra context",
-        "tooltip": "",
         "description": "Geef een korte beschrijving van hoe deze Challenge in het grotere plaatje past? Wat is de impact? Hoe past de Challenge in deze Hub?",
         "placeholder": ""
       },
       "vision": {
         "title": "Toekomstvisie",
-        "tooltip": "",
         "description": "Hoe ziet een succesvolle toekomst eruit? Waaruit moet de oplossing van deze Challenge bestaan?",
         "placeholder": ""
       },
       "who": {
         "title": "Wie kunnen een bijdrage leveren?",
-        "tooltip": "",
         "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
         "placeholder": ""
       },
@@ -403,31 +441,26 @@
       },
       "tagline": {
         "title": "Slagzin",
-        "tooltip": "",
         "description": "Leg in één zin uit waar deze Opportunity over gaat.",
         "placeholder": ""
       },
       "background": {
         "title": "Achtergrond",
-        "tooltip": "",
         "description": "Geef een korte omschrijving van hoe de Opportunity is ontstaan en hoe het pas in het grotere plaatje.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "",
         "description": "Wat zal deze Opportunity veranderen? Wat is de impact zijn op mensen en organisaties?",
         "placeholder": ""
       },
       "vision": {
         "title": "Omschrijving",
-        "tooltip": "",
         "description": "Omschrijf het idee en de impact op de bijbehorende Challenge. Onthoud dat het een flexibel document is en ieder moment kan worden aangepast.",
         "placeholder": ""
       },
       "who": {
         "title": "Wie is erbij betrokken?",
-        "tooltip": "",
         "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Opportunity.",
         "placeholder": ""
       },
@@ -485,7 +518,7 @@
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "{{displayName}}",
+        "canvas-created": "[name] {{displayName}}",
         "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
         "card-created": "[{{cardType}}] - {{cardDisplayName}}",
         "discussion-comment-created": "{{comment}}",
@@ -507,6 +540,7 @@
     "callout-creation": {
       "title": "Maak een nieuwe Callout",
       "callout-type-label": "Callout type",
+      "card-type-label": "Card type",
       "info-step": {
         "title": "Details",
         "description": "Omschrijving",
@@ -520,27 +554,29 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "Geen templates beschikbaar",
-        "card-template-label": "Kies een template dat je zou willen gebruiken voor de Callout"
+        "card-template-label": "Card Template",
+        "no-card-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Maak aan",
         "card-template-label": "Kies een template voor de Kaart"
       }
     },
+    "callout-edit": {
+      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+    },
     "aspect-creation": {
-      "title": "Maak een nieuw Kaart aan",
+      "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "Het soort additionele context om toe te voegen.",
         "error": "Fout opgetreden tijdens het laden van de types",
         "label": "Soort Kaart",
-        "type-help-text-short": "Kies het Kaart type dat het beste overeenkomt met de context die je wilt delen.",
-        "type-help-text": "Kaarten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke stakeholders. De set Kaart-types dat hier beschikbaar is staat vast. Kies het Kaart-type dat het beste overeenkomt met de context die je wilt delen."
+        "type-help-text-short": "Kies het Kaart type dat het beste overeenkomt met de context die je wilt delen."
       },
       "info-step": {
         "title": "Details",
         "description": "Deel alsjeblieft de details.",
         "description-placeholder": "Een beschrijving voor deze Kaart",
-        "description-help-text": "Voeg hier de belangrijkste informatie toe over de Kaart. Waarom is het relevant? Hoe is het gerelateerd?",
         "tags-help-text": "Voeg informatieve labels toe die het vinden van de Kaart makkelijker maken.",
         "name-help-text": "Een beschrijvende naam voor het Kaart.",
         "name-id-help-text": "Naam-ID help tekst",
@@ -954,7 +990,10 @@
             "aspect-templates": "Templates voor Kaarten",
             "canvas-templates": "Templates voor Canvasen",
             "innovation-templates": "Templates voor Innovation Flows",
-            "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?"
+            "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?",
+            "import-innovation-packs": {
+              "title": "Import from an Innovation Pack"
+            }
           },
           "my-profile": {
             "description": "Hier kun je de details van je profiel aanpassen."
@@ -963,7 +1002,7 @@
             "description": "Hier kun je meer informatie zien over je lidmaatschap."
           },
           "organizations": {
-            "description": "Hier kun je alle geassocieerde organisaties zien van deze gebruiker."
+            "description": "Here you can see the organizations that your user is associated with."
           },
           "notifications": {
             "description": "Hier kun je je voorkeuren voor notificaties aanpassen."
@@ -1099,7 +1138,9 @@
       },
       "no-results": "Geen resultaten",
       "more-results": "Er zijn meer zoekresultaten. Gebruik specifiekere zoekcriteria om het aantal resultaten te reduceren",
-      "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten"
+      "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten",
+      "search-suggestions": "Search suggestions",
+      "no-suggestions": "No suggestions"
     },
     "challenge-explorer": {
       "search": {
@@ -1511,6 +1552,13 @@
     "type": {
       "title": "Kaart Type",
       "help-text": "Welke informatie type wil je delen?"
+    },
+    "cardLocation": {
+      "title": "Card location",
+      "label": "Contributing to Callout",
+      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "success": "Successfully moved card to the new Callout.",
+      "error": "Something went wrong when moving the card, please try again."
     }
   },
   "innovation-edit": {
