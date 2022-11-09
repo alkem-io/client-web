@@ -15,6 +15,7 @@ import {
 } from '../../../models/graphql-schema';
 import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
+import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
@@ -31,6 +32,16 @@ interface CalloutChildPropValue {
   canvases: CanvasFragmentWithCallout[];
   comments: CommentsWithMessagesFragmentWithCallout;
 }
+
+interface CalloutCardTemplatePropValue {
+  [CalloutType.Card]: CalloutCardTemplate;
+  [CalloutType.Canvas]: undefined;
+  [CalloutType.Comments]: undefined;
+}
+
+type CalloutCardTemplateType = {
+  [Type in keyof CalloutCardTemplatePropValue]: { cardTemplate: CalloutCardTemplatePropValue[Type] };
+};
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
   [P in PropName]: CalloutChildPropValue[P];
@@ -50,7 +61,11 @@ type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description
     editable: boolean;
     isSubscribedToComments: boolean;
     url: string;
-  };
+  } & (
+    | CalloutCardTemplateType[CalloutType.Card]
+    | CalloutCardTemplateType[CalloutType.Canvas]
+    | CalloutCardTemplateType[CalloutType.Comments]
+  );
 
 const useCallouts = (params: OptionalCoreEntityIds) => {
   // queries

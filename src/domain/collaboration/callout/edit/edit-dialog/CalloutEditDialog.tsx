@@ -10,8 +10,8 @@ import ConfirmationDialog, {
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
-import { useCalloutCardTemplate } from '../../hooks/useCalloutCardTemplate';
-import { useUrlParams } from '../../../../../hooks';
+import { useHub } from '../../../../../hooks';
+import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -24,22 +24,17 @@ export interface CalloutEditDialogProps {
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, onClose, onDelete, onCalloutEdit }) => {
   const { t } = useTranslation();
+  const { templates } = useHub();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  const { cardTemplate } = useCalloutCardTemplate({
-    calloutNameId: callout.id,
-    hubNameId: hubNameId!,
-    challengeNameId,
-    opportunityNameId,
-  });
-  const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: cardTemplate?.type };
+  const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
   const [newCallout, setNewCallout] = useState<CalloutFormOutput>(initialValues);
   const handleStatusChanged = (valid: boolean) => setValid(valid);
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {
     setLoading(true);
-    await onCalloutEdit({ ...callout, ...newCallout });
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.aspectTemplates);
+    await onCalloutEdit({ ...callout, ...newCallout, cardTemplate: calloutCardTemplate });
     setLoading(false);
   };
   const handleDelete = useCallback(async () => {
