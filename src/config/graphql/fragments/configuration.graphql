@@ -15,6 +15,7 @@ fragment Configuration on Config {
     }
   }
   platform {
+    environment
     about
     feedback
     privacy

@@ -1284,6 +1284,8 @@ export type CreateOrganizationInput = {
 };
 
 export type CreateProfileInput = {
+  /** The URL of the avatar of the user */
+  avatarURL?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   location?: InputMaybe<CreateLocationInput>;
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
@@ -2786,6 +2788,8 @@ export type Platform = {
   __typename?: 'Platform';
   /** URL to a page about the platform */
   about: Scalars['String'];
+  /** Name of the environment */
+  environment: Scalars['String'];
   /** The feature flags for the platform */
   featureFlags: Array<FeatureFlag>;
   /** URL to a form for providing feedback */
@@ -4483,6 +4487,7 @@ export type ConfigurationFragment = {
   };
   platform: {
     __typename?: 'Platform';
+    environment: string;
     about: string;
     feedback: string;
     privacy: string;
@@ -4518,6 +4523,7 @@ export type ConfigurationQuery = {
     };
     platform: {
       __typename?: 'Platform';
+      environment: string;
       about: string;
       feedback: string;
       privacy: string;

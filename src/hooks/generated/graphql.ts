@@ -46,6 +46,7 @@ export const ConfigurationFragmentDoc = gql`
       }
     }
     platform {
+      environment
       about
       feedback
       privacy

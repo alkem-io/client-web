@@ -13,7 +13,6 @@ const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 =
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
-const APM_DEFAULT_ENVIRONMENT = 'local';
 
 export interface ApmCustomContext {
   authenticated?: boolean;
@@ -28,14 +27,15 @@ export interface ApmCustomContext {
 export const useApm = (): ApmBase | undefined => {
   const userObject = useUserObject();
   const customContext = useCustomContext();
-  const { apm: apmConfig } = useConfig();
+  const { apm: apmConfig, platform: platformConfig } = useConfig();
   const [apm, setApm] = useState<ApmBase | undefined>();
 
   const rumEnabled = apmConfig?.rumEnabled ?? false;
-  const endpoint = apmConfig?.endpoint ?? '';
+  const endpoint = apmConfig?.endpoint;
+  const environment = platformConfig?.environment;
 
   useEffect(() => {
-    if (!endpoint) {
+    if (!endpoint || !environment) {
       return;
     }
 
@@ -45,7 +45,7 @@ export const useApm = (): ApmBase | undefined => {
       serviceName: APM_CLIENT_SERVICE_NAME,
       serverUrl: endpoint,
       serviceVersion: require('../../package.json').version,
-      environment: process.env.environment ?? APM_DEFAULT_ENVIRONMENT,
+      environment,
       active: enabled,
     });
 
@@ -53,7 +53,7 @@ export const useApm = (): ApmBase | undefined => {
     apmInit.setCustomContext(customContext);
 
     setApm(apmInit);
-  }, [endpoint, rumEnabled, userObject, customContext]);
+  }, [endpoint, rumEnabled, environment, userObject, customContext]);
 
   return apm;
 };
@@ -108,7 +108,7 @@ const useCustomContext = () => {
   return useMemo<ApmCustomContext>(() => {
     const context: ApmCustomContext = {};
 
-    const userIp = userIpData?.IPv4;
+    const userIp = userIpData?.ip;
 
     if (!userIpLoading) {
       context.ip = userIp;
