@@ -3,6 +3,7 @@ export interface Configuration {
     providers: AuthenticationProvider[];
   };
   platform: {
+    environment: string;
     about: string;
     feedback: string;
     privacy: string;

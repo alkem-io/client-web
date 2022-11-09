@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export interface UserIpData {
-  country_code: string;
-  country_name: string;
+interface IpWhoIsResponse {
+  ip: string;
+  continent: string;
+  country: string;
   city: string;
-  postal: string;
   latitude: number;
   longitude: number;
-  IPv4: string;
-  state: string;
+}
+
+export interface UserIpData {
+  ip: string;
+  latitude: number;
+  longitude: number;
 }
 
 type UseUserIpReturnType = {
@@ -30,7 +34,7 @@ export const useUserIp = (skip?: boolean): UseUserIpReturnType => {
 
     setLoading(true);
     axios
-      .get<UserIpData>('https://geolocation-db.com/json/', {
+      .get<IpWhoIsResponse>('http://ipwho.is/', {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
@@ -40,16 +44,13 @@ export const useUserIp = (skip?: boolean): UseUserIpReturnType => {
       .then(
         x => {
           setData(x.data);
-          return x.data;
         },
         reason => {
           setError(new Error(reason));
-          return undefined;
         }
       )
       .catch(err => {
         setError(err);
-        return undefined;
       })
       .finally(() => setLoading(false));
   }, [skip]);
