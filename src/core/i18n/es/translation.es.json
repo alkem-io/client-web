@@ -57,7 +57,8 @@
     "confirm-choice": "Confirmar opciones",
     "confirm": "Confirmar",
     "change-template": "Cambiar Plantilla",
-    "change": "Cambiar"
+    "change": "Cambiar",
+    "import": "Import..."
   },
   "tooltips": {
     "click-more-info": "Click para más información",
@@ -261,8 +262,8 @@
           "order": 13,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
-          "name": "Miembro de la organización",
+        "ORGANIZATION_ASSOCIATE": {
+          "name": "Organization Associate",
           "order": 14,
           "hidden": true
         },
@@ -274,6 +275,11 @@
         "USER_GROUP_MEMBER": {
           "name": "Miembro del grupo de usuario",
           "order": 16,
+          "hidden": true
+        },
+        "INNOVATION_PACK_PROVIDER": {
+          "name": "Innovation Pack Provider",
+          "order": 17,
           "hidden": true
         }
       },
@@ -292,6 +298,47 @@
     "blocks": {
       "users-contributing": "los usuarios que están contribuyendo.",
       "all-contributing-users": "todos los colaboradores."
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Header 1",
+        "blocktype.h2": "Header 2",
+        "blocktype.h3": "Header 3",
+        "blocktype.h4": "Header 4",
+        "blocktype.h5": "Header 5",
+        "blocktype.h6": "Header 6",
+        "blocktype.blockquote": "Blockquote",
+        "blocktype.code": "Code",
+        "blocktype.blocktype": "Block Type",
+        "blocktype.normal": "Normal",
+        "emoji.emoji": "Emoticons",
+        "history.history": "History",
+        "history.undo": "Undo",
+        "history.redo": "Redo",
+        "image.image": "Visuals",
+        "image.fileUpload": "Upload File",
+        "image.byURL": "Paste URL",
+        "image.dropFileText": "Drop the file or click to upload",
+        "inline.bold": "Bold",
+        "inline.italic": "Italic",
+        "inline.strikethrough": "Strikethrough",
+        "inline.monospace": "Monospace",
+        "link.linkTitle": "Link Title",
+        "link.linkTarget": "URL",
+        "link.linkTargetOption": "Open link in new window",
+        "link.link": "Link",
+        "link.unlink": "Remove Link",
+        "list.list": "List",
+        "list.unordered": "Unordered List",
+        "list.ordered": "Ordered List",
+        "list.indent": "Indent",
+        "list.outdent": "Remove indent",
+        "remove.remove": "Remove"
+      }
     }
   },
   "community": {
@@ -307,7 +354,8 @@
     "draftNotice": "BORRADOR - Este Callout solo es visible para administradores.",
     "delete-confirm-title": "¿Borrar Callout?",
     "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados.",
-    "state-permission": "Permitir a los miembros enviar nuevos [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
+    "state-permission": "Accept new responses",
+    "permission-helptext": "Use the switch below to close this callout for new entries."
   },
   "journey-creation": {
     "dialog-title": "Crear {{entity}}"
@@ -324,31 +372,26 @@
     "hub": {
       "tagline": {
         "title": "En una línea",
-        "tooltip": "",
         "description": "Explica en una línea de qué trata este Hub",
         "placeholder": ""
       },
       "background": {
         "title": "Historia",
-        "tooltip": "",
         "description": "¿Cuál es la situación actual? ¿Qué se ha hecho para progresar? ¿Qué resultados se han logrado?",
         "placeholder": ""
       },
       "impact": {
         "title": "Impacto",
-        "tooltip": "",
         "description": "¿Qué cambiaría si se logra la visión? ¿Qué usuarios u organizaciones experimentarán una realidad diferente, para bien o para mal?",
         "placeholder": ""
       },
       "vision": {
         "title": "¿De qué trata esta comunidad?",
-        "tooltip": "",
         "description": "¿Cual es el marco de referencia para este Hub?",
         "placeholder": ""
       },
       "who": {
         "title": "¿Quién está involucrado?",
-        "tooltip": "",
         "description": "Piensa en personas, organizaciones, organismos públicos, insituciones de investigación, etc...",
         "placeholder": ""
       }
@@ -361,31 +404,26 @@
       },
       "tagline": {
         "title": "En una línea",
-        "tooltip": "",
         "description": "Explica en una frase de qué se trata este Desafío. También es posible enmarcarlo como una pregunta, comenzando con '¿Cómo podríamos...?'",
         "placeholder": ""
       },
       "background": {
         "title": "Realidad Actual",
-        "tooltip": "",
         "description": "Una breve impresión del estado actual del desafío. Piensa en el qué, dónde, cuándo y quién.",
         "placeholder": ""
       },
       "impact": {
         "title": "Contexto Adicional",
-        "tooltip": "",
         "description": "Da un pequeño resumen de cómo este Desafío puede enmarcarse en una foto aún mas amplia. ¿Cual es su impacto? ¿Por qué está ahí?",
         "placeholder": ""
       },
       "vision": {
         "title": "Visión a Futuro",
-        "tooltip": "",
         "description": "¿Cómo se ve el éxito? ¿En qué consistiría una solución a este Desafío?",
         "placeholder": ""
       },
       "who": {
         "title": "¿Quién debería contribuir?",
-        "tooltip": "",
         "description": "Piensa en individuos, organizaciones, organismos públicos, centros de investigación, etc.",
         "placeholder": ""
       },
@@ -403,31 +441,26 @@
       },
       "tagline": {
         "title": "En una línea",
-        "tooltip": "",
         "description": "Explica en una frase de qué trata esta Oportunidad",
         "placeholder": ""
       },
       "background": {
         "title": "Antecedentes",
-        "tooltip": "",
         "description": "Da un breve resumen de cómo esta Oportunidad fue identificada y cómo se enmarca en una foto mas amplia.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impacto",
-        "tooltip": "",
         "description": "¿Qué cambiaría esta oportunidad? ¿Cómo las personas u organizaciones se verían afectadas, para bien o para mal?",
         "placeholder": ""
       },
       "vision": {
         "title": "Descripción",
-        "tooltip": "",
         "description": "Describe la idea y el impacto que tendrá sobre el Desafío. Piensa que esto es un documento 'vivo', puede ser actualizado.",
         "placeholder": ""
       },
       "who": {
         "title": "¿Quién está involucrado?",
-        "tooltip": "",
         "description": "Describe las personas u organizaciones que están trabajando en esta oportunidad",
         "placeholder": ""
       },
@@ -485,7 +518,7 @@
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "{{displayName}}",
+        "canvas-created": "[name] {{displayName}}",
         "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
         "card-created": "[{{cardType}}] - {{cardDisplayName}}",
         "discussion-comment-created": "{{comment}}",
@@ -507,6 +540,7 @@
     "callout-creation": {
       "title": "Crear Callout",
       "callout-type-label": "Tipo de Callout",
+      "card-type-label": "Card type",
       "info-step": {
         "title": "Detalles",
         "description": "Descripción",
@@ -520,27 +554,29 @@
       "template-step": {
         "title": "Plantillas",
         "no-templates": "Plantillas no disponibles",
-        "card-template-label": "Elije una plantilla para tu Callout"
+        "card-template-label": "Card Template",
+        "no-card-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Crear",
         "card-template-label": "Elije una plantilla para la nueva Tarjeta"
       }
     },
+    "callout-edit": {
+      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+    },
     "aspect-creation": {
-      "title": "Crear una nueva Tarjeta",
+      "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "El tipo de contexto adicional a añadir.",
         "error": "Ha ocurrido un error al cargar los tipos",
         "label": "Tipo de Tarjeta",
-        "type-help-text-short": "Por favor elije el tipo de tarjeta que mejor se adapte al contexto que deseas compartir.",
-        "type-help-text": "La tarjeta permite compartir el contexto relevante, como otras iniciativas, conocimientos o partes interesadas clave. El conjunto de tipos de tarjetas disponibles en este contexto es fijo. Por favor elije el tipo de tarjeta que mejor se adapte al contexto que deseas compartir."
+        "type-help-text-short": "Por favor elije el tipo de tarjeta que mejor se adapte al contexto que deseas compartir."
       },
       "info-step": {
         "title": "Detalles",
         "description": "Por favor comparte los detalles",
         "description-placeholder": "Una descripción para esta tarjeta",
-        "description-help-text": "Añade aquí la información clave para la Tarjeta. ¿Por qué es relevante? ¿Cómo se relaciona?",
         "tags-help-text": "Añade etiquetas para ayudar a transmitir rápidamente la información clave sobre la tarjeta. Unas buenas etiquetas también ayudan a que la tarjeta sea más fácil de encontrar en las búsquedas.",
         "name-help-text": "Un nombre descriptivo para esta tarjeta.",
         "name-id-help-text": "Texto de ayuda para la identificación del Identificador",
@@ -954,7 +990,10 @@
             "aspect-templates": "Plantillas de Tarjetas",
             "canvas-templates": "Plantillas de Pizarras",
             "innovation-templates": "Plantillas de Innovation Flows",
-            "delete-confirmation": "¿Estás seguro de que quieres borrar {{template}} de este Hub? También puedes editar esta plantilla si lo deseas."
+            "delete-confirmation": "¿Estás seguro de que quieres borrar {{template}} de este Hub? También puedes editar esta plantilla si lo deseas.",
+            "import-innovation-packs": {
+              "title": "Import from an Innovation Pack"
+            }
           },
           "my-profile": {
             "description": "Aquí puedes editar los detalles de tu perfil de usuario."
@@ -963,7 +1002,7 @@
             "description": "Aquí puedes consultar tus membresías."
           },
           "organizations": {
-            "description": "Aquí puedes ver las organizaciones con las que tu usuario está relacionado."
+            "description": "Here you can see the organizations that your user is associated with."
           },
           "notifications": {
             "description": "Aquí puedes editar los ajustes de notificaciones."
@@ -1099,7 +1138,9 @@
       },
       "no-results": "No se encontraron resultados",
       "more-results": "Hay mas resultados. Por favor sé mas específico para reducir los resultados.",
-      "user-not-logged": "Inicia sesión o regístrate para incluir usuarios en tu búsqueda"
+      "user-not-logged": "Inicia sesión o regístrate para incluir usuarios en tu búsqueda",
+      "search-suggestions": "Search suggestions",
+      "no-suggestions": "No suggestions"
     },
     "challenge-explorer": {
       "search": {
@@ -1511,6 +1552,13 @@
     "type": {
       "title": "Tipo de Tarjeta",
       "help-text": "¿Qué tipo de información quieres compartir?"
+    },
+    "cardLocation": {
+      "title": "Card location",
+      "label": "Contributing to Callout",
+      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "success": "Successfully moved card to the new Callout.",
+      "error": "Something went wrong when moving the card, please try again."
     }
   },
   "innovation-edit": {

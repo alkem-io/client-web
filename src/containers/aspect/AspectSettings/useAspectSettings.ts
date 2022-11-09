@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../models/container';
+import { ContainerHook } from '../../../models/container';
 import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
@@ -9,7 +8,7 @@ import {
   useOpportunityAspectSettingsQuery,
   useUpdateAspectMutation,
 } from '../../../hooks/generated/graphql';
-import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
+import { Aspect, AspectSettingsCalloutFragment, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../common/utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
@@ -23,10 +22,11 @@ type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'typ
 export interface AspectSettingsContainerEntities {
   aspect?: AspectSettingsFragment;
   aspectsNames?: string[] | undefined;
+  parentCallout: AspectSettingsCalloutFragment | undefined;
 }
 
 export interface AspectSettingsContainerActions {
-  handleUpdate: (aspect: AspectUpdateData) => void;
+  handleUpdate: (aspect: AspectUpdateData) => Promise<void>;
   handleAddReference: (push: PushFunc) => void;
   handleRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
   handleDelete: (id: string) => Promise<void>;
@@ -40,12 +40,7 @@ export interface AspectSettingsContainerState {
   updateError?: ApolloError;
 }
 
-export interface AspectSettingsContainerProps
-  extends ContainerChildProps<
-    AspectSettingsContainerEntities,
-    AspectSettingsContainerActions,
-    AspectSettingsContainerState
-  > {
+export interface AspectSettingsContainerProps {
   hubNameId: string;
   challengeNameId?: string;
   opportunityNameId?: string;
@@ -53,14 +48,12 @@ export interface AspectSettingsContainerProps
   calloutNameId: string;
 }
 
-const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
-  children,
-  hubNameId,
-  aspectNameId,
-  challengeNameId,
-  opportunityNameId,
-  calloutNameId,
-}) => {
+const useAspectSettings: ContainerHook<
+  AspectSettingsContainerProps,
+  AspectSettingsContainerEntities,
+  AspectSettingsContainerActions,
+  AspectSettingsContainerState
+> = ({ hubNameId, aspectNameId, challengeNameId, opportunityNameId, calloutNameId }) => {
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
@@ -75,9 +68,6 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const parentCalloutFromHub = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId);
-  const parentCalloutAspectNamesFromHub = parentCalloutFromHub?.aspectNames?.map(x => x.displayName);
-  const hubAspect = parentCalloutFromHub?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: challengeData,
@@ -88,12 +78,6 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const parentCalloutFromChallenge = getCardCallout(
-    challengeData?.hub?.challenge?.collaboration?.callouts,
-    aspectNameId
-  );
-  const parentCalloutAspectNamesFromChallenge = parentCalloutFromChallenge?.aspectNames?.map(x => x.displayName);
-  const challengeAspect = parentCalloutFromChallenge?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -104,16 +88,17 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const parentCalloutFromOpportunity = getCardCallout(
-    opportunityData?.hub?.opportunity?.collaboration?.callouts,
-    aspectNameId
-  );
-  const parentCalloutAspectNamesFromOpportunity = parentCalloutFromOpportunity?.aspectNames?.map(x => x.displayName);
-  const opportunityAspect = parentCalloutFromOpportunity?.aspects?.find(x => x.nameID === aspectNameId);
 
-  const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
-  const parentCalloutAspectNames =
-    parentCalloutAspectNamesFromHub ?? parentCalloutAspectNamesFromChallenge ?? parentCalloutAspectNamesFromOpportunity;
+  const collaborationCallouts =
+    hubData?.hub?.collaboration?.callouts ??
+    challengeData?.hub?.challenge?.collaboration?.callouts ??
+    opportunityData?.hub?.opportunity?.collaboration?.callouts;
+
+  // TODO fetch calloutID for the Aspect for building a reliable link between entities
+  const parentCallout = getCardCallout(collaborationCallouts, aspectNameId);
+  const parentCalloutAspectNames = parentCallout?.aspectNames?.map(x => x.displayName);
+
+  const aspect = parentCallout?.aspects?.find(x => x.nameID === aspectNameId);
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
@@ -122,8 +107,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     onCompleted: () => notify('Aspect updated successfully', 'success'),
   });
 
-  const handleUpdate = (aspect: AspectUpdateData) => {
-    updateAspect({
+  const handleUpdate = async (aspect: AspectUpdateData) => {
+    await updateAspect({
       variables: {
         input: {
           ID: aspect.id,
@@ -174,14 +159,11 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     }
   };
 
-  return (
-    <>
-      {children(
-        { aspect, aspectsNames: parentCalloutAspectNames },
-        { loading, error, updating, deleting, updateError },
-        { handleUpdate, handleAddReference, handleRemoveReference, handleDelete }
-      )}
-    </>
-  );
+  return {
+    entities: { aspect, aspectsNames: parentCalloutAspectNames, parentCallout },
+    state: { loading, error, updating, deleting, updateError },
+    actions: { handleUpdate, handleAddReference, handleRemoveReference, handleDelete },
+  };
 };
-export default AspectSettingsContainer;
+
+export default useAspectSettings;

@@ -18,7 +18,7 @@ const CounterText = styled(Typography)(() => ({
 }));
 
 const getText = (count: number, separator: string, maxLength?: number) => {
-  if (maxLength && (count > maxLength)) {
+  if (maxLength && count > maxLength) {
     return <Typography color="red">{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;
   } else {
     return <Typography>{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;

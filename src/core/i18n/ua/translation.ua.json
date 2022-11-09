@@ -57,7 +57,8 @@
     "confirm-choice": "Підтвердити Вибір",
     "confirm": "Confirm",
     "change-template": "Change template",
-    "change": "Change"
+    "change": "Change",
+    "import": "Import..."
   },
   "tooltips": {
     "click-more-info": "Нажміть, щоб дізнатись більше",
@@ -261,9 +262,9 @@
           "order": 12,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
-          "name": "Учасник Організації",
-          "order": 13,
+        "ORGANIZATION_ASSOCIATE": {
+          "name": "Organization Associate",
+          "order": 14,
           "hidden": true
         },
         "USER_SELF_MANAGEMENT": {
@@ -274,6 +275,11 @@
         "USER_GROUP_MEMBER": {
           "name": "Учасник групи користувачів",
           "order": 15,
+          "hidden": true
+        },
+        "INNOVATION_PACK_PROVIDER": {
+          "name": "Innovation Pack Provider",
+          "order": 17,
           "hidden": true
         }
       },
@@ -292,6 +298,47 @@
     "blocks": {
       "users-contributing": "користувачі, які роблять внесок",
       "all-contributing-users": "всі учасники"
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Header 1",
+        "blocktype.h2": "Header 2",
+        "blocktype.h3": "Header 3",
+        "blocktype.h4": "Header 4",
+        "blocktype.h5": "Header 5",
+        "blocktype.h6": "Header 6",
+        "blocktype.blockquote": "Blockquote",
+        "blocktype.code": "Code",
+        "blocktype.blocktype": "Block Type",
+        "blocktype.normal": "Normal",
+        "emoji.emoji": "Emoticons",
+        "history.history": "History",
+        "history.undo": "Undo",
+        "history.redo": "Redo",
+        "image.image": "Visuals",
+        "image.fileUpload": "Upload File",
+        "image.byURL": "Paste URL",
+        "image.dropFileText": "Drop the file or click to upload",
+        "inline.bold": "Bold",
+        "inline.italic": "Italic",
+        "inline.strikethrough": "Strikethrough",
+        "inline.monospace": "Monospace",
+        "link.linkTitle": "Link Title",
+        "link.linkTarget": "URL",
+        "link.linkTargetOption": "Open link in new window",
+        "link.link": "Link",
+        "link.unlink": "Remove Link",
+        "list.list": "List",
+        "list.unordered": "Unordered List",
+        "list.ordered": "Ordered List",
+        "list.indent": "Indent",
+        "list.outdent": "Remove indent",
+        "remove.remove": "Remove"
+      }
     }
   },
   "community": {
@@ -307,7 +354,8 @@
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
-    "state-permission": "Allow members to submit new [$t(common.cards) / $t(common.canvases) / $t(common.comments)]"
+    "state-permission": "Accept new responses",
+    "permission-helptext": "Use the switch below to close this callout for new entries."
   },
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
@@ -324,31 +372,26 @@
     "hub": {
       "tagline": {
         "title": "Tagline",
-        "tooltip": "",
         "description": "Explain in one sentence what this Hub is about.",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "tooltip": "",
         "description": "Give a brief overview of the need for this Hub and how it came about.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "",
         "description": "What will this Hub change? How will people and organizations be affected?",
         "placeholder": ""
       },
       "vision": {
         "title": "Vision",
-        "tooltip": "",
         "description": "What is the frame of reference for this Hub?",
         "placeholder": ""
       },
       "who": {
         "title": "Who",
-        "tooltip": "",
         "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       }
@@ -361,31 +404,26 @@
       },
       "tagline": {
         "title": "Challenge Statement",
-        "tooltip": "",
         "description": "Explain in one sentence what this challenge is about. It is also possible to frame it as a question, starting with How might we...",
         "placeholder": ""
       },
       "background": {
         "title": "Current Reality",
-        "tooltip": "",
         "description": "Give a brief impression of the current state of the challenge. Think of the what, where, when and who.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "",
         "description": "Give a brief overview of how this Challenge is embedded in the wider picture. What is its impact? Why is it here?",
         "placeholder": ""
       },
       "vision": {
         "title": "Future Vision",
-        "tooltip": "",
         "description": "What does success look like? What should a solution to this Challenge comprise?",
         "placeholder": ""
       },
       "who": {
         "title": "Who",
-        "tooltip": "",
         "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       },
@@ -403,31 +441,26 @@
       },
       "tagline": {
         "title": "Tagline",
-        "tooltip": "",
         "description": "In one sentence, explain what this opportunity is about. Think of what and what for. ",
         "placeholder": ""
       },
       "background": {
         "title": "Description",
-        "tooltip": "",
         "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "",
         "description": "What will this Opportunity change? How will people and organizations be affected, for good or bad?",
         "placeholder": ""
       },
       "vision": {
         "title": "Vision",
-        "tooltip": "",
         "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
         "placeholder": ""
       },
       "who": {
         "title": "Who",
-        "tooltip": "",
         "description": "Describe the people and organizations who are currently working on this Opportunity.",
         "placeholder": ""
       },
@@ -485,7 +518,7 @@
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "{{displayName}}",
+        "canvas-created": "[name] {{displayName}}",
         "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
         "card-created": "[{{cardType}}] - {{cardDisplayName}}",
         "discussion-comment-created": "{{comment}}",
@@ -507,6 +540,7 @@
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
+      "card-type-label": "Card type",
       "info-step": {
         "title": "Деталі",
         "description": "Опис",
@@ -520,27 +554,29 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Choose a template  that you want to use for the Callout"
+        "card-template-label": "Card Template",
+        "no-card-template-selected": "Please select a card template"
       },
       "create-step": {
         "title": "Create",
         "card-template-label": "Choose Card template"
       }
     },
+    "callout-edit": {
+      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+    },
     "aspect-creation": {
-      "title": "Створити новий аспект",
+      "title": "Submit your answer to {{calloutDisplayName}}",
       "type-step": {
         "title": "Тип контексту для додавання",
         "error": "Під час завантаження типів сталась помилка",
         "label": "Тип аспекту",
-        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share.",
-        "type-help-text": "Аспекти дозволяють поширювати відповідний, або схожий контекст, такий як інші ініціативи, знання, або головні заціквлені сторони. Перелік доступних типів аспектів в контексті є сталим. Будь ласка, оберіть тип аспекту, що найкраще пасує до контексту, яким ви бажаєте поділитись"
+        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Деталі",
         "description": "Будь ласка, вкажіть деталі",
         "description-placeholder": "Опис даного аспекту",
-        "description-help-text": "Add here the key information about the aspCardect. Why is it relevant? How does it relate?",
         "tags-help-text": "Додайте теги у вільну форму, що будуть описувати основну інформацію аспекту. Правильні теги також полегшують пошук аспектів",
         "name-help-text": "Детальна назва для цього аспекту",
         "name-id-help-text": "Допоміжний текст ідентифікатора імені",
@@ -954,7 +990,10 @@
             "aspect-templates": "Card Templates",
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
+            "import-innovation-packs": {
+              "title": "Import from an Innovation Pack"
+            }
           },
           "my-profile": {
             "description": "Here you can edit your profile details."
@@ -963,7 +1002,7 @@
             "description": "Here you can see the membership information."
           },
           "organizations": {
-            "description": "Here you can see the associated organizations that your user is related to."
+            "description": "Here you can see the organizations that your user is associated with."
           },
           "notifications": {
             "description": "Here you can edit your notifications preferences."
@@ -1099,7 +1138,9 @@
       },
       "no-results": "Немає результатів",
       "more-results": "Є більше результатів пошуку. Будь ласка, вкажіть більш точні пошукові критерії, щоб зменшити кількість результатів",
-      "user-not-logged": "Увідіть, або зареєструйтесь, щоб вказати користувача в пошуку"
+      "user-not-logged": "Увідіть, або зареєструйтесь, щоб вказати користувача в пошуку",
+      "search-suggestions": "Search suggestions",
+      "no-suggestions": "No suggestions"
     },
     "challenge-explorer": {
       "search": {
@@ -1511,6 +1552,13 @@
     "type": {
       "title": "Тип Карти",
       "help-text": "What type of information do you want to share?"
+    },
+    "cardLocation": {
+      "title": "Card location",
+      "label": "Contributing to Callout",
+      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "success": "Successfully moved card to the new Callout.",
+      "error": "Something went wrong when moving the card, please try again."
     }
   },
   "innovation-edit": {

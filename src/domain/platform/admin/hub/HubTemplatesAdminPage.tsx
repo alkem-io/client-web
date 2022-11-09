@@ -74,40 +74,33 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   const aspectInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.
-      library.
-      innovationPacks.
-      filter(pack => pack.templates && pack.templates?.aspectTemplates.length > 0).
-      map(pack => ({
+    return innovationPacks?.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.aspectTemplates.length > 0)
+      .map(pack => ({
         ...pack,
-        templates: pack.templates?.aspectTemplates || []
+        templates: pack.templates?.aspectTemplates || [],
       }));
-  }, [innovationPacks])
-
+  }, [innovationPacks]);
 
   const canvasInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.
-      library.
-      innovationPacks.
-      filter(pack => pack.templates && pack.templates?.canvasTemplates.length > 0).
-      map(pack => ({
+    return innovationPacks?.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.canvasTemplates.length > 0)
+      .map(pack => ({
         ...pack,
-        templates: pack.templates?.canvasTemplates || []
+        templates: pack.templates?.canvasTemplates || [],
       }));
-  }, [innovationPacks])
+  }, [innovationPacks]);
 
   const lifecycleInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.
-      library.
-      innovationPacks.
-      filter(pack => pack.templates && pack.templates?.lifecycleTemplates.length > 0).
-      map(pack => ({
+    return innovationPacks?.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.lifecycleTemplates.length > 0)
+      .map(pack => ({
         ...pack,
-        templates: pack.templates?.lifecycleTemplates || []
+        templates: pack.templates?.lifecycleTemplates || [],
       }));
-  }, [innovationPacks])
+  }, [innovationPacks]);
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>

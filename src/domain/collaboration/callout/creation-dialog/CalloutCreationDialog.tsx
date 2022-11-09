@@ -31,6 +31,9 @@ export interface CalloutCardTemplateInfo {
   description: string;
   title: string;
   tags?: string[];
+  visual?: {
+    uri: string;
+  };
 }
 export interface CalloutCardTemplate {
   defaultDescription: string;

@@ -72,7 +72,7 @@ type AdminAspectTemplatesSectionProps<
   editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
   useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues> & { templateId: string }, UpdateM>;
-  useDeleteTemplateMutation: MutationHook<any, DeleteM>;  //!! TODO: { templateId: string, templatesSetId?: string }
+  useDeleteTemplateMutation: MutationHook<any, DeleteM>; //!! TODO: { templateId: string, templatesSetId?: string }
 };
 
 const AdminTemplatesSection = <
@@ -117,7 +117,10 @@ const AdminTemplatesSection = <
   const [isImportTemplatesDialogOpen, setIsImportTemplatesDialogOpen] = useState(false);
 
   const openCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(true), []);
-  const openImportTemplateDialog = useCallback(() => { loadInnovationPacks(); setIsImportTemplatesDialogOpen(true); }, [loadInnovationPacks]);
+  const openImportTemplateDialog = useCallback(() => {
+    loadInnovationPacks();
+    setIsImportTemplatesDialogOpen(true);
+  }, [loadInnovationPacks]);
   const closeCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(false), []);
   const closeImportTemplatesDialog = useCallback(() => setIsImportTemplatesDialogOpen(false), []);
 
@@ -164,15 +167,15 @@ const AdminTemplatesSection = <
     }
 
     // Deconstruct and rebuild template information from the InnovationPack template downloaded:
-    const { id, info, ...templateData} = template;
+    const { id, info, ...templateData } = template;
     const { id: infoId, ...infoData } = info;
     const values: SubmittedValues = {
-      ...templateData as any,
+      ...(templateData as any),
       info: {
         title: infoData.title,
         tags: infoData.tagset?.tags,
         description: infoData.description,
-      }
+      },
     };
 
     await createAspectTemplate({
@@ -204,7 +207,7 @@ const AdminTemplatesSection = <
     await deleteAspectTemplate({
       variables: {
         templateId: deletingTemplateId,
-        templatesSetId: templatesSetId!
+        templatesSetId: templatesSetId!,
       },
       refetchQueries,
     });
