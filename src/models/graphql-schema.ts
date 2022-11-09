@@ -3650,8 +3650,6 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
-  /** Callout type. */
-  type?: InputMaybe<CalloutType>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -11509,6 +11507,19 @@ export type UpdateCalloutMutation = {
     state: CalloutState;
     type: CalloutType;
     visibility: CalloutVisibility;
+    cardTemplate?:
+      | {
+          __typename?: 'AspectTemplate';
+          id: string;
+          type: string;
+          defaultDescription: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -12769,6 +12780,23 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+  cardTemplate?:
+    | {
+        __typename?: 'AspectTemplate';
+        id: string;
+        type: string;
+        defaultDescription: string;
+        info: {
+          __typename?: 'TemplateInfo';
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type CardTemplateFragment = {
+  __typename?: 'Callout';
   cardTemplate?:
     | {
         __typename?: 'AspectTemplate';

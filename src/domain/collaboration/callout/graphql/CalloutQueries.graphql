@@ -171,6 +171,10 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
+  ...CardTemplate
+}
+
+fragment CardTemplate on Callout {
   cardTemplate {
     id
     type
