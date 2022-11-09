@@ -38,6 +38,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
             description: callout.description,
             displayName: callout.displayName,
             state: callout.state,
+            cardTemplate: callout.cardTemplate,
           },
         },
       });

@@ -1168,6 +1168,21 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     visibility
+    cardTemplate {
+      id
+      type
+      defaultDescription
+      info {
+        tagset {
+          id
+          tags
+        }
+        visual {
+          id
+          uri
+        }
+      }
+    }
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}

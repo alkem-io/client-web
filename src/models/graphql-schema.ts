@@ -3611,8 +3611,19 @@ export type UpdateAspectTemplateInput = {
   type?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateCalloutCardTemplateInput = {
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The type of Aspects created from this Template. */
+  type?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
+  /** CardTemplate data for this Card Callout. */
+  cardTemplate?: InputMaybe<UpdateCalloutCardTemplateInput>;
   /** Callout description. */
   description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for this entity. */
@@ -3831,6 +3842,7 @@ export type UpdateTemplateInfoInput = {
   description?: InputMaybe<Scalars['Markdown']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   title?: InputMaybe<Scalars['String']>;
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateUserGroupInput = {
@@ -11599,6 +11611,19 @@ export type HubCalloutsQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
+                cardTemplate?:
+                  | {
+                      __typename?: 'AspectTemplate';
+                      id: string;
+                      type: string;
+                      defaultDescription: string;
+                      info: {
+                        __typename?: 'TemplateInfo';
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
               }>
             | undefined;
         }
@@ -11760,6 +11785,19 @@ export type ChallengeCalloutsQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
                       }
                     | undefined;
                 }>
@@ -11926,6 +11964,19 @@ export type OpportunityCalloutsQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
                 }>
               | undefined;
           }
@@ -12074,6 +12125,19 @@ export type HubCalloutQuery = {
                       __typename?: 'Authorization';
                       id: string;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                cardTemplate?:
+                  | {
+                      __typename?: 'AspectTemplate';
+                      id: string;
+                      type: string;
+                      defaultDescription: string;
+                      info: {
+                        __typename?: 'TemplateInfo';
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
                     }
                   | undefined;
               }>
@@ -12238,6 +12302,19 @@ export type ChallengeCalloutQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
                 }>
               | undefined;
           }
@@ -12399,6 +12476,19 @@ export type OpportunityCalloutQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  cardTemplate?:
+                    | {
+                        __typename?: 'AspectTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
                       }
                     | undefined;
                 }>
@@ -12595,6 +12685,19 @@ export type CalloutFragment = {
     | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  cardTemplate?:
+    | {
+        __typename?: 'AspectTemplate';
+        id: string;
+        type: string;
+        defaultDescription: string;
+        info: {
+          __typename?: 'TemplateInfo';
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
     | undefined;
 };
 
