@@ -108,10 +108,9 @@ const _hydrateHubCard = (
 
 const useHydrateChallengeCard = (
   data: SearchResultT<SearchResultChallengeFragment> | undefined,
-  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined,
-  skip: boolean
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
 ) => {
-  if (skip || !data?.challenge || !data?.hub) {
+  if (!data?.challenge || !data?.hub) {
     return null;
   }
   const challenge = data.challenge;
@@ -149,10 +148,9 @@ const useHydrateChallengeCard = (
 
 const useHydrateOpportunityCard = (
   data: SearchResultT<SearchResultOpportunityFragment> | undefined,
-  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined,
-  skip: boolean
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
 ) => {
-  if (skip || !data?.opportunity) {
+  if (!data?.opportunity) {
     return null;
   }
   const opportunity = data.opportunity;
@@ -189,7 +187,19 @@ const useHydrateOpportunityCard = (
   );
 };
 
-export const useHydrateCard = (result: SearchResultMetaType | undefined) => {
+interface HydratedCardGetter {
+  (): null | JSX.Element;
+}
+
+interface UseHydrateCardProvided {
+  hydrateUserCard: HydratedCardGetter;
+  hydrateOrganizationCard: HydratedCardGetter;
+  hydrateHubCard: HydratedCardGetter;
+  hydrateChallengeCard: HydratedCardGetter;
+  hydrateOpportunityCard: HydratedCardGetter;
+}
+
+export const useHydrateCard = (result: SearchResultMetaType | undefined): UseHydrateCardProvided => {
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user?.id;
 
@@ -210,15 +220,13 @@ export const useHydrateCard = (result: SearchResultMetaType | undefined) => {
 
   const hydrateChallengeCardResult = useHydrateChallengeCard(
     result as SearchResultT<SearchResultChallengeFragment>,
-    userRoles,
-    !result || !result['hubID']
+    userRoles
   );
   const hydrateChallengeCard = () => hydrateChallengeCardResult;
 
   const hydrateOpportunityCardResult = useHydrateOpportunityCard(
     result as SearchResultT<SearchResultOpportunityFragment>,
-    userRoles,
-    !result || !result['challenge']
+    userRoles
   );
   const hydrateOpportunityCard = () => hydrateOpportunityCardResult;
 
