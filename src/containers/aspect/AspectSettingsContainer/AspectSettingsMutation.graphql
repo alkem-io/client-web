@@ -4,6 +4,7 @@ mutation updateAspect($input: UpdateAspectInput!) {
     displayName
     type
     profile {
+      id
       description
       tagset {
         id

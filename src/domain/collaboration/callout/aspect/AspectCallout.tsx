@@ -100,6 +100,7 @@ const AspectCallout = ({
           nameID: '',
           displayName: aspect.displayName ?? '',
           profile: {
+            id: '',
             description: aspect.profileData?.description || '',
             tagset: {
               id: '-1',

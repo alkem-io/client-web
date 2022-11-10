@@ -4664,6 +4664,7 @@ export type HubAspectQuery = {
                       profile?:
                         | {
                             __typename?: 'CardProfile';
+                            id: string;
                             description: string;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
@@ -4781,6 +4782,7 @@ export type ChallengeAspectQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
@@ -4899,6 +4901,7 @@ export type OpportunityAspectQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
@@ -5001,6 +5004,7 @@ export type AspectDashboardDataFragment = {
               profile?:
                 | {
                     __typename?: 'CardProfile';
+                    id: string;
                     description: string;
                     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                     references?:
@@ -5077,6 +5081,7 @@ export type AspectDashboardFragment = {
   profile?:
     | {
         __typename?: 'CardProfile';
+        id: string;
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
@@ -5133,6 +5138,7 @@ export type UpdateAspectMutation = {
     profile?:
       | {
           __typename?: 'CardProfile';
+          id: string;
           description: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
@@ -5208,6 +5214,7 @@ export type HubAspectSettingsQuery = {
                       profile?:
                         | {
                             __typename?: 'CardProfile';
+                            id: string;
                             description: string;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
@@ -5302,6 +5309,7 @@ export type ChallengeAspectSettingsQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
@@ -5397,6 +5405,7 @@ export type OpportunityAspectSettingsQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
@@ -5463,6 +5472,7 @@ export type AspectSettingsFragment = {
   profile?:
     | {
         __typename?: 'CardProfile';
+        id: string;
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
@@ -6315,9 +6325,19 @@ export type ChallengePageQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description: string;
+                                  }>
                                 | undefined;
                             }
                           | undefined;
@@ -6585,8 +6605,18 @@ export type ChallengeProfileFragment = {
                     profile?:
                       | {
                           __typename?: 'CardProfile';
+                          id: string;
                           description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                          references?:
+                            | Array<{
+                                __typename?: 'Reference';
+                                id: string;
+                                name: string;
+                                uri: string;
+                                description: string;
+                              }>
+                            | undefined;
                         }
                       | undefined;
                   }>
@@ -7458,9 +7488,19 @@ export type HubPageQuery = {
                       profile?:
                         | {
                             __typename?: 'CardProfile';
+                            id: string;
                             description: string;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description: string;
+                                }>
                               | undefined;
                           }
                         | undefined;
@@ -7705,8 +7745,18 @@ export type HubPageFragment = {
                     profile?:
                       | {
                           __typename?: 'CardProfile';
+                          id: string;
                           description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                          references?:
+                            | Array<{
+                                __typename?: 'Reference';
+                                id: string;
+                                name: string;
+                                uri: string;
+                                description: string;
+                              }>
+                            | undefined;
                         }
                       | undefined;
                   }>
@@ -7937,9 +7987,19 @@ export type OpportunityPageQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description: string;
+                                  }>
                                 | undefined;
                             }
                           | undefined;
@@ -8150,8 +8210,18 @@ export type OpportunityPageFragment = {
                     profile?:
                       | {
                           __typename?: 'CardProfile';
+                          id: string;
                           description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                          references?:
+                            | Array<{
+                                __typename?: 'Reference';
+                                id: string;
+                                name: string;
+                                uri: string;
+                                description: string;
+                              }>
+                            | undefined;
                         }
                       | undefined;
                   }>
@@ -11004,8 +11074,12 @@ export type AspectCardFragment = {
   profile?:
     | {
         __typename?: 'CardProfile';
+        id: string;
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
       }
     | undefined;
 };
@@ -11024,8 +11098,12 @@ export type ContributeTabAspectFragment = {
   profile?:
     | {
         __typename?: 'CardProfile';
+        id: string;
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
       }
     | undefined;
 };
@@ -11045,6 +11123,7 @@ export type CreateAspectMutation = {
     profile?:
       | {
           __typename?: 'CardProfile';
+          id: string;
           description: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         }
@@ -11511,6 +11590,7 @@ export type CreateAspectFromContributeTabMutation = {
     profile?:
       | {
           __typename?: 'CardProfile';
+          id: string;
           description: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         }
@@ -11572,9 +11652,19 @@ export type HubCalloutsQuery = {
                       profile?:
                         | {
                             __typename?: 'CardProfile';
+                            id: string;
                             description: string;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description: string;
+                                }>
                               | undefined;
                           }
                         | undefined;
@@ -11730,9 +11820,19 @@ export type ChallengeCalloutsQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description: string;
+                                  }>
                                 | undefined;
                             }
                           | undefined;
@@ -11893,9 +11993,19 @@ export type OpportunityCalloutsQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description: string;
+                                  }>
                                 | undefined;
                             }
                           | undefined;
@@ -12051,9 +12161,19 @@ export type HubCalloutQuery = {
                       profile?:
                         | {
                             __typename?: 'CardProfile';
+                            id: string;
                             description: string;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                              | undefined;
+                            references?:
+                              | Array<{
+                                  __typename?: 'Reference';
+                                  id: string;
+                                  name: string;
+                                  uri: string;
+                                  description: string;
+                                }>
                               | undefined;
                           }
                         | undefined;
@@ -12208,9 +12328,19 @@ export type ChallengeCalloutQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description: string;
+                                  }>
                                 | undefined;
                             }
                           | undefined;
@@ -12370,9 +12500,19 @@ export type OpportunityCalloutQuery = {
                         profile?:
                           | {
                               __typename?: 'CardProfile';
+                              id: string;
                               description: string;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
+                                | undefined;
+                              references?:
+                                | Array<{
+                                    __typename?: 'Reference';
+                                    id: string;
+                                    name: string;
+                                    uri: string;
+                                    description: string;
+                                  }>
                                 | undefined;
                             }
                           | undefined;
@@ -12587,8 +12727,12 @@ export type CalloutFragment = {
         profile?:
           | {
               __typename?: 'CardProfile';
+              id: string;
               description: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              references?:
+                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | undefined;
             }
           | undefined;
       }>
@@ -12725,8 +12869,12 @@ export type AspectsOnCalloutFragment = {
         profile?:
           | {
               __typename?: 'CardProfile';
+              id: string;
               description: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              references?:
+                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | undefined;
             }
           | undefined;
       }>
@@ -12755,8 +12903,12 @@ export type CalloutAspectCreatedSubscription = {
       profile?:
         | {
             __typename?: 'CardProfile';
+            id: string;
             description: string;
             tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+            references?:
+              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | undefined;
           }
         | undefined;
     };

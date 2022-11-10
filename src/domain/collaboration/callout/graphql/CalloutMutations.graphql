@@ -5,6 +5,7 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
     displayName
     type
     profile {
+      id
       description
       tagset {
         id

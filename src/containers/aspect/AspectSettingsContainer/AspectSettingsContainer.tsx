@@ -15,7 +15,8 @@ import { newReferenceName } from '../../../common/utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'profile' | 'type'> & {
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'type'> & {
+  description: string;
   tags: string[];
   references?: Reference[];
 };
@@ -129,7 +130,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
           ID: aspect.id,
           displayName: aspect.displayName,
           profileData: {
-            description: aspect.profile?.description || '',
+            description: aspect?.description || '',
             references: aspect.references?.map(x => ({
               ID: x.id ?? '',
               name: x.name,

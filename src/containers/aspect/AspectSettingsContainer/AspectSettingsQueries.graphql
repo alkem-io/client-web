@@ -3,7 +3,7 @@ query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $
     id
     collaboration {
       id
-      callouts(IDs: [$calloutNameId])  {
+      callouts(IDs: [$calloutNameId]) {
         id
         type
         aspects(IDs: [$aspectNameId]) {
@@ -18,14 +18,19 @@ query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $
   }
 }
 
-query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+query ChallengeAspectSettings(
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $aspectNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
       collaboration {
         id
-        callouts(IDs: [$calloutNameId])  {
+        callouts(IDs: [$calloutNameId]) {
           id
           type
           aspects(IDs: [$aspectNameId]) {
@@ -41,7 +46,12 @@ query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_N
   }
 }
 
-query OpportunityAspectSettings($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+query OpportunityAspectSettings(
+  $hubNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $aspectNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
@@ -80,6 +90,7 @@ fragment AspectSettings on Aspect {
     ...VisualFull
   }
   profile {
+    id
     description
     tagset {
       id

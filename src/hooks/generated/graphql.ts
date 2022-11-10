@@ -131,6 +131,7 @@ export const AspectDashboardFragmentDoc = gql`
       ...VisualUri
     }
     profile {
+      id
       description
       tagset {
         id
@@ -205,6 +206,7 @@ export const AspectSettingsFragmentDoc = gql`
       ...VisualFull
     }
     profile {
+      id
       description
       tagset {
         id
@@ -310,11 +312,18 @@ export const AspectCardFragmentDoc = gql`
       ...VisualUri
     }
     profile {
+      id
       description
       tagset {
         id
         name
         tags
+      }
+      references {
+        id
+        name
+        uri
+        description
       }
     }
   }
@@ -3947,6 +3956,7 @@ export const UpdateAspectDocument = gql`
       displayName
       type
       profile {
+        id
         description
         tagset {
           id
@@ -11309,6 +11319,7 @@ export const CreateAspectDocument = gql`
       displayName
       type
       profile {
+        id
         description
         tagset {
           id
@@ -12508,6 +12519,7 @@ export const CreateAspectFromContributeTabDocument = gql`
       displayName
       type
       profile {
+        id
         description
         tagset {
           id

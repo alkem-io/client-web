@@ -10,11 +10,18 @@ fragment AspectCard on Aspect {
     ...VisualUri
   }
   profile {
+    id
     description
     tagset {
       id
       name
       tags
+    }
+    references {
+      id
+      name
+      uri
+      description
     }
   }
 }

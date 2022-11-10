@@ -72,11 +72,9 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
               id: entities.aspect.id,
               displayName: aspect.displayName,
               type: aspect.type,
-              profile: {
-                description: aspect.description,
-                tags: aspect.tags,
-                references: aspect.references || [],
-              },
+              description: aspect.description,
+              tags: aspect.tags,
+              references: aspect.references,
             });
           };
 
