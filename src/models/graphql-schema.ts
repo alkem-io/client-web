@@ -520,10 +520,9 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
+  criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
   inheritable: Scalars['Boolean'];
-  resourceID: Scalars['String'];
-  type: Scalars['String'];
 };
 
 export type AuthorizationPolicyRulePrivilege = {
@@ -5555,7 +5554,6 @@ export type AspectSettingsCalloutFragment = {
         id: string;
         nameID: string;
         displayName: string;
-        description: string;
         type: string;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -5588,9 +5586,16 @@ export type AspectSettingsCalloutFragment = {
               minWidth: number;
             }
           | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        profile?:
+          | {
+              __typename?: 'CardProfile';
+              id: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              references?:
+                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | undefined;
+            }
           | undefined;
       }>
     | undefined;

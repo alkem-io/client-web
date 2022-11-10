@@ -63,7 +63,16 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
     handleClose();
   };
 
-  const handleFormChange = (newAspect: AspectFormOutput) => setAspect({ ...aspect, ...newAspect });
+  const handleFormChange = (newAspect: AspectFormOutput) =>
+    setAspect({
+      ...aspect,
+      profileData: {
+        ...aspect.profileData,
+        description: newAspect.description,
+        tags: newAspect.tags,
+      },
+      ...newAspect,
+    });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
   const tags = aspect?.profileData?.tags ?? cardTemplate?.info?.tags;
 
