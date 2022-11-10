@@ -1,15 +1,16 @@
-import { Box, Skeleton, styled, Typography } from '@mui/material';
+import { Box, Skeleton, styled, Typography, useTheme } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
+import { EntityTypeName } from '../../layout/PageLayout/SimplePageLayout';
+import getEntityColor from '../../utils/getEntityColor';
 
 export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
 export const TITLE_HEIGHT = 7;
 
 const Root = styled(Box)(({ theme }) => ({
-  aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
   position: 'relative',
   [theme.breakpoints.down('lg')]: {
@@ -30,7 +31,6 @@ const Title = styled(Box)(({ theme }) => ({
   zIndex: 20,
   [theme.breakpoints.down('lg')]: {
     bottom: theme.spacing(-TITLE_HEIGHT),
-    backgroundColor: '#004f54',
   },
   // Title
   '& h1': {
@@ -52,23 +52,12 @@ const Ellipser = styled('div')(() => ({
   },
 }));
 
-const ImageWrapper = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  width: '100%',
-  height: '100%',
-  overflow: 'hidden',
-  zIndex: 10,
-  [theme.breakpoints.down('lg')]: {
-    position: 'relative',
-  },
-}));
-
-const Image = styled('img')(() => ({
+const Image = styled('img')(({ theme }) => ({
+  display: 'block',
   objectFit: 'cover',
   objectPosition: '50% 50%',
   width: '100%',
-  height: '100%',
+  minHeight: theme.spacing(10),
 }));
 
 const PageNotice = styled('div')(({ theme }) => ({
@@ -92,6 +81,7 @@ export interface PageBannerProps {
   showBreadcrumbs?: boolean;
   loading?: boolean;
   pageNotice?: ReactNode;
+  entityTypeName: EntityTypeName | 'admin';
 }
 
 /**
@@ -103,6 +93,7 @@ const PageBanner: FC<PageBannerProps> = ({
   tagline,
   bannerUrl,
   showBreadcrumbs,
+  entityTypeName,
   pageNotice = undefined,
   loading: dataLoading = false,
 }) => {
@@ -115,6 +106,11 @@ const PageBanner: FC<PageBannerProps> = ({
     setImageLoading(false);
   };
 
+  const theme = useTheme();
+
+  const titleBackgroundColor = getEntityColor(theme, entityTypeName);
+  const titleForegroundColor = entityTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
+
   return (
     <Root ref={containerReference}>
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
@@ -122,15 +118,17 @@ const PageBanner: FC<PageBannerProps> = ({
         <>
           {pageNotice ? <PageNotice>{pageNotice}</PageNotice> : undefined}
           {showBreadcrumbs && <BreadcrumbsView />}
-          <ImageWrapper>
-            <Image
-              src={bannerUrl}
-              alt={`${title} - Banner image`}
-              onLoad={() => setImageLoading(false)}
-              onError={imageLoadError}
-            />
-          </ImageWrapper>
-          <Title>
+          <Image
+            src={bannerUrl}
+            alt={`${title} - Banner image`}
+            onLoad={() => setImageLoading(false)}
+            onError={imageLoadError}
+          />
+          <Title
+            sx={{
+              [theme.breakpoints.down('lg')]: { backgroundColor: titleBackgroundColor, color: titleForegroundColor },
+            }}
+          >
             <Ellipser>
               <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
                 {title}

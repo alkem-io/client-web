@@ -4,11 +4,13 @@ import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../common/u
 import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from './generated/graphql';
 import { HubIcon } from '../common/icons/HubIcon';
 import { ChallengeIcon } from '../common/icons/ChallengeIcon';
+import { EntityTypeName } from '../domain/shared/layout/PageLayout/SimplePageLayout';
 
 export interface BreadcrumbsItem {
   title: string;
   icon: ComponentType;
   url: string;
+  entity: EntityTypeName;
 }
 
 export const useBreadcrumbs = () => {
@@ -51,6 +53,7 @@ export const useBreadcrumbs = () => {
           title: _hub?.hub.displayName || '',
           icon: HubIcon,
           url: buildHubUrl(hubNameId),
+          entity: 'hub',
         });
       }
       // Challenge breadcrumb - if we are watching an opportunity or an aspect in a challenge
@@ -59,6 +62,7 @@ export const useBreadcrumbs = () => {
           title: _challenge?.hub.challenge.displayName || '',
           icon: ChallengeIcon,
           url: buildChallengeUrl(hubNameId, challengeNameId),
+          entity: 'challenge',
         });
       }
       // Opportunity breadcrumb - if we are inside an opportunity and showOpportunity is true
@@ -67,6 +71,7 @@ export const useBreadcrumbs = () => {
           title: _opportunity?.hub.opportunity.displayName || '',
           icon: ChallengeIcon, // TODO: We'll need an opportunity Icon if we want to show opportunity breadcrumb
           url: buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId),
+          entity: 'opportunity',
         });
       }
     }

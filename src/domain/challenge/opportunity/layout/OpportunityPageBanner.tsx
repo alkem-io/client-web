@@ -12,6 +12,7 @@ const OpportunityPageBanner: FC = () => {
       tagline={opportunity?.context?.tagline}
       loading={loading}
       bannerUrl={getVisualBanner(opportunity?.context?.visuals)}
+      entityTypeName="opportunity"
       showBreadcrumbs
     />
   );

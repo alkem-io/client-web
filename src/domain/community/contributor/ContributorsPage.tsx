@@ -9,6 +9,7 @@ import { useUserContext } from './user';
 import { useUpdateNavigation } from '../../../hooks';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import TopLevelDesktopLayout from '../../shared/layout/PageLayout/TopLevelDesktopLayout';
 
 export interface ContributorsPageProps {}
 
@@ -30,33 +31,35 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
   };
 
   return (
-    <Box paddingY={2} marginTop={2}>
-      <Typography variant="h1">{t('pages.contributors.search.title')}</Typography>
-      <Typography>{t('pages.contributors.search.subtitle')}</Typography>
-      <SectionSpacer double />
-      <OutlinedInput
-        value={searchTerms}
-        sx={{ width: '100%' }}
-        placeholder={t('components.searchableList.placeholder')}
-        onChange={onSearchHandler}
-        endAdornment={
-          <InputAdornment position="end">
-            <SearchIcon />
-          </InputAdornment>
-        }
-      />
-      <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
-        {({ users, organizations }) => {
-          return (
-            <ContributorsView
-              usersPaginated={users}
-              showUsers={isAuthenticated}
-              organizationsPaginated={organizations}
-            />
-          );
-        }}
-      </ContributorsSearchContainer>
-    </Box>
+    <TopLevelDesktopLayout>
+      <Box paddingY={2} marginTop={2}>
+        <Typography variant="h1">{t('pages.contributors.search.title')}</Typography>
+        <Typography>{t('pages.contributors.search.subtitle')}</Typography>
+        <SectionSpacer double />
+        <OutlinedInput
+          value={searchTerms}
+          sx={{ width: '100%' }}
+          placeholder={t('components.searchableList.placeholder')}
+          onChange={onSearchHandler}
+          endAdornment={
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          }
+        />
+        <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
+          {({ users, organizations }) => {
+            return (
+              <ContributorsView
+                usersPaginated={users}
+                showUsers={isAuthenticated}
+                organizationsPaginated={organizations}
+              />
+            );
+          }}
+        </ContributorsSearchContainer>
+      </Box>
+    </TopLevelDesktopLayout>
   );
 };
 export default ContributorsPage;

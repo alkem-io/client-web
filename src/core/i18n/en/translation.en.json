@@ -58,7 +58,8 @@
     "confirm": "Confirm",
     "change-template": "Change template",
     "change": "Change",
-    "import": "Import..."
+    "import": "Import...",
+    "share": "Share"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -176,6 +177,7 @@
     "loading": "Loading...",
     "language": "Language",
     "innovation-flow": "Innovation flow",
+    "more": "More",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
