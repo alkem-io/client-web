@@ -164,7 +164,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     setPush(push);
     if (aspect?.id) {
       addReference({
-        cardProfileId: aspect.id,
+        cardProfileId: aspect.profile?.id,
         name: newReferenceName(aspect?.profile?.references?.length ?? 0),
       });
     }
