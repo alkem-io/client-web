@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '../../../../../containers/NotificationHandler';
 import { useApm, useUserContext, useUserScope } from '../../../../../hooks';
-import { ScrollButton } from '../../../core';
+import { FloatingActionButtons } from '../../../core';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
@@ -48,7 +48,7 @@ const App: FC = () => {
         <Footer />
       </div>
       {!cookies.accepted_cookies && <CookieConsent />}
-      <ScrollButton />
+      <FloatingActionButtons />
       <NotificationHandler />
     </>
   );
