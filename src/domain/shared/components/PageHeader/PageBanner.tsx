@@ -109,7 +109,7 @@ const PageBanner: FC<PageBannerProps> = ({
   const theme = useTheme();
 
   const titleBackgroundColor = getEntityColor(theme, entityTypeName);
-  const titleForegroundColor = entityTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
+  // const titleForegroundColor = entityTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
 
   return (
     <Root ref={containerReference}>
@@ -126,7 +126,9 @@ const PageBanner: FC<PageBannerProps> = ({
           />
           <Title
             sx={{
-              [theme.breakpoints.down('lg')]: { backgroundColor: titleBackgroundColor, color: titleForegroundColor },
+              [theme.breakpoints.down('lg')]: {
+                backgroundColor: titleBackgroundColor /*, color: titleForegroundColor*/,
+              },
             }}
           >
             <Ellipser>

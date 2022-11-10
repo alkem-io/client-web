@@ -72,8 +72,7 @@ const BreadcrumbsView: FC<BreadcrumbsViewProps> = () => {
               const Icon = item.icon;
 
               const breadcrumbBackgroundColor = getEntityColor(theme, item.entity);
-              const breadcrumbForegroundColor =
-                item.entity === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
+              // const breadcrumbForegroundColor = theme.palette.common.white;
 
               return (
                 <Breadcrumb
@@ -82,7 +81,7 @@ const BreadcrumbsView: FC<BreadcrumbsViewProps> = () => {
                   sx={{
                     [theme.breakpoints.down('lg')]: {
                       backgroundColor: breadcrumbBackgroundColor,
-                      color: breadcrumbForegroundColor,
+                      // color: breadcrumbForegroundColor,
                     },
                   }}
                 >

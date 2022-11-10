@@ -75,7 +75,8 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
 
   const navigationBackgroundColor = getEntityColor(theme, entityTypeName);
   const navigationForegroundColor =
-    entityTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
+    /*
+    entityTypeName === 'opportunity' ? theme.palette.hub.main : */ theme.palette.common.white;
 
   const shareDialog = shareUrl && (
     <ShareDialog
