@@ -20,7 +20,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Skeleton } from '@mui/material';
-import MDEditor from '@uiw/react-md-editor';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
@@ -39,6 +38,8 @@ import { useNotification } from '../../../../../hooks';
 import { Message } from '../../../../../models/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import hexToRGBA from '../../../../../common/utils/hexToRGBA';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -74,7 +75,10 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     width: '100%',
     height: '100%',
-    background: 'linear-gradient(to top, rgba(255,255,255, 1) 20%, rgba(255,255,255, 0) 80%)',
+    background: `linear-gradient(to top, ${hexToRGBA(theme.palette.background.paper, 1)} 20%,  ${hexToRGBA(
+      theme.palette.background.paper,
+      0
+    )} 80%)`,
     pointerEvents: 'none',
   },
   expand: {
@@ -249,7 +253,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <CardContent className={styles.root}>
                   <Collapse in={expanded || disableCollapse} timeout="auto" collapsedSize={40}>
                     <Box>
-                      {!reviewed && <MDEditor.Markdown source={m.message} />}
+                      {!reviewed && <WrapperMarkdown>{m.message}</WrapperMarkdown>}
                       {reviewed && (
                         <Typography component="pre" style={{ whiteSpace: 'pre-line' }}>
                           {m.message}
@@ -301,7 +305,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                   </CardActions>
                 )}
               </Card>
-              {disableElevation && i !== lastItemIndex && <Divider variant="inset" />}
+              {disableElevation && i !== lastItemIndex && <Divider />}
             </Grid>
           );
         })}
