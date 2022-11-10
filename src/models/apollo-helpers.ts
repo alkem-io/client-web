@@ -434,17 +434,15 @@ export type AuthorizationFieldPolicy = {
   verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleCredentialKeySpecifier = (
+  | 'criterias'
   | 'grantedPrivileges'
   | 'inheritable'
-  | 'resourceID'
-  | 'type'
   | AuthorizationPolicyRuleCredentialKeySpecifier
 )[];
 export type AuthorizationPolicyRuleCredentialFieldPolicy = {
+  criterias?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritable?: FieldPolicy<any> | FieldReadFunction<any>;
-  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRulePrivilegeKeySpecifier = (
   | 'grantedPrivileges'
@@ -1447,32 +1445,40 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'about'
+  | 'community'
   | 'environment'
   | 'featureFlags'
   | 'feedback'
   | 'foundation'
+  | 'help'
   | 'impact'
+  | 'newuser'
   | 'opensource'
   | 'privacy'
   | 'releases'
   | 'security'
   | 'support'
   | 'terms'
+  | 'tips'
   | PlatformKeySpecifier
 )[];
 export type PlatformFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
+  community?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   foundation?: FieldPolicy<any> | FieldReadFunction<any>;
+  help?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
+  newuser?: FieldPolicy<any> | FieldReadFunction<any>;
   opensource?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   releases?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  tips?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
 export type PlatformHubTemplateFieldPolicy = {

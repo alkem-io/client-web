@@ -539,10 +539,9 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
+  criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
   inheritable: Scalars['Boolean'];
-  resourceID: Scalars['String'];
-  type: Scalars['String'];
 };
 
 export type AuthorizationPolicyRulePrivilege = {
@@ -2788,6 +2787,8 @@ export type Platform = {
   __typename?: 'Platform';
   /** URL to a page about the platform */
   about: Scalars['String'];
+  /** URL where users can see the community forum */
+  community: Scalars['String'];
   /** Name of the environment */
   environment: Scalars['String'];
   /** The feature flags for the platform */
@@ -2796,13 +2797,17 @@ export type Platform = {
   feedback: Scalars['String'];
   /** URL for the link Foundation in the HomePage of the application */
   foundation: Scalars['String'];
+  /** URL where users can get help */
+  help: Scalars['String'];
   /** URL for the link Impact in the HomePage of the application */
   impact: Scalars['String'];
+  /** URL where new users can get onboarding help */
+  newuser: Scalars['String'];
   /** URL for the link Opensource in the HomePage of the application */
   opensource: Scalars['String'];
   /** URL to the privacy policy for the platform */
   privacy: Scalars['String'];
-  /** URL where users can get information about previouse releases */
+  /** URL where users can get information about previous releases */
   releases: Scalars['String'];
   /** URL to the security policy for the platform */
   security: Scalars['String'];
@@ -2810,6 +2815,8 @@ export type Platform = {
   support: Scalars['String'];
   /** URL to the terms of usage for the platform */
   terms: Scalars['String'];
+  /** URL where users can get tips and tricks */
+  tips: Scalars['String'];
 };
 
 export type PlatformHubTemplate = {
@@ -4498,6 +4505,10 @@ export type ConfigurationFragment = {
     foundation: string;
     opensource: string;
     releases: string;
+    help: string;
+    community: string;
+    newuser: string;
+    tips: string;
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -4534,6 +4545,10 @@ export type ConfigurationQuery = {
       foundation: string;
       opensource: string;
       releases: string;
+      help: string;
+      community: string;
+      newuser: string;
+      tips: string;
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };

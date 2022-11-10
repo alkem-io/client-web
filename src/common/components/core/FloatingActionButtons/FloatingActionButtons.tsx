@@ -1,5 +1,6 @@
-import { Box, Fade, useTheme } from '@mui/material';
+import { Box, Fade } from '@mui/material';
 import React, { FC } from 'react';
+import HelpButton from './HelpButton/HelpButton';
 import ScrollToTop from './ScrollToTop/ScrollToTop';
 
 export interface FloatingActionButtonsProps {
@@ -7,12 +8,11 @@ export interface FloatingActionButtonsProps {
 }
 
 const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true }) => {
-  const theme = useTheme();
-
   return (
     <Fade in={visible}>
-      <Box position="fixed" zIndex={theme.zIndex.snackbar - 50} bottom={24} right={24}>
+      <Box position="fixed" bottom={24} right={24}>
         <ScrollToTop />
+        <HelpButton />
       </Box>
     </Fade>
   );

@@ -57,6 +57,10 @@ export const ConfigurationFragmentDoc = gql`
       foundation
       opensource
       releases
+      help
+      community
+      newuser
+      tips
       featureFlags {
         enabled
         name
