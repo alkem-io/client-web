@@ -1,0 +1,8 @@
+mutation createReferenceOnCardProfile($referenceInput: CreateReferenceOnCardProfileInput!) {
+  createReferenceOnCardProfile(referenceData: $referenceInput) {
+    id
+    name
+    uri
+    description
+  }
+}
