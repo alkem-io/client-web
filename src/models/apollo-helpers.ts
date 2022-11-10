@@ -327,6 +327,7 @@ export type AspectKeySpecifier = (
   | 'authorization'
   | 'banner'
   | 'bannerNarrow'
+  | 'callout'
   | 'comments'
   | 'createdBy'
   | 'createdDate'
@@ -341,6 +342,7 @@ export type AspectFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   banner?: FieldPolicy<any> | FieldReadFunction<any>;
   bannerNarrow?: FieldPolicy<any> | FieldReadFunction<any>;
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1112,6 +1114,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToUser'
   | 'joinCommunity'
   | 'messageUser'
+  | 'moveAspectToCallout'
   | 'removeComment'
   | 'removeMessageFromDiscussion'
   | 'removeOrganizationAsCommunityLead'
@@ -1248,6 +1251,7 @@ export type MutationFieldPolicy = {
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveAspectToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1437,6 +1441,7 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'about'
+  | 'environment'
   | 'featureFlags'
   | 'feedback'
   | 'foundation'
@@ -1451,6 +1456,7 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
+  environment?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   foundation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1913,6 +1919,7 @@ export type TemplatesSetKeySpecifier = (
   | 'id'
   | 'lifecycleTemplate'
   | 'lifecycleTemplates'
+  | 'policy'
   | TemplatesSetKeySpecifier
 )[];
 export type TemplatesSetFieldPolicy = {
@@ -1924,6 +1931,11 @@ export type TemplatesSetFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycleTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  policy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type TemplatesSetPolicyKeySpecifier = ('minInnovationFlow' | TemplatesSetPolicyKeySpecifier)[];
+export type TemplatesSetPolicyFieldPolicy = {
+  minInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UpdatesKeySpecifier = ('authorization' | 'id' | 'messages' | UpdatesKeySpecifier)[];
 export type UpdatesFieldPolicy = {
@@ -2585,6 +2597,10 @@ export type StrictTypedTypePolicies = {
   TemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplatesSetKeySpecifier | (() => undefined | TemplatesSetKeySpecifier);
     fields?: TemplatesSetFieldPolicy;
+  };
+  TemplatesSetPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TemplatesSetPolicyKeySpecifier | (() => undefined | TemplatesSetPolicyKeySpecifier);
+    fields?: TemplatesSetPolicyFieldPolicy;
   };
   Updates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UpdatesKeySpecifier | (() => undefined | UpdatesKeySpecifier);

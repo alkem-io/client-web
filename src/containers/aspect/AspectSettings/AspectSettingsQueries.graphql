@@ -4,15 +4,7 @@ query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $
     collaboration {
       id
       callouts(IDs: [$calloutNameId]) {
-        id
-        type
-        aspects(IDs: [$aspectNameId]) {
-          ...AspectSettings
-        }
-        aspectNames: aspects {
-          id
-          displayName
-        }
+        ...AspectSettingsCallout
       }
     }
   }
@@ -31,15 +23,7 @@ query ChallengeAspectSettings(
       collaboration {
         id
         callouts(IDs: [$calloutNameId]) {
-          id
-          type
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectSettings
-          }
-          aspectNames: aspects {
-            id
-            displayName
-          }
+          ...AspectSettingsCallout
         }
       }
     }
@@ -59,15 +43,7 @@ query OpportunityAspectSettings(
       collaboration {
         id
         callouts(IDs: [$calloutNameId]) {
-          id
-          type
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectSettings
-          }
-          aspectNames: aspects {
-            id
-            displayName
-          }
+          ...AspectSettingsCallout
         }
       }
     }
@@ -103,5 +79,17 @@ fragment AspectSettings on Aspect {
       uri
       description
     }
+  }
+}
+
+fragment AspectSettingsCallout on Callout {
+  id
+  type
+  aspects(IDs: [$aspectNameId]) {
+    ...AspectSettings
+  }
+  aspectNames: aspects {
+    id
+    displayName
   }
 }

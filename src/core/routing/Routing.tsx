@@ -78,7 +78,7 @@ export const Routing: FC = () => {
         <Route
           path="/identity/*"
           element={
-            <WithApmTransaction path="/identify/*">
+            <WithApmTransaction path="/identity/*">
               <IdentityRoute />
             </WithApmTransaction>
           }

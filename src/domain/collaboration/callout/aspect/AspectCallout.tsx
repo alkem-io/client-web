@@ -35,7 +35,6 @@ const AspectCallout = ({
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
-
   const handleError = useApolloErrorHandler();
 
   const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
@@ -176,6 +175,7 @@ const AspectCallout = ({
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
         calloutId={callout.id}
+        cardTemplate={callout.cardTemplate}
       />
     </>
   );

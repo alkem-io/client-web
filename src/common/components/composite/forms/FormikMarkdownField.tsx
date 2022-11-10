@@ -167,6 +167,13 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     }
   }, [meta.initialValue]);
 
+  // Reset the form if value comes empty
+  useEffect(() => {
+    if (field.value === '') {
+      setEditorState(EditorState.createEmpty());
+    }
+  }, [field.value]);
+
   const onEditorStateChange = newEditorState => {
     setEditorState(newEditorState);
     const currentMd = draftjsToMd(convertToRaw(newEditorState.getCurrentContent()));

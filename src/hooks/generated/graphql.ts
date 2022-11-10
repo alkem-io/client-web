@@ -46,6 +46,7 @@ export const ConfigurationFragmentDoc = gql`
       }
     }
     platform {
+      environment
       about
       feedback
       privacy
@@ -82,6 +83,8 @@ export const VisualUriFragmentDoc = gql`
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
+    message
+    timestamp
     sender {
       id
       nameID
@@ -89,21 +92,23 @@ export const MessageDetailsFragmentDoc = gql`
       displayName
       lastName
       profile {
+        id
         avatar {
+          id
           uri
         }
         tagsets {
+          id
           name
           tags
         }
         location {
+          id
           city
           country
         }
       }
     }
-    message
-    timestamp
   }
 `;
 export const AspectDashboardFragmentDoc = gql`
@@ -222,6 +227,20 @@ export const AspectSettingsFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+`;
+export const AspectSettingsCalloutFragmentDoc = gql`
+  fragment AspectSettingsCallout on Callout {
+    id
+    type
+    aspects(IDs: [$aspectNameId]) {
+      ...AspectSettings
+    }
+    aspectNames: aspects {
+      id
+      displayName
+    }
+  }
+  ${AspectSettingsFragmentDoc}
 `;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
@@ -1157,6 +1176,25 @@ export const CommentsWithMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
+export const CardTemplateFragmentDoc = gql`
+  fragment CardTemplate on Callout {
+    cardTemplate {
+      id
+      type
+      defaultDescription
+      info {
+        tagset {
+          id
+          tags
+        }
+        visual {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -1179,10 +1217,12 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     visibility
+    ...CardTemplate
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
+  ${CardTemplateFragmentDoc}
 `;
 export const AspectsOnCalloutFragmentDoc = gql`
   fragment AspectsOnCallout on Callout {
@@ -4018,20 +4058,12 @@ export const HubAspectSettingsDocument = gql`
       collaboration {
         id
         callouts(IDs: [$calloutNameId]) {
-          id
-          type
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectSettings
-          }
-          aspectNames: aspects {
-            id
-            displayName
-          }
+          ...AspectSettingsCallout
         }
       }
     }
   }
-  ${AspectSettingsFragmentDoc}
+  ${AspectSettingsCalloutFragmentDoc}
 `;
 
 /**
@@ -4096,21 +4128,13 @@ export const ChallengeAspectSettingsDocument = gql`
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
-            id
-            type
-            aspects(IDs: [$aspectNameId]) {
-              ...AspectSettings
-            }
-            aspectNames: aspects {
-              id
-              displayName
-            }
+            ...AspectSettingsCallout
           }
         }
       }
     }
   }
-  ${AspectSettingsFragmentDoc}
+  ${AspectSettingsCalloutFragmentDoc}
 `;
 
 /**
@@ -4179,21 +4203,13 @@ export const OpportunityAspectSettingsDocument = gql`
         collaboration {
           id
           callouts(IDs: [$calloutNameId]) {
-            id
-            type
-            aspects(IDs: [$aspectNameId]) {
-              ...AspectSettings
-            }
-            aspectNames: aspects {
-              id
-              displayName
-            }
+            ...AspectSettingsCallout
           }
         }
       }
     }
   }
-  ${AspectSettingsFragmentDoc}
+  ${AspectSettingsCalloutFragmentDoc}
 `;
 
 /**
@@ -11469,6 +11485,59 @@ export type DeleteAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectMutation,
   SchemaTypes.DeleteAspectMutationVariables
 >;
+export const MoveAspectToCalloutDocument = gql`
+  mutation MoveAspectToCallout($aspectId: UUID!, $calloutId: UUID!) {
+    moveAspectToCallout(moveAspectData: { aspectID: $aspectId, calloutID: $calloutId }) {
+      id
+      nameID
+      callout {
+        id
+        nameID
+      }
+    }
+  }
+`;
+export type MoveAspectToCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveAspectToCalloutMutation,
+  SchemaTypes.MoveAspectToCalloutMutationVariables
+>;
+
+/**
+ * __useMoveAspectToCalloutMutation__
+ *
+ * To run a mutation, you first call `useMoveAspectToCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveAspectToCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveAspectToCalloutMutation, { data, loading, error }] = useMoveAspectToCalloutMutation({
+ *   variables: {
+ *      aspectId: // value for 'aspectId'
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useMoveAspectToCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MoveAspectToCalloutMutation,
+    SchemaTypes.MoveAspectToCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MoveAspectToCalloutMutation, SchemaTypes.MoveAspectToCalloutMutationVariables>(
+    MoveAspectToCalloutDocument,
+    options
+  );
+}
+export type MoveAspectToCalloutMutationHookResult = ReturnType<typeof useMoveAspectToCalloutMutation>;
+export type MoveAspectToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MoveAspectToCalloutMutation>;
+export type MoveAspectToCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveAspectToCalloutMutation,
+  SchemaTypes.MoveAspectToCalloutMutationVariables
+>;
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
@@ -12373,8 +12442,10 @@ export const UpdateCalloutDocument = gql`
       state
       type
       visibility
+      ...CardTemplate
     }
   }
+  ${CardTemplateFragmentDoc}
 `;
 export type UpdateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutMutation,
@@ -18749,6 +18820,80 @@ export type HubTemplatesQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
   return { query: HubTemplatesDocument, variables: variables };
+}
+export const InnovationPacksDocument = gql`
+  query InnovationPacks {
+    library {
+      innovationPacks {
+        id
+        nameID
+        provider {
+          id
+          nameID
+          displayName
+        }
+        displayName
+        templates {
+          id
+          aspectTemplates {
+            ...AdminAspectTemplate
+          }
+          canvasTemplates {
+            ...AdminCanvasTemplate
+          }
+          lifecycleTemplates {
+            ...AdminLifecycleTemplate
+          }
+        }
+      }
+    }
+  }
+  ${AdminAspectTemplateFragmentDoc}
+  ${AdminCanvasTemplateFragmentDoc}
+  ${AdminLifecycleTemplateFragmentDoc}
+`;
+
+/**
+ * __useInnovationPacksQuery__
+ *
+ * To run a query within a React component, call `useInnovationPacksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPacksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPacksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationPacksQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>(
+    InnovationPacksDocument,
+    options
+  );
+}
+export function useInnovationPacksLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationPacksQuery, SchemaTypes.InnovationPacksQueryVariables>(
+    InnovationPacksDocument,
+    options
+  );
+}
+export type InnovationPacksQueryHookResult = ReturnType<typeof useInnovationPacksQuery>;
+export type InnovationPacksLazyQueryHookResult = ReturnType<typeof useInnovationPacksLazyQuery>;
+export type InnovationPacksQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPacksQuery,
+  SchemaTypes.InnovationPacksQueryVariables
+>;
+export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPacksQueryVariables) {
+  return { query: InnovationPacksDocument, variables: variables };
 }
 export const UpdateInnovationTemplateDocument = gql`
   mutation updateInnovationTemplate(

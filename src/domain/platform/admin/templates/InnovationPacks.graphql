@@ -1,0 +1,26 @@
+query InnovationPacks {
+  library {
+    innovationPacks {
+      id
+      nameID
+      provider {
+        id
+        nameID
+        displayName
+      }
+      displayName
+      templates {
+        id
+        aspectTemplates {
+          ...AdminAspectTemplate
+        }
+        canvasTemplates {
+          ...AdminCanvasTemplate
+        }
+        lifecycleTemplates {
+          ...AdminLifecycleTemplate
+        }
+      }
+    }
+  }
+}

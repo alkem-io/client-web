@@ -9,11 +9,11 @@ import Main from './Main';
 import useServerMetadata from '../../../../../hooks/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../../hooks/subscription/CommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
-import { COOKIE_NAME } from '../../../../../domain/platform/cookies/useAlkemioCookies';
+import { ALKEMIO_COOKIE_NAME } from '../../../../../domain/platform/cookies/useAlkemioCookies';
 import CookieConsent from '../../../../../domain/platform/cookies/CookieConsent';
 
 const App: FC = () => {
-  const [cookies] = useCookies([COOKIE_NAME]);
+  const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
   const { user } = useUserContext();
 
   useUserScope(user);
