@@ -9,7 +9,7 @@ import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdo
 const DEFAULT_LINE_HEIGHT = 1.5;
 const LINE_CLAMP = 4;
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | 'tagset';
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
 export type CardTemplatePreview = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
   calloutNameId: string;
 };

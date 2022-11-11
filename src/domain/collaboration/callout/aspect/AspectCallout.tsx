@@ -84,9 +84,11 @@ const AspectCallout = ({
         aspectData: {
           calloutID: callout.id,
           displayName: aspect.displayName,
-          description: aspect.description,
+          profileData: {
+            description: aspect.profileData?.description,
+            tags: aspect.profileData?.tags,
+          },
           type: aspect.type,
-          tags: aspect.tags,
           visualUri: aspect.visualUri,
         },
       },
@@ -96,13 +98,16 @@ const AspectCallout = ({
           id: '',
           nameID: '',
           displayName: aspect.displayName ?? '',
-          description: aspect.description,
-          type: aspect.type,
-          tagset: {
-            id: '-1',
-            name: 'default',
-            tags: aspect.tags ?? [],
+          profile: {
+            id: '',
+            description: aspect.profileData?.description || '',
+            tagset: {
+              id: '-1',
+              name: 'default',
+              tags: aspect.profileData?.tags ?? [],
+            },
           },
+          type: aspect.type,
           banner: {
             id: '-1',
             name: '',

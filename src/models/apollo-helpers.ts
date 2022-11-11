@@ -49,23 +49,6 @@ export type ActivityLogEntryFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ActivityLogEntryBaseKeySpecifier = (
-  | 'collaborationID'
-  | 'createdDate'
-  | 'description'
-  | 'id'
-  | 'triggeredBy'
-  | 'type'
-  | ActivityLogEntryBaseKeySpecifier
-)[];
-export type ActivityLogEntryBaseFieldPolicy = {
-  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ActivityLogEntryCalloutCanvasCreatedKeySpecifier = (
   | 'callout'
   | 'canvas'
@@ -348,12 +331,10 @@ export type AspectKeySpecifier = (
   | 'comments'
   | 'createdBy'
   | 'createdDate'
-  | 'description'
   | 'displayName'
   | 'id'
   | 'nameID'
-  | 'references'
-  | 'tagset'
+  | 'profile'
   | 'type'
   | AspectKeySpecifier
 )[];
@@ -365,12 +346,10 @@ export type AspectFieldPolicy = {
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  references?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AspectCommentsMessageReceivedKeySpecifier = (
@@ -434,17 +413,15 @@ export type AuthorizationFieldPolicy = {
   verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleCredentialKeySpecifier = (
+  | 'criterias'
   | 'grantedPrivileges'
   | 'inheritable'
-  | 'resourceID'
-  | 'type'
   | AuthorizationPolicyRuleCredentialKeySpecifier
 )[];
 export type AuthorizationPolicyRuleCredentialFieldPolicy = {
+  criterias?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritable?: FieldPolicy<any> | FieldReadFunction<any>;
-  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRulePrivilegeKeySpecifier = (
   | 'grantedPrivileges'
@@ -562,6 +539,21 @@ export type CanvasTemplateFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   info?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CardProfileKeySpecifier = (
+  | 'authorization'
+  | 'description'
+  | 'id'
+  | 'references'
+  | 'tagset'
+  | CardProfileKeySpecifier
+)[];
+export type CardProfileFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  references?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'agent'
@@ -1083,7 +1075,7 @@ export type MutationKeySpecifier = (
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
-  | 'createReferenceOnAspect'
+  | 'createReferenceOnCardProfile'
   | 'createReferenceOnContext'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
@@ -1220,7 +1212,7 @@ export type MutationFieldPolicy = {
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
-  createReferenceOnAspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  createReferenceOnCardProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1758,13 +1750,6 @@ export type SearchResultFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchResultBaseKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultBaseKeySpecifier)[];
-export type SearchResultBaseFieldPolicy = {
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  terms?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SearchResultChallengeKeySpecifier = (
   | 'challenge'
   | 'hub'
@@ -2082,10 +2067,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ActivityLogEntryKeySpecifier | (() => undefined | ActivityLogEntryKeySpecifier);
     fields?: ActivityLogEntryFieldPolicy;
   };
-  ActivityLogEntryBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ActivityLogEntryBaseKeySpecifier | (() => undefined | ActivityLogEntryBaseKeySpecifier);
-    fields?: ActivityLogEntryBaseFieldPolicy;
-  };
   ActivityLogEntryCalloutCanvasCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -2258,6 +2239,10 @@ export type StrictTypedTypePolicies = {
   CanvasTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasTemplateKeySpecifier | (() => undefined | CanvasTemplateKeySpecifier);
     fields?: CanvasTemplateFieldPolicy;
+  };
+  CardProfile?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CardProfileKeySpecifier | (() => undefined | CardProfileKeySpecifier);
+    fields?: CardProfileFieldPolicy;
   };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);
@@ -2558,10 +2543,6 @@ export type StrictTypedTypePolicies = {
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);
     fields?: SearchResultFieldPolicy;
-  };
-  SearchResultBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultBaseKeySpecifier | (() => undefined | SearchResultBaseKeySpecifier);
-    fields?: SearchResultBaseFieldPolicy;
   };
   SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);
