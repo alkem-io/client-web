@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useOrganization } from '../../../../../hooks';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import OrganizationPageContainer from '../../../../../containers/organization/OrganizationPageContainer';
-import { EntityTabsProps } from '../../../../shared/layout/PageLayout/EntityPageLayout';
+import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
 
 const routes = {
   profile: 'profile',

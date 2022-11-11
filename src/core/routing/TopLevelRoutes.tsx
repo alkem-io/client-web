@@ -24,7 +24,7 @@ import { HELP_ROUTE, INSPIRATION_ROUTE } from '../../models/constants';
 import InspirationPage from '../help/pages/InspirationPage';
 import { WithApmTransaction } from '../../domain/shared/components';
 
-export const Routing: FC = () => {
+export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
 
   const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], [t]);

@@ -20,7 +20,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
     displayName: props.opportunity.displayName,
   });
 
-  const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
+  const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps} />;
+  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
 };

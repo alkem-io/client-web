@@ -13,7 +13,6 @@ export interface ActivityBaseViewProps {
   author: Author | undefined;
   createdDate: Date | string;
   action: string;
-  description: string;
   url?: string;
   loading?: boolean;
 }
@@ -28,7 +27,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   author,
   createdDate,
   action,
-  description,
+  children,
   url,
   loading,
 }) => {
@@ -62,7 +61,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
       <Box sx={theme => ({ marginLeft: theme.spacing(2), flexGrow: 1 })}>
         <Typography variant="caption">{loading ? <Skeleton width="60%" /> : title}</Typography>
         <ClampedTypography clamp={2}>
-          {loading ? <Skeleton /> : url ? <Link to={url}>{description}</Link> : description}
+          {loading ? <Skeleton /> : url ? <Link to={url}>{children}</Link> : children}
         </ClampedTypography>
       </Box>
     </Box>

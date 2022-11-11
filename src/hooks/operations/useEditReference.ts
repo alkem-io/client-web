@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { useRef } from 'react';
 import {
-  useCreateReferenceOnAspectMutation,
+  useCreateReferenceOnCardProfileMutation,
   useCreateReferenceOnContextMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
@@ -11,7 +11,7 @@ import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHan
 export type PushFunc = (success: boolean) => void;
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
-  aspectId?: string;
+  cardProfileId?: string;
   contextId?: string;
   profileId?: string;
   name: string;
@@ -55,14 +55,14 @@ export const useEditReference = () => {
     },
   });
 
-  const [addReferenceOnAspect] = useCreateReferenceOnAspectMutation({
+  const [addReferenceOnCardProfile] = useCreateReferenceOnCardProfileMutation({
     onError: handleError,
     onCompleted: data => {
       if (push.current) {
         push.current({
-          id: data?.createReferenceOnAspect.id,
-          name: data?.createReferenceOnAspect.name,
-          uri: data?.createReferenceOnAspect.uri,
+          id: data?.createReferenceOnCardProfile.id,
+          name: data?.createReferenceOnCardProfile.name,
+          uri: data?.createReferenceOnCardProfile.uri,
         });
       }
     },
@@ -85,7 +85,14 @@ export const useEditReference = () => {
     remove.current = removeFn;
   };
 
-  const addReference: AddReferenceFunc = ({ aspectId, contextId, profileId, name, uri = '', description = '' }) => {
+  const addReference: AddReferenceFunc = ({
+    cardProfileId,
+    contextId,
+    profileId,
+    name,
+    uri = '',
+    description = '',
+  }) => {
     if (contextId) {
       addReferenceOnContext({
         variables: {
@@ -112,11 +119,11 @@ export const useEditReference = () => {
       });
     }
 
-    if (aspectId) {
-      addReferenceOnAspect({
+    if (cardProfileId) {
+      addReferenceOnCardProfile({
         variables: {
           referenceInput: {
-            aspectID: aspectId,
+            cardProfileID: cardProfileId,
             name: name,
             description: description,
             uri: uri,

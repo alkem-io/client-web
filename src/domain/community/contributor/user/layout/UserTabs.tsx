@@ -3,7 +3,7 @@ import { buildUserProfileSettingsUrl, buildUserProfileUrl } from '../../../../..
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
 import { useTranslation } from 'react-i18next';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
-import { EntityTabsProps } from '../../../../shared/layout/PageLayout/EntityPageLayout';
+import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { useUrlParams } from '../../../../../hooks';

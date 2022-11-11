@@ -7,7 +7,12 @@ query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutN
   }
 }
 
-query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+query ChallengeAspect(
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $aspectNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
@@ -19,7 +24,12 @@ query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, 
   }
 }
 
-query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+query OpportunityAspect(
+  $hubNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $aspectNameId: UUID_NAMEID!
+  $calloutNameId: UUID_NAMEID!
+) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
@@ -51,7 +61,6 @@ fragment AspectDashboard on Aspect {
   nameID
   type
   displayName
-  description
   createdBy {
     id
     displayName
@@ -70,16 +79,20 @@ fragment AspectDashboard on Aspect {
   banner {
     ...VisualUri
   }
-  tagset {
+  profile {
     id
-    name
-    tags
-  }
-  references {
-    id
-    name
-    uri
     description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
   }
   comments {
     id
@@ -92,4 +105,3 @@ fragment AspectDashboard on Aspect {
     }
   }
 }
-

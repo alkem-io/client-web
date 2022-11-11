@@ -1,36 +1,17 @@
-import React, { ComponentType, PropsWithChildren } from 'react';
-import SimplePageLayout, { SimplePageLayoutProps } from './SimplePageLayout';
-import { EntityPageSection } from '../EntityPageSection';
+import React, { PropsWithChildren } from 'react';
+import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
+import EntityPageLayoutDesktop from './EntityPageLayoutDesktop';
+import { useMediaQuery, useTheme } from '@mui/material';
+import EntityPageLayoutMobile from './EntityPageLayoutMobile';
 
-export interface EntityTabsProps {
-  currentTab: EntityPageSection;
-}
+const EntityPageLayout = (props: PropsWithChildren<EntityPageLayoutProps>) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
-export interface EntityPageLayoutProps extends SimplePageLayoutProps<EntityPageSection> {
-  pageBannerComponent: ComponentType;
-  tabsComponent?: ComponentType<EntityTabsProps>;
-}
+  const Layout = isMobile ? EntityPageLayoutMobile : EntityPageLayoutDesktop;
 
-const EntityPageLayout = ({
-  currentSection,
-  entityTypeName,
-  tabDescriptionNs = 'pages',
-  children,
-  pageBannerComponent: PageBanner,
-  tabsComponent: Tabs,
-}: PropsWithChildren<EntityPageLayoutProps>) => {
   return (
-    <>
-      <PageBanner />
-      {Tabs && <Tabs currentTab={currentSection} />}
-      <SimplePageLayout
-        currentSection={currentSection}
-        entityTypeName={entityTypeName}
-        tabDescriptionNs={tabDescriptionNs}
-      >
-        {children}
-      </SimplePageLayout>
-    </>
+    <Layout {...props} />
   );
 };
 

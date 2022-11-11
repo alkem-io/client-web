@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../../../domain/community/contributor/user';
+import { useUserContext } from '../../../../../domain/community/contributor/user/hooks/useUserContext';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,6 +29,8 @@ import ListItemText from '@mui/material/ListItemText';
 import SearchBar from './SearchBar';
 import { ReactComponent as LogoSmallImage } from './alkemio-logo-small.svg';
 
+export const MobileTopBarHeight = 7;
+
 const MobileTopBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -48,7 +50,13 @@ const MobileTopBar = () => {
   const navigate = useNavigate();
 
   return (
-    <Box height={theme => theme.spacing(7)} display="flex" gap={2} alignItems="center" justifyContent="space-between">
+    <Box
+      height={theme => theme.spacing(MobileTopBarHeight)}
+      display="flex"
+      gap={2}
+      alignItems="center"
+      justifyContent="space-between"
+    >
       {!isSearchOpen && (
         <HamburgerDropdown anchorEl={anchorEl} open={isMenuOpen} onOpen={openMenu} onClose={closeMenu} />
       )}

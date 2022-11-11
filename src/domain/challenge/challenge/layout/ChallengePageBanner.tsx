@@ -12,6 +12,7 @@ const ChallengePageBanner: FC = () => {
       tagline={challenge?.context?.tagline}
       loading={loading}
       bannerUrl={getVisualBanner(challenge?.context?.visuals)}
+      entityTypeName="challenge"
       showBreadcrumbs
     />
   );

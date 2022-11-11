@@ -21,7 +21,7 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props =
     cardType: props.cardType,
   });
 
-  const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
+  const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps} />;
+  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
 };

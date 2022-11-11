@@ -6,12 +6,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useGlobalState } from '../../../../../hooks';
 import useCurrentBreakpoint from '../../../../../hooks/useCurrentBreakpoint';
 import HideOnScroll from '../HideOnScroll';
-import HelpIcon from './HelpIcon';
 import LanguageSelect from './LanguageSelect';
 import LogoComponent from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
-import MobileTopBar from './MobileTopBar';
+import MobileTopBar, { MobileTopBarHeight } from './MobileTopBar';
 
 const PREFIX = 'TopBar';
 
@@ -45,7 +44,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
     return state.matches('visible');
   });
 
-  const isBreakpointSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
   if (!loginVisible) {
     return null;
@@ -54,7 +53,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
   return (
     <HideOnScroll>
       <Root position="fixed" className={classes.bar}>
-        {isBreakpointSm ? (
+        {isMobile ? (
           <MobileTopBar />
         ) : (
           <Container maxWidth={breakpoint}>
@@ -69,7 +68,11 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
 export const TopBarSpacer = () => {
   const theme = useTheme();
 
-  return <Box height={theme.spacing(TopBarHeight)} sx={{ visibility: 'hidden' }} />;
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
+
+  const height = theme.spacing(isMobile ? MobileTopBarHeight : TopBarHeight);
+
+  return <Box height={height} sx={{ visibility: 'hidden' }} />;
 };
 
 export default TopBar;
@@ -105,7 +108,6 @@ const DesktopTopBar = () => {
           })}
         />
         <LanguageSelect />
-        <HelpIcon />
       </SearchBarGroup>
 
       <TopNavIcons />
