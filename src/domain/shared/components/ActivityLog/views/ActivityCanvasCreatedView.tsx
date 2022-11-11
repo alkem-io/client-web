@@ -19,7 +19,7 @@ export const ActivityCanvasCreatedView: FC<ActivityCanvasCreatedViewProps> = pro
   });
   const url = buildCanvasUrl(props.callout.nameID, props.canvas.nameID, props.journeyLocation);
 
-  const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
+  const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps} />;
+  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
 };

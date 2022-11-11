@@ -17,7 +17,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
     type: props.calloutType,
   });
   const url = buildCalloutUrl(props.callout.nameID, props.journeyLocation);
-  const resultProps: ActivityBaseViewProps = { ...props, action, url, description };
+  const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps} />;
+  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
 };
