@@ -26,6 +26,10 @@ fragment Configuration on Config {
     foundation
     opensource
     releases
+    help
+    community
+    newuser
+    tips
     featureFlags {
       enabled
       name
