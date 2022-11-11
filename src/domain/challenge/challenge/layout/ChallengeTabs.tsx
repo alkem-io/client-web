@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
 import { useChallenge } from '../../../../hooks';
 import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout/EntityPageLayout';
+import { EntityTabsProps } from '../../../shared/layout/PageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
+import { BatchPredictionOutlined } from '@mui/icons-material';
 
 export interface ChallengeTabsProps extends EntityTabsProps {}
 
@@ -24,13 +24,11 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
       shareUrl={rootUrl}
-      subEntityTab={
-        <HeaderNavigationTab
-          label={t('common.opportunities')}
-          value={EntityPageSection.Opportunities}
-          to={`${rootUrl}/${EntityPageSection.Opportunities}`}
-        />
-      }
+      subEntityTab={{
+        label: t('common.opportunities'),
+        section: EntityPageSection.Opportunities,
+        icon: <BatchPredictionOutlined />,
+      }}
     />
   );
 };

@@ -9,6 +9,7 @@ import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
 import PlatformUpdates from '../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
+import TopLevelDesktopLayout from '../../domain/shared/layout/PageLayout/TopLevelDesktopLayout';
 
 const currentPaths = [];
 
@@ -18,7 +19,7 @@ export const HomePage = () => {
   const user = useUserContext();
 
   return (
-    <>
+    <TopLevelDesktopLayout>
       <PlatformUpdates />
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -38,7 +39,7 @@ export const HomePage = () => {
           <HomePageFooter />
         </Grid>
       </Grid>
-    </>
+    </TopLevelDesktopLayout>
   );
 };
 

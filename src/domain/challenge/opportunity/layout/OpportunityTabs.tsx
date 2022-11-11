@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
 import { useOpportunity } from '../../../../hooks';
 import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout/EntityPageLayout';
+import { EntityTabsProps } from '../../../shared/layout/PageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
+import { HandshakeOutlined } from '@mui/icons-material';
 
 export interface OpportunityTabsProps extends EntityTabsProps {}
 
@@ -24,13 +24,11 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
       shareUrl={rootUrl}
-      subEntityTab={
-        <HeaderNavigationTab
-          label={t('common.agreements')}
-          value={EntityPageSection.Agreements}
-          to={`${rootUrl}/${EntityPageSection.Agreements}`}
-        />
-      }
+      subEntityTab={{
+        label: t('common.agreements'),
+        section: EntityPageSection.Agreements,
+        icon: <HandshakeOutlined />,
+      }}
     />
   );
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout/EntityPageLayout';
+import { EntityTabsProps } from '../../../shared/layout/PageLayout';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
 import { useHub } from '../HubContext/useHub';
 import { buildAdminHubUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
 import { useTranslation } from 'react-i18next';
+import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
 
 const HubTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
@@ -22,14 +22,12 @@ const HubTabs = (props: EntityTabsProps) => {
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
       shareUrl={rootUrl}
-      subEntityTab={
-        <HeaderNavigationTab
-          disabled={!permissions.canReadChallenges}
-          label={t('common.challenges')}
-          value={EntityPageSection.Challenges}
-          to={`${rootUrl}/${EntityPageSection.Challenges}`}
-        />
-      }
+      subEntityTab={{
+        label: t('common.challenges'),
+        section: EntityPageSection.Challenges,
+        icon: <ChallengeIcon />,
+        disabled: !permissions.canReadChallenges,
+      }}
     />
   );
 };

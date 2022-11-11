@@ -5,6 +5,7 @@ import PageBanner from '../../../shared/components/PageHeader/PageBanner';
 import HeaderNavigationTabs from '../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import TopLevelDesktopLayout from '../../../shared/layout/PageLayout/TopLevelDesktopLayout';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;
@@ -15,8 +16,8 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
   const getTabLabel = useCallback((section: AdminSection) => t(`common.${section}` as const), [t]);
 
   return (
-    <>
-      <PageBanner title={t('common.administration')} />
+    <TopLevelDesktopLayout>
+      <PageBanner title={t('common.administration')} entityTypeName="admin" />
       <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Hub}>
         {adminTabs.map(tab => {
           return (
@@ -27,7 +28,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
       <SectionSpacer />
 
       {children}
-    </>
+    </TopLevelDesktopLayout>
   );
 };
 
