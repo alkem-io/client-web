@@ -10,7 +10,7 @@ export interface FloatingActionButtonsProps {
 const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true }) => {
   return (
     <Fade in={visible}>
-      <Box position="fixed" bottom={24} right={24}>
+      <Box position="fixed" bottom={theme => theme.spacing(3)} right={theme => theme.spacing(3)}>
         <ScrollToTop />
         <HelpButton />
       </Box>
