@@ -33,10 +33,12 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       id: aspect.id,
       nameID: aspect.nameID,
       type: aspect.type,
-      description: aspect.description,
+      profileData: {
+        description: aspect.profile?.description!,
+        tags: aspect?.profile?.tagset?.tags,
+      },
       displayName: aspect.displayName,
-      tags: aspect?.tagset?.tags,
-      references: aspect?.references,
+      references: aspect?.profile?.references,
     };
 
   const aspectIndex = resolved.pathname.indexOf('/aspects');

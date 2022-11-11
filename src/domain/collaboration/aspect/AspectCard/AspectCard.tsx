@@ -46,7 +46,7 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | 'tagset';
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
 export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
   calloutNameId: string;
 };
@@ -68,14 +68,7 @@ const AspectCard: FC<AspectCardProps> = ({
   opportunityNameId,
   keepScroll,
 }) => {
-  const {
-    nameID = '',
-    calloutNameId = '',
-    displayName = '',
-    description = '',
-    type = '',
-    tagset,
-  } = (aspect || {}) as AspectCardAspect;
+  const { nameID = '', calloutNameId = '', displayName = '', profile, type = '' } = (aspect || {}) as AspectCardAspect;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (
@@ -85,7 +78,7 @@ const AspectCard: FC<AspectCardProps> = ({
         mediaUrl: bannerNarrow,
         labelText: type,
         labelAboveTitle: true,
-        tags: tagset?.tags ?? [],
+        tags: profile?.tagset?.tags ?? [],
         url:
           hubNameId &&
           nameID &&
@@ -109,7 +102,7 @@ const AspectCard: FC<AspectCardProps> = ({
         <Root>
           <Box className={classes.clampContainer}>
             <Typography component={WrapperMarkdown} className={classes.text}>
-              {description}
+              {profile?.description}
             </Typography>
           </Box>
         </Root>
