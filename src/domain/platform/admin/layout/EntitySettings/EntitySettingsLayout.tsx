@@ -9,7 +9,7 @@ import SimplePageLayout from '../../../../shared/layout/PageLayout/SimplePageLay
 import { useMediaQuery, useTheme } from '@mui/material';
 import TopBar, { TopBarSpacer } from '../../../../../common/components/composite/layout/TopBar/TopBar';
 import Main from '../../../../../common/components/composite/layout/App/Main';
-import Footer from '../../../../../common/components/composite/layout/App/Footer';
+import TopLevelDesktopLayout from '../../../../shared/layout/PageLayout/TopLevelDesktopLayout';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
@@ -22,6 +22,9 @@ type EntitySettingsLayoutProps = EntityLinkComponentProps & {
   tabRoutePrefix?: string;
 };
 
+// TODO Put LayoutHolder into Admin routes, making EntitySettingsLayout able to render EntityPageLayout.
+// Breakpoint checks and choosing the layout variation will be then handled by EntityPageLayout, thus making
+// EntitySettingsLayout a thin wrapper around EntityPageLayout that just prepends PageTabs to `children`.
 const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   entityTypeName,
   tabs,
@@ -39,13 +42,20 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
-  return (
-    <>
-      <TopBar />
-      <TopBarSpacer />
-      <PageBanner />
-      <Tabs currentTab={EntityPageSection.Settings} mobile={isMobile} />
-      {isMobile && (
+  const content = (
+    <SimplePageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
+      {children}
+    </SimplePageLayout>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        <TopBar />
+        <TopBarSpacer />
+        <Tabs currentTab={EntityPageSection.Settings} mobile />
+        <PageBanner />
+        <Main sx={{ marginTop: 2, marginBottom: 9, overflowX: 'auto' }}>{content}</Main>
         <PageTabs
           tabs={tabs}
           currentTab={currentTab}
@@ -53,24 +63,24 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
           routePrefix={tabRoutePrefix}
           getTabLabel={getTabLabel}
         />
-      )}
-      <Main sx={isMobile ? { marginTop: 2, marginBottom: 9, overflowX: 'auto' } : undefined}>
-        {!isMobile && (
-          <PageTabs
-            tabs={tabs}
-            currentTab={currentTab}
-            aria-label={`${entityTypeName} Settings tabs`}
-            routePrefix={tabRoutePrefix}
-            getTabLabel={getTabLabel}
-          />
-        )}
-        <SimplePageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
-          {children}
-        </SimplePageLayout>
-      </Main>
-      {!isMobile && <Footer />}
-    </>
-  );
+      </>
+    );
+  } else {
+    return (
+      <TopLevelDesktopLayout>
+        <PageBanner />
+        <Tabs currentTab={EntityPageSection.Settings} />
+        <PageTabs
+          tabs={tabs}
+          currentTab={currentTab}
+          aria-label={`${entityTypeName} Settings tabs`}
+          routePrefix={tabRoutePrefix}
+          getTabLabel={getTabLabel}
+        />
+        {content}
+      </TopLevelDesktopLayout>
+    );
+  }
 };
 
 export default EntitySettingsLayout;
