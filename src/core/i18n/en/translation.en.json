@@ -1506,6 +1506,19 @@
         "title": "Community administration",
         "subtitle": "This section allows you to select your preferences regarding the community administration"
       }
+    },
+    "help-dialog": {
+      "title": "Looking for help?",
+      "text": "Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination. Read more about the foundation behind the platform [here](https://alkem.io/help).<br /><br />Could you use some help? Click on the icons below to find the answers to your questions, have a look at other discussions on our community support forum or read about what's new on the platform in our release notes!",
+      "icons": {
+        "help-center-faq": "Help Center & FAQ",
+        "help-center-faq-link": "https://alkemio.foundation/faq",
+        "community-support-forum": "Community Support Forum",
+        "community-support-forum-link": "https://alkemio.foundation/forum",
+        "new-user": "New user? Start here!",
+        "new-user-link": "https://alkemio.foundation/new-user"
+      },
+      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     }
   },
   "operations": {

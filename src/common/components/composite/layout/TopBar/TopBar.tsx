@@ -6,7 +6,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useGlobalState } from '../../../../../hooks';
 import useCurrentBreakpoint from '../../../../../hooks/useCurrentBreakpoint';
 import HideOnScroll from '../HideOnScroll';
-import HelpIcon from './HelpIcon';
 import LanguageSelect from './LanguageSelect';
 import LogoComponent from './LogoComponent';
 import SearchBar from './SearchBar';
@@ -109,7 +108,6 @@ const DesktopTopBar = () => {
           })}
         />
         <LanguageSelect />
-        <HelpIcon />
       </SearchBarGroup>
 
       <TopNavIcons />

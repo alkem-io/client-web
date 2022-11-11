@@ -14,6 +14,10 @@ export interface Configuration {
     foundation: string;
     opensource: string;
     releases: string;
+    help: string;
+    community: string;
+    newuser: string;
+    tips: string;
     featureFlags: FeatureFlag[];
   };
   sentry: {

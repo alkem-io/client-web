@@ -30,7 +30,8 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
-import { ScrollButton } from '../../../common/components/core';
+import { FloatingActionButtons } from '../../../common/components/core';
+// import { ScrollButton } from '../../../common/components/core';
 
 export interface SubEntityTabDefinition {
   label: string;
@@ -208,7 +209,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             </List>
           </Drawer>
         )}
-        <ScrollButton bottom={theme => theme.spacing(10)} visibility={isDrawerOpen ? 'hidden' : 'visible'} />
+        <FloatingActionButtons bottom={theme => theme.spacing(10)} visibility={isDrawerOpen ? 'hidden' : 'visible'} />
       </>
     );
   }

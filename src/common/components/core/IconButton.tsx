@@ -10,6 +10,7 @@ const useIconButtonStyles = makeStyles(theme => ({
     borderWidth: 0,
     transition: 'background-color 0.5s ease-out',
     borderStyle: 'none',
+    cursor: 'pointer',
 
     '&:hover': {
       textDecoration: 'none',
