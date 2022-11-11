@@ -1,13 +1,11 @@
-import { Box, Fade, useTheme } from '@mui/material';
-import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import React, { useEffect, useState } from 'react';
-import IconButton from '../IconButton';
+import IconButton from '../../IconButton';
 
 const SCROLL_OFFSET = 36;
 
-const ScrollButton = () => {
+const ScrollToTop = () => {
   const [visible, setVisible] = useState(false);
-  const theme = useTheme();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -26,15 +24,13 @@ const ScrollButton = () => {
     return () => window.removeEventListener('scroll', toggleVisible);
   }, []);
 
+  if (!visible) return null;
+
   return (
-    <Fade in={visible}>
-      <Box position="fixed" zIndex={theme.zIndex.snackbar - 50} bottom={24} right={24}>
-        <IconButton onClick={scrollToTop} size="large">
-          <ExpandLess color="inherit" fontSize="large" />
-        </IconButton>
-      </Box>
-    </Fade>
+    <IconButton onClick={scrollToTop} size="large">
+      <ExpandLessIcon color="inherit" fontSize="large" />
+    </IconButton>
   );
 };
 
-export default ScrollButton;
+export default ScrollToTop;
