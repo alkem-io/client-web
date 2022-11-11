@@ -53,9 +53,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
       <>
         <TopBar />
         <TopBarSpacer />
-        <Tabs currentTab={EntityPageSection.Settings} mobile />
         <PageBanner />
-        <Main sx={{ marginTop: 2, marginBottom: 9, overflowX: 'auto' }}>{content}</Main>
         <PageTabs
           tabs={tabs}
           currentTab={currentTab}
@@ -63,6 +61,8 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
           routePrefix={tabRoutePrefix}
           getTabLabel={getTabLabel}
         />
+        <Main sx={{ marginTop: 2, marginBottom: 9, overflowX: 'auto' }}>{content}</Main>
+        <Tabs currentTab={EntityPageSection.Settings} mobile />
       </>
     );
   } else {
