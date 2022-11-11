@@ -51,9 +51,14 @@ export interface EntityPageTabsProps {
   mobile?: boolean;
 }
 
-enum BottomNavigationActions {
+enum NavigationActions {
   Share = 'share',
   More = 'more',
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare
+interface ShareCapableNavigator extends Navigator {
+  canShare?(data: ShareData): boolean;
 }
 
 const EntityPageTabs: FC<EntityPageTabsProps> = ({
@@ -68,6 +73,15 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
 }) => {
   const { t } = useTranslation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
+  const share = async () => {
+    const shareNavigator = navigator as ShareCapableNavigator;
+    if (shareNavigator.canShare?.({ url: shareUrl })) {
+      await shareNavigator.share({ url: shareUrl });
+    } else {
+      setShareDialogOpen(true);
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -98,11 +112,11 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             value={currentTab}
             onChange={(event, nextValue) => {
               switch (nextValue) {
-                case BottomNavigationActions.Share: {
-                  setShareDialogOpen(true);
+                case NavigationActions.Share: {
+                  share();
                   return;
                 }
-                case BottomNavigationActions.More: {
+                case NavigationActions.More: {
                   setIsDrawerOpen(true);
                   return;
                 }
@@ -145,14 +159,14 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             <BottomNavigationAction value={EntityPageSection.About} label={t('common.about')} icon={<InfoOutlined />} />
             {!showSettings && shareUrl && (
               <BottomNavigationAction
-                value={BottomNavigationActions.Share}
+                value={NavigationActions.Share}
                 label={t('buttons.share')}
                 icon={<ShareOutlined />}
               />
             )}
             {showSettings && currentTab !== EntityPageSection.Settings && (
               <BottomNavigationAction
-                value={BottomNavigationActions.More}
+                value={NavigationActions.More}
                 label={t('common.more')}
                 icon={<MoreVertOutlined />}
               />
@@ -232,11 +246,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           to={`${rootUrl}/${EntityPageSection.About}`}
         />
         {shareUrl && (
-          <HeaderNavigationButton
-            icon={<ShareOutlinedIcon />}
-            value={'share'}
-            onClick={() => setShareDialogOpen(true)}
-          />
+          <HeaderNavigationButton icon={<ShareOutlinedIcon />} value={NavigationActions.Share} onClick={share} />
         )}
       </HeaderNavigationTabs>
       {shareDialog}
