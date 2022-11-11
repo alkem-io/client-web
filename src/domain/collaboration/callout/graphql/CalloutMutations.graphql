@@ -3,12 +3,15 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
     id
     nameID
     displayName
-    description
     type
-    tagset {
+    profile {
       id
-      name
-      tags
+      description
+      tagset {
+        id
+        name
+        tags
+      }
     }
     banner {
       ...VisualUri

@@ -14,7 +14,8 @@ import { newReferenceName } from '../../../common/utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'type'> & {
+  description: string;
   tags: string[];
   references?: Reference[];
 };
@@ -113,15 +114,17 @@ const useAspectSettings: ContainerHook<
         input: {
           ID: aspect.id,
           displayName: aspect.displayName,
-          description: aspect.description,
+          profileData: {
+            description: aspect?.description || '',
+            references: aspect.references?.map(x => ({
+              ID: x.id ?? '',
+              name: x.name,
+              description: x.description,
+              uri: x.uri,
+            })),
+            tags: aspect.tags,
+          },
           type: aspect.type,
-          tags: aspect.tags,
-          references: aspect.references?.map(x => ({
-            ID: x.id ?? '',
-            name: x.name,
-            description: x.description,
-            uri: x.uri,
-          })),
         },
       },
     });
@@ -146,8 +149,8 @@ const useAspectSettings: ContainerHook<
     setPush(push);
     if (aspect?.id) {
       addReference({
-        aspectId: aspect.id,
-        name: newReferenceName(aspect?.references?.length ?? 0),
+        cardProfileId: aspect.profile?.id,
+        name: newReferenceName(aspect?.profile?.references?.length ?? 0),
       });
     }
   };
