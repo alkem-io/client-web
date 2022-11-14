@@ -2,10 +2,6 @@ import React, { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '../../../../../containers/NotificationHandler';
 import { useApm, useUserContext, useUserScope } from '../../../../../hooks';
-import { FloatingActionButtons } from '../../../core';
-import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
-import Footer from './Footer';
-import Main from './Main';
 import useServerMetadata from '../../../../../hooks/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../../hooks/subscription/CommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
@@ -39,16 +35,8 @@ const App: FC = () => {
 
   return (
     <>
-      <div id="main">
-        <TopBar />
-        <Main>
-          <TopBarSpacer />
-          <Outlet />
-        </Main>
-        <Footer />
-      </div>
+      <Outlet />
       {!cookies.accepted_cookies && <CookieConsent />}
-      <FloatingActionButtons />
       <NotificationHandler />
     </>
   );

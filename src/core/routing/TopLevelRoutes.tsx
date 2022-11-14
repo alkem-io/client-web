@@ -17,14 +17,13 @@ import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
-import HelpPage from '../help/pages/HelpPage';
 import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing';
-import { HELP_ROUTE, INSPIRATION_ROUTE } from '../../models/constants';
+import { INSPIRATION_ROUTE } from '../../models/constants';
 import InspirationPage from '../help/pages/InspirationPage';
 import { WithApmTransaction } from '../../domain/shared/components';
 
-export const Routing: FC = () => {
+export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
 
   const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], [t]);
@@ -152,14 +151,6 @@ export const Routing: FC = () => {
           element={
             <WithApmTransaction path="/restricted">
               <Restricted />
-            </WithApmTransaction>
-          }
-        />
-        <Route
-          path={HELP_ROUTE}
-          element={
-            <WithApmTransaction path={HELP_ROUTE}>
-              <HelpPage />
             </WithApmTransaction>
           }
         />

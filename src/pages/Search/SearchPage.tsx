@@ -26,6 +26,7 @@ import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import { escape } from 'lodash';
+import TopLevelDesktopLayout from '../../domain/shared/layout/PageLayout/TopLevelDesktopLayout';
 
 const tagsetNames = ['skills', 'keywords'];
 // todo translate
@@ -186,7 +187,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
 
   return (
-    <>
+    <TopLevelDesktopLayout>
       <Grid container padding={{ xs: 0, sm: 2, md: 8 }}>
         <Grid
           item
@@ -244,7 +245,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         onFilterChange={handleContributorFilterChange}
         loading={isSearching}
       />
-    </>
+    </TopLevelDesktopLayout>
   );
 };
 

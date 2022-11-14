@@ -10,7 +10,7 @@ import ServerMetadataProvider from './context/ServerMetadataProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './domain/community/contributor/user/providers/UserProvider/UserProvider';
 import './core/i18n/config';
-import { Routing } from './core/routing/Routing';
+import { TopLevelRoutes } from './core/routing/TopLevelRoutes';
 import ScrollToTop from './core/routing/ScrollToTop';
 import { CookiesProvider } from 'react-cookie';
 import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
@@ -74,7 +74,7 @@ const Root: FC = () => {
                           <UserProvider>
                             <CookiesProvider>
                               <ScrollToTop />
-                              <Routing />
+                              <TopLevelRoutes />
                             </CookiesProvider>
                           </UserProvider>
                         </NavigationProvider>
