@@ -49,13 +49,16 @@ const FooterLink = styled(Link)(({ theme }) => ({
 // In its TwoTone version it has a border but has a background with 0.3 opacity that doesn't look good either.
 // With this CSS rule that background is hidden and the FiberNewTwoToneIcon looks like in the designs
 const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
-  '& > path:nth-child(2)': { opacity: 0 },
+  '& > path:nth-of-type(2)': { opacity: 0 },
 }));
 
 const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const { platform } = useConfig();
   const handleClose = () => (onClose ? onClose() : undefined);
+  const faq = `${platform?.foundation}/faq`;
+  const contactUs = `${platform?.support}`;
+  const gettingStarted = `${platform?.help}/getting-started`;
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth={'xl'}>
@@ -66,19 +69,19 @@ const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
         <Grid container columns={{ xs: 4, sm: 6 }}>
           <Grid item xs={2}>
-            <IconWrapper href={platform?.help} target="_blank">
+            <IconWrapper href={faq} target="_blank">
               <Icon component={QuizOutlinedIzon} />
               {t('pages.help-dialog.icons.help-center-faq')}
             </IconWrapper>
           </Grid>
           <Grid item xs={2}>
-            <IconWrapper href={platform?.community} target="_blank">
+            <IconWrapper href={contactUs} target="_blank">
               <Icon component={ForumOutlinedIcon} />
               {t('pages.help-dialog.icons.community-support-forum')}
             </IconWrapper>
           </Grid>
           <Grid item xs={2}>
-            <IconWrapper href={platform?.newuser} target="_blank">
+            <IconWrapper href={gettingStarted} target="_blank">
               <Icon component={CustomNewIcon} />
               {t('pages.help-dialog.icons.new-user')}
             </IconWrapper>
