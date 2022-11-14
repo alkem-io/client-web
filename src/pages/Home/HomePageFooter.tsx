@@ -32,13 +32,6 @@ const FooterItem = ({ link, iconComponent, children }: PropsWithChildren<FooterI
   );
 };
 
-// to make all items take equal space regardless of their label length
-const CSS_FREE_SPACE_CONSUMER = {
-  content: '""',
-  display: 'block',
-  flex: '1 1 25%',
-};
-
 const HomePageFooter = () => {
   const { t } = useTranslation();
 
@@ -48,7 +41,7 @@ const HomePageFooter = () => {
         {t('pages.home.sections.footer.headline')}
       </Typography>
       <SectionSpacer double />
-      <Box display="flex" sx={{ '&::before': CSS_FREE_SPACE_CONSUMER, '&::after': CSS_FREE_SPACE_CONSUMER }}>
+      <Box display="flex" flexWrap="wrap" justifyContent="center">
         <FooterItem iconComponent={PublicIcon} link="//alkemio.foundation">
           {t('pages.home.sections.footer.links.foundation')}
         </FooterItem>
