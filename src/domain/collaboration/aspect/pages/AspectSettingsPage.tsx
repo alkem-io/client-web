@@ -140,7 +140,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
         onChange={setAspect}
         onAddReference={actions.handleAddReference}
         onRemoveReference={actions.handleRemoveReference}
-        tags={aspect?.tags}
+        tags={entities.aspect?.profile?.tagset?.tags}
       >
         {({ isValid, dirty }) => {
           const canSave = isAspectLoaded && dirty && isValid;

@@ -58,7 +58,7 @@
     "confirm": "Confirmar",
     "change-template": "Cambiar Plantilla",
     "change": "Cambiar",
-    "import": "Import...",
+    "import": "Importar...",
     "share": "Share"
   },
   "tooltips": {
@@ -565,10 +565,10 @@
       }
     },
     "callout-edit": {
-      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+      "type-edit-help-text": "Esto sólo afectará a las nuevas entradas, pero las tarjetas enviadas no serán cambiadas"
     },
     "aspect-creation": {
-      "title": "Submit your answer to {{calloutDisplayName}}",
+      "title": "Envía tu respuesta a {{calloutDisplayName}}",
       "type-step": {
         "title": "El tipo de contexto adicional a añadir.",
         "error": "Ha ocurrido un error al cargar los tipos",
@@ -994,7 +994,7 @@
             "innovation-templates": "Plantillas de Innovation Flows",
             "delete-confirmation": "¿Estás seguro de que quieres borrar {{template}} de este Hub? También puedes editar esta plantilla si lo deseas.",
             "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+              "title": "Importar desde un Paquete de Innovación"
             }
           },
           "my-profile": {
@@ -1004,7 +1004,7 @@
             "description": "Aquí puedes consultar tus membresías."
           },
           "organizations": {
-            "description": "Here you can see the organizations that your user is associated with."
+            "description": "Aquí puedes ver las organizaciones con las que tu usuario está relacionado."
           },
           "notifications": {
             "description": "Aquí puedes editar los ajustes de notificaciones."
@@ -1141,8 +1141,8 @@
       "no-results": "No se encontraron resultados",
       "more-results": "Hay mas resultados. Por favor sé mas específico para reducir los resultados.",
       "user-not-logged": "Inicia sesión o regístrate para incluir usuarios en tu búsqueda",
-      "search-suggestions": "Search suggestions",
-      "no-suggestions": "No suggestions"
+      "search-suggestions": "Sugerencias de búsqueda",
+      "no-suggestions": "Ninguna sugerencia"
     },
     "challenge-explorer": {
       "search": {
@@ -1508,17 +1508,14 @@
       }
     },
     "help-dialog": {
-      "title": "Looking for help?",
-      "text": "Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination. Read more about the foundation behind the platform [here](https://alkem.io/help).<br /><br />Could you use some help? Click on the icons below to find the answers to your questions, have a look at other discussions on our community support forum or read about what's new on the platform in our release notes!",
+      "title": "¿En busca de ayuda?",
+      "text": "Queremos ayudarte a usar con éxito la plataforma Alkemio, y para ello queremos facilitar el proceso de utilización y interacción. Solo asi podemos ayudarte a marcar la diferencia en los temas que son importantes para ti.<br /><br />Haga clic en los iconos de abajo para encontrar respuestas a sus preguntas, póngase en contacto con el equipo de Alkemio para obtener asistencia o simplemente empieza!",
       "icons": {
-        "help-center-faq": "Help Center & FAQ",
-        "help-center-faq-link": "https://alkemio.foundation/faq",
-        "community-support-forum": "Community Support Forum",
-        "community-support-forum-link": "https://alkemio.foundation/forum",
-        "new-user": "New user? Start here!",
-        "new-user-link": "https://alkemio.foundation/new-user"
+        "help-center-faq": "Centro de ayuda y FAQs",
+        "community-support-forum": "¡Contáctenos!",
+        "new-user": "¿Nuevo usuario? ¡Empieza aquí!"
       },
-      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
+      "tips-and-tricks": "Buscando consejos y trucos ¡Encuéntralos en las entradas del blog aquí!"
     }
   },
   "operations": {
@@ -1569,11 +1566,11 @@
       "help-text": "¿Qué tipo de información quieres compartir?"
     },
     "cardLocation": {
-      "title": "Card location",
-      "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
-      "success": "Successfully moved card to the new Callout.",
-      "error": "Something went wrong when moving the card, please try again."
+      "title": "Ubicación de la tarjeta",
+      "label": "Contribuyendo a Callout",
+      "reminder": "Tenga cuidado al cambiar la ubicación de la tarjeta. Si se mueve la tarjeta a otro Callout esto desaparecerá del actual Callout. Esto podría complicar las cosas quando las personas, incluida la persona que creó esta tarjeta, intentarán recuperarla. Ten en cuenta que sólo puedes mover tarjetas dentro del mismo Hub, Desafío y Oportunidad.",
+      "success": "Tarjeta movida con éxito a la nueva Callout.",
+      "error": "Algo salió mal al mover la tarjeta, por favor inténtalo de nuevo."
     }
   },
   "innovation-edit": {
