@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import Grid from '@mui/material/Grid';
+import React from 'react';
 import { Box, Container, Link, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import WrapperToolbar from '../../../core/WrapperToolbar';
@@ -24,90 +23,57 @@ const useFooterStyles = makeStyles(theme => ({
   },
 }));
 
-const Footer: FC = ({ children }) => {
+const Footer = () => {
   const { t } = useTranslation();
   const styles = useFooterStyles();
   const { platform } = useConfig();
   const breakpoint = useCurrentBreakpoint();
 
   return (
-    <>
-      <Box p={2} />
-      <Paper elevation={2}>
-        <Container maxWidth={breakpoint} className={styles.footer}>
-          <Grid container spacing={2}>
-            <Grid
-              item
-              xs={12}
-              sm={false}
-              justifyContent={'center'}
-              component={Box}
-              textAlign="center"
-              display={{ xs: 'block', sm: 'none' }}
-            >
-              <Link component={RouterLink} to={'/about'}>
-                <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
-              </Link>
-            </Grid>
-            <Grid item xs={12}>
-              <WrapperToolbar dense>
-                <Grid container justifyContent={'center'} wrap={'nowrap'} spacing={2}>
-                  <Grid container justifyContent={'center'} alignItems="center" spacing={2} wrap={'nowrap'}>
-                    <Grid item>
-                      <Link href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
-                        {t('footer.terms')}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
-                        {t('footer.privacy')}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
-                        {t('footer.security')}
-                      </Link>
-                    </Grid>
-                    <Grid item component={Box} display={{ xs: 'none', sm: 'block', lg: 'block' }}>
-                      <Link component={RouterLink} to={'/about'}>
-                        <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
-                        {t('footer.feedback')}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
-                        {t('footer.support')}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      <Link href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
-                        {t('footer.about')}
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </WrapperToolbar>
-            </Grid>
-            <Grid item xs={12}>
-              <WrapperToolbar dense className={styles.footerSecondary}>
-                <Grid container justifyContent={'flex-start'}>
-                  <WrapperTypography variant="caption" color="neutralMedium" weight="boldLight">
-                    {t('footer.copyright')}
-                  </WrapperTypography>
-                </Grid>
-                <Grid container justifyContent={'flex-end'}>
-                  {children}
-                </Grid>
-              </WrapperToolbar>
-            </Grid>
-          </Grid>
-        </Container>
-      </Paper>
-    </>
+    <Paper elevation={2} sx={{ marginTop: 4 }}>
+      <Container maxWidth={breakpoint} sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box justifyContent="center" textAlign="center" display={{ xs: 'block', sm: 'none' }} my={1}>
+          <Link component={RouterLink} to="/about">
+            <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+          </Link>
+        </Box>
+        <Box
+          display="flex"
+          justifyContent="center"
+          gap={2}
+          rowGap={1}
+          flexWrap={{ xs: 'wrap', md: 'nowrap' }}
+          flexGrow={1}
+        >
+          <Link href={platform?.terms || ''} target="_blank" rel="noopener noreferrer">
+            {t('footer.terms')}
+          </Link>
+          <Link href={platform?.privacy || ''} target="_blank" rel="noopener noreferrer">
+            {t('footer.privacy')}
+          </Link>
+          <Link href={platform?.security || ''} target="_blank" rel="noopener noreferrer">
+            {t('footer.security')}
+          </Link>
+          <Box display={{ xs: 'none', sm: 'block' }} component={RouterLink} to="/about">
+            <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
+          </Box>
+          <Link href={platform?.feedback || ''} target="_blank" rel="noopener noreferrer">
+            {t('footer.feedback')}
+          </Link>
+          <Link href={platform?.support || ''} target="_blank" rel="noopener noreferrer">
+            {t('footer.support')}
+          </Link>
+          <Link href={platform?.about || ''} target="_blank" rel="noopener noreferrer">
+            {t('footer.about')}
+          </Link>
+        </Box>
+        <WrapperToolbar dense sx={{ marginTop: { md: 2 } }}>
+          <WrapperTypography variant="caption" color="neutralMedium" weight="boldLight">
+            {t('footer.copyright')}
+          </WrapperTypography>
+        </WrapperToolbar>
+      </Container>
+    </Paper>
   );
 };
 
