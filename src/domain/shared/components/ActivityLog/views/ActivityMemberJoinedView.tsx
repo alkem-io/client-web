@@ -18,6 +18,9 @@ export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = props
   const description = t('components.activity-log-view.activity-description.member-joined', {
     communityType: props.communityType,
     userDisplayName: props.member.displayName,
+    interpolation: {
+      escapeValue: false,
+    },
   });
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
