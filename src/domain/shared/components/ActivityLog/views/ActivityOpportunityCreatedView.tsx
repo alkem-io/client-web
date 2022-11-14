@@ -18,6 +18,9 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
   );
   const description = t('components.activity-log-view.activity-description.opportunity-created', {
     displayName: props.opportunity.displayName,
+    interpolation: {
+      escapeValue: false,
+    },
   });
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };

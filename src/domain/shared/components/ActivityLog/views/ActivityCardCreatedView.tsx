@@ -19,6 +19,9 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props =
   const description = t('components.activity-log-view.activity-description.card-created', {
     cardDisplayName: props.card.displayName,
     cardType: props.cardType,
+    interpolation: {
+      escapeValue: false,
+    },
   });
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
