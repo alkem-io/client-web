@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, RefObject } from 'react';
 import { makeStyles } from '@mui/styles';
+import { Box, BoxProps } from '@mui/material';
 
 const useToolbarStyles = makeStyles(theme => ({
   toolbar: {
@@ -21,7 +22,7 @@ const useToolbarStyles = makeStyles(theme => ({
   },
 }));
 
-interface ToolbarProps {
+interface ToolbarProps extends BoxProps {
   dense?: boolean;
   classes?: {
     padding?: string;
@@ -32,11 +33,11 @@ interface ToolbarProps {
   innerRef?: RefObject<any>;
 }
 
-const WrapperToolbar: FC<ToolbarProps> = ({ dense, classes, className, children, innerRef }) => {
+const WrapperToolbar: FC<ToolbarProps> = ({ dense, classes, className, innerRef, ...boxProps }) => {
   const styles = useToolbarStyles();
 
   return (
-    <div
+    <Box
       ref={innerRef}
       className={clsx(
         styles.toolbar,
@@ -45,9 +46,8 @@ const WrapperToolbar: FC<ToolbarProps> = ({ dense, classes, className, children,
         styles.responsivePadding,
         className
       )}
-    >
-      {children}
-    </div>
+      {...boxProps}
+    />
   );
 };
 
