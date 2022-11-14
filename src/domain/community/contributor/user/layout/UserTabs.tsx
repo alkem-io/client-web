@@ -1,20 +1,14 @@
 import React, { useMemo } from 'react';
-import { buildUserProfileSettingsUrl, buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
-import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
-import { useTranslation } from 'react-i18next';
-import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { useUrlParams } from '../../../../../hooks';
-
-const routes = {
-  profile: 'profile',
-  settings: 'settings',
-};
+import { AssignmentIndOutlined } from '@mui/icons-material';
+import ProfileTabs from '../../../../shared/layout/ProfileTabs';
+import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
+import { buildUserProfileSettingsUrl, buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
 
 const UserTabs = (props: EntityTabsProps) => {
-  const { t } = useTranslation();
   const { user } = useUserContext();
 
   const { userNameId = '' } = useUrlParams();
@@ -22,20 +16,16 @@ const UserTabs = (props: EntityTabsProps) => {
 
   const isCurrentUser = useMemo(() => user?.user.id === userMetadata?.user.id, [user, userMetadata]);
 
+  const routes = useMemo(
+    () => ({
+      [EntityPageSection.Profile]: buildUserProfileUrl(userNameId),
+      [EntityPageSection.Settings]: buildUserProfileSettingsUrl(userNameId),
+    }),
+    [userNameId]
+  );
+
   return (
-    <HeaderNavigationTabs
-      value={props.currentTab}
-      defaultTab={routes.profile}
-      showSettings={isCurrentUser}
-      settingsUrl={buildUserProfileSettingsUrl(userNameId)}
-    >
-      <HeaderNavigationTab
-        label={t('common.profile')}
-        value={routes.profile}
-        to={buildUserProfileUrl(userNameId)}
-        className={'singleCenteredTab'}
-      />
-    </HeaderNavigationTabs>
+    <ProfileTabs showSettings={isCurrentUser} profileIconComponent={AssignmentIndOutlined} routes={routes} {...props} />
   );
 };
 
