@@ -13,9 +13,15 @@ export const ActivityCanvasCreatedView: FC<ActivityCanvasCreatedViewProps> = pro
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.canvas-created', {
     parentDisplayName: props.callout.displayName,
+    interpolation: {
+      escapeValue: false,
+    },
   });
   const description = t('components.activity-log-view.activity-description.canvas-created', {
-    displayName: `${props.canvas.displayName}`,
+    displayName: props.canvas.displayName,
+    interpolation: {
+      escapeValue: false,
+    },
   });
   const url = buildCanvasUrl(props.callout.nameID, props.canvas.nameID, props.journeyLocation);
 
