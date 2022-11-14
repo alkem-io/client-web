@@ -147,24 +147,26 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               <References references={references} />
             </DashboardSection>
           )}
-          <DashboardGenericSection
-            headerText={withOptionalCount(
-              t('pages.challenge.sections.dashboard.opportunities.title'),
-              entities.opportunitiesCount
-            )}
-            helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}
-            navText={t('buttons.see-all')}
-            navLink={'opportunities'}
-          >
-            <CardsLayout
-              items={opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION) || []}
-              deps={[hubNameId, challengeNameId]}
-            >
-              {opportunity => (
-                <OpportunityCard opportunity={opportunity} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+          {!!entities?.opportunitiesCount && entities.opportunitiesCount > 0 && (
+            <DashboardGenericSection
+              headerText={withOptionalCount(
+                t('pages.challenge.sections.dashboard.opportunities.title'),
+                entities.opportunitiesCount
               )}
-            </CardsLayout>
-          </DashboardGenericSection>
+              helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}
+              navText={t('buttons.see-all')}
+              navLink={'opportunities'}
+            >
+              <CardsLayout
+                items={opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION) || []}
+                deps={[hubNameId, challengeNameId]}
+              >
+                {opportunity => (
+                  <OpportunityCard opportunity={opportunity} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+                )}
+              </CardsLayout>
+            </DashboardGenericSection>
+          )}
           <DashboardSectionAspects
             aspects={aspects}
             aspectsCount={aspectsCount}
