@@ -14,6 +14,8 @@ import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { InnovationPack, InnovationPackTemplatesData } from './InnovationPacks/InnovationPack';
+import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
+import { TemplateImportCardComponentProps } from './InnovationPacks/TemplatesGallery';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;
@@ -57,6 +59,7 @@ type AdminAspectTemplatesSectionProps<
   keyof CreateTemplateDialogProps<SubmittedValues> | keyof EditTemplateDialogProps<T, SubmittedValues>
 > & {
   headerText: string;
+  importDialogHeaderText: string;
   templateId: string | undefined;
   templatesSetId: string | undefined;
   templates: T[] | undefined;
@@ -67,12 +70,13 @@ type AdminAspectTemplatesSectionProps<
   loadInnovationPacks: () => void;
   innovationPacks: InnovationPack[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
   useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues> & { templateId: string }, UpdateM>;
-  useDeleteTemplateMutation: MutationHook<any, DeleteM>; //!! TODO: { templateId: string, templatesSetId?: string }
+  useDeleteTemplateMutation: MutationHook<{ templateId: string; templatesSetId?: string }, DeleteM>;
 };
 
 const AdminTemplatesSection = <
@@ -84,6 +88,7 @@ const AdminTemplatesSection = <
   DialogProps extends {}
 >({
   headerText,
+  importDialogHeaderText,
   templates,
   templateId,
   templatesSetId,
@@ -97,6 +102,7 @@ const AdminTemplatesSection = <
   useUpdateTemplateMutation,
   useDeleteTemplateMutation,
   templateCardComponent: TemplateCard,
+  templateImportCardComponent: TemplateImportCard,
   templatePreviewComponent: TemplatePreview,
   createTemplateDialogComponent,
   editTemplateDialogComponent,
@@ -113,16 +119,16 @@ const AdminTemplatesSection = <
   const { user: userMetadata } = useUserContext();
   const userIsPlatformAdmin = userMetadata?.permissions.isPlatformAdmin;
 
-  const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
-  const [isImportTemplatesDialogOpen, setIsImportTemplatesDialogOpen] = useState(false);
+  const [isCreateTemplateDialogOpen, setCreateTemplateDialogOpen] = useState(false);
+  const [isImportTemplatesDialogOpen, setImportTemplatesDialogOpen] = useState(false);
 
-  const openCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(true), []);
+  const openCreateTemplateDialog = useCallback(() => setCreateTemplateDialogOpen(true), []);
   const openImportTemplateDialog = useCallback(() => {
     loadInnovationPacks();
-    setIsImportTemplatesDialogOpen(true);
+    setImportTemplatesDialogOpen(true);
   }, [loadInnovationPacks]);
-  const closeCreateTemplateDialog = useCallback(() => setIsCreateTemplateDialogOpen(false), []);
-  const closeImportTemplatesDialog = useCallback(() => setIsImportTemplatesDialogOpen(false), []);
+  const closeCreateTemplateDialog = useCallback(() => setCreateTemplateDialogOpen(false), []);
+  const closeImportTemplatesDialog = useCallback(() => setImportTemplatesDialogOpen(false), []);
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
@@ -223,11 +229,11 @@ const AdminTemplatesSection = <
           <Box>
             {userIsPlatformAdmin && (
               <Button
-                variant="outlined"
                 onClick={openImportTemplateDialog}
                 sx={{ marginRight: theme => theme.spacing(1) }}
+                startIcon={<LibraryIcon />}
               >
-                {t('buttons.import')}
+                {t('buttons.library')}
               </Button>
             )}
             &nbsp;
@@ -256,6 +262,8 @@ const AdminTemplatesSection = <
       />
       <ImportTemplatesDialog
         {...dialogProps}
+        headerText={importDialogHeaderText}
+        templateImportCardComponent={TemplateImportCard}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onSelectTemplate={handleImportTemplate}

@@ -1,24 +1,18 @@
-import { useTranslation } from 'react-i18next';
+import { Button, DialogContent, DialogProps, Skeleton } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { useState } from 'react';
-import {
-  DialogProps,
-  DialogContent,
-  List,
-  ListItemIcon,
-  ListItemText,
-  Skeleton,
-  ListItemButton,
-  Button,
-  Collapse,
-} from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
-import FileIcon from '@mui/icons-material/FileOpenOutlined';
-import { DialogActions, DialogTitle } from '../../../../../common/components/core/dialog';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { InnovationPack, InnovationPackTemplatesData } from './InnovationPack';
+import React, { ComponentType, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { DialogActions } from '../../../../../common/components/core/dialog';
+import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
+import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
+import { InnovationPack, InnovationPackTemplatesData, InnovationPackTemplateViewModel } from './InnovationPack';
+import TemplatePreview from './TemplatePreview';
+import TemplatesGallery, { TemplateImportCardComponentProps } from './TemplatesGallery';
 
 export interface ImportTemplatesDialogProps {
+  headerText: string;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps>;
   innovationPacks: InnovationPack[];
   open: boolean;
   onClose: DialogProps['onClose'];
@@ -27,6 +21,8 @@ export interface ImportTemplatesDialogProps {
 }
 
 const ImportTemplatesDialog = ({
+  headerText,
+  templateImportCardComponent,
   innovationPacks,
   loading,
   open,
@@ -35,19 +31,17 @@ const ImportTemplatesDialog = ({
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
 
-  const [foldersState, setFoldersState] = useState<string[]>([]);
-  const isFolderOpen = (id: string) => foldersState.includes(id);
-
-  const onClickOnFolder = (id: string) => {
-    if (isFolderOpen(id)) {
-      setFoldersState(foldersState.filter(f => f !== id));
-    } else {
-      setFoldersState([...foldersState, id]);
-    }
-  };
   // TODO: Rename to Innovat<I>onPack
 
   const handleClose = () => (onClose ? onClose({}, 'escapeKeyDown') : undefined);
+  const [previewTemplate, setPreviewTemplate] = useState<InnovationPackTemplateViewModel>();
+
+  const handlePreviewTemplate = (template: InnovationPackTemplateViewModel) => {
+    setPreviewTemplate(template);
+  };
+  const handleClosePreview = () => {
+    setPreviewTemplate(undefined);
+  };
 
   return (
     <Dialog
@@ -56,44 +50,30 @@ const ImportTemplatesDialog = ({
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
-      <DialogTitle onClose={handleClose}>
-        {t('pages.admin.generic.sections.templates.import-innovation-packs.title')}
-      </DialogTitle>
+      <DialogTitleWithIcon
+        subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
+        onClose={handleClose}
+        icon={<LibraryIcon />}
+      >
+        {headerText}
+      </DialogTitleWithIcon>
       <DialogContent>
         {loading && <Skeleton variant="rectangular" />}
-        {!loading && innovationPacks && (
-          <>
-            <List>
-              {innovationPacks.map(pack => {
-                const open = isFolderOpen(pack.id);
-                const templates = pack.templates as InnovationPackTemplatesData[];
-                return (
-                  <>
-                    <ListItemButton onClick={() => onClickOnFolder(pack.id)}>
-                      <ListItemIcon>
-                        <FolderIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={pack.displayName} secondary={pack.provider?.displayName} />
-                      {open ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {templates.map(t => (
-                          <ListItemButton sx={{ pl: 4 }} onClick={() => onSelectTemplate(t)}>
-                            <ListItemIcon>
-                              <FileIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={t.info.title} />
-                          </ListItemButton>
-                        ))}
-                      </List>
-                    </Collapse>
-                  </>
-                );
-              })}
-            </List>
-          </>
-        )}
+        {!loading &&
+          (previewTemplate ? (
+            <TemplatePreview
+              template={previewTemplate}
+              onSelectTemplate={onSelectTemplate}
+              onClose={handleClosePreview}
+            />
+          ) : (
+            <TemplatesGallery
+              innovationPacks={innovationPacks}
+              onSelectTemplate={onSelectTemplate}
+              onPreviewTemplate={handlePreviewTemplate}
+              templateImportCardComponent={templateImportCardComponent}
+            />
+          ))}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>

@@ -8,4 +8,11 @@ export type InnovationPackTemplatesData =
   | Pick<InnovationPackTemplates['canvasTemplates'][number], 'id' | 'value' | 'info'>
   | Pick<InnovationPackTemplates['lifecycleTemplates'][number], 'id' | 'definition' | 'type' | 'info'>;
 
+export type InnovationPackTemplateViewModel = {
+  innovationPackNameID: string;
+  innovationPackId: string;
+  innovationPackDisplayName: string;
+  provider: InnovationPackArray['provider'];
+} & InnovationPackTemplatesData;
+
 export type InnovationPack = InnovationPackInfo & { templates: InnovationPackTemplatesData[] };

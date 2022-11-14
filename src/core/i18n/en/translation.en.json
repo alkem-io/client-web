@@ -58,7 +58,7 @@
     "confirm": "Confirm",
     "change-template": "Change template",
     "change": "Change",
-    "import": "Import...",
+    "library": "Library",
     "share": "Share"
   },
   "tooltips": {
@@ -177,6 +177,7 @@
     "loading": "Loading...",
     "language": "Language",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation Flows",
     "more": "More",
     "genders": {
       "notSpecified": "not specified",
@@ -993,8 +994,9 @@
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
-            "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+            "import": {
+              "title": "Template Library: {{templateType}}",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set."
             }
           },
           "my-profile": {
