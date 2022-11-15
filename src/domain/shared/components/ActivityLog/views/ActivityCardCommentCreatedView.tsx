@@ -21,6 +21,9 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.card-comment-created', {
     cardDisplayName: card.displayName,
+    interpolation: {
+      escapeValue: false,
+    },
   });
   const url = buildAspectUrl(callout.nameID, card.nameID, journeyLocation);
   const comment = replaceQuotesInOldDescription(description);

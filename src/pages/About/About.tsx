@@ -7,6 +7,7 @@ import WrapperButton from '../../common/components/core/WrapperButton';
 import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../hooks';
 import useServerMetadata from '../../hooks/useServerMetadata';
+import TopLevelDesktopLayout from '../../domain/shared/layout/PageLayout/TopLevelDesktopLayout';
 
 const useAboutStyles = makeStyles(theme => ({
   content: {
@@ -58,7 +59,7 @@ export const AboutPage = () => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <>
+    <TopLevelDesktopLayout>
       <Grid container spacing={2}>
         <Grid item lg={3} className={styles.mdHidden} />
         <Grid item xs={12} lg={6}>
@@ -93,7 +94,7 @@ export const AboutPage = () => {
         </Grid>
         <Grid item lg={3} className={styles.mdHidden} />
       </Grid>
-    </>
+    </TopLevelDesktopLayout>
   );
 };
 

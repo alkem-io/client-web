@@ -72,12 +72,12 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
       {
         name: t('common.opportunities'),
         type: MetricType.Opportunity,
-        count: getMetricCount(activity, 'opportunities'),
+        count: getMetricCount(activity, MetricType.Opportunity),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getMetricCount(activity, 'members'),
+        count: getMetricCount(activity, MetricType.Member),
         color: 'neutralMedium',
       },
     ];
