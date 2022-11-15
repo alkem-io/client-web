@@ -5,6 +5,7 @@ import getMetricCount from '../../../../../../domain/platform/metrics/utils/getM
 import { Hub, Nvp, VisualUriFragment } from '../../../../../../models/graphql-schema';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
+import { MetricType } from '../../../../../../domain/platform/metrics/MetricType';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 
@@ -40,17 +41,17 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
       metrics={[
         {
           name: t('common.challenges'),
-          count: getMetricCount(metrics, 'challenges'),
+          count: getMetricCount(metrics, MetricType.Challenge),
           color: 'primary',
         },
         {
           name: t('common.opportunities'),
-          count: getMetricCount(metrics, 'opportunities'),
+          count: getMetricCount(metrics, MetricType.Opportunity),
           color: 'primary',
         },
         {
           name: t('common.members'),
-          count: getMetricCount(metrics, 'members'),
+          count: getMetricCount(metrics, MetricType.Member),
           color: 'positive',
         },
       ]}
