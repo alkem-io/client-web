@@ -17,6 +17,7 @@ import { ViewProps } from '../../../../models/view';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import OpportunityCommunityView from '../../../community/community/entities/OpportunityCommunityView';
 import DashboardOpportunityStatistics from '../../../shared/components/DashboardSections/DashboardOpportunityStatistics';
+import { MetricType } from '../../../platform/metrics/MetricType';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;
@@ -65,12 +66,12 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
     return [
       {
         name: t('common.members'),
-        count: getMetricCount(activity, 'members'),
+        count: getMetricCount(activity, MetricType.Member),
         color: 'neutralMedium',
       },
       {
         name: t('common.interests'),
-        count: getMetricCount(activity, 'relations'),
+        count: getMetricCount(activity, MetricType.Relation),
         color: 'primary',
       },
     ];

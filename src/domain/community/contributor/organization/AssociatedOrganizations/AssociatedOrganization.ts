@@ -8,6 +8,7 @@ import {
 import { buildOrganizationUrl } from '../../../../../common/utils/urlBuilders';
 import { TFunction } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
+import { MetricType } from '../../../../platform/metrics/MetricType';
 
 export interface AssociatedOrganization {
   nameID: string;
@@ -39,7 +40,7 @@ export const mapToAssociatedOrganization = (
   return {
     nameID, // to be used as React key
     name: organization?.displayName,
-    associatesCount: getMetricCount(organization?.metrics || [], 'associates'),
+    associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     description: organization?.profile.description,
     avatar: organization?.profile.avatar?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,

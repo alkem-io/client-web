@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { TFunction } from 'i18next';
 import { UserMetadata } from '../../contributor/user/hooks/useUserMetadataWrapper';
+import { MetricType } from '../../../platform/metrics/MetricType';
 
 export const toOrganizationCardProps = (
   org: OrganizationCardFragment,
@@ -22,7 +23,7 @@ export const toOrganizationCardProps = (
     avatar: org.profile.avatar?.uri,
     description: org.profile.description,
     role: roleName && t(roleName),
-    associatesCount: getMetricCount(org.metrics ?? [], 'associates'),
+    associatesCount: getMetricCount(org.metrics ?? [], MetricType.Associate),
     verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     url: buildOrganizationUrl(org.nameID),
   };
