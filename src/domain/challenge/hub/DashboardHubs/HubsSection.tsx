@@ -15,6 +15,7 @@ import { EntityContributionCardLabel } from '../../../../common/components/compo
 import { keyBy } from 'lodash';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { Loading } from '../../../../common/components/core';
+import { MetricType } from '../../../platform/metrics/MetricType';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -35,9 +36,9 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const { metrics, loading: isLoadingActivities } = useServerMetadata();
 
   const [hubCount, challengeCount, opportunityCount] = [
-    getMetricCount(metrics, 'hubs'),
-    getMetricCount(metrics, 'challenges'),
-    getMetricCount(metrics, 'opportunities'),
+    getMetricCount(metrics, MetricType.Hub),
+    getMetricCount(metrics, MetricType.Challenge),
+    getMetricCount(metrics, MetricType.Opportunity),
   ];
 
   const isMember = (hubId: string) => user?.ofHub(hubId) ?? false;

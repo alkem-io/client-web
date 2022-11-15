@@ -53,17 +53,17 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
       {
         name: t('common.challenges'),
         type: MetricType.Challenge,
-        count: getMetricCount(activity, 'challenges'),
+        count: getMetricCount(activity, MetricType.Challenge),
         color: 'neutral',
       },
       {
         name: t('common.opportunities'),
-        count: getMetricCount(activity, 'opportunities'),
+        count: getMetricCount(activity, MetricType.Opportunity),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getMetricCount(activity, 'members'),
+        count: getMetricCount(activity, MetricType.Member),
         color: 'neutralMedium',
       },
     ];

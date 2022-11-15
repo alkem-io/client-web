@@ -6,6 +6,7 @@ import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
 import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
 import { useUserContext } from '../../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
+import { MetricType } from '../../../../../../domain/platform/metrics/MetricType';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 export interface OpportunityCardProps {
@@ -43,7 +44,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
       }}
       label={isMember(opportunity.id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
-      metrics={[{ name: t('common.members'), count: getMetricCount(metrics, 'members') }]}
+      metrics={[{ name: t('common.members'), count: getMetricCount(metrics, MetricType.Member) }]}
     />
   );
 };

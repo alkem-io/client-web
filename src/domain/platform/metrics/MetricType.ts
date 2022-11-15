@@ -2,6 +2,7 @@ export enum MetricType {
   Opportunity = 'opportunities',
   Project = 'projects',
   Member = 'members',
+  Associate = 'associates',
   User = 'users',
   Organization = 'organizations',
   Hub = 'hubs',
