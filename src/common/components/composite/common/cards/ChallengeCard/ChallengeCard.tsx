@@ -6,6 +6,7 @@ import { buildChallengeUrl } from '../../../../../utils/urlBuilders';
 import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
 import { useUserContext } from '../../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
+import { MetricType } from '../../../../../../domain/platform/metrics/MetricType';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 
@@ -38,11 +39,11 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
     : [
         {
           name: t('common.opportunities'),
-          count: getMetricCount(metrics, 'opportunities'),
+          count: getMetricCount(metrics, MetricType.Opportunity),
         },
         {
           name: t('common.members'),
-          count: getMetricCount(metrics, 'members'),
+          count: getMetricCount(metrics, MetricType.Member),
         },
       ];
 
