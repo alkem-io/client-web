@@ -13,6 +13,7 @@ import { useUpdateNavigation } from '../../../../hooks';
 import { AUTH_REGISTER_PATH } from '../../../../models/constants';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
+import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 
 interface LoginPageProps {
   flow?: string;
@@ -36,7 +37,7 @@ const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
 // };
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
-  const { flow: loginFlow, loading } = useKratosFlow(FlowTypeName.Login, flow);
+  const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -57,7 +58,13 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
     }
   }, [loginFlow, navigate]);
 
-  if (loading) return <Loading text={t('kratos.loading-flow')} />;
+  if (loading) {
+    return <Loading text={t('kratos.loading-flow')} />;
+  }
+
+  if (error) {
+    return <ErrorDisplay />;
+  }
 
   const resetPassword = (
     <Box display={'flex'} justifyContent={'flex-end'}>
