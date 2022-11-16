@@ -47,6 +47,7 @@ const ImportTemplatesDialogPreviewStep = <T extends Template, Q extends T & Temp
             variant="contained"
             onClick={handleClickImport}
             disabled={importingTemplate}
+            sx={{ marginLeft: theme => theme.spacing(1) }}
           >
             {importingTemplate ? t('buttons.importing') : t('buttons.import')}
           </Button>

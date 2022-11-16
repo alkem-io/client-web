@@ -9,7 +9,7 @@ import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
 interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
 
-const InnovationImportTemplateCard = ({ template, actionButtons }: InnovationImportTemplateCardProps) => {
+const InnovationImportTemplateCard = ({ template, onClick, actionButtons }: InnovationImportTemplateCardProps) => {
   return (
     <ActionsCard
       key={template.id}
@@ -24,6 +24,7 @@ const InnovationImportTemplateCard = ({ template, actionButtons }: InnovationImp
       }
       imageUrl={getVisualBannerNarrow(template.info.visual)}
       defaultImage={<AutoGraphOutlinedIcon />}
+      onClick={onClick}
       actionButtons={actionButtons}
     />
   );

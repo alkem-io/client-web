@@ -8,7 +8,7 @@ import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
 interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
 
-const AspectImportTemplateCard = ({ template, actionButtons }: AspectImportTemplateCardProps) => {
+const AspectImportTemplateCard = ({ template, onClick, actionButtons }: AspectImportTemplateCardProps) => {
   return (
     <ActionsCard
       key={template.id}
@@ -23,6 +23,7 @@ const AspectImportTemplateCard = ({ template, actionButtons }: AspectImportTempl
       }
       imageUrl={getVisualBannerNarrow(template.info.visual)}
       defaultImage={<PanoramaOutlinedIcon />}
+      onClick={onClick}
       actionButtons={actionButtons}
     />
   );

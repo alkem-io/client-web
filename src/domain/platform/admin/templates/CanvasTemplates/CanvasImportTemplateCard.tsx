@@ -9,7 +9,7 @@ import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
 interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
 
-const CanvasImportTemplateCard = ({ template, actionButtons }: CanvasImportTemplateCardProps) => {
+const CanvasImportTemplateCard = ({ template, onClick, actionButtons }: CanvasImportTemplateCardProps) => {
   return (
     <ActionsCard
       key={template.id}
@@ -24,6 +24,7 @@ const CanvasImportTemplateCard = ({ template, actionButtons }: CanvasImportTempl
       }
       imageUrl={getVisualBannerNarrow(template.info.visual)}
       defaultImage={<WbIncandescentOutlined />}
+      onClick={onClick}
       actionButtons={actionButtons}
     />
   );

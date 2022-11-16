@@ -1,13 +1,11 @@
-import React, { ComponentType, useMemo, useState } from 'react';
-import { Button, Grid } from '@mui/material';
+import React, { ComponentType, useMemo } from 'react';
+import { Grid } from '@mui/material';
 import { InnovationPack, TemplateFromInnovationPack } from './InnovationPack';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { useTranslation } from 'react-i18next';
 import { Template } from '../AdminTemplatesSection';
 
 export interface TemplateImportCardComponentProps<Q extends TemplateFromInnovationPack> {
   template: Q;
+  onClick?: (e: MouseEvent) => void;
   actionButtons?: React.ReactNode[];
 }
 
@@ -21,10 +19,8 @@ export interface ImportTemplatesDialogGalleryStepProps<T extends Template, Q ext
 const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & TemplateFromInnovationPack>({
   innovationPacks,
   onPreviewTemplate,
-  onImportTemplate,
   templateImportCardComponent: TemplateCard,
 }: ImportTemplatesDialogGalleryStepProps<T, Q>) => {
-  const { t } = useTranslation();
   // TODO: Pending Implement filters
   const organizationFilter = null;
   const innovationPackFilter = null;
@@ -51,14 +47,6 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
       ) as any; //TODO? Better?
   }, [innovationPacks, organizationFilter, innovationPackFilter]);
 
-  const [selectingTemplate, setSelectingTemplate] = useState<string>('');
-  const handleSelectTemplate = (template: Q) => {
-    setSelectingTemplate(template.id);
-    onImportTemplate(template).finally(() => {
-      setSelectingTemplate('');
-    });
-  };
-
   /*
   // TODO: Pending Implement filters
       <Grid item xs={12}>
@@ -75,28 +63,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
         <Grid container columns={{ xs: 2, sm: 6, lg: 8 }} spacing={3}>
           {templates.map(template => (
             <Grid item xs={2} key={`grid-item-${template.id}`}>
-              <TemplateCard
-                template={template}
-                actionButtons={[
-                  <Button
-                    key={`preview-${template.id}`}
-                    startIcon={<VisibilityIcon />}
-                    variant="text"
-                    onClick={() => onPreviewTemplate(template)}
-                  >
-                    {t('buttons.preview')}
-                  </Button>,
-                  <Button
-                    key={`import-${template.id}`}
-                    startIcon={<SystemUpdateAltIcon />}
-                    variant="contained"
-                    onClick={() => handleSelectTemplate(template)}
-                    disabled={selectingTemplate === template.id}
-                  >
-                    {selectingTemplate === template.id ? t('buttons.importing') : t('buttons.import')}
-                  </Button>,
-                ]}
-              />
+              <TemplateCard template={template} onClick={() => onPreviewTemplate(template)} />
             </Grid>
           ))}
         </Grid>

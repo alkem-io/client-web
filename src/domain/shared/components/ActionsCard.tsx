@@ -8,7 +8,6 @@ import hexToRGBA from '../../../common/utils/hexToRGBA';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
-// Title bar:
 interface TitleBarProps {
   title: string;
   iconComponent?: ComponentType<SvgIconProps>;
@@ -68,7 +67,6 @@ const OrganizationName = styled(Typography)(() => ({
   textOverflow: 'ellipsis',
 }));
 
-// Image:
 const ImageWrapper = styled(Box)(({ theme }) => ({
   aspectRatio: '7/4',
   display: 'flex',
@@ -94,14 +92,12 @@ const ImagePreview = ({ src }: { src: string }) => {
   );
 };
 
-// Blue bar with extra information
 const ExtraInfoBar = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1, 1),
   color: theme.palette.highlight.contrastText,
   backgroundColor: theme.palette.highlight.main,
 }));
 
-// Example of a ReactNode with an icon that can be inserted in the ExtraInfoBar
 export const ExtraInfoWithIcon = ({
   iconComponent,
   children,
@@ -126,11 +122,16 @@ const ActionButtons = styled(Box)(({ theme }) => ({
 export interface ActionsCardProps extends TitleBarProps {
   imageUrl?: string;
   defaultImage?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
   actionButtons?: React.ReactNode[];
   extraInformation?: React.ReactNode;
 }
 
+/**
+ * Card specially made for Cards/Canvases/Lifecycles with buttons at the bottom
+ * @param props
+ * @returns
+ */
 const ActionsCard = (props: ActionsCardProps) => {
   const { extraInformation, onClick, imageUrl, defaultImage } = props;
   return (
@@ -140,8 +141,9 @@ const ActionsCard = (props: ActionsCardProps) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
+        cursor: onClick ? 'pointer' : 'default',
       }}
-      onClick={onClick}
+      onClick={e => (onClick ? onClick(e as any) : null)}
     >
       <TitleBar {...props} />
       <ImageWrapper>{imageUrl ? <ImagePreview src={imageUrl} /> : defaultImage}</ImageWrapper>
