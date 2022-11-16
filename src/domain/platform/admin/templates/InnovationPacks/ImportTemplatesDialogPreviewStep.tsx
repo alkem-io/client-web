@@ -3,26 +3,24 @@ import React, { ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { InnovationPackTemplatesData, InnovationPackTemplateViewModel } from './InnovationPack';
-import { TemplateImportCardComponentProps } from './ImportTemplatesDialogTemplatesGallery';
-import { TemplatePreviewProps } from '../AdminTemplatesSection';
-import { TemplateInfoFragment } from '../../../../../models/graphql-schema';
+import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
+import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
 
-export interface ImportTemplatesDialogTemplatePreviewProps {
-  onSelectTemplate: (template: InnovationPackTemplatesData) => Promise<void>;
+export interface ImportTemplatesDialogPreviewStepProps<T extends Template> {
+  onSelectTemplate: (template: T) => Promise<void>;
   onClose: () => void;
-  template: InnovationPackTemplateViewModel;
-  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps>;
-  templatePreviewComponent: ComponentType<TemplatePreviewProps<{ id: string; info: TemplateInfoFragment }>>;
+  template: T;
+  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
 }
 
-const ImportTemplatesDialogTemplatePreview = ({
+const ImportTemplatesDialogPreviewStep = <T extends Template>({
   template,
   templatePreviewCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
   onSelectTemplate,
   onClose,
-}: ImportTemplatesDialogTemplatePreviewProps) => {
+}: ImportTemplatesDialogPreviewStepProps<T>) => {
   const { t } = useTranslation();
 
   const [importingTemplate, setImporting] = useState(false);
@@ -53,10 +51,10 @@ const ImportTemplatesDialogTemplatePreview = ({
         </Box>
       </Grid>
       <Grid item xs={12} md={9}>
-        <TemplatePreview open template={template} onClose={onClose} />
+        <TemplatePreview template={template} />
       </Grid>
     </Grid>
   );
 };
 
-export default ImportTemplatesDialogTemplatePreview;
+export default ImportTemplatesDialogPreviewStep;

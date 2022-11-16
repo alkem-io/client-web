@@ -4,25 +4,26 @@ import { InnovationPack, InnovationPackTemplatesData, InnovationPackTemplateView
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useTranslation } from 'react-i18next';
+import { Template } from '../AdminTemplatesSection';
 
-export interface TemplateImportCardComponentProps {
-  template: InnovationPackTemplateViewModel;
+export interface TemplateImportCardComponentProps<T extends Template> {
+  template: T;
   actionButtons?: React.ReactNode[];
 }
 
-export interface ImportTemplatesDialogTemplatesGalleryProps {
+export interface ImportTemplatesDialogGalleryStepProps<T extends Template> {
   innovationPacks: InnovationPack[];
-  onPreviewTemplate: (template: InnovationPackTemplateViewModel) => void;
+  onPreviewTemplate: (template: T) => void;
   onSelectTemplate: (template: InnovationPackTemplatesData) => Promise<void>;
-  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps>;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
 }
 
-const ImportTemplatesDialogTemplatesGallery = ({
+const ImportTemplatesDialogGalleryStep = <T extends Template>({
   innovationPacks,
   onPreviewTemplate,
   onSelectTemplate,
   templateImportCardComponent: TemplateCard,
-}: ImportTemplatesDialogTemplatesGalleryProps) => {
+}: ImportTemplatesDialogGalleryStepProps<T>) => {
   const { t } = useTranslation();
   const organizationFilter = null;
   const innovationPackFilter = null;
@@ -99,4 +100,4 @@ const ImportTemplatesDialogTemplatesGallery = ({
   );
 };
 
-export default ImportTemplatesDialogTemplatesGallery;
+export default ImportTemplatesDialogGalleryStep;
