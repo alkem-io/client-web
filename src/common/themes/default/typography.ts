@@ -4,6 +4,7 @@ export const monserrat = '"MONTSERRAT"';
 export const sourceSansPro = '"Source Sans Pro"';
 
 export const typographyOptions: TypographyOptions = {
+  fontSize: 15,
   h1: { fontFamily: monserrat, fontSize: '2.125rem', fontWeight: 600 },
   h2: { fontFamily: monserrat, fontSize: '1.825rem', fontWeight: 600 },
   h3: { fontFamily: monserrat, fontSize: '1.625rem', fontWeight: 600 },

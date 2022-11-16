@@ -12,6 +12,7 @@ import RecoveryRoute from './RecoveryRoute';
 import RegistrationRoute from './RegistrationRoute';
 import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
+import AcceptTerms from '../pages/AcceptTerms';
 
 export const IdentityRoute: FC = () => {
   const {
@@ -43,6 +44,7 @@ export const IdentityRoute: FC = () => {
         }
       />
       <Route path="*" element={<Error404 />} />
+      <Route path="accept_terms" element={<AcceptTerms />} />
     </Routes>
   );
 };
