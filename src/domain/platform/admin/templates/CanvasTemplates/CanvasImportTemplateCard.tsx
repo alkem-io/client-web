@@ -1,12 +1,31 @@
 import React from 'react';
-import { TemplateImportCardComponentProps } from '../InnovationPacks/TemplatesGallery';
-import ActionsCard from '../../../../shared/components/ActionsCard';
-import { getVisualBanner } from '../../../../../common/utils/visuals.utils';
+import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogTemplatesGallery';
+import ActionsCard, { ExtraInfoWithIcon } from '../../../../shared/components/ActionsCard';
+import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
+import GestureIcon from '@mui/icons-material/Gesture';
+import { WbIncandescentOutlined } from '@mui/icons-material';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 
 interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps {}
 
-const CanvasImportTemplateCard = ({ template }: CanvasImportTemplateCardProps) => {
-  return <ActionsCard title={template.info.title} imageUrl={getVisualBanner(template.info.visual)} />;
+const CanvasImportTemplateCard = ({ template, actionButtons }: CanvasImportTemplateCardProps) => {
+  return (
+    <ActionsCard
+      key={template.id}
+      iconComponent={GestureIcon}
+      title={template.info.title}
+      provider={template.provider?.displayName}
+      providerLogoUrl={template.provider?.profile.avatar?.uri}
+      extraInformation={
+        <ExtraInfoWithIcon iconComponent={Inventory2OutlinedIcon}>
+          {template.innovationPackDisplayName}
+        </ExtraInfoWithIcon>
+      }
+      imageUrl={getVisualBannerNarrow(template.info.visual)}
+      defaultImage={<WbIncandescentOutlined />}
+      actionButtons={actionButtons}
+    />
+  );
 };
 
 export default CanvasImportTemplateCard;

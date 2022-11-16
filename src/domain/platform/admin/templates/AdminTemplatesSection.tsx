@@ -7,7 +7,7 @@ import { TemplateInfoFragment } from '../../../../models/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler, useNotification, useUserContext } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -15,7 +15,7 @@ import { MutationTuple } from '@apollo/client/react/types/types';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { InnovationPack, InnovationPackTemplatesData } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
-import { TemplateImportCardComponentProps } from './InnovationPacks/TemplatesGallery';
+import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogTemplatesGallery';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;
@@ -115,6 +115,7 @@ const AdminTemplatesSection = <
 
   const onError = useApolloErrorHandler();
   const { t } = useTranslation();
+  const notify = useNotification();
 
   const { user: userMetadata } = useUserContext();
   const userIsPlatformAdmin = userMetadata?.permissions.isPlatformAdmin;
@@ -184,14 +185,17 @@ const AdminTemplatesSection = <
       },
     };
 
-    await createAspectTemplate({
+    const result = await createAspectTemplate({
       variables: {
         templatesSetId,
         ...values,
       },
       refetchQueries,
     });
-    closeImportTemplatesDialog();
+
+    if (!result.errors) {
+      notify(t('pages.admin.generic.sections.templates.import.imported-successfully-notification'), 'success');
+    }
   };
 
   const selectedTemplate = templateId ? templates?.find(({ id }) => id === templateId) : undefined;
@@ -264,6 +268,7 @@ const AdminTemplatesSection = <
         {...dialogProps}
         headerText={importDialogHeaderText}
         templateImportCardComponent={TemplateImportCard}
+        templatePreviewComponent={TemplatePreview as any}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onSelectTemplate={handleImportTemplate}

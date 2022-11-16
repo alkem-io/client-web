@@ -18,6 +18,7 @@ const Icon = styled(Box)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   backgroundColor: theme.palette.primary.main,
   width: theme.spacing(6),
+  flex: `0 0 ${theme.spacing(6)}`,
   height: theme.spacing(6),
   marginRight: theme.spacing(2),
   borderRadius: 5,

@@ -16,3 +16,5 @@ export type InnovationPackTemplateViewModel = {
 } & InnovationPackTemplatesData;
 
 export type InnovationPack = InnovationPackInfo & { templates: InnovationPackTemplatesData[] };
+
+// TODO: use TemplateInfoFragment here ??

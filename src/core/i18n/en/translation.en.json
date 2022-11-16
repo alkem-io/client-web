@@ -59,7 +59,10 @@
     "change-template": "Change template",
     "change": "Change",
     "library": "Library",
-    "share": "Share"
+    "share": "Share",
+    "preview": "Preview",
+    "import": "Import",
+    "importing": "Importing..."
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -996,7 +999,8 @@
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set."
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "imported-successfully-notification": "Template imported successfully"
             }
           },
           "my-profile": {

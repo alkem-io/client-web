@@ -1,50 +1,138 @@
-import React, { ComponentType } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import withElevationOnHover from './withElevationOnHover';
-import { Box, Paper, SvgIconProps } from '@mui/material';
-/*import LinkNoUnderline from './LinkNoUnderline';
+import { Box, Paper, styled, SvgIconProps, Typography } from '@mui/material';
 import Icon, { IconProps } from './Icon';
-import IconLabel from './IconLabel';
-*/
+import Image from './Image';
 import { ClampedTypography } from './ClampedTypography';
+import hexToRGBA from '../../../common/utils/hexToRGBA';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
-/*const ImagePreview = ({ src }: { src: string }) => {
-  const backgroundImage = `url(${src})`;
-  return <Box flexGrow={1} sx={{ backgroundImage, backgroundSize: 'cover', backgroundPosition: 'center' }} />;
-};
-
-const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => {
-  return (
-    <Box display="flex" flexGrow={1} justifyContent="center" alignItems="center">
-      <Icon iconComponent={iconComponent} color="primary" size="xxl" />
-    </Box>
-  );
-};
-
-*/
+// Title bar:
 interface TitleBarProps {
   title: string;
   iconComponent?: ComponentType<SvgIconProps>;
   provider?: string;
-  providerLogo?: string;
+  providerLogoUrl?: string;
 }
-const TitleBar = ({ title, iconComponent }: TitleBarProps) => {
-  /// <PositionedIcon iconComponent={iconComponent} />
+
+const TitleBar = ({ iconComponent, title, provider, providerLogoUrl }: TitleBarProps) => {
   return (
     <Box sx={{ display: 'flex' }}>
-      <Box sx={{ flex: 0, width: theme => theme.spacing(3) }}>{iconComponent ? iconComponent : undefined}</Box>
-      <ClampedTypography clamp={1}>{title}</ClampedTypography>
+      {iconComponent ? (
+        <RoundedIcon>
+          <Icon iconComponent={iconComponent} size="medium" />
+        </RoundedIcon>
+      ) : null}
+      <Box sx={{ flex: 1, padding: theme => theme.spacing(1, 1, 1, 0) }}>
+        <ClampedTypography clamp={1} variant="h5">
+          {title}
+        </ClampedTypography>
+        {provider ? (
+          <OrganizationWrapper>
+            {providerLogoUrl ? <OrganizationLogo src={providerLogoUrl} /> : null}
+            <OrganizationName>{provider}</OrganizationName>
+          </OrganizationWrapper>
+        ) : null}
+      </Box>
     </Box>
   );
 };
 
+const RoundedIcon = styled(Box)(({ theme }) => ({
+  background: theme.palette.primary.dark,
+  color: theme.palette.common.white,
+  borderRadius: '50%',
+  width: theme.spacing(5),
+  height: theme.spacing(5),
+  margin: theme.spacing(1.5, 2),
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+const OrganizationWrapper = styled(Box)(() => ({
+  display: 'flex',
+}));
+
+const OrganizationLogo = styled(Image)(({ theme }) => ({
+  flex: 1,
+  display: 'inline-block',
+  maxWidth: theme.spacing(3),
+  maxHeight: theme.spacing(3),
+  marginRight: theme.spacing(1),
+}));
+
+const OrganizationName = styled(Typography)(() => ({
+  display: 'inline',
+  textOverflow: 'ellipsis',
+}));
+
+// Image:
+const ImageWrapper = styled(Box)(({ theme }) => ({
+  aspectRatio: '7/4',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  color: theme.palette.primary.main,
+  '& > svg': {
+    fontSize: '3em',
+  },
+}));
+
+const ImagePreview = ({ src }: { src: string }) => {
+  return (
+    <Box
+      flexGrow={1}
+      sx={{
+        background: theme => `${hexToRGBA(theme.palette.highlight.main, 0.2)} url('${src}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        aspectRatio: '7/4',
+      }}
+    />
+  );
+};
+
+// Blue bar with extra information
+const ExtraInfoBar = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(1, 1),
+  color: theme.palette.highlight.contrastText,
+  backgroundColor: theme.palette.highlight.main,
+}));
+
+// Example of a ReactNode with an icon that can be inserted in the ExtraInfoBar
+export const ExtraInfoWithIcon = ({
+  iconComponent,
+  children,
+}: PropsWithChildren<{ iconComponent?: IconProps['iconComponent'] }>) => {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      {iconComponent ? (
+        <Icon iconComponent={iconComponent} sx={{ marginRight: theme => theme.spacing(1) }} size="small" />
+      ) : null}
+      {children}
+    </Box>
+  );
+};
+
+// ActionButtons at the bottom of the card
+const ActionButtons = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'end',
+  padding: theme.spacing(2, 1),
+}));
+
 export interface ActionsCardProps extends TitleBarProps {
   imageUrl?: string;
-  onClick?: () => void; //??
+  defaultImage?: React.ReactNode;
+  onClick?: () => void;
+  actionButtons?: React.ReactNode[];
+  extraInformation?: React.ReactNode;
 }
 
 const ActionsCard = (props: ActionsCardProps) => {
+  const { extraInformation, onClick, imageUrl, defaultImage } = props;
   return (
     <ElevatedPaper
       sx={{
@@ -53,8 +141,12 @@ const ActionsCard = (props: ActionsCardProps) => {
         flexDirection: 'column',
         alignItems: 'stretch',
       }}
+      onClick={onClick}
     >
       <TitleBar {...props} />
+      <ImageWrapper>{imageUrl ? <ImagePreview src={imageUrl} /> : defaultImage}</ImageWrapper>
+      {extraInformation ? <ExtraInfoBar>{extraInformation}</ExtraInfoBar> : null}
+      <ActionButtons>{props.actionButtons}</ActionButtons>
     </ElevatedPaper>
   );
 };

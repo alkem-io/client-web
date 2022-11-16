@@ -2,27 +2,32 @@ import { Button, DialogContent, DialogProps, Skeleton } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import React, { ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { DialogActions } from '../../../../../common/components/core/dialog';
 import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
 import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
+import { TemplateInfoFragment } from '../../../../../models/graphql-schema';
+import { TemplatePreviewProps } from '../AdminTemplatesSection';
 import { InnovationPack, InnovationPackTemplatesData, InnovationPackTemplateViewModel } from './InnovationPack';
-import TemplatePreview from './TemplatePreview';
-import TemplatesGallery, { TemplateImportCardComponentProps } from './TemplatesGallery';
+import ImportTemplatesDialogTemplatePreview from './ImportTemplatesDialogTemplatePreview';
+import ImportTemplatesDialogTemplatesGallery, {
+  TemplateImportCardComponentProps,
+} from './ImportTemplatesDialogTemplatesGallery';
 
 export interface ImportTemplatesDialogProps {
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps>;
+  templatePreviewComponent: ComponentType<TemplatePreviewProps<{ id: string; info: TemplateInfoFragment }>>;
   innovationPacks: InnovationPack[];
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSelectTemplate: (template: InnovationPackTemplatesData) => void;
+  onSelectTemplate: (template: InnovationPackTemplatesData) => Promise<void>;
   loading?: boolean;
 }
 
 const ImportTemplatesDialog = ({
   headerText,
   templateImportCardComponent,
+  templatePreviewComponent,
   innovationPacks,
   loading,
   open,
@@ -30,8 +35,6 @@ const ImportTemplatesDialog = ({
   onSelectTemplate,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
-
-  // TODO: Rename to Innovat<I>onPack
 
   const handleClose = () => (onClose ? onClose({}, 'escapeKeyDown') : undefined);
   const [previewTemplate, setPreviewTemplate] = useState<InnovationPackTemplateViewModel>();
@@ -47,7 +50,7 @@ const ImportTemplatesDialog = ({
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
       maxWidth={false}
     >
       <DialogTitleWithIcon
@@ -61,13 +64,15 @@ const ImportTemplatesDialog = ({
         {loading && <Skeleton variant="rectangular" />}
         {!loading &&
           (previewTemplate ? (
-            <TemplatePreview
+            <ImportTemplatesDialogTemplatePreview
               template={previewTemplate}
               onSelectTemplate={onSelectTemplate}
               onClose={handleClosePreview}
+              templatePreviewCardComponent={templateImportCardComponent}
+              templatePreviewComponent={templatePreviewComponent}
             />
           ) : (
-            <TemplatesGallery
+            <ImportTemplatesDialogTemplatesGallery
               innovationPacks={innovationPacks}
               onSelectTemplate={onSelectTemplate}
               onPreviewTemplate={handlePreviewTemplate}
