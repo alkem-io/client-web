@@ -66,6 +66,7 @@ export enum ActivityEventType {
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
   OpportunityCreated = 'OPPORTUNITY_CREATED',
+  UpdateSent = 'UPDATE_SENT',
 }
 
 export type ActivityLogEntry = {
@@ -226,6 +227,25 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   triggeredBy: User;
   /** The event type for this Activity. */
   type: ActivityEventType;
+};
+
+export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
+  __typename?: 'ActivityLogEntryUpdateSent';
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  id: Scalars['UUID'];
+  /** The Message that been sent to this Community. */
+  message: Scalars['String'];
+  /** The user that triggered this Activity. */
+  triggeredBy: User;
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+  /** The Updates for this Community. */
+  updates: Updates;
 };
 
 export type ActivityLogInput = {
@@ -17417,6 +17437,32 @@ type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
   };
 };
 
+type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
+  __typename: 'ActivityLogEntryUpdateSent';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment
@@ -17425,7 +17471,8 @@ export type ActivityLogOnCollaborationFragment =
   | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
   | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment;
+  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
 
 export type ActivityLogOnCollaborationQueryVariables = Exact<{
   queryData: ActivityLogInput;
@@ -17675,6 +17722,33 @@ export type ActivityLogOnCollaborationQuery = {
           context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
         };
       }
+    | {
+        __typename: 'ActivityLogEntryUpdateSent';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        message: string;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          firstName: string;
+          lastName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+              }
+            | undefined;
+        };
+        updates: { __typename?: 'Updates'; id: string };
+      }
   >;
 };
 
@@ -17749,6 +17823,12 @@ export type ActivityLogOpportunityCreatedFragment = {
 export type ActivityLogCalloutDiscussionCommentFragment = {
   __typename?: 'ActivityLogEntryCalloutDiscussionComment';
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+};
+
+export type ActivityLogUpdateSentFragment = {
+  __typename?: 'ActivityLogEntryUpdateSent';
+  message: string;
+  updates: { __typename?: 'Updates'; id: string };
 };
 
 export type CommentsWithMessagesFragment = {

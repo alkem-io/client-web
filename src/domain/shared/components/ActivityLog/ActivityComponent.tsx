@@ -11,6 +11,7 @@ import {
   ActivityLogEntry,
   ActivityLogMemberJoinedFragment,
   ActivityLogOpportunityCreatedFragment,
+  ActivityLogUpdateSentFragment,
 } from '../../../../models/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
 import {
@@ -27,6 +28,7 @@ import {
 } from './views';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -52,6 +54,7 @@ export type ActivityLogResultType = ActivityLogResult<
   | ActivityLogCalloutPublishedFragment
   | ActivityLogChallengeCreatedFragment
   | ActivityLogOpportunityCreatedFragment
+  | ActivityLogUpdateSentFragment
 >;
 
 export interface ActivityLogComponentProps {
@@ -173,6 +176,17 @@ const ActivityViewChooser = ({
       return (
         <ActivityOpportunityCreatedView
           opportunity={activityOpportunityCreated.opportunity}
+          author={author}
+          {...activity}
+          {...rest}
+        />
+      );
+    case ActivityEventType.UpdateSent:
+      const activityUpdateSent = activity as ActivityLogResult<ActivityLogUpdateSentFragment>;
+      return (
+        <ActivityUpdateSentView
+          updates={activityUpdateSent.updates}
+          message={activityUpdateSent.message}
           author={author}
           {...activity}
           {...rest}

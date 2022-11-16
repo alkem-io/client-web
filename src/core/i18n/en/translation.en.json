@@ -516,7 +516,8 @@
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member",
         "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)"
+        "opportunity-created": "created a new $t(common.opportunity)",
+        "update-sent": "shared a new $t(common.update)"
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
@@ -526,7 +527,8 @@
         "discussion-comment-created": "{{comment}}",
         "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
         "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}"
+        "opportunity-created": "{{displayName}}",
+        "update-sent": "{{update}}"
       }
     },
     "lifecycle-visualizer": {
