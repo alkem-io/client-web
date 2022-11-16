@@ -15,7 +15,8 @@ import { MutationTuple } from '@apollo/client/react/types/types';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { InnovationPack, InnovationPackTemplatesData } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
-import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogTemplatesGallery';
+import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
+import TemplateViewDialog from './TemplateViewDialog';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;
@@ -37,10 +38,6 @@ interface EditTemplateDialogProps<T extends Template, SubmittedValues extends {}
 
 export interface TemplatePreviewProps<T extends Template> {
   template: T;
-  open: boolean;
-  onClose: DialogProps['onClose'];
-  editUrl?: string;
-  editLinkState?: Record<string, unknown>;
 }
 
 export interface MutationHook<Variables, MutationResult> {
@@ -285,12 +282,16 @@ const AdminTemplatesSection = <
         />
       )}
       {selectedTemplate && (
-        <TemplatePreview
+        <TemplateViewDialog
           open={!edit}
           template={selectedTemplate}
           onClose={onCloseTemplateDialog}
           {...buildTemplateEditLink(selectedTemplate)}
-        />
+        >
+          <TemplatePreview
+            template={selectedTemplate}
+          />
+        </TemplateViewDialog>
       )}
       {deletingTemplateId && (
         <ConfirmationDialog
