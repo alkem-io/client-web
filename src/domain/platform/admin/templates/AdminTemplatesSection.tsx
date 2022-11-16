@@ -12,9 +12,9 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
-import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
-import { InnovationPack, InnovationPackTemplatesData } from './InnovationPacks/InnovationPack';
+import { InnovationPack, TemplateFromInnovationPack } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
+import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 
@@ -46,6 +46,7 @@ export interface MutationHook<Variables, MutationResult> {
 
 type AdminAspectTemplatesSectionProps<
   T extends Template,
+  Q extends T & TemplateFromInnovationPack,
   SubmittedValues extends {},
   CreateM,
   UpdateM,
@@ -67,7 +68,7 @@ type AdminAspectTemplatesSectionProps<
   loadInnovationPacks: () => void;
   innovationPacks: InnovationPack[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
-  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps>;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
@@ -78,6 +79,7 @@ type AdminAspectTemplatesSectionProps<
 
 const AdminTemplatesSection = <
   T extends Template,
+  Q extends T & TemplateFromInnovationPack,
   SubmittedValues extends {},
   CreateM,
   UpdateM,
@@ -104,7 +106,7 @@ const AdminTemplatesSection = <
   createTemplateDialogComponent,
   editTemplateDialogComponent,
   ...dialogProps
-}: AdminAspectTemplatesSectionProps<T, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+}: AdminAspectTemplatesSectionProps<T, Q, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
@@ -165,7 +167,7 @@ const AdminTemplatesSection = <
     closeCreateTemplateDialog();
   };
 
-  const handleImportTemplate = async (template: InnovationPackTemplatesData) => {
+  const handleImportTemplate = async (template: T) => {
     if (!templatesSetId) {
       throw new TypeError('TemplatesSet ID not loaded.');
     }
@@ -265,10 +267,10 @@ const AdminTemplatesSection = <
         {...dialogProps}
         headerText={importDialogHeaderText}
         templateImportCardComponent={TemplateImportCard}
-        templatePreviewComponent={TemplatePreview as any}
+        templatePreviewComponent={TemplatePreview}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
-        onSelectTemplate={handleImportTemplate}
+        onImportTemplate={handleImportTemplate}
         innovationPacks={innovationPacks}
       />
       {selectedTemplate && (
@@ -288,9 +290,7 @@ const AdminTemplatesSection = <
           onClose={onCloseTemplateDialog}
           {...buildTemplateEditLink(selectedTemplate)}
         >
-          <TemplatePreview
-            template={selectedTemplate}
-          />
+          <TemplatePreview template={selectedTemplate} />
         </TemplateViewDialog>
       )}
       {deletingTemplateId && (

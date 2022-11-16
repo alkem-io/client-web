@@ -1,12 +1,13 @@
 import React from 'react';
-import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogTemplatesGallery';
+import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import ActionsCard, { ExtraInfoWithIcon } from '../../../../shared/components/ActionsCard';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import GestureIcon from '@mui/icons-material/Gesture';
 import { WbIncandescentOutlined } from '@mui/icons-material';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
-interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps {}
+interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
 
 const CanvasImportTemplateCard = ({ template, actionButtons }: CanvasImportTemplateCardProps) => {
   return (

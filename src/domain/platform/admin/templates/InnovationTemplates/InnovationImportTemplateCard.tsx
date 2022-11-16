@@ -1,12 +1,13 @@
 import React from 'react';
-import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogTemplatesGallery';
+import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import ActionsCard, { ExtraInfoWithIcon } from '../../../../shared/components/ActionsCard';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
-interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps {}
+interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
 
 const InnovationImportTemplateCard = ({ template, actionButtons }: InnovationImportTemplateCardProps) => {
   return (

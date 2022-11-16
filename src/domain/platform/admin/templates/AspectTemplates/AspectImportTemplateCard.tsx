@@ -1,11 +1,12 @@
 import React from 'react';
-import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogTemplatesGallery';
+import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import ActionsCard, { ExtraInfoWithIcon } from '../../../../shared/components/ActionsCard';
 import PanoramaOutlinedIcon from '@mui/icons-material/PanoramaOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
-interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps {}
+interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
 
 const AspectImportTemplateCard = ({ template, actionButtons }: AspectImportTemplateCardProps) => {
   return (

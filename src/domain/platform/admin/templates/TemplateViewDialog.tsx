@@ -13,7 +13,14 @@ interface TemplateViewDialogProps<T extends Template> {
   editLinkState?: Record<string, unknown>;
 }
 
-const TemplateViewDialog = <T extends Template>({ template, open, onClose, editUrl, editLinkState, children }: PropsWithChildren<TemplateViewDialogProps<T>>) => {
+const TemplateViewDialog = <T extends Template>({
+  template,
+  open,
+  onClose,
+  editUrl,
+  editLinkState,
+  children,
+}: PropsWithChildren<TemplateViewDialogProps<T>>) => {
   const { t } = useTranslation();
 
   const {
@@ -22,7 +29,6 @@ const TemplateViewDialog = <T extends Template>({ template, open, onClose, editU
 
   return (
     <DialogWhiteBg open={open} onClose={onClose}>
-      <h1>Carlos</h1>
       {visual?.uri && <img src={visual.uri} alt={description} />}
       <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box display="flex" minWidth={theme => theme.spacing(46)} justifyContent="space-between" alignItems="center">

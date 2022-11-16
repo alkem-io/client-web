@@ -1,34 +1,35 @@
 import React, { ComponentType, useMemo, useState } from 'react';
 import { Button, Grid } from '@mui/material';
-import { InnovationPack, InnovationPackTemplatesData, InnovationPackTemplateViewModel } from './InnovationPack';
+import { InnovationPack, TemplateFromInnovationPack } from './InnovationPack';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useTranslation } from 'react-i18next';
 import { Template } from '../AdminTemplatesSection';
 
-export interface TemplateImportCardComponentProps<T extends Template> {
-  template: T;
+export interface TemplateImportCardComponentProps<Q extends TemplateFromInnovationPack> {
+  template: Q;
   actionButtons?: React.ReactNode[];
 }
 
-export interface ImportTemplatesDialogGalleryStepProps<T extends Template> {
+export interface ImportTemplatesDialogGalleryStepProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
   innovationPacks: InnovationPack[];
-  onPreviewTemplate: (template: T) => void;
-  onSelectTemplate: (template: InnovationPackTemplatesData) => Promise<void>;
-  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
+  onImportTemplate: (template: T) => Promise<void>;
+  onPreviewTemplate: (template: Q) => void;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
 }
 
-const ImportTemplatesDialogGalleryStep = <T extends Template>({
+const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & TemplateFromInnovationPack>({
   innovationPacks,
   onPreviewTemplate,
-  onSelectTemplate,
+  onImportTemplate,
   templateImportCardComponent: TemplateCard,
-}: ImportTemplatesDialogGalleryStepProps<T>) => {
+}: ImportTemplatesDialogGalleryStepProps<T, Q>) => {
   const { t } = useTranslation();
+  // TODO: Pending Implement filters
   const organizationFilter = null;
   const innovationPackFilter = null;
 
-  const templates: InnovationPackTemplateViewModel[] = useMemo(() => {
+  const templates: Q[] = useMemo(() => {
     return innovationPacks
       .filter(pack => {
         if (innovationPackFilter) {
@@ -47,19 +48,19 @@ const ImportTemplatesDialogGalleryStep = <T extends Template>({
           innovationPackNameID: pack.nameID,
           innovationPackId: pack.id,
         }))
-      );
+      ) as any; //TODO? Better?
   }, [innovationPacks, organizationFilter, innovationPackFilter]);
 
   const [selectingTemplate, setSelectingTemplate] = useState<string>('');
-  const handleSelectTemplate = (template: InnovationPackTemplatesData) => {
+  const handleSelectTemplate = (template: Q) => {
     setSelectingTemplate(template.id);
-    onSelectTemplate(template).finally(() => {
+    onImportTemplate(template).finally(() => {
       setSelectingTemplate('');
     });
   };
 
-  return (
-    <Grid container>
+  /*
+  // TODO: Pending Implement filters
       <Grid item xs={12}>
         <input type="text" placeholder="search" />
       </Grid>
@@ -67,7 +68,11 @@ const ImportTemplatesDialogGalleryStep = <T extends Template>({
         Filters
       </Grid>
       <Grid item xs={12} md={9}>
-        <Grid container columns={{ xs: 2, sm: 4, lg: 6 }} spacing={2}>
+*/
+  return (
+    <Grid container>
+      <Grid item xs={12}>
+        <Grid container columns={{ xs: 2, sm: 6, lg: 8 }} spacing={3}>
           {templates.map(template => (
             <Grid item xs={2} key={`grid-item-${template.id}`}>
               <TemplateCard

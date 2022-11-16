@@ -5,35 +5,37 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
+import { TemplateFromInnovationPack } from './InnovationPack';
 
-export interface ImportTemplatesDialogPreviewStepProps<T extends Template> {
-  onSelectTemplate: (template: T) => Promise<void>;
+export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
+  onImportTemplate: (template: T) => Promise<void>;
   onClose: () => void;
-  template: T;
-  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<T>>;
+  template: any;
+  /*template: Q;*/
+  templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
 }
 
-const ImportTemplatesDialogPreviewStep = <T extends Template>({
+const ImportTemplatesDialogPreviewStep = <T extends Template, Q extends T & TemplateFromInnovationPack>({
   template,
   templatePreviewCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
-  onSelectTemplate,
+  onImportTemplate,
   onClose,
-}: ImportTemplatesDialogPreviewStepProps<T>) => {
+}: ImportTemplatesDialogPreviewStepProps<T, Q>) => {
   const { t } = useTranslation();
 
   const [importingTemplate, setImporting] = useState(false);
 
   const handleClickImport = async () => {
     setImporting(true);
-    await onSelectTemplate(template);
+    await onImportTemplate(template);
     setImporting(false);
     onClose();
   };
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <TemplateCard template={template} />
         <Box sx={{ display: 'flex', marginY: theme => theme.spacing(2), justifyContent: 'end' }}>
