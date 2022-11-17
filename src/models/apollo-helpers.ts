@@ -211,6 +211,27 @@ export type ActivityLogEntryOpportunityCreatedFieldPolicy = {
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ActivityLogEntryUpdateSentKeySpecifier = (
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'message'
+  | 'triggeredBy'
+  | 'type'
+  | 'updates'
+  | ActivityLogEntryUpdateSentKeySpecifier
+)[];
+export type ActivityLogEntryUpdateSentFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updates?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActorKeySpecifier = (
   | 'authorization'
   | 'description'
@@ -2130,6 +2151,13 @@ export type StrictTypedTypePolicies = {
       | ActivityLogEntryOpportunityCreatedKeySpecifier
       | (() => undefined | ActivityLogEntryOpportunityCreatedKeySpecifier);
     fields?: ActivityLogEntryOpportunityCreatedFieldPolicy;
+  };
+  ActivityLogEntryUpdateSent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ActivityLogEntryUpdateSentKeySpecifier
+      | (() => undefined | ActivityLogEntryUpdateSentKeySpecifier);
+    fields?: ActivityLogEntryUpdateSentFieldPolicy;
   };
   Actor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorKeySpecifier | (() => undefined | ActorKeySpecifier);
