@@ -18,7 +18,7 @@ const CalloutRoute: FC<CalloutRouteProps> = ({ parentPagePath, entityTypeName })
         path={`aspects/:${nameOfUrl.aspectNameId}/*`}
         element={
           <AspectProvider>
-            <AspectRoute parentPagePath={parentPagePath} />
+            <AspectRoute parentPagePath={parentPagePath} entityTypeName={entityTypeName} />
           </AspectProvider>
         }
       />

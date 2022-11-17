@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
@@ -26,8 +26,16 @@ interface CalloutsPageProps {
   scrollToCallout?: boolean;
 }
 
-const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: CalloutsPageProps) => {
+const CalloutsPage: FC<CalloutsPageProps> = ({ entityTypeName, rootUrl, scrollToCallout = false, children }) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
+
+  useEffect(() => {
+    console.log('CalloutsPage mounted');
+
+    return () => {
+      console.log('CalloutsPage unmounted');
+    };
+  }, []);
 
   const PageLayout = usePageLayoutByEntity(entityTypeName);
 
@@ -144,6 +152,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
         onSaveAsDraft={handleCalloutDrafted}
         isCreating={isCreating}
       />
+      {children}
     </>
   );
 };
