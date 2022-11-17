@@ -1,7 +1,8 @@
 import React, { ComponentType, useMemo } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { InnovationPack, TemplateFromInnovationPack } from './InnovationPack';
 import { Template } from '../AdminTemplatesSection';
+import { useTranslation } from 'react-i18next';
 
 export interface TemplateImportCardComponentProps<Q extends TemplateFromInnovationPack> {
   template: Q;
@@ -21,6 +22,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
   onPreviewTemplate,
   templateImportCardComponent: TemplateCard,
 }: ImportTemplatesDialogGalleryStepProps<T, Q>) => {
+  const { t } = useTranslation();
   // TODO: Pending Implement filters
   const organizationFilter = null;
   const innovationPackFilter = null;
@@ -66,6 +68,11 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
               <TemplateCard template={template} onClick={() => onPreviewTemplate(template)} />
             </Grid>
           ))}
+          {templates.length === 0 && (
+            <Grid item xs={8}>
+              <Typography>{t('pages.admin.generic.sections.templates.import.no-templates')}</Typography>
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </Grid>
