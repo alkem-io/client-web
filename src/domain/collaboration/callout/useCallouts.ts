@@ -1,7 +1,10 @@
 import { isChallengeId, isHubId, isOpportunityId, OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import {
+  useChallengeCalloutsLazyQuery,
   useChallengeCalloutsQuery,
+  useHubCalloutsLazyQuery,
   useHubCalloutsQuery,
+  useOpportunityCalloutsLazyQuery,
   useOpportunityCalloutsQuery,
 } from '../../../hooks/generated/graphql';
 import {
@@ -87,6 +90,20 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     skip: !isOpportunityId(params),
   });
 
+  const [getHubCallouts] = useHubCalloutsLazyQuery({
+    variables: isHubId(params) ? params : (params as never),
+    fetchPolicy: 'cache-and-network',
+  });
+  const [getChallengeCallouts] = useChallengeCalloutsLazyQuery({
+    variables: isChallengeId(params) ? params : (params as never),
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [getOpportunityCallouts] = useOpportunityCalloutsLazyQuery({
+    variables: isOpportunityId(params) ? params : (params as never),
+    fetchPolicy: 'cache-and-network',
+  });
+
   const collaboration = (
     hubCalloutsData?.hub ??
     challengeCalloutsData?.hub.challenge ??
@@ -127,6 +144,9 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     callouts,
     canCreateCallout,
     loading: hubCalloutsLoading || challengeCalloutsLoading || opportunityCalloutsLoading,
+    reloadHubCallouts: getHubCallouts,
+    reloadChallengeCallouts: getChallengeCallouts,
+    reloadOpportunityCallouts: getOpportunityCallouts,
   };
 };
 
