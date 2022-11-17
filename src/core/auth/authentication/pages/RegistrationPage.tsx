@@ -1,52 +1,66 @@
-import { Box } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import KratosUI from '../components/KratosUI';
-import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import WrapperButton from '../../../../common/components/core/WrapperButton';
-import Delimiter from '../../../../common/components/core/Delimiter';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
-import { useConfig } from '../../../../hooks';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
+import Container from '../../../../domain/shared/layout/Container';
+import { sxCols } from '../../../../domain/shared/layout/Grid';
+import FixedHeightLogo from '../components/FixedHeightLogo';
+import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
+import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import { UiNode } from '@ory/kratos-client';
+import { UiNodeInputAttributes } from '@ory/kratos-client/api';
+import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 
 interface RegisterPageProps {
   flow?: string;
 }
 
+interface UiNodeInput extends UiNode {
+  attributes: UiNodeInputAttributes;
+}
+
+// TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
+const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
+  return typeof flowId === 'string' && sessionStorage.getItem(`kratosFlow:${flowId}:hasAcceptedTerms`) === 'true';
+};
+
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const { flow: registrationFlow, loading } = useKratosFlow(FlowTypeName.Registration, flow);
 
-  const { platform, loading: loadingPlatform } = useConfig();
+  const location = useLocation();
 
-  if (loadingPlatform || loading) return <Loading text={t('kratos.loading-flow')} />;
+  const hasAcceptedTerms =
+    (location.state as { hasAcceptedTerms: boolean } | null)?.hasAcceptedTerms ||
+    readHasAcceptedTermsFromStorage(registrationFlow?.id);
+
+  if (loading) return <Loading text={t('kratos.loading-flow')} />;
+
+  const termsCheckbox = registrationFlow?.ui.nodes.find(isAcceptTermsCheckbox) as UiNodeInput | undefined;
+
+  if (termsCheckbox && !(termsCheckbox.attributes.value || hasAcceptedTerms)) {
+    return <Navigate to="/identity/sign_up" replace />;
+  }
+
+  const storeHasAcceptedTerms = () => {
+    if (registrationFlow?.id && (termsCheckbox?.attributes.value || hasAcceptedTerms)) {
+      sessionStorage.setItem(`kratosFlow:${registrationFlow.id}:hasAcceptedTerms`, 'true');
+    }
+  };
 
   return (
-    <AuthenticationLayout>
-      <Grid container spacing={2} justifyContent={'center'}>
-        <Grid item sm={4}>
-          <Box marginY={3} textAlign={'center'}>
-            <WrapperTypography variant={'h3'}>{t('pages.registration.header')}</WrapperTypography>
-          </Box>
-          <KratosUI flow={registrationFlow} termsURL={platform?.terms} privacyURL={platform?.privacy} />
-          <Delimiter>OR</Delimiter>
-          <WrapperTypography variant={'h5'}>{t('pages.registration.login')}</WrapperTypography>
-          <WrapperButton
-            variant="primary"
-            type={'submit'}
-            small
-            block
-            onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })}
-            text={t('authentication.sign-in')}
-          />
-        </Grid>
-      </Grid>
-    </AuthenticationLayout>
+    <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <FixedHeightLogo />
+      <SubHeading>{t('pages.registration.header')}</SubHeading>
+      <KratosUI flow={registrationFlow} hasAcceptedTerms={hasAcceptedTerms} onBeforeSubmit={storeHasAcceptedTerms} />
+      <Paragraph textAlign="center" marginTop={5}>
+        {t('pages.registration.login')} <Link to={AUTH_LOGIN_PATH}>{t('authentication.sign-in')}</Link>
+      </Paragraph>
+    </Container>
   );
 };
+
 export default RegistrationPage;

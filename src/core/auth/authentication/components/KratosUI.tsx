@@ -19,6 +19,8 @@ import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import { KratosFriendlierMessageMapper } from './Kratos/messages';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
+import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
+import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
 
 interface KratosUIProps {
   flow?:
@@ -27,10 +29,14 @@ interface KratosUIProps {
     | SelfServiceSettingsFlow
     | SelfServiceVerificationFlow
     | SelfServiceRecoveryFlow;
-  termsURL?: string;
-  privacyURL?: string;
   resetPasswordElement?: ReactNode;
   hideFields?: string[];
+  hasAcceptedTerms?: boolean;
+  /**
+   * @deprecated - needed to store hasAcceptedTerms before submit.
+   * Remove once we're able to make Kratos keep traits.accepted_terms on error.
+   */
+  onBeforeSubmit?: () => void;
 }
 
 const toAlertVariant = (type: string) => {
@@ -74,6 +80,10 @@ const toUiControl = (node: UiNode, key: number) => {
       case 'password':
         extraProps.autoComplete = 'password';
         break;
+    }
+
+    if (isAcceptTermsCheckbox(node)) {
+      return <KratosAcceptTermsCheckbox node={node} />;
     }
 
     switch (attributes.type) {
@@ -190,18 +200,33 @@ export default KratosUI;
 interface KratosUIContextProps {
   termsURL?: string;
   privacyURL?: string;
+  hasAcceptedTerms?: boolean;
   isHidden: (node: UiNode) => boolean;
+  /**
+   * @deprecated - needed to store hasAcceptedTerms before submit.
+   * Remove once we're able to make Kratos keep traits.accepted_terms on error.
+   */
+  onBeforeSubmit?: () => void;
 }
 
 export const KratosUIContext = React.createContext<KratosUIContextProps>({ isHidden: (_node: UiNode) => false });
 
 interface KratosUIProviderProps {
-  termsURL?: string;
-  privacyURL?: string;
   hideFields?: string[];
+  hasAcceptedTerms?: boolean;
+  /**
+   * @deprecated - needed to store hasAcceptedTerms before submit.
+   * Remove once we're able to make Kratos keep traits.accepted_terms on error.
+   */
+  onBeforeSubmit?: () => void;
 }
 
-export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL, privacyURL, hideFields }) => {
+export const KratosUIProvider: FC<KratosUIProviderProps> = ({
+  hasAcceptedTerms,
+  hideFields,
+  onBeforeSubmit,
+  children,
+}) => {
   const isHidden = useCallback(
     (node: UiNode) => {
       if (!hideFields) return false;
@@ -218,9 +243,9 @@ export const KratosUIProvider: FC<KratosUIProviderProps> = ({ children, termsURL
   return (
     <KratosUIContext.Provider
       value={{
-        termsURL,
-        privacyURL,
         isHidden,
+        hasAcceptedTerms,
+        onBeforeSubmit,
       }}
     >
       {children}

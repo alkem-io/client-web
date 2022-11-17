@@ -10,7 +10,7 @@ interface KratosButtonProps extends KratosProps {}
 
 export const KratosButton: FC<KratosButtonProps> = ({ node }) => {
   const attributes = node.attributes as UiNodeInputAttributes;
-  const { isHidden } = useContext(KratosUIContext);
+  const { isHidden, onBeforeSubmit } = useContext(KratosUIContext);
 
   return (
     <Grid item xs={12}>
@@ -21,6 +21,7 @@ export const KratosButton: FC<KratosButtonProps> = ({ node }) => {
           disabled={attributes.disabled}
           value={attributes.value}
           color="primaryDark"
+          onClick={onBeforeSubmit}
         >
           {getNodeTitle(node)}
         </AuthActionButton>

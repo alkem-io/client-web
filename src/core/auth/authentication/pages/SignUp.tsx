@@ -13,6 +13,8 @@ import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
 import ButtonStyling from '../components/AuthProviders/ButtonStyling';
 import AuthActionButton from '../components/Button';
+import { useNavigate } from 'react-router-dom';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
 
 const linkedInTheme = {
   palette: {
@@ -36,6 +38,21 @@ const EmailIcon = () => {
 };
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
+  const signUp = () => {
+    navigate(AUTH_REGISTER_PATH, {
+      replace: true,
+      state: {
+        hasAcceptedTerms: true,
+      },
+    });
+  };
+
+  const signIn = () => {
+    navigate(AUTH_LOGIN_PATH);
+  };
+
   return (
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
       <FixedHeightLogo />
@@ -69,14 +86,21 @@ const SignUp = () => {
           >
             Sign up with Microsoft
           </ButtonStyling>
-          <AcceptTermsButtonWrapper startIcon={<EmailIcon />} color="primaryDark" justifyContent="start">
+          <AcceptTermsButtonWrapper
+            startIcon={<EmailIcon />}
+            color="primaryDark"
+            justifyContent="start"
+            onClick={signUp}
+          >
             Sign up with E-Mail
           </AcceptTermsButtonWrapper>
           {/*The following text and the button are put into the same Box for all the buttons to be of the same width*/}
           <Paragraph textAlign="center" marginY={4}>
             Already have an account?
           </Paragraph>
-          <AuthActionButton color="primaryDark">Sign in</AuthActionButton>
+          <AuthActionButton color="primaryDark" onClick={signIn}>
+            Sign in
+          </AuthActionButton>
         </Box>
       </AcceptTermsContext>
     </Container>
