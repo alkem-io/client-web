@@ -112,14 +112,13 @@ export const ExtraInfoWithIcon = ({
   );
 };
 
-// ActionButtons at the bottom of the card
 const ActionButtons = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'end',
   padding: theme.spacing(2, 1),
 }));
 
-export interface ActionsCardProps extends TitleBarProps {
+export interface CardWithProviderProps extends TitleBarProps {
   imageUrl?: string;
   defaultImage?: React.ReactNode;
   onClick?: (e: MouseEvent) => void;
@@ -132,7 +131,7 @@ export interface ActionsCardProps extends TitleBarProps {
  * @param props
  * @returns
  */
-const ActionsCard = (props: ActionsCardProps) => {
+const CardWithProvider = (props: CardWithProviderProps) => {
   const { extraInformation, onClick, imageUrl, defaultImage } = props;
   return (
     <ElevatedPaper
@@ -153,4 +152,4 @@ const ActionsCard = (props: ActionsCardProps) => {
   );
 };
 
-export default ActionsCard;
+export default CardWithProvider;

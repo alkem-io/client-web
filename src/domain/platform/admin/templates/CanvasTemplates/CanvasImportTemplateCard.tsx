@@ -1,6 +1,6 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import ActionsCard, { ExtraInfoWithIcon } from '../../../../shared/components/ActionsCard';
+import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import GestureIcon from '@mui/icons-material/Gesture';
 import { WbIncandescentOutlined } from '@mui/icons-material';
@@ -11,7 +11,7 @@ interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps
 
 const CanvasImportTemplateCard = ({ template, onClick, actionButtons }: CanvasImportTemplateCardProps) => {
   return (
-    <ActionsCard
+    <CardWithProvider
       key={template.id}
       iconComponent={GestureIcon}
       title={template.info.title}

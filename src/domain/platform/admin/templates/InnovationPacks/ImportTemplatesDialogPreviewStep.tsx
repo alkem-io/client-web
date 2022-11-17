@@ -10,8 +10,7 @@ import { TemplateFromInnovationPack } from './InnovationPack';
 export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
   onImportTemplate: (template: T) => Promise<void>;
   onClose: () => void;
-  template: any;
-  /*template: Q;*/
+  template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
 }

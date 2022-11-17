@@ -1,6 +1,6 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import ActionsCard, { ExtraInfoWithIcon } from '../../../../shared/components/ActionsCard';
+import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
@@ -11,7 +11,7 @@ interface InnovationImportTemplateCardProps extends TemplateImportCardComponentP
 
 const InnovationImportTemplateCard = ({ template, onClick, actionButtons }: InnovationImportTemplateCardProps) => {
   return (
-    <ActionsCard
+    <CardWithProvider
       key={template.id}
       iconComponent={AutoGraphIcon}
       title={template.info.title}
