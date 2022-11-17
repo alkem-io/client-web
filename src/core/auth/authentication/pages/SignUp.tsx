@@ -2,15 +2,17 @@ import Container from '../../../../domain/shared/layout/Container';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
-import { Box, Button, ButtonProps, createTheme, ThemeProvider } from '@mui/material';
+import { Box } from '@mui/material';
 import AcceptTermsCheckbox from '../components/AcceptTermsCheckbox';
 import AcceptTermsButtonWrapper from '../components/AcceptTermsButtonWrapper';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { ReactComponent as LinkedInIcon } from '../components/OAuthProviders/LinkedIn.svg';
-import { ReactComponent as MicrosoftIcon } from '../components/OAuthProviders/Microsoft.svg';
+import { ReactComponent as LinkedInIcon } from '../components/AuthProviders/LinkedIn.svg';
+import { ReactComponent as MicrosoftIcon } from '../components/AuthProviders/Microsoft.svg';
 import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
+import ButtonStyling from '../components/AuthProviders/ButtonStyling';
+import AuthActionButton from '../components/Button';
 
 const linkedInTheme = {
   palette: {
@@ -51,26 +53,30 @@ const SignUp = () => {
       <AcceptTermsContext>
         <AcceptTermsCheckbox />
         <Box display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
-          <ThemeProvider
-            theme={theme => createTheme({ ...theme, palette: { ...theme.palette, ...linkedInTheme.palette } })}
+          <ButtonStyling
+            options={linkedInTheme}
+            icon={<LinkedInIcon />}
+            component={AcceptTermsButtonWrapper}
+            justifyContent="start"
           >
-            <AcceptTermsButtonWrapper startIcon={<LinkedInIcon />}>Sign up with LinkedIn</AcceptTermsButtonWrapper>
-          </ThemeProvider>
-          <ThemeProvider
-            theme={theme => createTheme({ ...theme, palette: { ...theme.palette, ...microsoftTheme.palette } })}
+            Sign up with LinkedIn
+          </ButtonStyling>
+          <ButtonStyling
+            options={microsoftTheme}
+            icon={<MicrosoftIcon />}
+            component={AcceptTermsButtonWrapper}
+            justifyContent="start"
           >
-            <AcceptTermsButtonWrapper startIcon={<MicrosoftIcon />}>Sign up with Microsoft</AcceptTermsButtonWrapper>
-          </ThemeProvider>
-          <AcceptTermsButtonWrapper startIcon={<EmailIcon />} color={'primaryDark' as ButtonProps['color']}>
+            Sign up with Microsoft
+          </ButtonStyling>
+          <AcceptTermsButtonWrapper startIcon={<EmailIcon />} color="primaryDark" justifyContent="start">
             Sign up with E-Mail
           </AcceptTermsButtonWrapper>
           {/*The following text and the button are put into the same Box for all the buttons to be of the same width*/}
           <Paragraph textAlign="center" marginY={4}>
             Already have an account?
           </Paragraph>
-          <Button variant="contained" color={'primaryDark' as ButtonProps['color']}>
-            Sign in
-          </Button>
+          <AuthActionButton color="primaryDark">Sign in</AuthActionButton>
         </Box>
       </AcceptTermsContext>
     </Container>

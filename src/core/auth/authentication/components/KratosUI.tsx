@@ -1,15 +1,14 @@
-import { Grid } from '@mui/material';
-import { Alert } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import {
-  UiNode,
-  UiText,
   SelfServiceLoginFlow,
+  SelfServiceRecoveryFlow,
   SelfServiceRegistrationFlow,
   SelfServiceSettingsFlow,
   SelfServiceVerificationFlow,
-  SelfServiceRecoveryFlow,
+  UiNode,
+  UiText,
 } from '@ory/kratos-client';
-import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
+import React, { FC, FormEvent, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Delimiter from '../../../../common/components/core/Delimiter';
 import { getNodeName, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
@@ -19,6 +18,7 @@ import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import { KratosFriendlierMessageMapper } from './Kratos/messages';
+import { sxCols } from '../../../../domain/shared/layout/Grid';
 
 interface KratosUIProps {
   flow?:
@@ -29,7 +29,7 @@ interface KratosUIProps {
     | SelfServiceRecoveryFlow;
   termsURL?: string;
   privacyURL?: string;
-  resetPasswordComponent?: React.ReactChild;
+  resetPasswordElement?: ReactNode;
   hideFields?: string[];
 }
 
@@ -91,7 +91,7 @@ const toUiControl = (node: UiNode, key: number) => {
   }
 };
 
-export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...rest }) => {
+export const KratosUI: FC<KratosUIProps> = ({ resetPasswordElement, flow, children, ...rest }) => {
   const { t } = useTranslation();
   const [showFormAlert, setShowFormAlert] = useState(false);
 
@@ -108,13 +108,26 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
     }
   }, []);
 
-  type NodeGroups = { default: UiNode[]; oidc: UiNode[]; password: UiNode[]; rest: UiNode[] };
+  type NodeGroups = {
+    default: UiNode[];
+    oidc: UiNode[];
+    password: UiNode[];
+    rest: UiNode[];
+    submit: UiNode[];
+    hidden: UiNode[];
+  };
 
   const nodesByGroup = useMemo(() => {
     if (!flow) return;
 
     return flow.ui.nodes.reduce(
       (acc, node) => {
+        if (/*node.type === 'input' && */ node.attributes['type'] === 'submit') {
+          return { ...acc, submit: [...acc.submit, node] };
+        }
+        if (node.attributes['type'] === 'hidden') {
+          return { ...acc, hidden: [...acc.hidden, node] };
+        }
         switch (node.group) {
           case 'default':
             return { ...acc, default: [...acc.default, node] };
@@ -126,7 +139,7 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
             return { ...acc, rest: [...acc.rest, node] };
         }
       },
-      { default: [], oidc: [], password: [], rest: [] } as NodeGroups
+      { default: [], oidc: [], password: [], rest: [], submit: [], hidden: [] } as NodeGroups
     );
   }, [flow]);
 
@@ -154,19 +167,20 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
         </Alert>
       )}
       <form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item>
-            <KratosMessages messages={ui.messages} />
-          </Grid>
+        {nodesByGroup.hidden.map(toUiControl)}
+        <Box display="flex" flexDirection="column" alignItems="stretch" gap={2} width={sxCols(4)}>
+          <KratosMessages messages={ui.messages} />
           {nodesByGroup.default.map(toUiControl)}
           {nodesByGroup.password.map(toUiControl)}
-          <Grid item xs={12}>
-            {resetPasswordComponent}
-          </Grid>
+          {resetPasswordElement}
+          {nodesByGroup.rest.map(toUiControl)}
+          <Box alignSelf="center" display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
+            {nodesByGroup.submit.map(toUiControl)}
+            {children}
+          </Box>
           {nodesByGroup.oidc.length > 0 && <Delimiter>or</Delimiter>}
           {nodesByGroup.oidc.map(toUiControl)}
-          {nodesByGroup.rest.map(toUiControl)}
-        </Grid>
+        </Box>
       </form>
     </KratosUIProvider>
   );

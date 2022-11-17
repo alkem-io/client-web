@@ -14,6 +14,7 @@ import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
 import AcceptTerms from '../pages/AcceptTerms';
 import SignUp from '../pages/SignUp';
+import SignIn from '../pages/SignIn';
 
 export const IdentityRoute: FC = () => {
   const {
@@ -47,6 +48,7 @@ export const IdentityRoute: FC = () => {
       <Route path="*" element={<Error404 />} />
       <Route path="accept_terms" element={<AcceptTerms />} />
       <Route path="sign_up" element={<SignUp />} />
+      <Route path="sign_in" element={<SignIn />} />
     </Routes>
   );
 };

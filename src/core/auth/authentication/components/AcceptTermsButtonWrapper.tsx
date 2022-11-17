@@ -1,11 +1,12 @@
-import { Box, Button, ButtonProps, Tooltip } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { useHasAcceptedTerms } from './AcceptTermsContext';
+import AuthActionButton, { AuthActionButtonProps } from './Button';
 
-interface AcceptTermsButtonWrapperProps extends ButtonProps {
+interface AcceptTermsButtonWrapperProps extends AuthActionButtonProps {
   marginTop?: number;
 }
 
-const ButtonContinue = ({ marginTop, ...buttonProps }: AcceptTermsButtonWrapperProps) => {
+const AcceptTermsButtonWrapper = ({ marginTop, ...buttonProps }: AcceptTermsButtonWrapperProps) => {
   const hasAcceptedTerms = useHasAcceptedTerms();
 
   return (
@@ -15,15 +16,10 @@ const ButtonContinue = ({ marginTop, ...buttonProps }: AcceptTermsButtonWrapperP
       placement="top"
     >
       <Box marginTop={marginTop}>
-        <Button
-          variant="contained"
-          disabled={!hasAcceptedTerms}
-          {...buttonProps}
-          sx={{ width: '100%', justifyContent: 'start' }}
-        />
+        <AuthActionButton disabled={!hasAcceptedTerms} {...buttonProps} />
       </Box>
     </Tooltip>
   );
 };
 
-export default ButtonContinue;
+export default AcceptTermsButtonWrapper;

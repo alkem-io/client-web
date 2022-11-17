@@ -72,7 +72,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <Box marginY={3} textAlign={'center'}>
             <WrapperTypography variant={'h3'}>{t('pages.login.title')}</WrapperTypography>
           </Box>
-          <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
+          <KratosUI flow={loginFlow} resetPasswordElement={resetPassword} />
           <Delimiter>OR</Delimiter>
           <WrapperTypography variant={'h5'}>{t('pages.login.register')}</WrapperTypography>
           <WrapperButton
