@@ -41,12 +41,15 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   const termsCheckbox = registrationFlow?.ui.nodes.find(isAcceptTermsCheckbox) as UiNodeInput | undefined;
 
-  if (termsCheckbox && !(termsCheckbox.attributes.value || hasAcceptedTerms)) {
+  const areTermsAccepted = (checkbox: UiNodeInput) => checkbox.attributes.value || hasAcceptedTerms;
+
+  if (termsCheckbox && !areTermsAccepted(termsCheckbox)) {
     return <Navigate to="/identity/sign_up" replace />;
   }
 
+  // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
   const storeHasAcceptedTerms = () => {
-    if (registrationFlow?.id && (termsCheckbox?.attributes.value || hasAcceptedTerms)) {
+    if (registrationFlow?.id && termsCheckbox && areTermsAccepted(termsCheckbox)) {
       sessionStorage.setItem(`kratosFlow:${registrationFlow.id}:hasAcceptedTerms`, 'true');
     }
   };
