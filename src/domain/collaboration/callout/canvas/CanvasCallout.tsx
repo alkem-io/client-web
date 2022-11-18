@@ -1,7 +1,7 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useMemo, useState } from 'react';
 import SimpleCard from '../../../shared/components/SimpleCard';
-import { WbIncandescentOutlined } from '@mui/icons-material';
+import { CanvasIcon } from '../../../../common/icons/CanvasIcon';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
@@ -72,7 +72,7 @@ const CanvasCallout = ({
                   {...buildCanvasUrl(canvas.nameID, canvas.calloutNameId)}
                   title={canvas.displayName}
                   imageUrl={canvas.preview?.uri}
-                  iconComponent={WbIncandescentOutlined}
+                  iconComponent={CanvasIcon}
                 />
               ) : (
                 <Skeleton />

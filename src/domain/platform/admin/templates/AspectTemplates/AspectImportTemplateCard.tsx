@@ -2,7 +2,7 @@ import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
-import PanoramaOutlinedIcon from '@mui/icons-material/PanoramaOutlined';
+import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
@@ -12,7 +12,7 @@ const AspectImportTemplateCard = ({ template, onClick, actionButtons }: AspectIm
   return (
     <CardWithProvider
       key={template.id}
-      iconComponent={PanoramaOutlinedIcon}
+      iconComponent={BallotOutlinedIcon}
       title={template.info.title}
       provider={template.provider?.displayName}
       providerLogoUrl={template.provider?.profile.avatar?.uri}
@@ -22,7 +22,7 @@ const AspectImportTemplateCard = ({ template, onClick, actionButtons }: AspectIm
         </ExtraInfoWithIcon>
       }
       imageUrl={getVisualBannerNarrow(template.info.visual)}
-      defaultImage={<PanoramaOutlinedIcon />}
+      defaultImage={<BallotOutlinedIcon />}
       onClick={onClick}
       actionButtons={actionButtons}
     />

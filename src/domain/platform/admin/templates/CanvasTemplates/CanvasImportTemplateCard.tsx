@@ -2,8 +2,7 @@ import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
-import GestureIcon from '@mui/icons-material/Gesture';
-import { WbIncandescentOutlined } from '@mui/icons-material';
+import { CanvasIcon } from '../../../../../common/icons/CanvasIcon';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
 
@@ -13,7 +12,7 @@ const CanvasImportTemplateCard = ({ template, onClick, actionButtons }: CanvasIm
   return (
     <CardWithProvider
       key={template.id}
-      iconComponent={GestureIcon}
+      iconComponent={CanvasIcon}
       title={template.info.title}
       provider={template.provider?.displayName}
       providerLogoUrl={template.provider?.profile.avatar?.uri}
@@ -23,7 +22,7 @@ const CanvasImportTemplateCard = ({ template, onClick, actionButtons }: CanvasIm
         </ExtraInfoWithIcon>
       }
       imageUrl={getVisualBannerNarrow(template.info.visual)}
-      defaultImage={<WbIncandescentOutlined />}
+      defaultImage={<CanvasIcon />}
       onClick={onClick}
       actionButtons={actionButtons}
     />
