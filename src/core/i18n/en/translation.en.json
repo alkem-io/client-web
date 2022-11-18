@@ -505,6 +505,16 @@
     }
   },
   "components": {
+    "error-display": {
+      "title": "Ooops!",
+      "went-wrong": "Looks like something went wrong.",
+      "contact-support-sentence": "If this problem persists, please contact support.",
+      "buttons": {
+        "reload": "Reload",
+        "take-me-home": "Take me home",
+        "contact-support": "Contact support"
+      }
+    },
     "search-cards": {
       "matched-terms": "Matched Terms"
     },
