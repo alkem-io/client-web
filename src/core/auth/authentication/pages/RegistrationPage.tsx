@@ -12,6 +12,7 @@ import WrapperTypography from '../../../../common/components/core/WrapperTypogra
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { useConfig } from '../../../../hooks';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
+import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 
 interface RegisterPageProps {
   flow?: string;
@@ -20,11 +21,17 @@ interface RegisterPageProps {
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { flow: registrationFlow, loading } = useKratosFlow(FlowTypeName.Registration, flow);
+  const { flow: registrationFlow, loading, error } = useKratosFlow(FlowTypeName.Registration, flow);
 
   const { platform, loading: loadingPlatform } = useConfig();
 
-  if (loadingPlatform || loading) return <Loading text={t('kratos.loading-flow')} />;
+  if (loadingPlatform || loading) {
+    return <Loading text={t('kratos.loading-flow')} />;
+  }
+
+  if (error) {
+    return <ErrorDisplay />;
+  }
 
   return (
     <AuthenticationLayout>

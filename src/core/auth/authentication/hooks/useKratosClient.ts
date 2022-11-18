@@ -28,6 +28,12 @@ const isWhoamiError401 = (error: AxiosError) =>
 const isAxiosError = (error: { isAxiosError: boolean }): error is AxiosError => error.isAxiosError;
 
 const getKratosErrorMessage = (requestError: AxiosError) => {
+  const errMessage = requestError.message;
+
+  if (errMessage) {
+    return `Kratos Error: ${errMessage}`;
+  }
+
   if (requestError.response?.data) {
     const { message, reason, error } = requestError.response?.data;
     const errorMessage = message ? [message, reason].filter(v => v).join(' ') : error.message;

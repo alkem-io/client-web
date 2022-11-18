@@ -9,6 +9,7 @@ import {
 import { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useKratosClient } from './useKratosClient';
+import { error as logError } from '../../../../services/logging/sentry/log';
 
 type FlowTypes =
   | SelfServiceLoginFlow
@@ -54,7 +55,9 @@ const useKratosFlow = <Name extends FlowTypeName>(
       if (response.status === 410) {
         window.location.replace(response.data.error.details.redirect_to);
       } else {
-        setError(err.message);
+        const error = new Error(err.message);
+        setError(error);
+        logError(error);
       }
     }
   }, []);
@@ -65,7 +68,9 @@ const useKratosFlow = <Name extends FlowTypeName>(
         setLoading(true);
         const { status, data } = await promise;
         if (status !== 200) {
-          setError(new Error('Error loading flow!'));
+          const error = new Error(`Error loading flow! Status: ${status}`);
+          setError(error);
+          logError(error);
         }
         setFlow(data as ReturnFlowType[Name]);
       } catch (error) {
