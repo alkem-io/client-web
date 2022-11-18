@@ -46,7 +46,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
           innovationPackNameID: pack.nameID,
           innovationPackId: pack.id,
         }))
-      ) as any; //TODO? Better?
+      ) as any as Q[];
   }, [innovationPacks, organizationFilter, innovationPackFilter]);
 
   /*
@@ -60,7 +60,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
       <Grid item xs={12} md={9}>
 */
   return (
-    <Grid container>
+    <Grid container sx={{ padding: theme => theme.spacing(2) }}>
       <Grid item xs={12}>
         <Grid container columns={{ xs: 2, sm: 6, lg: 8 }} spacing={3}>
           {templates.map(template => (

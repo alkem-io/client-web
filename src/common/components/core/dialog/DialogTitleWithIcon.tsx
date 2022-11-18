@@ -9,7 +9,7 @@ import { Box, Divider } from '@mui/material';
 
 const Root = styled(MuiDialogTitle)(({ theme }) => ({
   margin: 0,
-  padding: theme.spacing(2),
+  padding: theme.spacing(3, 3, 2, 3),
   display: 'flex',
   alignItems: 'center',
 }));

@@ -93,7 +93,7 @@ const ImagePreview = ({ src }: { src: string }) => {
 };
 
 const ExtraInfoBar = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1, 1),
+  padding: theme.spacing(1.5, 2),
   color: theme.palette.highlight.contrastText,
   backgroundColor: theme.palette.highlight.main,
 }));
@@ -147,7 +147,7 @@ const CardWithProvider = (props: CardWithProviderProps) => {
       <TitleBar {...props} />
       <ImageWrapper>{imageUrl ? <ImagePreview src={imageUrl} /> : defaultImage}</ImageWrapper>
       {extraInformation ? <ExtraInfoBar>{extraInformation}</ExtraInfoBar> : null}
-      <ActionButtons>{props.actionButtons}</ActionButtons>
+      {props.actionButtons && props.actionButtons.length > 0 && <ActionButtons>{props.actionButtons}</ActionButtons>}
     </ElevatedPaper>
   );
 };
