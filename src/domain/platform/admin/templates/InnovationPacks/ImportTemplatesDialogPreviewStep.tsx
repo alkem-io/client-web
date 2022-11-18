@@ -1,11 +1,12 @@
 import { Box, Button, Grid } from '@mui/material';
-import React, { ComponentType, useState } from 'react';
+import React, { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
 import { TemplateFromInnovationPack } from './InnovationPack';
+import useLoadingState from '../../../../../hooks/useLoadingState';
 
 export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
   onImportTemplate: (template: T) => Promise<void>;
@@ -24,13 +25,12 @@ const ImportTemplatesDialogPreviewStep = <T extends Template, Q extends T & Temp
 }: ImportTemplatesDialogPreviewStepProps<T, Q>) => {
   const { t } = useTranslation();
 
-  const [importingTemplate, setImporting] = useState(false);
+  const [importingTemplate, doImportTemplate] = useLoadingState(async () => {
+    await onImportTemplate(template);
+  });
 
   const handleClickImport = async () => {
-    setImporting(true);
-    await onImportTemplate(template);
-    setImporting(false);
-    onClose();
+    doImportTemplate();
   };
 
   return (

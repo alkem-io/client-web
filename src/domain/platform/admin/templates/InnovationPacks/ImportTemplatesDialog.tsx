@@ -33,7 +33,12 @@ const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateFromInn
 }: ImportTemplatesDialogProps<T, Q>) => {
   const { t } = useTranslation();
 
-  const handleClose = () => (onClose ? onClose({}, 'escapeKeyDown') : undefined);
+  const handleClose = () => {
+    if (onClose) {
+      onClose({}, 'escapeKeyDown');
+    }
+    handleClosePreview();
+  };
   const [previewTemplate, setPreviewTemplate] = useState<Q>();
 
   const handlePreviewTemplate = (template: Q) => {
@@ -46,7 +51,7 @@ const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateFromInn
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
       maxWidth={false}
     >
