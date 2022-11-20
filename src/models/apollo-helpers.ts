@@ -759,25 +759,28 @@ export type CommunityFieldPolicy = {
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyKeySpecifier = ('lead' | 'member' | CommunityPolicyKeySpecifier)[];
+export type CommunityPolicyKeySpecifier = ('id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   lead?: FieldPolicy<any> | FieldReadFunction<any>;
   member?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyRoleKeySpecifier = (
+export type CommunityRolePolicyKeySpecifier = (
   | 'credential'
   | 'maxOrg'
   | 'maxUser'
   | 'minOrg'
   | 'minUser'
-  | CommunityPolicyRoleKeySpecifier
+  | 'parentCredentials'
+  | CommunityRolePolicyKeySpecifier
 )[];
-export type CommunityPolicyRoleFieldPolicy = {
+export type CommunityRolePolicyFieldPolicy = {
   credential?: FieldPolicy<any> | FieldReadFunction<any>;
   maxOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   maxUser?: FieldPolicy<any> | FieldReadFunction<any>;
   minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   minUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConfigKeySpecifier = ('apm' | 'authentication' | 'platform' | 'sentry' | 'template' | ConfigKeySpecifier)[];
 export type ConfigFieldPolicy = {
@@ -2358,9 +2361,9 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
     fields?: CommunityPolicyFieldPolicy;
   };
-  CommunityPolicyRole?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommunityPolicyRoleKeySpecifier | (() => undefined | CommunityPolicyRoleKeySpecifier);
-    fields?: CommunityPolicyRoleFieldPolicy;
+  CommunityRolePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityRolePolicyKeySpecifier | (() => undefined | CommunityRolePolicyKeySpecifier);
+    fields?: CommunityRolePolicyFieldPolicy;
   };
   Config?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);

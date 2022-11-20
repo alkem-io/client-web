@@ -548,7 +548,7 @@ export type AuthorizationPolicyRuleCredential = {
 export type AuthorizationPolicyRulePrivilege = {
   __typename?: 'AuthorizationPolicyRulePrivilege';
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  sourcePrivilege: Scalars['String'];
+  sourcePrivilege: AuthorizationPrivilege;
 };
 
 export type AuthorizationPolicyRuleVerifiedCredential = {
@@ -564,6 +564,7 @@ export enum AuthorizationPrivilege {
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
+  Contribute = 'CONTRIBUTE',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCallout = 'CREATE_CALLOUT',
@@ -571,6 +572,7 @@ export enum AuthorizationPrivilege {
   CreateChallenge = 'CREATE_CHALLENGE',
   CreateComment = 'CREATE_COMMENT',
   CreateHub = 'CREATE_HUB',
+  CreateOpportunity = 'CREATE_OPPORTUNITY',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
@@ -794,6 +796,9 @@ export type ChallengeEventInput = {
 };
 
 export enum ChallengePreferenceType {
+  AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
+  AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
+  AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   MembershipApplyChallengeFromHubMembers = 'MEMBERSHIP_APPLY_CHALLENGE_FROM_HUB_MEMBERS',
   MembershipFeedbackOnChallengeContext = 'MEMBERSHIP_FEEDBACK_ON_CHALLENGE_CONTEXT',
   MembershipJoinChallengeFromHubMembers = 'MEMBERSHIP_JOIN_CHALLENGE_FROM_HUB_MEMBERS',
@@ -1023,12 +1028,16 @@ export type CommunityJoinInput = {
 
 export type CommunityPolicy = {
   __typename?: 'CommunityPolicy';
-  lead: CommunityPolicyRole;
-  member: CommunityPolicyRole;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The role policy that defines the leads for this Community. */
+  lead: CommunityRolePolicy;
+  /** The role policy that defines the members for this Community. */
+  member: CommunityRolePolicy;
 };
 
-export type CommunityPolicyRole = {
-  __typename?: 'CommunityPolicyRole';
+export type CommunityRolePolicy = {
+  __typename?: 'CommunityRolePolicy';
   /** The CredentialDefinition that is associated with this role */
   credential: CredentialDefinition;
   /** Maximum number of Organizations in this role */
@@ -1039,6 +1048,8 @@ export type CommunityPolicyRole = {
   minOrg: Scalars['Float'];
   /** Minimum number of Users in this role */
   minUser: Scalars['Float'];
+  /** The CredentialDefinitions associated with this role in parent communities */
+  parentCredentials: Array<CredentialDefinition>;
 };
 
 export type Config = {
@@ -2878,7 +2889,10 @@ export type PreferenceDefinition = {
 };
 
 export enum PreferenceType {
+  AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
+  AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
   AllowMembersToCreateChallenges = 'ALLOW_MEMBERS_TO_CREATE_CHALLENGES',
+  AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
   AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
   MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
