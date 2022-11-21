@@ -1,24 +1,18 @@
-import * as d3 from 'd3';
 import React, { FC, useEffect, useMemo, useRef } from 'react';
-import { createMachine } from 'xstate';
-import { toDirectedGraph } from '@xstate/graph';
 import { Theme, useTheme } from '@mui/material/styles';
 import { Lifecycle } from '../../../../../models/graphql-schema';
+//import * as d3 from 'd3';
+import { createMachine } from 'xstate';
+import { toDirectedGraph } from '@xstate/graph';
 
-export interface GraphThemeOptions {
-  strokePrimaryColor?: string;
-  strokeDefaultColor?: string;
-  fillColor?: string;
-  font?: string;
-  fontSize?: number;
-}
+import { LifecycleVisualization, LifecycleDataProvider, LifecycleVisualizationOptions } from '@alkemio/visualization';
 
 export interface InnovationFlowVisualizerProps {
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>;
-  options?: GraphThemeOptions;
+  options?: LifecycleVisualizationOptions;
 }
 
-export const validateLifecycleDefinition = (definition: string): Error | undefined => {
+export const validateLifecycleDefinition = (definition: string) => {
   if (!definition) {
     return new Error('Definition is not defined');
   }
@@ -30,7 +24,6 @@ export const validateLifecycleDefinition = (definition: string): Error | undefin
   } catch (e) {
     return e;
   }
-
   return undefined;
 };
 
@@ -53,18 +46,18 @@ const buildGraph = (
   ref: SVGSVGElement,
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>,
   theme: Theme,
-  options?: GraphThemeOptions
+  options?: LifecycleVisualizationOptions
 ) => {
   if (validateLifecycleDefinition(lifecycle.machineDef)) {
     return undefined;
   }
 
-  const graphThemeDefaults: GraphThemeOptions = {
+  const graphThemeDefaults: LifecycleVisualizationOptions = {
     strokePrimaryColor: theme.palette.primary.main,
     strokeDefaultColor: '#000',
     fillColor: theme.palette.background.paper,
-    font: theme.typography.button.fontFamily,
-    fontSize: theme.typography.button.fontSize as number,
+    font: theme.typography.button.fontFamily?.toString() || 'Source Sans Pro',
+    fontSize: theme.typography.button.fontSize?.toString() || '16px',
   };
 
   options = { ...graphThemeDefaults, ...options };
@@ -72,21 +65,29 @@ const buildGraph = (
   _buildGraph(ref, lifecycle, options);
 };
 
-const _buildGraph = (
+const _buildGraph = async (
   ref: SVGSVGElement,
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>,
-  options: GraphThemeOptions
+  options: LifecycleVisualizationOptions
 ) => {
-  const machine = createMachine(JSON.parse(lifecycle.machineDef));
-  const graph = toDirectedGraph(machine);
+  const lifecycleData = new LifecycleDataProvider();
+  await lifecycleData.loadData(lifecycle.machineDef);
 
+  //const machine = createMachine(JSON.parse(lifecycle.machineDef));
+  //const graph = toDirectedGraph(machine);
+
+  //const machine = lifecycleData.machine;
+  //const graph = lifecycleData.graph;
   const width = 800;
   const height = 400;
 
-  const boxWidth = 120;
-  const boxHeight = 30;
-  const cornerRound = 10;
+  // const boxWidth = 120;
+  // const boxHeight = 30;
+  // const cornerRound = 10;
 
+  const visualization = new LifecycleVisualization(ref, lifecycleData, width, height, options);
+  visualization.displayLifecycle();
+  /*
   const initialState: string = machine.id + '.' + machine.initial?.toString();
 
   const nodes = graph.children.map(node => {
@@ -254,5 +255,6 @@ const _buildGraph = (
   setTimeout(() => {
     simulation.stop();
   }, 1);
+  */
 };
 export default InnovationFlowVisualizer;
