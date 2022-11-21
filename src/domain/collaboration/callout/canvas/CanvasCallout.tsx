@@ -83,7 +83,7 @@ const CanvasCallout = ({
         </CardsLayoutScroller>
       </CalloutLayout>
       <CanvasActionsContainer>
-        {(_, actionsState, actions) => (
+        {(entities, actionsState, actions) => (
           <CanvasCreateDialog
             entities={{
               calloutID: callout.id,
