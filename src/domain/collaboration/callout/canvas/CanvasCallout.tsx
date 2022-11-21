@@ -6,13 +6,13 @@ import { LinkWithState } from '../../../shared/types/LinkWithState';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
-import { CanvasProvider } from '../../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { CalloutState } from '../../../../models/graphql-schema';
 import { Skeleton } from '@mui/material';
+import { useHub } from '../../../../hooks';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
@@ -41,6 +41,7 @@ const CanvasCallout = ({
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
   const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
+  const { templates } = useHub();
   const createButtonComponent = useMemo(
     () =>
       callout.state !== CalloutState.Closed ? (
@@ -81,34 +82,29 @@ const CanvasCallout = ({
           </CardsLayout>
         </CardsLayoutScroller>
       </CalloutLayout>
-      <CanvasProvider>
-        {(entities, state) => (
-          <CanvasActionsContainer>
-            {(_, actionsState, actions) => (
-              <CanvasCreateDialog
-                entities={{
-                  calloutID: callout.id,
-                  templates: entities.templates,
-                }}
-                actions={{
-                  onCancel: handleCreateDialogClosed,
-                  onConfirm: input => {
-                    actions.onCreate(input);
-                    setShowCreateCanvasDialog(false);
-                  },
-                }}
-                options={{
-                  show: showCreateCanvasDialog,
-                }}
-                state={{
-                  canvasLoading: state.loadingCanvases,
-                  templatesLoading: state.loadingCanvases,
-                }}
-              />
-            )}
-          </CanvasActionsContainer>
+      <CanvasActionsContainer>
+        {(entities, actionsState, actions) => (
+          <CanvasCreateDialog
+            entities={{
+              calloutID: callout.id,
+              templates: templates.canvasTemplates,
+            }}
+            actions={{
+              onCancel: handleCreateDialogClosed,
+              onConfirm: input => {
+                actions.onCreate(input);
+                setShowCreateCanvasDialog(false);
+              },
+            }}
+            options={{
+              show: showCreateCanvasDialog,
+            }}
+            state={{
+              canvasLoading: loading,
+            }}
+          />
         )}
-      </CanvasProvider>
+      </CanvasActionsContainer>
     </>
   );
 };
