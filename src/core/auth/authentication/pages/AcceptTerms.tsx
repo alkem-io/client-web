@@ -7,6 +7,7 @@ import AcceptTermsCheckbox from '../components/AcceptTermsCheckbox';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import AcceptTermsButtonWrapper from '../components/AcceptTermsButtonWrapper';
 import FixedHeightLogo from '../components/FixedHeightLogo';
+import { useUserContext } from '../../../../domain/community/contributor/user';
 
 const Introduction = () => {
   return (
@@ -23,15 +24,21 @@ const Introduction = () => {
   );
 };
 
-const Greeting = () => {
-  return <SubHeading>Hi [first name], welcome at Alkemio!</SubHeading>;
+interface GreetingProps {
+  userName: string;
+}
+
+const Greeting = ({ userName }: GreetingProps) => {
+  return <SubHeading>Hi {userName}, welcome at Alkemio!</SubHeading>;
 };
 
 const AcceptTerms = () => {
+  const { user } = useUserContext();
+
   return (
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
       <FixedHeightLogo />
-      <Greeting />
+      {user && <Greeting userName={user.user.firstName} />}
       <Introduction />
       <AcceptTermsContext>
         <AcceptTermsCheckbox />
