@@ -34,12 +34,14 @@ const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateFromInn
   const { t } = useTranslation();
 
   const handleClose = () => {
-    if (onClose) {
-      onClose({}, 'escapeKeyDown');
-    }
+    onClose?.({}, 'escapeKeyDown');
     handleClosePreview();
   };
   const [previewTemplate, setPreviewTemplate] = useState<Q>();
+
+  const handleImportTemplate = (template: T) => {
+    return onImportTemplate?.(template).then(() => handleClosePreview());
+  };
 
   const handlePreviewTemplate = (template: Q) => {
     setPreviewTemplate(template);
@@ -68,14 +70,14 @@ const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateFromInn
           (!previewTemplate ? (
             <ImportTemplatesDialogGalleryStep
               innovationPacks={innovationPacks}
-              onImportTemplate={onImportTemplate}
+              onImportTemplate={handleImportTemplate}
               onPreviewTemplate={handlePreviewTemplate}
               templateImportCardComponent={templateImportCardComponent}
             />
           ) : (
             <ImportTemplatesDialogPreviewStep
               template={previewTemplate}
-              onImportTemplate={onImportTemplate}
+              onImportTemplate={handleImportTemplate}
               onClose={handleClosePreview}
               templatePreviewCardComponent={templateImportCardComponent}
               templatePreviewComponent={templatePreviewComponent}

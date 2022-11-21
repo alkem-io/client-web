@@ -194,6 +194,8 @@ const AdminTemplatesSection = <
 
     if (!result.errors) {
       notify(t('pages.admin.generic.sections.templates.import.imported-successfully-notification'), 'success');
+    } else {
+      throw result.errors;
     }
   };
 
