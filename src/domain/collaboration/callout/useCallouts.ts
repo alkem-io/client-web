@@ -140,13 +140,17 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     } as TypedCallout;
   });
 
+  const reloadCallouts = isOpportunityId(params)
+    ? getOpportunityCallouts
+    : isChallengeId(params)
+    ? getChallengeCallouts
+    : getHubCallouts;
+
   return {
     callouts,
     canCreateCallout,
     loading: hubCalloutsLoading || challengeCalloutsLoading || opportunityCalloutsLoading,
-    reloadHubCallouts: getHubCallouts,
-    reloadChallengeCallouts: getChallengeCallouts,
-    reloadOpportunityCallouts: getOpportunityCallouts,
+    reloadCallouts,
   };
 };
 

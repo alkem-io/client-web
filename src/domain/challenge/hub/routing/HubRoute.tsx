@@ -14,7 +14,7 @@ import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import HubContextPage from '../pages/HubContextPage';
 import HubDashboardPage from '../pages/HubDashboardPage';
-import CalloutsPageLayout from '../../../collaboration/callout/CalloutsPageLayout';
+import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();
@@ -33,7 +33,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
         <Route
           path={routes.Explore}
-          element={<CalloutsPageLayout entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
+          element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route path={routes.About} element={<HubContextPage paths={currentPaths} />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
@@ -41,11 +41,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
           element={
-            <CalloutsPageLayout
-              entityTypeName="hub"
-              rootUrl={`${resolved.pathname}/${routes.Explore}`}
-              scrollToCallout
-            />
+            <CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} scrollToCallout />
           }
         />
         <Route

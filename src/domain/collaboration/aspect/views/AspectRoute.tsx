@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import CalloutsPageLayout from '../../callout/CalloutsPageLayout';
+import CalloutsPage from '../../callout/CalloutsPage';
 import AspectDashboardPage from '../pages/AspectDashboardPage';
 import AspectSettingsPage from '../pages/AspectSettingsPage';
 import AspectSharePage from '../pages/AspectSharePage';
@@ -25,25 +25,25 @@ const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath, entityTypeName }) =
         <Route
           path={AspectDialogSection.Dashboard}
           element={
-            <CalloutsPageLayout rootUrl={parentPagePath} entityTypeName={entityTypeName}>
-              {<AspectDashboardPage onClose={onClose} />}
-            </CalloutsPageLayout>
+            <CalloutsPage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+              <AspectDashboardPage onClose={onClose} />
+            </CalloutsPage>
           }
         />
         <Route
           path={AspectDialogSection.Share}
           element={
-            <CalloutsPageLayout rootUrl={parentPagePath} entityTypeName={entityTypeName}>
-              {<AspectSharePage onClose={onClose} />}
-            </CalloutsPageLayout>
+            <CalloutsPage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+              <AspectSharePage onClose={onClose} />
+            </CalloutsPage>
           }
         />
         <Route
           path={AspectDialogSection.Settings}
           element={
-            <CalloutsPageLayout rootUrl={parentPagePath} entityTypeName={entityTypeName}>
-              {<AspectSettingsPage onClose={onClose} />}
-            </CalloutsPageLayout>
+            <CalloutsPage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+              <AspectSettingsPage onClose={onClose} />
+            </CalloutsPage>
           }
         />
       </Route>

@@ -11,7 +11,7 @@ import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import OpportunityContextPage from '../pages/OpportunityContextPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
-import CalloutsPageLayout from '../../../collaboration/callout/CalloutsPageLayout';
+import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -40,9 +40,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/contributors`} element={<OpportunityDashboardPage dialog="contributors" />} />
         <Route
           path={routes.Explore}
-          element={
-            <CalloutsPageLayout entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />
-          }
+          element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
@@ -50,7 +48,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
           element={
-            <CalloutsPageLayout
+            <CalloutsPage
               entityTypeName="opportunity"
               rootUrl={`${resolved.pathname}/${routes.Explore}`}
               scrollToCallout
