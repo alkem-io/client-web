@@ -14,10 +14,10 @@ import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import { routes } from '../routes/challengeRoutes';
-import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeContextPage from '../pages/ChallengeContextPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
+import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 
 interface ChallengeRootProps extends PageProps {}
 
