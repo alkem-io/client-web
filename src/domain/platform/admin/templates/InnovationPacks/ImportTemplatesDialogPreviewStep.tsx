@@ -25,9 +25,7 @@ const ImportTemplatesDialogPreviewStep = <T extends Template, Q extends T & Temp
 }: ImportTemplatesDialogPreviewStepProps<T, Q>) => {
   const { t } = useTranslation();
 
-  const [importingTemplate, doImportTemplate] = useLoadingState(async () => {
-    await onImportTemplate(template);
-  });
+  const [importingTemplate, doImportTemplate] = useLoadingState(() => onImportTemplate(template));
 
   const handleClickImport = async () => {
     doImportTemplate();
