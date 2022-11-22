@@ -21,12 +21,14 @@ interface CommentsCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvent
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData;
   };
+  calloutNames: string[];
   isSubscribedToComments: boolean;
   loading?: boolean;
 }
 
 const CommentsCallout = ({
   callout,
+  calloutNames,
   loading,
   onCalloutEdit,
   onVisibilityChange,
@@ -131,6 +133,7 @@ const CommentsCallout = ({
     <>
       <CalloutLayout
         callout={callout}
+        calloutNames={calloutNames}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
