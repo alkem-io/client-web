@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import ReactMarkdown, { Options as ReactMarkdownOptions } from 'react-markdown';
 import gfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import remarkGithub from 'remark-github';
 import emoji from 'remark-emoji';
 import { Box, BoxProps } from '@mui/material';
 const createComponentWithInheritedWidth = (tagName: BoxProps['component']) => {
@@ -33,7 +32,6 @@ export const WrapperMarkdown: FC<MarkdownProps> = (props: MarkdownProps) => {
       components={components}
       remarkPlugins={[
         gfm,
-        [remarkGithub, { repository: 'https://github.com/alkem-io/alkemio.git' }],
         [emoji, { padSpaceAfter: false, emoticon: true }],
       ]}
       rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}

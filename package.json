@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.28.2",
+  "version": "0.28.3",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -89,7 +89,6 @@
     "relay-compiler": "^13.1.1",
     "remark-emoji": "^3.0.2",
     "remark-gfm": "^3.0.1",
-    "remark-github": "^11.2.4",
     "replace-special-characters": "^1.2.5",
     "subscriptions-transport-ws": "^0.11.0",
     "typescript": "~4.1.3",
