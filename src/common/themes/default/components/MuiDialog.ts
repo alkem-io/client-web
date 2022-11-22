@@ -1,6 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiDialog = (_theme: Theme): Components['MuiDialog'] | undefined => {
+const MuiDialog = (_theme: Theme): Components['MuiDialog'] => {
   return {
     styleOverrides: {
       paper: {
@@ -9,4 +9,5 @@ const MuiDialog = (_theme: Theme): Components['MuiDialog'] | undefined => {
     },
   };
 };
+
 export default MuiDialog;

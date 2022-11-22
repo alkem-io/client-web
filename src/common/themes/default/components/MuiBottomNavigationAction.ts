@@ -1,6 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiBottomNavigationAction = (theme: Theme): Components['MuiBottomNavigationAction'] | undefined => {
+const MuiBottomNavigationAction = (theme: Theme): Components['MuiBottomNavigationAction'] => {
   return {
     styleOverrides: {
       root: {
@@ -10,4 +10,5 @@ const MuiBottomNavigationAction = (theme: Theme): Components['MuiBottomNavigatio
     },
   };
 };
+
 export default MuiBottomNavigationAction;

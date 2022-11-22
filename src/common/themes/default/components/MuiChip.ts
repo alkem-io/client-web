@@ -1,6 +1,6 @@
 import { Components, emphasize, Theme } from '@mui/material/styles';
 
-const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
+const MuiChip = (theme: Theme): Components['MuiChip'] => {
   return {
     styleOverrides: {
       outlined: {
@@ -40,4 +40,5 @@ const MuiChip = (theme: Theme): Components['MuiChip'] | undefined => {
     },
   };
 };
+
 export default MuiChip;
