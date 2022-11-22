@@ -6,7 +6,7 @@ import MuiChip from './MuiChip';
 import MuiDialog from './MuiDialog';
 import MuiDialogContent from './MuiDialogContent';
 import MuiIcon from './MuiIcon';
-import MuiLink from './MuiLInk';
+import MuiLink from './MuiLink';
 import MuiPaper from './MuiPaper';
 import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
