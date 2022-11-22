@@ -71,7 +71,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
     : undefined;
 
   return (
-    <FormGroup sx={{ paddingBottom: theme => theme.spacing(1) }}>
+    <FormGroup sx={{ paddingBottom: theme => theme.spacing(withCounter ? 2 : 1) }}>
       <FormControl>
         <OutlinedInput
           multiline
