@@ -4,22 +4,37 @@ import gfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import emoji from 'remark-emoji';
 import { Box, BoxProps } from '@mui/material';
-const createComponentWithInheritedWidth = (tagName: BoxProps['component']) => {
-  const ReactMDNodeImplementation: FC<{ node: any }> = ({ node, ...props }) => {
+import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
+
+const createComponentThatInheritsParentWidth = (tagName: BoxProps['component']) => {
+  const ReactMDNodeImplementation: FC<{ node: ReactMarkdownProps['node'] }> = ({ node, ...props }) => {
     return <Box component={tagName} maxWidth="100%" {...props} />;
   };
 
   return ReactMDNodeImplementation;
 };
 
-const nodeTypesToInheritParentWidth = ['img', 'iframe'] as const;
+const nodeTypesInheritingParentWidth = ['img', 'iframe'] as const;
 
-const components = nodeTypesToInheritParentWidth.reduce((prev, tagName) => {
+const componentsInheritingWidth = nodeTypesInheritingParentWidth.reduce((prev, tagName) => {
   return {
     ...prev,
-    [tagName]: createComponentWithInheritedWidth(tagName),
+    [tagName]: createComponentThatInheritsParentWidth(tagName),
   };
 }, {});
+
+interface LinkProps
+  extends Omit<ReactMarkdownProps, 'children'>,
+    React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {}
+
+const LinkNewTab = ({ node, ...props }: LinkProps) => {
+  return <a target="_blank" {...props} />;
+};
+
+const componentImplementations = {
+  ...componentsInheritingWidth,
+  a: LinkNewTab,
+};
 
 const allowedNodeTypes = ['iframe'] as const;
 
@@ -29,7 +44,7 @@ export const WrapperMarkdown: FC<MarkdownProps> = (props: MarkdownProps) => {
   // wrap this here, so that we don't have to include the gfm all the time
   return (
     <ReactMarkdown
-      components={components}
+      components={componentImplementations}
       remarkPlugins={[
         gfm,
         [emoji, { padSpaceAfter: false, emoticon: true }],
