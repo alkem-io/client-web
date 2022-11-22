@@ -39,6 +39,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     url: string;
     cardTemplate?: CalloutCardTemplate;
   };
+  calloutNames: string[];
 }
 
 const TitleBar = styled(Box)(() => ({
@@ -60,6 +61,7 @@ const CalloutLayout = ({
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
+  calloutNames,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -169,6 +171,7 @@ const CalloutLayout = ({
         title={`${t('buttons.edit')} ${t('common.callout')}`}
         onCalloutEdit={handleCalloutEdit}
         onDelete={onCalloutDelete}
+        calloutNames={calloutNames}
       />
     </>
   );

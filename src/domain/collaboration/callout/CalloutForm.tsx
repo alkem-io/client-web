@@ -6,13 +6,14 @@ import { Grid, Typography } from '@mui/material';
 import FormRow from '../../shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../shared/components/Section/Section';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
 import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
 import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
+import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
 
 type FormValueType = {
   displayName: string;
@@ -47,9 +48,17 @@ export interface CalloutFormProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
+  calloutNames: string[];
 }
 
-const CalloutForm: FC<CalloutFormProps> = ({ callout, editMode = false, onChange, onStatusChanged, children }) => {
+const CalloutForm: FC<CalloutFormProps> = ({
+  callout,
+  calloutNames,
+  editMode = false,
+  onChange,
+  onStatusChanged,
+  children,
+}) => {
   const { t } = useTranslation();
 
   const initialValues: FormValueType = useMemo(
@@ -64,12 +73,19 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, editMode = false, onChange
     [callout?.id]
   );
 
+  const uniqueNameValidator = yup
+    .string()
+    .required(t('common.field-required'))
+    .test('is-valid-name', t('components.callout-creation.info-step.unique-title-validation-text'), value => {
+      if (editMode) {
+        return Boolean(value && (!calloutNames?.includes(value) || value === callout?.displayName));
+      } else {
+        return Boolean(value && !calloutNames?.includes(value));
+      }
+    });
+
   const validationSchema = yup.object().shape({
-    displayName: yup
-      .string()
-      .required(t('common.field-required'))
-      .min(3, ({ min }) => t('common.field-min-length', { min }))
-      .max(SMALL_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
+    displayName: displayNameValidator.concat(uniqueNameValidator),
     description: yup
       .string()
       .required(t('common.field-required'))
