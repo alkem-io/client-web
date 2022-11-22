@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
@@ -10,11 +9,11 @@ import { ChallengeContextSection } from './ChallengeContextSection';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
 import {
+  Context,
   ContextTabFragment,
-  Tagset,
   LifecycleContextTabFragment,
   MetricsItemFragment,
-  Context,
+  Tagset,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
@@ -22,8 +21,8 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import ChallengeCommunityView from '../../../community/community/entities/ChallengeCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import getDepsValueFromObject from '../../../shared/utils/getDepsValueFromObject';
+import DashboardSectionHeaderActions from '../../../shared/components/DashboardSectionHeaderActions';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -88,9 +87,8 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
     <>
       <ChallengeContextSection
         primaryAction={
-          <Box display="flex">
+          <DashboardSectionHeaderActions>
             <LifecycleState lifecycle={challengeLifecycle} />
-            <SectionSpacer />
             {canCreateCommunityContextReview ? (
               <Button variant="contained" component={RouterLink} to={'../feedback'}>
                 {t('components.context-section.give-feedback')}
@@ -100,7 +98,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
             )}
-          </Box>
+          </DashboardSectionHeaderActions>
         }
         background={background}
         displayName={challengeDisplayName}
