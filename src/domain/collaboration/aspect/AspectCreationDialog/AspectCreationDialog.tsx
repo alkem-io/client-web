@@ -20,6 +20,7 @@ export type AspectCreationDialogProps = {
   calloutDisplayName: string;
   calloutId: string;
   cardTemplate: CalloutCardTemplate | undefined;
+  isCreating: boolean;
 } & CoreEntityIdTypes;
 
 export interface CardCreationCardTemplateInfo {
@@ -40,6 +41,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   onCreate,
   calloutDisplayName,
   cardTemplate,
+  isCreating,
 }) => {
   const { t } = useTranslation();
   const [aspect, setAspect] = useState<AspectCreationType>({});
@@ -80,7 +82,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
     return (
       <>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
-        <Button onClick={handleCreate} variant="contained" disabled={!isFormValid}>
+        <Button onClick={handleCreate} variant="contained" disabled={!isFormValid || isCreating}>
           {t('buttons.create')}
         </Button>
       </>
