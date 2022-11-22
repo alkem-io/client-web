@@ -75,6 +75,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   const displayNameSchema = yup
     .string()
     .required(t('common.field-required'))
+    .test('is-not-spaces', t('forms.validations.nonBlank'), value => !value || !/^[\s]*$/.test(value))
     .min(3, ({ min }) => t('common.field-min-length', { min }))
     .max(SMALL_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max }))
     .test('is-valid-name', t('components.callout-creation.info-step.unique-title-validation-text'), value => {
