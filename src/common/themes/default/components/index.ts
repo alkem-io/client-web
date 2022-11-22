@@ -12,6 +12,7 @@ import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
 import MuiTabPanel from './MuiTabPanel';
 import MuiSelect from './MuiSelect';
+import MuiBottomNavigationAction from './MuiBottomNavigationAction';
 import type {} from '@mui/lab/themeAugmentation';
 
 const componentsOverride = (theme: Theme): Components => ({
@@ -28,6 +29,7 @@ const componentsOverride = (theme: Theme): Components => ({
   MuiSkeleton: MuiSkeleton(theme),
   MuiTabPanel: MuiTabPanel(theme),
   MuiSelect: MuiSelect(theme),
+  MuiBottomNavigationAction: MuiBottomNavigationAction(theme),
 });
 
 export default componentsOverride;
