@@ -44,7 +44,7 @@ const AspectCallout = ({
     opportunityNameId,
   });
 
-  const [createAspect] = useCreateAspectFromContributeTabMutation({
+  const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionEnabled || !data) {
@@ -176,6 +176,7 @@ const AspectCallout = ({
         opportunityNameId={opportunityNameId}
         calloutId={callout.id}
         cardTemplate={callout.cardTemplate}
+        isCreating={isCreatingAspect}
       />
     </>
   );
