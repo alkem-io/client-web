@@ -1,10 +1,6 @@
 import { alpha, Components, Theme } from '@mui/material/styles';
 
 const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
-
   return {
     variants: [
       {

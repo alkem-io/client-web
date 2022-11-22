@@ -1,9 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
 const MuiDialogContent = (theme: Theme): Components['MuiDialogContent'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
   return {
     styleOverrides: {
       dividers: {

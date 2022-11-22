@@ -1,9 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiDialog = (theme: Theme): Components['MuiDialog'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
+const MuiDialog = (_theme: Theme): Components['MuiDialog'] | undefined => {
   return {
     styleOverrides: {
       paper: {

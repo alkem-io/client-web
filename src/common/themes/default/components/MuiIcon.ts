@@ -1,9 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiIcon = (theme: Theme): Components['MuiIcon'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
+const MuiIcon = (_theme: Theme): Components['MuiIcon'] | undefined => {
   return {
     styleOverrides: {
       fontSizeSmall: { fontSize: 24 },

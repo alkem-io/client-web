@@ -1,9 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiAvatar = (theme: Theme): Components['MuiAvatar'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
+const MuiAvatar = (_theme: Theme): Components['MuiAvatar'] | undefined => {
   return {
     defaultProps: {
       variant: 'rounded',

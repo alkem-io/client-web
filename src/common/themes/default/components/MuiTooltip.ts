@@ -1,10 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiTooltip = (theme: Theme): Components['MuiTooltip'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
-
+const MuiTooltip = (_theme: Theme): Components['MuiTooltip'] | undefined => {
   return {
     defaultProps: {
       arrow: true,
