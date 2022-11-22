@@ -2,7 +2,6 @@ import { Box, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import HelpButton from '../../../../common/components/core/HelpButton';
 import MetricCircleView from '../../../platform/metrics/MetricCircleView';
-import { SectionSpacer } from './Section';
 
 interface SectionHeaderProps {
   text: ReactNode;
@@ -13,10 +12,21 @@ interface SectionHeaderProps {
 
 const SectionHeader: FC<SectionHeaderProps> = ({ text, icon, helpText, counter, children }) => {
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Box display="flex" alignItems="center">
+    <Box
+      display="flex"
+      alignItems="start"
+      flexWrap={{ xs: 'wrap', sm: 'wrap', md: 'nowrap' }}
+      gap={2}
+      justifyContent="space-between"
+    >
+      <Box display="flex" alignItems="center" flexGrow={1} flexShrink={1} flexBasis={{ xl: 0 }}>
         {icon}
-        <Typography variant="h4" fontWeight={600} marginLeft={theme => (icon ? theme.spacing(1) : 0)}>
+        <Typography
+          variant="h4"
+          fontWeight={600}
+          marginLeft={theme => (icon ? theme.spacing(1) : 0)}
+          sx={{ wordBreak: 'break-word' }}
+        >
           {text}
         </Typography>
         {typeof counter !== 'undefined' && (
@@ -26,7 +36,6 @@ const SectionHeader: FC<SectionHeaderProps> = ({ text, icon, helpText, counter, 
         )}
         {helpText && <HelpButton helpText={helpText} />}
       </Box>
-      <SectionSpacer />
       {children}
     </Box>
   );
