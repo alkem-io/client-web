@@ -78,8 +78,16 @@ const FieldContainer = styled(({ isFocused, ...rest }: FieldContainerProps) => <
 
   & .MuiInputLabel-root.MuiInputLabel-outlined.MuiFormLabel-root {
     padding: ${props => props.theme.spacing(0, 1)};
-    transform: translate(8px, 66px) scale(1);
+    transform: translate(${props => props.theme.spacing(1)}, ${props => props.theme.spacing(8.5)}) scale(1);
   }
+  /* This breakpoint on SM is because the toolbar collapses to two lines of buttons on XS screens
+   * so it is higher and the placeholder needs to go lower. */
+  ${props => props.theme.breakpoints.down('sm')} {
+    & .MuiInputLabel-root.MuiInputLabel-outlined.MuiFormLabel-root {
+      transform: translate(${props => props.theme.spacing(1)}, ${props => props.theme.spacing(14)}) scale(1);
+    }
+  }
+  /* This is the style of the shrunk label, small and translated to the top left and blue if focused */
   & .MuiInputLabel-root.MuiInputLabel-outlined.MuiFormLabel-root.MuiInputLabel-shrink {
     color: ${props => (props.isFocused ? props.theme.palette.primary.main : props.theme.palette.grey[800])};
     background: ${props => props.theme.palette.common.white};
@@ -265,7 +273,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         </FieldContainer>
       </FormControl>
       {withCounter && <CharacterCounter count={textLength} maxLength={maxLength} />}
-      <FormHelperText sx={{ width: '95%' }} error={isError}>
+      <FormHelperText sx={{ marginRight: theme => theme.spacing(10) }} error={isError}>
         {helperText}
       </FormHelperText>
     </FormGroup>
