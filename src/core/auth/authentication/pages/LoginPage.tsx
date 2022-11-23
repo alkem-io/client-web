@@ -4,12 +4,6 @@ import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import { Box } from '@mui/material';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { ReactComponent as LinkedInIcon } from '../components/AuthProviders/LinkedIn.svg';
-import { ReactComponent as MicrosoftIcon } from '../components/AuthProviders/Microsoft.svg';
-import ButtonStyling from '../components/AuthProviders/ButtonStyling';
-import linkedInTheme from '../components/AuthProviders/LinkedInTheme';
-import microsoftTheme from '../components/AuthProviders/MicrosoftTheme';
-import AuthActionButton from '../components/Button';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
 import React, { useLayoutEffect } from 'react';
@@ -18,7 +12,7 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-import { AUTH_REGISTER_PATH } from '../../../../models/constants';
+import { AUTH_SIGN_UP_PATH } from '../../../../models/constants';
 
 interface SignInPageProps {
   flow?: string;
@@ -86,30 +80,10 @@ const LoginPage = ({ flow }: SignInPageProps) => {
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
       <FixedHeightLogo />
       <SubHeading>{t('pages.login.title')}</SubHeading>
-      <KratosUI flow={loginFlow} resetPasswordElement={resetPassword}>
-        <Paragraph textAlign="center" marginY={2} textTransform="uppercase">
-          Or
-        </Paragraph>
-        <ButtonStyling
-          options={linkedInTheme}
-          icon={<LinkedInIcon />}
-          component={AuthActionButton}
-          justifyContent="start"
-        >
-          Sign up with LinkedIn
-        </ButtonStyling>
-        <ButtonStyling
-          options={microsoftTheme}
-          icon={<MicrosoftIcon />}
-          component={AuthActionButton}
-          justifyContent="start"
-        >
-          Sign up with Microsoft
-        </ButtonStyling>
-      </KratosUI>
+      <KratosUI flow={loginFlow} resetPasswordElement={resetPassword} />
       <Paragraph textAlign="center" marginTop={5}>
         {tLink('pages.login.register', {
-          signup: { to: AUTH_REGISTER_PATH },
+          signup: { to: AUTH_SIGN_UP_PATH },
         })}
       </Paragraph>
     </Container>

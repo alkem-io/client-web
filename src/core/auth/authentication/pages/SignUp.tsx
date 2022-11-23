@@ -3,34 +3,20 @@ import { sxCols } from '../../../../domain/shared/layout/Grid';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import { Box } from '@mui/material';
-import AcceptTermsCheckbox from '../components/AcceptTermsCheckbox';
-import AcceptTermsButtonWrapper from '../components/AcceptTermsButtonWrapper';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { ReactComponent as LinkedInIcon } from '../components/AuthProviders/LinkedIn.svg';
-import { ReactComponent as MicrosoftIcon } from '../components/AuthProviders/Microsoft.svg';
 import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
-import ButtonStyling from '../components/AuthProviders/ButtonStyling';
 import AuthActionButton from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
-
-const linkedInTheme = {
-  palette: {
-    primary: {
-      main: '#0076B2',
-    },
-  },
-};
-
-const microsoftTheme = {
-  palette: {
-    primary: {
-      main: '#fff',
-    },
-  },
-};
+import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
+import produce from 'immer';
+import KratosUI from '../components/KratosUI';
+import { useState } from 'react';
+import AcceptTermsButtonImpl from '../components/AcceptTermsButtonImpl';
+import AcceptTermsButtonContextual from '../components/AcceptTermsButtonContextual';
+import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);
@@ -38,8 +24,28 @@ const EmailIcon = () => {
 };
 
 const SignUp = () => {
+  const { flow } = useKratosFlow(FlowTypeName.Registration, undefined);
+
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+
+  // Sign Up flow is a flow reduced to just showing Accept Terms checkbox and a selection of Sign Up options.
+  const signUpFlow =
+    flow &&
+    produce(flow, nextFlow => {
+      const socialFlowNodes = nextFlow.ui.nodes.filter(
+        node =>
+          // Just the essentials for choosing/initializing a flow
+          node.attributes['name'] === 'csrf_token' ||
+          node.attributes['name'] === 'traits.accepted_terms' ||
+          node.group === 'oidc'
+      );
+      nextFlow.ui.nodes = socialFlowNodes;
+    });
+
   const navigate = useNavigate();
 
+  // Sign Up inits a new flow, otherwise Kratos complains about missing fields like email
+  // which a user had no chance to fill because they weren't even on the page.
   const signUp = () => {
     navigate(AUTH_REGISTER_PATH, {
       replace: true,
@@ -67,41 +73,36 @@ const SignUp = () => {
           Please read the these documents and accept them below before continuing to sign up.
         </Paragraph>
       </Box>
-      <AcceptTermsContext>
-        <AcceptTermsCheckbox />
-        <Box display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
-          <ButtonStyling
-            options={linkedInTheme}
-            icon={<LinkedInIcon />}
-            component={AcceptTermsButtonWrapper}
-            justifyContent="start"
-          >
-            Sign up with LinkedIn
-          </ButtonStyling>
-          <ButtonStyling
-            options={microsoftTheme}
-            icon={<MicrosoftIcon />}
-            component={AcceptTermsButtonWrapper}
-            justifyContent="start"
-          >
-            Sign up with Microsoft
-          </ButtonStyling>
-          <AcceptTermsButtonWrapper
+      {/*<AcceptTermsCheckbox value={hasAcceptedTerms} onChange={setHasAcceptedTerms} />*/}
+      <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
+        <KratosUI
+          flow={signUpFlow}
+          buttonComponent={AcceptTermsButtonContextual}
+          renderAcceptTermsCheckbox={checkbox => (
+            <KratosVisibleAcceptTermsCheckbox
+              value={hasAcceptedTerms}
+              onChange={setHasAcceptedTerms}
+              node={checkbox}
+              sx={{ marginBottom: 2, alignSelf: 'center' }}
+            />
+          )}
+        >
+          <AcceptTermsButtonImpl
+            hasAcceptedTerms={hasAcceptedTerms}
             startIcon={<EmailIcon />}
             color="primaryDark"
             justifyContent="start"
             onClick={signUp}
           >
             Sign up with E-Mail
-          </AcceptTermsButtonWrapper>
-          {/*The following text and the button are put into the same Box for all the buttons to be of the same width*/}
+          </AcceptTermsButtonImpl>
           <Paragraph textAlign="center" marginY={4}>
             Already have an account?
           </Paragraph>
           <AuthActionButton color="primaryDark" onClick={signIn}>
             Sign in
           </AuthActionButton>
-        </Box>
+        </KratosUI>
       </AcceptTermsContext>
     </Container>
   );

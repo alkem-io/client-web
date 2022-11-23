@@ -1,14 +1,12 @@
 import { Box, Tooltip } from '@mui/material';
-import { useHasAcceptedTerms } from './AcceptTermsContext';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
 
-interface AcceptTermsButtonWrapperProps extends AuthActionButtonProps {
+export interface AcceptTermsButtonImplProps extends AuthActionButtonProps {
+  hasAcceptedTerms: boolean;
   marginTop?: number;
 }
 
-const AcceptTermsButtonWrapper = ({ marginTop, ...buttonProps }: AcceptTermsButtonWrapperProps) => {
-  const hasAcceptedTerms = useHasAcceptedTerms();
-
+const AcceptTermsButtonImpl = ({ hasAcceptedTerms, marginTop, ...buttonProps }: AcceptTermsButtonImplProps) => {
   return (
     <Tooltip
       title="Please read and accept the Terms of Use and Privacy Policy before you continue"
@@ -22,4 +20,4 @@ const AcceptTermsButtonWrapper = ({ marginTop, ...buttonProps }: AcceptTermsButt
   );
 };
 
-export default AcceptTermsButtonWrapper;
+export default AcceptTermsButtonImpl;

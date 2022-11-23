@@ -1,25 +1,21 @@
-import { Box, Checkbox, FormControlLabel } from '@mui/material';
-import { useHasAcceptedTerms, useSetHasAcceptedTerms } from './AcceptTermsContext';
+import { Box, Checkbox, FormControlLabel, FormControlLabelProps } from '@mui/material';
 import { useConfig } from '../../../../hooks';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-//
-// interface AcceptTermsCheckboxProps {
-//   value: boolean;
-//   onChange: (value: boolean) => void;
-// }
 
-const AcceptTermsCheckbox = (/*{ value, onChange }: AcceptTermsCheckboxProps*/) => {
-  const hasAcceptedTerms = useHasAcceptedTerms();
-  const setHasAcceptedTerms = useSetHasAcceptedTerms();
+export interface AcceptTermsCheckboxProps
+  extends Omit<FormControlLabelProps, 'value' | 'control' | 'label' | 'onChange'> {
+  value: boolean;
+  onChange?: (value: boolean) => void;
+}
 
+const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxProps) => {
   const { platform, loading: loadingPlatform } = useConfig();
 
   if (loadingPlatform) {
     return null;
   }
 
-  // eslint-skip-next-line jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
-  const tTerms = translateWithElements(<a target="_blank" />);
+  const tTerms = translateWithElements(<a target="_blank" />); // eslint-skip jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
   const label = tTerms('pages.registration.terms', {
     terms: {
       href: platform!.terms,
@@ -31,12 +27,14 @@ const AcceptTermsCheckbox = (/*{ value, onChange }: AcceptTermsCheckboxProps*/) 
 
   return (
     <FormControlLabel
-      value={hasAcceptedTerms}
-      onChange={(event, nextValue) => setHasAcceptedTerms?.(nextValue)}
+      value={value}
+      checked={value}
+      onChange={(event, nextValue) => onChange?.(nextValue)}
       control={<Checkbox />}
       label={<Box>{label}</Box>}
       disableTypography
       sx={{ fontSize: 15 }}
+      {...props}
     />
   );
 };

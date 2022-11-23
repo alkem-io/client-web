@@ -1,25 +1,13 @@
-import { createContext, Dispatch, FC, useContext, useMemo, useState } from 'react';
+import { createContext, FC, useContext } from 'react';
 
-interface AcceptTermsContextProvided {
+interface AcceptTermsContextProps {
   hasAcceptedTerms: boolean;
-  setHasAcceptedTerms: Dispatch<boolean>;
 }
 
-const AcceptTermsReactContext = createContext<AcceptTermsContextProvided | null>(null);
+const AcceptTermsReactContext = createContext(false);
 
-export const AcceptTermsContext: FC = ({ children }) => {
-  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
-
-  const provided = useMemo(
-    () => ({
-      hasAcceptedTerms,
-      setHasAcceptedTerms,
-    }),
-    [hasAcceptedTerms, setHasAcceptedTerms]
-  );
-
-  return <AcceptTermsReactContext.Provider value={provided}>{children}</AcceptTermsReactContext.Provider>;
+export const AcceptTermsContext: FC<AcceptTermsContextProps> = ({ hasAcceptedTerms, children }) => {
+  return <AcceptTermsReactContext.Provider value={hasAcceptedTerms}>{children}</AcceptTermsReactContext.Provider>;
 };
 
-export const useHasAcceptedTerms = () => useContext(AcceptTermsReactContext)?.hasAcceptedTerms;
-export const useSetHasAcceptedTerms = () => useContext(AcceptTermsReactContext)?.setHasAcceptedTerms;
+export const useHasAcceptedTerms = () => useContext(AcceptTermsReactContext);
