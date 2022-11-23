@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import produce from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
@@ -10,18 +11,13 @@ import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
-import { UiNode } from '@ory/kratos-client';
-import { UiNodeInputAttributes } from '@ory/kratos-client/api';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
-import produce from 'immer';
+import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import { UiNodeInput } from '../components/UiNodeInput';
 
 interface RegisterPageProps {
   flow?: string;
-}
-
-interface UiNodeInput extends UiNode {
-  attributes: UiNodeInputAttributes;
 }
 
 // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
@@ -31,7 +27,7 @@ const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
 
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
-  const { flow: registrationFlow, loading } = useKratosFlow(FlowTypeName.Registration, flow);
+  const { flow: registrationFlow, loading, error } = useKratosFlow(FlowTypeName.Registration, flow);
 
   const location = useLocation();
 
@@ -60,6 +56,14 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
       sessionStorage.setItem(`kratosFlow:${registrationFlow.id}:hasAcceptedTerms`, 'true');
     }
   };
+
+  if (loading) {
+    return <Loading text={t('kratos.loading-flow')} />;
+  }
+
+  if (error) {
+    return <ErrorDisplay />;
+  }
 
   return (
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>

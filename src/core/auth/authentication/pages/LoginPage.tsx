@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { AUTH_SIGN_UP_PATH } from '../../../../models/constants';
+import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 
 interface SignInPageProps {
   flow?: string;
@@ -36,9 +37,9 @@ const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
 // };
 
 const LoginPage = ({ flow }: SignInPageProps) => {
-  const { flow: loginFlow, loading } = useKratosFlow(FlowTypeName.Login, flow);
-
+  const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {
@@ -53,6 +54,14 @@ const LoginPage = ({ flow }: SignInPageProps) => {
       navigate('/identity/verify/reminder');
     }
   }, [loginFlow, navigate]);
+
+  if (loading) {
+    return <Loading text={t('kratos.loading-flow')} />;
+  }
+
+  if (error) {
+    return <ErrorDisplay />;
+  }
 
   const resetPassword = (
     <Box
@@ -70,12 +79,8 @@ const LoginPage = ({ flow }: SignInPageProps) => {
     </Box>
   );
 
-  const { t } = useTranslation();
   const tLink = translateWithElements(<Link to="" />);
 
-  if (loading) return <Loading text={t('kratos.loading-flow')} />;
-
-  // TODO merge maxWidth???
   return (
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
       <FixedHeightLogo />

@@ -501,6 +501,16 @@
     }
   },
   "components": {
+    "error-display": {
+      "title": "Ooops!",
+      "went-wrong": "Looks like something went wrong.",
+      "contact-support-sentence": "If this problem persists, please contact support.",
+      "buttons": {
+        "reload": "Reload",
+        "take-me-home": "Take me home",
+        "contact-support": "Contact support"
+      }
+    },
     "search-cards": {
       "matched-terms": "Matched Terms"
     },
@@ -516,7 +526,8 @@
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member",
         "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)"
+        "opportunity-created": "created a new $t(common.opportunity)",
+        "update-sent": "shared a new $t(common.update)"
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
@@ -526,7 +537,8 @@
         "discussion-comment-created": "{{comment}}",
         "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
         "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}"
+        "opportunity-created": "{{displayName}}",
+        "update-sent": "{{update}}"
       }
     },
     "lifecycle-visualizer": {
@@ -551,7 +563,8 @@
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",

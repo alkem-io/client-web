@@ -96,6 +96,11 @@ export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyL
   return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;
 };
 
+export const buildUpdatesUrl = (journeyLocation: JourneyLocation) => {
+  const updatesPath = `/${EntityPageSection.Dashboard}/updates`;
+  return `${buildJourneyUrl(journeyLocation)}${updatesPath}`;
+};
+
 export const buildAspectUrl = (calloutNameId: string, aspectNameId: string, journeyLocation: JourneyLocation) => {
   const aspectUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}/aspects/${aspectNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${aspectUrl}`;
