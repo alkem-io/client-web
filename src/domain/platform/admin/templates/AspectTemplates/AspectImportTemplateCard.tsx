@@ -4,9 +4,9 @@ import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils
 import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
+import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 
-interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
+interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
 const AspectImportTemplateCard = ({ template, onClick, actionButtons }: AspectImportTemplateCardProps) => {
   return (

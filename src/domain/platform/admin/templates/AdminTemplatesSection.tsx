@@ -12,7 +12,7 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
-import { InnovationPack, TemplateFromInnovationPack } from './InnovationPacks/InnovationPack';
+import { InnovationPackSpecificTemplate, TemplateInnovationPackMetaInfo } from './InnovationPacks/InnovationPack';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
@@ -46,7 +46,7 @@ export interface MutationHook<Variables, MutationResult> {
 
 type AdminAspectTemplatesSectionProps<
   T extends Template,
-  Q extends T & TemplateFromInnovationPack,
+  Q extends T & TemplateInnovationPackMetaInfo,
   SubmittedValues extends {},
   CreateM,
   UpdateM,
@@ -66,7 +66,7 @@ type AdminAspectTemplatesSectionProps<
   buildTemplateLink: (aspect: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPack[];
+  innovationPacks: InnovationPackSpecificTemplate<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
@@ -79,7 +79,7 @@ type AdminAspectTemplatesSectionProps<
 
 const AdminTemplatesSection = <
   T extends Template,
-  Q extends T & TemplateFromInnovationPack,
+  Q extends T & TemplateInnovationPackMetaInfo,
   SubmittedValues extends {},
   CreateM,
   UpdateM,

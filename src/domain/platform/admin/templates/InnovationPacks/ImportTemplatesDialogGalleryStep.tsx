@@ -1,23 +1,25 @@
 import React, { ComponentType, useMemo } from 'react';
 import { Grid, Typography } from '@mui/material';
-import { InnovationPack, TemplateFromInnovationPack } from './InnovationPack';
+import { InnovationPackSpecificTemplate, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import { Template } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 
-export interface TemplateImportCardComponentProps<Q extends TemplateFromInnovationPack> {
+export interface TemplateImportCardComponentProps<Q extends TemplateInnovationPackMetaInfo> {
   template: Q;
   onClick?: (e: MouseEvent) => void;
   actionButtons?: React.ReactNode[];
 }
 
-export interface ImportTemplatesDialogGalleryStepProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
-  innovationPacks: InnovationPack[];
-  onImportTemplate: (template: T) => Promise<void>;
+export interface ImportTemplatesDialogGalleryStepProps<
+  T extends Template,
+  Q extends T & TemplateInnovationPackMetaInfo
+> {
+  innovationPacks: InnovationPackSpecificTemplate<T>[];
   onPreviewTemplate: (template: Q) => void;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
 }
 
-const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & TemplateFromInnovationPack>({
+const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & TemplateInnovationPackMetaInfo>({
   innovationPacks,
   onPreviewTemplate,
   templateImportCardComponent: TemplateCard,
@@ -27,7 +29,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
   const organizationFilter = null;
   const innovationPackFilter = null;
 
-  const templates: Q[] = useMemo(() => {
+  const templates = useMemo(() => {
     return innovationPacks
       .filter(pack => {
         if (innovationPackFilter) {
@@ -46,7 +48,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
           innovationPackNameID: pack.nameID,
           innovationPackId: pack.id,
         }))
-      ) as any as Q[];
+      ) as Q[];
   }, [innovationPacks, organizationFilter, innovationPackFilter]);
 
   /*

@@ -4,9 +4,9 @@ import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/componen
 import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 import { CanvasIcon } from '../../../../../common/icons/CanvasIcon';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import { TemplateFromInnovationPack } from '../InnovationPacks/InnovationPack';
+import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 
-interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateFromInnovationPack> {}
+interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
 const CanvasImportTemplateCard = ({ template, onClick, actionButtons }: CanvasImportTemplateCardProps) => {
   return (

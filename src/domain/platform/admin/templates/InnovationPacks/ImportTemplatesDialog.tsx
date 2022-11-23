@@ -6,22 +6,22 @@ import { DialogActions } from '../../../../../common/components/core/dialog';
 import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
 import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
 import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
-import { InnovationPack, TemplateFromInnovationPack } from './InnovationPack';
+import { InnovationPackSpecificTemplate, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 
-export interface ImportTemplatesDialogProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
+export interface ImportTemplatesDialogProps<T extends Template, Q extends T & TemplateInnovationPackMetaInfo> {
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
-  innovationPacks: InnovationPack[];
+  innovationPacks: InnovationPackSpecificTemplate<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
   onImportTemplate: (template: T) => Promise<void>;
   loading?: boolean;
 }
 
-const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateFromInnovationPack>({
+const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateInnovationPackMetaInfo>({
   headerText,
   templateImportCardComponent,
   templatePreviewComponent,
@@ -70,7 +70,6 @@ const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateFromInn
           (!previewTemplate ? (
             <ImportTemplatesDialogGalleryStep
               innovationPacks={innovationPacks}
-              onImportTemplate={handleImportTemplate}
               onPreviewTemplate={handlePreviewTemplate}
               templateImportCardComponent={templateImportCardComponent}
             />

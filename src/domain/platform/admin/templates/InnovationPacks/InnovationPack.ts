@@ -11,7 +11,10 @@ type InnovationPackTemplatesData =
 
 export type InnovationPack = InnovationPackInfo & { templates: InnovationPackTemplatesData[] };
 
-export interface TemplateFromInnovationPack extends Template {
+// TODO figure out why admin templates components use generics while receiving data of known types
+export type InnovationPackSpecificTemplate<T extends Template> = InnovationPackInfo & { templates: T[] };
+
+export interface TemplateInnovationPackMetaInfo extends Template {
   innovationPackNameID: string;
   innovationPackId: string;
   innovationPackDisplayName: string;

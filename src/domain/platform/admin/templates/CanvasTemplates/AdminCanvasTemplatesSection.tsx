@@ -18,7 +18,7 @@ import CreateCanvasTemplateDialog, { CreateCanvasTemplateDialogProps } from './C
 import CanvasTemplatePreview from './CanvasTemplatePreview';
 import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
-import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import { InnovationPackSpecificTemplate } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
 
 interface AdminCanvasTemplatesSectionProps {
@@ -33,7 +33,7 @@ interface AdminCanvasTemplatesSectionProps {
   canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPack[];
+  innovationPacks: InnovationPackSpecificTemplate<AdminCanvasTemplateFragment>[];
 }
 
 const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: AdminCanvasTemplatesSectionProps) => {

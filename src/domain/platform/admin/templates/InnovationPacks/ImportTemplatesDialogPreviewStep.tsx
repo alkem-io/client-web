@@ -5,10 +5,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
-import { TemplateFromInnovationPack } from './InnovationPack';
+import { TemplateInnovationPackMetaInfo } from './InnovationPack';
 import useLoadingState from '../../../../../hooks/useLoadingState';
 
-export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q extends T & TemplateFromInnovationPack> {
+export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q extends T & TemplateInnovationPackMetaInfo> {
   onImportTemplate: (template: T) => Promise<void>;
   onClose: () => void;
   template: Q;
@@ -16,7 +16,7 @@ export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q ext
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
 }
 
-const ImportTemplatesDialogPreviewStep = <T extends Template, Q extends T & TemplateFromInnovationPack>({
+const ImportTemplatesDialogPreviewStep = <T extends Template, Q extends T & TemplateInnovationPackMetaInfo>({
   template,
   templatePreviewCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
