@@ -1,30 +1,12 @@
 import React, { FC, useEffect, useMemo, useRef } from 'react';
 import { Theme, useTheme } from '@mui/material/styles';
 import { Lifecycle } from '../../../../../models/graphql-schema';
-import { createMachine } from 'xstate';
-import { toDirectedGraph } from '@xstate/graph';
-
 import { LifecycleVisualization, LifecycleDataProvider, LifecycleVisualizationOptions } from '@alkemio/visualization';
 
 export interface InnovationFlowVisualizerProps {
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>;
   options?: LifecycleVisualizationOptions;
 }
-
-export const validateLifecycleDefinition = (definition: string) => {
-  if (!definition) {
-    return new Error('Definition is not defined');
-  }
-
-  try {
-    const jsonDef = JSON.parse(definition);
-    const machine = createMachine(jsonDef);
-    toDirectedGraph(machine);
-  } catch (e) {
-    return e;
-  }
-  return undefined;
-};
 
 const InnovationFlowVisualizer: FC<InnovationFlowVisualizerProps> = ({ lifecycle, options }) => {
   const theme = useTheme();
@@ -47,7 +29,7 @@ const buildGraph = (
   theme: Theme,
   options?: LifecycleVisualizationOptions
 ) => {
-  if (validateLifecycleDefinition(lifecycle.machineDef)) {
+  if (!LifecycleDataProvider.validateLifecycleDefinition(lifecycle.machineDef)) {
     return undefined;
   }
 
@@ -74,6 +56,7 @@ const _buildGraph = async (
 
   const width = 800;
   const height = 400;
+  lifecycleData.updateState(lifecycle.state || '');
 
   const visualization = new LifecycleVisualization(ref, lifecycleData, width, height, options);
   visualization.displayLifecycle();
