@@ -20,9 +20,18 @@ export interface CalloutEditDialogProps {
   onClose: () => void;
   onDelete: (callout: CalloutEditType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
+  calloutNames: string[];
 }
 
-const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, onClose, onDelete, onCalloutEdit }) => {
+const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
+  open,
+  title,
+  callout,
+  onClose,
+  onDelete,
+  onCalloutEdit,
+  calloutNames,
+}) => {
   const { t } = useTranslation();
   const { templates } = useHub();
   const [loading, setLoading] = useState(false);
@@ -74,7 +83,13 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({ open, title, callout, o
           </Box>
         </DialogTitle>
         <DialogContent dividers>
-          <CalloutForm callout={initialValues} editMode onStatusChanged={handleStatusChanged} onChange={handleChange} />
+          <CalloutForm
+            callout={initialValues}
+            calloutNames={calloutNames}
+            editMode
+            onStatusChanged={handleStatusChanged}
+            onChange={handleChange}
+          />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
           <LoadingButton

@@ -11,13 +11,11 @@ const ASSOCIATE_CARDS_COUNT = 12;
 interface AssociatesViewProps {
   associates: ContributorCardProps[];
   count?: number;
-  perRow?: 1 | 2 | 3 | 4 | 6 | 12;
 }
 
-export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = ASSOCIATE_CARDS_COUNT, perRow = 6 }) => {
+export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = ASSOCIATE_CARDS_COUNT }) => {
   const { t } = useTranslation();
   const [showAll, setShowAll] = useState(false);
-  const columnWidth = 12 / perRow;
   const usersCount = associates.length - count;
 
   const associatesToShow = useMemo(
@@ -30,9 +28,9 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = AS
       title={t('components.associates.title', { count: associates.length })}
       helpText={t('components.associates.help')}
     >
-      <Grid container spacing={2}>
+      <Grid container spacing={2} columns={{ xs: 6, sm: 12 }}>
         {associatesToShow.map((x, i) => (
-          <Grid key={i} item xs={columnWidth}>
+          <Grid key={i} item xs={2}>
             <ContributorCard {...x} />
           </Grid>
         ))}

@@ -1,10 +1,6 @@
 import { Components, Theme } from '@mui/material';
 
-const MuiSelect = (theme: Theme): Components['MuiSelect'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
-
+const MuiSelect = (_theme: Theme): Components['MuiSelect'] => {
   return {
     styleOverrides: {
       /**
@@ -18,4 +14,5 @@ const MuiSelect = (theme: Theme): Components['MuiSelect'] | undefined => {
     },
   };
 };
+
 export default MuiSelect;
