@@ -17113,7 +17113,19 @@ export type InnovationPacksQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      provider?: { __typename?: 'Organization'; id: string; nameID: string; displayName: string } | undefined;
+      provider?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            displayName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }
+        | undefined;
       templates?:
         | {
             __typename?: 'TemplatesSet';

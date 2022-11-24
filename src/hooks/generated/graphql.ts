@@ -18892,6 +18892,13 @@ export const InnovationPacksDocument = gql`
           id
           nameID
           displayName
+          profile {
+            id
+            avatar {
+              id
+              uri
+            }
+          }
         }
         displayName
         templates {
