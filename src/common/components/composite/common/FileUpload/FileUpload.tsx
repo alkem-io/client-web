@@ -26,7 +26,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const acceptedFileTypes = useMemo(() => storage?.file.mimeTypes.join(','), [storage]);
-  const MB_LIMIT = storage?.file.maxFileSize ? storage.file.maxFileSize / 1048576 : 0;
+  const MB_LIMIT = storage?.file.maxFileSize ? storage.file.maxFileSize / (1024 * 1024) : 0;
 
   const [uploadFile, { loading }] = useUploadFileMutation({
     onError: handleError,
@@ -41,7 +41,6 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
 
     if (storage?.file.maxFileSize && selectedFile.size > storage?.file.maxFileSize) {
       notify(t('components.file-upload.file-size-error', { limit: MB_LIMIT }), 'error');
-      handleClose();
       return;
     }
     await uploadFile({ variables: { file: selectedFile } });
@@ -70,27 +69,25 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
           }
         }}
       />
-      {dialogOpened && (
-        <Dialog open={dialogOpened} maxWidth="xs" aria-labelledby="confirm-innovation-flow">
-          <DialogTitle id="confirm-innovation-flow">{t('components.file-upload.confirm-dialog.title')}</DialogTitle>
-          <DialogContent sx={{ paddingX: 2 }}>
-            {tLinks('components.file-upload.confirm-dialog.confirm-text', {
-              aup: { href: platform?.aup },
-            })}
-            <SectionSpacer />
-            <FormControlLabel
-              control={<Checkbox checked={confirmation} onChange={() => handleCheckboxToggle(confirmation)} />}
-              label={t('components.file-upload.confirm-dialog.checkbox-label')}
-            />
-          </DialogContent>
-          <DialogActions sx={{ justifyContent: 'end' }}>
-            {handleClose && <Button onClick={handleClose}>{t('buttons.cancel')}</Button>}
-            <Button onClick={handleSubmit} disabled={loading || !confirmation}>
-              {t('buttons.confirm')}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      <Dialog open={dialogOpened} maxWidth="xs" aria-labelledby="confirm-innovation-flow">
+        <DialogTitle id="confirm-innovation-flow">{t('components.file-upload.confirm-dialog.title')}</DialogTitle>
+        <DialogContent sx={{ paddingX: 2 }}>
+          {tLinks('components.file-upload.confirm-dialog.confirm-text', {
+            aup: { href: platform?.aup },
+          })}
+          <SectionSpacer />
+          <FormControlLabel
+            control={<Checkbox checked={confirmation} onChange={() => handleCheckboxToggle(confirmation)} />}
+            label={t('components.file-upload.confirm-dialog.checkbox-label')}
+          />
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'end' }}>
+          {handleClose && <Button onClick={handleClose}>{t('buttons.cancel')}</Button>}
+          <Button onClick={handleSubmit} disabled={loading || !confirmation}>
+            {t('buttons.confirm')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
