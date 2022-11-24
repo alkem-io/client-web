@@ -549,7 +549,7 @@ export type AuthorizationPolicyRuleCredential = {
 export type AuthorizationPolicyRulePrivilege = {
   __typename?: 'AuthorizationPolicyRulePrivilege';
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  sourcePrivilege: Scalars['String'];
+  sourcePrivilege: AuthorizationPrivilege;
 };
 
 export type AuthorizationPolicyRuleVerifiedCredential = {
@@ -565,6 +565,7 @@ export enum AuthorizationPrivilege {
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
+  Contribute = 'CONTRIBUTE',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCallout = 'CREATE_CALLOUT',
@@ -572,6 +573,7 @@ export enum AuthorizationPrivilege {
   CreateChallenge = 'CREATE_CHALLENGE',
   CreateComment = 'CREATE_COMMENT',
   CreateHub = 'CREATE_HUB',
+  CreateOpportunity = 'CREATE_OPPORTUNITY',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
@@ -797,6 +799,9 @@ export type ChallengeEventInput = {
 };
 
 export enum ChallengePreferenceType {
+  AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
+  AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
+  AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   MembershipApplyChallengeFromHubMembers = 'MEMBERSHIP_APPLY_CHALLENGE_FROM_HUB_MEMBERS',
   MembershipFeedbackOnChallengeContext = 'MEMBERSHIP_FEEDBACK_ON_CHALLENGE_CONTEXT',
   MembershipJoinChallengeFromHubMembers = 'MEMBERSHIP_JOIN_CHALLENGE_FROM_HUB_MEMBERS',
@@ -2911,7 +2916,10 @@ export type PreferenceDefinition = {
 };
 
 export enum PreferenceType {
+  AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
+  AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
   AllowMembersToCreateChallenges = 'ALLOW_MEMBERS_TO_CREATE_CHALLENGES',
+  AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
   AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
   MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
@@ -17088,7 +17096,19 @@ export type InnovationPacksQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      provider?: { __typename?: 'Organization'; id: string; nameID: string; displayName: string } | undefined;
+      provider?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            displayName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }
+        | undefined;
       templates?:
         | {
             __typename?: 'TemplatesSet';

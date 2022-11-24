@@ -1,7 +1,7 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useMemo, useState } from 'react';
 import SimpleCard from '../../../shared/components/SimpleCard';
-import { WbIncandescentOutlined } from '@mui/icons-material';
+import { CanvasIcon } from '../../../../common/icons/CanvasIcon';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
@@ -21,6 +21,7 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents 
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCard[];
   };
+  calloutNames: string[];
   buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
   canCreate?: boolean;
@@ -28,6 +29,7 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents 
 
 const CanvasCallout = ({
   callout,
+  calloutNames,
   loading,
   hubNameId,
   challengeNameId,
@@ -56,6 +58,7 @@ const CanvasCallout = ({
     <>
       <CalloutLayout
         callout={callout}
+        calloutNames={calloutNames}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
@@ -73,7 +76,7 @@ const CanvasCallout = ({
                   {...buildCanvasUrl(canvas.nameID, canvas.calloutNameId)}
                   title={canvas.displayName}
                   imageUrl={canvas.preview?.uri}
-                  iconComponent={WbIncandescentOutlined}
+                  iconComponent={CanvasIcon}
                 />
               ) : (
                 <Skeleton />

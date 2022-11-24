@@ -1,11 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
-import {} from '@mui/material/Tab';
 
-const MuiTab = (theme: Theme): Components['MuiTab'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
-
+const MuiTab = (theme: Theme): Components['MuiTab'] => {
   return {
     styleOverrides: {
       root: {
@@ -26,4 +21,5 @@ const MuiTab = (theme: Theme): Components['MuiTab'] | undefined => {
     },
   };
 };
+
 export default MuiTab;

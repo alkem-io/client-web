@@ -55,7 +55,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = ({ paths }) 
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      {permissions.canCreate && (
+      {permissions.canCreateOpportunity && (
         <Box sx={{ display: 'flex', justifyContent: 'end', marginBottom: theme => theme.spacing(1) }}>
           <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={() => setOpen(true)}>
             {t('buttons.create')}

@@ -1,13 +1,11 @@
 import { Components, Theme } from '@mui/material/styles';
 
-const MuiLink = (theme: Theme): Components['MuiLink'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
+const MuiLink = (_theme: Theme): Components['MuiLink'] => {
   return {
     defaultProps: {
       underline: 'none',
     },
   };
 };
+
 export default MuiLink;

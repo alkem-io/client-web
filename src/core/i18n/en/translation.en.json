@@ -58,8 +58,11 @@
     "confirm": "Confirm",
     "change-template": "Change template",
     "change": "Change",
-    "import": "Import...",
-    "share": "Share"
+    "library": "Library",
+    "share": "Share",
+    "preview": "Preview",
+    "import": "Import",
+    "importing": "Importing..."
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -177,6 +180,7 @@
     "loading": "Loading...",
     "language": "Language",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation Flows",
     "more": "More",
     "genders": {
       "notSpecified": "not specified",
@@ -563,7 +567,8 @@
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",
@@ -1005,8 +1010,11 @@
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
-            "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+            "import": {
+              "title": "Template Library: {{templateType}}",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "no-templates": "Couldn't find any Template of this type",
+              "imported-successfully-notification": "Template imported successfully"
             }
           },
           "my-profile": {
