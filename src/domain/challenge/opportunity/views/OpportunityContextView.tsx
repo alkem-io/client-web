@@ -1,5 +1,4 @@
 import { ApolloError } from '@apollo/client';
-import { Box } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
@@ -18,6 +17,7 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import OpportunityCommunityView from '../../../community/community/entities/OpportunityCommunityView';
 import DashboardOpportunityStatistics from '../../../shared/components/DashboardSections/DashboardOpportunityStatistics';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import DashboardSectionHeaderActions from '../../../shared/components/DashboardSectionHeaderActions';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;
@@ -80,9 +80,9 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
   return (
     <OpportunityContextSection
       primaryAction={
-        <Box display="flex">
+        <DashboardSectionHeaderActions>
           <LifecycleState lifecycle={opportunityLifecycle} />
-        </Box>
+        </DashboardSectionHeaderActions>
       }
       background={background}
       displayName={opportunityDisplayName}

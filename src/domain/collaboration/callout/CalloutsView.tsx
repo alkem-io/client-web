@@ -47,6 +47,8 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
+  const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
+
   // Scroll to Callout handler:
   const addElement = useScrollToElement(scrollToCallout, calloutNameId);
 
@@ -81,6 +83,7 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
                       <AspectCallout
                         key={callout.id}
                         callout={callout}
+                        calloutNames={calloutNames}
                         loading={loading}
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
@@ -96,6 +99,7 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
                       <CanvasCallout
                         key={callout.id}
                         callout={callout}
+                        calloutNames={calloutNames}
                         loading={loading}
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
@@ -112,6 +116,7 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
                       <CommentsCallout
                         key={callout.id}
                         callout={callout}
+                        calloutNames={calloutNames}
                         loading={loading}
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
@@ -135,6 +140,7 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
         onClose={handleCreateCalloutClosed}
         onSaveAsDraft={handleCalloutDrafted}
         isCreating={isCreating}
+        calloutNames={calloutNames}
       />
     </>
   );

@@ -39,12 +39,18 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     url: string;
     cardTemplate?: CalloutCardTemplate;
   };
+  calloutNames: string[];
 }
 
+const TitleBar = styled(Box)(() => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+}));
+
 const CalloutActionsBar = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  right: theme.spacing(-1.5),
-  top: theme.spacing(-1.5),
+  marginRight: theme.spacing(-1.5),
+  marginTop: theme.spacing(-1.5),
+  height: theme.spacing(5),
   display: 'flex',
   flexFlow: 'row-reverse',
 }));
@@ -55,6 +61,7 @@ const CalloutLayout = ({
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
+  calloutNames,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -104,26 +111,27 @@ const CalloutLayout = ({
             <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
           </Box>
         )}
-        <Box m={3} position="relative">
-          <CalloutActionsBar>
-            {callout.editable && (
-              <IconButton
-                id="callout-settings-button"
-                aria-haspopup="true"
-                aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-                aria-expanded={settingsOpened ? 'true' : undefined}
-                onClick={handleSettingsOpened}
-              >
-                <SettingsOutlinedIcon />
-              </IconButton>
-            )}
-            <ShareButton url={callout.url} entityTypeName="callout" />
-          </CalloutActionsBar>
-          <Heading sx={{ display: 'flex', gap: 2.5 }}>
-            <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
-          </Heading>
+        <Box m={3}>
+          <TitleBar>
+            <Heading sx={{ display: 'flex', gap: 2.5 }}>
+              <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
+            </Heading>
+            <CalloutActionsBar>
+              {callout.editable && (
+                <IconButton
+                  id="callout-settings-button"
+                  aria-haspopup="true"
+                  aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
+                  aria-expanded={settingsOpened ? 'true' : undefined}
+                  onClick={handleSettingsOpened}
+                >
+                  <SettingsOutlinedIcon />
+                </IconButton>
+              )}
+              <ShareButton url={callout.url} entityTypeName="callout" />
+            </CalloutActionsBar>
+          </TitleBar>
           <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
-
           {children}
         </Box>
       </Card>
@@ -163,6 +171,7 @@ const CalloutLayout = ({
         title={`${t('buttons.edit')} ${t('common.callout')}`}
         onCalloutEdit={handleCalloutEdit}
         onDelete={onCalloutDelete}
+        calloutNames={calloutNames}
       />
     </>
   );

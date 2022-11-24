@@ -567,7 +567,8 @@
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",

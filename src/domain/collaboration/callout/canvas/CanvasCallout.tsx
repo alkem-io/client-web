@@ -21,6 +21,7 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents 
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCard[];
   };
+  calloutNames: string[];
   buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
   canCreate?: boolean;
@@ -28,6 +29,7 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents 
 
 const CanvasCallout = ({
   callout,
+  calloutNames,
   loading,
   hubNameId,
   challengeNameId,
@@ -56,6 +58,7 @@ const CanvasCallout = ({
     <>
       <CalloutLayout
         callout={callout}
+        calloutNames={calloutNames}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}

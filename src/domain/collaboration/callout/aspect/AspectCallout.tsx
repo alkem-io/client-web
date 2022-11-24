@@ -16,12 +16,14 @@ interface AspectCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents 
   callout: CalloutLayoutProps['callout'] & {
     aspects: AspectCardAspect[];
   };
+  calloutNames: string[];
   loading?: boolean;
   canCreate?: boolean;
 }
 
 const AspectCallout = ({
   callout,
+  calloutNames,
   loading,
   canCreate = false,
   hubNameId,
@@ -44,7 +46,7 @@ const AspectCallout = ({
     opportunityNameId,
   });
 
-  const [createAspect] = useCreateAspectFromContributeTabMutation({
+  const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionEnabled || !data) {
@@ -142,6 +144,7 @@ const AspectCallout = ({
     <>
       <CalloutLayout
         callout={callout}
+        calloutNames={calloutNames}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
@@ -176,6 +179,7 @@ const AspectCallout = ({
         opportunityNameId={opportunityNameId}
         calloutId={callout.id}
         cardTemplate={callout.cardTemplate}
+        isCreating={isCreatingAspect}
       />
     </>
   );
