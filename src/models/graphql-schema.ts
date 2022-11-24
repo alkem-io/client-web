@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  CID: string;
   DID: string;
   DateTime: Date;
   JSON: string;
@@ -574,6 +575,8 @@ export enum AuthorizationPrivilege {
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
+  FileDelete = 'FILE_DELETE',
+  FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
   GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
   MoveCard = 'MOVE_CARD',
@@ -1023,12 +1026,16 @@ export type CommunityJoinInput = {
 
 export type CommunityPolicy = {
   __typename?: 'CommunityPolicy';
-  lead: CommunityPolicyRole;
-  member: CommunityPolicyRole;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The role policy that defines the leads for this Community. */
+  lead: CommunityRolePolicy;
+  /** The role policy that defines the members for this Community. */
+  member: CommunityRolePolicy;
 };
 
-export type CommunityPolicyRole = {
-  __typename?: 'CommunityPolicyRole';
+export type CommunityRolePolicy = {
+  __typename?: 'CommunityRolePolicy';
   /** The CredentialDefinition that is associated with this role */
   credential: CredentialDefinition;
   /** Maximum number of Organizations in this role */
@@ -1039,6 +1046,8 @@ export type CommunityPolicyRole = {
   minOrg: Scalars['Float'];
   /** Minimum number of Users in this role */
   minUser: Scalars['Float'];
+  /** The CredentialDefinitions associated with this role in parent communities */
+  parentCredentials: Array<CredentialDefinition>;
 };
 
 export type Config = {
@@ -1047,6 +1056,8 @@ export type Config = {
   apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** Integration with a 3rd party Geo information service */
+  geo: Geo;
   /** Platform related resources. */
   platform: Platform;
   /** Sentry (client monitoring) related configuration. */
@@ -1471,6 +1482,10 @@ export type DeleteDiscussionInput = {
   ID: Scalars['UUID'];
 };
 
+export type DeleteFileInput = {
+  CID: Scalars['CID'];
+};
+
 export type DeleteHubInput = {
   ID: Scalars['UUID_NAMEID'];
 };
@@ -1592,6 +1607,12 @@ export type FeedbackTemplate = {
   name: Scalars['String'];
   /** Template questions. */
   questions: Array<QuestionTemplate>;
+};
+
+export type Geo = {
+  __typename?: 'Geo';
+  /** Endpoint where geo information is consumed from. */
+  endpoint: Scalars['String'];
 };
 
 export type GrantAuthorizationCredentialInput = {
@@ -1956,6 +1977,8 @@ export type Mutation = {
   deleteCollaboration: Collaboration;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
+  /** Removes a file. */
+  deleteFile: Scalars['Boolean'];
   /** Deletes the specified Hub. */
   deleteHub: Hub;
   /** Deletes the specified InnovationPack. */
@@ -2096,6 +2119,8 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
+  /** Uploads a file. */
+  uploadFile: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -2338,6 +2363,10 @@ export type MutationDeleteCollaborationArgs = {
 
 export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
+};
+
+export type MutationDeleteFileArgs = {
+  deleteData: DeleteFileInput;
 };
 
 export type MutationDeleteHubArgs = {
@@ -2618,6 +2647,10 @@ export type MutationUpdateUserGroupArgs = {
 
 export type MutationUpdateVisualArgs = {
   updateData: UpdateVisualInput;
+};
+
+export type MutationUploadFileArgs = {
+  file: Scalars['Upload'];
 };
 
 export type MutationUploadImageOnVisualArgs = {
@@ -4525,6 +4558,7 @@ export type ConfigurationFragment = {
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+  geo: { __typename?: 'Geo'; endpoint: string };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
@@ -4565,6 +4599,7 @@ export type ConfigurationQuery = {
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+    geo: { __typename?: 'Geo'; endpoint: string };
   };
 };
 

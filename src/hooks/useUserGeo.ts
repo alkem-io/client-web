@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { geoEndpoint } from '../common/constants/endpoints';
+import { useConfig } from './useConfig';
 
 interface GeoInformationResponse {
   latitude: number;
@@ -19,12 +19,15 @@ type UseUserGeoReturnType = {
 };
 
 export const useUserGeo = (skip?: boolean): UseUserGeoReturnType => {
+  const { geo } = useConfig();
+  const geoEndpoint = geo?.endpoint;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>();
   const [data, setData] = useState<UserGeoData | undefined>();
 
   useEffect(() => {
-    if (skip) {
+    if (skip || !geoEndpoint) {
       return;
     }
 
@@ -37,7 +40,7 @@ export const useUserGeo = (skip?: boolean): UseUserGeoReturnType => {
       )
       .catch(err => setError(err))
       .finally(() => setLoading(false));
-  }, [skip]);
+  }, [skip, geoEndpoint]);
 
   return { data, loading, error };
 };

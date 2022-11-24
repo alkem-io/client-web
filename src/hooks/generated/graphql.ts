@@ -75,6 +75,9 @@ export const ConfigurationFragmentDoc = gql`
       rumEnabled
       endpoint
     }
+    geo {
+      endpoint
+    }
   }
 `;
 export const VisualUriFragmentDoc = gql`
