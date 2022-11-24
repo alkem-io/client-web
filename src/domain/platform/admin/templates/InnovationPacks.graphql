@@ -7,6 +7,13 @@ query InnovationPacks {
         id
         nameID
         displayName
+        profile {
+          id
+          avatar {
+            id
+            uri
+          }
+        }
       }
       displayName
       templates {

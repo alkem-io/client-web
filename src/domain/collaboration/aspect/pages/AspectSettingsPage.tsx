@@ -69,7 +69,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== entities.parentCallout?.id;
 
-  const { callouts } = useCallouts({
+  const { callouts, reloadCallouts } = useCallouts({
     hubNameId,
     challengeNameId,
     opportunityNameId,
@@ -126,6 +126,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
         challengeNameId,
         opportunityNameId,
       });
+      await reloadCallouts();
       navigate(`${aspectURL}/settings`, { replace: true });
     }
   };
