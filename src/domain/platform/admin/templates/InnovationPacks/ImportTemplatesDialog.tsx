@@ -6,7 +6,7 @@ import { DialogActions } from '../../../../../common/components/core/dialog';
 import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
 import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
 import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
-import { InnovationPackSpecificTemplate, TemplateInnovationPackMetaInfo } from './InnovationPack';
+import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 
@@ -14,7 +14,7 @@ export interface ImportTemplatesDialogProps<T extends Template, Q extends T & Te
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
-  innovationPacks: InnovationPackSpecificTemplate<T>[];
+  innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
   onImportTemplate: (template: T) => Promise<void>;

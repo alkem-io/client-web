@@ -14,7 +14,7 @@ import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import InnovationTemplateView from './InnovationTemplateView';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
-import { InnovationPackSpecificTemplate } from '../InnovationPacks/InnovationPack';
+import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import InnovationImportTemplateCard from './InnovationImportTemplateCard';
 
 interface AdminInnovationTemplatesSectionProps {
@@ -26,7 +26,7 @@ interface AdminInnovationTemplatesSectionProps {
   buildTemplateLink: (aspect: AdminLifecycleTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPackSpecificTemplate<AdminLifecycleTemplateFragment>[];
+  innovationPacks: InnovationPack<AdminLifecycleTemplateFragment>[];
 }
 
 const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionProps) => {

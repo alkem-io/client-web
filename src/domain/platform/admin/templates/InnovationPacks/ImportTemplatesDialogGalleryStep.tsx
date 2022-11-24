@@ -1,6 +1,6 @@
 import React, { ComponentType, useMemo } from 'react';
 import { Grid, Typography } from '@mui/material';
-import { InnovationPackSpecificTemplate, TemplateInnovationPackMetaInfo } from './InnovationPack';
+import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import { Template } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +14,7 @@ export interface ImportTemplatesDialogGalleryStepProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo
 > {
-  innovationPacks: InnovationPackSpecificTemplate<T>[];
+  innovationPacks: InnovationPack<T>[];
   onPreviewTemplate: (template: Q) => void;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
 }
