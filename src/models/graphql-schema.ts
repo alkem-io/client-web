@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  CID: string;
   DID: string;
   DateTime: Date;
   JSON: string;
@@ -574,6 +575,8 @@ export enum AuthorizationPrivilege {
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
+  FileDelete = 'FILE_DELETE',
+  FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
   GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
   MoveCard = 'MOVE_CARD',
@@ -1023,12 +1026,16 @@ export type CommunityJoinInput = {
 
 export type CommunityPolicy = {
   __typename?: 'CommunityPolicy';
-  lead: CommunityPolicyRole;
-  member: CommunityPolicyRole;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The role policy that defines the leads for this Community. */
+  lead: CommunityRolePolicy;
+  /** The role policy that defines the members for this Community. */
+  member: CommunityRolePolicy;
 };
 
-export type CommunityPolicyRole = {
-  __typename?: 'CommunityPolicyRole';
+export type CommunityRolePolicy = {
+  __typename?: 'CommunityRolePolicy';
   /** The CredentialDefinition that is associated with this role */
   credential: CredentialDefinition;
   /** Maximum number of Organizations in this role */
@@ -1039,6 +1046,8 @@ export type CommunityPolicyRole = {
   minOrg: Scalars['Float'];
   /** Minimum number of Users in this role */
   minUser: Scalars['Float'];
+  /** The CredentialDefinitions associated with this role in parent communities */
+  parentCredentials: Array<CredentialDefinition>;
 };
 
 export type Config = {
@@ -1051,6 +1060,8 @@ export type Config = {
   platform: Platform;
   /** Sentry (client monitoring) related configuration. */
   sentry: Sentry;
+  /** Configuration for storage providers, e.g. file */
+  storage: StorageConfig;
   /** Alkemio template configuration. */
   template: Template;
 };
@@ -1471,6 +1482,11 @@ export type DeleteDiscussionInput = {
   ID: Scalars['UUID'];
 };
 
+export type DeleteFileInput = {
+  /** IPFS Content Identifier (CID) of the file, e.g. Qmde6CnXDGGe7Dynz1pnxgNARtdVBme9YBwNbo4HJiRy2W */
+  CID: Scalars['CID'];
+};
+
 export type DeleteHubInput = {
   ID: Scalars['UUID_NAMEID'];
 };
@@ -1592,6 +1608,14 @@ export type FeedbackTemplate = {
   name: Scalars['String'];
   /** Template questions. */
   questions: Array<QuestionTemplate>;
+};
+
+export type FileStorageConfig = {
+  __typename?: 'FileStorageConfig';
+  /** Max file size, in bytes. */
+  maxFileSize: Scalars['Float'];
+  /** Allowed mime types for file upload, separated by a coma. */
+  mimeTypes: Array<Scalars['String']>;
 };
 
 export type GrantAuthorizationCredentialInput = {
@@ -1956,6 +1980,8 @@ export type Mutation = {
   deleteCollaboration: Collaboration;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
+  /** Removes a file. */
+  deleteFile: Scalars['Boolean'];
   /** Deletes the specified Hub. */
   deleteHub: Hub;
   /** Deletes the specified InnovationPack. */
@@ -2096,6 +2122,8 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
+  /** Uploads a file. */
+  uploadFile: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -2338,6 +2366,10 @@ export type MutationDeleteCollaborationArgs = {
 
 export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
+};
+
+export type MutationDeleteFileArgs = {
+  deleteData: DeleteFileInput;
 };
 
 export type MutationDeleteHubArgs = {
@@ -2620,6 +2652,10 @@ export type MutationUpdateVisualArgs = {
   updateData: UpdateVisualInput;
 };
 
+export type MutationUploadFileArgs = {
+  file: Scalars['Upload'];
+};
+
 export type MutationUploadImageOnVisualArgs = {
   file: Scalars['Upload'];
   uploadData: VisualUploadImageInput;
@@ -2807,6 +2843,8 @@ export type Platform = {
   __typename?: 'Platform';
   /** URL to a page about the platform */
   about: Scalars['String'];
+  /** URL where users can get tips and tricks */
+  aup: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
   /** Name of the environment */
@@ -3458,6 +3496,12 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
+};
+
+export type StorageConfig = {
+  __typename?: 'StorageConfig';
+  /** Config for uploading files to Alkemio. */
+  file: FileStorageConfig;
 };
 
 export type Subscription = {
@@ -4491,6 +4535,12 @@ export type ProfileVerifiedCredentialSubscription = {
   profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
 };
 
+export type UploadFileMutationVariables = Exact<{
+  file: Scalars['Upload'];
+}>;
+
+export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
+
 export type ConfigurationFragment = {
   __typename?: 'Config';
   authentication: {
@@ -4521,10 +4571,15 @@ export type ConfigurationFragment = {
     community: string;
     newuser: string;
     tips: string;
+    aup: string;
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+  storage: {
+    __typename?: 'StorageConfig';
+    file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
+  };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
@@ -4561,10 +4616,15 @@ export type ConfigurationQuery = {
       community: string;
       newuser: string;
       tips: string;
+      aup: string;
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+    storage: {
+      __typename?: 'StorageConfig';
+      file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
+    };
   };
 };
 

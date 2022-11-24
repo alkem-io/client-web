@@ -7,6 +7,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import HelpButton from '../../core/HelpButton';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
+import FileUploadButton from '../common/FileUpload/FileUpload';
 
 type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
@@ -21,6 +22,7 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   loading?: boolean;
   withCounter?: boolean;
   maxLength?: number;
+  attachFile?: boolean;
 };
 
 export const FormikInputField: FC<InputFieldProps> = ({
@@ -39,14 +41,12 @@ export const FormikInputField: FC<InputFieldProps> = ({
   rows,
   withCounter,
   maxLength,
+  attachFile = false,
   ...rest
 }) => {
   const tErr = useValidationMessageTranslation();
-
   const [field, meta, helpers] = useField(name);
-
   const isError = Boolean(meta.error) && meta.touched;
-
   const helperText = useMemo(() => {
     if (!isError) {
       return _helperText;
@@ -90,6 +90,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
             <>
               {loading && <CircularProgress size={20} />}
               {helpIconText && <HelpButton helpText={helpIconText} />}
+              {attachFile && <FileUploadButton onUpload={helpers.setValue} />}
             </>
           ),
           readOnly: readOnly,
