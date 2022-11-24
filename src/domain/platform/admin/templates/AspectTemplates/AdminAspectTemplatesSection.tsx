@@ -15,6 +15,7 @@ import AspectTemplateView from './AspectTemplateView';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import AspectImportTemplateCard from './AspectImportTemplateCard';
 
 interface AdminAspectTemplatesSectionProps {
   templateId: string | undefined;
@@ -25,7 +26,7 @@ interface AdminAspectTemplatesSectionProps {
   buildTemplateLink: (aspect: AdminAspectTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPack[];
+  innovationPacks: InnovationPack<AdminAspectTemplateFragment>[];
 }
 
 const AdminAspectTemplatesSection = (props: AdminAspectTemplatesSectionProps) => {
@@ -35,7 +36,11 @@ const AdminAspectTemplatesSection = (props: AdminAspectTemplatesSectionProps) =>
     <AdminTemplatesSection
       {...props}
       headerText={t('pages.admin.generic.sections.templates.aspect-templates')}
+      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+        templateType: t('common.cards'),
+      })}
       templateCardComponent={AspectTemplateCard}
+      templateImportCardComponent={AspectImportTemplateCard}
       templatePreviewComponent={AspectTemplateView}
       createTemplateDialogComponent={CreateAspectTemplateDialog}
       editTemplateDialogComponent={EditAspectTemplateDialog}
