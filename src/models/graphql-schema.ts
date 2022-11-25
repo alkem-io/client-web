@@ -16852,6 +16852,9 @@ export type HubTemplatesQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           aspectTemplates: Array<{
             __typename?: 'AspectTemplate';
             id: string;

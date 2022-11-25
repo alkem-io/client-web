@@ -7,7 +7,7 @@ import { TemplateInfoFragment } from '../../../../models/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -65,6 +65,7 @@ type AdminAspectTemplatesSectionProps<
   buildTemplateLink: (aspect: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
+  canImportTemplates: boolean;
   innovationPacks: InnovationPack[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
@@ -100,6 +101,7 @@ const AdminTemplatesSection = <
   templatePreviewComponent: TemplatePreview,
   createTemplateDialogComponent,
   editTemplateDialogComponent,
+  canImportTemplates,
   ...dialogProps
 }: AdminAspectTemplatesSectionProps<T, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
@@ -109,9 +111,6 @@ const AdminTemplatesSection = <
 
   const onError = useApolloErrorHandler();
   const { t } = useTranslation();
-
-  const { user: userMetadata } = useUserContext();
-  const userIsPlatformAdmin = userMetadata?.permissions.isPlatformAdmin;
 
   const [isCreateTemplateDialogOpen, setIsCreateTemplateDialogOpen] = useState(false);
   const [isImportTemplatesDialogOpen, setIsImportTemplatesDialogOpen] = useState(false);
@@ -221,7 +220,7 @@ const AdminTemplatesSection = <
         headerText={headerText}
         primaryAction={
           <Box>
-            {userIsPlatformAdmin && (
+            {canImportTemplates && (
               <Button
                 variant="outlined"
                 onClick={openImportTemplateDialog}

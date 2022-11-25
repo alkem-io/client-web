@@ -26,6 +26,7 @@ interface AdminInnovationTemplatesSectionProps {
   edit?: boolean;
   loadInnovationPacks: () => void;
   innovationPacks: InnovationPack[];
+  canImportTemplates: boolean;
 }
 
 const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionProps) => {
