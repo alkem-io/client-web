@@ -1,11 +1,11 @@
 import { useHasAcceptedTerms } from './AcceptTermsContext';
 import { AuthActionButtonProps } from './Button';
-import AcceptTermsButtonImpl from './AcceptTermsButtonImpl';
+import AcceptTermsButton from './AcceptTermsButton';
 
 const AcceptTermsButtonContextual = (props: AuthActionButtonProps) => {
   const hasAcceptedTerms = useHasAcceptedTerms();
 
-  return <AcceptTermsButtonImpl hasAcceptedTerms={hasAcceptedTerms} {...props} />;
+  return <AcceptTermsButton hasAcceptedTerms={hasAcceptedTerms} {...props} />;
 };
 
 export default AcceptTermsButtonContextual;

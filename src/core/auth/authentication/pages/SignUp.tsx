@@ -13,7 +13,7 @@ import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
 import { useState } from 'react';
-import AcceptTermsButtonImpl from '../components/AcceptTermsButtonImpl';
+import AcceptTermsButton from '../components/AcceptTermsButton';
 import AcceptTermsButtonContextual from '../components/AcceptTermsButtonContextual';
 import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
 import PlatformIntroduction from '../components/PlatformIntroduction';
@@ -82,7 +82,7 @@ const SignUp = () => {
               />
             )}
           >
-            <AcceptTermsButtonImpl
+            <AcceptTermsButton
               hasAcceptedTerms={hasAcceptedTerms}
               startIcon={<EmailIcon />}
               color="primaryDark"
@@ -90,7 +90,7 @@ const SignUp = () => {
               onClick={signUp}
             >
               Sign up with E-Mail
-            </AcceptTermsButtonImpl>
+            </AcceptTermsButton>
             <Paragraph textAlign="center" marginY={4}>
               Already have an account?
             </Paragraph>

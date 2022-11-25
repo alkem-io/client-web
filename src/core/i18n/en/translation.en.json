@@ -1478,7 +1478,8 @@
     "accept-terms": {
       "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "greeting": "Hi {{user}}, welcome at Alkemio!",
-      "continue": "Continue to the platform"
+      "continue": "Continue to the platform",
+      "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registration-success": {
       "header": "Thank you for signing up.",
