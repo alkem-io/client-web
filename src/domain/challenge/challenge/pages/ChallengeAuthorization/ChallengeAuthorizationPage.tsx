@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
@@ -10,6 +10,7 @@ import {
   ChallengePreferencesQueryVariables,
   ChallengePreferenceType,
   UpdatePreferenceOnChallengeMutationVariables,
+  PreferenceType,
 } from '../../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
@@ -71,6 +72,12 @@ const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({
     selectedGroups
   );
 
+  //todo: Return AllowNonMembersReadAccess when it is working properly
+  const filteredPreferences = useMemo(
+    () => preferences.filter(pref => pref.definition.type !== PreferenceType.AllowNonMembersReadAccess),
+    [preferences]
+  );
+
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Authorization} tabRoutePrefix={routePrefix}>
       <ChallengeAuthorizationView credential={authorizationCredential} resourceId={resourceId} />
@@ -78,7 +85,7 @@ const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({
       <PreferenceSection
         headerText={t('common.authorization')}
         subHeaderText={t('pages.admin.challenge.authorization.preferences.subtitle')}
-        preferences={preferences}
+        preferences={filteredPreferences}
         onUpdate={(id, type, value) => onUpdate(type, value)}
         loading={loading}
         submitting={submitting}
