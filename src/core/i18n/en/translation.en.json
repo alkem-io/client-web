@@ -75,6 +75,13 @@
     "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
+    },
+    "social-login": {
+      "connect": "Connect with {{provider}}",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft"
+      }
     }
   },
   "common": {
@@ -1440,8 +1447,14 @@
     },
     "registration": {
       "header": "Create an account to start using Alkemio",
+      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "login": "Have an account?"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "greeting": "Hi {{user}}, welcome at Alkemio!",
+      "continue": "Continue to the platform"
     },
     "registration-success": {
       "header": "Thank you for signing up.",

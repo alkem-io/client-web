@@ -9,19 +9,14 @@ export interface AcceptTermsCheckboxProps
 }
 
 const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxProps) => {
-  const { platform, loading: loadingPlatform } = useConfig();
-
-  if (loadingPlatform) {
-    return null;
-  }
-
-  const tTerms = translateWithElements(<a target="_blank" />); // eslint-skip jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
+  const { platform } = useConfig();
+  const tTerms = translateWithElements(<a target="_blank" />); // eslint-disable jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
   const label = tTerms('pages.registration.terms', {
     terms: {
-      href: platform!.terms,
+      href: platform?.terms,
     },
     privacy: {
-      href: platform!.privacy,
+      href: platform?.privacy,
     },
   });
 

@@ -2,7 +2,6 @@ import Container from '../../../../domain/shared/layout/Container';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
-import { Box } from '@mui/material';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { EmailOutlined } from '@mui/icons-material';
@@ -17,6 +16,8 @@ import { useState } from 'react';
 import AcceptTermsButtonImpl from '../components/AcceptTermsButtonImpl';
 import AcceptTermsButtonContextual from '../components/AcceptTermsButtonContextual';
 import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
+import PlatformIntroduction from '../components/PlatformIntroduction';
+import { useTranslation } from 'react-i18next';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);
@@ -25,6 +26,8 @@ const EmailIcon = () => {
 
 const SignUp = () => {
   const { flow } = useKratosFlow(FlowTypeName.Registration, undefined);
+
+  const { t } = useTranslation();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
@@ -62,18 +65,8 @@ const SignUp = () => {
   return (
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
       <FixedHeightLogo />
-      <SubHeading>Create an account to start using Alkemio</SubHeading>
-      <Box>
-        <Paragraph textAlign="center">
-          Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working
-          together on solutions. Challenges take center-stage. Focus is on the destination.
-        </Paragraph>
-        <Paragraph textAlign="center">
-          To keep the platform safe, open, and constructive, every user must accept the Terms of Use and Privacy Policy.
-          Please read the these documents and accept them below before continuing to sign up.
-        </Paragraph>
-      </Box>
-      {/*<AcceptTermsCheckbox value={hasAcceptedTerms} onChange={setHasAcceptedTerms} />*/}
+      <SubHeading>{t('pages.registration.header')}</SubHeading>
+      <PlatformIntroduction label="pages.registration.introduction" />
       <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
         <KratosUI
           flow={signUpFlow}

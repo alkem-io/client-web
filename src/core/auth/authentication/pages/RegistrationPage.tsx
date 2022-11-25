@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
@@ -15,6 +15,7 @@ import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import { UiNodeInput } from '../components/UiNodeInput';
+import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 
 interface RegisterPageProps {
   flow?: string;
@@ -24,6 +25,8 @@ interface RegisterPageProps {
 const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
   return typeof flowId === 'string' && sessionStorage.getItem(`kratosFlow:${flowId}:hasAcceptedTerms`) === 'true';
 };
+
+const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
@@ -56,6 +59,11 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
       sessionStorage.setItem(`kratosFlow:${registrationFlow.id}:hasAcceptedTerms`, 'true');
     }
   };
+
+  if (registrationFlow?.ui.messages?.some(message => message.id === MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID)) {
+    const state: LocationStateWithKratosErrors = { kratosErrors: registrationFlow?.ui.messages };
+    return <Navigate to={AUTH_LOGIN_PATH} state={state} replace />;
+  }
 
   if (loading) {
     return <Loading text={t('kratos.loading-flow')} />;

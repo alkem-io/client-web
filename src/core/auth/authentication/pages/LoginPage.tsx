@@ -1,21 +1,23 @@
+import { Box } from '@mui/material';
+import produce from 'immer';
 import Container from '../../../../domain/shared/layout/Container';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
-import { Box } from '@mui/material';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
 import React, { useLayoutEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { AUTH_SIGN_UP_PATH } from '../../../../models/constants';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 
-interface SignInPageProps {
+interface LoginPageProps {
   flow?: string;
 }
 
@@ -36,10 +38,19 @@ const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
 //   return node && (node.attributes as UiNodeInputAttributes).value;
 // };
 
-const LoginPage = ({ flow }: SignInPageProps) => {
+const LoginPage = ({ flow }: LoginPageProps) => {
   const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
   const navigate = useNavigate();
+  const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
+
+  const loginFlowWithErrors =
+    loginFlow &&
+    produce(loginFlow, flow => {
+      if (kratosErrors) {
+        flow.ui.messages = kratosErrors;
+      }
+    });
 
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {
@@ -85,7 +96,7 @@ const LoginPage = ({ flow }: SignInPageProps) => {
     <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
       <FixedHeightLogo />
       <SubHeading>{t('pages.login.title')}</SubHeading>
-      <KratosUI flow={loginFlow} resetPasswordElement={resetPassword} />
+      <KratosUI flow={loginFlowWithErrors} resetPasswordElement={resetPassword} />
       <Paragraph textAlign="center" marginTop={5}>
         {tLink('pages.login.register', {
           signup: { to: AUTH_SIGN_UP_PATH },

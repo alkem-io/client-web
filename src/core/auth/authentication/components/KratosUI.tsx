@@ -30,6 +30,7 @@ import { ReactComponent as MicrosoftIcon } from './AuthProviders/Microsoft.svg';
 import { UiNodeInput } from './UiNodeInput';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import produce from 'immer';
+import TranslationKey from '../../../../types/TranslationKey';
 
 interface KratosUIProps {
   flow:
@@ -75,14 +76,22 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
   );
 };
 
-const socialCustomizations = {
+interface SocialCustomization {
+  icon: FC<React.SVGProps<SVGSVGElement> & { title?: string }>;
+  theme: { palette: { primary: { main: string } } };
+  label: string;
+}
+
+const socialCustomizations: Record<string, SocialCustomization> = {
   linkedin: {
     theme: linkedInTheme,
     icon: LinkedInIcon,
+    label: 'linkedin',
   },
   microsoft: {
     theme: microsoftTheme,
     icon: MicrosoftIcon,
+    label: 'microsoft',
   },
 };
 
@@ -104,7 +113,7 @@ export const KratosUI: FC<KratosUIProps> = ({
   children,
   ...rest
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [showFormAlert, setShowFormAlert] = useState(false);
 
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
@@ -212,6 +221,12 @@ export const KratosUI: FC<KratosUIProps> = ({
       if (node.group === 'oidc' && attributes.type === 'submit') {
         const Icon = socialCustomizations[attributes.value]?.icon;
 
+        const label = i18n.exists(`authentication.social-login.providers.${attributes.value}`)
+          ? t('authentication.social-login.connect', {
+              provider: t(`authentication.social-login.providers.${attributes.value}` as TranslationKey),
+            })
+          : node.meta.label?.text;
+
         return (
           <ButtonStyling
             styles={socialCustomizations[attributes.value]?.theme}
@@ -222,7 +237,7 @@ export const KratosUI: FC<KratosUIProps> = ({
             type={attributes.type}
             value={attributes.value}
           >
-            {node.meta.label?.text}
+            {label}
           </ButtonStyling>
         );
       }
@@ -249,12 +264,17 @@ export const KratosUI: FC<KratosUIProps> = ({
 
     const AcceptTermsComponent = AcceptTerms!; // ensured by isAcceptTermsMode
 
+    const userNameInput = flow?.ui.nodes.find(node => node.attributes['name'] === 'traits.name.first') as
+      | UiNodeInput<string>
+      | undefined;
+    const userName = userNameInput?.attributes.value ?? undefined ?? 'AndrewТеб';
+
     const buttonNode = flow?.ui.nodes
       .slice()
       .sort(node => (node.group === 'oidc' ? 1 : -1))
       .find(node => node.attributes['type'] === 'submit') as UiNodeInput;
 
-    return <AcceptTermsComponent checkboxNode={termsCheckbox!} buttonNode={buttonNode} />;
+    return <AcceptTermsComponent userName={userName} checkboxNode={termsCheckbox!} buttonNode={buttonNode} />;
   };
 
   return (
