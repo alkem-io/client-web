@@ -39,7 +39,7 @@ const validator = {
     .string()
     .required()
     .test('is-renderable', 'Invalid definition provided', value =>
-      LifecycleDataProvider.validateLifecycleDefinition(value ?? '')
+      value ? LifecycleDataProvider.validateLifecycleDefinition(value) : false
     ),
   type: yup.string().oneOf(Object.values(LifecycleType)),
 };
