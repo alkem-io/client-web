@@ -17,14 +17,11 @@ export const SafeInnovationFlowVisualizer = ({ definition }: { definition: strin
 
   const isValid = useMemo(() => LifecycleDataProvider.validateLifecycleDefinition(definition), [definition]);
 
-  return (
-    <>
-      {isValid && <InnovationFlowVisualizer lifecycle={lifecycle} />}
-      {!isValid && (
-        <Box justifyContent="center">
-          <Typography variant={'h4'}>{t('components.lifecycle-visualizer.error')}</Typography>
-        </Box>
-      )}
-    </>
+  return isValid ? (
+    <InnovationFlowVisualizer lifecycle={lifecycle} />
+  ) : (
+    <Box justifyContent="center">
+      <Typography variant={'h4'}>{t('components.lifecycle-visualizer.error')}</Typography>
+    </Box>
   );
 };
