@@ -18,6 +18,7 @@ export interface Configuration {
     community: string;
     newuser: string;
     tips: string;
+    aup: string;
     featureFlags: FeatureFlag[];
   };
   sentry: {
@@ -25,8 +26,17 @@ export interface Configuration {
     endpoint: string;
     submitPII: boolean;
   };
+  storage: {
+    file: {
+      mimeTypes: string[];
+      maxFileSize: number;
+    };
+  };
   apm: {
     rumEnabled: boolean;
+    endpoint: string;
+  };
+  geo: {
     endpoint: string;
   };
 }

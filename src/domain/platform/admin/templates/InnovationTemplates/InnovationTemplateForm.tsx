@@ -9,8 +9,8 @@ import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import FormikSelect, { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { validateLifecycleDefinition } from './InnovationFlowVisualizer';
 import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
+import { LifecycleDataProvider } from '@alkemio/visualization';
 
 export interface InnovationTemplateFormValues {
   title: string;
@@ -38,7 +38,9 @@ const validator = {
   definition: yup
     .string()
     .required()
-    .test('is-renderable', 'Invalid definition provided', value => !validateLifecycleDefinition(value ?? '')),
+    .test('is-renderable', 'Invalid definition provided', value =>
+      LifecycleDataProvider.validateLifecycleDefinition(value ?? '')
+    ),
   type: yup.string().oneOf(Object.values(LifecycleType)),
 };
 

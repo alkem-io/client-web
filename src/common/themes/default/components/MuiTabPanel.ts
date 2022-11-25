@@ -1,11 +1,6 @@
 import { Components, Theme } from '@mui/material/styles';
-import type {} from '@mui/lab/themeAugmentation';
 
-const MuiTabPanel = (theme: Theme): Components['MuiTabPanel'] | undefined => {
-  if (!theme) {
-    return undefined;
-  }
-
+const MuiTabPanel = (_theme: Theme): Components['MuiTabPanel'] => {
   return {
     styleOverrides: {
       root: {
@@ -15,4 +10,5 @@ const MuiTabPanel = (theme: Theme): Components['MuiTabPanel'] | undefined => {
     },
   };
 };
+
 export default MuiTabPanel;

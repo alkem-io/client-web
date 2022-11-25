@@ -61,6 +61,7 @@ export const ConfigurationFragmentDoc = gql`
       community
       newuser
       tips
+      aup
       featureFlags {
         enabled
         name
@@ -73,6 +74,15 @@ export const ConfigurationFragmentDoc = gql`
     }
     apm {
       rumEnabled
+      endpoint
+    }
+    storage {
+      file {
+        mimeTypes
+        maxFileSize
+      }
+    }
+    geo {
       endpoint
     }
   }
@@ -2059,6 +2069,14 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
 `;
+export const ActivityLogUpdateSentFragmentDoc = gql`
+  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+    updates {
+      id
+    }
+    message
+  }
+`;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
     id
@@ -3396,6 +3414,48 @@ export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
 >;
 export type ProfileVerifiedCredentialSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
+export const UploadFileDocument = gql`
+  mutation UploadFile($file: Upload!) {
+    uploadFile(file: $file)
+  }
+`;
+export type UploadFileMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadFileMutation,
+  SchemaTypes.UploadFileMutationVariables
+>;
+
+/**
+ * __useUploadFileMutation__
+ *
+ * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadFileMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>(
+    UploadFileDocument,
+    options
+  );
+}
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
+export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
+export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadFileMutation,
+  SchemaTypes.UploadFileMutationVariables
+>;
 export const ConfigurationDocument = gql`
   query configuration {
     configuration {
@@ -18835,6 +18895,13 @@ export const InnovationPacksDocument = gql`
           id
           nameID
           displayName
+          profile {
+            id
+            avatar {
+              id
+              uri
+            }
+          }
         }
         displayName
         templates {
@@ -19155,6 +19222,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       ... on ActivityLogEntryOpportunityCreated {
         ...ActivityLogOpportunityCreated
       }
+      ... on ActivityLogEntryUpdateSent {
+        ...ActivityLogUpdateSent
+      }
     }
   }
   ${ActivityLogMemberJoinedFragmentDoc}
@@ -19165,6 +19235,7 @@ export const ActivityLogOnCollaborationDocument = gql`
   ${ActivityLogCalloutDiscussionCommentFragmentDoc}
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogUpdateSentFragmentDoc}
 `;
 
 /**

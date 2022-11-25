@@ -58,8 +58,11 @@
     "confirm": "Confirm",
     "change-template": "Change template",
     "change": "Change",
-    "import": "Import...",
-    "share": "Share"
+    "library": "Library",
+    "share": "Share",
+    "preview": "Preview",
+    "import": "Import",
+    "importing": "Importing..."
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -177,7 +180,9 @@
     "loading": "Loading...",
     "language": "Language",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation Flows",
     "more": "More",
+    "url": "URL",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -501,6 +506,16 @@
     }
   },
   "components": {
+    "error-display": {
+      "title": "Ooops!",
+      "went-wrong": "Looks like something went wrong.",
+      "contact-support-sentence": "If this problem persists, please contact support.",
+      "buttons": {
+        "reload": "Reload",
+        "take-me-home": "Take me home",
+        "contact-support": "Contact support"
+      }
+    },
     "search-cards": {
       "matched-terms": "Matched Terms"
     },
@@ -516,7 +531,8 @@
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
         "member-joined": "new member",
         "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)"
+        "opportunity-created": "created a new $t(common.opportunity)",
+        "update-sent": "shared a new $t(common.update)"
       },
       "activity-description": {
         "callout-published": "[{{type}}] - {{displayName}}",
@@ -526,7 +542,8 @@
         "discussion-comment-created": "{{comment}}",
         "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
         "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}"
+        "opportunity-created": "{{displayName}}",
+        "update-sent": "{{update}}"
       }
     },
     "lifecycle-visualizer": {
@@ -551,7 +568,8 @@
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",
@@ -677,7 +695,17 @@
       "tooltips": {
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
-      }
+      },
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
+    },
+    "file-upload": {
+      "confirm-dialog": {
+        "title": "Uploading a document",
+        "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
+        "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
+      },
+      "file-size-error": "File size excedes the {{limit}}MB limit",
+      "file-upload-success": "File uploaded successfully"
     },
     "editHubForm": {
       "host": {
@@ -993,8 +1021,11 @@
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
-            "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+            "import": {
+              "title": "Template Library: {{templateType}}",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "no-templates": "Couldn't find any Template of this type",
+              "imported-successfully-notification": "Template imported successfully"
             }
           },
           "my-profile": {

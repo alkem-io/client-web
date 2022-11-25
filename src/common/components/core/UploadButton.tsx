@@ -30,7 +30,7 @@ export const UploadButton: FC<UploadButtonProps> = ({ onChange, accept, icon, te
   );
 
   const button = icon ? (
-    <IconButton color="primary" aria-label="upload image" onClick={handleButtonClick} disabled={disabled}>
+    <IconButton aria-label="upload image" onClick={handleButtonClick} disabled={disabled}>
       {icon}
     </IconButton>
   ) : (
