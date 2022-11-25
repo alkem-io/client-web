@@ -785,6 +785,7 @@ export type CommunityRolePolicyFieldPolicy = {
 export type ConfigKeySpecifier = (
   | 'apm'
   | 'authentication'
+  | 'geo'
   | 'platform'
   | 'sentry'
   | 'storage'
@@ -794,6 +795,7 @@ export type ConfigKeySpecifier = (
 export type ConfigFieldPolicy = {
   apm?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
+  geo?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -924,6 +926,10 @@ export type FileStorageConfigKeySpecifier = ('maxFileSize' | 'mimeTypes' | FileS
 export type FileStorageConfigFieldPolicy = {
   maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
+export type GeoFieldPolicy = {
+  endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
@@ -2436,6 +2442,10 @@ export type StrictTypedTypePolicies = {
   FileStorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FileStorageConfigKeySpecifier | (() => undefined | FileStorageConfigKeySpecifier);
     fields?: FileStorageConfigFieldPolicy;
+  };
+  Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
+    fields?: GeoFieldPolicy;
   };
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);

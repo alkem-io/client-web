@@ -1061,6 +1061,8 @@ export type Config = {
   apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** Integration with a 3rd party Geo information service */
+  geo: Geo;
   /** Platform related resources. */
   platform: Platform;
   /** Sentry (client monitoring) related configuration. */
@@ -1621,6 +1623,12 @@ export type FileStorageConfig = {
   maxFileSize: Scalars['Float'];
   /** Allowed mime types for file upload, separated by a coma. */
   mimeTypes: Array<Scalars['String']>;
+};
+
+export type Geo = {
+  __typename?: 'Geo';
+  /** Endpoint where geo information is consumed from. */
+  endpoint: Scalars['String'];
 };
 
 export type GrantAuthorizationCredentialInput = {
@@ -4588,6 +4596,7 @@ export type ConfigurationFragment = {
     __typename?: 'StorageConfig';
     file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
   };
+  geo: { __typename?: 'Geo'; endpoint: string };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
@@ -4633,6 +4642,7 @@ export type ConfigurationQuery = {
       __typename?: 'StorageConfig';
       file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
     };
+    geo: { __typename?: 'Geo'; endpoint: string };
   };
 };
 

@@ -20,6 +20,7 @@ export const useConfig = () => {
       sentry: context.config?.sentry,
       storage: context.config?.storage,
       apm: context.config?.apm,
+      geo: context.config?.geo,
       loading: context.loading,
       error: context.error,
       isFeatureEnabled: (name: string) =>

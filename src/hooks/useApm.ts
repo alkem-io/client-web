@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import { error as logError } from '../../src/services/logging/sentry/log';
 import { useUserContext } from '../domain/community/contributor/user';
 import { useConfig } from './useConfig';
-import { useUserIp } from './useUserIp';
+import { useUserGeo } from './useUserGeo';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../domain/platform/cookies/useAlkemioCookies';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
@@ -13,6 +13,8 @@ const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 =
 const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
+
+const skipOnLocal = process.env.NODE_ENV !== 'production';
 
 export interface ApmCustomContext {
   authenticated?: boolean;
@@ -103,23 +105,21 @@ const useUserObject = () => {
 const useCustomContext = () => {
   const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
   const user = userMetadata?.user;
-  const { data: userIpData, loading: userIpLoading, error: userIpError } = useUserIp();
+
+  const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo(skipOnLocal);
 
   return useMemo<ApmCustomContext>(() => {
     const context: ApmCustomContext = {};
 
-    const userIp = userIpData?.ip;
-
-    if (!userIpLoading) {
-      context.ip = userIp;
+    if (!userGeoLoading) {
       context.location = {
-        lat: userIpData?.latitude,
-        lon: userIpData?.longitude,
+        lat: userGeoData?.latitude,
+        lon: userGeoData?.longitude,
       };
     }
 
-    if (userIpError) {
-      logError(userIpError);
+    if (userGeoError) {
+      logError(userGeoError);
     }
 
     if (!userLoading) {
@@ -128,5 +128,5 @@ const useCustomContext = () => {
     }
 
     return context;
-  }, [userIpData, userIpLoading, userIpError, userLoading, isAuthenticated, user?.email]);
+  }, [userGeoData, userGeoLoading, userGeoError, userLoading, isAuthenticated, user?.email]);
 };

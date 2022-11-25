@@ -8,7 +8,10 @@ import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
 import { TemplateInnovationPackMetaInfo } from './InnovationPack';
 import useLoadingState from '../../../../../hooks/useLoadingState';
 
-export interface ImportTemplatesDialogPreviewStepProps<T extends Template, Q extends T & TemplateInnovationPackMetaInfo> {
+export interface ImportTemplatesDialogPreviewStepProps<
+  T extends Template,
+  Q extends T & TemplateInnovationPackMetaInfo
+> {
   onImportTemplate: (template: T) => Promise<void>;
   onClose: () => void;
   template: Q;
