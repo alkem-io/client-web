@@ -19,6 +19,7 @@ import CanvasTemplatePreview from './CanvasTemplatePreview';
 import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import CanvasImportTemplateCard from './CanvasImportTemplateCard';
 
 interface AdminCanvasTemplatesSectionProps {
   templateId: string | undefined;
@@ -32,7 +33,7 @@ interface AdminCanvasTemplatesSectionProps {
   canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPack[];
+  innovationPacks: InnovationPack<AdminCanvasTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -72,7 +73,11 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
       {...props}
       canvases={canvases}
       headerText={t('pages.admin.generic.sections.templates.canvas-templates')}
+      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+        templateType: t('common.canvases'),
+      })}
       templateCardComponent={CanvasTemplateCard}
+      templateImportCardComponent={CanvasImportTemplateCard}
       templatePreviewComponent={CanvasTemplatePreview}
       createTemplateDialogComponent={CreateCanvasTemplateDialogWithCanvases}
       editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases}

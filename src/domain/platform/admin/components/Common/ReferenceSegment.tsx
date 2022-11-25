@@ -1,15 +1,17 @@
 import { DeleteOutline } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Grid, Typography } from '@mui/material';
+import { Box, Grid, Link, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { FieldArray } from 'formik';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { PushFunc, RemoveFunc } from '../../../../../hooks';
+import { PushFunc, RemoveFunc, useConfig } from '../../../../../hooks';
 import { Reference } from '../../../../../models/Profile';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
 
 export interface ReferenceSegmentProps {
   references: Reference[];
@@ -33,6 +35,8 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   onRemove,
 }) => {
   const { t } = useTranslation();
+  const tLinks = TranslateWithElements(<Link target="_blank" />);
+  const { platform } = useConfig();
   const [removing, setRemoving] = useState<number | undefined>();
   const [adding, setAdding] = useState(false);
 
@@ -78,59 +82,72 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
             </Grid>
           ) : (
             references?.map((ref, index) => (
-              <Grid key={index} container item spacing={4}>
-                <Grid item xs="auto">
-                  <FormikInputField
-                    name={`references.${index}.name`}
-                    title={'Name'}
-                    readOnly={readOnly}
-                    disabled={disabled || index === removing}
-                  />
-                </Grid>
-                <Grid item flexGrow={1}>
-                  <FormikInputField
-                    name={`references.${index}.uri`}
-                    title={'URI'}
-                    readOnly={readOnly}
-                    disabled={disabled || index === removing}
-                  />
-                </Grid>
-                <Grid item xs="auto">
-                  <Tooltip
-                    title={t('components.referenceSegment.tooltips.remove-reference') || ''}
-                    id={'remove a reference'}
-                    placement={'bottom'}
-                  >
-                    <IconButton
-                      aria-label="Remove"
-                      onClick={e => {
-                        e.preventDefault();
-                        if (onRemove) {
-                          setRemoving(index);
-                          onRemove(ref, (success: boolean) => {
-                            if (success) remove(index);
-                            setRemoving(undefined);
-                          });
-                        } else {
-                          remove(index);
-                        }
-                      }}
+              <>
+                <Grid key={index} container item>
+                  <Grid item xs="auto">
+                    <FormikInputField
+                      name={`references.${index}.name`}
+                      title={t('common.title')}
+                      readOnly={readOnly}
                       disabled={disabled || index === removing}
-                      size="large"
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  </Tooltip>
+                    />
+                  </Grid>
+                  <Grid item xs sx={{ paddingLeft: theme => theme.spacing(2) }}>
+                    <FormikInputField
+                      name={`references.${index}.uri`}
+                      title={t('common.url')}
+                      readOnly={readOnly}
+                      disabled={disabled || index === removing}
+                      attachFile
+                      helperText={
+                        ref.uri === ''
+                          ? tLinks('components.referenceSegment.url-helper-text', {
+                              terms: { href: platform?.terms },
+                            })
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Box display={'flex'} alignItems={'baseline'} height="100%">
+                      <Tooltip
+                        title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                        id={'remove a reference'}
+                        placement={'bottom'}
+                      >
+                        <IconButton
+                          aria-label="Remove"
+                          onClick={e => {
+                            e.preventDefault();
+                            if (onRemove) {
+                              setRemoving(index);
+                              onRemove(ref, (success: boolean) => {
+                                if (success) remove(index);
+                                setRemoving(undefined);
+                              });
+                            } else {
+                              remove(index);
+                            }
+                          }}
+                          disabled={disabled || index === removing}
+                          size="large"
+                        >
+                          <DeleteOutline />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sx={{ paddingTop: theme => theme.spacing(2) }}>
+                    <FormikInputField
+                      name={`references.${index}.description`}
+                      title={'Description'}
+                      readOnly={readOnly}
+                      disabled={disabled || index === removing}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={`references.${index}.description`}
-                    title={'Description'}
-                    readOnly={readOnly}
-                    disabled={disabled || index === removing}
-                  />
-                </Grid>
-              </Grid>
+                {references.length > index + 1 && <SectionSpacer double />}
+              </>
             ))
           )}
         </Grid>

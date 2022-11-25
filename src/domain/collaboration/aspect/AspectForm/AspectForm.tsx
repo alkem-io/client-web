@@ -97,7 +97,7 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const uniqueNameValidator = yup
     .string()
-    .required('name is required')
+    .required(t('common.field-required'))
     .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
       if (edit) {
         return Boolean(value && (!aspectNames?.includes(value) || value === aspect?.displayName));

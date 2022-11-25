@@ -96,7 +96,14 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
         />
       </FormControl>
       {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
-      {meta.touched && <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>}
+      {meta.touched && (
+        <FormHelperText
+          sx={{ marginRight: theme => (withCounter ? theme.spacing(10) : 0) }}
+          error={Boolean(meta.error)}
+        >
+          {meta.error}
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 };

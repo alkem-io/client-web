@@ -759,32 +759,46 @@ export type CommunityFieldPolicy = {
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyKeySpecifier = ('lead' | 'member' | CommunityPolicyKeySpecifier)[];
+export type CommunityPolicyKeySpecifier = ('id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];
 export type CommunityPolicyFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
   lead?: FieldPolicy<any> | FieldReadFunction<any>;
   member?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyRoleKeySpecifier = (
+export type CommunityRolePolicyKeySpecifier = (
   | 'credential'
   | 'maxOrg'
   | 'maxUser'
   | 'minOrg'
   | 'minUser'
-  | CommunityPolicyRoleKeySpecifier
+  | 'parentCredentials'
+  | CommunityRolePolicyKeySpecifier
 )[];
-export type CommunityPolicyRoleFieldPolicy = {
+export type CommunityRolePolicyFieldPolicy = {
   credential?: FieldPolicy<any> | FieldReadFunction<any>;
   maxOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   maxUser?: FieldPolicy<any> | FieldReadFunction<any>;
   minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
   minUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ConfigKeySpecifier = ('apm' | 'authentication' | 'platform' | 'sentry' | 'template' | ConfigKeySpecifier)[];
+export type ConfigKeySpecifier = (
+  | 'apm'
+  | 'authentication'
+  | 'geo'
+  | 'platform'
+  | 'sentry'
+  | 'storage'
+  | 'template'
+  | ConfigKeySpecifier
+)[];
 export type ConfigFieldPolicy = {
   apm?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
+  geo?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
+  storage?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContextKeySpecifier = (
@@ -907,6 +921,15 @@ export type FeedbackTemplateKeySpecifier = ('name' | 'questions' | FeedbackTempl
 export type FeedbackTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type FileStorageConfigKeySpecifier = ('maxFileSize' | 'mimeTypes' | FileStorageConfigKeySpecifier)[];
+export type FileStorageConfigFieldPolicy = {
+  maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
+export type GeoFieldPolicy = {
+  endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
@@ -1113,6 +1136,7 @@ export type MutationKeySpecifier = (
   | 'deleteChallenge'
   | 'deleteCollaboration'
   | 'deleteDiscussion'
+  | 'deleteFile'
   | 'deleteHub'
   | 'deleteInnovationPack'
   | 'deleteLifecycleTemplate'
@@ -1183,6 +1207,7 @@ export type MutationKeySpecifier = (
   | 'updateUser'
   | 'updateUserGroup'
   | 'updateVisual'
+  | 'uploadFile'
   | 'uploadImageOnVisual'
   | MutationKeySpecifier
 )[];
@@ -1250,6 +1275,7 @@ export type MutationFieldPolicy = {
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteFile?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1320,6 +1346,7 @@ export type MutationFieldPolicy = {
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFile?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
@@ -1460,6 +1487,7 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'about'
+  | 'aup'
   | 'community'
   | 'environment'
   | 'featureFlags'
@@ -1479,6 +1507,7 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
+  aup?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1863,6 +1892,10 @@ export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataK
 export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
+export type StorageConfigFieldPolicy = {
+  file?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
@@ -2358,9 +2391,9 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
     fields?: CommunityPolicyFieldPolicy;
   };
-  CommunityPolicyRole?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommunityPolicyRoleKeySpecifier | (() => undefined | CommunityPolicyRoleKeySpecifier);
-    fields?: CommunityPolicyRoleFieldPolicy;
+  CommunityRolePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityRolePolicyKeySpecifier | (() => undefined | CommunityRolePolicyKeySpecifier);
+    fields?: CommunityRolePolicyFieldPolicy;
   };
   Config?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);
@@ -2405,6 +2438,14 @@ export type StrictTypedTypePolicies = {
   FeedbackTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FeedbackTemplateKeySpecifier | (() => undefined | FeedbackTemplateKeySpecifier);
     fields?: FeedbackTemplateFieldPolicy;
+  };
+  FileStorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | FileStorageConfigKeySpecifier | (() => undefined | FileStorageConfigKeySpecifier);
+    fields?: FileStorageConfigFieldPolicy;
+  };
+  Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
+    fields?: GeoFieldPolicy;
   };
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);
@@ -2607,6 +2648,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);
+    fields?: StorageConfigFieldPolicy;
   };
   Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);

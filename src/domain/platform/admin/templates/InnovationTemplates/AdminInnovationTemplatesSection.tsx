@@ -15,6 +15,7 @@ import InnovationTemplateView from './InnovationTemplateView';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import InnovationImportTemplateCard from './InnovationImportTemplateCard';
 
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
@@ -25,7 +26,7 @@ interface AdminInnovationTemplatesSectionProps {
   buildTemplateLink: (aspect: AdminLifecycleTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
-  innovationPacks: InnovationPack[];
+  innovationPacks: InnovationPack<AdminLifecycleTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -36,7 +37,11 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
     <AdminTemplatesSection
       {...props}
       headerText={t('pages.admin.generic.sections.templates.innovation-templates')}
+      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+        templateType: t('common.innovation-flows'),
+      })}
       templateCardComponent={InnovationTemplateCard}
+      templateImportCardComponent={InnovationImportTemplateCard}
       templatePreviewComponent={InnovationTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}

@@ -61,6 +61,7 @@ export const ConfigurationFragmentDoc = gql`
       community
       newuser
       tips
+      aup
       featureFlags {
         enabled
         name
@@ -73,6 +74,15 @@ export const ConfigurationFragmentDoc = gql`
     }
     apm {
       rumEnabled
+      endpoint
+    }
+    storage {
+      file {
+        mimeTypes
+        maxFileSize
+      }
+    }
+    geo {
       endpoint
     }
   }
@@ -3404,6 +3414,48 @@ export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
 >;
 export type ProfileVerifiedCredentialSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
+export const UploadFileDocument = gql`
+  mutation UploadFile($file: Upload!) {
+    uploadFile(file: $file)
+  }
+`;
+export type UploadFileMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadFileMutation,
+  SchemaTypes.UploadFileMutationVariables
+>;
+
+/**
+ * __useUploadFileMutation__
+ *
+ * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadFileMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UploadFileMutation, SchemaTypes.UploadFileMutationVariables>(
+    UploadFileDocument,
+    options
+  );
+}
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
+export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
+export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadFileMutation,
+  SchemaTypes.UploadFileMutationVariables
+>;
 export const ConfigurationDocument = gql`
   query configuration {
     configuration {
@@ -6574,10 +6626,10 @@ export function refetchOrganizationAssociatesQuery(variables: SchemaTypes.Organi
   return { query: OrganizationAssociatesDocument, variables: variables };
 }
 export const ChallengePreferencesDocument = gql`
-  query challengePreferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
+  query challengePreferences($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
       id
-      challenge(ID: $challengeId) {
+      challenge(ID: $challengeNameId) {
         id
         preferences {
           id
@@ -6608,8 +6660,8 @@ export const ChallengePreferencesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengePreferencesQuery({
  *   variables: {
- *      hubId: // value for 'hubId'
- *      challengeId: // value for 'challengeId'
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
  *   },
  * });
  */
@@ -18847,6 +18899,13 @@ export const InnovationPacksDocument = gql`
           id
           nameID
           displayName
+          profile {
+            id
+            avatar {
+              id
+              uri
+            }
+          }
         }
         displayName
         templates {

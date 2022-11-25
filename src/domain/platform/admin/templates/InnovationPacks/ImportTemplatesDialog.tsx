@@ -1,99 +1,87 @@
-import { useTranslation } from 'react-i18next';
+import { Button, DialogContent, DialogProps, Skeleton } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { useState } from 'react';
-import {
-  DialogProps,
-  DialogContent,
-  List,
-  ListItemIcon,
-  ListItemText,
-  Skeleton,
-  ListItemButton,
-  Button,
-  Collapse,
-} from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
-import FileIcon from '@mui/icons-material/FileOpenOutlined';
-import { DialogActions, DialogTitle } from '../../../../../common/components/core/dialog';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { InnovationPack, InnovationPackTemplatesData } from './InnovationPack';
+import React, { ComponentType, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { DialogActions } from '../../../../../common/components/core/dialog';
+import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
+import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
+import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
+import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
+import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
+import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 
-export interface ImportTemplatesDialogProps {
-  innovationPacks: InnovationPack[];
+export interface ImportTemplatesDialogProps<T extends Template, Q extends T & TemplateInnovationPackMetaInfo> {
+  headerText: string;
+  templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
+  innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSelectTemplate: (template: InnovationPackTemplatesData) => void;
+  onImportTemplate: (template: T) => Promise<void>;
   loading?: boolean;
 }
 
-const ImportTemplatesDialog = ({
+const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateInnovationPackMetaInfo>({
+  headerText,
+  templateImportCardComponent,
+  templatePreviewComponent,
   innovationPacks,
   loading,
   open,
   onClose,
-  onSelectTemplate,
-}: ImportTemplatesDialogProps) => {
+  onImportTemplate,
+}: ImportTemplatesDialogProps<T, Q>) => {
   const { t } = useTranslation();
 
-  const [foldersState, setFoldersState] = useState<string[]>([]);
-  const isFolderOpen = (id: string) => foldersState.includes(id);
-
-  const onClickOnFolder = (id: string) => {
-    if (isFolderOpen(id)) {
-      setFoldersState(foldersState.filter(f => f !== id));
-    } else {
-      setFoldersState([...foldersState, id]);
-    }
+  const handleClose = () => {
+    onClose?.({}, 'escapeKeyDown');
+    handleClosePreview();
   };
-  // TODO: Rename to Innovat<I>onPack
+  const [previewTemplate, setPreviewTemplate] = useState<Q>();
 
-  const handleClose = () => (onClose ? onClose({}, 'escapeKeyDown') : undefined);
+  const handleImportTemplate = (template: T) => {
+    return onImportTemplate?.(template).then(() => handleClosePreview());
+  };
+
+  const handlePreviewTemplate = (template: Q) => {
+    setPreviewTemplate(template);
+  };
+  const handleClosePreview = () => {
+    setPreviewTemplate(undefined);
+  };
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
+      onClose={handleClose}
+      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
       maxWidth={false}
     >
-      <DialogTitle onClose={handleClose}>
-        {t('pages.admin.generic.sections.templates.import-innovation-packs.title')}
-      </DialogTitle>
+      <DialogTitleWithIcon
+        subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
+        onClose={handleClose}
+        icon={<LibraryIcon />}
+      >
+        {headerText}
+      </DialogTitleWithIcon>
       <DialogContent>
         {loading && <Skeleton variant="rectangular" />}
-        {!loading && innovationPacks && (
-          <>
-            <List>
-              {innovationPacks.map(pack => {
-                const open = isFolderOpen(pack.id);
-                const templates = pack.templates as InnovationPackTemplatesData[];
-                return (
-                  <>
-                    <ListItemButton onClick={() => onClickOnFolder(pack.id)}>
-                      <ListItemIcon>
-                        <FolderIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={pack.displayName} secondary={pack.provider?.displayName} />
-                      {open ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {templates.map(t => (
-                          <ListItemButton sx={{ pl: 4 }} onClick={() => onSelectTemplate(t)}>
-                            <ListItemIcon>
-                              <FileIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={t.info.title} />
-                          </ListItemButton>
-                        ))}
-                      </List>
-                    </Collapse>
-                  </>
-                );
-              })}
-            </List>
-          </>
-        )}
+        {!loading &&
+          (!previewTemplate ? (
+            <ImportTemplatesDialogGalleryStep
+              innovationPacks={innovationPacks}
+              onPreviewTemplate={handlePreviewTemplate}
+              templateImportCardComponent={templateImportCardComponent}
+            />
+          ) : (
+            <ImportTemplatesDialogPreviewStep
+              template={previewTemplate}
+              onImportTemplate={handleImportTemplate}
+              onClose={handleClosePreview}
+              templatePreviewCardComponent={templateImportCardComponent}
+              templatePreviewComponent={templatePreviewComponent}
+            />
+          ))}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
