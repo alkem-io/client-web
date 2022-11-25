@@ -14,6 +14,8 @@ const APM_CLIENT_TRACK_COOKIE_VALUE_PREFIX = 'apm';
 const APM_CLIENT_TRACK_COOKIE_VALUE_NOT_TRACKED = 'not-tracked';
 const APM_CLIENT_SERVICE_NAME = 'alkemio-client-web';
 
+const skipOnLocal = process.env.NODE_ENV !== 'production';
+
 export interface ApmCustomContext {
   authenticated?: boolean;
   ip?: string;
@@ -104,7 +106,7 @@ const useCustomContext = () => {
   const { user: userMetadata, isAuthenticated, loading: userLoading } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo();
+  const { data: userGeoData, loading: userGeoLoading, error: userGeoError } = useUserGeo(skipOnLocal);
 
   return useMemo<ApmCustomContext>(() => {
     const context: ApmCustomContext = {};
