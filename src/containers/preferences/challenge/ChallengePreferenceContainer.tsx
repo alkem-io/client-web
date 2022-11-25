@@ -34,7 +34,7 @@ const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ c
   const handleError = useApolloErrorHandler();
 
   const { data, loading, error } = useChallengePreferencesQuery({
-    variables: { hubId, challengeId },
+    variables: { hubNameId: hubId, challengeNameId: challengeId },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
     skip: !hubId,

@@ -8703,8 +8703,8 @@ export type OrganizationAssociatesQuery = {
 };
 
 export type ChallengePreferencesQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengePreferencesQuery = {
