@@ -15,7 +15,10 @@ export const SafeInnovationFlowVisualizer = ({ definition }: { definition: strin
     [definition]
   );
 
-  const error = useMemo(() => !LifecycleDataProvider.validateLifecycleDefinition(definition), [definition]);
+  const error = useMemo(
+    () => !definition || !LifecycleDataProvider.validateLifecycleDefinition(definition),
+    [definition]
+  );
 
   if (!error) {
     return <InnovationFlowVisualizer lifecycle={lifecycle} />;
