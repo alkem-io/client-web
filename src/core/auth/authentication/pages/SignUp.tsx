@@ -18,6 +18,7 @@ import AcceptTermsButtonContextual from '../components/AcceptTermsButtonContextu
 import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
 import PlatformIntroduction from '../components/PlatformIntroduction';
 import { useTranslation } from 'react-i18next';
+import KratosForm from '../components/Kratos/KratosForm';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);
@@ -63,41 +64,43 @@ const SignUp = () => {
   };
 
   return (
-    <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
-      <FixedHeightLogo />
-      <SubHeading>{t('pages.registration.header')}</SubHeading>
-      <PlatformIntroduction label="pages.registration.introduction" />
-      <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
-        <KratosUI
-          flow={signUpFlow}
-          buttonComponent={AcceptTermsButtonContextual}
-          renderAcceptTermsCheckbox={checkbox => (
-            <KratosVisibleAcceptTermsCheckbox
-              value={hasAcceptedTerms}
-              onChange={setHasAcceptedTerms}
-              node={checkbox}
-              sx={{ marginBottom: 2, alignSelf: 'center' }}
-            />
-          )}
-        >
-          <AcceptTermsButtonImpl
-            hasAcceptedTerms={hasAcceptedTerms}
-            startIcon={<EmailIcon />}
-            color="primaryDark"
-            justifyContent="start"
-            onClick={signUp}
+    <KratosForm ui={signUpFlow?.ui}>
+      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+        <FixedHeightLogo />
+        <SubHeading>{t('pages.registration.header')}</SubHeading>
+        <PlatformIntroduction label="pages.registration.introduction" />
+        <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
+          <KratosUI
+            ui={signUpFlow?.ui}
+            buttonComponent={AcceptTermsButtonContextual}
+            renderAcceptTermsCheckbox={checkbox => (
+              <KratosVisibleAcceptTermsCheckbox
+                value={hasAcceptedTerms}
+                onChange={setHasAcceptedTerms}
+                node={checkbox}
+                sx={{ marginBottom: 2, alignSelf: 'center' }}
+              />
+            )}
           >
-            Sign up with E-Mail
-          </AcceptTermsButtonImpl>
-          <Paragraph textAlign="center" marginY={4}>
-            Already have an account?
-          </Paragraph>
-          <AuthActionButton color="primaryDark" onClick={signIn}>
-            Sign in
-          </AuthActionButton>
-        </KratosUI>
-      </AcceptTermsContext>
-    </Container>
+            <AcceptTermsButtonImpl
+              hasAcceptedTerms={hasAcceptedTerms}
+              startIcon={<EmailIcon />}
+              color="primaryDark"
+              justifyContent="start"
+              onClick={signUp}
+            >
+              Sign up with E-Mail
+            </AcceptTermsButtonImpl>
+            <Paragraph textAlign="center" marginY={4}>
+              Already have an account?
+            </Paragraph>
+            <AuthActionButton color="primaryDark" onClick={signIn}>
+              Sign in
+            </AuthActionButton>
+          </KratosUI>
+        </AcceptTermsContext>
+      </Container>
+    </KratosForm>
   );
 };
 

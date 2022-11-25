@@ -7,6 +7,7 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import KratosForm from '../components/Kratos/KratosForm';
 
 interface RegisterPageProps {
   flow: string;
@@ -30,16 +31,18 @@ export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
   }
 
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={2} justifyContent={'center'}>
-        <Grid item sm={4}>
-          <Box marginY={3} textAlign={'center'}>
-            <WrapperTypography variant={'h3'}>{t('pages.settings.header')}</WrapperTypography>
-          </Box>
-          <KratosUI flow={settingsFlow} hideFields={hideFields} />
+    <KratosForm ui={settingsFlow?.ui}>
+      <Container maxWidth="lg">
+        <Grid container spacing={2} justifyContent={'center'}>
+          <Grid item sm={4}>
+            <Box marginY={3} textAlign={'center'}>
+              <WrapperTypography variant={'h3'}>{t('pages.settings.header')}</WrapperTypography>
+            </Box>
+            <KratosUI ui={settingsFlow?.ui} hideFields={hideFields} />
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </KratosForm>
   );
 };
 

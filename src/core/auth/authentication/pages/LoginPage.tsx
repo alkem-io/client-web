@@ -16,6 +16,7 @@ import translateWithElements from '../../../../domain/shared/i18n/TranslateWithE
 import { AUTH_SIGN_UP_PATH } from '../../../../models/constants';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
+import KratosForm from '../components/Kratos/KratosForm';
 
 interface LoginPageProps {
   flow?: string;
@@ -44,11 +45,11 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
 
-  const loginFlowWithErrors =
+  const loginUi =
     loginFlow &&
-    produce(loginFlow, flow => {
+    produce(loginFlow.ui, ui => {
       if (kratosErrors) {
-        flow.ui.messages = kratosErrors;
+        ui.messages = kratosErrors;
       }
     });
 
@@ -93,16 +94,18 @@ const LoginPage = ({ flow }: LoginPageProps) => {
   const tLink = translateWithElements(<Link to="" />);
 
   return (
-    <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
-      <FixedHeightLogo />
-      <SubHeading>{t('pages.login.title')}</SubHeading>
-      <KratosUI flow={loginFlowWithErrors} resetPasswordElement={resetPassword} />
-      <Paragraph textAlign="center" marginTop={5}>
-        {tLink('pages.login.register', {
-          signup: { to: AUTH_SIGN_UP_PATH },
-        })}
-      </Paragraph>
-    </Container>
+    <KratosForm ui={loginUi}>
+      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+        <FixedHeightLogo />
+        <SubHeading>{t('pages.login.title')}</SubHeading>
+        <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
+        <Paragraph textAlign="center" marginTop={5}>
+          {tLink('pages.login.register', {
+            signup: { to: AUTH_SIGN_UP_PATH },
+          })}
+        </Paragraph>
+      </Container>
+    </KratosForm>
   );
 };
 

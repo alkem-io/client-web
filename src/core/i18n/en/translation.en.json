@@ -85,6 +85,7 @@
     }
   },
   "common": {
+    "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",

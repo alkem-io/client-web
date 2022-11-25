@@ -16,6 +16,7 @@ import AcceptTerms from './AcceptTerms';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import { UiNodeInput } from '../components/UiNodeInput';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
+import KratosForm from '../components/Kratos/KratosForm';
 
 interface RegisterPageProps {
   flow?: string;
@@ -40,8 +41,6 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
-  const termsCheckbox = registrationFlow?.ui.nodes.find(isAcceptTermsCheckbox) as UiNodeInput | undefined;
-
   const areTermsAccepted = (checkbox: UiNodeInput) => checkbox.attributes.value || hasAcceptedTerms;
 
   const registrationFlowWithAcceptedTerms =
@@ -52,6 +51,10 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
         termsCheckbox.attributes.value = hasAcceptedTerms;
       }
     });
+
+  const termsCheckbox = registrationFlowWithAcceptedTerms?.ui.nodes.find(isAcceptTermsCheckbox) as
+    | UiNodeInput
+    | undefined;
 
   // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
   const storeHasAcceptedTerms = () => {
@@ -73,20 +76,29 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
     return <ErrorDisplay />;
   }
 
+  const mustAcceptTerms = termsCheckbox ? !termsCheckbox.attributes.value : false;
+
   return (
-    <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
-      <FixedHeightLogo />
-      <SubHeading>{t('pages.registration.header')}</SubHeading>
-      <KratosUI
-        flow={registrationFlowWithAcceptedTerms}
-        onBeforeSubmit={storeHasAcceptedTerms}
-        acceptTermsComponent={AcceptTerms}
-        hideFields={['traits.picture']}
-      />
-      <Paragraph textAlign="center" marginTop={5}>
-        {t('pages.registration.login')} <Link to={AUTH_LOGIN_PATH}>{t('authentication.sign-in')}</Link>
-      </Paragraph>
-    </Container>
+    <KratosForm ui={registrationFlow?.ui}>
+      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+        <FixedHeightLogo />
+        {mustAcceptTerms && <AcceptTerms ui={registrationFlow!.ui} />}
+        {!mustAcceptTerms && (
+          <>
+            <SubHeading>{t('pages.registration.header')}</SubHeading>
+            <KratosUI
+              ui={registrationFlowWithAcceptedTerms?.ui}
+              onBeforeSubmit={storeHasAcceptedTerms}
+              acceptTermsComponent={AcceptTerms}
+              hideFields={['traits.picture']}
+            />
+          </>
+        )}
+        <Paragraph textAlign="center" marginTop={5}>
+          {t('pages.registration.login')} <Link to={AUTH_LOGIN_PATH}>{t('authentication.sign-in')}</Link>
+        </Paragraph>
+      </Container>
+    </KratosForm>
   );
 };
 

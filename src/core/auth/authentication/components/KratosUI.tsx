@@ -1,14 +1,6 @@
 import { Alert, Box, ButtonProps } from '@mui/material';
-import {
-  SelfServiceLoginFlow,
-  SelfServiceRecoveryFlow,
-  SelfServiceRegistrationFlow,
-  SelfServiceSettingsFlow,
-  SelfServiceVerificationFlow,
-  UiNode,
-  UiText,
-} from '@ory/kratos-client';
-import React, { ComponentType, FC, FormEvent, ReactNode, useCallback, useMemo, useState } from 'react';
+import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
+import React, { ComponentType, FC, ReactNode, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
 import KratosButton from './Kratos/KratosButton';
@@ -29,17 +21,11 @@ import microsoftTheme from './AuthProviders/MicrosoftTheme';
 import { ReactComponent as MicrosoftIcon } from './AuthProviders/Microsoft.svg';
 import { UiNodeInput } from './UiNodeInput';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
-import produce from 'immer';
 import TranslationKey from '../../../../types/TranslationKey';
+import { useKratosFormContext } from './Kratos/KratosForm';
 
 interface KratosUIProps {
-  flow:
-    | SelfServiceLoginFlow
-    | SelfServiceRegistrationFlow
-    | SelfServiceSettingsFlow
-    | SelfServiceVerificationFlow
-    | SelfServiceRecoveryFlow
-    | undefined;
+  ui?: UiContainer;
   resetPasswordElement?: ReactNode;
   acceptTermsComponent?: ComponentType<KratosAcceptTermsProps>;
   renderAcceptTermsCheckbox?: (checkbox: UiNodeInput) => ReactNode;
@@ -105,8 +91,8 @@ interface NodeGroups {
 }
 
 export const KratosUI: FC<KratosUIProps> = ({
+  ui,
   resetPasswordElement,
-  flow,
   acceptTermsComponent: AcceptTerms,
   buttonComponent: Button = AuthActionButton,
   renderAcceptTermsCheckbox = checkbox => <KratosAcceptTermsCheckbox node={checkbox} />,
@@ -114,47 +100,8 @@ export const KratosUI: FC<KratosUIProps> = ({
   ...rest
 }) => {
   const { t, i18n } = useTranslation();
-  const [showFormAlert, setShowFormAlert] = useState(false);
 
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    const button = getActiveElement() as HTMLButtonElement | null;
-    // do check if only submitting password method
-    if (button && button.name === 'method' && button.value === 'password') {
-      if (!e.currentTarget.checkValidity()) {
-        setShowFormAlert(true);
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-    }
-  }, []);
-
-  const termsCheckbox = flow?.ui.nodes.find(isAcceptTermsCheckbox) as UiNodeInput | undefined;
-  const isAcceptTermsMode = termsCheckbox && AcceptTerms ? !termsCheckbox.attributes.value : false;
-
-  const ui = useMemo(() => {
-    return (
-      flow &&
-      produce(flow.ui, nextUi => {
-        const termsCheckbox = nextUi.nodes.find(isAcceptTermsCheckbox) as UiNodeInput | undefined;
-        const isAcceptTermsMode = termsCheckbox && AcceptTerms ? !termsCheckbox.attributes.value : false;
-
-        // Hiding all UI elements in "Accept Terms" mode except for Accept Terms checkbox
-        if (isAcceptTermsMode) {
-          nextUi.nodes = nextUi.nodes
-            .filter(node => !isAcceptTermsCheckbox(node))
-            .filter(node => node.attributes['type'] !== 'submit')
-            .map(node => ({
-              ...node,
-              attributes: {
-                ...node.attributes,
-                type: 'hidden',
-              },
-            }));
-        }
-      })
-    );
-  }, [flow, AcceptTerms]);
+  const kratosFormContext = useKratosFormContext();
 
   const nodesByGroup = useMemo(() => {
     return ui?.nodes.reduce(
@@ -181,18 +128,6 @@ export const KratosUI: FC<KratosUIProps> = ({
   }, [ui]);
 
   if (!nodesByGroup || !ui) return null;
-
-  const getActiveElement = (doc?: Document): Element | null => {
-    doc = doc || (typeof document !== 'undefined' ? document : undefined);
-    if (typeof doc === 'undefined') {
-      return null;
-    }
-    try {
-      return doc.activeElement || doc.body;
-    } catch (e) {
-      return doc.body;
-    }
-  };
 
   const toUiControl = (node: UiNode, key: number) => {
     const attributes = node.attributes;
@@ -257,62 +192,42 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
   };
 
-  const renderAcceptTerms = () => {
-    if (!isAcceptTermsMode) {
-      return;
-    }
-
-    const AcceptTermsComponent = AcceptTerms!; // ensured by isAcceptTermsMode
-
-    const userNameInput = flow?.ui.nodes.find(node => node.attributes['name'] === 'traits.name.first') as
-      | UiNodeInput<string>
-      | undefined;
-    const userName = userNameInput?.attributes.value ?? undefined ?? 'AndrewТеб';
-
-    const buttonNode = flow?.ui.nodes
-      .slice()
-      .sort(node => (node.group === 'oidc' ? 1 : -1))
-      .find(node => node.attributes['type'] === 'submit') as UiNodeInput;
-
-    return <AcceptTermsComponent userName={userName} checkboxNode={termsCheckbox!} buttonNode={buttonNode} />;
-  };
+  if (!kratosFormContext) {
+    throw new Error('Not within a KratosForm');
+  }
 
   return (
     <KratosUIProvider {...rest}>
-      {showFormAlert && (
-        <Alert severity={'warning'} onClose={() => setShowFormAlert(false)}>
+      {nodesByGroup.hidden.map(toUiControl)}
+      {!kratosFormContext.isFormValid && (
+        <Alert severity={'warning'} onClose={() => kratosFormContext.setIsFormValid(true)}>
           {t('authentication.validation.fill-fields')}
         </Alert>
       )}
-      <form action={ui.action} method={ui.method} noValidate onSubmit={handleSubmit}>
-        {nodesByGroup.hidden.map(toUiControl)}
-        {renderAcceptTerms()}
-        <Box display="flex" flexDirection="column" alignItems="stretch" gap={2} width={sxCols(4)}>
-          <KratosMessages messages={ui.messages} />
-          {nodesByGroup.default.map(toUiControl)}
-          {nodesByGroup.password.map(toUiControl)}
-          {resetPasswordElement}
-          {nodesByGroup.rest.map(toUiControl)}
-          <Box alignSelf="center" display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
-            {nodesByGroup.submit.map(toUiControl)}
-            {nodesByGroup.submit.length > 0 && nodesByGroup.oidc.length > 0 && (
-              <Paragraph textAlign="center" marginY={2} textTransform="uppercase">
-                Or
-              </Paragraph>
-            )}
-            {nodesByGroup.oidc.map(toUiControl)}
-            {children}
-          </Box>
+      <Box display="flex" flexDirection="column" alignItems="stretch" gap={2} width={sxCols(4)}>
+        <KratosMessages messages={ui.messages} />
+        {nodesByGroup.default.map(toUiControl)}
+        {nodesByGroup.password.map(toUiControl)}
+        {resetPasswordElement}
+        {nodesByGroup.rest.map(toUiControl)}
+        <Box alignSelf="center" display="flex" flexDirection="column" alignItems="stretch" gap={2} marginTop={2}>
+          {nodesByGroup.submit.map(toUiControl)}
+          {nodesByGroup.submit.length > 0 && nodesByGroup.oidc.length > 0 && (
+            <Paragraph textAlign="center" marginY={2} textTransform="uppercase">
+              {t('common.or')}
+            </Paragraph>
+          )}
+          {nodesByGroup.oidc.map(toUiControl)}
+          {children}
         </Box>
-      </form>
+      </Box>
     </KratosUIProvider>
   );
 };
+
 export default KratosUI;
 
 interface KratosUIContextProps {
-  termsURL?: string;
-  privacyURL?: string;
   isHidden: (node: UiNode) => boolean;
   /**
    * @deprecated - it's needed to store hasAcceptedTerms before submit because Kratos can reset the form state.
@@ -346,6 +261,7 @@ export const KratosUIProvider: FC<KratosUIProviderProps> = ({ hideFields, onBefo
     },
     [hideFields]
   );
+
   return (
     <KratosUIContext.Provider
       value={{
