@@ -15,19 +15,16 @@ export const SafeInnovationFlowVisualizer = ({ definition }: { definition: strin
     [definition]
   );
 
-  const error = useMemo(
-    () => !definition || !LifecycleDataProvider.validateLifecycleDefinition(definition),
-    [definition]
-  );
-
-  if (!error) {
-    return <InnovationFlowVisualizer lifecycle={lifecycle} />;
-  }
+  const isValid = useMemo(() => LifecycleDataProvider.validateLifecycleDefinition(definition), [definition]);
 
   return (
-    <Box justifyContent="center">
-      <Typography variant={'h4'}>{t('components.lifecycle-visualizer.error')}</Typography>
-      {error.toString()}
-    </Box>
+    <>
+      {isValid && <InnovationFlowVisualizer lifecycle={lifecycle} />}
+      {!isValid && (
+        <Box justifyContent="center">
+          <Typography variant={'h4'}>{t('components.lifecycle-visualizer.error')}</Typography>
+        </Box>
+      )}
+    </>
   );
 };

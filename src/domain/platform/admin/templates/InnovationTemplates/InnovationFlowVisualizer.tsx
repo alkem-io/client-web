@@ -29,7 +29,7 @@ const buildGraph = (
   theme: Theme,
   options?: LifecycleVisualizationOptions
 ) => {
-  if (!lifecycle.machineDef || !LifecycleDataProvider.validateLifecycleDefinition(lifecycle.machineDef)) {
+  if (!LifecycleDataProvider.validateLifecycleDefinition(lifecycle.machineDef)) {
     return undefined;
   }
 
