@@ -6,6 +6,7 @@ import { useUrlParams } from '../../../../hooks';
 interface ChallengePermissions {
   canUpdate: boolean;
   canCreate: boolean;
+  canCreateOpportunity: boolean;
   canReadCommunity: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
@@ -31,6 +32,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   permissions: {
     canUpdate: false,
     canCreate: false,
+    canCreateOpportunity: false,
     canReadCommunity: false,
     contextPrivileges: [],
   },
@@ -62,6 +64,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
     () => ({
       canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
       canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
+      canCreateOpportunity: myPrivileges.includes(AuthorizationPrivilege.CreateOpportunity),
       canReadCommunity,
       contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),

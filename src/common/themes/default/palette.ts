@@ -24,6 +24,10 @@ export const paletteOptions: PaletteOptions = {
     main: grey[300],
     dark: grey[400],
   },
+  highlight: {
+    main: '#DEEFF6',
+    contrastText: '#1D384A',
+  },
   hub: {
     main: '#1D384A',
   },
@@ -43,6 +47,7 @@ declare module '@mui/material/styles/createPalette' {
     neutral: PaletteColorOptions;
     neutralMedium: PaletteColorOptions;
     neutralLight: PaletteColorOptions;
+    highlight: PaletteColorOptions;
     hub: PaletteColorOptions;
     challenge: PaletteColorOptions;
     opportunity: PaletteColorOptions;
@@ -54,6 +59,7 @@ declare module '@mui/material/styles/createPalette' {
     neutral: PaletteColor;
     neutralMedium: PaletteColor;
     neutralLight: PaletteColor;
+    highlight: PaletteColor;
     hub: PaletteColor;
     challenge: PaletteColor;
     opportunity: PaletteColor;

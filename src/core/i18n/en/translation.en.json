@@ -58,8 +58,11 @@
     "confirm": "Confirm",
     "change-template": "Change template",
     "change": "Change",
-    "import": "Import...",
-    "share": "Share"
+    "library": "Library",
+    "share": "Share",
+    "preview": "Preview",
+    "import": "Import",
+    "importing": "Importing..."
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -185,7 +188,9 @@
     "loading": "Loading...",
     "language": "Language",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation Flows",
     "more": "More",
+    "url": "URL",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -698,7 +703,17 @@
       "tooltips": {
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
-      }
+      },
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
+    },
+    "file-upload": {
+      "confirm-dialog": {
+        "title": "Uploading a document",
+        "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
+        "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
+      },
+      "file-size-error": "File size excedes the {{limit}}MB limit",
+      "file-upload-success": "File uploaded successfully"
     },
     "editHubForm": {
       "host": {
@@ -1014,8 +1029,11 @@
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
-            "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+            "import": {
+              "title": "Template Library: {{templateType}}",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "no-templates": "Couldn't find any Template of this type",
+              "imported-successfully-notification": "Template imported successfully"
             }
           },
           "my-profile": {
@@ -1049,6 +1067,11 @@
         }
       },
       "challenge": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.challenge) authorization preferences"
+          }
+        },
         "community": {
           "preferences": {
             "title": "Membership",
