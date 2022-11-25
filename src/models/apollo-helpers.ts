@@ -788,6 +788,7 @@ export type ConfigKeySpecifier = (
   | 'geo'
   | 'platform'
   | 'sentry'
+  | 'storage'
   | 'template'
   | ConfigKeySpecifier
 )[];
@@ -797,6 +798,7 @@ export type ConfigFieldPolicy = {
   geo?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
+  storage?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContextKeySpecifier = (
@@ -919,6 +921,11 @@ export type FeedbackTemplateKeySpecifier = ('name' | 'questions' | FeedbackTempl
 export type FeedbackTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type FileStorageConfigKeySpecifier = ('maxFileSize' | 'mimeTypes' | FileStorageConfigKeySpecifier)[];
+export type FileStorageConfigFieldPolicy = {
+  maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
@@ -1480,6 +1487,7 @@ export type PaginatedUsersFieldPolicy = {
 };
 export type PlatformKeySpecifier = (
   | 'about'
+  | 'aup'
   | 'community'
   | 'environment'
   | 'featureFlags'
@@ -1499,6 +1507,7 @@ export type PlatformKeySpecifier = (
 )[];
 export type PlatformFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
+  aup?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1883,6 +1892,10 @@ export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataK
 export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
+export type StorageConfigFieldPolicy = {
+  file?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
@@ -2426,6 +2439,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | FeedbackTemplateKeySpecifier | (() => undefined | FeedbackTemplateKeySpecifier);
     fields?: FeedbackTemplateFieldPolicy;
   };
+  FileStorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | FileStorageConfigKeySpecifier | (() => undefined | FileStorageConfigKeySpecifier);
+    fields?: FileStorageConfigFieldPolicy;
+  };
   Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
     fields?: GeoFieldPolicy;
@@ -2631,6 +2648,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);
+    fields?: StorageConfigFieldPolicy;
   };
   Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);

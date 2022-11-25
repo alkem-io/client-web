@@ -25,6 +25,7 @@ export interface CalloutCreationDialogProps {
   onClose: () => void;
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
   isCreating: boolean;
+  calloutNames: string[];
 }
 
 export interface CalloutCardTemplateInfo {
@@ -41,7 +42,13 @@ export interface CalloutCardTemplate {
   info: CalloutCardTemplateInfo;
 }
 
-const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft, isCreating }) => {
+const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
+  open,
+  onClose,
+  onSaveAsDraft,
+  isCreating,
+  calloutNames,
+}) => {
   const { t } = useTranslation();
   const { templates } = useHub();
 
@@ -89,7 +96,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
       </DialogTitle>
       <DialogContent dividers>
         <Box paddingY={theme => theme.spacing(2)}>
-          <CalloutForm callout={callout} onChange={handleValueChange} onStatusChanged={handleStatusChange} />
+          <CalloutForm
+            callout={callout}
+            calloutNames={calloutNames}
+            onChange={handleValueChange}
+            onStatusChanged={handleStatusChange}
+          />
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>

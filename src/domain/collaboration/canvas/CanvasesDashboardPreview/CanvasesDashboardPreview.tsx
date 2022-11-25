@@ -3,7 +3,7 @@ import DashboardGenericSection, {
 } from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { Typography } from '@mui/material';
 import React from 'react';
-import { WbIncandescentOutlined } from '@mui/icons-material';
+import { CanvasIcon } from '../../../../common/icons/CanvasIcon';
 import { useTranslation } from 'react-i18next';
 import SimpleCard from '../../../shared/components/SimpleCard';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
@@ -50,7 +50,7 @@ const CanvasesDashboardPreview = ({
             {...buildCanvasLink(canvas.nameID, canvas.calloutNameId)}
             title={canvas.displayName}
             imageUrl={canvas.preview?.uri}
-            iconComponent={WbIncandescentOutlined}
+            iconComponent={CanvasIcon}
           />
         ))}
       </SimpleCardsList>

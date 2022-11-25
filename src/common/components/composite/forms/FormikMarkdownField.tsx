@@ -273,7 +273,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         </FieldContainer>
       </FormControl>
       {withCounter && <CharacterCounter count={textLength} maxLength={maxLength} />}
-      <FormHelperText sx={{ marginRight: theme => theme.spacing(10) }} error={isError}>
+      <FormHelperText sx={{ marginRight: theme => (withCounter ? theme.spacing(10) : 0) }} error={isError}>
         {helperText}
       </FormHelperText>
     </FormGroup>

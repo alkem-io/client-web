@@ -30,6 +30,7 @@ fragment Configuration on Config {
     community
     newuser
     tips
+    aup
     featureFlags {
       enabled
       name
@@ -43,6 +44,12 @@ fragment Configuration on Config {
   apm {
     rumEnabled
     endpoint
+  }
+  storage {
+    file {
+      mimeTypes
+      maxFileSize
+    }
   }
   geo {
     endpoint

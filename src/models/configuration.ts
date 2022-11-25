@@ -18,12 +18,19 @@ export interface Configuration {
     community: string;
     newuser: string;
     tips: string;
+    aup: string;
     featureFlags: FeatureFlag[];
   };
   sentry: {
     enabled: boolean;
     endpoint: string;
     submitPII: boolean;
+  };
+  storage: {
+    file: {
+      mimeTypes: string[];
+      maxFileSize: number;
+    };
   };
   apm: {
     rumEnabled: boolean;

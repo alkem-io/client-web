@@ -549,7 +549,7 @@ export type AuthorizationPolicyRuleCredential = {
 export type AuthorizationPolicyRulePrivilege = {
   __typename?: 'AuthorizationPolicyRulePrivilege';
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  sourcePrivilege: Scalars['String'];
+  sourcePrivilege: AuthorizationPrivilege;
 };
 
 export type AuthorizationPolicyRuleVerifiedCredential = {
@@ -565,6 +565,7 @@ export enum AuthorizationPrivilege {
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
+  Contribute = 'CONTRIBUTE',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCallout = 'CREATE_CALLOUT',
@@ -572,6 +573,7 @@ export enum AuthorizationPrivilege {
   CreateChallenge = 'CREATE_CHALLENGE',
   CreateComment = 'CREATE_COMMENT',
   CreateHub = 'CREATE_HUB',
+  CreateOpportunity = 'CREATE_OPPORTUNITY',
   CreateOrganization = 'CREATE_ORGANIZATION',
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
@@ -797,6 +799,9 @@ export type ChallengeEventInput = {
 };
 
 export enum ChallengePreferenceType {
+  AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
+  AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
+  AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   MembershipApplyChallengeFromHubMembers = 'MEMBERSHIP_APPLY_CHALLENGE_FROM_HUB_MEMBERS',
   MembershipFeedbackOnChallengeContext = 'MEMBERSHIP_FEEDBACK_ON_CHALLENGE_CONTEXT',
   MembershipJoinChallengeFromHubMembers = 'MEMBERSHIP_JOIN_CHALLENGE_FROM_HUB_MEMBERS',
@@ -1062,6 +1067,8 @@ export type Config = {
   platform: Platform;
   /** Sentry (client monitoring) related configuration. */
   sentry: Sentry;
+  /** Configuration for storage providers, e.g. file */
+  storage: StorageConfig;
   /** Alkemio template configuration. */
   template: Template;
 };
@@ -1483,6 +1490,7 @@ export type DeleteDiscussionInput = {
 };
 
 export type DeleteFileInput = {
+  /** IPFS Content Identifier (CID) of the file, e.g. Qmde6CnXDGGe7Dynz1pnxgNARtdVBme9YBwNbo4HJiRy2W */
   CID: Scalars['CID'];
 };
 
@@ -1607,6 +1615,14 @@ export type FeedbackTemplate = {
   name: Scalars['String'];
   /** Template questions. */
   questions: Array<QuestionTemplate>;
+};
+
+export type FileStorageConfig = {
+  __typename?: 'FileStorageConfig';
+  /** Max file size, in bytes. */
+  maxFileSize: Scalars['Float'];
+  /** Allowed mime types for file upload, separated by a coma. */
+  mimeTypes: Array<Scalars['String']>;
 };
 
 export type Geo = {
@@ -2840,6 +2856,8 @@ export type Platform = {
   __typename?: 'Platform';
   /** URL to a page about the platform */
   about: Scalars['String'];
+  /** URL where users can get tips and tricks */
+  aup: Scalars['String'];
   /** URL where users can see the community forum */
   community: Scalars['String'];
   /** Name of the environment */
@@ -2911,7 +2929,10 @@ export type PreferenceDefinition = {
 };
 
 export enum PreferenceType {
+  AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
+  AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
   AllowMembersToCreateChallenges = 'ALLOW_MEMBERS_TO_CREATE_CHALLENGES',
+  AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
   AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
   MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
@@ -3491,6 +3512,12 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
+};
+
+export type StorageConfig = {
+  __typename?: 'StorageConfig';
+  /** Config for uploading files to Alkemio. */
+  file: FileStorageConfig;
 };
 
 export type Subscription = {
@@ -4524,6 +4551,12 @@ export type ProfileVerifiedCredentialSubscription = {
   profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
 };
 
+export type UploadFileMutationVariables = Exact<{
+  file: Scalars['Upload'];
+}>;
+
+export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
+
 export type ConfigurationFragment = {
   __typename?: 'Config';
   authentication: {
@@ -4554,10 +4587,15 @@ export type ConfigurationFragment = {
     community: string;
     newuser: string;
     tips: string;
+    aup: string;
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+  storage: {
+    __typename?: 'StorageConfig';
+    file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
+  };
   geo: { __typename?: 'Geo'; endpoint: string };
 };
 
@@ -4595,10 +4633,15 @@ export type ConfigurationQuery = {
       community: string;
       newuser: string;
       tips: string;
+      aup: string;
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
+    storage: {
+      __typename?: 'StorageConfig';
+      file: { __typename?: 'FileStorageConfig'; mimeTypes: Array<string>; maxFileSize: number };
+    };
     geo: { __typename?: 'Geo'; endpoint: string };
   };
 };
@@ -17088,7 +17131,19 @@ export type InnovationPacksQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      provider?: { __typename?: 'Organization'; id: string; nameID: string; displayName: string } | undefined;
+      provider?:
+        | {
+            __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            displayName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }
+        | undefined;
       templates?:
         | {
             __typename?: 'TemplatesSet';
