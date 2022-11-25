@@ -82,6 +82,9 @@ export const ConfigurationFragmentDoc = gql`
         maxFileSize
       }
     }
+    geo {
+      endpoint
+    }
   }
 `;
 export const VisualUriFragmentDoc = gql`

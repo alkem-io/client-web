@@ -51,4 +51,7 @@ fragment Configuration on Config {
       maxFileSize
     }
   }
+  geo {
+    endpoint
+  }
 }

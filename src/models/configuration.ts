@@ -36,6 +36,9 @@ export interface Configuration {
     rumEnabled: boolean;
     endpoint: string;
   };
+  geo: {
+    endpoint: string;
+  };
 }
 
 export interface AspectTemplate {
