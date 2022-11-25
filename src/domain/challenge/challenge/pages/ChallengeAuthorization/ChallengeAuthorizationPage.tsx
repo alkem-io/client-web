@@ -39,7 +39,7 @@ const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({
 }) => {
   const { t } = useTranslation();
   const { hubNameId } = useHub();
-  const { challengeNameId } = useChallenge();
+  const { challengeNameId, challengeId } = useChallenge();
 
   useAppendBreadcrumb(paths, {
     name: t(`common.enums.authorization-credentials.${authorizationCredential}.name` as const),
@@ -53,7 +53,7 @@ const ChallengeAuthorizationPage: FC<ChallengeAuthorizationPageProps> = ({
     value: boolean
   ): UpdatePreferenceOnChallengeMutationVariables => ({
     preferenceData: {
-      challengeID: challengeNameId,
+      challengeID: challengeId,
       type: type as ChallengePreferenceType,
       value: value ? 'true' : 'false',
     },
