@@ -18830,6 +18830,10 @@ export const HubTemplatesDocument = gql`
       id
       templates {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         aspectTemplates {
           ...AdminAspectTemplate
         }
