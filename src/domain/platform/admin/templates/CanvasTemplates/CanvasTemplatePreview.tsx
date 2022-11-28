@@ -13,15 +13,11 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 
 interface CanvasTemplateViewProps {
   template: AdminCanvasTemplateFragment;
-  getTemplateValue?: ((template: AdminCanvasTemplateFragment) => void) | undefined;
+  getTemplateValue?: (template: AdminCanvasTemplateFragment) => void;
   templateValue?: AdminCanvasTemplateValueFragment | undefined;
 }
 
-const CanvasTemplatePreview = ({
-  template,
-  getTemplateValue = () => {},
-  templateValue = undefined,
-}: CanvasTemplateViewProps) => {
+const CanvasTemplatePreview = ({ template, getTemplateValue = () => {}, templateValue }: CanvasTemplateViewProps) => {
   const { t } = useTranslation();
 
   const {

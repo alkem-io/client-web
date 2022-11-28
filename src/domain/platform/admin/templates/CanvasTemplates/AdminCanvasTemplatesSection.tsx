@@ -72,7 +72,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
   );
 
   const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
 
   const getTemplateValue = useCallback(
@@ -83,7 +83,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
   );
 
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
-    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'network-only' });
+    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network' });
 
   const getImportedTemplateValue = useCallback(
     (template: AdminCanvasTemplateFragment) => {
