@@ -5,15 +5,21 @@ import { useTranslation } from 'react-i18next';
 import { DialogActions } from '../../../../../common/components/core/dialog';
 import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
 import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
-import { Template, TemplatePreviewProps } from '../AdminTemplatesSection';
+import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 
-export interface ImportTemplatesDialogProps<T extends Template, Q extends T & TemplateInnovationPackMetaInfo> {
+export interface ImportTemplatesDialogProps<
+  T extends Template,
+  Q extends T & TemplateInnovationPackMetaInfo,
+  V extends TemplateValue
+> {
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
+  getImportedTemplateValue?: (template: T) => void;
+  importedTemplateValue?: V | undefined;
   innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
@@ -21,16 +27,22 @@ export interface ImportTemplatesDialogProps<T extends Template, Q extends T & Te
   loading?: boolean;
 }
 
-const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateInnovationPackMetaInfo>({
+const ImportTemplatesDialog = <
+  T extends Template,
+  Q extends T & TemplateInnovationPackMetaInfo,
+  V extends TemplateValue
+>({
   headerText,
   templateImportCardComponent,
   templatePreviewComponent,
+  getImportedTemplateValue,
+  importedTemplateValue,
   innovationPacks,
   loading,
   open,
   onClose,
   onImportTemplate,
-}: ImportTemplatesDialogProps<T, Q>) => {
+}: ImportTemplatesDialogProps<T, Q, V>) => {
   const { t } = useTranslation();
 
   const handleClose = () => {
@@ -80,6 +92,8 @@ const ImportTemplatesDialog = <T extends Template, Q extends T & TemplateInnovat
               onClose={handleClosePreview}
               templatePreviewCardComponent={templateImportCardComponent}
               templatePreviewComponent={templatePreviewComponent}
+              getImportedTemplateValue={getImportedTemplateValue}
+              importedTemplateValue={importedTemplateValue}
             />
           ))}
       </DialogContent>

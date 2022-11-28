@@ -36,10 +36,14 @@ fragment AdminAspectTemplate on AspectTemplate {
 
 fragment AdminCanvasTemplate on CanvasTemplate {
   id
-  value
   info {
     ...TemplateInfo
   }
+}
+
+fragment AdminCanvasTemplateValue on CanvasTemplate {
+  id
+  value
 }
 
 fragment TemplateInfo on TemplateInfo {
@@ -52,5 +56,17 @@ fragment TemplateInfo on TemplateInfo {
   }
   visual {
     ...VisualFull
+  }
+}
+
+query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplate(ID: $canvasTemplateId) {
+        ...AdminCanvasTemplateValue
+      }
+    }
   }
 }

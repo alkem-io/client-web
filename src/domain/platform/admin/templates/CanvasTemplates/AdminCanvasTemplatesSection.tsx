@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   useCreateCanvasTemplateMutation,
   useDeleteCanvasTemplateMutation,
+  useHubTemplatesCanvasTemplateWithValueLazyQuery,
+  useInnovationPackCanvasTemplateWithValueLazyQuery,
   useUpdateCanvasTemplateMutation,
 } from '../../../../../hooks/generated/graphql';
 import {
@@ -20,6 +22,7 @@ import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
+import { useHub } from '../../../../../hooks';
 
 interface AdminCanvasTemplatesSectionProps {
   templateId: string | undefined;
@@ -38,6 +41,7 @@ interface AdminCanvasTemplatesSectionProps {
 
 const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: AdminCanvasTemplatesSectionProps) => {
   const { t } = useTranslation();
+  const { hubNameId } = useHub();
 
   const CreateCanvasTemplateDialogWithCanvases = useMemo(
     () => (props: CreateCanvasTemplateDialogProps) => {
@@ -67,6 +71,27 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
     [loadCanvases]
   );
 
+  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'network-only',
+  });
+
+  const getTemplateValue = useCallback(
+    (template: AdminCanvasTemplateFragment) => {
+      fetchCanvasValue({ variables: { hubId: hubNameId, canvasTemplateId: template.id } });
+    },
+    [hubNameId, fetchCanvasValue]
+  );
+
+  const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
+    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'network-only' });
+
+  const getImportedTemplateValue = useCallback(
+    (template: AdminCanvasTemplateFragment) => {
+      fetchInnovationPackCanvasValue({ variables: { canvasTemplateId: template.id } });
+    },
+    [fetchInnovationPackCanvasValue]
+  );
+
   return (
     <AdminTemplatesSection
       {...props}
@@ -78,6 +103,12 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
       templateCardComponent={CanvasTemplateCard}
       templateImportCardComponent={CanvasImportTemplateCard}
       templatePreviewComponent={CanvasTemplatePreview}
+      getTemplateValue={getTemplateValue}
+      getImportedTemplateValue={getImportedTemplateValue}
+      templateValue={canvasValue?.hub.templates?.canvasTemplate}
+      importedTemplateValue={
+        importedCanvasValue?.library?.innovationPacks?.flatMap(ip => ip.templates?.canvasTemplate)[0]
+      }
       createTemplateDialogComponent={CreateCanvasTemplateDialogWithCanvases}
       editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases}
       useCreateTemplateMutation={useCreateCanvasTemplateMutation}

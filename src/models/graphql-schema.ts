@@ -16960,7 +16960,6 @@ export type HubTemplatesQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            value: string;
             info: {
               __typename?: 'TemplateInfo';
               id: string;
@@ -17074,7 +17073,6 @@ export type AdminAspectTemplateFragment = {
 export type AdminCanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
-  value: string;
   info: {
     __typename?: 'TemplateInfo';
     id: string;
@@ -17098,6 +17096,8 @@ export type AdminCanvasTemplateFragment = {
   };
 };
 
+export type AdminCanvasTemplateValueFragment = { __typename?: 'CanvasTemplate'; id: string; value: string };
+
 export type TemplateInfoFragment = {
   __typename?: 'TemplateInfo';
   id: string;
@@ -17120,12 +17120,33 @@ export type TemplateInfoFragment = {
     | undefined;
 };
 
+export type HubTemplatesCanvasTemplateWithValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type HubTemplatesCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationPacksQuery = {
   __typename?: 'Query';
   library: {
     __typename?: 'Library';
+    id: string;
     innovationPacks: Array<{
       __typename?: 'InnovatonPack';
       id: string;
@@ -17178,7 +17199,6 @@ export type InnovationPacksQuery = {
             canvasTemplates: Array<{
               __typename?: 'CanvasTemplate';
               id: string;
-              value: string;
               info: {
                 __typename?: 'TemplateInfo';
                 id: string;
@@ -17228,6 +17248,28 @@ export type InnovationPacksQuery = {
                   | undefined;
               };
             }>;
+          }
+        | undefined;
+    }>;
+  };
+};
+
+export type InnovationPackCanvasTemplateWithValueQueryVariables = Exact<{
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type InnovationPackCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  library: {
+    __typename?: 'Library';
+    id: string;
+    innovationPacks: Array<{
+      __typename?: 'InnovatonPack';
+      id: string;
+      templates?:
+        | {
+            __typename?: 'TemplatesSet';
+            canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
           }
         | undefined;
     }>;

@@ -22,6 +22,8 @@ export interface Template extends Identifiable {
   info: TemplateInfoFragment;
 }
 
+export interface TemplateValue {}
+
 interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   open: boolean;
   onClose: DialogProps['onClose'];
@@ -36,8 +38,15 @@ interface EditTemplateDialogProps<T extends Template, SubmittedValues extends {}
   template: T | undefined;
 }
 
-export interface TemplatePreviewProps<T extends Template> {
+export interface TemplatePreviewProps<T extends Template, V extends TemplateValue> {
   template: T;
+  /**
+   * getTemplateValue will trigger the lazyQuery to retrieve the template value.
+   * Some Templates like AspectTemplates come with all the data already in template so calling this function
+   * is not needed, but in general call this function when you need templateValue filled with the actual template data.
+   */
+  getTemplateValue?: (template: T) => void;
+  templateValue?: V | undefined;
 }
 
 export interface MutationHook<Variables, MutationResult> {
@@ -47,6 +56,7 @@ export interface MutationHook<Variables, MutationResult> {
 type AdminAspectTemplatesSectionProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
+  V extends TemplateValue,
   SubmittedValues extends {},
   CreateM,
   UpdateM,
@@ -69,7 +79,11 @@ type AdminAspectTemplatesSectionProps<
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
+  getTemplateValue?: (template: T) => void;
+  getImportedTemplateValue?: (template: T) => void;
+  templateValue?: V | undefined;
+  importedTemplateValue?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
@@ -80,6 +94,7 @@ type AdminAspectTemplatesSectionProps<
 const AdminTemplatesSection = <
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
+  V extends TemplateValue,
   SubmittedValues extends {},
   CreateM,
   UpdateM,
@@ -106,7 +121,7 @@ const AdminTemplatesSection = <
   createTemplateDialogComponent,
   editTemplateDialogComponent,
   ...dialogProps
-}: AdminAspectTemplatesSectionProps<T, Q, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+}: AdminAspectTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
@@ -292,7 +307,11 @@ const AdminTemplatesSection = <
           onClose={onCloseTemplateDialog}
           {...buildTemplateEditLink(selectedTemplate)}
         >
-          <TemplatePreview template={selectedTemplate} />
+          <TemplatePreview
+            template={selectedTemplate}
+            getTemplateValue={dialogProps.getTemplateValue}
+            templateValue={dialogProps.templateValue}
+          />
         </TemplateViewDialog>
       )}
       {deletingTemplateId && (
