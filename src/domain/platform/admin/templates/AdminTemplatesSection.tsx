@@ -7,7 +7,7 @@ import { TemplateInfoFragment } from '../../../../models/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler, useNotification, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -76,6 +76,7 @@ type AdminAspectTemplatesSectionProps<
   buildTemplateLink: (aspect: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
+  canImportTemplates: boolean;
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
@@ -120,6 +121,7 @@ const AdminTemplatesSection = <
   templatePreviewComponent: TemplatePreview,
   createTemplateDialogComponent,
   editTemplateDialogComponent,
+  canImportTemplates,
   ...dialogProps
 }: AdminAspectTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
@@ -130,9 +132,6 @@ const AdminTemplatesSection = <
   const onError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
-
-  const { user: userMetadata } = useUserContext();
-  const userIsPlatformAdmin = userMetadata?.permissions.isPlatformAdmin;
 
   const [isCreateTemplateDialogOpen, setCreateTemplateDialogOpen] = useState(false);
   const [isImportTemplatesDialogOpen, setImportTemplatesDialogOpen] = useState(false);
@@ -247,7 +246,7 @@ const AdminTemplatesSection = <
         headerText={headerText}
         primaryAction={
           <Box>
-            {userIsPlatformAdmin && (
+            {canImportTemplates && (
               <Button
                 onClick={openImportTemplateDialog}
                 sx={{ marginRight: theme => theme.spacing(1) }}
