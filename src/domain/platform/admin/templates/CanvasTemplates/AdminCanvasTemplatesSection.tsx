@@ -34,6 +34,7 @@ interface AdminCanvasTemplatesSectionProps {
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
   loadInnovationPacks: () => void;
   innovationPacks: InnovationPack<AdminCanvasTemplateFragment>[];
+  canImportTemplates: boolean;
 }
 
 const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: AdminCanvasTemplatesSectionProps) => {

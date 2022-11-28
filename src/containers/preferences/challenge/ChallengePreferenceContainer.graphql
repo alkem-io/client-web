@@ -1,7 +1,7 @@
-query challengePreferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId){
+query challengePreferences($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
     id
-    challenge(ID: $challengeId) {
+    challenge(ID: $challengeNameId) {
       id
       preferences {
         id

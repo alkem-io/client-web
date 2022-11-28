@@ -1059,6 +1059,11 @@
         }
       },
       "challenge": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.challenge) authorization preferences"
+          }
+        },
         "community": {
           "preferences": {
             "title": "Membership",

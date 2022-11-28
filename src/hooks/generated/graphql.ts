@@ -6626,10 +6626,10 @@ export function refetchOrganizationAssociatesQuery(variables: SchemaTypes.Organi
   return { query: OrganizationAssociatesDocument, variables: variables };
 }
 export const ChallengePreferencesDocument = gql`
-  query challengePreferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
+  query challengePreferences($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
       id
-      challenge(ID: $challengeId) {
+      challenge(ID: $challengeNameId) {
         id
         preferences {
           id
@@ -6660,8 +6660,8 @@ export const ChallengePreferencesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengePreferencesQuery({
  *   variables: {
- *      hubId: // value for 'hubId'
- *      challengeId: // value for 'challengeId'
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
  *   },
  * });
  */
@@ -18825,6 +18825,10 @@ export const HubTemplatesDocument = gql`
       id
       templates {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         aspectTemplates {
           ...AdminAspectTemplate
         }

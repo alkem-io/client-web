@@ -8703,8 +8703,8 @@ export type OrganizationAssociatesQuery = {
 };
 
 export type ChallengePreferencesQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengePreferencesQuery = {
@@ -16930,6 +16930,9 @@ export type HubTemplatesQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           aspectTemplates: Array<{
             __typename?: 'AspectTemplate';
             id: string;
