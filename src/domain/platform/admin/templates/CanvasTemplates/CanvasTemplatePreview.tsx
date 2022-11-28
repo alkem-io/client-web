@@ -1,7 +1,7 @@
 import { Box, styled, Typography } from '@mui/material';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdminCanvasTemplateFragment } from '../../../../../models/graphql-schema';
+import { AdminCanvasTemplateFragment, AdminCanvasTemplateValueFragment } from '../../../../../models/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
@@ -13,22 +13,27 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 
 interface CanvasTemplateViewProps {
   template: AdminCanvasTemplateFragment;
+  getTemplateValue?: (template: AdminCanvasTemplateFragment) => void;
+  templateValue?: AdminCanvasTemplateValueFragment | undefined;
 }
 
-const CanvasTemplatePreview = ({ template }: CanvasTemplateViewProps) => {
+const CanvasTemplatePreview = ({ template, getTemplateValue = () => {}, templateValue }: CanvasTemplateViewProps) => {
   const { t } = useTranslation();
 
   const {
     info: { tagset: { tags } = {}, description = '' },
-    value,
   } = template;
+
+  useEffect(() => {
+    getTemplateValue(template);
+  }, [getTemplateValue, template]);
 
   const canvasFromTemplate = useMemo(() => {
     return {
       id: '__template',
-      value,
+      value: templateValue?.value ?? '',
     };
-  }, [value]);
+  }, [templateValue]);
 
   return (
     <>
@@ -44,7 +49,7 @@ const CanvasTemplatePreview = ({ template }: CanvasTemplateViewProps) => {
         <TagsComponent tags={tags || []} />
       </Box>
       <Box height={theme => theme.spacing(40)}>
-        {value && (
+        {templateValue?.value && (
           <CanvasWhiteboard
             entities={{
               canvas: canvasFromTemplate,

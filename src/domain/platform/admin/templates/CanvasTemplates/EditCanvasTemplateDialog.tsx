@@ -1,8 +1,12 @@
-import { AdminCanvasTemplateFragment, CanvasDetailsFragment } from '../../../../../models/graphql-schema';
+import {
+  AdminCanvasTemplateFragment,
+  AdminCanvasTemplateValueFragment,
+  CanvasDetailsFragment,
+} from '../../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CanvasTemplateForm, { CanvasTemplateFormSubmittedValues, CanvasTemplateFormValues } from './CanvasTemplateForm';
 import Dialog from '@mui/material/Dialog';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
@@ -13,6 +17,8 @@ export interface EditCanvasTemplateDialogProps {
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   onDelete: () => void;
   template: AdminCanvasTemplateFragment | undefined;
+  getTemplateValue: (template: AdminCanvasTemplateFragment) => void;
+  templateValue: AdminCanvasTemplateValueFragment | undefined;
   canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
@@ -25,15 +31,23 @@ const EditCanvasTemplateDialog = ({
   onSubmit,
   onDelete,
   getParentCalloutId,
+  getTemplateValue,
+  templateValue,
 }: EditCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!template) return;
+
+    getTemplateValue(template);
+  }, [getTemplateValue, template]);
 
   if (!template) {
     return null;
   }
 
   const values: Partial<CanvasTemplateFormValues> = {
-    value: template.value,
+    value: templateValue?.value,
     title: template.info.title,
     description: template.info.description,
     tags: template.info.tagset?.tags,
