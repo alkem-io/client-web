@@ -19283,10 +19283,11 @@ export const ActivityCreatedDocument = gql`
   subscription activityCreated($collaborationID: UUID!) {
     activityCreated(collaborationID: $collaborationID) {
       activity {
-        id
+        ...ActivityLogOnCollaboration
       }
     }
   }
+  ${ActivityLogOnCollaborationFragmentDoc}
 `;
 
 /**
