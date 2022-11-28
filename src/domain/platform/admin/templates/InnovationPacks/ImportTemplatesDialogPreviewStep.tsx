@@ -13,7 +13,7 @@ export interface ImportTemplatesDialogPreviewStepProps<
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue
 > {
-  onImportTemplate: (template: T) => Promise<void>;
+  onImportTemplate: (template: T, templateValue: V | undefined) => Promise<void>;
   onClose: () => void;
   template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
@@ -37,7 +37,9 @@ const ImportTemplatesDialogPreviewStep = <
 }: ImportTemplatesDialogPreviewStepProps<T, Q, V>) => {
   const { t } = useTranslation();
 
-  const [importingTemplate, doImportTemplate] = useLoadingState(() => onImportTemplate(template));
+  const [importingTemplate, doImportTemplate] = useLoadingState(() =>
+    onImportTemplate(template, importedTemplateValue)
+  );
 
   const handleClickImport = async () => {
     doImportTemplate();

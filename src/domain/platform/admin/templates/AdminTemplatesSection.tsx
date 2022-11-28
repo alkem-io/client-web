@@ -181,7 +181,7 @@ const AdminTemplatesSection = <
     closeCreateTemplateDialog();
   };
 
-  const handleImportTemplate = async (template: T) => {
+  const handleImportTemplate = async (template: T, value: V | undefined) => {
     if (!templatesSetId) {
       throw new TypeError('TemplatesSet ID not loaded.');
     }
@@ -191,6 +191,7 @@ const AdminTemplatesSection = <
     const { id: infoId, ...infoData } = info;
     const values: SubmittedValues = {
       ...(templateData as any),
+      ...(value as any),
       info: {
         title: infoData.title,
         tags: infoData.tagset?.tags,
