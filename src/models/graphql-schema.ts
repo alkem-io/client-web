@@ -32,30 +32,10 @@ export type Apm = {
   rumEnabled: Scalars['Boolean'];
 };
 
-export type Activity = {
-  __typename?: 'Activity';
-  /** The id of the Collaboration entity within which the Activity was generated. */
-  collaborationID: Scalars['UUID'];
-  /** The timestamp for the Activity. */
-  createdDate: Scalars['DateTime'];
-  /** The text details for this Activity. */
-  description: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The id of the parent of the entity within which the Activity was generated. */
-  parentID?: Maybe<Scalars['UUID']>;
-  /** The id of the entity that is associated with this Activity. */
-  resourceID: Scalars['UUID'];
-  /** The id of the user that triggered this Activity. */
-  triggeredBy: Scalars['UUID'];
-  /** The event type for this Activity. */
-  type: ActivityEventType;
-};
-
 export type ActivityCreatedSubscriptionResult = {
   __typename?: 'ActivityCreatedSubscriptionResult';
   /** The newly created activity */
-  activity: Activity;
+  activity: ActivityLogEntry;
 };
 
 export enum ActivityEventType {
@@ -17319,7 +17299,273 @@ export type ActivityCreatedSubscription = {
   __typename?: 'Subscription';
   activityCreated: {
     __typename?: 'ActivityCreatedSubscriptionResult';
-    activity: { __typename?: 'Activity'; id: string };
+    activity:
+      | {
+          __typename: 'ActivityLogEntryCalloutCanvasCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutCardComment';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutCardCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutDiscussionComment';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutPublished';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
+        }
+      | {
+          __typename: 'ActivityLogEntryChallengeCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          challenge: {
+            __typename?: 'Challenge';
+            id: string;
+            nameID: string;
+            displayName: string;
+            context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryMemberJoined';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          communityType: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          community: { __typename?: 'Community'; id: string; displayName: string };
+          user: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryOpportunityCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+          opportunity: {
+            __typename?: 'Opportunity';
+            id: string;
+            nameID: string;
+            displayName: string;
+            context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryUpdateSent';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            profile?:
+              | {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                }
+              | undefined;
+          };
+        };
   };
 };
 
