@@ -60,7 +60,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
       )}
       <Box sx={theme => ({ marginLeft: theme.spacing(2), flexGrow: 1 })}>
         <Typography variant="caption">{loading ? <Skeleton width="60%" /> : title}</Typography>
-        <ClampedTypography clamp={2}>
+        <ClampedTypography clamp={2} component="span">
           {loading ? <Skeleton /> : url ? <Link to={url}>{children}</Link> : children}
         </ClampedTypography>
       </Box>

@@ -1,5 +1,6 @@
 query InnovationPacks {
   library {
+    id
     innovationPacks {
       id
       nameID
@@ -26,6 +27,19 @@ query InnovationPacks {
         }
         lifecycleTemplates {
           ...AdminLifecycleTemplate
+        }
+      }
+    }
+  }
+}
+query InnovationPackCanvasTemplateWithValue($canvasTemplateId: UUID!) {
+  library {
+    id
+    innovationPacks {
+      id
+      templates {
+        canvasTemplate(ID: $canvasTemplateId){
+          ...AdminCanvasTemplateValue
         }
       }
     }
