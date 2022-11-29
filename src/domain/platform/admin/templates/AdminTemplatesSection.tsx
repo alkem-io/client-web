@@ -57,7 +57,7 @@ type AdminTemplatesSectionProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'info'>,
+  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -96,7 +96,7 @@ const AdminTemplatesSection = <
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'info'>,
+  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -190,7 +190,7 @@ const AdminTemplatesSection = <
     const { id, info, ...templateData } = template;
     const { id: infoId, ...infoData } = info;
     const values: SubmittedValues = {
-      ...templateData as SubmittedValues,
+      ...(templateData as SubmittedValues),
       ...value,
       info: {
         title: infoData.title,
