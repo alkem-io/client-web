@@ -1,5 +1,5 @@
-import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
-import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
+import { exportToBlob, serializeAsJSON } from '@alkemio/excalidraw';
+import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,7 +32,7 @@ import { Loading } from '../../../../common/components/core';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import CanvasListItemState from '../CanvasList/CanvasListItemState';
-import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
+import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
 import { useUrlParams } from '../../../../hooks';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
