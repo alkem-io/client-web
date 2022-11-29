@@ -1,11 +1,11 @@
 subscription activityCreated($collaborationID: UUID!) {
   activityCreated(collaborationID: $collaborationID) {
     activity {
-      id
+      ...ActivityLogOnCollaboration
     }
   }
 }
-# use when subscription is working correctly on the server
+
 fragment ActivityLogOnCollaboration on ActivityLogEntry {
   id
   collaborationID
