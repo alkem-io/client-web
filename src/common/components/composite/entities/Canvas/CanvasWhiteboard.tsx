@@ -1,6 +1,6 @@
-import { Excalidraw } from '@excalidraw/excalidraw';
-import { ExportedDataState, ImportedDataState } from '@excalidraw/excalidraw/types/data/types';
-import { ExcalidrawAPIRefValue, ExcalidrawProps, ExportOpts } from '@excalidraw/excalidraw/types/types';
+import { Excalidraw } from '@alkemio/excalidraw';
+import { ExportedDataState, ImportedDataState } from '@alkemio/excalidraw/types/data/types';
+import { ExcalidrawAPIRefValue, ExcalidrawProps, ExportOpts } from '@alkemio/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -64,7 +64,11 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
     const value = canvas?.value;
-    const data = useMemo(() => (value ? JSON.parse(value) : initialExcalidrawState), [value]);
+    const data = useMemo(() => {
+      const parsedData = value ? JSON.parse(value) : initialExcalidrawState;
+      parsedData.zoomToFit = true;
+      return parsedData;
+    }, [value]);
 
     const refreshOnDataChange = useAsyncInterruptibleCallback(check =>
       debounce(async debouncedData => {
