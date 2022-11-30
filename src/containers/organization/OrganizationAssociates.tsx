@@ -8,10 +8,14 @@ import {
   useRemoveUserAsOrganizationAdminMutation,
   useRemoveUserAsOrganizationOwnerMutation,
   useRemoveUserFromOrganizationMutation,
-} from '../../hooks/generated/graphql';
+} from '../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../hooks';
-import { AuthorizationCredential, Organization, UserDisplayNameFragment } from '../../models/graphql-schema';
-import { Member } from '../../models/User';
+import {
+  AuthorizationCredential,
+  Organization,
+  UserDisplayNameFragment,
+} from '../../core/apollo/generated/graphql-schema';
+import { Member } from '../../domain/community/contributor/user/models/User';
 import { useAvailableMembersWithCredential } from '../../domain/community/community/useAvailableMembersWithCredential';
 import { AvailableMembersResults } from '../../domain/community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 

@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { once } from 'lodash';
 import { useConfig } from '../../../../hooks';
-import { AuthenticationProviderConfigUnion, OryConfig } from '../../../../models/graphql-schema';
+import { AuthenticationProviderConfigUnion, OryConfig } from '../../../apollo/generated/graphql-schema';
 import { error as logError } from '../../../../services/logging/sentry/log';
 
 export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryConfig {

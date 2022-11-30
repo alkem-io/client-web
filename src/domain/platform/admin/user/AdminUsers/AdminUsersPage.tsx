@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import AdminLayout from '../../toplevel/AdminLayout';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { AdminSection } from '../../toplevel/constants';
 import { useUpdateNavigation } from '../../../../../hooks';
 import useUserList from '../../../../community/contributor/user/providers/useUserList';

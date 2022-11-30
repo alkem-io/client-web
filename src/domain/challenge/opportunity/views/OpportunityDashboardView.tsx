@@ -17,8 +17,8 @@ import {
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
   Reference,
-} from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import { buildOpportunityUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';

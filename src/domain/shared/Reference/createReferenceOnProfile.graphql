@@ -1,0 +1,5 @@
+mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
+  createReferenceOnProfile(referenceInput: $input) {
+    ...ReferenceDetails
+  }
+}

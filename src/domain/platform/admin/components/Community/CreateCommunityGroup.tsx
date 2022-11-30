@@ -1,9 +1,12 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../../../hooks/generated/graphql';
+import {
+  GroupDetailsFragmentDoc,
+  useCreateGroupOnCommunityMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../../hooks';
 import { useUpdateNavigation } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages';
+import { PageProps } from '../../../../shared/types/PageProps';
 import CreateGroupForm from '../Common/CreateGroupForm';
 import { WithCommunity } from './CommunityTypes';
 

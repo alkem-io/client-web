@@ -13,7 +13,7 @@ import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,
   useMeQuery,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { Loading } from '../../../core';
 import WrapperButton from '../../../core/WrapperButton';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';

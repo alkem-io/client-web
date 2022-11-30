@@ -7,8 +7,11 @@ import ConfirmationDialog from '../../../../common/components/composite/dialogs/
 import { ICanvasActions } from '../../../../containers/canvas/CanvasActionsContainer';
 import CanvasValueContainer from '../../../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../../../hooks';
-import { CanvasCheckoutStateEnum, CreateCanvasCanvasTemplateFragment } from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+import {
+  CanvasCheckoutStateEnum,
+  CreateCanvasCanvasTemplateFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { CanvasFragmentWithCallout } from '../../callout/useCallouts';

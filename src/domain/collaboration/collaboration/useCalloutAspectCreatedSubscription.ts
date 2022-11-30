@@ -1,9 +1,9 @@
-import { CalloutAspectCreatedDocument } from '../../../hooks/generated/graphql';
+import { CalloutAspectCreatedDocument } from '../../../core/apollo/generated/apollo-hooks';
 import {
   AspectsOnCalloutFragment,
   CalloutAspectCreatedSubscription,
   CalloutAspectCreatedSubscriptionVariables,
-} from '../../../models/graphql-schema';
+} from '../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../shared/subscriptions/useSubscriptionToSubEntity';
 
 const useCalloutAspectCreatedSubscription = createUseSubscriptionToSubEntityHook<

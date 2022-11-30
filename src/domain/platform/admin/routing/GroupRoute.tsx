@@ -4,9 +4,9 @@ import { GroupPage } from '../components';
 import { WithCommunity } from '../components/Community/CommunityTypes';
 import EditMembersPage from '../components/Group/EditMembersPage';
 import { Loading } from '../../../../common/components/core';
-import { UserGroup } from '../../../../models/graphql-schema';
-import { Error404 } from '../../../../pages';
-import { PageProps } from '../../../../pages/common';
+import { UserGroup } from '../../../../core/apollo/generated/graphql-schema';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { PageProps } from '../../../shared/types/PageProps';
 
 interface Props extends PageProps, WithCommunity {
   group?: UserGroup;

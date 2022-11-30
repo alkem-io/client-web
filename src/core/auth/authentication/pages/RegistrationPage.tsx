@@ -11,7 +11,7 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { useConfig } from '../../../../hooks';
-import { AUTH_LOGIN_PATH } from '../../../../models/constants';
+import { AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 
 interface RegisterPageProps {

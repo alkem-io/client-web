@@ -6,11 +6,11 @@ import {
   useChallengeProfileInfoQuery,
   useHubLifecycleTemplatesQuery,
   useUpdateChallengeInnovationFlowMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/UpdateInnovationFlow';
 import ChallengeLifecycleContainer from '../../../../../containers/challenge/ChallengeLifecycleContainer';
-import { LifecycleType } from '../../../../../models/graphql-schema';
+import { LifecycleType } from '../../../../../core/apollo/generated/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const ChallengeInnovationFlowView: FC = () => {

@@ -1,9 +1,12 @@
 import React, { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../core/container/container';
 import { useApolloErrorHandler } from '../../../hooks';
-import { useChallengePreferencesQuery, useUpdatePreferenceOnChallengeMutation } from '../../../hooks/generated/graphql';
-import { ChallengePreferenceType, Preference, PreferenceType } from '../../../models/graphql-schema';
+import {
+  useChallengePreferencesQuery,
+  useUpdatePreferenceOnChallengeMutation,
+} from '../../../core/apollo/generated/apollo-hooks';
+import { ChallengePreferenceType, Preference, PreferenceType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface ChallengePreferenceContainerEntities {
   preferences: Preference[];

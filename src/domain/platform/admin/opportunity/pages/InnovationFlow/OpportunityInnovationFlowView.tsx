@@ -6,11 +6,11 @@ import {
   useHubLifecycleTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityInnovationFlowMutation,
-} from '../../../../../../hooks/generated/graphql';
+} from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
 import OpportunityLifecycleContainer from '../../../../../../containers/opportunity/OpportunityLifecycleContainer';
-import { LifecycleType } from '../../../../../../models/graphql-schema';
+import { LifecycleType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const OpportunityInnovationFlowView: FC = () => {

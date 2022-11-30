@@ -1,8 +1,0 @@
-query globalActivity {
-    metadata {
-        metrics {
-            name
-            value
-        }
-    }
-}

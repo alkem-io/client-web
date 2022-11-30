@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { useChallengeInfoQuery } from '../../../../hooks/generated/graphql';
-import { AuthorizationPrivilege, ChallengeInfoFragment } from '../../../../models/graphql-schema';
+import { useChallengeInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, ChallengeInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../../hooks';
 
 interface ChallengePermissions {

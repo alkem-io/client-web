@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Lifecycle, Maybe } from '../../../../../models/graphql-schema';
+import { Lifecycle, Maybe } from '../../../../../core/apollo/generated/graphql-schema';
 import Card, { CardProps } from '../../../core/Card';
 import { Metrics, MetricItem } from './Metrics';
 import StateActivityCardItem from './StateMetricCardItem';

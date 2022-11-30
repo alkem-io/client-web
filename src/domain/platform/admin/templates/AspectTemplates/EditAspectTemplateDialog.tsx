@@ -1,4 +1,4 @@
-import { AdminAspectTemplateFragment } from '../../../../../models/graphql-schema';
+import { AdminAspectTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFormValues } from './AspectTemplateForm';
 import Dialog from '@mui/material/Dialog';

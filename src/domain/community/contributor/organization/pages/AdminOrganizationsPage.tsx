@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import AdminLayout from '../../../../platform/admin/toplevel/AdminLayout';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { AdminSection } from '../../../../platform/admin/toplevel/constants';
 import useAdminGlobalOrganizationsList from '../../../../platform/admin/organization/GlobalOrganizationsList/useAdminGlobalOrganizationsList';
 import SearchableListLayout from '../../../../shared/components/SearchableListLayout';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../models/container';
+import { ContainerChildProps } from '../../core/container/container';
 import {
   MetricsItemFragment,
   AuthorizationPrivilege,
@@ -8,12 +8,12 @@ import {
   LifecycleContextTabFragment,
   Scalars,
   Tagset,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 import {
   useChallengeContextQuery,
   useHubContextQuery,
   useOpportunityContextQuery,
-} from '../../hooks/generated/graphql';
+} from '../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../hooks';
 
 interface ContextTabPermissions {

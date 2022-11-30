@@ -5,9 +5,9 @@ import {
   useCreateCalloutMutation,
   useHubCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
-import { CalloutState, CalloutType } from '../../../../../models/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 
 export type CalloutCreationType = {

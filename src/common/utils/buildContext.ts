@@ -5,7 +5,7 @@ import {
   Location,
   UpdateContextInput,
   UpdateReferenceInput,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 
 interface ContextObject {
   background?: string;

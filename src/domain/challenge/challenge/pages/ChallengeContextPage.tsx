@@ -4,7 +4,7 @@ import ContextTabContainer from '../../../../containers/context/ContextTabContai
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ChallengeContextView } from '../views/ChallengeContextView';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 
 export interface ChallengeContextPageProps extends PageProps {}
 

@@ -6,15 +6,20 @@ import {
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
-import { EditMode } from '../../../../../models/editMode';
-import { CreateOrganizationInput, UpdateOrganizationInput, Organization } from '../../../../../models/graphql-schema';
-import { PageProps } from '../../../../../pages';
+import { EditMode } from '../../../../../core/forms/editMode';
+import {
+  CreateOrganizationInput,
+  UpdateOrganizationInput,
+  Organization,
+} from '../../../../../core/apollo/generated/graphql-schema';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { Loading } from '../../../../../common/components/core';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
+
 interface Props extends PageProps {
   title?: string;
   mode: EditMode;

@@ -1,5 +1,5 @@
-import { ApplicationForRoleResult } from '../../../models/graphql-schema';
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { ApplicationForRoleResult } from '../../../core/apollo/generated/graphql-schema';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
 
 type WithType = { type: ApplicationTypeEnum };
 export type ApplicationWithType = ApplicationForRoleResult & WithType;

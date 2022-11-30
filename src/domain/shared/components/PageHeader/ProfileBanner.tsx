@@ -2,7 +2,7 @@ import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import { DEFAULT_BANNER_URL, BANNER_ASPECT_RATIO } from './PageBanner';
-import { Location } from '../../../../models/graphql-schema';
+import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../common/location/LocationView';
 import { formatLocation } from '../../../common/location/LocationUtils';

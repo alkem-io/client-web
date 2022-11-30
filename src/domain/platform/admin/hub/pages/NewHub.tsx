@@ -12,10 +12,10 @@ import {
   HubDetailsFragmentDoc,
   useCreateHubMutation,
   useOrganizationsListQuery,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
 import { createContextInput } from '../../../../../common/utils/buildContext';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 
 interface NewHubProps extends PageProps {}
 

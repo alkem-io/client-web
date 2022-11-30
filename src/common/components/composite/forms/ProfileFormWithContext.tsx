@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { ElementType, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, LifecycleType, Reference, Tagset } from '../../../../models/graphql-schema';
+import { Context, LifecycleType, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import {
   ContextSegmentProps,

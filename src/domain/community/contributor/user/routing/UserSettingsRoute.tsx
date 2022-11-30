@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { useUpdateNavigation, useConfig } from '../../../../../hooks';
-import { FEATURE_SSI } from '../../../../../models/constants';
-import { PageProps, Error404 } from '../../../../../pages';
+import { FEATURE_SSI } from '../../../../platform/config/features.constants';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { EntityPageLayoutHolder } from '../../../../shared/layout/PageLayout';
 import EditUserProfilePage from '../pages/EditUserProfilePage';
 import UserCredentialsPage from '../pages/UserCredentialsPage';

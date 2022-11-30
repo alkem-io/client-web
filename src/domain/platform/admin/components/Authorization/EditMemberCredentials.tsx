@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useUserContext } from '../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
-import AuthorizationPageProps from '../../../../../pages/Admin/AuthorizationPageProps';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+import AuthorizationPageProps from '../../authorization/AuthorizationPageProps';
 import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential';
 

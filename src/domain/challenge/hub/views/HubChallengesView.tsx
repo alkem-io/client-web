@@ -12,8 +12,8 @@ import {
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import { ViewProps } from '../../../../models/view';
-import { Challenge, ChallengeCardFragment } from '../../../../models/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
+import { Challenge, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 
 interface Permissions {

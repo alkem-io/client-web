@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { ContainerHook } from '../../../models/container';
+import { ContainerHook } from '../../../core/container/container';
 import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
@@ -7,9 +7,13 @@ import {
   useHubAspectSettingsQuery,
   useOpportunityAspectSettingsQuery,
   useUpdateAspectMutation,
-} from '../../../hooks/generated/graphql';
-import { Aspect, AspectSettingsCalloutFragment, AspectSettingsFragment } from '../../../models/graphql-schema';
-import { Reference } from '../../../models/Profile';
+} from '../../../core/apollo/generated/apollo-hooks';
+import {
+  Aspect,
+  AspectSettingsCalloutFragment,
+  AspectSettingsFragment,
+} from '../../../core/apollo/generated/graphql-schema';
+import { Reference } from '../../../domain/common/profile/Profile';
 import { newReferenceName } from '../../../common/utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';

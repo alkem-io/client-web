@@ -1,8 +1,8 @@
 import Grid from '@mui/material/Grid';
 import TableCell from '@mui/material/TableCell';
 import React, { FC } from 'react';
-import { Member } from '../../../../../models/User';
-import { UserDisplayNameFragment } from '../../../../../models/graphql-schema';
+import { Member } from '../../../../community/contributor/user/models/User';
+import { UserDisplayNameFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { AvailableMembers, EditMembers } from './EditMembers';
 import { Box, Typography } from '@mui/material';
 

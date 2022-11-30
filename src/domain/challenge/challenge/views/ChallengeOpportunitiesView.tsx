@@ -13,7 +13,7 @@ import {
   ChallengeContainerEntities,
   ChallengeContainerState,
 } from '../../../../containers/challenge/ChallengePageContainer';
-import { Opportunity } from '../../../../models/graphql-schema';
+import { Opportunity } from '../../../../core/apollo/generated/graphql-schema';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { useChallenge } from '../hooks/useChallenge';
 

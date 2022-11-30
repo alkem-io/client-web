@@ -1,5 +1,5 @@
 import { ValueType } from '../filterFn';
-import { AspectCardFragment } from '../../../../../models/graphql-schema';
+import { AspectCardFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export const aspectValueGetter = ({ id, displayName, profile, type }: AspectCardFragment): ValueType => ({
   id,

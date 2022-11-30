@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Grid, Link, Tooltip, Typography as MUITypography } from '@mui/material';
-import { Reference } from '../../../../../models/Profile';
+import { Reference } from '../../../../../domain/common/profile/Profile';
 import { createStyles, makeStyles } from '@mui/styles';
 
 interface ReferenceProps {

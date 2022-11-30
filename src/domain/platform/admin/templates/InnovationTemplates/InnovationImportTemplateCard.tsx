@@ -1,7 +1,7 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
-import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';

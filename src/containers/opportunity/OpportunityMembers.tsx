@@ -4,9 +4,14 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,
   useRemoveUserAsOpportunityAdminMutation,
-} from '../../hooks/generated/graphql';
-import { AuthorizationCredential, Community, Opportunity, UserDisplayNameFragment } from '../../models/graphql-schema';
-import { Member } from '../../models/User';
+} from '../../core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationCredential,
+  Community,
+  Opportunity,
+  UserDisplayNameFragment,
+} from '../../core/apollo/generated/graphql-schema';
+import { Member } from '../../domain/community/contributor/user/models/User';
 import {
   useAvailableMembersWithCredential,
   AvailableMembersResults,

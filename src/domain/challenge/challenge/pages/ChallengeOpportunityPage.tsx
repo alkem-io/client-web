@@ -9,7 +9,7 @@ import ChallengePageContainer from '../../../../containers/challenge/ChallengePa
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ChallengeOpportunitiesView } from '../views/ChallengeOpportunitiesView';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';

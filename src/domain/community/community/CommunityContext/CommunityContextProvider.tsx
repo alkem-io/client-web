@@ -4,7 +4,7 @@ import {
   useChallengeCommunityQuery,
   useHubCommunityQuery,
   useOpportunityCommunityQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 
 /**

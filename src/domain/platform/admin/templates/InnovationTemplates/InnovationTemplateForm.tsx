@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
-import { CreateTemplateInfoInput, LifecycleType, Visual } from '../../../../../models/graphql-schema';
+import { CreateTemplateInfoInput, LifecycleType, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';

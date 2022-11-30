@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Preference, UserPreferenceType } from '../../../../../models/graphql-schema';
-import { ViewProps } from '../../../../../models/view';
+import { Preference, UserPreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../../core/container/view';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import { useUserContext } from '../../../../../hooks';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';

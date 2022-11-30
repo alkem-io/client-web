@@ -1,17 +1,17 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '../../shared/components/AuthorAvatar/models/author';
 import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
-import { useAuthorDetailsQuery } from '../../../hooks/generated/graphql';
+import { useAuthorDetailsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash';
-import { COUNTRIES_BY_CODE } from '../../../models/constants';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { COUNTRIES_BY_CODE } from '../../common/location/countries.constants';
+import { AuthorizationCredential } from '../../../core/apollo/generated/graphql-schema';
 import { useChallenge, useHub, useOpportunity, WithCredentials } from '../../../hooks';
 import { useTranslation } from 'react-i18next';
 import {
   MessageAuthorRoleNameKey,
   HOST_TRANSLATION_KEY,
   LEAD_TRANSLATION_KEY,
-} from '../../../models/constants/translation.constants';
+} from '../../community/contributor/user/constants/translation.constants';
 
 type ResourceTypeName = 'hub' | 'challenge' | 'opportunity';
 

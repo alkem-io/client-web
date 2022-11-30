@@ -3,7 +3,7 @@ import {
   CalloutType,
   CalloutVisibility,
   CanvasDetailsFragment,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../useCallouts';
 
 // These are two utility functions to reduce an array of callouts with an inside array of aspects/canvases

@@ -1,7 +1,7 @@
 import {
   useAssignOrganizationAsCommunityMemberMutation,
   useRemoveOrganizationAsCommunityMemberMutation,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityMembersAssignment from './useCommunityMembersAssignment';
 import useAllPossibleOrganizations from './useAllPossibleOrganizations';
 import { UseOrganizationAssignmentOptions, UseOrganizationAssignmentProvided } from './OrganizationAssignmentTypes';

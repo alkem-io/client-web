@@ -8,8 +8,8 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
   useRemoveUserAsChallengeAdminMutation,
-} from '../../../../../hooks/generated/graphql';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ChallengeAuthorizationViewProps {
   credential: AuthorizationCredential;

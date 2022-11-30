@@ -6,7 +6,7 @@ import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
 
-import { PageProps } from '../../../../../pages';
+import { PageProps } from '../../../../shared/types/PageProps';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
@@ -14,7 +14,7 @@ import {
   useCreateOpportunityMutation,
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler, useUrlParams, useNotification, useChallenge } from '../../../../../hooks';
 import { useHub } from '../../../../../hooks';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
@@ -127,4 +127,5 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
     </>
   );
 };
+
 export default OpportunityList;

@@ -1,5 +1,5 @@
 import { ValueType } from '../filterFn';
-import { Challenge, Hub, Opportunity } from '../../../../../models/graphql-schema';
+import { Challenge, Hub, Opportunity } from '../../../../../core/apollo/generated/graphql-schema';
 
 type EntityType = Hub | Challenge | Opportunity;
 

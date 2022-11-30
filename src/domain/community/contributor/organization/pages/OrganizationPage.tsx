@@ -4,7 +4,7 @@ import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { useUpdateNavigation } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 
 interface OrganizationPageProps extends PageProps {}
 

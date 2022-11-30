@@ -6,10 +6,10 @@ import {
   useJoinCommunityMutation,
   useUserApplicationsQuery,
   useUserProfileLazyQuery,
-} from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../common/utils/urlBuilders';
-import { AuthorizationPrivilege } from '../../models/graphql-schema';
+import { AuthorizationPrivilege } from '../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../domain/community/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
 import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';

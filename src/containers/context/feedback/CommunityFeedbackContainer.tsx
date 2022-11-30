@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../core/container/container';
 import {
   useCommunityFeedbackTemplatesQuery,
   useCreateFeedbackOnCommunityContextMutation,
-} from '../../../hooks/generated/graphql';
-import { CreateNvpInput, FeedbackTemplate } from '../../../models/graphql-schema';
+} from '../../../core/apollo/generated/apollo-hooks';
+import { CreateNvpInput, FeedbackTemplate } from '../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../../domain/community/community/CommunityContext';
 import { useApolloErrorHandler, useNotification } from '../../../hooks';
 import { useTranslation } from 'react-i18next';

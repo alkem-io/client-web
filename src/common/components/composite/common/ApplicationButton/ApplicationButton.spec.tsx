@@ -2,7 +2,11 @@ import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '../../../../utils/test/test-utils';
 import { ApplicationButton } from './ApplicationButton';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH } from '../../../../../models/constants';
+import { AUTH_LOGIN_PATH } from '../../../../../core/auth/authentication/constants/authentication.constants';
+import {
+  APPLICATION_STATE_NEW,
+  APPLICATION_STATE_REJECTED,
+} from '../../../../../domain/community/application/constants/ApplicationState';
 
 describe('ApplicationButton component', () => {
   test('buttons is loading', () => {

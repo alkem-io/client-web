@@ -9,7 +9,7 @@ import { SectionSpacer } from '../../../shared/components/Section/Section';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';
 import { Loading } from '../../../../common/components/core';
-import CommunityGroupListPage from '../../../../pages/Admin/Community/CommunityListPage';
+import CommunityGroupListPage from '../community/CommunityListPage';
 import ChallengeCommunityAdminMembershipPreferencesSection from './ChallengeCommunityAdminMembershipPreferencesSection';
 import useChallengeLeadOrganizationAssignment from '../../../community/community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
 import useChallengeMemberOrganizationAssignment from '../../../community/community/useCommunityAssignment/useChallengeMemberOrganizationAssignment';
@@ -20,7 +20,7 @@ import {
   useChallengeAvailableLeadUsersLazyQuery,
   useChallengeAvailableMemberUsersLazyQuery,
   useChallengeCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';

@@ -4,7 +4,7 @@ import { ApmBase, init as initApm, UserObject } from '@elastic/apm-rum';
 import { useCookies } from 'react-cookie';
 import { error as logError } from '../../src/services/logging/sentry/log';
 import { useUserContext } from '../domain/community/contributor/user';
-import { useConfig } from './useConfig';
+import { useConfig } from '../domain/platform/config/useConfig';
 import { useUserGeo } from './useUserGeo';
 import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../domain/platform/cookies/useAlkemioCookies';
 

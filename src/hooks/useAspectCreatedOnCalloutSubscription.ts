@@ -6,8 +6,8 @@ import {
   usePrivilegesOnChallengeCollaborationQuery,
   usePrivilegesOnHubCollaborationQuery,
   usePrivilegesOnOpportunityCollaborationQuery,
-} from './generated/graphql';
-import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../models/graphql-schema';
+} from '../core/apollo/generated/apollo-hooks';
+import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../core/apollo/generated/graphql-schema';
 import useCalloutAspectCreatedSubscription from '../domain/collaboration/collaboration/useCalloutAspectCreatedSubscription';
 
 export type AspectWithPermissions = AspectCardFragment & { canDelete: boolean | undefined };

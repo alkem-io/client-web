@@ -1,7 +1,7 @@
 import {
   refetchOpportunityCommunityMembersQuery,
   useOpportunityCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useLeadOrganizationAssignment from './useLeadOrganizationAssignment';
 
 interface Options {

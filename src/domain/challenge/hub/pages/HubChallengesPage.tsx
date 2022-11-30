@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useHub, useUpdateNavigation } from '../../../../hooks';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 import HubChallengesView from '../views/HubChallengesView';
 import ChallengesCardContainer from '../../../../containers/hub/ChallengesCardContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
