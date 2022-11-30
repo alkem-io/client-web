@@ -3,6 +3,7 @@ import { styled, Typography, TypographyProps } from '@mui/material';
 
 export interface ClampedTypographyProps extends TypographyProps {
   clamp: number;
+  component?: React.ElementType;
 }
 // Using custom props with styled components
 // https://styled-components.com/docs/api#using-custom-props

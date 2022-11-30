@@ -16,7 +16,7 @@ import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanva
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 import { getAllCanvasesOnCallouts } from '../../../../containers/canvas/getCanvasCallout';
-import { CalloutType } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CalloutType } from '../../../../models/graphql-schema';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
@@ -58,7 +58,9 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     canvasTemplates,
     lifecycleTemplates,
     id: templatesSetID,
+    authorization: templateSetAuth,
   } = hubTemplatesData?.hub.templates ?? {};
+  const canImportTemplates = templateSetAuth?.myPrivileges?.includes(AuthorizationPrivilege.Create) ?? false;
 
   // assuming we'll provide templates for the canvases only from hub callout canvases
   const canvases = getAllCanvasesOnCallouts(hubCanvasesData?.hub.collaboration?.callouts);
@@ -114,6 +116,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         edit={edit}
         loadInnovationPacks={loadInnovationPacks}
         innovationPacks={aspectInnovationPacks}
+        canImportTemplates={canImportTemplates}
       />
       <SectionSpacer />
       <AdminCanvasTemplatesSection
@@ -129,6 +132,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         getParentCalloutId={findParentCalloutId}
         loadInnovationPacks={loadInnovationPacks}
         innovationPacks={canvasInnovationPacks}
+        canImportTemplates={canImportTemplates}
       />
       <SectionSpacer />
       <AdminInnovationTemplatesSection
@@ -141,6 +145,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         edit={edit}
         loadInnovationPacks={loadInnovationPacks}
         innovationPacks={lifecycleInnovationPacks}
+        canImportTemplates={canImportTemplates}
       />
     </HubSettingsLayout>
   );
