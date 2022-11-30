@@ -1,6 +1,6 @@
 import AcceptTermsButton, { AcceptTermsButtonProps } from './AcceptTermsButton';
 import { getNodeName, getNodeValue } from './Kratos/helpers';
-import { UiNodeInput } from './UiNodeInput';
+import { UiNodeInput } from './Kratos/UiNodeInput';
 import { ButtonProps } from '@mui/material';
 
 interface KratosAcceptTermsButtonProps extends AcceptTermsButtonProps {

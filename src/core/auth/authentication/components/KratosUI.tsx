@@ -1,8 +1,8 @@
-import { Alert, Box, ButtonProps } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import React, { ComponentType, FC, ReactNode, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getNodeName, getNodeValue, guessVariant, isUiNodeInputAttributes } from './Kratos/helpers';
+import { getNodeName, getNodeValue, guessVariant, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
 import KratosHidden from './Kratos/KratosHidden';
@@ -13,16 +13,11 @@ import { sxCols } from '../../../../domain/shared/layout/Grid';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
-import ButtonStyling from './AuthProviders/ButtonStyling';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
-import linkedInTheme from './AuthProviders/LinkedInTheme';
-import { ReactComponent as LinkedInIcon } from './AuthProviders/LinkedIn.svg';
-import microsoftTheme from './AuthProviders/MicrosoftTheme';
-import { ReactComponent as MicrosoftIcon } from './AuthProviders/Microsoft.svg';
-import { UiNodeInput } from './UiNodeInput';
+import { UiNodeInput } from './Kratos/UiNodeInput';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
-import TranslationKey from '../../../../types/TranslationKey';
 import { useKratosFormContext } from './Kratos/KratosForm';
+import KratosSocialButton from './Kratos/KratosSocialButton';
 
 interface KratosUIProps {
   ui?: UiContainer;
@@ -62,25 +57,6 @@ const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
   );
 };
 
-interface SocialCustomization {
-  icon: FC<React.SVGProps<SVGSVGElement> & { title?: string }>;
-  theme: { palette: { primary: { main: string } } };
-  label: string;
-}
-
-const socialCustomizations: Record<string, SocialCustomization> = {
-  linkedin: {
-    theme: linkedInTheme,
-    icon: LinkedInIcon,
-    label: 'linkedin',
-  },
-  microsoft: {
-    theme: microsoftTheme,
-    icon: MicrosoftIcon,
-    label: 'microsoft',
-  },
-};
-
 interface NodeGroups {
   default: UiNode[];
   oidc: UiNode[];
@@ -94,22 +70,19 @@ export const KratosUI: FC<KratosUIProps> = ({
   ui,
   resetPasswordElement,
   acceptTermsComponent: AcceptTerms,
-  buttonComponent: Button = AuthActionButton,
+  buttonComponent = AuthActionButton,
   renderAcceptTermsCheckbox = checkbox => <KratosAcceptTermsCheckbox node={checkbox} />,
   children,
   ...rest
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const kratosFormContext = useKratosFormContext();
 
   const nodesByGroup = useMemo(() => {
     return ui?.nodes.reduce(
       (acc, node) => {
-        if (node.group !== 'oidc' && node.attributes['type'] === 'submit') {
-          return { ...acc, submit: [...acc.submit, node] };
-        }
-        if (node.attributes['type'] === 'hidden') {
+        if (isHiddenInput(node)) {
           return { ...acc, hidden: [...acc.hidden, node] };
         }
         switch (node.group) {
@@ -118,6 +91,9 @@ export const KratosUI: FC<KratosUIProps> = ({
           case 'oidc':
             return { ...acc, oidc: [...acc.oidc, node] };
           case 'password':
+            if (isSubmitButton(node)) {
+              return { ...acc, submit: [...acc.submit, node] };
+            }
             return { ...acc, password: [...acc.password, node] };
           default:
             return { ...acc, rest: [...acc.rest, node] };
@@ -130,65 +106,44 @@ export const KratosUI: FC<KratosUIProps> = ({
   if (!nodesByGroup || !ui) return null;
 
   const toUiControl = (node: UiNode, key: number) => {
-    const attributes = node.attributes;
-    if (isUiNodeInputAttributes(attributes)) {
-      const variant = guessVariant(node);
-
-      const extraProps: KratosInputExtraProps = {
-        autoCapitalize: 'off',
-        autoCorrect: 'off',
-      };
-
-      switch (variant) {
-        case 'email':
-        case 'username':
-          extraProps.autoComplete = 'username';
-          break;
-        case 'password':
-          extraProps.autoComplete = 'password';
-          break;
-      }
-
-      if (isAcceptTermsCheckbox(node)) {
-        return renderAcceptTermsCheckbox(node as UiNodeInput);
-      }
-
-      if (node.group === 'oidc' && attributes.type === 'submit') {
-        const Icon = socialCustomizations[attributes.value]?.icon;
-
-        const label = i18n.exists(`authentication.social-login.providers.${attributes.value}`)
-          ? t('authentication.social-login.connect', {
-              provider: t(`authentication.social-login.providers.${attributes.value}` as TranslationKey),
-            })
-          : node.meta.label?.text;
-
-        return (
-          <ButtonStyling
-            styles={socialCustomizations[attributes.value]?.theme}
-            icon={Icon && <Icon />}
-            component={Button as ComponentType<ButtonProps>}
-            justifyContent="start"
-            name={attributes.name}
-            type={attributes.type}
-            value={attributes.value}
-          >
-            {label}
-          </ButtonStyling>
-        );
-      }
-
-      switch (attributes.type) {
-        case 'hidden':
-          return <KratosHidden key={key} node={node} />;
-        case 'submit':
-          return <KratosButton key={key} node={node} />;
-        case 'checkbox':
-          return <KratosCheckbox key={key} node={node} />;
-        default:
-          return <KratosInput key={key} node={node} {...extraProps} />;
-      }
-    } else {
+    if (!isInputNode(node)) {
       return <KratosInput key={key} node={node} />;
+    }
+
+    const variant = guessVariant(node);
+
+    const extraProps: KratosInputExtraProps = {
+      autoCapitalize: 'off',
+      autoCorrect: 'off',
+    };
+
+    switch (variant) {
+      case 'email':
+      case 'username':
+        extraProps.autoComplete = 'username';
+        break;
+      case 'password':
+        extraProps.autoComplete = 'password';
+        break;
+    }
+
+    if (isAcceptTermsCheckbox(node)) {
+      return renderAcceptTermsCheckbox(node as UiNodeInput);
+    }
+
+    if (node.group === 'oidc' && isSubmitButton(node)) {
+      return <KratosSocialButton node={node} buttonComponent={buttonComponent} />;
+    }
+
+    switch (node.attributes.type) {
+      case 'hidden':
+        return <KratosHidden key={key} node={node} />;
+      case 'submit':
+        return <KratosButton key={key} node={node} />;
+      case 'checkbox':
+        return <KratosCheckbox key={key} node={node} />;
+      default:
+        return <KratosInput key={key} node={node} {...extraProps} />;
     }
   };
 

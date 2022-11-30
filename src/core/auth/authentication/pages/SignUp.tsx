@@ -19,11 +19,22 @@ import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptT
 import PlatformIntroduction from '../components/PlatformIntroduction';
 import { useTranslation } from 'react-i18next';
 import KratosForm from '../components/Kratos/KratosForm';
+import { UiContainer } from '@ory/kratos-client';
+import { KRATOS_INPUT_NAME_CSRF, KRATOS_TRAIT_NAME_ACCEPTED_TERMS } from '../components/Kratos/constants';
+import { isInputNode } from '../components/Kratos/helpers';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);
   return <EmailOutlined sx={{ height: size, width: size }} />;
 };
+
+const getMinimalSocialLoginNodes = (ui: UiContainer) =>
+  ui.nodes.filter(
+    node =>
+      node.group === 'oidc' ||
+      (isInputNode(node) &&
+        (node.attributes.name === KRATOS_INPUT_NAME_CSRF || node.attributes.name === KRATOS_TRAIT_NAME_ACCEPTED_TERMS))
+  );
 
 const SignUp = () => {
   const { flow } = useKratosFlow(FlowTypeName.Registration, undefined);
@@ -36,14 +47,7 @@ const SignUp = () => {
   const signUpFlow =
     flow &&
     produce(flow, nextFlow => {
-      const socialFlowNodes = nextFlow.ui.nodes.filter(
-        node =>
-          // Just the essentials for choosing/initializing a flow
-          node.attributes['name'] === 'csrf_token' ||
-          node.attributes['name'] === 'traits.accepted_terms' ||
-          node.group === 'oidc'
-      );
-      nextFlow.ui.nodes = socialFlowNodes;
+      nextFlow.ui.nodes = getMinimalSocialLoginNodes(nextFlow.ui);
     });
 
   const navigate = useNavigate();

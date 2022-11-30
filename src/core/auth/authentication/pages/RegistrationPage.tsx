@@ -14,7 +14,7 @@ import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
-import { UiNodeInput } from '../components/UiNodeInput';
+import { UiNodeInput } from '../components/Kratos/UiNodeInput';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
 

@@ -1,6 +1,7 @@
 import { UiContainer } from '@ory/kratos-client';
 import { Box, BoxProps } from '@mui/material';
 import { createContext, Dispatch, FormEvent, useCallback, useContext, useMemo, useState } from 'react';
+import { isSubmittingPasswordFlow } from './helpers';
 
 interface KratosFormProps extends BoxProps<'form'> {
   ui?: UiContainer;
@@ -17,9 +18,7 @@ const KratosForm = ({ ui, children, ...formProps }: KratosFormProps) => {
   const [isFormValid, setIsFormValid] = useState(true);
 
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    const button = document.activeElement as HTMLButtonElement | null;
-    // do check if only submitting password method
-    if (button && button.name === 'method' && button.value === 'password') {
+    if (isSubmittingPasswordFlow(e)) {
       if (!e.currentTarget.checkValidity()) {
         setIsFormValid(false);
         e.preventDefault();
