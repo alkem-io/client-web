@@ -3,6 +3,7 @@ import { grey } from '@mui/material/colors';
 
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#068293' },
+  primaryDark: { main: '#1D384A', contrastText: '#fff' },
   secondary: { main: '#00a88f' },
   text: {
     primary: '#181828',
@@ -40,6 +41,7 @@ export const paletteOptions: PaletteOptions = {
 
 declare module '@mui/material/styles/createPalette' {
   interface PaletteOptions {
+    primaryDark: PaletteColorOptions;
     positive: PaletteColorOptions;
     negative: PaletteColorOptions;
     neutral: PaletteColorOptions;
@@ -51,6 +53,7 @@ declare module '@mui/material/styles/createPalette' {
     opportunity: PaletteColorOptions;
   }
   interface Palette {
+    primaryDark: PaletteColor;
     positive: PaletteColor;
     negative: PaletteColor;
     neutral: PaletteColor;
@@ -60,5 +63,14 @@ declare module '@mui/material/styles/createPalette' {
     hub: PaletteColor;
     challenge: PaletteColor;
     opportunity: PaletteColor;
+  }
+}
+
+// Taken from https://mui.com/material-ui/customization/palette/
+// But does not seem to work
+declare module '@mui/material/Button' {
+  interface ButtonPropsColorOverrides {
+    primaryDark: true;
+    hub: true;
   }
 }

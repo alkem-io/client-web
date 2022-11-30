@@ -45,10 +45,7 @@ export const WrapperMarkdown: FC<MarkdownProps> = (props: MarkdownProps) => {
   return (
     <ReactMarkdown
       components={componentImplementations}
-      remarkPlugins={[
-        gfm,
-        [emoji, { padSpaceAfter: false, emoticon: true }],
-      ]}
+      remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }]]}
       rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}
       {...props}
     />
