@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { WithCommunity } from '../../components/Community/CommunityTypes';
 import { useUrlParams } from '../../../../../hooks';
-import { useHubGroupQuery } from '../../../../../hooks/generated/graphql';
-import { PageProps } from '../../../../../pages';
+import { useHubGroupQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { GroupRoute } from '../../routing/GroupRoute';
 
 interface GroupRouteProps extends PageProps, WithCommunity {}

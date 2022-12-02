@@ -14,7 +14,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { AuthorizationPrivilege, CanvasDetailsFragment } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CanvasDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import CanvasListItemState from './CanvasListItemState';
 import { Identifiable } from '../../../shared/types/Identifiable';
 

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { AvatarsProvider } from '../../../../../context/AvatarsProvider';
-import { User } from '../../../../../models/graphql-schema';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import Avatar from '../../../../../common/components/core/Avatar';
 import AvatarContainer from '../../../../../common/components/core/AvatarContainer';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useOpportunity } from '../../../../hooks';
-import { useOpportunityCommunityContributorsQuery } from '../../../../hooks/generated/graphql';
+import { useOpportunityCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import useSearchAcrossMultipleLists from '../../../shared/utils/useSearchAcrossMultipleLists';

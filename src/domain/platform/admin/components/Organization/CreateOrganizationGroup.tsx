@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { useApolloErrorHandler, useOrganization, useUpdateNavigation } from '../../../../../hooks';
-import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '../../../../../hooks/generated/graphql';
-import { PageProps } from '../../../../../pages';
+import {
+  GroupDetailsFragmentDoc,
+  useCreateGroupOnOrganizationMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { PageProps } from '../../../../shared/types/PageProps';
 import CreateGroupForm from '../Common/CreateGroupForm';
 
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {

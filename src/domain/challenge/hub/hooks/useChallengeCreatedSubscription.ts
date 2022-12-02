@@ -1,9 +1,9 @@
-import { ChallengeCreatedDocument } from '../../../../hooks/generated/graphql';
+import { ChallengeCreatedDocument } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   ChallengeCreatedSubscription,
   ChallengeCreatedSubscriptionVariables,
   ChallengesOnHubFragment,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 
 const useChallengeCreatedSubscription = createUseSubscriptionToSubEntityHook<

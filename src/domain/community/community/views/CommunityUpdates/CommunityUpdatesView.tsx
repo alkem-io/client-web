@@ -35,9 +35,9 @@ import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../hooks';
-import { Message } from '../../../../../models/graphql-schema';
+import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/forms/field-length.constants';
 import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
 import hexToRGBA from '../../../../../common/utils/hexToRGBA';
 

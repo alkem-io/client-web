@@ -1,4 +1,4 @@
-import { UserCardFragment } from '../../../../models/graphql-schema';
+import { UserCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { addUserCardRoleNameKey } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';

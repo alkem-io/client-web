@@ -3,8 +3,8 @@ import React, { FC, useMemo } from 'react';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { useUpdateNavigation } from '../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
-import { PageProps } from '../../../../../pages';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+import { PageProps } from '../../../../shared/types/PageProps';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
 import { WithCommunity } from '../Community/CommunityTypes';
 

@@ -11,17 +11,17 @@ import {
   ChallengePreferenceType,
   UpdatePreferenceOnChallengeMutationVariables,
   PreferenceType,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
-import { PreferenceTypes } from '../../../../../models/preference-types';
+import { PreferenceTypes } from '../../../../common/preference/preference-types';
 import { useChallenge, useHub } from '../../../../../hooks';
 import { usePreferences } from '../../../../../hooks/providers/preference';
 import {
   ChallengePreferencesDocument,
   UpdatePreferenceOnChallengeDocument,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 
 const authorizationCredential = AuthorizationCredential.ChallengeAdmin;
 const selectedGroups = ['Authorization', 'Privileges'];

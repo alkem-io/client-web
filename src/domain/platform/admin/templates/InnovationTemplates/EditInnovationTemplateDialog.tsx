@@ -1,4 +1,4 @@
-import { AdminLifecycleTemplateFragment } from '../../../../../models/graphql-schema';
+import { AdminLifecycleTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import InnovationTemplateForm, {
   InnovationTemplateFormSubmittedValues,

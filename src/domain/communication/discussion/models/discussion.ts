@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege, DiscussionCategory } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { Message as Comment } from '../../../shared/components/Comments/models/message';
 

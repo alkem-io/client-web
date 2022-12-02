@@ -5,7 +5,7 @@ import { useAppendBreadcrumb } from '../../../../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../../../layout/EntitySettings/types';
 import OpportunityAuthorizationView from './OpportunityAdminAuthorizationView';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationCredential } from '../../../../../../models/graphql-schema';
+import { AuthorizationCredential } from '../../../../../../core/apollo/generated/graphql-schema';
 
 const OpportunityAuthorizationPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   const { t } = useTranslation();

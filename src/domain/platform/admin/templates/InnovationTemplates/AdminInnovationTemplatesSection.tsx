@@ -6,9 +6,12 @@ import {
   useCreateInnovationTemplateMutation,
   useDeleteInnovationTemplateMutation,
   useUpdateInnovationTemplateMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
-import { AdminLifecycleTemplateFragment, UpdateInnovationTemplateMutation } from '../../../../../models/graphql-schema';
+import {
+  AdminLifecycleTemplateFragment,
+  UpdateInnovationTemplateMutation,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import InnovationTemplateView from './InnovationTemplateView';

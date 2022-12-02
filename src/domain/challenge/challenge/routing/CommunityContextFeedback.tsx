@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { PageProps, Error404 } from '../../../../pages';
+import { PageProps } from '../../../shared/types/PageProps';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
 import CommunityContextFeedbackPage from '../../../community/community/pages/CommunityContextFeedbackPage';
 import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
 

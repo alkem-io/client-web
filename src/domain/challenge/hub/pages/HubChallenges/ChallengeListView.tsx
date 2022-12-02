@@ -12,10 +12,10 @@ import {
   useChallengesWithCommunityQuery,
   useCreateChallengeMutation,
   useDeleteChallengeMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
 import { useHub } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { ChallengeIcon } from '../../../../../common/icons/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';

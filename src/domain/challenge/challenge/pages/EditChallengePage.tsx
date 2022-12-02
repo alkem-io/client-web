@@ -10,7 +10,7 @@ import {
   useCreateChallengeMutation,
   useHubLifecycleTemplatesQuery,
   useUpdateChallengeMutation,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
@@ -20,7 +20,7 @@ import ProfileFormWithContext, {
 } from '../../../../common/components/composite/forms/ProfileFormWithContext';
 import FormMode from '../../../platform/admin/components/FormMode';
 import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
-import { LifecycleType } from '../../../../models/graphql-schema';
+import { LifecycleType } from '../../../../core/apollo/generated/graphql-schema';
 import { ChallengeContextSegment } from '../../../platform/admin/challenge/ChallengeContextSegment';
 
 interface Props {

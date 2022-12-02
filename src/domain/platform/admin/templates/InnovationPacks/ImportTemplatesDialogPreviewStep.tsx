@@ -37,7 +37,7 @@ const ImportTemplatesDialogPreviewStep = <
 }: ImportTemplatesDialogPreviewStepProps<T, Q, V>) => {
   const { t } = useTranslation();
 
-  const [importingTemplate, doImportTemplate] = useLoadingState(() =>
+  const [doImportTemplate, importingTemplate] = useLoadingState(() =>
     onImportTemplate(template, importedTemplateValue)
   );
 

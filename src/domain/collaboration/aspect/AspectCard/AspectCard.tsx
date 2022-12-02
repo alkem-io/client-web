@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Aspect, VisualUriFragment } from '../../../../models/graphql-schema';
+import { Aspect, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import EntityContributionCard from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { styled } from '@mui/material';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';

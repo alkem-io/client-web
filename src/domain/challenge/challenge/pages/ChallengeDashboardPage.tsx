@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import ChallengePageContainer from '../../../../containers/challenge/ChallengePageContainer';
-import { DiscussionsProvider } from '../../../../context/Discussions/DiscussionsProvider';
+import { DiscussionsProvider } from '../../../communication/discussion/providers/DiscussionsProvider';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';

@@ -1,4 +1,4 @@
-import { HubNameFragment } from '../../../../models/graphql-schema';
+import { HubNameFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 interface PopUpProps<T> {
   entity: T;

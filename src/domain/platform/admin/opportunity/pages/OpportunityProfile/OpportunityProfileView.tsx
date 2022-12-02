@@ -11,9 +11,9 @@ import {
   useUpdateOpportunityMutation,
   refetchOpportunityProfileInfoQuery,
   useOpportunityProfileInfoQuery,
-} from '../../../../../../hooks/generated/graphql';
+} from '../../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../../hooks/useNavigateToEdit';
-import { Context } from '../../../../../../models/graphql-schema';
+import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 

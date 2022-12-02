@@ -11,13 +11,16 @@ import {
   HubPreferencesQueryVariables,
   HubPreferenceType,
   UpdatePreferenceOnHubMutationVariables,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { usePreferences } from '../../../../../hooks/providers';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
-import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../../hooks/generated/graphql';
+import {
+  HubPreferencesDocument,
+  UpdatePreferenceOnHubDocument,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../../../../hooks';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import { PreferenceTypes } from '../../../../../models/preference-types';
+import { PreferenceTypes } from '../../../../common/preference/preference-types';
 
 interface HubAuthorizationPageProps extends SettingsPageProps {
   resourceId: string | undefined;

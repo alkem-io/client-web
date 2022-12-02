@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import { OpportunityPageContainer } from '../../../../containers';
-import { DiscussionsProvider } from '../../../../context/Discussions/DiscussionsProvider';
+import { DiscussionsProvider } from '../../../communication/discussion/providers/DiscussionsProvider';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import OpportunityContributorsDialogContent from '../../../community/community/entities/OpportunityContributorsDialogContent';

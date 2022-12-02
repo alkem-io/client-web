@@ -4,12 +4,12 @@ import {
   HubPreferencesQueryVariables,
   HubPreferenceType,
   UpdatePreferenceOnHubMutationVariables,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { useHub } from '../../../../hooks';
-import { PreferenceTypes } from '../../../../models/preference-types';
+import { PreferenceTypes } from '../../../common/preference/preference-types';
 import { usePreferences } from '../../../../hooks/providers/preference';
-import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../hooks/generated/graphql';
+import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../core/apollo/generated/apollo-hooks';
 import PreferenceSection from '../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 
 const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;

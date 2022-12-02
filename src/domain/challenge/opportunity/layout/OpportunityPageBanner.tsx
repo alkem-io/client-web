@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import PageBanner from '../../../shared/components/PageHeader/PageBanner';
 import { useOpportunity } from '../../../../hooks';
-import { getVisualBanner } from '../../../../common/utils/visuals.utils';
+import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 
 const OpportunityPageBanner: FC = () => {
   const { opportunity, loading } = useOpportunity();

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
-import { Error404 } from '../../../../../pages';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import AuthorizationRouteProps from '../../routing/AuthorizationRouteProps';
 import OpportunityAuthorizationPage from '../pages/OpportunityAuthorization/OpportunityAuthorizationPage';
 

@@ -1,8 +1,8 @@
 import { Dispatch, useState } from 'react';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { useAllOrganizationsLazyQuery } from '../../../../hooks/generated/graphql';
+import { useAllOrganizationsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Provided as UsePaginatedQueryProvided } from '../../../shared/pagination/usePaginatedQuery';
-import { AllOrganizationsQuery, OrganizationDetailsFragment } from '../../../../models/graphql-schema';
+import { AllOrganizationsQuery, OrganizationDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 const AVAILABLE_ORGANIZATIONS_PER_PAGE = 10;
 

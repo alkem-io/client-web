@@ -1,9 +1,12 @@
 import { sortBy } from 'lodash';
 import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
-import { useUpdatePreferenceOnUserMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
-import { Preference, PreferenceType, UserPreferenceType } from '../../models/graphql-schema';
+import {
+  useUpdatePreferenceOnUserMutation,
+  useUserNotificationsPreferencesQuery,
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
+import { Preference, PreferenceType, UserPreferenceType } from '../../core/apollo/generated/graphql-schema';
 
 export interface UserNotificationsContainerEntities {
   preferences: Preference[];

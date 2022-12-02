@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useChallenge } from '../../../../hooks';
-import { useChallengeCommunityContributorsQuery } from '../../../../hooks/generated/graphql';
+import { useChallengeCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';

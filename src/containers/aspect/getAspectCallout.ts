@@ -1,4 +1,4 @@
-import { CalloutType } from '../../models/graphql-schema';
+import { CalloutType } from '../../core/apollo/generated/graphql-schema';
 
 export const getCardCallout = <A extends { nameID: string }, T extends { type: CalloutType; aspects?: A[] }>(
   callouts: T[] | undefined,

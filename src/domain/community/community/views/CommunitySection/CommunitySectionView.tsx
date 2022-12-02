@@ -11,13 +11,14 @@ import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdo
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../../../../common/components/core/Section';
 import { useCommunityContext } from '../../CommunityContext';
 import { useConfig } from '../../../../../hooks';
-import { FEATURE_COMMUNICATIONS } from '../../../../../models/constants';
+// import { FEATURE_COMMUNICATIONS } from '../../../../../models/constants';
 import { Discussion } from '../../../../communication/discussion/models/discussion';
-import { AuthorizationPrivilege, Message, User } from '../../../../../models/graphql-schema';
+import { AuthorizationPrivilege, Message, User } from '../../../../../core/apollo/generated/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
 import { useAuthorsDetails } from '../../../../communication/communication/useAuthorsDetails';
+import { FEATURE_COMMUNICATIONS } from '../../../../platform/config/features.constants';
 
 export interface CommunitySectionPropsExt
   extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
@@ -75,6 +76,8 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   const { communicationPrivileges } = useCommunityContext();
   const canCreateDiscussions = communicationPrivileges.some(x => x === AuthorizationPrivilege.Create);
 
+  const areCommunicationsEnabled = isFeatureEnabled(FEATURE_COMMUNICATIONS);
+
   const updatesCountLabel = updates?.length ? `(${updates?.length})` : '';
   const discussionsCountLabel = discussions?.length ? `(${discussions?.length})` : '';
   const tabList: TabConfig[] = [
@@ -82,12 +85,12 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     {
       name: 'updates',
       label: `${t('common.updates')} ${updatesCountLabel}`,
-      enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
+      enabled: areCommunicationsEnabled,
     },
     {
       name: 'discussion',
       label: `${t('common.discussions')} ${discussionsCountLabel}`,
-      enabled: isFeatureEnabled(FEATURE_COMMUNICATIONS),
+      enabled: areCommunicationsEnabled,
     },
   ].filter(x => x.enabled);
 
@@ -109,7 +112,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
             <MembersView shuffle={shuffle} users={users} entityId={parentEntityId} />
             <WrapperButton text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
           </TabPanel>
-          {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
+          {areCommunicationsEnabled && (
             <>
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
                 <Box>

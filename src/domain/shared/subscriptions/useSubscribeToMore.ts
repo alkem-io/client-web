@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
-import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
+import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
 import getDepsValueFromObject from '../utils/getDepsValueFromObject';
 
@@ -12,7 +12,7 @@ export interface SubscribeToMore<QueryData> {
 
 export interface Options<TVariables> {
   skip?: boolean;
-  variables?: TVariables
+  variables?: TVariables;
 }
 
 const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables = undefined>(

@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
-import { useTagsetsTemplateQuery } from '../../../../../hooks/generated/graphql';
-import { Tagset, UpdateTagset } from '../../../../../models/Profile';
+import { useTagsetsTemplateQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { Tagset, UpdateTagset } from '../../../../common/profile/Profile';
 import {
   Organization,
   OrganizationVerificationEnum,
   TagsetTemplate,
   UpdateOrganizationInput,
   CreateOrganizationInput,
-} from '../../../../../models/graphql-schema';
-import { EditMode } from '../../../../../models/editMode';
+} from '../../../../../core/apollo/generated/graphql-schema';
+import { EditMode } from '../../../../../core/forms/editMode';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import Section, { Header } from '../../../../../common/components/core/Section';
 import VisualUpload from '../../../../../common/components/composite/common/VisualUpload/VisualUpload';

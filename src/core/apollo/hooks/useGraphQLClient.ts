@@ -10,7 +10,7 @@ import {
   redirectLink,
   httpLink,
 } from '../../../common/utils/graphql-links';
-import { typePolicies } from '../../../config/graphql/typePolicies';
+import { typePolicies } from '../config/typePolicies';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');

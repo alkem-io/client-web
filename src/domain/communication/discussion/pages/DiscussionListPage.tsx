@@ -13,9 +13,9 @@ import CategorySelector, {
 } from '../../../../common/components/composite/common/CategorySelector/CategorySelector';
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
+import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import { DiscussionListView } from '../views/DiscussionsListView';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 import { useUpdateNavigation } from '../../../../hooks';
 
 interface DiscussionsPageProps extends PageProps {}

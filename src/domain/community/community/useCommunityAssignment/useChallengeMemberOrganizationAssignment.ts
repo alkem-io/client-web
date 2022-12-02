@@ -1,7 +1,7 @@
 import {
   refetchChallengeCommunityMembersQuery,
   useChallengeCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useMemberOrganizationAssignment from './useMemberOrganizationAssignment';
 
 interface Options {

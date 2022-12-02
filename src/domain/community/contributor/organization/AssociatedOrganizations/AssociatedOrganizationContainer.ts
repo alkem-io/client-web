@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from '../../../../../hooks';
-import { useAssociatedOrganizationQuery } from '../../../../../hooks/generated/graphql';
+import { useAssociatedOrganizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,

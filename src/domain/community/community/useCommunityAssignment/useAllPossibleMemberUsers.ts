@@ -1,7 +1,7 @@
-import { UserDisplayNameFragment } from '../../../../models/graphql-schema';
+import { UserDisplayNameFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { useAvailableUsersQuery, useCommunityMembersQuery } from '../../../../hooks/generated/graphql';
+import { useAvailableUsersQuery, useCommunityMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../../../hooks';
 import useLocalSearch from '../../../shared/utils/useLocalSearch';
 

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import CommunityContextFeedbackContainer from '../../../../containers/context/feedback/CommunityFeedbackContainer';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 import { useUpdateNavigation } from '../../../../hooks';
 import CommunityFeedbackView from '../../../challenge/challenge/views/CommunityFeedbackView';
 

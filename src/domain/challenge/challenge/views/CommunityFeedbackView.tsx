@@ -9,8 +9,8 @@ import Skeleton from '@mui/material/Skeleton';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import { FeedbackDataEntry } from '../../../../containers/context/feedback/CommunityFeedbackContainer';
-import { QuestionTemplate } from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+import { QuestionTemplate } from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import getDepsValueFromObject from '../../../shared/utils/getDepsValueFromObject';
 

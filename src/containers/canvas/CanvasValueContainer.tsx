@@ -5,15 +5,15 @@ import {
   useChallengeCanvasValuesQuery,
   useHubCanvasValuesQuery,
   useOpportunityCanvasValuesQuery,
-} from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import {
   Canvas,
   CanvasContentUpdatedSubscription,
   CanvasDetailsFragment,
   CanvasValueFragment,
   SubscriptionCanvasContentUpdatedArgs,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 import { TemplateQuery } from './CanvasProvider';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import findById from '../../domain/shared/utils/findById';

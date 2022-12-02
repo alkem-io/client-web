@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { CalloutState, CalloutType } from '../../../../models/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';

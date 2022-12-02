@@ -4,11 +4,11 @@ import {
   useChallengeContributionDetailsQuery,
   useHubContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
-} from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
-import { ContributionItem } from '../../models/entities/contribution';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
+import { ContributionItem } from '../../domain/community/contributor/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../common/utils/urlBuilders';
-import { getVisualBanner } from '../../common/utils/visuals.utils';
+import { getVisualBanner } from '../../domain/common/visual/utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionCardV2Details;

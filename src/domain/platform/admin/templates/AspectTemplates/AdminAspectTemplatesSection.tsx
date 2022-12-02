@@ -6,9 +6,12 @@ import {
   useCreateAspectTemplateMutation,
   useDeleteAspectTemplateMutation,
   useUpdateAspectTemplateMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { AspectTemplateFormSubmittedValues } from './AspectTemplateForm';
-import { AdminAspectTemplateFragment, UpdateAspectTemplateMutation } from '../../../../../models/graphql-schema';
+import {
+  AdminAspectTemplateFragment,
+  UpdateAspectTemplateMutation,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AspectTemplateView from './AspectTemplateView';

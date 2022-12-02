@@ -6,7 +6,7 @@ import {
   useHubCalloutsQuery,
   useOpportunityCalloutsLazyQuery,
   useOpportunityCalloutsQuery,
-} from '../../../hooks/generated/graphql';
+} from '../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   Callout,
@@ -15,7 +15,7 @@ import {
   CanvasDetailsFragment,
   CommentsWithMessagesFragment,
   ContributeTabAspectFragment,
-} from '../../../models/graphql-schema';
+} from '../../../core/apollo/generated/graphql-schema';
 import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';

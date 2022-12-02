@@ -1,14 +1,15 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { DiscussionProvider } from '../../../../context/Discussions/DiscussionProvider';
+import { DiscussionProvider } from '../providers/DiscussionProvider';
 import { useConfig } from '../../../../hooks';
-import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../../models/constants';
-import { Error404, PageProps } from '../../../../pages';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
+import { PageProps } from '../../../shared/types/PageProps';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
 import DiscussionListPage from '../pages/DiscussionListPage';
 import DiscussionPage from '../pages/DiscussionPage';
 import NewDiscussionPage from '../pages/NewDiscussionPage';
 import { nameOfUrl } from '../../../../core/routing/url-params';
-import { DiscussionsProvider } from '../../../../context/Discussions/DiscussionsProvider';
+import { DiscussionsProvider } from '../providers/DiscussionsProvider';
 
 interface DiscussionsRouteProps extends PageProps {}
 

@@ -8,8 +8,8 @@ import {
   useUpdateOpportunityMutation,
   refetchOpportunityProfileInfoQuery,
   useOpportunityProfileInfoQuery,
-} from '../../../../../../hooks/generated/graphql';
-import { Context } from '../../../../../../models/graphql-schema';
+} from '../../../../../../core/apollo/generated/apollo-hooks';
+import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import { OpportunityContextSegment } from '../../OpportunityContextSegment';
 
 const OpportunityContextView: FC = () => {

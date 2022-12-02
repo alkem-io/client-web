@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import LifecycleState from './LifecycleState';
 

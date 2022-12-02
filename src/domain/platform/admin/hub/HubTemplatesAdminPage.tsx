@@ -8,7 +8,7 @@ import {
   useHubCanvasesLazyQuery,
   useHubTemplatesQuery,
   useInnovationPacksLazyQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
@@ -16,7 +16,7 @@ import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanva
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 import { getAllCanvasesOnCallouts } from '../../../../containers/canvas/getCanvasCallout';
-import { AuthorizationPrivilege, CalloutType } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;

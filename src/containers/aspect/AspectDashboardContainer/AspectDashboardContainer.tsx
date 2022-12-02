@@ -1,6 +1,10 @@
 import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
+import {
+  AspectDashboardFragment,
+  AuthorizationPrivilege,
+  Scalars,
+} from '../../../core/apollo/generated/graphql-schema';
 import {
   MessageDetailsFragmentDoc,
   useChallengeAspectQuery,
@@ -8,7 +12,7 @@ import {
   useOpportunityAspectQuery,
   usePostCommentInAspectMutation,
   useRemoveCommentFromAspectMutation,
-} from '../../../hooks/generated/graphql';
+} from '../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Message } from '../../../domain/shared/components/Comments/models/message';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import { LifecycleType } from '../../../../../models/graphql-schema';
+import { LifecycleType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface CreateAspectTemplateDialogProps {
   open: boolean;

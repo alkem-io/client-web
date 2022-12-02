@@ -1,7 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
 import { useOrganization } from '../../../../hooks';
-import { Error404, PageProps } from '../../../../pages';
+import { PageProps } from '../../../shared/types/PageProps';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
 import OrganizationProfilePage from './OrganizationProfilePage';
 import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationCommunityPage from './OrganizationCommunityPage';

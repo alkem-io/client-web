@@ -12,8 +12,11 @@ import QRCodeDialog from '../../../../../common/components/composite/dialogs/QRC
 import { Loading } from '../../../../../common/components/core';
 import UserCredentialsContainer from '../../../../../containers/user/UserCredentialsContainer';
 import { useNotification, useUpdateNavigation } from '../../../../../hooks';
-import { useUserSsiLazyQuery, useProfileVerifiedCredentialSubscription } from '../../../../../hooks/generated/graphql';
-import { PageProps } from '../../../../../pages';
+import {
+  useUserSsiLazyQuery,
+  useProfileVerifiedCredentialSubscription,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';

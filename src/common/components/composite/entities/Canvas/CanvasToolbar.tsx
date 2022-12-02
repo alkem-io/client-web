@@ -1,6 +1,6 @@
 import { Toolbar } from '@mui/material';
 import React, { FC } from 'react';
-import { Canvas } from '../../../../../models/graphql-schema';
+import { Canvas } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CanvasToolbarEntities {
   canvas: Canvas;
