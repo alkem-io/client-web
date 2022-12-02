@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { MessageWithPayload } from '../../../domain/shared/i18n/ValidationMessageTranslation';
-import { SMALL_TEXT_LENGTH } from '../../../core/forms/field-length.constants';
+import { SMALL_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 
 export const displayNameValidator = yup
   .string()

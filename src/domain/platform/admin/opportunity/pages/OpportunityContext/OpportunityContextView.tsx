@@ -3,7 +3,9 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateContextInput } from '../../../../../../common/utils/buildContext';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
-import { useNotification, useApolloErrorHandler, useUrlParams } from '../../../../../../hooks';
+import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
   useUpdateOpportunityMutation,
   refetchOpportunityProfileInfoQuery,

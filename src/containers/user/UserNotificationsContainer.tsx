@@ -1,6 +1,7 @@
 import { sortBy } from 'lodash';
 import React, { FC, useMemo } from 'react';
-import { useApolloErrorHandler, useUrlParams } from '../../hooks';
+import { useUrlParams } from '../../core/routing/useUrlParams';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useUpdatePreferenceOnUserMutation,
   useUserNotificationsPreferencesQuery,

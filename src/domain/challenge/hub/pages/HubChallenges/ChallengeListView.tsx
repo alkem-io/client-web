@@ -1,10 +1,9 @@
 import React, { FC, useCallback, useState } from 'react';
-
+import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
@@ -13,15 +12,15 @@ import {
   useCreateChallengeMutation,
   useDeleteChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
-import { useHub } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useHub } from '../../HubContext/useHub';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { ChallengeIcon } from '../../../../../common/icons/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildAdminChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
-import Box from '@mui/material/Box';
 
 interface ChallengeListProps extends PageProps {}
 

@@ -8,7 +8,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select/Select';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useHub } from '../../../../../hooks';
+import { useHub } from '../../../../../domain/challenge/hub/HubContext/useHub';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,

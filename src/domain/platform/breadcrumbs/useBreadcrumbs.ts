@@ -1,10 +1,10 @@
 import { ComponentType, useMemo } from 'react';
-import { useUrlParams } from '.';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../common/utils/urlBuilders';
-import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from '../core/apollo/generated/apollo-hooks';
-import { HubIcon } from '../common/icons/HubIcon';
-import { ChallengeIcon } from '../common/icons/ChallengeIcon';
-import { EntityTypeName } from '../domain/shared/layout/PageLayout/SimplePageLayout';
+import { useUrlParams } from '../../../core/routing/useUrlParams';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../common/utils/urlBuilders';
+import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { HubIcon } from '../../../common/icons/HubIcon';
+import { ChallengeIcon } from '../../../common/icons/ChallengeIcon';
+import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 
 export interface BreadcrumbsItem {
   title: string;

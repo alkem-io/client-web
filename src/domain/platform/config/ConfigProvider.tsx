@@ -6,7 +6,7 @@ import { ConfigurationDocument } from '../../../core/apollo/generated/apollo-hoo
 import { ConfigurationQuery } from '../../../core/apollo/generated/graphql-schema';
 import { logger } from '../../../services/logging/winston/logger';
 import { Configuration } from './configuration';
-import useLoadingStateWithHandlers from '../../../hooks/useLoadingStateWithHandlers';
+import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
 
 export interface ConfigContextProps {
   config?: Configuration;

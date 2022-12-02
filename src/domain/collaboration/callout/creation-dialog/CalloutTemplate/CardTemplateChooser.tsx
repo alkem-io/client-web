@@ -1,10 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Grid, Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
 import CardTemplatesList from './CardTemplatesList';
 import CardTemplatePreview from './CardTemplateCardPreview';
-import { useHub } from '../../../../../hooks';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useField } from 'formik';
 
 interface CardTemplatesChooserProps {

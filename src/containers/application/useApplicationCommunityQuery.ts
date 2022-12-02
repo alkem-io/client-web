@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useUrlParams } from '../../hooks';
+import { useUrlParams } from '../../core/routing/useUrlParams';
 import {
   useChallengeApplicationQuery,
   useChallengeApplicationTemplateQuery,

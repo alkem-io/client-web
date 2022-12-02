@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
 import OpportunitySettingsLayout from './OpportunitySettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { useHub, useOpportunity } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
 import CommunityGroupListPage from '../community/CommunityListPage';

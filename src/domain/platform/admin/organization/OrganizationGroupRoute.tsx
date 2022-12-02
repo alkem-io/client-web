@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useOrganizationGroupQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { PageProps } from '../../../shared/types/PageProps';
 import { GroupRoute } from '../routing/GroupRoute';

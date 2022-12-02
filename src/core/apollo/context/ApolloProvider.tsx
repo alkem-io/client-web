@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useConfig } from '../../../hooks';
+import { useConfig } from '../../../domain/platform/config/useConfig';
 import { ApolloProvider } from '@apollo/client';
 import { FEATURE_SUBSCRIPTIONS } from '../../../domain/platform/config/features.constants';
 import { useGraphQLClient } from '../hooks/useGraphQLClient';

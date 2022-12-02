@@ -5,10 +5,9 @@ import QuizOutlinedIzon from '@mui/icons-material/QuizOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-
 import { DialogActions, DialogContent, DialogTitle } from '../../../common/components/core/dialog';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
-import { useConfig } from '../../../hooks';
+import { useConfig } from '../../../domain/platform/config/useConfig';
 
 interface HelpDialogProps {
   open: boolean;

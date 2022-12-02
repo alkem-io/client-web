@@ -7,7 +7,8 @@ import RemoveModal from '../../../../common/components/core/RemoveModal';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { useDiscussionContext } from '../providers/DiscussionProvider';
 import { useDiscussionsContext } from '../providers/DiscussionsProvider';
-import { useUpdateNavigation, useUserContext } from '../../../../hooks';
+import { useUserContext } from '../../../community/contributor/user';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import DiscussionView from '../views/DiscussionView';
 import { PageProps } from '../../../shared/types/PageProps';
 

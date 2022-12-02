@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../../../hooks';
+import { useUserContext } from '../../user';
 import { useAssociatedOrganizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,

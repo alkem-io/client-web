@@ -6,7 +6,8 @@ import Link from '@mui/material/Link';
 import HelpOutline from '@mui/icons-material/HelpOutline';
 import MultipleSelect, { MultiSelectElement } from '../../../../common/components/core/MultipleSelect';
 import { SubHeader } from '../../../../common/components/core/Section';
-import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../../community/contributor/user';
 import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
@@ -18,7 +19,6 @@ import {
   SearchResult,
   SearchResultType,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { PageProps } from '../../../shared/types/PageProps';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../core/routing/route.constants';
 import { AUTH_LOGIN_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
@@ -82,9 +82,8 @@ export type SearchResultMetaType = SearchResultT<
   | SearchResultOpportunityFragment
 >;
 
-const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
+const SearchPage: FC = () => {
   const handleError = useApolloErrorHandler();
-  useUpdateNavigation({ currentPaths: paths });
 
   const navigate = useNavigate();
   const { t } = useTranslation();

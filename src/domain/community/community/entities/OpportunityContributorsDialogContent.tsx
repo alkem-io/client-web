@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useOpportunity } from '../../../../hooks';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 import { useOpportunityCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
@@ -35,4 +35,5 @@ const OpportunityContributorsDialogContent: FC<ContributorsDialogContentProps> =
     />
   );
 };
+
 export default OpportunityContributorsDialogContent;

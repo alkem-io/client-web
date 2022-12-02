@@ -6,7 +6,7 @@ import CanvasDialog from '../CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../../../../containers/canvas/CanvasActionsContainer';
 import CanvasValueContainer from '../../../../containers/canvas/CanvasValueContainer';
-import { useUserContext } from '../../../../hooks';
+import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasCheckoutStateEnum,
   CreateCanvasCanvasTemplateFragment,

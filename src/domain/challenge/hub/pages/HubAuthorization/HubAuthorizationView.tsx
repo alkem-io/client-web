@@ -3,7 +3,8 @@ import React, { FC } from 'react';
 
 import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
-import { useApolloErrorHandler, useHub } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useHub } from '../../HubContext/useHub';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsHubAdminMutation,

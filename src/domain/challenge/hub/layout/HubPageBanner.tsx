@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { useConfig, useHub } from '../../../../hooks';
+import { useHub } from '../HubContext/useHub';
+import { useConfig } from '../../../platform/config/useConfig';
 import PageBanner from '../../../shared/components/PageHeader/PageBanner';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';

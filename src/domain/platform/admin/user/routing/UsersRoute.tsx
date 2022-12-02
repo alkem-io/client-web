@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { EditMode } from '../../../../../core/forms/editMode';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import AdminUsersPage from '../AdminUsers/AdminUsersPage';
 import { UserPage } from '../pages/UserPage';
-import { nameOfUrl } from '../../../../../core/routing/url-params';
+import { nameOfUrl } from '../../../../../core/routing/urlParams';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');

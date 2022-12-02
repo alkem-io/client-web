@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '../../components/Community/EditMembersUsers';
 import OrganizationAssociates from '../../../../../containers/organization/OrganizationAssociates';
-import { useOrganization } from '../../../../../hooks';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';

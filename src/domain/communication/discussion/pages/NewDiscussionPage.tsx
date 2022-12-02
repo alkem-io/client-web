@@ -4,7 +4,7 @@ import { useCommunityContext } from '../../../community/community/CommunityConte
 import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import NewDiscussionView from '../views/NewDiscussionView';
 import { PageProps } from '../../../shared/types/PageProps';
-import { useUpdateNavigation } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 
 export interface NewDiscussionPageProps extends PageProps {}
 
@@ -23,4 +23,5 @@ const NewDiscussionPage: FC<NewDiscussionPageProps> = ({ paths }) => {
     </DiscussionsLayout>
   );
 };
+
 export default NewDiscussionPage;

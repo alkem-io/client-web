@@ -4,7 +4,7 @@ import {
   APPLICATION_STATE_NEW,
   APPLICATION_STATE_REJECTED,
 } from '../../domain/community/application/constants/ApplicationState';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchUserApplicationsQuery,
   useDeleteUserApplicationMutation,

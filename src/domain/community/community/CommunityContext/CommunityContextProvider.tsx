@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useChallengeCommunityQuery,
   useHubCommunityQuery,

@@ -15,10 +15,3 @@ query hubPreferences($hubNameId: UUID_NAMEID!) {
     }
   }
 }
-
-mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
-  updatePreferenceOnHub(preferenceData: $preferenceData) {
-    id
-    value
-  }
-}

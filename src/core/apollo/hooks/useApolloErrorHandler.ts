@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 import { Severity } from '../../state/global/notifications/notificationMachine';
 import { useTranslation } from 'react-i18next';
 import { error as logError } from '../../../services/logging/sentry/log';
-import { useNotification } from '../../../hooks/useNotification';
+import { useNotification } from '../../ui/notifications/useNotification';
 
 enum GraphQLErrorsExtensionCodes {
   BAD_USER_INPUT = 'BAD_USER_INPUT',

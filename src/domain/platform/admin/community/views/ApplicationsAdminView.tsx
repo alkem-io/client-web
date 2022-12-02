@@ -2,7 +2,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useEventOnApplicationMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '../../../../community/application/dialogs/ApplicationDialog';

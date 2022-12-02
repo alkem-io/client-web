@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../core/container/container';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useChallengePreferencesQuery,
   useUpdatePreferenceOnChallengeMutation,

@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Loading } from '../../../../common/components/core';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import { logger } from '../../../../services/logging/winston/logger';
 import { useKratosClient } from '../hooks/useKratosClient';
 

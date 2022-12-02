@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import { useTransactionScope, useHub } from '../../../../../hooks';
+import { useTransactionScope } from '../../../../../core/analytics/useSentry';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import HubCommunicationsPage from '../../../../challenge/hub/pages/HubCommunication/HubCommunicationsPage';

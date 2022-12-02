@@ -33,9 +33,9 @@ import CanvasWhiteboard from '../../../../common/components/composite/entities/C
 import CanvasListItemState from '../CanvasList/CanvasListItemState';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
-import UrlParams from '../../../../core/routing/url-params';
+import UrlParams from '../../../../core/routing/urlParams';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 type CanvasWithoutValue = Omit<Canvas, 'value'>;

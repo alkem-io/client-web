@@ -14,7 +14,7 @@ import {
   useHubContextQuery,
   useOpportunityContextQuery,
 } from '../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 
 interface ContextTabPermissions {
   canCreateCommunityContextReview: boolean;

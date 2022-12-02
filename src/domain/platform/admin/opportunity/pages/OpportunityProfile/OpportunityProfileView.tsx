@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { createContextInput, updateContextInput } from '../../../../../../common/utils/buildContext';
 import FormMode from '../../../components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../../common/components/composite/forms/ProfileForm';
-import { useNotification, useApolloErrorHandler, useChallenge, useUrlParams } from '../../../../../../hooks';
+import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useChallenge } from '../../../../../challenge/challenge/hooks/useChallenge';
+import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
   useCreateOpportunityMutation,
   refetchOpportunitiesQuery,
@@ -12,7 +15,7 @@ import {
   refetchOpportunityProfileInfoQuery,
   useOpportunityProfileInfoQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
-import { useNavigateToEdit } from '../../../../../../hooks/useNavigateToEdit';
+import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
 import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';

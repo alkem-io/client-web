@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import FormMode from '../../../components/FormMode';
-import { useAppendBreadcrumb } from '../../../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../../../core/routing/usePathUtils';
 import { SettingsSection } from '../../../layout/EntitySettings/constants';
 import { SettingsPageProps } from '../../../layout/EntitySettings/types';
 import OpportunitySettingsLayout from '../../OpportunitySettingsLayout';

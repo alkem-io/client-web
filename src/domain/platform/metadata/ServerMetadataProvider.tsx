@@ -3,7 +3,7 @@ import { Metadata, ServerMetadataQuery } from '../../../core/apollo/generated/gr
 import { ServerMetadataDocument } from '../../../core/apollo/generated/apollo-hooks';
 import { logger } from '../../../services/logging/winston/logger';
 import queryRequest from '../../../common/utils/query-request/query-request';
-import useLoadingStateWithHandlers from '../../../hooks/useLoadingStateWithHandlers';
+import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
 
 interface ServerMetadataContextProps {
   metadata?: Metadata;

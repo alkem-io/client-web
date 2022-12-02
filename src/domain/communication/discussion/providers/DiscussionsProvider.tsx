@@ -1,7 +1,8 @@
 import { uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useApolloErrorHandler, useHub } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,

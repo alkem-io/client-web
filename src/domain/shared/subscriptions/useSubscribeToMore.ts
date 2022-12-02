@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useConfig } from '../../platform/config/useConfig';
+import { useUserContext } from '../../community/contributor/user';
 import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
 import getDepsValueFromObject from '../utils/getDepsValueFromObject';

@@ -5,7 +5,9 @@ import { useResolvedPath } from 'react-router-dom';
 import EditMemberCredentials from '../components/Authorization/EditMemberCredentials';
 import AdminLayout from '../toplevel/AdminLayout';
 import { AdminSection } from '../toplevel/constants';
-import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsGlobalAdminMutation,

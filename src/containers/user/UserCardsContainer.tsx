@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { UserCardProps } from '../../common/components/composite/common/cards';
-import { useUserCardRoleName } from '../../hooks';
+import useUserCardRoleName from '../../domain/community/contributor/user/hooks/useUserCardRoleName';
 import { useUserCardsContainerQuery } from '../../core/apollo/generated/apollo-hooks';
 import { COUNTRIES_BY_CODE } from '../../domain/common/location/countries.constants';
 import { ContainerChildProps } from '../../core/container/container';

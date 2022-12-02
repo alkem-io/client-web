@@ -11,7 +11,8 @@ import ContextSectionIcon from '../../../../common/components/composite/sections
 import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
-import { useHub, useChallenge } from '../../../../hooks';
+import { useHub } from '../../hub/HubContext/useHub';
+import { useChallenge } from '../../challenge/hooks/useChallenge';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
   OpportunityPageFragment,
@@ -36,7 +37,6 @@ import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
-  // activity: MetricsItem[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   discussions: Discussion[];

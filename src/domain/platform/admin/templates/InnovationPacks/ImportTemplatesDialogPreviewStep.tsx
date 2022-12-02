@@ -6,7 +6,7 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { TemplateInnovationPackMetaInfo } from './InnovationPack';
-import useLoadingState from '../../../../../hooks/useLoadingState';
+import useLoadingState from '../../../../shared/utils/useLoadingState';
 
 export interface ImportTemplatesDialogPreviewStepProps<
   T extends Template,

@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 
 import { useResolvedPath } from 'react-router-dom';
 import UserNotificationsContainer from '../../../../../containers/user/UserNotificationsContainer';
-import { useUpdateNavigation } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
@@ -25,4 +25,5 @@ const UserNotificationsPage: FC<UserNotificationsPageProps> = ({ paths }) => {
     </UserSettingsLayout>
   );
 };
+
 export default UserNotificationsPage;

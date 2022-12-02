@@ -13,7 +13,8 @@ import {
   usePostCommentInAspectMutation,
   useRemoveCommentFromAspectMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useUserContext } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../../domain/community/contributor/user';
 import { Message } from '../../../domain/shared/components/Comments/models/message';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {

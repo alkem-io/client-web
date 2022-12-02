@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { WithCommunity } from '../../components/Community/CommunityTypes';
-import { useUrlParams } from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useHubGroupQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { GroupRoute } from '../../routing/GroupRoute';

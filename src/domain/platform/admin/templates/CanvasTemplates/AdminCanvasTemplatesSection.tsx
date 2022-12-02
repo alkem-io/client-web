@@ -22,7 +22,7 @@ import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
-import { useHub } from '../../../../../hooks';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 
 interface AdminCanvasTemplatesSectionProps {
   templateId: string | undefined;

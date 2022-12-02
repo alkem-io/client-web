@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
-
 import { Loading } from '../../../../common/components/core';
-import { useDeleteUserGroup, useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useDeleteUserGroup } from '../components/Group/useDeleteUserGroup';
 import { useCommunityGroupsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';

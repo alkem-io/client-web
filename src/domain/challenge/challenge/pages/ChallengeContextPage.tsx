@@ -1,5 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import { useChallenge, useHub, useUpdateNavigation } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useHub } from '../../hub/HubContext/useHub';
+import { useChallenge } from '../hooks/useChallenge';
 import ContextTabContainer from '../../../../containers/context/ContextTabContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';

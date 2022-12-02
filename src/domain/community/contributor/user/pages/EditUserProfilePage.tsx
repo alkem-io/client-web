@@ -3,19 +3,17 @@ import { useNavigate } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
 import { UserForm } from '../../../../../common/components/composite/forms/UserForm';
 import { Loading } from '../../../../../common/components/core';
-import {
-  useApolloErrorHandler,
-  useNotification,
-  useUpdateNavigation,
-  useUrlParams,
-  useUserContext,
-} from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useUserContext } from '../hooks/useUserContext';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
   useUserQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { EditMode } from '../../../../../core/forms/editMode';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import { UserModel } from '../models/User';
 import { logger } from '../../../../../services/logging/winston/logger';

@@ -3,7 +3,8 @@ import React, { useCallback, useMemo } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
   usePostCommentInCalloutMutation,

@@ -11,7 +11,7 @@ import VisualUpload from '../../../../common/components/composite/common/VisualU
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 export interface TemplateInfoValues {
   title: string;

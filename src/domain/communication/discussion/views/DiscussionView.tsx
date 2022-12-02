@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
-import { MID_TEXT_LENGTH } from '../../../../core/forms/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { Message } from '../../../shared/components/Comments/models/message';
 import { Discussion } from '../models/discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import WrapperButton from '../../../common/components/core/WrapperButton';
 import Section from '../../../common/components/core/Section';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation } from '../../routing/useNavigation';
 
 const paths = { currentPaths: [] };
 

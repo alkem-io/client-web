@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import RecoveryPage from '../pages/RecoveryPage';
 
 interface RecoveryRouteProps {}
@@ -15,4 +15,5 @@ export const RecoveryRoute: FC<RecoveryRouteProps> = () => {
 
   return <RecoveryPage flow={flow} />;
 };
+
 export default RecoveryRoute;

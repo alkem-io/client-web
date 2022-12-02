@@ -1,7 +1,8 @@
 import { Grid, Grow } from '@mui/material';
 import React from 'react';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useUpdateNavigation, useUserContext } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useUserContext } from '../../../community/contributor/user';
 import ContributorsSection from './ContributorsSection';
 import HubsSection from '../../../challenge/hub/DashboardHubs/HubsSection';
 import WelcomeSection from './WelcomeSection';

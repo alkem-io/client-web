@@ -6,7 +6,7 @@ import {
   useUpdatePreferenceOnOrganizationMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { OrganizationPreferenceType, Preference } from '../../../core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 
 export interface OrganizationPreferenceContainerEntities {
   preferences: Preference[];

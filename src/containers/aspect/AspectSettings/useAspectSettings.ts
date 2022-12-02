@@ -1,6 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import { ContainerHook } from '../../../core/container/container';
-import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
+import { PushFunc, RemoveFunc, useEditReference } from '../../../domain/shared/Reference/useEditReference';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../core/ui/notifications/useNotification';
 import {
   useChallengeAspectSettingsQuery,
   useDeleteAspectMutation,

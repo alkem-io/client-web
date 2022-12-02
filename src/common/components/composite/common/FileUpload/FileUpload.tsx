@@ -5,7 +5,9 @@ import { Button, Checkbox, Dialog, FormControlLabel, Link } from '@mui/material'
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import UploadButton from '../../../core/UploadButton';
 import { DialogTitle, DialogActions, DialogContent } from '../../../core/dialog';
-import { useApolloErrorHandler, useConfig, useNotification } from '../../../../../hooks';
+import { useConfig } from '../../../../../domain/platform/config/useConfig';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUploadFileMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { TranslateWithElements } from '../../../../../domain/shared/i18n/TranslateWithElements';
 import SectionSpacer from '../../../../../domain/shared/components/Section/SectionSpacer';

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useChallengeLifecycleQuery, useEventOnChallengeMutation } from '../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import { Lifecycle } from '../../core/apollo/generated/graphql-schema';
 import {
   ComponentOrChildrenFn,

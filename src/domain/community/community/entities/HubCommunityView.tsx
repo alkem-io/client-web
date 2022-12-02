@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { useHub, useUserContext } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useUserContext } from '../../contributor/user';
 import { toOrganizationCardProps } from '../utils/useOrganizationCardProps';
 import { useHubCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
