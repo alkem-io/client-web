@@ -3,12 +3,12 @@ import { ContributorCardProps } from '../../../../common/components/composite/co
 import { UserCardProps } from '../../../../common/components/composite/common/cards';
 import { useMemo } from 'react';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
-import { COUNTRIES_BY_CODE } from '../../../../models/constants';
-import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
+import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
+import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
 import {
   DashboardContributingOrganizationFragment,
   DashboardContributingUserFragment,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import { EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
 
 interface CommunityMembers {

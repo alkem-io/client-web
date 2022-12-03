@@ -6,11 +6,11 @@ import {
   useChallengeCanvasesQuery,
   useHubCanvasesQuery,
   useOpportunityCanvasesQuery,
-} from '../../hooks/generated/graphql';
+} from '../../core/apollo/generated/apollo-hooks';
 import {
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 import { getCanvasCallout } from './getCanvasCallout';
 
 interface CanvasProviderProps {

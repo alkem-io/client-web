@@ -13,12 +13,12 @@ import DashboardSection from '../../../../common/components/composite/sections/D
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
 import { useConfig } from '../../../../hooks';
-import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../../models/constants';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
 import {
   ChallengeCardFragment,
   AssociatedOrganizationDetailsFragment,
   Reference,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import { buildHubUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';

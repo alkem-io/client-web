@@ -1,0 +1,1 @@
+export const LATEST_ACTIVITIES_COUNT = 5;

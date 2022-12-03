@@ -14,13 +14,13 @@ import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
   useUserQuery,
-} from '../../../../../hooks/generated/graphql';
-import { EditMode } from '../../../../../models/editMode';
-import { User } from '../../../../../models/graphql-schema';
-import { UserModel } from '../../../../../models/User';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { EditMode } from '../../../../../core/forms/editMode';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
+import { UserModel } from '../models/User';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';

@@ -1,8 +1,8 @@
 import React, { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { NotificationHandler } from '../../../../../containers/NotificationHandler';
+import { NotificationHandler } from '../../../../../core/notifications/NotificationHandler';
 import { useApm, useUserContext, useUserScope } from '../../../../../hooks';
-import useServerMetadata from '../../../../../hooks/useServerMetadata';
+import useServerMetadata from '../../../../../domain/platform/metadata/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../../hooks/subscription/CommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '../../../../../domain/platform/cookies/useAlkemioCookies';

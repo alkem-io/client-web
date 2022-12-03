@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { useOpportunityProviderQuery } from '../../../../hooks/generated/graphql';
-import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../../../models/graphql-schema';
+import { useOpportunityProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { useChallenge } from '../../../../hooks';
 import { useUrlParams } from '../../../../hooks';
 

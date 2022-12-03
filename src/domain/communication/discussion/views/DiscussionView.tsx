@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
-import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../../core/forms/field-length.constants';
 import { Message } from '../../../shared/components/Comments/models/message';
 import { Discussion } from '../models/discussion';
-import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface DiscussionViewProps {
   discussion: Discussion;

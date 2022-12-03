@@ -4,7 +4,7 @@ import {
   AssociatedOrganizationDetailsFragment,
   OrganizationVerificationEnum,
   User,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { buildOrganizationUrl } from '../../../../../common/utils/urlBuilders';
 import { TFunction } from 'react-i18next';
 import { ApolloError } from '@apollo/client';

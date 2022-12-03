@@ -6,7 +6,7 @@ import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
-import CommunityGroupListPage from '../../../../pages/Admin/Community/CommunityListPage';
+import CommunityGroupListPage from '../community/CommunityListPage';
 import { useHub } from '../../../../hooks';
 import useHubApplications from './providers/useHubApplications';
 import { HubCommunityAdminMembershipPreferencesSection } from './HubCommunityAdminMembershipPreferencesSection';
@@ -18,7 +18,7 @@ import {
   useHubAvailableLeadUsersLazyQuery,
   useHubAvailableMemberUsersLazyQuery,
   useHubCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useMemberOrganizationAssignment from '../../../community/community/useCommunityAssignment/useMemberOrganizationAssignment';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';

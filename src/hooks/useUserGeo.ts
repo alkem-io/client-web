@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useConfig } from './useConfig';
+import { useConfig } from '../domain/platform/config/useConfig';
 
 interface GeoInformationResponse {
   latitude: number;

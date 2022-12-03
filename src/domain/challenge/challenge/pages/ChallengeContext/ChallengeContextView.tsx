@@ -6,7 +6,7 @@ import {
   refetchChallengeProfileInfoQuery,
   useChallengeProfileInfoQuery,
   useUpdateChallengeMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';

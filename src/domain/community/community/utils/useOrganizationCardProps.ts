@@ -1,4 +1,7 @@
-import { OrganizationCardFragment, OrganizationVerificationEnum } from '../../../../models/graphql-schema';
+import {
+  OrganizationCardFragment,
+  OrganizationVerificationEnum,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationCardProps } from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { getUserCardRoleNameKey, useUserContext } from '../../../../hooks';

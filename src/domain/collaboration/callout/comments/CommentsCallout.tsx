@@ -8,9 +8,9 @@ import {
   MessageDetailsFragmentDoc,
   usePostCommentInCalloutMutation,
   useRemoveCommentFromCalloutMutation,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { Message } from '../../../shared/components/Comments/models/message';
-import { AuthorizationPrivilege, CalloutState } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 

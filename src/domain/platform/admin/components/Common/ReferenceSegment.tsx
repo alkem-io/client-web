@@ -8,7 +8,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { PushFunc, RemoveFunc, useConfig } from '../../../../../hooks';
-import { Reference } from '../../../../../models/Profile';
+import { Reference } from '../../../../common/profile/Profile';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';

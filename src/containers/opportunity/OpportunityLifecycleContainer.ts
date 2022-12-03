@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { useEventOnOpportunityMutation, useOpportunityLifecycleQuery } from '../../hooks/generated/graphql';
+import { useEventOnOpportunityMutation, useOpportunityLifecycleQuery } from '../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../hooks';
-import { Lifecycle } from '../../models/graphql-schema';
+import { Lifecycle } from '../../core/apollo/generated/graphql-schema';
 import {
   ComponentOrChildrenFn,
   renderComponentOrChildrenFn,

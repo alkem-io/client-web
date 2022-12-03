@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { Nvp } from '../../../../models/graphql-schema';
+import { Nvp } from '../../../../core/apollo/generated/graphql-schema';
 
 const getCanvasesCount = (activity: Nvp[] | undefined) => {
   const value = activity?.find(activity => activity.name === MetricType.Canvas)?.value;

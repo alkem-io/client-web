@@ -3,10 +3,10 @@ import { Box, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '@mui/styles';
-import { User } from '../../../../models/graphql-schema';
+import { User } from '../../../../core/apollo/generated/graphql-schema';
 import Card from '../../../../common/components/core/Card';
 import Edit from '@mui/icons-material/Edit';
-import { COUNTRIES } from '../../../../models/constants';
+import { COUNTRIES } from '../../../common/location/countries.constants';
 import { useTranslation } from 'react-i18next';
 
 interface ContactDetailProps {

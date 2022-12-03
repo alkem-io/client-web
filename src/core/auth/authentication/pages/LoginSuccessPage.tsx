@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { STORAGE_KEY_RETURN_URL } from '../../../../models/constants';
+import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 
 interface LoginSuccessPageProps {}
 

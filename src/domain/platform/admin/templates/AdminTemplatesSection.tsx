@@ -3,7 +3,7 @@ import { Box, Button, DialogProps } from '@mui/material';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TemplateInfoFragment } from '../../../../models/graphql-schema';
+import { TemplateInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';

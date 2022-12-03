@@ -3,9 +3,9 @@ import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Box, Skeleton } from '@mui/material';
 import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
-import { useUploadVisualMutation } from '../../../../../hooks/generated/graphql';
+import { useUploadVisualMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import UploadButton from '../../../core/UploadButton';
-import { Visual } from '../../../../../models/graphql-schema';
+import { Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import { CropDialog } from './CropDialog';
 import ImageComponent from '../../../../../domain/shared/components/ImageComponent';
 

@@ -1,5 +1,5 @@
 import { useUrlParams } from '../../../../../hooks';
-import { useChallengeApplicationsQuery } from '../../../../../hooks/generated/graphql';
+import { useChallengeApplicationsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 const EMPTY = [];
 

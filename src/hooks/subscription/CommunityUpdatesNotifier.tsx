@@ -1,6 +1,6 @@
 import { useApolloErrorHandler, useConfig, useNotification, useUserContext } from '..';
-import { useCommunicationUpdateMessageReceivedSubscription } from '../generated/graphql';
-import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../models/constants';
+import { useCommunicationUpdateMessageReceivedSubscription } from '../../core/apollo/generated/apollo-hooks';
+import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../domain/platform/config/features.constants';
 import { logger } from '../../services/logging/winston/logger';
 
 const useCommunityUpdatesNotifier = () => {

@@ -1,4 +1,4 @@
-import { CalloutType, CanvasDetailsFragment } from '../../models/graphql-schema';
+import { CalloutType, CanvasDetailsFragment } from '../../core/apollo/generated/graphql-schema';
 // temp function used in the transition period for switching to collaboration; for choosing the correct callout by type
 export const getCanvasCallout = <T extends { type: CalloutType; nameID: string }>(
   callouts: T[] | undefined,

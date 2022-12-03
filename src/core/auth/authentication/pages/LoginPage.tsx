@@ -10,7 +10,7 @@ import Delimiter from '../../../../common/components/core/Delimiter';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../../../hooks';
-import { AUTH_REGISTER_PATH } from '../../../../models/constants';
+import { AUTH_REGISTER_PATH } from '../constants/authentication.constants';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';

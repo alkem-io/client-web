@@ -3,8 +3,8 @@ import {
   CalloutFragment,
   CalloutMessageReceivedSubscription,
   SubscriptionCalloutMessageReceivedArgs,
-} from '../../../models/graphql-schema';
-import { CalloutMessageReceivedDocument } from '../../../hooks/generated/graphql';
+} from '../../../core/apollo/generated/graphql-schema';
+import { CalloutMessageReceivedDocument } from '../../../core/apollo/generated/apollo-hooks';
 
 const useCalloutMessageReceivedSubscriptionOnExplorePage = calloutIDs =>
   createUseSubscriptionToSubEntityHook<

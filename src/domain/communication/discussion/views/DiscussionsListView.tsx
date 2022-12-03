@@ -6,7 +6,7 @@ import { Filter } from '../../../platform/admin/components/Common/Filter';
 import ProfileCard from '../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import DiscussionOverview from '../../../../common/components/composite/entities/Communication/DiscussionOverview';
 import { Discussion } from '../models/discussion';
-import { ViewProps } from '../../../../models/view';
+import { ViewProps } from '../../../../core/container/view';
 
 interface DiscussionListViewEntities {
   discussions: Discussion[];

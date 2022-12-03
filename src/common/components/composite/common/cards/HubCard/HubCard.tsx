@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildHubUrl } from '../../../../../utils/urlBuilders';
 import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
-import { Hub, Nvp, VisualUriFragment } from '../../../../../../models/graphql-schema';
+import { Hub, Nvp, VisualUriFragment } from '../../../../../../core/apollo/generated/graphql-schema';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
-import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../../../../domain/common/visual/utils/visuals.utils';
 import { MetricType } from '../../../../../../domain/platform/metrics/MetricType';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';

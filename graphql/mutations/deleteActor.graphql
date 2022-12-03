@@ -1,5 +1,0 @@
-mutation deleteActor($input: DeleteActorInput!) {
-  deleteActor(deleteData: $input) {
-    id
-  }
-}

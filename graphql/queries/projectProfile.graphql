@@ -1,8 +1,0 @@
-query projectProfile($hubId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    project(ID: $projectId) {
-      ...ProjectDetails
-    }
-  }
-}

@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
-import { Error404, PageProps } from '../../../../pages';
+import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { PageProps } from '../../../shared/types/PageProps';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyPage from '../pages/ApplyPage';
 import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
 

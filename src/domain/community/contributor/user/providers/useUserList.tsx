@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
 import { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
-import { useDeleteUserMutation, useUserListQuery } from '../../../../../hooks/generated/graphql';
+import { useDeleteUserMutation, useUserListQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
-import { UserListQuery, UserListQueryVariables } from '../../../../../models/graphql-schema';
+import { UserListQuery, UserListQueryVariables } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
 

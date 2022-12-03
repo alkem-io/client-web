@@ -25,8 +25,7 @@ import { makeStyles } from '@mui/styles';
 import { isEqual } from 'lodash';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CanvasWithoutValue } from '../../../../models/entities/canvas';
-import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+import { Canvas, CanvasCheckoutStateEnum } from '../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../../common/components/core';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
@@ -39,9 +38,11 @@ import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import UrlParams from '../../../../core/routing/url-params';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
+type CanvasWithoutValue = Omit<Canvas, 'value'>;
+
 interface CanvasDialogProps {
   entities: {
-    canvas?: CanvasWithoutValue & { value: Canvas['value'] };
+    canvas?: Canvas;
   };
   actions: {
     onCancel: () => void;

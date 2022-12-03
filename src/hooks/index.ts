@@ -3,7 +3,7 @@ export * from '../domain/community/contributor/user/hooks/useUserContext';
 export * from '../core/apollo/hooks/useApolloErrorHandler';
 
 export * from '../core/auth/authentication/hooks/useAuthenticate';
-export * from './useConfig';
+export * from '../domain/platform/config/useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
 
@@ -19,7 +19,7 @@ export * from './useAspectCreatedOnCalloutSubscription';
 export * from './useUrlParams';
 export * from './useCurrentBreakpoint';
 
-export * from './operations/useEditReference';
+export * from '../domain/shared/Reference/useEditReference';
 export * from './useNavigation';
 export * from './useBreadcrumbs';
 export * from './useNotification';

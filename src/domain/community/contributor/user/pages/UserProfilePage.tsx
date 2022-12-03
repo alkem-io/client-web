@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { Loading } from '../../../../../common/components/core';
 import { useUpdateNavigation, useUrlParams } from '../../../../../hooks';
-import { PageProps, Error404 } from '../../../../../pages';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';

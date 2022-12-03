@@ -1,12 +1,15 @@
 import React, { FC, useCallback } from 'react';
-import { ApplicationForRoleResult, User } from '../../models/graphql-schema';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
+import { ApplicationForRoleResult, User } from '../../core/apollo/generated/graphql-schema';
+import {
+  APPLICATION_STATE_NEW,
+  APPLICATION_STATE_REJECTED,
+} from '../../domain/community/application/constants/ApplicationState';
 import { useApolloErrorHandler } from '../../hooks';
 import {
   refetchUserApplicationsQuery,
   useDeleteUserApplicationMutation,
   useUserProfileApplicationsQuery,
-} from '../../hooks/generated/graphql';
+} from '../../core/apollo/generated/apollo-hooks';
 import getApplicationWithType, { ApplicationWithType } from '../../common/utils/application/getApplicationWithType';
 import sortApplications from '../../common/utils/application/sortApplications';
 

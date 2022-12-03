@@ -5,8 +5,13 @@ import { MetricItem } from '../../../../common/components/composite/common/Metri
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { HubContextSection } from './HubContextSection';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
-import { ContextTabFragment, Tagset, MetricsItemFragment, Context } from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+import {
+  ContextTabFragment,
+  Tagset,
+  MetricsItemFragment,
+  Context,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import ActivityView from '../../../platform/metrics/views/MetricsView';

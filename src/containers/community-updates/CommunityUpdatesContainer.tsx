@@ -6,15 +6,15 @@ import {
   useCommunityUpdatesQuery,
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
-} from '../../hooks/generated/graphql';
+} from '../../core/apollo/generated/apollo-hooks';
 import {
   CommunicationUpdateMessageReceivedSubscription,
   Community,
   CommunityUpdatesQuery,
   Hub,
   Message,
-} from '../../models/graphql-schema';
-import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
+} from '../../core/apollo/generated/graphql-schema';
+import { FEATURE_SUBSCRIPTIONS } from '../../domain/platform/config/features.constants';
 import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import { buildAuthorFromUser } from '../../common/utils/buildAuthorFromUser';

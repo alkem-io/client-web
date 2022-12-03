@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useConfig, useHub } from '../../../../hooks';
 import PageBanner from '../../../shared/components/PageHeader/PageBanner';
-import { getVisualBanner } from '../../../../common/utils/visuals.utils';
-import { HubVisibility } from '../../../../models/graphql-schema';
+import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
 import { Link } from '@mui/material';
-import { Configuration } from '../../../../models/configuration';
+import { Configuration } from '../../../platform/config/configuration';
 import TranslationKey from '../../../../types/TranslationKey';
 
 const getPageNoticeLabel = (

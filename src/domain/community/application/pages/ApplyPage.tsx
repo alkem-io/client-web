@@ -16,11 +16,11 @@ import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../.
 import {
   refetchUserApplicationsQuery,
   useApplyForCommunityMembershipMutation,
-} from '../../../../hooks/generated/graphql';
-import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
-import { CreateNvpInput } from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationTypeKey from '../../../../common/utils/translation/get-application-type-key';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {

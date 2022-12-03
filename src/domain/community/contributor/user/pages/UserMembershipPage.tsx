@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 import { useUrlParams, useUpdateNavigation } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { ContributionsView } from '../../../profile/views/ProfileView';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';

@@ -2,7 +2,7 @@ import {
   AdminCanvasTemplateFragment,
   AdminCanvasTemplateValueFragment,
   CanvasDetailsFragment,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CanvasTemplateForm, { CanvasTemplateFormSubmittedValues, CanvasTemplateFormValues } from './CanvasTemplateForm';
 import Dialog from '@mui/material/Dialog';

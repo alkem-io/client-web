@@ -6,7 +6,7 @@ import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { useHub, useOpportunity } from '../../../../hooks';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
-import CommunityGroupListPage from '../../../../pages/Admin/Community/CommunityListPage';
+import CommunityGroupListPage from '../community/CommunityListPage';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import useOpportunityLeadOrganizationAssignment from '../../../community/community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
 import useOpportunityMemberOrganizationAssignment from '../../../community/community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
@@ -17,7 +17,7 @@ import {
   useOpportunityAvailableLeadUsersLazyQuery,
   useOpportunityAvailableMemberUsersLazyQuery,
   useOpportunityCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';

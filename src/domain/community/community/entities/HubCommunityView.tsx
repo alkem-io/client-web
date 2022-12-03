@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../../../hooks';
 import { toOrganizationCardProps } from '../utils/useOrganizationCardProps';
-import { useHubCommunityContributorsQuery } from '../../../../hooks/generated/graphql';
+import { useHubCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';

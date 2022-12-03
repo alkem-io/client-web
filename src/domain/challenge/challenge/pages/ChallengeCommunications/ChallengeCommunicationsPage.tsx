@@ -4,7 +4,7 @@ import { SettingsSection } from '../../../../platform/admin/layout/EntitySetting
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
 import { WithCommunity } from '../../../../platform/admin/components/Community/CommunityTypes';
-import CommunityUpdatesPage from '../../../../../pages/Admin/Community/CommunityUpdatesPage';
+import CommunityUpdatesPage from '../../../../platform/admin/community/CommunityUpdatesPage';
 
 interface ChallengeCommunicationsPageProps extends SettingsPageProps, WithCommunity {}
 

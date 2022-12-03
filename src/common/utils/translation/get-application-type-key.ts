@@ -1,4 +1,4 @@
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
 import TranslationKey from '../../../types/TranslationKey';
 
 const getApplicationTypeKey = (type: ApplicationTypeEnum): TranslationKey => {

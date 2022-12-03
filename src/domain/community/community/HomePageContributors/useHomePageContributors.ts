@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
 import { shuffle } from 'lodash';
 import { useUserContext } from '../../../../hooks';
-import { useContributingUsersQuery, useContributingOrganizationsQuery } from '../../../../hooks/generated/graphql';
-import { COUNTRIES_BY_CODE } from '../../../../models/constants';
+import {
+  useContributingUsersQuery,
+  useContributingOrganizationsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
+import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { WithId } from '../../../../types/WithId';
-import { AuthorizationCredential } from '../../../../models/graphql-schema';
+import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
 const MAX_ITEMS_TO_SHOW = 20;
 const HALF_MAX_ITEMS_TO_SHOW = MAX_ITEMS_TO_SHOW / 2; // If logged in, show half users half organizations

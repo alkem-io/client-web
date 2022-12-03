@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { Error404 } from '../../../../pages';
-import AdminAuthorizationPage from '../../../../pages/Admin/AdminAuthorization/AdminAuthorizationPage';
-import GlobalAuthorizationPage from '../../../../pages/Admin/GlobalAuthorizationPage';
-import GlobalCommunityAuthorizationPage from '../../../../pages/Admin/GlobalCommunityAuthorizationPage';
-import GlobalHubsAdminAuthorizationPage from '../../../../pages/Admin/GlobalHubsAdminAuthorizationPage';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
+import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
+import GlobalCommunityAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
+import GlobalHubsAdminAuthorizationPage from '../authorization/GlobalHubsAdminAuthorizationPage';
 import { nameOfUrl } from '../../../../core/routing/url-params';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
 
