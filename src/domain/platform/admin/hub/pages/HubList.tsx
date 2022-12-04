@@ -5,7 +5,8 @@ import {
   useAdminHubsListQuery,
   useDeleteHubMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { PageProps } from '../../../../shared/types/PageProps';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import ListPage from '../../components/ListPage';

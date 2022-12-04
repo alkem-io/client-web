@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { Agent } from '../../core/apollo/generated/graphql-schema';
-import getUserRoleTranslationKey from '../../common/utils/user-role-name/get-user-role-translation-key';
+import { Agent } from '../../../../../core/apollo/generated/graphql-schema';
+import getUserRoleTranslationKey from '../../../../../common/utils/user-role-name/get-user-role-translation-key';
 import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
   RoleNameKey,
-} from '../../domain/community/contributor/user/constants/translation.constants';
+} from '../constants/translation.constants';
 import { sortBy } from 'lodash';
 
 const ROLES_ORDER = [OWNER_TRANSLATION_KEY, ADMIN_TRANSLATION_KEY, MEMBER_TRANSLATION_KEY] as const;

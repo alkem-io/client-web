@@ -6,7 +6,7 @@ import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlin
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import { RouterLink } from '../../../common/components/core/RouterLink';
 import { INSPIRATION_ROUTE } from '../../../core/routing/route.constants';
-import { useUrlParams } from '../../../hooks';
+import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { AuthorizationPrivilege, CalloutType } from '../../../core/apollo/generated/graphql-schema';
 import useScrollToElement from '../../shared/utils/scroll/useScrollToElement';
 import { useCalloutCreation } from './creation-dialog/useCalloutCreation/useCalloutCreation';

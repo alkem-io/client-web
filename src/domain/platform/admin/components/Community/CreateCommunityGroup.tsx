@@ -4,8 +4,8 @@ import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnCommunityMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../hooks';
-import { useUpdateNavigation } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { PageProps } from '../../../../shared/types/PageProps';
 import CreateGroupForm from '../Common/CreateGroupForm';
 import { WithCommunity } from './CommunityTypes';

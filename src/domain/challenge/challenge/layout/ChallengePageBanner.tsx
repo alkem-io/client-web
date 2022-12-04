@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import PageBanner from '../../../shared/components/PageHeader/PageBanner';
-import { useChallenge } from '../../../../hooks';
+import { useChallenge } from '../hooks/useChallenge';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 
 const ChallengePageBanner: FC = () => {

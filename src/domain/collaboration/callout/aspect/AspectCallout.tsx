@@ -8,7 +8,8 @@ import {
   AspectCardFragmentDoc,
   useCreateAspectFromContributeTabMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCalloutSubscription';
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';

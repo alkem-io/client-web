@@ -1,7 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useDiscussionsContext } from '../../domain/communication/discussion/providers/DiscussionsProvider';
-import { useChallenge, useHub, useUserContext } from '../../hooks';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useHub } from '../../domain/challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../domain/challenge/challenge/hooks/useChallenge';
 import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../core/container/container';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';

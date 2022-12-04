@@ -2,7 +2,7 @@ import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { useUpdateNavigation } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import { PageProps } from '../../../../shared/types/PageProps';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';

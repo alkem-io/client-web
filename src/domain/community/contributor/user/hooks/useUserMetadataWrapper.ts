@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useCredentialsResolver } from '../../../../../hooks';
+import { useCredentialsResolver } from '../../../../common/credential/useCredentialsResolver';
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../../common/tags/tagset.constants';
 import { ContributionItem } from '../../contribution';
 import {

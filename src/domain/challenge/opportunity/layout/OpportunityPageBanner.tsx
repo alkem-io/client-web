@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import PageBanner from '../../../shared/components/PageHeader/PageBanner';
-import { useOpportunity } from '../../../../hooks';
+import { useOpportunity } from '../hooks/useOpportunity';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 
 const OpportunityPageBanner: FC = () => {

@@ -1,14 +1,17 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useNotification, useOrganization, useUpdateNavigation } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
-import { EditMode } from '../../../../../core/forms/editMode';
+import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
 import {
   CreateOrganizationInput,
   UpdateOrganizationInput,

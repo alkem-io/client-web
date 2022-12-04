@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
-import { useOpportunity } from '../../../../hooks';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
 import OpportunityPageBanner from '../../../challenge/opportunity/layout/OpportunityPageBanner';
 import OpportunityTabs from '../../../challenge/opportunity/layout/OpportunityTabs';

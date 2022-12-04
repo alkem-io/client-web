@@ -1,5 +1,6 @@
 import { FC, useEffect, useMemo } from 'react';
-import { useUrlParams, useUserContext } from '../../hooks';
+import { useUrlParams } from '../../core/routing/useUrlParams';
+import { useUserContext } from '../../domain/community/contributor/user';
 import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,

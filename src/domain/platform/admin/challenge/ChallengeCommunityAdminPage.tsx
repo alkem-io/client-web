@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import ChallengeSettingsLayout from './ChallengeSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
-import { useChallenge, useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';

@@ -2,7 +2,9 @@ import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import EditMemberCredentials from '../components/Authorization/EditMemberCredentials';
-import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsGlobalCommunityAdminMutation,

@@ -4,7 +4,8 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationCardProps } from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { getUserCardRoleNameKey, useUserContext } from '../../../../hooks';
+import { getUserCardRoleNameKey } from '../../contributor/user/hooks/useUserCardRoleName';
+import { useUserContext } from '../../contributor/user';
 import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { useTranslation } from 'react-i18next';

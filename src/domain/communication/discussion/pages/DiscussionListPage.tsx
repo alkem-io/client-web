@@ -16,7 +16,7 @@ import { useCommunityContext } from '../../../community/community/CommunityConte
 import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import { DiscussionListView } from '../views/DiscussionsListView';
 import { PageProps } from '../../../shared/types/PageProps';
-import { useUpdateNavigation } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 
 interface DiscussionsPageProps extends PageProps {}
 

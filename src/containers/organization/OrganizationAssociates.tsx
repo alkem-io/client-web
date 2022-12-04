@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useUserContext } from '../../hooks';
+import { useUserContext } from '../../domain/community/contributor/user';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganizationAdminMutation,
@@ -9,7 +9,7 @@ import {
   useRemoveUserAsOrganizationOwnerMutation,
   useRemoveUserFromOrganizationMutation,
 } from '../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import {
   AuthorizationCredential,
   Organization,

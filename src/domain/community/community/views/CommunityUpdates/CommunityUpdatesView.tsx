@@ -34,10 +34,10 @@ import Avatar from '../../../../../common/components/core/Avatar';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
-import { useNotification } from '../../../../../hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
 import hexToRGBA from '../../../../../common/utils/hexToRGBA';
 

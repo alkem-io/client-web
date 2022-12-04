@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUpdateNavigation } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import SearchableList, { SearchableListItem } from './SearchableList';
 import { Path } from '../../../../context/NavigationProvider';
 import SearchableListLayout from '../../../shared/components/SearchableListLayout';

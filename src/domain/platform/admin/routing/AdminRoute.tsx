@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, Navigate, useResolvedPath } from 'react-router-dom';
-import { useTransactionScope } from '../../../../hooks';
+import { useTransactionScope } from '../../../../core/analytics/useSentry';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import RestrictedRoute from '../../../../core/routing/RestrictedRoute';

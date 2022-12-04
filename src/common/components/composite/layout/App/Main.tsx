@@ -1,7 +1,7 @@
 import { Container, ContainerProps } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React from 'react';
-import useCurrentBreakpoint from '../../../../../hooks/useCurrentBreakpoint';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 
 const useMainStyles = makeStyles(() => ({
   main: {

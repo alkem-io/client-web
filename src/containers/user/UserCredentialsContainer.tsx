@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useBeginAlkemioUserCredentialOfferInteractionMutation,
   useBeginCommunityMemberCredentialOfferInteractionMutation,

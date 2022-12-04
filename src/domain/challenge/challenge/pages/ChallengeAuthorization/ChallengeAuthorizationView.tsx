@@ -1,9 +1,9 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
-
 import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
-import { useApolloErrorHandler, useChallenge } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useChallenge } from '../../hooks/useChallenge';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,

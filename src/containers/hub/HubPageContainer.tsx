@@ -1,6 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useHub, useUserContext } from '../../hooks';
+import { useHub } from '../../domain/challenge/hub/HubContext/useHub';
+import { useUserContext } from '../../domain/community/contributor/user';
 import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../core/container/container';
 import {

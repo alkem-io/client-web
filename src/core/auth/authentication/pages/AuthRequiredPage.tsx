@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../constants/authentication.constants';
 import { Box } from '@mui/material';

@@ -4,7 +4,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { EditMode } from '../../../../core/forms/editMode';
+import { EditMode } from '../../../../core/ui/forms/editMode';
 import { SocialNetworkEnum } from '../../../../domain/shared/components/SocialLinks/models/SocialNetworks';
 import { TagsetTemplate, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { Reference, Tagset } from '../../../../domain/common/profile/Profile';

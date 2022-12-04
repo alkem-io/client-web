@@ -7,7 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { forwardRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { useCombinedRefs } from '../../../../../hooks/useCombinedRefs';
+import { useCombinedRefs } from '../../../../../domain/shared/utils/useCombinedRefs';
 import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
 import useAsyncInterruptibleCallback from '../../../../../domain/shared/utils/useAsyncInterruptibleCallback';
 

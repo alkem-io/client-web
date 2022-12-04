@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
 import CanvasesView from '../EntityCanvasPage/CanvasesView';
 

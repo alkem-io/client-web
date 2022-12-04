@@ -6,7 +6,8 @@ import {
   useHubCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 

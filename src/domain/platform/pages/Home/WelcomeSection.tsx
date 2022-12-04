@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
 import BannerImage from './BannerImage';
 import HeaderLink from './HeaderLink';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../config/useConfig';
 
 const WelcomeSection = () => {
   const { t } = useTranslation();

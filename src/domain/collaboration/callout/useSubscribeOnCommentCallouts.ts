@@ -1,4 +1,6 @@
-import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useConfig } from '../../platform/config/useConfig';
+import { useUserContext } from '../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
   useCalloutMessageReceivedSubscription,

@@ -10,12 +10,12 @@ import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/F
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
 import { Aspect, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
-import { PushFunc, RemoveFunc } from '../../../../hooks';
+import { PushFunc, RemoveFunc } from '../../../shared/Reference/useEditReference';
 import { Reference } from '../../../common/profile/Profile';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import FormRow from '../../../shared/layout/FormLayout';
 import { displayNameValidator } from '../../../../common/utils/validator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 type FormValueType = {
   name: string;

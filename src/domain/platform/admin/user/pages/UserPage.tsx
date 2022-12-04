@@ -4,7 +4,6 @@ import { PageProps } from '../../../../shared/types/PageProps';
 import UserRemoveModal from '../../components/User/UserRemoveModal';
 import UserForm from '../../../../../common/components/composite/forms/UserForm';
 import { Loading } from '../../../../../common/components/core/Loading/Loading';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../../../hooks';
 import {
   useCreateTagsetOnProfileMutation,
   useCreateUserMutation,
@@ -13,12 +12,16 @@ import {
   useUpdateUserMutation,
   useUserQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { EditMode } from '../../../../../core/forms/editMode';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
 import { CreateUserInput } from '../../../../../core/apollo/generated/graphql-schema';
 import { UserModel } from '../../../../community/contributor/user/models/User';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { createUserNameID } from '../../../../../common/utils/createUserNameId';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 
 interface UserPageProps extends PageProps {
   mode: EditMode;

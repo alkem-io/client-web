@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUserContext } from '../../../../../hooks';
+import { useUserContext } from '../../../../community/contributor/user';
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import AuthorizationPageProps from '../../authorization/AuthorizationPageProps';
 import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';

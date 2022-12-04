@@ -1,7 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useApolloErrorHandler, useDeleteUserGroup, useNotification, useUpdateNavigation } from '../../../../../hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useDeleteUserGroup } from './useDeleteUserGroup';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,

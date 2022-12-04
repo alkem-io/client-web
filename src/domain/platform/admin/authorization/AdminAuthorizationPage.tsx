@@ -5,7 +5,7 @@ import { Container, Grid } from '@mui/material';
 import Card from '../../../../common/components/core/Card';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import { Link as RouterLink } from 'react-router-dom';
-import { useUpdateNavigation } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { AdminSection } from '../toplevel/constants';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 

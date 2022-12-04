@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
-import { useUrlParams } from '../../hooks';
+import { useUrlParams } from '../../core/routing/useUrlParams';
 import {
   useCanvasTemplatesQuery,
   useChallengeCanvasesQuery,

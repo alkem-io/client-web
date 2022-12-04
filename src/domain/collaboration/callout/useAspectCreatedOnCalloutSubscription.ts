@@ -1,4 +1,4 @@
-import { useApolloErrorHandler } from './index';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useChallengeCalloutQuery,
   useHubCalloutQuery,
@@ -6,9 +6,9 @@ import {
   usePrivilegesOnChallengeCollaborationQuery,
   usePrivilegesOnHubCollaborationQuery,
   usePrivilegesOnOpportunityCollaborationQuery,
-} from '../core/apollo/generated/apollo-hooks';
-import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../core/apollo/generated/graphql-schema';
-import useCalloutAspectCreatedSubscription from '../domain/collaboration/collaboration/useCalloutAspectCreatedSubscription';
+} from '../../../core/apollo/generated/apollo-hooks';
+import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../../../core/apollo/generated/graphql-schema';
+import useCalloutAspectCreatedSubscription from '../collaboration/useCalloutAspectCreatedSubscription';
 
 export type AspectWithPermissions = AspectCardFragment & { canDelete: boolean | undefined };
 export interface AspectsData {

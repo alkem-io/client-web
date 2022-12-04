@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
-import { useQueryParams } from '../../hooks';
-import { useTransactionScope } from '../../hooks';
+import { useTransactionScope } from '../analytics/useSentry';
+import { useQueryParams } from './useQueryParams';
 import { RestrictedPage } from '../pages/Restricted/RestrictedPage';
 import { info as logInfo } from '../../services/logging/sentry/log';
 

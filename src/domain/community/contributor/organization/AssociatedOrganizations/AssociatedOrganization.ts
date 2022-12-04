@@ -1,4 +1,4 @@
-import { getUserCardRoleNameKey } from '../../../../../hooks';
+import { getUserCardRoleNameKey } from '../../user/hooks/useUserCardRoleName';
 import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import {
   AssociatedOrganizationDetailsFragment,

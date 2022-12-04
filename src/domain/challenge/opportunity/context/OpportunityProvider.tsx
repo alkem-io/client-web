@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { useOpportunityProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { useChallenge } from '../../../../hooks';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useChallenge } from '../../challenge/hooks/useChallenge';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;

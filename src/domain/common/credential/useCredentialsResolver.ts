@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationCredential } from '../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential } from '../../../core/apollo/generated/graphql-schema';
 
 export interface CredentialResolver {
   toRoleName: (value: AuthorizationCredential) => string;

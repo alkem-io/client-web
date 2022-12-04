@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { useTransactionScope } from '../../../../../hooks';
+import { useTransactionScope } from '../../../../../core/analytics/useSentry';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
-import { nameOfUrl } from '../../../../../core/routing/url-params';
+import { nameOfUrl } from '../../../../../core/routing/urlParams';
 import { HubContextProvider } from '../../../../challenge/hub/HubContext/HubContext';
 import AdminHubsPage from '../pages/AdminHubsPage';
 import NewHub from '../pages/NewHub';

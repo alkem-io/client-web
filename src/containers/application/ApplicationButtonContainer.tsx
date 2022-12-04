@@ -1,6 +1,9 @@
 import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { useApolloErrorHandler, useChallenge, useHub, useUserContext } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useHub } from '../../domain/challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../domain/challenge/challenge/hooks/useChallenge';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,

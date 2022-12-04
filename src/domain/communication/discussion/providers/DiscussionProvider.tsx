@@ -1,6 +1,9 @@
 import { sortBy, uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
-import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useConfig } from '../../../platform/config/useConfig';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,

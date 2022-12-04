@@ -1,6 +1,6 @@
 import { UserCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
-import { addUserCardRoleNameKey } from '../../../../hooks';
+import { addUserCardRoleNameKey } from '../../contributor/user/hooks/useUserCardRoleName';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';

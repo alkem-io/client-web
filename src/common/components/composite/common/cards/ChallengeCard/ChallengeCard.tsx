@@ -4,7 +4,7 @@ import { Challenge, Nvp, VisualUriFragment } from '../../../../../../core/apollo
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildChallengeUrl } from '../../../../../utils/urlBuilders';
 import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
-import { useUserContext } from '../../../../../../hooks';
+import { useUserContext } from '../../../../../../domain/community/contributor/user';
 import { getVisualBannerNarrow } from '../../../../../../domain/common/visual/utils/visuals.utils';
 import { MetricType } from '../../../../../../domain/platform/metrics/MetricType';
 

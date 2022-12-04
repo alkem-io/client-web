@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import {
   refetchHubTemplatesQuery,

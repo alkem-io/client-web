@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Loading } from '../../../../../common/components/core';
-import { useUpdateNavigation, useUrlParams } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useOrganization } from '../../../../../hooks';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
 import OrganizationPreferenceContainer from '../../../../../containers/preferences/organization/OrganizationPreferenceContainer';
 import OrganizationAuthorizationPreferencesView from '../../../../community/contributor/organization/views/OrganizationAuthorizationPreferencesView';
 
@@ -22,4 +22,5 @@ const OrganizationAuthorizationPreferencesPageView: FC = () => {
     </OrganizationPreferenceContainer>
   );
 };
+
 export default OrganizationAuthorizationPreferencesPageView;

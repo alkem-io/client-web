@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
-import { useUpdateNavigation } from '../../../hooks';
 import { Path } from '../../../context/NavigationProvider';
 import { useFetchMd } from '../hooks/useFetchMd';
 import HelpView from '../views/HelpView';
+import { useUpdateNavigation } from '../../routing/useNavigation';
 
 interface InspirationPageProps {
   paths?: Path[];

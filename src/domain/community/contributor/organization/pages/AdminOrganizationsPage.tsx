@@ -6,7 +6,7 @@ import useAdminGlobalOrganizationsList from '../../../../platform/admin/organiza
 import SearchableListLayout from '../../../../shared/components/SearchableListLayout';
 import { useResolvedPath } from 'react-router-dom';
 import SimpleSearchableList from '../../../../shared/components/SimpleSearchableList';
-import { useUpdateNavigation } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 
 interface AdminOrganizationsPageProps extends PageProps {}
 

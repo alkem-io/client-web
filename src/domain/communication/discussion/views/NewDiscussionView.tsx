@@ -9,7 +9,7 @@ import WrapperButton from '../../../../common/components/core/WrapperButton';
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../../../../common/components/composite/entities/Communication/DiscussionIcon';
-import { MID_TEXT_LENGTH } from '../../../../core/forms/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 const discussionCategories = [
   {
