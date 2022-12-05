@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useConfig } from '../../../platform/config/useConfig';
-import PageBanner from '../../../shared/components/PageHeader/PageBanner';
+import EntityPageBanner from '../../../shared/components/PageHeader/EntityPageBanner';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
@@ -42,7 +42,7 @@ const HubPageBanner: FC = () => {
   const pageNotice = pageNoticeLabel && tLinks(...pageNoticeLabel);
 
   return (
-    <PageBanner
+    <EntityPageBanner
       title={displayName}
       tagline={context?.tagline}
       loading={loading}

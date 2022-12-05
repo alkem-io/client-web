@@ -58,6 +58,7 @@ const Image = styled('img')(({ theme }) => ({
   objectPosition: '50% 50%',
   width: '100%',
   minHeight: theme.spacing(10),
+  aspectRatio: BANNER_ASPECT_RATIO,
 }));
 
 const PageNotice = styled('div')(({ theme }) => ({
@@ -74,7 +75,7 @@ const PageNotice = styled('div')(({ theme }) => ({
   padding: theme.spacing(0.5, 0),
 }));
 
-export interface PageBannerProps {
+export interface EntityPageBannerProps {
   title?: string;
   tagline?: string;
   bannerUrl?: string;
@@ -88,7 +89,7 @@ export interface PageBannerProps {
  * This is the common top banner for Hubs/Challenges/Opportunities, and in general anything else except the home.
  * For Users/Organizations see ProfileBanner
  */
-const PageBanner: FC<PageBannerProps> = ({
+const EntityPageBanner: FC<EntityPageBannerProps> = ({
   title,
   tagline,
   bannerUrl,
@@ -149,4 +150,4 @@ const PageBanner: FC<PageBannerProps> = ({
   );
 };
 
-export default PageBanner;
+export default EntityPageBanner;
