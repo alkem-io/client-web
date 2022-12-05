@@ -25,7 +25,8 @@ const useActivityOnCollaborationSubscription = (collaborationID: string) =>
         return;
       }
 
-      subEntity.push(activityCreated.activity);
+      subEntity.unshift(activityCreated.activity);
+      subEntity.splice(LATEST_ACTIVITIES_COUNT, 1);
     },
   });
 
