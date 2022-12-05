@@ -10,9 +10,9 @@ import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsC
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
-import { CalloutState } from '../../../../models/graphql-schema';
+import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;

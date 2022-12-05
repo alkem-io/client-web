@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import {
   CanvasDetailsFragmentDoc,
   useCheckoutCanvasMutation,
@@ -7,15 +7,15 @@ import {
   useDeleteCanvasMutation,
   useUpdateCanvasMutation,
   useUploadVisualMutation,
-} from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import {
   Canvas,
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
   CreateCanvasOnCalloutInput,
   DeleteCanvasInput,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
 
 export interface ICanvasActions {

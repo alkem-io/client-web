@@ -1,5 +1,5 @@
-import { useUrlParams } from '../../../../../hooks';
-import { useHubApplicationsQuery } from '../../../../../hooks/generated/graphql';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useHubApplicationsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 const EMPTY = [];
 

@@ -5,7 +5,7 @@ import { Box, Button, DialogActions } from '@mui/material';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
-import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
+import { CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { CalloutCardTemplate } from '../../callout/creation-dialog/CalloutCreationDialog';
 

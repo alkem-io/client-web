@@ -1,4 +1,4 @@
-import { InnovationPacksQuery } from '../../../../../models/graphql-schema';
+import { InnovationPacksQuery } from '../../../../../core/apollo/generated/graphql-schema';
 import { Template } from '../AdminTemplatesSection';
 
 type InnovationPackArray = InnovationPacksQuery['library']['innovationPacks'][number];

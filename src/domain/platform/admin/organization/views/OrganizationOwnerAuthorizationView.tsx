@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '../../components/Community/EditMembersUsers';
 import OrganizationMembers from '../../../../../containers/organization/OrganizationAssociates';
-import { useOrganization } from '../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import { useOrganizationAssociatesQuery } from '../../../../../hooks/generated/graphql';
+import { useOrganizationAssociatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export const OrganizationOwnerAuthorizationView: FC = () => {
   const { organizationId } = useOrganization();

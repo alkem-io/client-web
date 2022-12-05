@@ -12,15 +12,17 @@ import Image from '../../../shared/components/Image';
 import { Loading } from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useApplicationCommunityQuery } from '../../../../containers/application/useApplicationCommunityQuery';
-import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../contributor/user';
 import {
   refetchUserApplicationsQuery,
   useApplyForCommunityMembershipMutation,
-} from '../../../../hooks/generated/graphql';
-import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
-import { CreateNvpInput } from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { ApplicationTypeEnum } from '../constants/ApplicationType';
+import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationTypeKey from '../../../../common/utils/translation/get-application-type-key';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {

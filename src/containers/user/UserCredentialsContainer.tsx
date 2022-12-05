@@ -1,19 +1,19 @@
 import React, { FC, useCallback } from 'react';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useBeginAlkemioUserCredentialOfferInteractionMutation,
   useBeginCommunityMemberCredentialOfferInteractionMutation,
   useBeginCredentialRequestInteractionMutation,
   useGetSupportedCredentialMetadataQuery,
   useUserSsiQuery,
-} from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import {
   AgentBeginVerifiedCredentialOfferOutput,
   AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
   VerifiedCredential,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 
 interface UserCredentialsContainerEntities {
   credentialMetadata: CredentialMetadataOutput[] | undefined;

@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
-import { Lifecycle as LifecycleModel } from '../../../../models/graphql-schema';
+import { Lifecycle as LifecycleModel } from '../../../../core/apollo/generated/graphql-schema';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
 import Section, { SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';

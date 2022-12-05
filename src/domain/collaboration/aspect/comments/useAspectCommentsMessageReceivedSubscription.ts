@@ -1,10 +1,10 @@
-import { AspectDashboardFragment } from '../../../../models/graphql-schema';
+import { AspectDashboardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
   AspectCommentsMessageReceivedSubscription,
   AspectCommentsMessageReceivedSubscriptionVariables,
-} from '../../../../models/graphql-schema';
-import { AspectCommentsMessageReceivedDocument } from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { AspectCommentsMessageReceivedDocument } from '../../../../core/apollo/generated/apollo-hooks';
 
 const useAspectCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntityHook<
   AspectDashboardFragment,

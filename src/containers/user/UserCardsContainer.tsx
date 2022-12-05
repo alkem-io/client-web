@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { UserCardProps } from '../../common/components/composite/common/cards';
-import { useUserCardRoleName } from '../../hooks';
-import { useUserCardsContainerQuery } from '../../hooks/generated/graphql';
-import { COUNTRIES_BY_CODE } from '../../models/constants';
-import { ContainerChildProps } from '../../models/container';
-import { User } from '../../models/graphql-schema';
+import useUserCardRoleName from '../../domain/community/contributor/user/hooks/useUserCardRoleName';
+import { useUserCardsContainerQuery } from '../../core/apollo/generated/apollo-hooks';
+import { COUNTRIES_BY_CODE } from '../../domain/common/location/countries.constants';
+import { ContainerChildProps } from '../../core/container/container';
+import { User } from '../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 
 interface UserCardsContainerEntities {

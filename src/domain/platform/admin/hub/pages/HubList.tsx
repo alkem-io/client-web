@@ -4,13 +4,14 @@ import {
   refetchAdminHubsListQuery,
   useAdminHubsListQuery,
   useDeleteHubMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
-import { PageProps } from '../../../../../pages';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { PageProps } from '../../../../shared/types/PageProps';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
-import { AuthorizationPrivilege, HubVisibility } from '../../../../../models/graphql-schema';
+import { AuthorizationPrivilege, HubVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 

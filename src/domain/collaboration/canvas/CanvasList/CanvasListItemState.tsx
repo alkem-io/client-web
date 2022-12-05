@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CircleIcon from '@mui/icons-material/Circle';
-import { CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+import { CanvasCheckoutStateEnum } from '../../../../core/apollo/generated/graphql-schema';
 import { Tooltip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnTotalSilenceIcon from '@mui/icons-material/DoNotDisturbOnTotalSilence';

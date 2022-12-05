@@ -3,13 +3,14 @@ import React, { FC } from 'react';
 
 import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
-import { useApolloErrorHandler, useHub } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useHub } from '../../HubContext/useHub';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsHubAdminMutation,
   useRemoveUserAsHubAdminMutation,
-} from '../../../../../hooks/generated/graphql';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface HubAuthorizationViewProps {
   credential: AuthorizationCredential;

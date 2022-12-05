@@ -1,11 +1,13 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { useChallenge, useHub, useUserContext } from '../../hooks';
-import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+import { useDiscussionsContext } from '../../domain/communication/discussion/providers/DiscussionsProvider';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useHub } from '../../domain/challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../domain/challenge/challenge/hooks/useChallenge';
+import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
-import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../domain/platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../domain/platform/metrics/MetricType';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
@@ -16,7 +18,7 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../domain/collaboration/callout/utils/getPublishedCallouts';
-import { Reference } from '../../models/Profile';
+import { Reference } from '../../domain/common/profile/Profile';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
 import useOpportunityCreatedSubscription from '../../domain/challenge/challenge/hooks/useOpportunityCreatedSubscription';
 import { ActivityLogResultType } from '../../domain/shared/components/ActivityLog/ActivityComponent';

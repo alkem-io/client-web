@@ -1,4 +1,4 @@
-import { AspectTemplate, CalloutType } from '../../../../models/graphql-schema';
+import { AspectTemplate, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { AspectTemplateFormSubmittedValues } from '../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 
 export const createCardTemplateFromTemplateSet = <C extends { type?: CalloutType; cardTemplateType?: string }>(

@@ -2,8 +2,8 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMemberUsers from '../../../components/Community/EditMembersUsers';
 import OpportunityMembers from '../../../../../../containers/opportunity/OpportunityMembers';
-import { useOpportunity } from '../../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../../models/graphql-schema';
+import { useOpportunity } from '../../../../../challenge/opportunity/hooks/useOpportunity';
+import { AuthorizationCredential } from '../../../../../../core/apollo/generated/graphql-schema';
 
 export const OpportunityAdminAuthorizationView: FC = () => {
   const { opportunityId, opportunity } = useOpportunity();

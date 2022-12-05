@@ -1,10 +1,10 @@
-import { Agent, AuthorizationCredential } from '../../../models/graphql-schema';
+import { Agent, AuthorizationCredential } from '../../../core/apollo/generated/graphql-schema';
 import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
   RoleNameKey,
-} from '../../../models/constants/translation.constants';
+} from '../../../domain/community/contributor/user/constants/translation.constants';
 
 const ownerRoles = [AuthorizationCredential.OrganizationOwner];
 

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 import { AspectDialogSection } from '../views/AspectDialogSection';
 import AspectDashboardContainer from '../../../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';

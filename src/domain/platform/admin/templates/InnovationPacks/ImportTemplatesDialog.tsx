@@ -23,7 +23,7 @@ export interface ImportTemplatesDialogProps<
   innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
-  onImportTemplate: (template: T) => Promise<void>;
+  onImportTemplate: (template: T, templateValue: V | undefined) => Promise<void>;
   loading?: boolean;
 }
 
@@ -51,8 +51,9 @@ const ImportTemplatesDialog = <
   };
   const [previewTemplate, setPreviewTemplate] = useState<Q>();
 
-  const handleImportTemplate = (template: T) => {
-    return onImportTemplate?.(template).then(() => handleClosePreview());
+  const handleImportTemplate = async (template: T, templateValue: V | undefined) => {
+    await onImportTemplate?.(template, templateValue);
+    handleClosePreview();
   };
 
   const handlePreviewTemplate = (template: Q) => {

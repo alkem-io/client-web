@@ -5,11 +5,12 @@ import DiscussionsLayout from '../../../../common/components/composite/layout/Di
 import { Loading } from '../../../../common/components/core';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { useDiscussionContext } from '../../../../context/Discussions/DiscussionProvider';
-import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
-import { useUpdateNavigation, useUserContext } from '../../../../hooks';
+import { useDiscussionContext } from '../providers/DiscussionProvider';
+import { useDiscussionsContext } from '../providers/DiscussionsProvider';
+import { useUserContext } from '../../../community/contributor/user';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import DiscussionView from '../views/DiscussionView';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 
 interface DiscussionPageProps extends PageProps {}
 

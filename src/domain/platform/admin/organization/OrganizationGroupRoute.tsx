@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../hooks';
-import { useOrganizationGroupQuery } from '../../../../hooks/generated/graphql';
-import { PageProps } from '../../../../pages';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useOrganizationGroupQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { PageProps } from '../../../shared/types/PageProps';
 import { GroupRoute } from '../routing/GroupRoute';
 
 interface GroupRouteProps extends PageProps {}

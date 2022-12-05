@@ -5,7 +5,7 @@ import { alpha, Avatar, Box, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { Reference } from '../../../../models/graphql-schema';
+import { Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import MessageView from '../../../shared/components/Comments/MessageView';
@@ -18,7 +18,7 @@ import DashboardColumn from '../../../../common/components/composite/sections/Da
 import { mapWithSeparator } from '../../../shared/utils/joinNodes';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
-import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { ShareComponent, ShareComponentTitle } from '../../../shared/components/ShareDialog/ShareComponent';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { PageProps } from '../../../../pages/common';
-import { useUpdateNavigation } from '../../../../hooks';
+import { PageProps } from '../../../shared/types/PageProps';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import OpportunityProjectsView from '../views/OpportunityProjectsView';

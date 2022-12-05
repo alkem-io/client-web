@@ -6,14 +6,14 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { TemplateInnovationPackMetaInfo } from './InnovationPack';
-import useLoadingState from '../../../../../hooks/useLoadingState';
+import useLoadingState from '../../../../shared/utils/useLoadingState';
 
 export interface ImportTemplatesDialogPreviewStepProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue
 > {
-  onImportTemplate: (template: T) => Promise<void>;
+  onImportTemplate: (template: T, templateValue: V | undefined) => Promise<void>;
   onClose: () => void;
   template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
@@ -37,7 +37,9 @@ const ImportTemplatesDialogPreviewStep = <
 }: ImportTemplatesDialogPreviewStepProps<T, Q, V>) => {
   const { t } = useTranslation();
 
-  const [importingTemplate, doImportTemplate] = useLoadingState(() => onImportTemplate(template));
+  const [doImportTemplate, importingTemplate] = useLoadingState(() =>
+    onImportTemplate(template, importedTemplateValue)
+  );
 
   const handleClickImport = async () => {
     doImportTemplate();

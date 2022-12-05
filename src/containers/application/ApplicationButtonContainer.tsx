@@ -1,15 +1,18 @@
 import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { useApolloErrorHandler, useChallenge, useHub, useUserContext } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useHub } from '../../domain/challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../domain/challenge/challenge/hooks/useChallenge';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
   useUserApplicationsQuery,
   useUserProfileLazyQuery,
-} from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../common/utils/urlBuilders';
-import { AuthorizationPrivilege } from '../../models/graphql-schema';
+import { AuthorizationPrivilege } from '../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../domain/community/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
 import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';

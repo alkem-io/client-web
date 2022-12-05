@@ -1,9 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import useChallengeCreatedSubscription from '../../domain/challenge/hub/hooks/useChallengeCreatedSubscription';
-import { useChallengeCardsQuery } from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
-import { ChallengeCardFragment } from '../../models/graphql-schema';
+import { useChallengeCardsQuery } from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
+import { ChallengeCardFragment } from '../../core/apollo/generated/graphql-schema';
 
 export interface ChallengesCardContainerEntities {
   challenges: ChallengeCardFragment[];

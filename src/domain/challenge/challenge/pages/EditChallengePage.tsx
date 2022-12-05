@@ -2,7 +2,10 @@ import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Path } from '../../../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../../hooks';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import {
   refetchChallengeProfileInfoQuery,
   refetchChallengesWithCommunityQuery,
@@ -10,8 +13,8 @@ import {
   useCreateChallengeMutation,
   useHubLifecycleTemplatesQuery,
   useUpdateChallengeMutation,
-} from '../../../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useNavigateToEdit } from '../../../../core/routing/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
@@ -20,7 +23,7 @@ import ProfileFormWithContext, {
 } from '../../../../common/components/composite/forms/ProfileFormWithContext';
 import FormMode from '../../../platform/admin/components/FormMode';
 import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
-import { LifecycleType } from '../../../../models/graphql-schema';
+import { LifecycleType } from '../../../../core/apollo/generated/graphql-schema';
 import { ChallengeContextSegment } from '../../../platform/admin/challenge/ChallengeContextSegment';
 
 interface Props {

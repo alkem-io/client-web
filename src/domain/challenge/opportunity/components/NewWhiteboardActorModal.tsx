@@ -3,7 +3,7 @@ import { Form, Formik } from 'formik';
 import { nanoid } from 'nanoid';
 import React, { FC } from 'react';
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
-import { Actor } from '../../../../models/graphql-schema';
+import { Actor } from '../../../../core/apollo/generated/graphql-schema';
 
 const template = {
   type: 'excalidraw',

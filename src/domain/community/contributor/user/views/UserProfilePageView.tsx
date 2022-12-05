@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '../../../../../hooks';
-import { FEATURE_SSI } from '../../../../../models/constants';
+import { useConfig } from '../../../../platform/config/useConfig';
+import { FEATURE_SSI } from '../../../../platform/config/features.constants';
 import { CredentialsView, ContributionsView } from '../../../profile/views/ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../../../profile/views/ProfileView/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';

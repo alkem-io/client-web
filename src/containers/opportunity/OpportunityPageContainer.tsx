@@ -2,11 +2,11 @@ import { ApolloError } from '@apollo/client';
 import { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useOpportunity, useUserContext } from '../../hooks';
-import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../models/container';
+import { useOpportunity } from '../../domain/challenge/opportunity/hooks/useOpportunity';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useOpportunityPageQuery } from '../../core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '../../core/container/container';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
-import { OpportunityProject } from '../../models/entities/opportunity';
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
@@ -14,7 +14,7 @@ import {
   OpportunityPageRelationsFragment,
   Project,
   Reference,
-} from '../../models/graphql-schema';
+} from '../../core/apollo/generated/graphql-schema';
 import { replaceAll } from '../../common/utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../common/utils/urlBuilders';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
@@ -29,6 +29,13 @@ import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../doma
 import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ActivityLogResultType } from '../../domain/shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../domain/shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+
+interface OpportunityProject {
+  title: string;
+  type: 'display' | 'add' | 'more';
+  description?: string;
+  onSelect?: () => void;
+}
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;

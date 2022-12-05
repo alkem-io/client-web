@@ -14,8 +14,8 @@ import {
   LifecycleContextTabFragment,
   MetricsItemFragment,
   Tagset,
-} from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';

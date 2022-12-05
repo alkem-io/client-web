@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
-import { useUrlParams } from '../../hooks';
+import { useUrlParams } from '../../core/routing/useUrlParams';
 import {
   useChallengeApplicationQuery,
   useChallengeApplicationTemplateQuery,
   useHubApplicationQuery,
   useHubApplicationTemplateQuery,
-} from '../../hooks/generated/graphql';
-import { ApplicationTypeEnum } from '../../models/enums/application-type';
+} from '../../core/apollo/generated/apollo-hooks';
+import { ApplicationTypeEnum } from '../../domain/community/application/constants/ApplicationType';
 import { buildChallengeUrl, buildHubUrl } from '../../common/utils/urlBuilders';
-import { getVisualAvatar } from '../../common/utils/visuals.utils';
+import { getVisualAvatar } from '../../domain/common/visual/utils/visuals.utils';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   const { hubNameId = '', challengeNameId = '' } = useUrlParams();

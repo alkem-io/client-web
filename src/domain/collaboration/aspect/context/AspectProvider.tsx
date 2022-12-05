@@ -1,12 +1,13 @@
 import React, { FC, useContext } from 'react';
-import { useApolloErrorHandler, useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useChallengeAspectProviderQuery,
   useHubAspectProviderQuery,
   useOpportunityAspectProviderQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { getCardCallout } from '../../../../containers/aspect/getAspectCallout';
 
 interface AspectPermissions {

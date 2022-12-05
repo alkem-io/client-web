@@ -6,14 +6,21 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AspectForm, { AspectFormInput, AspectFormOutput } from '../AspectForm/AspectForm';
 import useAspectSettings from '../../../../containers/aspect/AspectSettings/useAspectSettings';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
-import { AspectSettingsFragment, AuthorizationPrivilege, CalloutType, Visual } from '../../../../models/graphql-schema';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import {
+  AspectSettingsFragment,
+  AuthorizationPrivilege,
+  CalloutType,
+  Visual,
+} from '../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../common/visual/views/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { AspectDialogSection } from '../views/AspectDialogSection';
 import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 import useCallouts from '../../callout/useCallouts';
-import { useMoveAspectToCalloutMutation } from '../../../../hooks/generated/graphql';
+import { useMoveAspectToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 
 export interface AspectSettingsPageProps {

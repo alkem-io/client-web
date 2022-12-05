@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import EmailVerificationRequiredPage from '../pages/EmailVerificationRequiredPage';
 import VerificationPage from '../pages/VerificationPage';
 import VerificationSuccessPage from '../pages/VerificationSuccessPage';

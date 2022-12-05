@@ -5,12 +5,12 @@ import {
   useHubTemplatesCanvasTemplateWithValueLazyQuery,
   useInnovationPackCanvasTemplateWithValueLazyQuery,
   useUpdateCanvasTemplateMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   AdminCanvasTemplateFragment,
   CanvasDetailsFragment,
   UpdateCanvasTemplateMutation,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
@@ -22,7 +22,7 @@ import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
-import { useHub } from '../../../../../hooks';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 
 interface AdminCanvasTemplatesSectionProps {
   templateId: string | undefined;

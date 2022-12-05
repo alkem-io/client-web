@@ -1,6 +1,9 @@
 import { ApplicationWithType } from './getApplicationWithType';
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
-import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../models/constants';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
+import {
+  APPLICATION_STATE_NEW,
+  APPLICATION_STATE_REJECTED,
+} from '../../../domain/community/application/constants/ApplicationState';
 import sortApplications from './sortApplications';
 
 type TestData = {

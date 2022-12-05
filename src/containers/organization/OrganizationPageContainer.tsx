@@ -3,18 +3,20 @@ import React, { FC, useMemo } from 'react';
 import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../domain/shared/components/SocialLinks/SocialLinks';
 import { RoleType } from '../../domain/community/contributor/user/constants/RoleType';
-import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
-import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
-import { COUNTRIES_BY_CODE } from '../../models/constants';
-import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../models/constants/tagset.constants';
-import { ContainerChildProps } from '../../models/container';
-import { ContributionItem } from '../../models/entities/contribution';
+import { useOrganization } from '../../domain/community/contributor/organization/hooks/useOrganization';
+import useUserCardRoleName from '../../domain/community/contributor/user/hooks/useUserCardRoleName';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useRolesOrganizationQuery } from '../../core/apollo/generated/apollo-hooks';
+import { COUNTRIES_BY_CODE } from '../../domain/common/location/countries.constants';
+import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../domain/common/tags/tagset.constants';
+import { ContainerChildProps } from '../../core/container/container';
+import { ContributionItem } from '../../domain/community/contributor/contribution';
 import {
   isSocialNetworkSupported,
   SocialNetworkEnum,
   toSocialNetworkEnum,
 } from '../../domain/shared/components/SocialLinks/models/SocialNetworks';
-import { AuthorizationCredential, OrganizationInfoFragment, User } from '../../models/graphql-schema';
+import { AuthorizationCredential, OrganizationInfoFragment, User } from '../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 
 export interface OrganizationContainerEntities {

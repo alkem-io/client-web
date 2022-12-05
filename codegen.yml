@@ -1,15 +1,13 @@
 overwrite: true
 schema: "http://localhost:4000/graphql"
-documents: [
-  "graphql/**/*.graphql",
-  "src/**/*.graphql"
-]
+documents:
+  - "src/**/*.graphql"
 hooks:
   afterAllFileWrite:
     - eslint --fix
     - prettier --write
 generates:
-  src/models/graphql-schema.ts:
+  src/core/apollo/generated/graphql-schema.ts:
     plugins:
       - typescript
       - "typescript-operations"
@@ -31,16 +29,16 @@ generates:
         MessageID: string
         LifecycleDefinition: string
       strictScalars: true
-  src/hooks/generated/graphql.ts:
+  src/core/apollo/generated/apollo-hooks.ts:
     preset: import-types
     presetConfig:
-      typesPath: ../../models/graphql-schema
+      typesPath: ./graphql-schema
       importTypesNamespace: SchemaTypes
     plugins:
       - "typescript-react-apollo"
     config:
       withHooks: true
       withRefetchFn: true
-  src/models/apollo-helpers.ts:
+  src/core/apollo/generated/apollo-helpers.ts:
     plugins:
       - typescript-apollo-client-helpers

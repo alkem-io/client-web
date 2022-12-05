@@ -5,8 +5,8 @@ import {
   useChallengeNameIdQuery,
   useHubNameIdQuery,
   useOpportunityNameIdQuery,
-} from '../../hooks/generated/graphql';
-import { Application } from '../../models/graphql-schema';
+} from '../../core/apollo/generated/apollo-hooks';
+import { Application } from '../../core/apollo/generated/graphql-schema';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../common/utils/urlBuilders';
 import getApplicationTypeTranslationKey from '../../common/utils/application/getApplicationTypeTranslation';
 import { ApplicationWithType } from '../../common/utils/application/getApplicationWithType';

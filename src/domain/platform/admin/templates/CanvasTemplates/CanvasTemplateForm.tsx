@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import { CreateTemplateInfoInput, Visual } from '../../../../../models/graphql-schema';
+import { CreateTemplateInfoInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import TemplateForm from '../TemplateForm';
 import CanvasFormikSelectInput, { Canvas } from './CanvasFormikSelectInput';

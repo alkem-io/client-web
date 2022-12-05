@@ -1,14 +1,15 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useConfig, useUrlParams } from '../../../../hooks';
-import { useHubProviderQuery } from '../../../../hooks/generated/graphql';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useConfig } from '../../../platform/config/useConfig';
+import { useHubProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   HubInfoFragment,
   HubVisibility,
   TemplatesSet,
   Visual,
-} from '../../../../models/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 
 export interface HubPermissions {
   viewerCanUpdate: boolean;

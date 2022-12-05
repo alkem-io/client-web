@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import Typography from '@mui/material/Typography';
 import makeStyles from '@mui/styles/makeStyles';
-import { OrganizationVerificationEnum } from '../../../../../models/graphql-schema';
+import { OrganizationVerificationEnum } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({

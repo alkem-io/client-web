@@ -3,8 +3,9 @@ import { useMemo, useState } from 'react';
 import {
   useAdminGlobalOrganizationsListQuery,
   useDeleteOrganizationMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useNotification } from '../../../../../hooks';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../../shared/components/SimpleSearchableList';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';

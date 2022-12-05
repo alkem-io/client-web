@@ -1,4 +1,4 @@
-import { User } from '../../../../../models/graphql-schema';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import { ValueType } from '../filterFn';
 
 export const userValueGetter = ({ id, displayName, email, profile }: User): ValueType => ({

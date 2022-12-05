@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
-import { useOrganization } from '../../../../hooks';
+import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
 import OrganizationPageBanner from '../../../community/contributor/organization/layout/OrganizationPageBanner';
 import OrganizationTabs from '../../../community/contributor/organization/layout/OrganizationTabs';
