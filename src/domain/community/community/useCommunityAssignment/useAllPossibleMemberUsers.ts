@@ -2,7 +2,7 @@ import { UserDisplayNameFragment } from '../../../../core/apollo/generated/graph
 import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 import { useAvailableUsersQuery, useCommunityMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import useLocalSearch from '../../../shared/utils/useLocalSearch';
 
 export interface UseAllPossibleMemberUsersProvided {

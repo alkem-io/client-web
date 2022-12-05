@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import { useUpdateNavigation, useConfig } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { useConfig } from '../../../../platform/config/useConfig';
 import { FEATURE_SSI } from '../../../../platform/config/features.constants';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';

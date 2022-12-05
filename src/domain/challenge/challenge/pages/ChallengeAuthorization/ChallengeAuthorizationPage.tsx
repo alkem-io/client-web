@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
 import ChallengeAuthorizationView from './ChallengeAuthorizationView';
 import {
@@ -16,8 +16,9 @@ import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 import { PreferenceTypes } from '../../../../common/preference/preference-types';
-import { useChallenge, useHub } from '../../../../../hooks';
-import { usePreferences } from '../../../../../hooks/providers/preference';
+import { useHub } from '../../../hub/HubContext/useHub';
+import { useChallenge } from '../../hooks/useChallenge';
+import { usePreferences } from '../../../../common/preference/usePreferences';
 import {
   ChallengePreferencesDocument,
   UpdatePreferenceOnChallengeDocument,

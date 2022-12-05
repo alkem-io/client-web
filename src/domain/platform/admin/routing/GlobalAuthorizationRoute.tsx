@@ -5,7 +5,7 @@ import AdminAuthorizationPage from '../authorization/AdminAuthorizationPage';
 import GlobalAuthorizationPage from '../authorization/GlobalAuthorizationPage';
 import GlobalCommunityAuthorizationPage from '../authorization/GlobalCommunityAuthorizationPage';
 import GlobalHubsAdminAuthorizationPage from '../authorization/GlobalHubsAdminAuthorizationPage';
-import { nameOfUrl } from '../../../../core/routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/urlParams';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
 
 const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {

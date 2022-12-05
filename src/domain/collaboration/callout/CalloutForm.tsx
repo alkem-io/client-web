@@ -6,7 +6,7 @@ import { Grid, Typography } from '@mui/material';
 import FormRow from '../../shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../shared/components/Section/Section';
-import { MID_TEXT_LENGTH } from '../../../core/forms/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';

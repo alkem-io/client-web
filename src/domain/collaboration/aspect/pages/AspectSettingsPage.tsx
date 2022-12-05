@@ -6,7 +6,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AspectForm, { AspectFormInput, AspectFormOutput } from '../AspectForm/AspectForm';
 import useAspectSettings from '../../../../containers/aspect/AspectSettings/useAspectSettings';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import {
   AspectSettingsFragment,
   AuthorizationPrivilege,

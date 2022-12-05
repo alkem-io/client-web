@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler, useUserContext } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../domain/community/contributor/user';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useChallenge } from '../../../../hooks';
+import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 import { useChallengeCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../core/forms/field-length.constants';
+import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
 import FormRow from '../../../../shared/layout/FormLayout';
 

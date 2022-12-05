@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import { useHubCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';

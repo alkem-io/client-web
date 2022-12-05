@@ -1,6 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useConfig, useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useConfig } from '../../../platform/config/useConfig';
 import { useHubProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,

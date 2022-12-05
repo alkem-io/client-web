@@ -1,6 +1,10 @@
 import { matchPath, useLocation } from 'react-router-dom';
 
-// Imitates the useRouteMatch from v5. To be used only with Tabs.
+/**
+ * Imitates the useRouteMatch from v5. To be used only with Tabs.
+ * @deprecated - pass currentTab as prop (already implemented in most pages).
+ * @param patterns
+ */
 const useRouteMatch = (patterns: readonly string[]) => {
   const { pathname } = useLocation();
 

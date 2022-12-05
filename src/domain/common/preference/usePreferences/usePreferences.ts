@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { ApolloError, useMutation, useQuery } from '@apollo/client';
 import { DocumentNode } from 'graphql';
-import { Preference, PreferenceType } from '../../../core/apollo/generated/graphql-schema';
-import { PreferenceTypes } from '../../../domain/common/preference/preference-types';
-import { useApolloErrorHandler } from '../..';
+import { Preference, PreferenceType } from '../../../../core/apollo/generated/graphql-schema';
+import { PreferenceTypes } from '../preference-types';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 
 interface Provided {
   loading: boolean;

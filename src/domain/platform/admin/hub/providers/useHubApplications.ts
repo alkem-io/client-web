@@ -1,4 +1,4 @@
-import { useUrlParams } from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useHubApplicationsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 const EMPTY = [];

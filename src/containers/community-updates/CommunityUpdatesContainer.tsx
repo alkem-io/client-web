@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from 'react';
-import { useApolloErrorHandler, useConfig } from '../../hooks';
+import { useApolloErrorHandler } from '../../core/apollo/hooks/useApolloErrorHandler';
+import { useConfig } from '../../domain/platform/config/useConfig';
 import {
   CommunicationUpdateMessageReceivedDocument,
   refetchCommunityUpdatesQuery,

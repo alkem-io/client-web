@@ -16,7 +16,7 @@ import {
   ChallengeContainerEntities,
   ChallengeContainerState,
 } from '../../../../containers/challenge/ChallengePageContainer';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
 import { buildChallengeUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';

@@ -6,7 +6,8 @@ import {
   useChallengeExplorerPageQuery,
   useChallengeExplorerSearchQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';

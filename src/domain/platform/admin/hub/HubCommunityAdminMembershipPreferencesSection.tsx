@@ -6,9 +6,9 @@ import {
   UpdatePreferenceOnHubMutationVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { PreferenceTypes } from '../../../common/preference/preference-types';
-import { usePreferences } from '../../../../hooks/providers/preference';
+import { usePreferences } from '../../../common/preference/usePreferences';
 import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../core/apollo/generated/apollo-hooks';
 import PreferenceSection from '../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 

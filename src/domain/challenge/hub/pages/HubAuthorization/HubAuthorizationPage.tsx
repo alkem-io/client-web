@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubSettingsLayout from '../../../../platform/admin/hub/HubSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
 import HubAuthorizationView from './HubAuthorizationView';
 import {
@@ -12,13 +12,13 @@ import {
   HubPreferenceType,
   UpdatePreferenceOnHubMutationVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { usePreferences } from '../../../../../hooks/providers';
+import { usePreferences } from '../../../../common/preference/usePreferences';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 import {
   HubPreferencesDocument,
   UpdatePreferenceOnHubDocument,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useHub } from '../../../../../hooks';
+import { useHub } from '../../HubContext/useHub';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import { PreferenceTypes } from '../../../../common/preference/preference-types';
 

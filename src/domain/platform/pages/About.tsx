@@ -5,7 +5,6 @@ import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 import WrapperButton from '../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
-import { useUpdateNavigation } from '../../../hooks';
 import useServerMetadata from '../metadata/useServerMetadata';
 import TopLevelDesktopLayout from '../../shared/layout/PageLayout/TopLevelDesktopLayout';
 
@@ -50,13 +49,10 @@ const useAboutStyles = makeStyles(theme => ({
   },
 }));
 
-const currentPaths = [];
 export const AboutPage = () => {
   const styles = useAboutStyles();
   const { services } = useServerMetadata();
   const { t } = useTranslation();
-
-  useUpdateNavigation({ currentPaths });
 
   return (
     <TopLevelDesktopLayout>

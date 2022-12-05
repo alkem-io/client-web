@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import { PARAM_NAME_RETURN_URL, STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
 import LoginPage from '../pages/LoginPage';

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import OpportunitySettingsLayout from '../../OpportunitySettingsLayout';
 import { SettingsSection } from '../../../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../../../layout/EntitySettings/types';
 import OpportunityAuthorizationView from './OpportunityAdminAuthorizationView';
 import { useTranslation } from 'react-i18next';

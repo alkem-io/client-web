@@ -16,7 +16,7 @@ import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from './Restricted';
 import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
-import { nameOfUrl } from './url-params';
+import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
 import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/ChallengeExplorerPage';

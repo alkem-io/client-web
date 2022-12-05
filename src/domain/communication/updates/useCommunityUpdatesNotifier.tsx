@@ -1,7 +1,10 @@
-import { useApolloErrorHandler, useConfig, useNotification, useUserContext } from '..';
-import { useCommunicationUpdateMessageReceivedSubscription } from '../../core/apollo/generated/apollo-hooks';
-import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../domain/platform/config/features.constants';
-import { logger } from '../../services/logging/winston/logger';
+import { useConfig } from '../../platform/config/useConfig';
+import { useUserContext } from '../../community/contributor/user';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../core/ui/notifications/useNotification';
+import { useCommunicationUpdateMessageReceivedSubscription } from '../../../core/apollo/generated/apollo-hooks';
+import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
+import { logger } from '../../../services/logging/winston/logger';
 
 const useCommunityUpdatesNotifier = () => {
   const { isFeatureEnabled } = useConfig();

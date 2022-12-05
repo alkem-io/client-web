@@ -15,8 +15,11 @@ import {
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler, useUrlParams, useNotification, useChallenge } from '../../../../../hooks';
-import { useHub } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../challenge/opportunity/forms/CreateOpportunityForm';
 import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilders';

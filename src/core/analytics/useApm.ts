@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { ApmBase, init as initApm, UserObject } from '@elastic/apm-rum';
+// TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
-import { error as logError } from '../../src/services/logging/sentry/log';
-import { useUserContext } from '../domain/community/contributor/user';
-import { useConfig } from '../domain/platform/config/useConfig';
-import { useUserGeo } from './useUserGeo';
-import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../domain/platform/cookies/useAlkemioCookies';
+import { error as logError } from '../../services/logging/sentry/log';
+import { useUserContext } from '../../domain/community/contributor/user';
+import { useConfig } from '../../domain/platform/config/useConfig';
+import { useUserGeo } from '../../domain/community/contributor/user/hooks/useUserGeo';
+import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../domain/platform/cookies/useAlkemioCookies';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07
@@ -46,7 +47,7 @@ export const useApm = (): ApmBase | undefined => {
     const apmInit = initApm({
       serviceName: APM_CLIENT_SERVICE_NAME,
       serverUrl: endpoint,
-      serviceVersion: require('../../package.json').version,
+      serviceVersion: require('../../../package.json').version,
       environment,
       active: enabled,
     });
@@ -61,6 +62,7 @@ export const useApm = (): ApmBase | undefined => {
 };
 
 const useGetOrSetApmCookie = (): string | undefined => {
+  // TODO Refactor to store data in localStorage, remove react-cookie npm
   const [cookies, setCookie] = useCookies([APM_CLIENT_TRACK_COOKIE, ALKEMIO_COOKIE_NAME]);
 
   return useMemo(() => {

@@ -13,7 +13,7 @@ import {
   UpdateOrganizationInput,
   CreateOrganizationInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { EditMode } from '../../../../../core/forms/editMode';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import Section, { Header } from '../../../../../common/components/core/Section';
 import VisualUpload from '../../../../../common/components/composite/common/VisualUpload/VisualUpload';

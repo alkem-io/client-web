@@ -5,7 +5,10 @@ import { useAuthorDetailsQuery } from '../../../core/apollo/generated/apollo-hoo
 import { uniq } from 'lodash';
 import { COUNTRIES_BY_CODE } from '../../common/location/countries.constants';
 import { AuthorizationCredential } from '../../../core/apollo/generated/graphql-schema';
-import { useChallenge, useHub, useOpportunity, WithCredentials } from '../../../hooks';
+import { WithCredentials } from '../../community/contributor/user/hooks/useUserCardRoleName';
+import { useHub } from '../../challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../challenge/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../challenge/opportunity/hooks/useOpportunity';
 import { useTranslation } from 'react-i18next';
 import {
   MessageAuthorRoleNameKey,

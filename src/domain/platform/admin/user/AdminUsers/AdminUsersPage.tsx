@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import AdminLayout from '../../toplevel/AdminLayout';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { AdminSection } from '../../toplevel/constants';
-import { useUpdateNavigation } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import useUserList from '../../../../community/contributor/user/providers/useUserList';
 import SimpleSearchableList from '../../../../shared/components/SimpleSearchableList';
 import SearchableListLayout from '../../../../shared/components/SearchableListLayout';

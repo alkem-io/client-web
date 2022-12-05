@@ -3,7 +3,7 @@ import OrganizationPageContainer from '../../../../../containers/organization/Or
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { useUpdateNavigation } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { PageProps } from '../../../../shared/types/PageProps';
 
 interface OrganizationPageProps extends PageProps {}
@@ -21,4 +21,5 @@ export const OrganizationPage: FC<OrganizationPageProps> = ({ paths }) => {
     </OrganizationPageLayout>
   );
 };
+
 export default OrganizationPage;

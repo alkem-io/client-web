@@ -5,7 +5,7 @@ import { SettingsPageProps } from '../layout/EntitySettings/types';
 import OrganizationAdminAuthorizationView from './views/OrganizationAdminAuthorizationView';
 import OrganizationOwnerAuthorizationView from './views/OrganizationOwnerAuthorizationView';
 import OrganizationAuthorizationPreferencesPageView from './views/OrganizationAuthorizationPreferencesPageView';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 
 const OrganizationAuthorizationPage: FC<SettingsPageProps> = ({ paths }) => {

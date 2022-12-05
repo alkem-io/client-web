@@ -5,7 +5,7 @@ import DashboardHubsSection, {
   DashboardHubSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useUserContext } from '../../../../hooks';
+import { useUserContext } from '../../../community/contributor/user';
 import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MetricTooltip from '../../../platform/metrics/MetricTooltip';
 import useServerMetadata from '../../../platform/metadata/useServerMetadata';

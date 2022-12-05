@@ -12,7 +12,7 @@ import DashboardColumn from '../../../../common/components/composite/sections/Da
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
 import {
   ChallengeCardFragment,

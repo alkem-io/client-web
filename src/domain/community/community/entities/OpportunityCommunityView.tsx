@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useOpportunity } from '../../../../hooks';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 import { useOpportunityCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';

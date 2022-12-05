@@ -7,7 +7,6 @@ import { TemplateInfoFragment } from '../../../../core/apollo/generated/graphql-
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -17,6 +16,8 @@ import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;

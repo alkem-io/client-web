@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useUpdateNavigation } from './useNavigation';
-import { Path } from '../context/NavigationProvider';
+import { Path } from '../../context/NavigationProvider';
 import { useResolvedPath } from 'react-router-dom';
 
 interface PathDef {

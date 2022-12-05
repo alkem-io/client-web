@@ -4,9 +4,9 @@ import { makeStyles } from '@mui/styles';
 import WrapperToolbar from '../../../core/WrapperToolbar';
 import WrapperTypography from '../../../core/WrapperTypography';
 import Image from '../../../../../domain/shared/components/Image';
-import { useConfig } from '../../../../../hooks';
+import { useConfig } from '../../../../../domain/platform/config/useConfig';
 import { RouterLink } from '../../../core/RouterLink';
-import useCurrentBreakpoint from '../../../../../hooks/useCurrentBreakpoint';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import { useTranslation } from 'react-i18next';
 
 const useFooterStyles = makeStyles(theme => ({

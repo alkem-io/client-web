@@ -6,7 +6,7 @@ import { PageProps } from '../../shared/types/PageProps';
 import { Loading } from '../../../common/components/core';
 import WrapperButton from '../../../common/components/core/WrapperButton';
 import Card from '../../../common/components/core/Card';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 
 interface Props extends PageProps {
   data: Array<{

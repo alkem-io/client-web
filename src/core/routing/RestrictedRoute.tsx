@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import Loading from '../../common/components/core/Loading/Loading';
 import { useAuthenticationContext } from '../auth/authentication/hooks/useAuthenticationContext';
-import { useUserContext } from '../../hooks';
+import { useUserContext } from '../../domain/community/contributor/user';
 import { AuthorizationCredential } from '../apollo/generated/graphql-schema';
 
 // those roles have unconditional access to every restricted resource

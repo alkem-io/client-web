@@ -6,7 +6,7 @@ import { HubIcon } from '../../../../../common/icons/HubIcon';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
 import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
-import { useUserContext } from '../../../../../hooks';
+import { useUserContext } from '../../../../community/contributor/user';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
