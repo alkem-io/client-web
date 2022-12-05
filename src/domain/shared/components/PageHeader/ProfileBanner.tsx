@@ -13,7 +13,7 @@ import hexToRGBA from '../../../../common/utils/hexToRGBA';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
-function backgroundBuilder(
+function gradientBuilder(
   angle: number,
   steps: { color: string; opacity: number; position: number }[],
   backgroundImageUrl: string,
@@ -32,7 +32,7 @@ const Root = styled(Box)(({ theme }) => ({
   aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
   position: 'relative',
-  background: backgroundBuilder(
+  background: gradientBuilder(
     90,
     [
       { color: theme.palette.neutralLight.main, opacity: 1, position: 0 },

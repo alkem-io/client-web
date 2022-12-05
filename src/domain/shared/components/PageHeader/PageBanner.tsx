@@ -7,7 +7,7 @@ import { EntityTypeName } from '../../layout/PageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
 
 export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
-export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
+export const DEFAULT_BANNER_URL = 'https://sdgs.un.org/themes/custom/porto/assets/goals/global-goals.png'; // Original banner images were 768 x 128 pixels
 export const TITLE_HEIGHT = 7;
 
 const Root = styled(Box)(({ theme }) => ({
@@ -58,6 +58,7 @@ const Image = styled('img')(({ theme }) => ({
   objectPosition: '50% 50%',
   width: '100%',
   minHeight: theme.spacing(10),
+  aspectRatio: BANNER_ASPECT_RATIO,
 }));
 
 const PageNotice = styled('div')(({ theme }) => ({
