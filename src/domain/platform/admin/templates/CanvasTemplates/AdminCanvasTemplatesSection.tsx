@@ -84,7 +84,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
   );
 
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
-    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network' });
+    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   const getImportedTemplateValue = useCallback(
     (template: AdminCanvasTemplateFragment) => {
