@@ -37,7 +37,6 @@ const useGlobalStyles = makeStyles(theme => ({
     body: {
       height: '100%',
       margin: 0,
-      fontFamily: '"Source Sans Pro", "Montserrat"',
     },
     '#root': {
       minHeight: '100%',

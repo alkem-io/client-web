@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material';
 import { ThemeOptions } from '@mui/material/styles';
 import componentsOverride from './components';
 import { paletteOptions } from './palette';
-import { typographyOptions } from './typography';
+import { typographyOptions } from '../../../core/ui/typography/themeOptions';
 import type {} from '@mui/lab/themeAugmentation';
 
 // use theme constant instead of these
