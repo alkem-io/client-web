@@ -1,9 +1,8 @@
 import { createTheme } from '@mui/material';
 import { ThemeOptions } from '@mui/material/styles';
 import componentsOverride from './components';
-import { paletteOptions } from './palette';
-import { typographyOptions } from '../../../core/ui/typography/themeOptions';
-import type {} from '@mui/lab/themeAugmentation';
+import { paletteOptions } from '../../palette/palette';
+import { typographyOptions } from '../../typography/themeOptions';
 
 // use theme constant instead of these
 const SPACING = 8;
@@ -14,7 +13,7 @@ const AVATAR_SIZE_LG = 9;
 export const theme: ThemeOptions = {
   palette: paletteOptions,
   typography: typographyOptions,
-  shape: { borderRadius: 4 },
+  shape: { borderRadius: 12 },
   spacing: SPACING,
   breakpoints: {
     values: {
@@ -52,6 +51,7 @@ export const theme: ThemeOptions = {
 };
 
 const defaultMUITheme = createTheme(theme);
+
 theme.components = componentsOverride(defaultMUITheme);
 
 declare module '@mui/material/styles' {

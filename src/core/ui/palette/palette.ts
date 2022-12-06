@@ -2,7 +2,7 @@ import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material
 import { grey } from '@mui/material/colors';
 
 export const paletteOptions: PaletteOptions = {
-  primary: { main: '#068293' },
+  primary: { main: '#065F6B' },
   secondary: { main: '#00a88f' },
   text: {
     primary: '#181828',
@@ -16,8 +16,8 @@ export const paletteOptions: PaletteOptions = {
     dark: grey[600],
   },
   neutralLight: { main: '#F9F9F9' },
-  background: { default: '#ffffff', paper: '#F9F9F9' },
-  divider: grey[400],
+  background: { default: '#F1F4F5', paper: '#FFFFFF' },
+  divider: '#D3D3D3',
   mode: 'light',
   grey: {
     main: grey[300],
