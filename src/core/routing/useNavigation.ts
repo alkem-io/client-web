@@ -1,5 +1,5 @@
 import { useContext, useLayoutEffect } from 'react';
-import { NavigationContext, Path } from '../../context/NavigationProvider';
+import { NavigationContext, Path } from './NavigationProvider';
 
 interface UseUpdateNavigationOptions {
   currentPaths: Path[] | undefined;

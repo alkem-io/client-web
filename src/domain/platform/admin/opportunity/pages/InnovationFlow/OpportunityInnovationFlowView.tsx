@@ -10,7 +10,7 @@ import {
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
-import OpportunityLifecycleContainer from '../../../../../../containers/opportunity/OpportunityLifecycleContainer';
+import OpportunityLifecycleContainer from '../../../../../challenge/opportunity/containers/OpportunityLifecycleContainer';
 import { LifecycleType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
