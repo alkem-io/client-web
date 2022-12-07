@@ -3,7 +3,7 @@ import HubPageBanner from './HubPageBanner';
 import HubTabs from './HubTabs';
 import { PropsWithChildren } from 'react';
 
-interface HubPageLayoutProps
+export interface HubPageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
 
 const HubPageLayout = (props: PropsWithChildren<HubPageLayoutProps>) => {
