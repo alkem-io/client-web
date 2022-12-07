@@ -18,7 +18,7 @@ export interface ImportTemplatesDialogProps<
   headerText: string;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
-  getImportedTemplateValue?: (template: T) => void;
+  getImportedTemplateValue?: (template: Q) => void;
   importedTemplateValue?: V | undefined;
   innovationPacks: InnovationPack<T>[];
   open: boolean;
