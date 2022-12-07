@@ -704,7 +704,7 @@
         "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
         "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
       },
-      "file-size-error": "File size exceedes the {{limit}}MB limit",
+      "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },
     "editHubForm": {
