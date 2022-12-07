@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsContainer';
+import CanvasActionsContainer from '../containers/CanvasActionsContainer';
 import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_COLLABORATION_CANVASES } from '../../../platform/config/features.constants';
 import {

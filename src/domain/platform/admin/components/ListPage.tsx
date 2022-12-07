@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import SearchableList, { SearchableListItem } from './SearchableList';
-import { Path } from '../../../../context/NavigationProvider';
+import { Path } from '../../../../core/routing/NavigationProvider';
 import SearchableListLayout from '../../../shared/components/SearchableListLayout';
 
 interface ListPageProps {

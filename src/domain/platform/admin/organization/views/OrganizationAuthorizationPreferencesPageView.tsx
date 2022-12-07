@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
-import OrganizationPreferenceContainer from '../../../../../containers/preferences/organization/OrganizationPreferenceContainer';
+import OrganizationPreferenceContainer from '../../../../common/preference/organization/OrganizationPreferenceContainer';
 import OrganizationAuthorizationPreferencesView from '../../../../community/contributor/organization/views/OrganizationAuthorizationPreferencesView';
 
 const OrganizationAuthorizationPreferencesPageView: FC = () => {

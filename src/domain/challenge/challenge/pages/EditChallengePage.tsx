@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Path } from '../../../../context/NavigationProvider';
+import { Path } from '../../../../core/routing/NavigationProvider';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';

@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMemberUsers from '../../../components/Community/EditMembersUsers';
-import OpportunityMembers from '../../../../../../containers/opportunity/OpportunityMembers';
+import OpportunityMembers from '../../../../../challenge/opportunity/containers/OpportunityMembers';
 import { useOpportunity } from '../../../../../challenge/opportunity/hooks/useOpportunity';
 import { AuthorizationCredential } from '../../../../../../core/apollo/generated/graphql-schema';
 
