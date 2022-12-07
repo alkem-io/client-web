@@ -74,6 +74,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       debounce(async debouncedData => {
         const excalidraw = await check(combinedRef.current?.readyPromise);
         excalidraw?.updateScene(debouncedData);
+        excalidraw?.zoomToFit();
       }, CANVAS_UPDATE_DEBOUNCE_INTERVAL)
     );
 
