@@ -995,10 +995,17 @@ export type InnovatonPackFieldPolicy = {
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LibraryKeySpecifier = ('authorization' | 'id' | 'innovationPacks' | LibraryKeySpecifier)[];
+export type LibraryKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'innovationPack'
+  | 'innovationPacks'
+  | LibraryKeySpecifier
+)[];
 export type LibraryFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (

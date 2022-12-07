@@ -20,7 +20,7 @@ import CreateCanvasTemplateDialog, { CreateCanvasTemplateDialogProps } from './C
 import CanvasTemplatePreview from './CanvasTemplatePreview';
 import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
-import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 
@@ -87,8 +87,10 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
     useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   const getImportedTemplateValue = useCallback(
-    (template: AdminCanvasTemplateFragment) => {
-      fetchInnovationPackCanvasValue({ variables: { canvasTemplateId: template.id } });
+    (template: AdminCanvasTemplateFragment & TemplateInnovationPackMetaInfo) => {
+      fetchInnovationPackCanvasValue({
+        variables: { innovationPackId: template.innovationPackId, canvasTemplateId: template.id },
+      });
     },
     [fetchInnovationPackCanvasValue]
   );
@@ -107,9 +109,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
       getTemplateValue={getTemplateValue}
       getImportedTemplateValue={getImportedTemplateValue}
       templateValue={canvasValue?.hub.templates?.canvasTemplate}
-      importedTemplateValue={
-        importedCanvasValue?.library?.innovationPacks?.flatMap(ip => ip.templates?.canvasTemplate)[0]
-      }
+      importedTemplateValue={importedCanvasValue?.library?.innovationPack?.templates?.canvasTemplate}
       createTemplateDialogComponent={CreateCanvasTemplateDialogWithCanvases}
       editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases}
       useCreateTemplateMutation={useCreateCanvasTemplateMutation}
