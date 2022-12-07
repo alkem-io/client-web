@@ -1,14 +1,14 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { CalloutState, CalloutType } from '../../../../models/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
 
 export type CalloutCreationDialogFields = {

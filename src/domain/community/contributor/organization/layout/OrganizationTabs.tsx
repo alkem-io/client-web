@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../../../common/utils/urlBuilders';
-import { useOrganization } from '../../../../../hooks';
-import OrganizationPageContainer from '../../../../../containers/organization/OrganizationPageContainer';
+import { useOrganization } from '../hooks/useOrganization';
+import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
 import ProfileTabs from '../../../../shared/layout/ProfileTabs';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';

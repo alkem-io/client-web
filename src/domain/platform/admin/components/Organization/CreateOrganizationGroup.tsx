@@ -2,9 +2,14 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { useApolloErrorHandler, useOrganization, useUpdateNavigation } from '../../../../../hooks';
-import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '../../../../../hooks/generated/graphql';
-import { PageProps } from '../../../../../pages';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import {
+  GroupDetailsFragmentDoc,
+  useCreateGroupOnOrganizationMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { PageProps } from '../../../../shared/types/PageProps';
 import CreateGroupForm from '../Common/CreateGroupForm';
 
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {

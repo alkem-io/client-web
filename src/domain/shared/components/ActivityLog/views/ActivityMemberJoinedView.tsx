@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
-import { Community } from '../../../../../models/graphql-schema';
+import { Community } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 
 export interface ActivityMemberJoinedViewProps extends ActivityViewProps {

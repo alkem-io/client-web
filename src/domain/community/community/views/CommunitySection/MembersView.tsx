@@ -4,8 +4,8 @@ import UserAvatar from '../../UserAvatar/UserAvatar';
 import { Loading } from '../../../../../common/components/core';
 import AvatarContainer from '../../../../../common/components/core/AvatarContainer';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
-import UserCardsContainer from '../../../../../containers/user/UserCardsContainer';
-import { User } from '../../../../../models/graphql-schema';
+import UserCardsContainer from '../../../contributor/user/containers/UserCardsContainer';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import shuffleCollection from '../../../../../common/utils/shuffleCollection';
 
 interface MembersProps {

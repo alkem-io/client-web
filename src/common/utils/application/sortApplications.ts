@@ -1,6 +1,6 @@
 import { ApplicationWithType } from './getApplicationWithType';
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
-import { APPLICATION_STATE_NEW } from '../../../models/constants';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
+import { APPLICATION_STATE_NEW } from '../../../domain/community/application/constants/ApplicationState';
 
 const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
   if (

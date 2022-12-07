@@ -2,7 +2,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Button, Tooltip } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import { LifecycleModal } from '../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
 
 export interface LifecycleProps {

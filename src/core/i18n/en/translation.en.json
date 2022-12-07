@@ -19,7 +19,7 @@
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
     "apply": "Apply",
-    "explore": "Explore",
+    "explore": "Contribute",
     "ok": "Ok",
     "create": "Create",
     "publish": "Publish",
@@ -104,7 +104,7 @@
     "create-new-entity": "Create new {{entity}}",
     "description": "Description",
     "about": "About",
-    "explore": "Explore",
+    "explore": "Contribute",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
     "filterby": "Filter by...",
@@ -123,7 +123,7 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
-    "communications": "Communications",
+    "communications": "Updates",
     "applications": "Applications",
     "interest": "Interest",
     "interests": "Interests",
@@ -704,7 +704,7 @@
         "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
         "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
       },
-      "file-size-error": "File size excedes the {{limit}}MB limit",
+      "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },
     "editHubForm": {

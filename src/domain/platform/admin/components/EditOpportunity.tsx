@@ -1,14 +1,12 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Path } from '../../../../context/NavigationProvider';
-import {
-  useApolloErrorHandler,
-  useChallenge,
-  useNotification,
-  useUpdateNavigation,
-  useUrlParams,
-} from '../../../../hooks';
+import { Path } from '../../../../core/routing/NavigationProvider';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import {
   refetchOpportunitiesQuery,
   refetchOpportunityProfileInfoQuery,
@@ -16,8 +14,8 @@ import {
   useHubLifecycleTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
-} from '../../../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useNavigateToEdit } from '../../../../core/routing/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
@@ -25,7 +23,7 @@ import ProfileFormWithContext, {
   ProfileFormValuesType,
 } from '../../../../common/components/composite/forms/ProfileFormWithContext';
 import FormMode from './FormMode';
-import { Context, LifecycleType } from '../../../../models/graphql-schema';
+import { Context, LifecycleType } from '../../../../core/apollo/generated/graphql-schema';
 import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
 import { OpportunityContextSegment } from '../opportunity/OpportunityContextSegment';
 

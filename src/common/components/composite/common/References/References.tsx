@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import { Reference } from '../../../../../models/Profile';
+import { Reference } from '../../../../../domain/common/profile/Profile';
 import ReferenceView from './Reference';
 
 interface ReferencesProps {

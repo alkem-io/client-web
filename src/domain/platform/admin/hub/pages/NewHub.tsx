@@ -7,15 +7,17 @@ import WrapperTypography from '../../../../../common/components/core/WrapperTypo
 import AdminLayout from '../../toplevel/AdminLayout';
 import { AdminSection } from '../../toplevel/constants';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../../../hooks';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   HubDetailsFragmentDoc,
   useCreateHubMutation,
   useOrganizationsListQuery,
-} from '../../../../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { createContextInput } from '../../../../../common/utils/buildContext';
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 
 interface NewHubProps extends PageProps {}
 

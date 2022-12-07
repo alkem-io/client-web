@@ -1,16 +1,17 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../../models/container';
+import { ContainerChildProps } from '../../../../core/container/container';
 import {
   useChallengeExplorerDataQuery,
   useChallengeExplorerPageQuery,
   useChallengeExplorerSearchQuery,
-} from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
-import { getVisualBannerNarrow } from '../../../../common/utils/visuals.utils';
-import { SearchResultChallengeFragment } from '../../../../models/graphql-schema';
-import { SearchResultT } from '../../../../pages/Search/SearchPage';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { SearchResultT } from '../../../platform/pages/Search/SearchPage';
 
 export type SimpleChallenge = {
   id: string;

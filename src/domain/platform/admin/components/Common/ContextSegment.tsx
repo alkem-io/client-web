@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { JourneyType } from '../../../../challenge/JourneyType';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import MarkdownInput from './MarkdownInput';

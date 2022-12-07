@@ -1,7 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
-import { useHub, useChallenge } from '../../../../../hooks';
-import { PageProps, Error404 } from '../../../../../pages';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import ChallengeCommunicationsPage from '../../../../challenge/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
 import ChallengeProfilePage from '../../../../challenge/challenge/pages/ChallengeProfile/ChallengeProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';

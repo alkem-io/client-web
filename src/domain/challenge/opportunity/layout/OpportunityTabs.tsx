@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useOpportunity } from '../../../../hooks';
+import { useOpportunity } from '../hooks/useOpportunity';
 import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { EntityTabsProps } from '../../../shared/layout/PageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';

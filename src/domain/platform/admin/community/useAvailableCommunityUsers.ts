@@ -1,4 +1,8 @@
-import { AvailableUserFragment, PageInfoFragment, UserFilterInput } from '../../../../models/graphql-schema';
+import {
+  AvailableUserFragment,
+  PageInfoFragment,
+  UserFilterInput,
+} from '../../../../core/apollo/generated/graphql-schema';
 import useUsersSearch, {
   UseUsersSearchResult,
 } from '../../../community/community/useAvailableMembersWithCredential/useUsersSearch';

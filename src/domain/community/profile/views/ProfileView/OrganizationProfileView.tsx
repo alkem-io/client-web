@@ -5,7 +5,7 @@ import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
-import { Location } from '../../../../../models/graphql-schema';
+import { Location } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;

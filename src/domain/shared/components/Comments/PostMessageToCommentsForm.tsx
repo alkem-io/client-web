@@ -5,7 +5,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import HelpIcon from '@mui/icons-material/Help';
-import { useUserContext } from '../../../../hooks';
+import { useUserContext } from '../../../community/contributor/user';
 import FormikCommentInputField from '../../../../common/components/composite/forms/FormikCommentInputField';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { WithCommunity } from '../../../components/Community/CommunityTypes';
-import { useAppendBreadcrumb } from '../../../../../../hooks/usePathUtils';
-import CommunityUpdatesPage from '../../../../../../pages/Admin/Community/CommunityUpdatesPage';
+import { useAppendBreadcrumb } from '../../../../../../core/routing/usePathUtils';
+import CommunityUpdatesPage from '../../../community/CommunityUpdatesPage';
 import { SettingsSection } from '../../../layout/EntitySettings/constants';
 import { SettingsPageProps } from '../../../layout/EntitySettings/types';
 import OpportunitySettingsLayout from '../../OpportunitySettingsLayout';

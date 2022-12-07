@@ -20,7 +20,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
-import { HELP_ROUTE, SEARCH_ROUTE } from '../../../../../models/constants';
+import { HELP_ROUTE, SEARCH_ROUTE } from '../../../../../core/routing/route.constants';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LanguageIcon from '@mui/icons-material/Language';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';

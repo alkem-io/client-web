@@ -11,9 +11,9 @@ import InfoIcon from '@mui/icons-material/Info';
 import { ApplicationWithType } from '../../../../../common/utils/application/getApplicationWithType';
 import { ApplicationDialog, ApplicationDialogDataType } from '../../dialogs/ApplicationDialog';
 import Tag from '../../../../../common/components/core/Tag';
-import { APPLICATION_STATE_NEW } from '../../../../../models/constants';
+import { APPLICATION_STATE_NEW } from '../../constants/ApplicationState';
 import { makeStyles } from '@mui/styles';
-import { ApplicationDialogDetails } from '../../../../../containers/application/PendingApplicationContainer';
+import { ApplicationDialogDetails } from '../../containers/PendingApplicationContainer';
 import IconButton from '@mui/material/IconButton';
 
 const useStyles = makeStyles(theme => ({

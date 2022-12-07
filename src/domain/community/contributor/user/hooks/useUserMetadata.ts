@@ -1,5 +1,5 @@
-import { useUserProfileQuery } from '../../../../../hooks/generated/graphql';
-import { User } from '../../../../../models/graphql-schema';
+import { useUserProfileQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 import { useUserMetadataWrapper } from './useUserMetadataWrapper';
 
 export const useUserMetadata = (id: string) => {

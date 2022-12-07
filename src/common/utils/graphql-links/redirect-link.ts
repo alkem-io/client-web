@@ -1,7 +1,7 @@
 import { onError } from '@apollo/client/link/error';
 import { ServerParseError } from '@apollo/client';
 import { logger } from '../../../services/logging/winston/logger';
-import { AUTH_LOGIN_PATH } from '../../../models/constants';
+import { AUTH_LOGIN_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
 
 /**
  * This link handles the flow of a changed cookie secret or an expired cookie:

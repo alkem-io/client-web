@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { makeStyles } from '@mui/styles';
-import { Lifecycle, Maybe } from '../../../../../models/graphql-schema';
+import { Lifecycle, Maybe } from '../../../../../core/apollo/generated/graphql-schema';
 import WrapperTypography from '../../../core/WrapperTypography';
 import InnovationFlowVisualizer from '../../../../../domain/platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 import { DialogContent, DialogTitle } from '../../../core/dialog';

@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import useRouteMatch from '../../../../../hooks/routing/useRouteMatch';
+import useRouteMatch from '../../../../../core/routing/useRouteMatch';
 import { RouterLink } from '../../../core/RouterLink';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ProfileMenuItem from './ProfileMenuItem';

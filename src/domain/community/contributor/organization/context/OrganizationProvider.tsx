@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../../hooks';
-import { useOrganizationInfoQuery } from '../../../../../hooks/generated/graphql';
-import { OrganizationInfoFragment } from '../../../../../models/graphql-schema';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useOrganizationInfoQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;

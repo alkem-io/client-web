@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useConfig } from '../../../../../hooks';
-import { FEATURE_SSI } from '../../../../../models/constants';
+import { useConfig } from '../../../config/useConfig';
+import { FEATURE_SSI } from '../../../config/features.constants';
 import { useUserContext } from '../../../../community/contributor/user';
 import UserPageBanner from '../../../../community/contributor/user/layout/UserPageBanner';
 import UserTabs from '../../../../community/contributor/user/layout/UserTabs';

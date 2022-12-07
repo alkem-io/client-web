@@ -11,8 +11,8 @@ import {
   AspectCardFragment,
   MetricsItemFragment,
   Context,
-} from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import OpportunityCommunityView from '../../../community/community/entities/OpportunityCommunityView';
 import DashboardOpportunityStatistics from '../../../shared/components/DashboardSections/DashboardOpportunityStatistics';

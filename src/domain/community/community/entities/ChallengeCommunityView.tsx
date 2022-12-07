@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useChallenge } from '../../../../hooks';
-import { useChallengeCommunityContributorsQuery } from '../../../../hooks/generated/graphql';
+import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
+import { useChallengeCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
@@ -8,7 +8,7 @@ import CommunityContributorsSearch from '../CommunityContributors/CommunityContr
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { userCardValueGetter } from '../../../../common/components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { Identifiable } from '../../../shared/types/Identifiable';
-import { OrganizationCardFragment } from '../../../../models/graphql-schema';
+import { OrganizationCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useSearchAcrossMultipleLists from '../../../shared/utils/useSearchAcrossMultipleLists';
 
 export const organizationCardValueGetter = ({
