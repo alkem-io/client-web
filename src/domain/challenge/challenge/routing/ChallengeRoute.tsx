@@ -6,7 +6,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
 import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import ApplyRoute from '../../../community/application/routing/apply.route';
+import ApplyRoute from '../../../community/application/routing/ApplyRoute';
 import { nameOfUrl } from '../../../../core/routing/urlParams';
 import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
@@ -19,6 +19,7 @@ import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeContextPage from '../pages/ChallengeContextPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
+import ChallengePageLayout from '../layout/ChallengePageLayout';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -31,7 +32,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   );
 
   if (loading) {
-    return <Loading text={'Loading challenge'} />;
+    return <Loading text="Loading challenge" />;
   }
 
   if (!challengeId) {
@@ -40,7 +41,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route path={'/'} element={<EntityPageLayoutHolder />}>
+      <Route path="/" element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
@@ -65,12 +66,21 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'challenge'} />
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName="challenge" />
           }
         />
       </Route>
-      <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
-      <Route path={'feedback/*'} element={<CommunityFeedbackRoute paths={currentPaths} />} />
+      <Route
+        path="apply/*"
+        element={
+          <ApplyRoute
+            paths={currentPaths}
+            type={ApplicationTypeEnum.challenge}
+            entityPageLayout={ChallengePageLayout}
+          />
+        }
+      />
+      <Route path="feedback/*" element={<CommunityFeedbackRoute paths={currentPaths} />} />
       <Route
         path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
         element={
