@@ -28,8 +28,8 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route path={'/'} element={<EntityPageLayoutHolder />}>
-        <Route index element={<Navigate replace to={'dashboard'} />} />
+      <Route path="/" element={<EntityPageLayoutHolder />}>
+        <Route index element={<Navigate replace to="dashboard" />} />
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
@@ -52,7 +52,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         />
       </Route>
       <Route
-        path={'apply'}
+        path="apply"
         element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.hub} entityPageLayout={HubPageLayout} />}
       />
       <Route
