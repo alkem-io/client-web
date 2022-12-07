@@ -32,7 +32,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   );
 
   if (loading) {
-    return <Loading text={'Loading challenge'} />;
+    return <Loading text="Loading challenge" />;
   }
 
   if (!challengeId) {
@@ -41,7 +41,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route path={'/'} element={<EntityPageLayoutHolder />}>
+      <Route path="/" element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
@@ -66,12 +66,12 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'challenge'} />
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName="challenge" />
           }
         />
       </Route>
       <Route
-        path={'apply/*'}
+        path="apply/*"
         element={
           <ApplyRoute
             paths={currentPaths}
@@ -80,7 +80,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           />
         }
       />
-      <Route path={'feedback/*'} element={<CommunityFeedbackRoute paths={currentPaths} />} />
+      <Route path="feedback/*" element={<CommunityFeedbackRoute paths={currentPaths} />} />
       <Route
         path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
         element={
