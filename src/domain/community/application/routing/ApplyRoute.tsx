@@ -18,7 +18,7 @@ interface Props extends PageProps {
 const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type }) => {
   return (
     <Routes>
-      <Route path={'/'} element={<EntityPageLayoutHolder />}>
+      <Route path="/" element={<EntityPageLayoutHolder />}>
         <Route
           index
           element={
