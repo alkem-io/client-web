@@ -3,7 +3,7 @@ import ChallengePageBanner from './ChallengePageBanner';
 import ChallengeTabs from './ChallengeTabs';
 import { PropsWithChildren } from 'react';
 
-interface ChallengePageLayoutProps
+export interface ChallengePageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
 
 const ChallengePageLayout = (props: PropsWithChildren<ChallengePageLayoutProps>) => {
