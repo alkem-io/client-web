@@ -32,13 +32,13 @@ query InnovationPacks {
     }
   }
 }
-query InnovationPackCanvasTemplateWithValue($canvasTemplateId: UUID!) {
+query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
   library {
     id
-    innovationPacks {
+    innovationPack(ID: $innovationPackId) {
       id
       templates {
-        canvasTemplate(ID: $canvasTemplateId){
+        canvasTemplate(ID: $canvasTemplateId) {
           ...AdminCanvasTemplateValue
         }
       }
