@@ -11,7 +11,7 @@ import ContextSectionIcon from '../../../../common/components/composite/sections
 import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
-import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
 import {

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Path } from '../../../context/NavigationProvider';
+import { Path } from '../../routing/NavigationProvider';
 import { useFetchMd } from '../hooks/useFetchMd';
 import HelpView from '../views/HelpView';
 import { useUpdateNavigation } from '../../routing/useNavigation';

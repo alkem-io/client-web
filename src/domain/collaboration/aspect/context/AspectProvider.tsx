@@ -8,7 +8,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { getCardCallout } from '../../../../containers/aspect/getAspectCallout';
+import { getCardCallout } from '../containers/getAspectCallout';
 
 interface AspectPermissions {
   canUpdate: boolean;

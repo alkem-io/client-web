@@ -6,7 +6,7 @@ import { LinkWithState } from '../../../shared/types/LinkWithState';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
-import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsContainer';
+import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';

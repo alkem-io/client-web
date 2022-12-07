@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import { WithCommunity } from '../components/Community/CommunityTypes';
-import { CommunityUpdatesContainer } from '../../../../containers/community-updates/CommunityUpdatesContainer';
+import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { CommunityUpdatesView } from '../../../community/community/views/CommunityUpdates/CommunityUpdatesView';
 
