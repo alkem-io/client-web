@@ -16,6 +16,7 @@ import { CookiesProvider } from 'react-cookie';
 import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
+import { fontFamilySourceSans } from './core/ui/typography/themeOptions';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -37,7 +38,7 @@ const useGlobalStyles = makeStyles(theme => ({
     body: {
       height: '100%',
       margin: 0,
-      fontFamily: '"Source Sans Pro", "Montserrat"',
+      fontFamily: fontFamilySourceSans,
     },
     '#root': {
       minHeight: '100%',
