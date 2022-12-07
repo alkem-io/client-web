@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   CommunityUpdatesContainer,
   CommunityUpdatesContainerProps,
-} from '../../../../containers/community-updates/CommunityUpdatesContainer';
+} from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import SingleUpdateView from '../../../communication/updates/views/SingleUpdateView';
 import DashboardGenericSection from './DashboardGenericSection';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';

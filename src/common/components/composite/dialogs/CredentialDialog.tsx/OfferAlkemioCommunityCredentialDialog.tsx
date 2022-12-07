@@ -11,7 +11,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributionDetailsContainer from '../../../../../containers/ContributionDetails/ContributionDetailsContainer';
+import ContributionDetailsContainer from '../../../../../domain/community/profile/ContributionDetailsContainer/ContributionDetailsContainer';
 import { ContributionItem } from '../../../../../domain/community/contributor/contribution';
 import { AgentBeginVerifiedCredentialOfferOutput } from '../../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../../types/TranslationKey';

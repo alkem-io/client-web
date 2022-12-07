@@ -3,7 +3,7 @@ import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from '
 import { SelectInputProps } from '@mui/material/Select/SelectInput';
 import { useField } from 'formik';
 import React, { MouseEventHandler, useCallback, useMemo, useState } from 'react';
-import CanvasValueContainer from '../../../../../containers/canvas/CanvasValueContainer';
+import CanvasValueContainer from '../../../../collaboration/canvas/containers/CanvasValueContainer';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import TranslationKey from '../../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../shared/i18n/ValidationMessageTranslation';

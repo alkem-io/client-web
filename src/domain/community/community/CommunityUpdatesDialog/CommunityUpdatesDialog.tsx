@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
-import { CommunityUpdatesContainer } from '../../../../containers/community-updates/CommunityUpdatesContainer';
+import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 
 export interface CommunityUpdatesDialogProps {

@@ -7,7 +7,7 @@ import { useHub } from '../HubContext/useHub';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { PageProps } from '../../../shared/types/PageProps';
 import HubChallengesView from '../views/HubChallengesView';
-import ChallengesCardContainer from '../../../../containers/hub/ChallengesCardContainer';
+import ChallengesCardContainer from '../containers/ChallengesCardContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import HubPageLayout from '../layout/HubPageLayout';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';

@@ -1,0 +1,162 @@
+import { ApolloError } from '@apollo/client';
+import React, { FC, useMemo } from 'react';
+import { ContributorCardProps } from '../../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
+import { RoleType } from '../../user/constants/RoleType';
+import { useOrganization } from '../hooks/useOrganization';
+import useUserCardRoleName from '../../user/hooks/useUserCardRoleName';
+import { useUserContext } from '../../user';
+import { useRolesOrganizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
+import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
+import { ContainerChildProps } from '../../../../../core/container/container';
+import { ContributionItem } from '../../contribution';
+import {
+  isSocialNetworkSupported,
+  SocialNetworkEnum,
+  toSocialNetworkEnum,
+} from '../../../../shared/components/SocialLinks/models/SocialNetworks';
+import {
+  AuthorizationCredential,
+  OrganizationInfoFragment,
+  User,
+} from '../../../../../core/apollo/generated/graphql-schema';
+import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
+
+export interface OrganizationContainerEntities {
+  organization?: OrganizationInfoFragment;
+  socialLinks: SocialLinkItem[];
+  links: string[];
+  capabilities: string[];
+  keywords: string[];
+  associates: ContributorCardProps[];
+  contributions: ContributionItem[];
+  permissions: {
+    canEdit: boolean;
+  };
+  website?: string;
+}
+
+export interface OrganizationContainerActions {}
+
+export interface OrganizationContainerState {
+  loading: boolean;
+  error?: ApolloError;
+}
+
+export interface OrganizationPageContainerProps
+  extends ContainerChildProps<
+    OrganizationContainerEntities,
+    OrganizationContainerActions,
+    OrganizationContainerState
+  > {}
+
+export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
+  const { organizationId, organizationNameId, loading, organization } = useOrganization();
+
+  const usersWithRoles = useUserCardRoleName((organization?.associates || []) as User[], organizationId);
+
+  const { data: membershipData, loading: orgMembershipLoading } = useRolesOrganizationQuery({
+    variables: {
+      input: {
+        organizationID: organizationNameId,
+      },
+    },
+    skip: !organizationNameId,
+  });
+
+  const socialLinks = useMemo(() => {
+    const result = (organization?.profile.references || [])
+      .map(s => ({
+        type: toSocialNetworkEnum(s.name),
+        url: s.uri,
+      }))
+      .filter(isSocialLink);
+    if (organization?.contactEmail) result.push({ type: SocialNetworkEnum.email, url: organization?.contactEmail });
+    if (organization?.website) result.push({ type: SocialNetworkEnum.website, url: organization?.website });
+
+    return result;
+  }, [organization]);
+
+  const links = useMemo(() => {
+    let result = (organization?.profile.references || [])
+      .filter(x => !isSocialNetworkSupported(x.name))
+      .map(s => s.uri);
+
+    return result;
+  }, [organization]);
+
+  const keywords = useMemo(
+    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
+    [organization]
+  );
+
+  const capabilities = useMemo(
+    () => organization?.profile.tagsets?.find(x => x.name.toLowerCase() === CAPABILITIES_TAGSET)?.tags || [],
+    [organization]
+  );
+
+  const { user } = useUserContext();
+
+  const permissions = {
+    canEdit: useMemo(
+      () =>
+        user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
+        user?.hasCredentials(AuthorizationCredential.OrganizationOwner, organizationId) ||
+        user?.hasCredentials(AuthorizationCredential.OrganizationAdmin, organizationId) ||
+        false,
+      [user, organizationId]
+    ),
+  };
+
+  const associates = useMemo<ContributorCardProps[]>(() => {
+    return (
+      usersWithRoles.map<ContributorCardProps>(x => ({
+        id: x.id,
+        displayName: x.displayName,
+        roleName: x.roleName,
+        avatar: x.profile?.avatar?.uri || '',
+        tooltip: {
+          city: x.profile?.location?.city || '',
+          country: x.profile?.location?.country && COUNTRIES_BY_CODE[x.profile?.location?.country],
+          tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
+        },
+        url: buildUserProfileUrl(x.nameID),
+      })) || []
+    );
+  }, [usersWithRoles]);
+
+  const contributions = useMemo(() => {
+    const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+
+    const hubContributions = hubsHosting.map<ContributionItem>(x => ({
+      hubId: x.id,
+    }));
+
+    // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
+    const challengeContributions =
+      membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
+        h.challenges
+          .filter(c => c.roles?.includes(RoleType.Lead))
+          .map<ContributionItem>(c => ({
+            hubId: h.id,
+            challengeId: c.id,
+          }))
+      ) || [];
+
+    return [...hubContributions, ...challengeContributions];
+  }, [membershipData]);
+
+  return (
+    <>
+      {children(
+        { organization, permissions, socialLinks, links, keywords, capabilities, associates, contributions },
+        {
+          loading: loading || orgMembershipLoading,
+        },
+        {}
+      )}
+    </>
+  );
+};
+export default OrganizationPageContainer;
