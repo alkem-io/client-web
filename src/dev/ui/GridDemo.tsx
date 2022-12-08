@@ -5,6 +5,8 @@ import GridItem, { GridItemProps } from '../../core/ui/grid/GridItem';
 import { Box } from '@mui/material';
 import { GUTTER_MUI, GUTTER_PX } from '../../core/ui/grid/constants';
 import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
+import CalloutBlockMarginal from '../../domain/collaboration/callout/Contribute/CalloutBlockMarginal';
+import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
 
 const DummyContent = (props: GridItemProps) => (
   <GridItem {...props}>
@@ -27,31 +29,40 @@ const GridDemo = () => {
             <BlockTitle>Block Title</BlockTitle>
             <Text>{loremIpsum}</Text>
           </PageContentBlock>
-          <PageContentBlock>
-            <DummyContent columns={2} />
-            <DummyContent columns={2} />
+          <PageContentBlock disableGap disablePadding>
+            <PageContentBlockGrid>
+              <DummyContent columns={2} />
+              <DummyContent columns={2} />
+            </PageContentBlockGrid>
           </PageContentBlock>
-          <PageContentBlock>
-            <DummyContent columns={1} />
-            <DummyContent />
+          <PageContentBlock disableGap disablePadding>
+            <PageContentBlockGrid>
+              <DummyContent columns={1} />
+              <DummyContent />
+            </PageContentBlockGrid>
           </PageContentBlock>
         </PageContentColumn>
         <PageContentColumn columns={8}>
-          <PageContentBlock>
-            <DummyContent columns={2} />
-            <DummyContent columns={2} />
-            <DummyContent columns={4} />
-            <DummyContent columns={4} />
-            <DummyContent columns={1} />
-            <DummyContent />
+          <PageContentBlock disableGap disablePadding>
+            <PageContentBlockGrid>
+              <DummyContent columns={2} />
+              <DummyContent columns={2} />
+              <DummyContent columns={4} />
+              <DummyContent columns={4} />
+              <DummyContent columns={1} />
+              <DummyContent />
+            </PageContentBlockGrid>
           </PageContentBlock>
-          <PageContentBlock cards>
-            <DummyContent columns={3} />
-            <DummyContent columns={3} />
-            <DummyContent columns={3} />
-            <DummyContent columns={3} />
-            <DummyContent columns={3} />
-            <DummyContent />
+          <PageContentBlock disableGap disablePadding>
+            <CalloutBlockMarginal variant="header">Callout</CalloutBlockMarginal>
+            <PageContentBlockGrid cards>
+              <DummyContent columns={3} />
+              <DummyContent columns={3} />
+              <DummyContent columns={3} />
+              <DummyContent columns={3} />
+              <DummyContent columns={3} />
+            </PageContentBlockGrid>
+            <CalloutBlockMarginal variant="footer">Status</CalloutBlockMarginal>
           </PageContentBlock>
         </PageContentColumn>
       </PageContent>
