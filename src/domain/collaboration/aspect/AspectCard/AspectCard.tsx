@@ -46,8 +46,12 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
-export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type' | 'createdDate';
+export type AspectCardAspect = Pick<Aspect, NeededFields> & {
+  bannerNarrow?: VisualUriFragment;
+  createdBy: { displayName: string };
+  comments?: { messageCount?: number | undefined };
+} & {
   calloutNameId: string;
 };
 

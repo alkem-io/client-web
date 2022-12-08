@@ -254,6 +254,13 @@ export const AspectCardFragmentDoc = gql`
     nameID
     displayName
     type
+    createdBy {
+      displayName
+    }
+    createdDate
+    comments {
+      messageCount
+    }
     banner {
       ...VisualUri
     }
@@ -1862,6 +1869,132 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const SearchResultProfileFragmentDoc = gql`
+  fragment SearchResultProfile on Profile {
+    id
+    location {
+      id
+      country
+      city
+    }
+    tagsets {
+      id
+      tags
+    }
+    avatar {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SearchResultUserFragmentDoc = gql`
+  fragment SearchResultUser on SearchResultUser {
+    user {
+      id
+      nameID
+      displayName
+      profile {
+        ...SearchResultProfile
+      }
+    }
+  }
+  ${SearchResultProfileFragmentDoc}
+`;
+export const SearchResultOrganizationFragmentDoc = gql`
+  fragment SearchResultOrganization on SearchResultOrganization {
+    organization {
+      id
+      nameID
+      displayName
+      profile {
+        ...SearchResultProfile
+      }
+    }
+  }
+  ${SearchResultProfileFragmentDoc}
+`;
+export const SearchResultHubFragmentDoc = gql`
+  fragment SearchResultHub on SearchResultHub {
+    hub {
+      id
+      nameID
+      displayName
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SearchResultChallengeFragmentDoc = gql`
+  fragment SearchResultChallenge on SearchResultChallenge {
+    challenge {
+      id
+      nameID
+      displayName
+      hubID
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    hub {
+      id
+      nameID
+      displayName
+      context {
+        tagline
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const SearchResultOpportunityFragmentDoc = gql`
+  fragment SearchResultOpportunity on SearchResultOpportunity {
+    opportunity {
+      id
+      nameID
+      displayName
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+    challenge {
+      id
+      nameID
+      displayName
+    }
+    hub {
+      id
+      nameID
+      displayName
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
     id
@@ -2064,132 +2197,6 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     }
     message
   }
-`;
-export const SearchResultProfileFragmentDoc = gql`
-  fragment SearchResultProfile on Profile {
-    id
-    location {
-      id
-      country
-      city
-    }
-    tagsets {
-      id
-      tags
-    }
-    avatar {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const SearchResultUserFragmentDoc = gql`
-  fragment SearchResultUser on SearchResultUser {
-    user {
-      id
-      nameID
-      displayName
-      profile {
-        ...SearchResultProfile
-      }
-    }
-  }
-  ${SearchResultProfileFragmentDoc}
-`;
-export const SearchResultOrganizationFragmentDoc = gql`
-  fragment SearchResultOrganization on SearchResultOrganization {
-    organization {
-      id
-      nameID
-      displayName
-      profile {
-        ...SearchResultProfile
-      }
-    }
-  }
-  ${SearchResultProfileFragmentDoc}
-`;
-export const SearchResultHubFragmentDoc = gql`
-  fragment SearchResultHub on SearchResultHub {
-    hub {
-      id
-      nameID
-      displayName
-      context {
-        id
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      tagset {
-        id
-        tags
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const SearchResultChallengeFragmentDoc = gql`
-  fragment SearchResultChallenge on SearchResultChallenge {
-    challenge {
-      id
-      nameID
-      displayName
-      hubID
-      context {
-        id
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      tagset {
-        id
-        tags
-      }
-    }
-    hub {
-      id
-      nameID
-      displayName
-      context {
-        tagline
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const SearchResultOpportunityFragmentDoc = gql`
-  fragment SearchResultOpportunity on SearchResultOpportunity {
-    opportunity {
-      id
-      nameID
-      displayName
-      context {
-        id
-        tagline
-        visuals {
-          ...VisualUri
-        }
-      }
-      tagset {
-        id
-        tags
-      }
-    }
-    challenge {
-      id
-      nameID
-      displayName
-    }
-    hub {
-      id
-      nameID
-      displayName
-    }
-  }
-  ${VisualUriFragmentDoc}
 `;
 export const UploadFileDocument = gql`
   mutation UploadFile($file: Upload!) {
@@ -12193,6 +12200,157 @@ export function useCalloutAspectCreatedSubscription(
 export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
 export type CalloutAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
+export const ProfileVerifiedCredentialDocument = gql`
+  subscription profileVerifiedCredential {
+    profileVerifiedCredential {
+      vc
+    }
+  }
+`;
+
+/**
+ * __useProfileVerifiedCredentialSubscription__
+ *
+ * To run a query within a React component, call `useProfileVerifiedCredentialSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useProfileVerifiedCredentialSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileVerifiedCredentialSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProfileVerifiedCredentialSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ProfileVerifiedCredentialSubscription,
+    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ProfileVerifiedCredentialSubscription,
+    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+  >(ProfileVerifiedCredentialDocument, options);
+}
+export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
+  typeof useProfileVerifiedCredentialSubscription
+>;
+export type ProfileVerifiedCredentialSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
+export const HubPreferencesDocument = gql`
+  query hubPreferences($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      preferences {
+        id
+        value
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubPreferencesQuery__
+ *
+ * To run a query within a React component, call `useHubPreferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPreferencesQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useHubPreferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
+    HubPreferencesDocument,
+    options
+  );
+}
+export function useHubPreferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
+    HubPreferencesDocument,
+    options
+  );
+}
+export type HubPreferencesQueryHookResult = ReturnType<typeof useHubPreferencesQuery>;
+export type HubPreferencesLazyQueryHookResult = ReturnType<typeof useHubPreferencesLazyQuery>;
+export type HubPreferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPreferencesQuery,
+  SchemaTypes.HubPreferencesQueryVariables
+>;
+export function refetchHubPreferencesQuery(variables: SchemaTypes.HubPreferencesQueryVariables) {
+  return { query: HubPreferencesDocument, variables: variables };
+}
+export const UpdatePreferenceOnHubDocument = gql`
+  mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
+    updatePreferenceOnHub(preferenceData: $preferenceData) {
+      id
+      value
+    }
+  }
+`;
+export type UpdatePreferenceOnHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePreferenceOnHubMutation,
+  SchemaTypes.UpdatePreferenceOnHubMutationVariables
+>;
+
+/**
+ * __useUpdatePreferenceOnHubMutation__
+ *
+ * To run a mutation, you first call `useUpdatePreferenceOnHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePreferenceOnHubMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePreferenceOnHubMutation, { data, loading, error }] = useUpdatePreferenceOnHubMutation({
+ *   variables: {
+ *      preferenceData: // value for 'preferenceData'
+ *   },
+ * });
+ */
+export function useUpdatePreferenceOnHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePreferenceOnHubMutation,
+    SchemaTypes.UpdatePreferenceOnHubMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdatePreferenceOnHubMutation,
+    SchemaTypes.UpdatePreferenceOnHubMutationVariables
+  >(UpdatePreferenceOnHubDocument, options);
+}
+export type UpdatePreferenceOnHubMutationHookResult = ReturnType<typeof useUpdatePreferenceOnHubMutation>;
+export type UpdatePreferenceOnHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnHubMutation>;
+export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePreferenceOnHubMutation,
+  SchemaTypes.UpdatePreferenceOnHubMutationVariables
+>;
 export const CreateTagsetOnProfileDocument = gql`
   mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
     createTagsetOnProfile(tagsetData: $input) {
@@ -12305,6 +12463,52 @@ export type TagsetsTemplateQueryResult = Apollo.QueryResult<
 export function refetchTagsetsTemplateQuery(variables?: SchemaTypes.TagsetsTemplateQueryVariables) {
   return { query: TagsetsTemplateDocument, variables: variables };
 }
+export const UploadVisualDocument = gql`
+  mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
+    uploadImageOnVisual(file: $file, uploadData: $uploadData) {
+      id
+      uri
+    }
+  }
+`;
+export type UploadVisualMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadVisualMutation,
+  SchemaTypes.UploadVisualMutationVariables
+>;
+
+/**
+ * __useUploadVisualMutation__
+ *
+ * To run a mutation, you first call `useUploadVisualMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadVisualMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadVisualMutation, { data, loading, error }] = useUploadVisualMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
+ *   },
+ * });
+ */
+export function useUploadVisualMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadVisualMutation, SchemaTypes.UploadVisualMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UploadVisualMutation, SchemaTypes.UploadVisualMutationVariables>(
+    UploadVisualDocument,
+    options
+  );
+}
+export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
+export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
+export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadVisualMutation,
+  SchemaTypes.UploadVisualMutationVariables
+>;
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID!]!) {
     usersById(IDs: $ids) {
@@ -18356,46 +18560,144 @@ export type ServerMetadataQueryResult = Apollo.QueryResult<
 export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadataQueryVariables) {
   return { query: ServerMetadataDocument, variables: variables };
 }
-export const ProfileVerifiedCredentialDocument = gql`
-  subscription profileVerifiedCredential {
-    profileVerifiedCredential {
-      vc
+export const SearchDocument = gql`
+  query search($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      id
+      score
+      terms
+      type
+      ... on SearchResultHub {
+        ...SearchResultHub
+      }
+      ... on SearchResultChallenge {
+        ...SearchResultChallenge
+      }
+      ... on SearchResultOpportunity {
+        ...SearchResultOpportunity
+      }
+      ... on SearchResultUser {
+        ...SearchResultUser
+      }
+      ... on SearchResultOrganization {
+        ...SearchResultOrganization
+      }
+    }
+  }
+  ${SearchResultHubFragmentDoc}
+  ${SearchResultChallengeFragmentDoc}
+  ${SearchResultOpportunityFragmentDoc}
+  ${SearchResultUserFragmentDoc}
+  ${SearchResultOrganizationFragmentDoc}
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+export function useSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
+export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
+  return { query: SearchDocument, variables: variables };
+}
+export const UserRolesSearchCardsDocument = gql`
+  query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $userId }) {
+      hubs {
+        id
+        roles
+        challenges {
+          id
+          nameID
+          roles
+        }
+        opportunities {
+          id
+          roles
+        }
+      }
+      organizations {
+        id
+        roles
+      }
     }
   }
 `;
 
 /**
- * __useProfileVerifiedCredentialSubscription__
+ * __useUserRolesSearchCardsQuery__
  *
- * To run a query within a React component, call `useProfileVerifiedCredentialSubscription` and pass it any options that fit your needs.
- * When your component renders, `useProfileVerifiedCredentialSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserRolesSearchCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserRolesSearchCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useProfileVerifiedCredentialSubscription({
+ * const { data, loading, error } = useUserRolesSearchCardsQuery({
  *   variables: {
+ *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useProfileVerifiedCredentialSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
-    SchemaTypes.ProfileVerifiedCredentialSubscription,
-    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+export function useUserRolesSearchCardsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserRolesSearchCardsQuery,
+    SchemaTypes.UserRolesSearchCardsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.ProfileVerifiedCredentialSubscription,
-    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
-  >(ProfileVerifiedCredentialDocument, options);
+  return Apollo.useQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
+    UserRolesSearchCardsDocument,
+    options
+  );
 }
-export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
-  typeof useProfileVerifiedCredentialSubscription
+export function useUserRolesSearchCardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserRolesSearchCardsQuery,
+    SchemaTypes.UserRolesSearchCardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
+    UserRolesSearchCardsDocument,
+    options
+  );
+}
+export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
+export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
+export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserRolesSearchCardsQuery,
+  SchemaTypes.UserRolesSearchCardsQueryVariables
 >;
-export type ProfileVerifiedCredentialSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
+export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
+  return { query: UserRolesSearchCardsDocument, variables: variables };
+}
 export const CreateReferenceOnContextDocument = gql`
   mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
     createReferenceOnContext(referenceInput: $input) {
@@ -18588,52 +18890,6 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
 >;
-export const UploadVisualDocument = gql`
-  mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
-    uploadImageOnVisual(file: $file, uploadData: $uploadData) {
-      id
-      uri
-    }
-  }
-`;
-export type UploadVisualMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UploadVisualMutation,
-  SchemaTypes.UploadVisualMutationVariables
->;
-
-/**
- * __useUploadVisualMutation__
- *
- * To run a mutation, you first call `useUploadVisualMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadVisualMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadVisualMutation, { data, loading, error }] = useUploadVisualMutation({
- *   variables: {
- *      file: // value for 'file'
- *      uploadData: // value for 'uploadData'
- *   },
- * });
- */
-export function useUploadVisualMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadVisualMutation, SchemaTypes.UploadVisualMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UploadVisualMutation, SchemaTypes.UploadVisualMutationVariables>(
-    UploadVisualDocument,
-    options
-  );
-}
-export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
-export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
-export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UploadVisualMutation,
-  SchemaTypes.UploadVisualMutationVariables
->;
 export const ActivityCreatedDocument = gql`
   subscription activityCreated($collaborationID: UUID!) {
     activityCreated(collaborationID: $collaborationID) {
@@ -18797,253 +19053,4 @@ export function refetchActivityLogOnCollaborationQuery(
   variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
-}
-export const HubPreferencesDocument = gql`
-  query hubPreferences($hubNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      preferences {
-        id
-        value
-        definition {
-          id
-          description
-          displayName
-          group
-          type
-          valueType
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useHubPreferencesQuery__
- *
- * To run a query within a React component, call `useHubPreferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPreferencesQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *   },
- * });
- */
-export function useHubPreferencesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
-    HubPreferencesDocument,
-    options
-  );
-}
-export function useHubPreferencesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
-    HubPreferencesDocument,
-    options
-  );
-}
-export type HubPreferencesQueryHookResult = ReturnType<typeof useHubPreferencesQuery>;
-export type HubPreferencesLazyQueryHookResult = ReturnType<typeof useHubPreferencesLazyQuery>;
-export type HubPreferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubPreferencesQuery,
-  SchemaTypes.HubPreferencesQueryVariables
->;
-export function refetchHubPreferencesQuery(variables: SchemaTypes.HubPreferencesQueryVariables) {
-  return { query: HubPreferencesDocument, variables: variables };
-}
-export const UpdatePreferenceOnHubDocument = gql`
-  mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
-    updatePreferenceOnHub(preferenceData: $preferenceData) {
-      id
-      value
-    }
-  }
-`;
-export type UpdatePreferenceOnHubMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdatePreferenceOnHubMutation,
-  SchemaTypes.UpdatePreferenceOnHubMutationVariables
->;
-
-/**
- * __useUpdatePreferenceOnHubMutation__
- *
- * To run a mutation, you first call `useUpdatePreferenceOnHubMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePreferenceOnHubMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePreferenceOnHubMutation, { data, loading, error }] = useUpdatePreferenceOnHubMutation({
- *   variables: {
- *      preferenceData: // value for 'preferenceData'
- *   },
- * });
- */
-export function useUpdatePreferenceOnHubMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdatePreferenceOnHubMutation,
-    SchemaTypes.UpdatePreferenceOnHubMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdatePreferenceOnHubMutation,
-    SchemaTypes.UpdatePreferenceOnHubMutationVariables
-  >(UpdatePreferenceOnHubDocument, options);
-}
-export type UpdatePreferenceOnHubMutationHookResult = ReturnType<typeof useUpdatePreferenceOnHubMutation>;
-export type UpdatePreferenceOnHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnHubMutation>;
-export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdatePreferenceOnHubMutation,
-  SchemaTypes.UpdatePreferenceOnHubMutationVariables
->;
-export const SearchDocument = gql`
-  query search($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      id
-      score
-      terms
-      type
-      ... on SearchResultHub {
-        ...SearchResultHub
-      }
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
-      }
-      ... on SearchResultOpportunity {
-        ...SearchResultOpportunity
-      }
-      ... on SearchResultUser {
-        ...SearchResultUser
-      }
-      ... on SearchResultOrganization {
-        ...SearchResultOrganization
-      }
-    }
-  }
-  ${SearchResultHubFragmentDoc}
-  ${SearchResultChallengeFragmentDoc}
-  ${SearchResultOpportunityFragmentDoc}
-  ${SearchResultUserFragmentDoc}
-  ${SearchResultOrganizationFragmentDoc}
-`;
-
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-export function useSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
-export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
-  return { query: SearchDocument, variables: variables };
-}
-export const UserRolesSearchCardsDocument = gql`
-  query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $userId }) {
-      hubs {
-        id
-        roles
-        challenges {
-          id
-          nameID
-          roles
-        }
-        opportunities {
-          id
-          roles
-        }
-      }
-      organizations {
-        id
-        roles
-      }
-    }
-  }
-`;
-
-/**
- * __useUserRolesSearchCardsQuery__
- *
- * To run a query within a React component, call `useUserRolesSearchCardsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserRolesSearchCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserRolesSearchCardsQuery({
- *   variables: {
- *      userId: // value for 'userId'
- *   },
- * });
- */
-export function useUserRolesSearchCardsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserRolesSearchCardsQuery,
-    SchemaTypes.UserRolesSearchCardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
-    UserRolesSearchCardsDocument,
-    options
-  );
-}
-export function useUserRolesSearchCardsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserRolesSearchCardsQuery,
-    SchemaTypes.UserRolesSearchCardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
-    UserRolesSearchCardsDocument,
-    options
-  );
-}
-export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
-export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
-export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserRolesSearchCardsQuery,
-  SchemaTypes.UserRolesSearchCardsQueryVariables
->;
-export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
-  return { query: UserRolesSearchCardsDocument, variables: variables };
 }

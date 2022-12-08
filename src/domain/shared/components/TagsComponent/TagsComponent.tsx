@@ -36,17 +36,15 @@ const useStyles = makeStyles(theme =>
 
 interface Props {
   tags: string[];
-  tagsFor?: string;
   count?: number;
   className?: any;
   loading?: boolean;
 }
 
-const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading }) => {
+const TagsComponent: FC<Props> = ({ tags, count = 3, className, loading }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const getMoreTagsText = useCallback((count: number) => t('components.tags-component.more', { count }), [t]);
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
   const wrapped = (children: ReactNode) => <div className={styles.tagWrapper}>{children}</div>;
 
@@ -62,7 +60,6 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
           color="primary"
           sx={{ borderColor: 'primary.main' }}
           size="small"
-          icon={<FiberManualRecordIcon fontSize="small" />}
           className={clsx(styles.tagMargin, styles.maxWidth)}
         />
       </Tooltip>
@@ -77,17 +74,13 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
           classes={{
             iconSmall: styles.iconSmall,
           }}
-          label={getMoreTagsText(remainingTags.length)}
-          variant="outlined"
-          color="primary"
-          sx={{ borderColor: 'primary.main' }}
+          label={`+${remainingTags.length}`}
           size="small"
-          icon={<FiberManualRecordIcon />}
           className={styles.tagMargin}
         />
       </Tooltip>
     ),
-    [getMoreTagsText, styles.iconSmall, styles.tagMargin]
+    [styles.iconSmall, styles.tagMargin]
   );
 
   const renderTags = () => {
@@ -102,7 +95,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
     <div className={className}>
       {tags.length === 0 && !loading && (
         <Typography color="neutral.main" variant="subtitle2">
-          {t('components.tags-component.no-tags', { name: tagsFor || 'item' })}
+          {t('components.tags-component.no-tags')}
         </Typography>
       )}
       {loading

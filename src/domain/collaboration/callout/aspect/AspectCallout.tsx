@@ -1,7 +1,10 @@
+import React, { useMemo, useState } from 'react';
+import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import { useNavigate } from 'react-router-dom';
+
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import AspectCard, { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
@@ -13,6 +16,11 @@ import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCall
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import ContributeCard from '../../aspect/AspectCard/ContributeCard';
+import CardExtraInfoSection from '../../aspect/AspectCard/CardExtraInfoSection';
+import CardDetailsSection, { CardDescription, CardTags } from '../../aspect/AspectCard/CardDetailsSection';
+import CardTitleSection from '../../aspect/AspectCard/CardTitleSection';
+import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -42,6 +50,7 @@ const AspectCallout = ({
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
   const handleError = useApolloErrorHandler();
+  const navigate = useNavigate();
 
   const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
     hubNameId: hubNameId || '',
@@ -159,16 +168,38 @@ const AspectCallout = ({
             deps={[hubNameId, challengeNameId, opportunityNameId]}
             {...(canCreate ? { createButtonComponent } : {})}
           >
-            {aspect => (
-              <AspectCard
-                aspect={aspect}
-                hubNameId={hubNameId}
-                challengeNameId={challengeNameId}
-                opportunityNameId={opportunityNameId}
-                loading={!aspect}
-                keepScroll
-              />
-            )}
+            {aspect => {
+              const createdDate = aspect?.createdDate && new Date(aspect!.createdDate);
+              return (
+                <ContributeCard
+                  onClick={() => {
+                    navigate(
+                      buildAspectUrl(aspect!.calloutNameId, aspect!.nameID, {
+                        hubNameId: hubNameId!,
+                        challengeNameId,
+                        opportunityNameId,
+                      })
+                    );
+                  }}
+                  titleComponent={
+                    <CardTitleSection
+                      title={aspect!.displayName}
+                      iconComponent={BallotOutlinedIcon}
+                      createdBy={aspect!.createdBy.displayName}
+                    />
+                  }
+                  contentComponent={
+                    <CardDetailsSection>
+                      <CardDescription description={aspect!.profile!.description} />
+                      <CardTags tags={aspect!.profile!.tagset!.tags} />
+                    </CardDetailsSection>
+                  }
+                  extraInfoComponent={
+                    <CardExtraInfoSection createdDate={createdDate} messageCount={aspect?.comments?.messageCount} />
+                  }
+                />
+              );
+            }}
           </CardsLayout>
         </CardsLayoutScroller>
       </CalloutLayout>

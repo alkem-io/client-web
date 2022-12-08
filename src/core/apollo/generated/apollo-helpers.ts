@@ -614,10 +614,11 @@ export type CollaborationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommentsKeySpecifier = ('authorization' | 'id' | 'messages' | CommentsKeySpecifier)[];
+export type CommentsKeySpecifier = ('authorization' | 'id' | 'messageCount' | 'messages' | CommentsKeySpecifier)[];
 export type CommentsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  messageCount?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
@@ -995,10 +996,17 @@ export type InnovatonPackFieldPolicy = {
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LibraryKeySpecifier = ('authorization' | 'id' | 'innovationPacks' | LibraryKeySpecifier)[];
+export type LibraryKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'innovationPack'
+  | 'innovationPacks'
+  | LibraryKeySpecifier
+)[];
 export type LibraryFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
