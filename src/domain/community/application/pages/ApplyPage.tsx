@@ -11,7 +11,7 @@ import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import Image from '../../../shared/components/Image';
 import { Loading } from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import { useApplicationCommunityQuery } from '../../../../containers/application/useApplicationCommunityQuery';
+import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../contributor/user';

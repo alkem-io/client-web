@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 
 import { useResolvedPath } from 'react-router-dom';
-import UserNotificationsContainer from '../../../../../containers/user/UserNotificationsContainer';
+import UserNotificationsContainer from '../containers/UserNotificationsContainer';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';

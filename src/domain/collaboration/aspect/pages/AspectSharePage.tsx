@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 import { AspectDialogSection } from '../views/AspectDialogSection';
-import AspectDashboardContainer from '../../../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
+import AspectDashboardContainer from '../containers/AspectDashboardContainer/AspectDashboardContainer';
 import AspectDashboardView from '../views/AspectDashboardView';
 
 export interface AspectSharePageProps {

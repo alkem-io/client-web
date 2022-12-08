@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { useHub } from '../../hub/HubContext/useHub';
 import { useChallenge } from '../hooks/useChallenge';
-import ContextTabContainer from '../../../../containers/context/ContextTabContainer';
+import ContextTabContainer from '../../../context/ContextTabContainer/ContextTabContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ChallengeContextView } from '../views/ChallengeContextView';

@@ -83,7 +83,7 @@ type AdminTemplatesSectionProps<
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getTemplateValue?: (template: T) => void;
-  getImportedTemplateValue?: (template: T) => void;
+  getImportedTemplateValue?: (template: Q) => void;
   templateValue?: V | undefined;
   importedTemplateValue?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;

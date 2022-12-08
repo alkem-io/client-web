@@ -6,7 +6,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
 import { useChallenge } from '../hooks/useChallenge';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
-import ChallengePageContainer from '../../../../containers/challenge/ChallengePageContainer';
+import ChallengePageContainer from '../containers/ChallengePageContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ChallengeOpportunitiesView } from '../views/ChallengeOpportunitiesView';

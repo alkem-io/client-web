@@ -1,5 +1,5 @@
 import { Box, Button, Grid } from '@mui/material';
-import React, { ComponentType } from 'react';
+import React, { ComponentType, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -18,7 +18,7 @@ export interface ImportTemplatesDialogPreviewStepProps<
   template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
-  getImportedTemplateValue?: (template: T) => void;
+  getImportedTemplateValue?: (template: Q) => void;
   importedTemplateValue?: V | undefined;
 }
 
@@ -45,6 +45,11 @@ const ImportTemplatesDialogPreviewStep = <
     doImportTemplate();
   };
 
+  const getTemplateValue = useCallback(
+    () => (getImportedTemplateValue ? getImportedTemplateValue(template) : undefined),
+    [getImportedTemplateValue, template]
+  );
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -67,7 +72,7 @@ const ImportTemplatesDialogPreviewStep = <
       <Grid item xs={12} md={9}>
         <TemplatePreview
           template={template}
-          getTemplateValue={getImportedTemplateValue}
+          getTemplateValue={getTemplateValue}
           templateValue={importedTemplateValue}
         />
       </Grid>

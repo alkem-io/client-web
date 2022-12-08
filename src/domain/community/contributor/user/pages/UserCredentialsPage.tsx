@@ -10,7 +10,7 @@ import OfferAlkemioCommunityCredentialDialog from '../../../../../common/compone
 import RequestCredentialDialog from '../../../../../common/components/composite/dialogs/CredentialDialog.tsx/RequestCredentialDialog';
 import QRCodeDialog from '../../../../../common/components/composite/dialogs/QRCodeDialog/QRCodeDialog';
 import { Loading } from '../../../../../common/components/core';
-import UserCredentialsContainer from '../../../../../containers/user/UserCredentialsContainer';
+import UserCredentialsContainer from '../containers/UserCredentialsContainer';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {

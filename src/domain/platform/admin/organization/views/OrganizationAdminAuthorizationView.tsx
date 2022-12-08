@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '../../components/Community/EditMembersUsers';
-import OrganizationMembers from '../../../../../containers/organization/OrganizationAssociates';
+import OrganizationAssociatesContainer from '../../../../community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
 import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
 import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../../common/components/core/Loading/Loading';
@@ -25,7 +25,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
         `common.enums.authorization-credentials.${AuthorizationCredential.OrganizationAdmin}.name` as const
       )}
     >
-      <OrganizationMembers
+      <OrganizationAssociatesContainer
         entities={{
           organizationId,
           parentAssociates: orgAssociates,
@@ -47,7 +47,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
             onSearchTermChange={actions.setSearchTerm}
           />
         )}
-      </OrganizationMembers>
+      </OrganizationAssociatesContainer>
     </DashboardGenericSection>
   );
 };

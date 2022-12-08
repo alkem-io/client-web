@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { HubContextSection } from './HubContextSection';
-import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import {
   ContextTabFragment,
   Tagset,

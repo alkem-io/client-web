@@ -15,7 +15,7 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
-import { getAllCanvasesOnCallouts } from '../../../../containers/canvas/getCanvasCallout';
+import { getAllCanvasesOnCallouts } from '../../../collaboration/canvas/containers/getCanvasCallout';
 import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
