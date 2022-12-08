@@ -45,7 +45,7 @@ const GridDemo = () => {
         </PageContentColumn>
         <PageContentColumn columns={8}>
           <PageContentBlock>
-            <PageContentBlockHeaderWithDialogAction title="Block with Dialog Action" />
+            <PageContentBlockHeaderWithDialogAction title="Block with Dialog Action" onDialogOpen={() => {}} />
             <Text>{loremIpsum}</Text>
           </PageContentBlock>
           <PageContentBlock disableGap disablePadding>

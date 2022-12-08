@@ -3,7 +3,7 @@ import { OpenInFull } from '@mui/icons-material'; // TODO replace with custom ic
 import PageContentBlockHeader, { PageContentBlockHeaderProps } from './PageContentBlockHeader';
 
 interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHeaderProps {
-  onDialogOpen?: () => void;
+  onDialogOpen: () => void;
 }
 
 const PageContentBlockHeaderWithDialogAction = ({
