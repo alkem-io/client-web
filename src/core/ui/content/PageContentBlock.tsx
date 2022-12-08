@@ -1,37 +1,28 @@
-import { BoxProps, Paper, PaperProps } from '@mui/material';
-import { GRID_COLUMNS_BLOCK_WITH_CARDS } from '../grid/constants';
-import GridContainer from '../grid/GridContainer';
-import { useColumns } from '../grid/GridContext';
-import GridProvider from '../grid/GridProvider';
-import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
+import { BoxProps, Paper, PaperProps, SxProps } from '@mui/material';
+import { GUTTER_MUI } from '../grid/constants';
 
 interface PageContentBlockProps {
   accent?: boolean;
-  cards?: boolean;
+  disablePadding?: boolean;
+  disableGap?: boolean;
 }
 
 const PageContentBlock = ({
   accent = false,
-  cards = false,
-  children,
+  disablePadding = false,
+  disableGap = false,
   ...props
 }: BoxProps & PaperProps & PageContentBlockProps) => {
-  const gridColumns = useColumns();
-
-  const sx = {
+  const sx: SxProps = {
     color: accent ? 'background.default' : undefined,
     backgroundColor: accent ? 'primary.main' : undefined,
+    padding: disablePadding ? undefined : GUTTER_MUI,
+    display: disableGap ? undefined : 'flex',
+    flexDirection: disableGap ? undefined : 'column',
+    gap: disableGap ? undefined : GUTTER_MUI,
   };
 
-  const breakpoint = useCurrentBreakpoint();
-
-  const columns = cards ? (breakpoint === 'xs' ? 1 : GRID_COLUMNS_BLOCK_WITH_CARDS) : gridColumns;
-
-  return (
-    <GridContainer component={Paper} sx={sx} {...props}>
-      <GridProvider columns={columns}>{children}</GridProvider>
-    </GridContainer>
-  );
+  return <Paper sx={sx} {...props} />;
 };
 
 export default PageContentBlock;
