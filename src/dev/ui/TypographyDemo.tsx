@@ -10,7 +10,7 @@ import {
   Text,
   TextBlock,
 } from '../../core/ui/typography';
-import { gutterMui } from '../../core/ui/grid/constants';
+import { GUTTER_MUI } from '../../core/ui/grid/constants';
 import Main from '../../common/components/composite/layout/App/Main';
 import WrapperMarkdown from '../../common/components/core/WrapperMarkdown';
 
@@ -19,13 +19,13 @@ const loremIpsum =
 
 const TypographyDemo = () => {
   return (
-    <Main sx={{ gap: gutterMui, my: gutterMui * 2 }}>
+    <Main sx={{ gap: GUTTER_MUI, my: GUTTER_MUI * 2 }}>
       <PlatformTitle>Platform Title</PlatformTitle>
       <PageTitle>Page Title</PageTitle>
       <BlockTitle>Block Title</BlockTitle>
       <BlockSectionTitle>Section title inside a block</BlockSectionTitle>
       <Tagline>Tagline</Tagline>
-      <Box display="flex" gap={gutterMui}>
+      <Box display="flex" gap={GUTTER_MUI}>
         <TextBlock>
           <Text>Regular body text</Text>
           <Text>{loremIpsum}</Text>
@@ -35,12 +35,12 @@ const TypographyDemo = () => {
           <CardText>{loremIpsum}</CardText>
         </TextBlock>
       </Box>
-      <Box display="flex" gap={gutterMui}>
+      <Box display="flex" gap={GUTTER_MUI}>
         <Button>Buttons</Button>
         <Button variant="contained">Buttons</Button>
       </Box>
       <Caption>Captions, descriptions, automatically generated text</Caption>
-      <Box display="flex" gap={gutterMui}>
+      <Box display="flex" gap={GUTTER_MUI}>
         <TextBlock>
           <WrapperMarkdown>{`Markdown text with **strong** and *em*.\n\n${loremIpsum}`}</WrapperMarkdown>
         </TextBlock>

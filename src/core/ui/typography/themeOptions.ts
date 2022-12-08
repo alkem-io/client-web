@@ -1,5 +1,5 @@
 import { TypographyOptions } from '@mui/material/styles/createTypography';
-import { gutter } from '../grid/constants';
+import { GUTTER_PX } from '../grid/constants';
 import { rem } from './utils';
 
 export const fontFamilyMontserrat = '"Montserrat", sans-serif';
@@ -9,8 +9,8 @@ const fontWeightRegular = 400;
 const fontWeightMedium = 500;
 const fontWeightBold = 700;
 
-const lineHeightSingle = rem(gutter);
-const lineHeightDouble = rem(gutter * 2);
+const lineHeightSingle = rem(GUTTER_PX);
+const lineHeightDouble = rem(GUTTER_PX * 2);
 
 export const typographyOptions: TypographyOptions = {
   h1: {
