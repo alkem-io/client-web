@@ -1,10 +1,13 @@
 import { IconButton } from '@mui/material';
-import { OpenInFull } from '@mui/icons-material'; // TODO replace with custom icon
+import { Theme } from '@mui/material/styles';
+import { ReactComponent as ExpandContentIcon } from './ExpandContentIcon.svg';
 import PageContentBlockHeader, { PageContentBlockHeaderProps } from './PageContentBlockHeader';
 
 interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHeaderProps {
   onDialogOpen: () => void;
 }
+
+const iconSize = (theme: Theme) => theme.spacing(2);
 
 const PageContentBlockHeaderWithDialogAction = ({
   onDialogOpen,
@@ -12,8 +15,8 @@ const PageContentBlockHeaderWithDialogAction = ({
   ...headerProps
 }: PageContentBlockHeaderWithDialogActionProps) => {
   const dialogAction = (
-    <IconButton onClick={onDialogOpen}>
-      <OpenInFull />
+    <IconButton onClick={onDialogOpen} sx={{ svg: { width: iconSize, height: iconSize } }}>
+      <ExpandContentIcon />
     </IconButton>
   );
 
