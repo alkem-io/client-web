@@ -4,7 +4,7 @@ import PageContentBlock from '../../core/ui/content/PageContentBlock';
 import GridItem, { GridItemProps } from '../../core/ui/grid/GridItem';
 import { Box } from '@mui/material';
 import { GUTTER_MUI, GUTTER_PX } from '../../core/ui/grid/constants';
-import { BlockTitle, PageTitle } from '../../core/ui/typography';
+import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
 
 const DummyContent = (props: GridItemProps) => (
   <GridItem {...props}>
@@ -25,7 +25,7 @@ const GridDemo = () => {
         <PageContentColumn columns={4}>
           <PageContentBlock accent>
             <BlockTitle>Block Title</BlockTitle>
-            {loremIpsum}
+            <Text>{loremIpsum}</Text>
           </PageContentBlock>
           <PageContentBlock>
             <DummyContent columns={2} />
