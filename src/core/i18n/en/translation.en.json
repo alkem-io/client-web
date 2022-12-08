@@ -1441,7 +1441,14 @@
     "about": {
       "title": "Reimagining collaboration",
       "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboration.",
-      "powered-by": "Powered by {{name}} v{{version}}"
+      "powered-by": "Powered by {{name}} v{{version}}",
+      "vision": "What is this community about?",
+      "background": "Background",
+      "impact": "Impact",
+      "who": "Who should be involved",
+      "updates": "News",
+      "references": "References",
+      "statistics": "Statistics"
     },
     "error": {
       "title": "Ooops!",

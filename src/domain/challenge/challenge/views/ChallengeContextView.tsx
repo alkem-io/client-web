@@ -48,7 +48,7 @@ interface ChallengeContextViewProps
   extends ViewProps<ChallengeContextEntities, ChallengeContextActions, ChallengeContextState, ChallengeContextOptions> {
   activity: MetricsItemFragment[] | undefined;
 }
-
+// todo delete
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, entities, state, options }) => {
   const { t, i18n } = useTranslation();
   const { canCreateCommunityContextReview } = options;
