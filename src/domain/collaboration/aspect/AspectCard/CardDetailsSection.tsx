@@ -20,10 +20,10 @@ export const CardDescription = ({ description = '' }: { description?: string }) 
 };
 
 export interface CardTagsProps {
-  tags: string[];
+  tags: string[] | undefined;
 }
 
-export const CardTags = ({ tags }: CardTagsProps) => {
+export const CardTags = ({ tags = [] }: CardTagsProps) => {
   return (
     <Box
       sx={{

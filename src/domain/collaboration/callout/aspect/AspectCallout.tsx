@@ -169,29 +169,31 @@ const AspectCallout = ({
             {...(canCreate ? { createButtonComponent } : {})}
           >
             {aspect => {
-              const createdDate = aspect?.createdDate && new Date(aspect!.createdDate);
+              const createdDate = aspect?.createdDate && new Date(aspect?.createdDate);
               return (
                 <ContributeCard
                   onClick={() => {
-                    navigate(
-                      buildAspectUrl(aspect!.calloutNameId, aspect!.nameID, {
-                        hubNameId: hubNameId!,
-                        challengeNameId,
-                        opportunityNameId,
-                      })
-                    );
+                    if (aspect?.calloutNameId) {
+                      navigate(
+                        buildAspectUrl(aspect?.calloutNameId, aspect?.nameID, {
+                          hubNameId: hubNameId!,
+                          challengeNameId,
+                          opportunityNameId,
+                        })
+                      );
+                    }
                   }}
                   titleComponent={
                     <CardTitleSection
-                      title={aspect!.displayName}
+                      title={aspect?.displayName}
                       iconComponent={BallotOutlinedIcon}
-                      createdBy={aspect!.createdBy.displayName}
+                      createdBy={aspect?.createdBy.displayName}
                     />
                   }
                   contentComponent={
                     <CardDetailsSection>
-                      <CardDescription description={aspect!.profile!.description} />
-                      <CardTags tags={aspect!.profile!.tagset!.tags} />
+                      <CardDescription description={aspect?.profile!.description} />
+                      <CardTags tags={aspect?.profile?.tagset?.tags} />
                     </CardDetailsSection>
                   }
                   extraInfoComponent={
