@@ -48,14 +48,14 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   organizationNameId?: string;
   challengesCount: number | undefined;
   discussions: Discussion[];
-  organization?: any;
+  organization?: unknown;
   challenges: ChallengeCardFragment[];
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
   canvases: CanvasCard[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
-  community?: any;
+  community?: unknown;
   loading: boolean;
   isMember?: boolean;
   communityReadAccess?: boolean;

@@ -40,7 +40,7 @@ const TitleBar = styled(Box)(() => ({
 export interface DialogTitleWithIconProps extends DialogTitleProps {
   icon?: React.ReactNode;
   subtitle?: React.ReactNode;
-  onClose?: (e: Event) => void;
+  onClose?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const DialogTitleWithIcon = (props: DialogTitleWithIconProps) => {
@@ -54,7 +54,7 @@ const DialogTitleWithIcon = (props: DialogTitleWithIconProps) => {
           {subtitle ? <Typography variant={'h6'}>{subtitle}</Typography> : null}
         </TitleBar>
         {onClose ? (
-          <IconButton aria-label="close" onClick={(e: any) => onClose(e)} size="medium">
+          <IconButton aria-label="close" onClick={onClose} size="medium">
             <CloseIcon />
           </IconButton>
         ) : null}

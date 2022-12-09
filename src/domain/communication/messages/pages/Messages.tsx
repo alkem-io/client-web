@@ -10,6 +10,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { makeStyles } from '@mui/styles';
 import { FEATURE_COMMUNICATIONS } from '../../../platform/config/features.constants';
 import { PageProps } from '../../../shared/types/PageProps';
+import Timeout = NodeJS.Timeout;
 
 const date = new Date();
 const closure = (date, offset) => {
@@ -130,7 +131,7 @@ export const DummyChat: FC = () => {
 
   useEffect(() => {
     const [message, ...rest] = messagesLeft;
-    let timeout: any = undefined;
+    let timeout: Timeout;
 
     if (message) {
       setShowLoader({ left: message.left, right: !message.left });

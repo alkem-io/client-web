@@ -96,7 +96,7 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
   const [showFormAlert, setShowFormAlert] = useState(false);
 
   const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    const button = getActiveElement() as any;
+    const button = getActiveElement() as HTMLButtonElement;
     // do ckeck if only submitting password method
     if (button && button.name === 'method' && button.value === 'password') {
       if (!e.currentTarget.checkValidity()) {

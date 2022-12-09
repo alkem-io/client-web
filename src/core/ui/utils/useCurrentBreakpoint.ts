@@ -16,6 +16,8 @@ const useCurrentBreakpoint = () => {
     xs,
   };
 
+  // is already handled in journey-refresh
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const current: keyof typeof breakpoints = Object.keys(breakpoints).find(key => breakpoints[key]) || ('xl' as any);
 
   return current;

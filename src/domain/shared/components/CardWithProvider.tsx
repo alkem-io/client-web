@@ -121,7 +121,7 @@ const ActionButtons = styled(Box)(({ theme }) => ({
 export interface CardWithProviderProps extends TitleBarProps {
   imageUrl?: string;
   defaultImage?: React.ReactNode;
-  onClick?: (e: MouseEvent) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   actionButtons?: React.ReactNode[];
   extraInformation?: React.ReactNode;
 }
@@ -142,7 +142,7 @@ const CardWithProvider = (props: CardWithProviderProps) => {
         alignItems: 'stretch',
         cursor: onClick ? 'pointer' : 'default',
       }}
-      onClick={e => (onClick ? onClick(e as any) : null)}
+      onClick={onClick}
     >
       <TitleBar {...props} />
       <ImageWrapper>{imageUrl ? <ImagePreview src={imageUrl} /> : defaultImage}</ImageWrapper>
