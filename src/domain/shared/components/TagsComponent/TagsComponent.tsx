@@ -63,9 +63,11 @@ const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeig
 
   if (tags.length === 0) {
     return (
-      <Typography color="neutral.main" variant="subtitle2">
-        {t('components.tags-component.no-tags')}
-      </Typography>
+      <Box paddingX={1.5} paddingY={1}>
+        <Typography color="neutral.main" variant="subtitle2">
+          {t('components.tags-component.no-tags')}
+        </Typography>
+      </Box>
     );
   }
 
