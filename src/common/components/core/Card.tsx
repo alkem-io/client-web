@@ -304,7 +304,7 @@ export interface CardProps extends Record<string, unknown> {
     name: string;
   };
   actions?: JSX.Element[];
-  onClick?: () => any;
+  onClick?: () => void;
 }
 
 const useCardStyles = makeStyles<Theme, ClassProps>(theme => ({
