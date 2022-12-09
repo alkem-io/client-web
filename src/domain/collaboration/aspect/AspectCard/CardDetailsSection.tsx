@@ -5,10 +5,12 @@ import TagsComponent from '../../../shared/components/TagsComponent/TagsComponen
 import { gutters } from '../../../../core/ui/grid/utils';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 
+const DESCRIPTION_TEXT_MAX_LINES = 5;
+
 export const CardDescription = ({ description = '' }: { description?: string }) => {
   return (
-    <Box height={gutters(6)} paddingX={1.5} paddingY={1}>
-      <Text maxHeight="100%" overflow="hidden" sx={webkitLineClamp}>
+    <Box height={gutters(DESCRIPTION_TEXT_MAX_LINES + 1)} paddingX={1.5} paddingY={1}>
+      <Text maxHeight="100%" overflow="hidden" sx={webkitLineClamp(DESCRIPTION_TEXT_MAX_LINES)}>
         {description}
       </Text>
     </Box>

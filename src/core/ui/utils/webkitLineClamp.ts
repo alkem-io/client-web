@@ -1,9 +1,9 @@
 import { SxProps } from '@mui/material';
 
-const webkitLineClamp: SxProps = {
+const webkitLineClamp = (lines: number): SxProps => ({
   display: '-webkit-box',
-  '-webkit-line-clamp': '5',
+  '-webkit-line-clamp': `${lines}`,
   '-webkit-box-orient': 'vertical',
-};
+});
 
 export default webkitLineClamp;
