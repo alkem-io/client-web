@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AspectForm, { AspectFormInput, AspectFormOutput } from '../AspectForm/AspectForm';
-import useAspectSettings from '../../../../containers/aspect/AspectSettings/useAspectSettings';
+import useAspectSettings from '../containers/AspectSettings/useAspectSettings';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';

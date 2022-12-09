@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import OrganizationPageContainer from '../../../../../containers/organization/OrganizationPageContainer';
+import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';

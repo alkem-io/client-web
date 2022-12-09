@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import { OpportunityPageContainer } from '../../../../containers';
+import OpportunityPageContainer from '../containers/OpportunityPageContainer';
 import { DiscussionsProvider } from '../../../communication/discussion/providers/DiscussionsProvider';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';

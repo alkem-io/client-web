@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   OrganizationContainerEntities,
   OrganizationContainerState,
-} from '../../../../../containers/organization/OrganizationPageContainer';
+} from '../OrganizationPageContainer/OrganizationPageContainer';
 import { OrganizationVerificationEnum } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildAdminOrganizationUrl } from '../../../../../common/utils/urlBuilders';
 import {

@@ -1,14 +1,17 @@
 import { useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Breakpoint, useTheme } from '@mui/material/styles';
+import { findKey } from 'lodash';
 
-const useCurrentBreakpoint = () => {
+const useCurrentBreakpoint = (): Breakpoint => {
   const theme = useTheme();
+
   const xl = useMediaQuery(theme.breakpoints.only('xl'));
   const lg = useMediaQuery(theme.breakpoints.only('lg'));
   const md = useMediaQuery(theme.breakpoints.only('md'));
   const sm = useMediaQuery(theme.breakpoints.only('sm'));
   const xs = useMediaQuery(theme.breakpoints.only('xs'));
-  const breakpoints = {
+
+  const breakpoints: Record<Breakpoint, boolean> = {
     xl,
     lg,
     md,
@@ -16,9 +19,7 @@ const useCurrentBreakpoint = () => {
     xs,
   };
 
-  const current: keyof typeof breakpoints = Object.keys(breakpoints).find(key => breakpoints[key]) || ('xl' as any);
-
-  return current;
+  return (findKey(breakpoints) as Breakpoint) ?? 'xl';
 };
 
 export default useCurrentBreakpoint;
