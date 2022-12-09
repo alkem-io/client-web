@@ -130,7 +130,7 @@ export const DummyChat: FC = () => {
 
   useEffect(() => {
     const [message, ...rest] = messagesLeft;
-    let timeout: any = undefined;
+    let timeout: NodeJS.Timeout;
 
     if (message) {
       setShowLoader({ left: message.left, right: !message.left });
