@@ -159,7 +159,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const onProjectTransition = useCallback(
-    (project?: any) => {
+    (project?: { nameID: string }) => {
       navigate(project?.nameID ?? 'new');
     },
     [navigate]

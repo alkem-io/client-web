@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { To, useLocation, useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
 import { LinkWithState } from '../types/LinkWithState';
 
@@ -27,7 +27,7 @@ const useBackToParentPage = (parentPageUrl: string, { keepScroll }: Options = {}
   const backToParentPage = useCallback(() => {
     const { parentPage } = (location.state ?? {}) as { [LOCATION_STATE_PARAM_PARENT_PAGE]?: unknown };
     if (parentPage) {
-      navigate(-1 as any, { state: { keepScroll } });
+      navigate(-1 as To, { state: { keepScroll } });
     } else {
       navigate(parentPageUrl, { replace: true, state: { keepScroll } });
     }

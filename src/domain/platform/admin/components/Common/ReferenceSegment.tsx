@@ -41,10 +41,10 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   const [removing, setRemoving] = useState<number | undefined>();
   const [adding, setAdding] = useState(false);
 
-  const handleAdd = (push: (obj: any) => void) => {
+  const handleAdd = (push: (obj: unknown) => void) => {
     if (onAdd) {
       setAdding(true);
-      return onAdd((obj?: any) => {
+      return onAdd((obj?: unknown) => {
         if (obj) push(obj);
         setAdding(false);
       });

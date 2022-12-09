@@ -38,7 +38,7 @@ interface Props {
   tags: string[];
   tagsFor?: string;
   count?: number;
-  className?: any;
+  className?: string;
   loading?: boolean;
 }
 
