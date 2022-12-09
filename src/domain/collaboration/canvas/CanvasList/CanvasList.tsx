@@ -1,5 +1,6 @@
 import { List, ListProps } from '@mui/material';
 import React, { FC } from 'react';
+import { times } from 'lodash';
 import CanvasListItem, { CanvasListItemCanvas, CanvasListItemSkeleton } from './CanvasListItem';
 import { Identifiable } from '../../../shared/types/Identifiable';
 
@@ -26,7 +27,7 @@ export const CanvasList: FC<CanvasListProps> = ({ entities, actions, options, st
 
   return (
     <List>
-      {loading && Array.apply(null, { length: 3 } as any).map((_, i) => <CanvasListItemSkeleton key={i} />)}
+      {loading && times(3, i => <CanvasListItemSkeleton key={i} />)}
       {!loading &&
         canvases.map(c => (
           <CanvasListItem

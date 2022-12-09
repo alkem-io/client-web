@@ -23,9 +23,9 @@ export interface TemplateInfoSubmittedValues {
   info: CreateTemplateInfoInput;
 }
 
-interface TemplateFormProps<Values extends {}> {
+interface TemplateFormProps<Values extends TemplateInfoValues> {
   title: ReactNode;
-  initialValues: Partial<Values & TemplateInfoValues>;
+  initialValues: Partial<Values>;
   visual?: Visual;
   onSubmit: (values: Values & TemplateInfoSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<Values & TemplateInfoValues>) => ReactNode);
@@ -33,7 +33,7 @@ interface TemplateFormProps<Values extends {}> {
   validator: yup.ObjectSchemaDefinition<Partial<Values>>;
 }
 
-const TemplateForm = <Values extends {}>({
+const TemplateForm = <Values extends TemplateInfoValues>({
   title,
   initialValues,
   visual,
@@ -54,7 +54,7 @@ const TemplateForm = <Values extends {}>({
           tags,
           description,
         },
-      } as any);
+      } as Values & TemplateInfoSubmittedValues);
     },
     [onSubmit]
   );

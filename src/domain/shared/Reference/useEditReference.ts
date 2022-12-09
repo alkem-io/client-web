@@ -9,6 +9,8 @@ import {
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 
 export type PushFunc = (success: boolean) => void;
+// TODO this hook needs refactoring - something weird is going on with types here
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
   cardProfileId?: string;
