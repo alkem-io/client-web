@@ -4,7 +4,7 @@ import AspectProvider from '../../aspect/context/AspectProvider';
 import AspectRoute from '../../aspect/views/AspectRoute';
 import CanvasRoute from '../../canvas/views/CanvasRoute';
 import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
-import { nameOfUrl } from '../../../../core/routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/urlParams';
 
 export interface CalloutRouteProps {
   parentPagePath: string;

@@ -1,5 +1,5 @@
-import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
-import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
+import { exportToBlob, serializeAsJSON } from '@alkemio/excalidraw';
+import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,23 +25,24 @@ import { makeStyles } from '@mui/styles';
 import { isEqual } from 'lodash';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CanvasWithoutValue } from '../../../../models/entities/canvas';
-import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+import { Canvas, CanvasCheckoutStateEnum } from '../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../../common/components/core';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import CanvasListItemState from '../CanvasList/CanvasListItemState';
-import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
+import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
-import UrlParams from '../../../../core/routing/url-params';
+import UrlParams from '../../../../core/routing/urlParams';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+
+type CanvasWithoutValue = Omit<Canvas, 'value'>;
 
 interface CanvasDialogProps {
   entities: {
-    canvas?: CanvasWithoutValue & { value: Canvas['value'] };
+    canvas?: Canvas;
   };
   actions: {
     onCancel: () => void;

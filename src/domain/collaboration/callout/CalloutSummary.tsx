@@ -2,7 +2,7 @@ import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled, Typography, Box } from '@mui/material';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
-import { CalloutType } from '../../../models/graphql-schema';
+import { CalloutType } from '../../../core/apollo/generated/graphql-schema';
 
 export type CalloutSummaryFields = {
   description: string;

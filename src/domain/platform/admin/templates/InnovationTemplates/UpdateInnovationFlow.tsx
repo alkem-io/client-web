@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { Button, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 import SelectInnovationFlowDialog, {
   LifecycleTemplate,

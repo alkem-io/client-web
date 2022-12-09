@@ -6,12 +6,12 @@ import { Form, Formik, FormikProps } from 'formik';
 import { DialogActions, DialogContent, Typography } from '@mui/material';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { TagsetField } from '../components/Common/TagsetSegment';
-import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
+import { CreateTemplateInfoInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 export interface TemplateInfoValues {
   title: string;

@@ -104,6 +104,10 @@ interface TypographyProps extends Record<string, unknown> {
   clamp?: string | number;
 }
 
+/**
+ * @deprecated - use the exports of src/core/ui/typography
+ * TODO remove this component after the migration to the new design is complete
+ */
 const WrapperTypography: FC<TypographyProps> = ({
   variant = 'body',
   color = 'neutral',

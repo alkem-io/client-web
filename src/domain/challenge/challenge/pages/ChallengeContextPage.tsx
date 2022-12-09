@@ -1,10 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { useChallenge, useHub, useUpdateNavigation } from '../../../../hooks';
-import ContextTabContainer from '../../../../containers/context/ContextTabContainer';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useHub } from '../../hub/HubContext/useHub';
+import { useChallenge } from '../hooks/useChallenge';
+import ContextTabContainer from '../../../context/ContextTabContainer/ContextTabContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ChallengeContextView } from '../views/ChallengeContextView';
-import { PageProps } from '../../../../pages/common';
+import { PageProps } from '../../../shared/types/PageProps';
 
 export interface ChallengeContextPageProps extends PageProps {}
 

@@ -1,19 +1,23 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useApolloErrorHandler, useDeleteUserGroup, useNotification, useUpdateNavigation } from '../../../../../hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useDeleteUserGroup } from './useDeleteUserGroup';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
-} from '../../../../../hooks/generated/graphql';
-import { AuthorizationCredential, User, UserGroup } from '../../../../../models/graphql-schema';
-import { PageProps } from '../../../../../pages';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential, User, UserGroup } from '../../../../../core/apollo/generated/graphql-schema';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { logger } from '../../../../../services/logging/winston/logger';
-import GroupForm from './GroupForm';
+import GroupForm from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '../../../../../common/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
+
 interface GroupPageProps extends PageProps {
   group?: UserGroup;
 }

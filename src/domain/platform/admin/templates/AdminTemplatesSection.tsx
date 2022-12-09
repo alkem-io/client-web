@@ -3,11 +3,10 @@ import { Box, Button, DialogProps } from '@mui/material';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TemplateInfoFragment } from '../../../../models/graphql-schema';
+import { TemplateInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
-import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -17,6 +16,8 @@ import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 export interface Template extends Identifiable {
   info: TemplateInfoFragment;
@@ -53,11 +54,11 @@ export interface MutationHook<Variables, MutationResult> {
   (baseOptions?: Apollo.MutationHookOptions<MutationResult, Variables>): MutationTuple<MutationResult, Variables>;
 }
 
-type AdminAspectTemplatesSectionProps<
+type AdminTemplatesSectionProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends {},
+  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -82,7 +83,7 @@ type AdminAspectTemplatesSectionProps<
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getTemplateValue?: (template: T) => void;
-  getImportedTemplateValue?: (template: T) => void;
+  getImportedTemplateValue?: (template: Q) => void;
   templateValue?: V | undefined;
   importedTemplateValue?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
@@ -96,7 +97,7 @@ const AdminTemplatesSection = <
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends {},
+  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -123,7 +124,7 @@ const AdminTemplatesSection = <
   editTemplateDialogComponent,
   canImportTemplates,
   ...dialogProps
-}: AdminAspectTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+}: AdminTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
@@ -190,8 +191,8 @@ const AdminTemplatesSection = <
     const { id, info, ...templateData } = template;
     const { id: infoId, ...infoData } = info;
     const values: SubmittedValues = {
-      ...(templateData as any),
-      ...(value as any),
+      ...(templateData as SubmittedValues),
+      ...value,
       info: {
         title: infoData.title,
         tags: infoData.tagset?.tags,

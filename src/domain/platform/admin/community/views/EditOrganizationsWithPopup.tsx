@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { OrganizationDetailsFragment } from '../../../../../models/graphql-schema';
+import { OrganizationDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import EditMembers, { AvailableMembers } from '../../components/Community/EditMembers';
 import { Avatar, Box, Button, Dialog, DialogContent, TableCell } from '@mui/material';
 import Heading from '../../../../shared/components/Heading';

@@ -4,7 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import React, { useMemo } from 'react';
 import { DialogProps } from '@mui/material';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import { CanvasDetailsFragment } from '../../../../../models/graphql-schema';
+import { CanvasDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CreateCanvasTemplateDialogProps {
   open: boolean;

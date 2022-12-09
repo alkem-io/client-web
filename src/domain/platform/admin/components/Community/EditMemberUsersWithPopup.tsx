@@ -6,7 +6,7 @@ import { EditMemberUsersProps } from './EditMembersUsers';
 import { useTranslation } from 'react-i18next';
 import Heading from '../../../../shared/components/Heading';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import { AvailableUserFragment } from '../../../../../models/graphql-schema';
+import { AvailableUserFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface EditMemberUsersWithPopupProps extends EditMemberUsersProps {
   availableMembers: AvailableUserFragment[];

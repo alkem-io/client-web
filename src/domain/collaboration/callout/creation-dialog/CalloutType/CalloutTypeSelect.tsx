@@ -5,7 +5,7 @@ import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import ModeOutlinedIcon from '@mui/icons-material/ModeOutlined';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
-import { CalloutType } from '../../../../../models/graphql-schema';
+import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import RadioButtonGroup from '../../../../shared/components/RadioButtons/RadioButtonGroup';
 import RadioButton from '../../../../shared/components/RadioButtons/RadioButton';
 

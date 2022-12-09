@@ -5,7 +5,7 @@ import UpdatesContainer from './Components/UpdatesContainer';
 import TextContainer from './Components/TextContainer';
 import CloseButton from './Components/CloseButton';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../config/useConfig';
 
 interface ReleaseNotificationData {
   prevClientVersion: string;

@@ -1,7 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
-import { useChallenge, useOpportunity } from '../../../../../hooks';
-import { PageProps, Error404 } from '../../../../../pages';
+import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../../../challenge/opportunity/hooks/useOpportunity';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OpportunityCommunityAdminPage from '../OpportunityCommunityAdminPage';
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '../pages/OpportunityContext/OpportunityContextPage';

@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { LoadingButton } from '@mui/lab';
 import { CampaignOutlined } from '@mui/icons-material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
-import { CalloutVisibility } from '../../../../../models/graphql-schema';
+import { CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutVisibilityChangeDialogProps {
   open: boolean;

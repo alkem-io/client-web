@@ -1,13 +1,16 @@
 import { useMemo } from 'react';
 import { ActivityLogResultType } from '../ActivityComponent';
-import { ActivityCreatedDocument, useActivityLogOnCollaborationQuery } from '../../../../../hooks/generated/graphql';
-import { LATEST_ACTIVITIES_COUNT } from '../../../../../models/constants/common.constants';
+import {
+  ActivityCreatedDocument,
+  useActivityLogOnCollaborationQuery,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { LATEST_ACTIVITIES_COUNT } from '../constants';
 import createUseSubscriptionToSubEntityHook from '../../../subscriptions/useSubscriptionToSubEntity';
 import {
   ActivityCreatedSubscription,
   ActivityCreatedSubscriptionVariables,
   ActivityLogOnCollaborationFragment,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 
 const useActivityOnCollaborationSubscription = (collaborationID: string) =>
   createUseSubscriptionToSubEntityHook<
@@ -22,7 +25,8 @@ const useActivityOnCollaborationSubscription = (collaborationID: string) =>
         return;
       }
 
-      subEntity.push(activityCreated.activity);
+      subEntity.unshift(activityCreated.activity);
+      subEntity.splice(LATEST_ACTIVITIES_COUNT, 1);
     },
   });
 

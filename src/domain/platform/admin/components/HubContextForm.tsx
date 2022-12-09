@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Location, EmptyLocation } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
-import { Context, Reference, Tagset } from '../../../../models/graphql-schema';
+import { Context, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import { nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';

@@ -3,9 +3,9 @@ import {
   useDeleteCalloutMutation,
   useUpdateCalloutMutation,
   useUpdateCalloutVisibilityMutation,
-} from '../../../../../hooks/generated/graphql';
-import { Callout, CalloutVisibility } from '../../../../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../../../../hooks';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 

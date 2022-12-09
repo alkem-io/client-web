@@ -9,11 +9,8 @@ import {
   entityValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import {
-  ChallengeContainerEntities,
-  ChallengeContainerState,
-} from '../../../../containers/challenge/ChallengePageContainer';
-import { Opportunity } from '../../../../models/graphql-schema';
+import { ChallengeContainerEntities, ChallengeContainerState } from '../containers/ChallengePageContainer';
+import { Opportunity } from '../../../../core/apollo/generated/graphql-schema';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { useChallenge } from '../hooks/useChallenge';
 

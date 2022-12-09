@@ -1,4 +1,4 @@
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../../../domain/platform/config/useConfig';
 import { Box, BoxProps } from '@mui/material';
 import { Trans } from 'react-i18next';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';

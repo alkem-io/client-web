@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import ContextTabContainer from '../../../../containers/context/ContextTabContainer';
-import { useUpdateNavigation } from '../../../../hooks';
-import { PageProps } from '../../../../pages';
+import ContextTabContainer from '../../../context/ContextTabContainer/ContextTabContainer';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { PageProps } from '../../../shared/types/PageProps';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useHub } from '../HubContext/useHub';
 import HubPageLayout from '../layout/HubPageLayout';

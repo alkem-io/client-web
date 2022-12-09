@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import {
   useCanvasTemplatesOnCalloutCreationQuery,
   useCanvasTemplateValueQuery,
-} from '../../../../../hooks/generated/graphql';
-import { CalloutType } from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import CanvasPreview from '../../../canvas/CanvasPreview/CanvasPreview';
 import { CalloutTemplateProps } from './CalloutTemplateProps';

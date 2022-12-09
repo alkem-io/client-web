@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useMemo, useRef } from 'react';
 import { Theme, useTheme } from '@mui/material/styles';
-import { Lifecycle } from '../../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import { LifecycleVisualization, LifecycleDataProvider, LifecycleVisualizationOptions } from '@alkemio/visualization';
 
 export interface InnovationFlowVisualizerProps {

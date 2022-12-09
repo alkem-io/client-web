@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
-import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsContainer';
-import { useConfig } from '../../../../hooks';
-import { FEATURE_COLLABORATION_CANVASES } from '../../../../models/constants';
+import CanvasActionsContainer from '../containers/CanvasActionsContainer';
+import { useConfig } from '../../../platform/config/useConfig';
+import { FEATURE_COLLABORATION_CANVASES } from '../../../platform/config/features.constants';
 import {
   AuthorizationPrivilege,
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
-} from '../../../../models/graphql-schema';
-import { Error404 } from '../../../../pages';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
 import CanvasManagementView, {
   ActiveCanvasIdHolder,
   CanvasManagementViewEntities,

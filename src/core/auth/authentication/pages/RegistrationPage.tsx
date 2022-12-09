@@ -5,7 +5,7 @@ import produce from 'immer';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
-import { AUTH_LOGIN_PATH } from '../../../../models/constants';
+import { AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import Container from '../../../../domain/shared/layout/Container';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';

@@ -4,11 +4,11 @@ import {
   OpportunityCardFragmentDoc,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
-import { useConfig } from '../../../../hooks/useConfig';
-import { FEATURE_SUBSCRIPTIONS } from '../../../../models/constants';
+import { useConfig } from '../../../platform/config/useConfig';
+import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 
 interface ChallengeCreationInput {

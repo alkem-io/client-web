@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, FormControlLabelProps } from '@mui/material';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../../../domain/platform/config/useConfig';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 
 export interface AcceptTermsCheckboxProps

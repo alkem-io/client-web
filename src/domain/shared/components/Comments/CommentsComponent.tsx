@@ -4,7 +4,7 @@ import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
 import { Message } from './models/message';
-import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { mapWithSeparator } from '../../utils/joinNodes';
 import SectionSpacer from '../Section/SectionSpacer';
 import { animateScroll as scroller } from 'react-scroll';

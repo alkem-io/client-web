@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '../../../../hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useChallengeCommunityQuery,
   useHubCommunityQuery,
   useOpportunityCommunityQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
 
 /**

@@ -1,5 +1,0 @@
-mutation deleteRelation($input: DeleteRelationInput!) {
-  deleteRelation(deleteData: $input) {
-    id
-  }
-}

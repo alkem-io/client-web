@@ -6,7 +6,7 @@ import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
 
-import { PageProps } from '../../../../../pages';
+import { PageProps } from '../../../../shared/types/PageProps';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
@@ -14,9 +14,12 @@ import {
   useCreateOpportunityMutation,
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams, useNotification, useChallenge } from '../../../../../hooks';
-import { useHub } from '../../../../../hooks';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../challenge/opportunity/forms/CreateOpportunityForm';
 import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilders';
@@ -127,4 +130,5 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
     </>
   );
 };
+
 export default OpportunityList;

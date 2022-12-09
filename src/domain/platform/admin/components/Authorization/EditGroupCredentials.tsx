@@ -3,9 +3,9 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import EditMemberUsers from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential';
 

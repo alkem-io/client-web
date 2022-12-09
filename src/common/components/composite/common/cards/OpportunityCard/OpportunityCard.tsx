@@ -1,11 +1,11 @@
 import React, { FC, useCallback } from 'react';
-import { Nvp, Opportunity, VisualUriFragment } from '../../../../../../models/graphql-schema';
+import { Nvp, Opportunity, VisualUriFragment } from '../../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
 import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
-import { useUserContext } from '../../../../../../hooks';
-import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
+import { useUserContext } from '../../../../../../domain/community/contributor/user';
+import { getVisualBannerNarrow } from '../../../../../../domain/common/visual/utils/visuals.utils';
 import { MetricType } from '../../../../../../domain/platform/metrics/MetricType';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';

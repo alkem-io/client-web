@@ -1,8 +1,7 @@
 import { Button, ButtonProps } from '@mui/material';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 
-export interface AuthActionButtonProps extends Omit<ButtonProps, 'color'> {
-  color?: ButtonProps['color'] | 'primaryDark';
+export interface AuthActionButtonProps extends ButtonProps {
   justifyContent?: 'start' | 'center';
 }
 

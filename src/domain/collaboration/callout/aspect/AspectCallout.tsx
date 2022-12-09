@@ -4,9 +4,13 @@ import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
-import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../../hooks';
-import { CalloutState, CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
+import {
+  AspectCardFragmentDoc,
+  useCreateAspectFromContributeTabMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCalloutSubscription';
+import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 

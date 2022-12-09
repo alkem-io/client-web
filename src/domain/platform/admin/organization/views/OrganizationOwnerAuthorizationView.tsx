@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '../../components/Community/EditMembersUsers';
-import OrganizationMembers from '../../../../../containers/organization/OrganizationAssociates';
-import { useOrganization } from '../../../../../hooks';
-import { AuthorizationCredential } from '../../../../../models/graphql-schema';
+import OrganizationAssociatesContainer from '../../../../community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import { useOrganizationAssociatesQuery } from '../../../../../hooks/generated/graphql';
+import { useOrganizationAssociatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export const OrganizationOwnerAuthorizationView: FC = () => {
   const { organizationId } = useOrganization();
@@ -25,7 +25,7 @@ export const OrganizationOwnerAuthorizationView: FC = () => {
         `common.enums.authorization-credentials.${AuthorizationCredential.OrganizationOwner}.name` as const
       )}
     >
-      <OrganizationMembers
+      <OrganizationAssociatesContainer
         entities={{
           organizationId,
           parentAssociates: orgAssociates,
@@ -45,7 +45,7 @@ export const OrganizationOwnerAuthorizationView: FC = () => {
             onSearchTermChange={actions.setSearchTerm}
           />
         )}
-      </OrganizationMembers>
+      </OrganizationAssociatesContainer>
     </DashboardGenericSection>
   );
 };

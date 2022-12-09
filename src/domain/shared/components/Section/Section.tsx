@@ -82,7 +82,7 @@ const Section: FC<SectionProps> = ({
 
   return (
     <>
-      <Paper elevation={0} square variant="outlined" classes={classes?.section} className={styles.container}>
+      <Paper elevation={0} variant="outlined" classes={classes?.section} className={styles.container}>
         {bannerUrl ? (
           <Box position="relative" className={styles.bannerContainer} sx={sideBannerRight ? { order: 2 } : null}>
             <img src={bannerUrl} alt="banner" onLoad={() => setBannerLoading(false)} className={styles.bannerImage} />

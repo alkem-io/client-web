@@ -1,16 +1,15 @@
 import { Fade } from '@mui/material';
 import clsx from 'clsx';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useRef, useState } from 'react';
 import Card from '../../../../common/components/core/Card';
 import Section, { Header, SubHeader } from '../../../../common/components/core/Section';
 import Spinner from '../../../../common/components/core/Spinner';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import { useConfig } from '../../../../hooks';
-import { useUpdateNavigation } from '../../../../hooks';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
+import { useConfig } from '../../../platform/config/useConfig';
 import { makeStyles } from '@mui/styles';
-import { FEATURE_COMMUNICATIONS } from '../../../../models/constants';
-import { PageProps } from '../../../../pages/common';
+import { FEATURE_COMMUNICATIONS } from '../../../platform/config/features.constants';
+import { PageProps } from '../../../shared/types/PageProps';
 
 const date = new Date();
 const closure = (date, offset) => {

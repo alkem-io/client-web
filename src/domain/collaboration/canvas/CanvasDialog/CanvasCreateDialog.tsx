@@ -16,7 +16,10 @@ import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnCalloutInput } from '../../../../models/graphql-schema';
+import {
+  CreateCanvasCanvasTemplateFragment,
+  CreateCanvasOnCalloutInput,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { Loading } from '../../../../common/components/core';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';

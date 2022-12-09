@@ -2,7 +2,10 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { BackdropProps } from './BackdropWithMessage';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
+import {
+  AUTH_LOGIN_PATH,
+  AUTH_REGISTER_PATH,
+} from '../../../../core/auth/authentication/constants/authentication.constants';
 import Image from '../Image';
 import { Box, Button, styled, Typography, TypographyProps } from '@mui/material';
 

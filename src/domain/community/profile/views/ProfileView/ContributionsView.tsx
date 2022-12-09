@@ -5,8 +5,8 @@ import { ContributionCardV2 } from '../../../../../common/components/composite/c
 import ProfileCard, {
   ProfileCardProps,
 } from '../../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
-import ContributionDetailsContainer from '../../../../../containers/ContributionDetails/ContributionDetailsContainer';
-import { ContributionItem } from '../../../../../models/entities/contribution';
+import ContributionDetailsContainer from '../../ContributionDetailsContainer/ContributionDetailsContainer';
+import { ContributionItem } from '../../../contributor/contribution';
 
 export interface ContributionViewProps extends ProfileCardProps {
   contributions: ContributionItem[];

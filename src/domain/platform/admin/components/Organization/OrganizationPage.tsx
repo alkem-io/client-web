@@ -1,20 +1,28 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useNotification, useOrganization, useUpdateNavigation } from '../../../../../hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
-} from '../../../../../hooks/generated/graphql';
-import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
-import { EditMode } from '../../../../../models/editMode';
-import { CreateOrganizationInput, UpdateOrganizationInput, Organization } from '../../../../../models/graphql-schema';
-import { PageProps } from '../../../../../pages';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
+import { EditMode } from '../../../../../core/ui/forms/editMode';
+import {
+  CreateOrganizationInput,
+  UpdateOrganizationInput,
+  Organization,
+} from '../../../../../core/apollo/generated/graphql-schema';
+import { PageProps } from '../../../../shared/types/PageProps';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { Loading } from '../../../../../common/components/core';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
+
 interface Props extends PageProps {
   title?: string;
   mode: EditMode;

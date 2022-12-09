@@ -1,6 +1,6 @@
 import React from 'react';
 import CommunityUpdatesDashboardSection from './CommunityUpdatesDashboardSection';
-import { CommunityUpdatesContainer } from '../../../../containers/community-updates/CommunityUpdatesContainer';
+import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 
 export interface CommunityUpdatesProps {
   hubId?: string;

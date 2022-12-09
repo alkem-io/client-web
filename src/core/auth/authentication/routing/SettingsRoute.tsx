@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import SettingsPage from '../pages/SettingsPage';
 
 export const SettingsRoute: FC = () => {
@@ -13,4 +13,5 @@ export const SettingsRoute: FC = () => {
 
   return <SettingsPage flow={flow} />;
 };
+
 export default SettingsRoute;

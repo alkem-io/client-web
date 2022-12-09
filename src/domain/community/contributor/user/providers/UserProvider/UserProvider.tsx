@@ -6,9 +6,9 @@ import {
   useMeQuery,
   usePlatformLevelAuthorizationQuery,
   useRolesUserQuery,
-} from '../../../../../../hooks/generated/graphql';
-import { ErrorPage } from '../../../../../../pages';
-import { User } from '../../../../../../models/graphql-schema';
+} from '../../../../../../core/apollo/generated/apollo-hooks';
+import { ErrorPage } from '../../../../../../core/pages/Errors/ErrorPage';
+import { User } from '../../../../../../core/apollo/generated/graphql-schema';
 import { UserRolesInEntity } from './UserRolesInEntity';
 import { useAuthenticationContext } from '../../../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { UserMetadata, useUserMetadataWrapper } from '../../hooks/useUserMetadataWrapper';
@@ -35,6 +35,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const wrapper = useUserMetadataWrapper();
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
   const { data: meHasProfileData, loading: loadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
+  // TODO "me" query fetches too much beyond user name
   const { data: meData, loading: loadingMe } = useMeQuery({
     skip: !meHasProfileData?.meHasProfile,
   });
