@@ -1,6 +1,5 @@
 import React, { FC, useCallback } from 'react';
 import Chip from '@mui/material/Chip';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useTranslation } from 'react-i18next';
 import { Box, BoxProps, Tooltip, Typography } from '@mui/material';
 import { times } from 'lodash';
@@ -55,13 +54,7 @@ const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeig
       <Box {...DEFAULT_TAGS_CONTAINER_PROPS} {...tagsContainerProps}>
         {times(count, i => (
           <Skeleton key={i} width={`${100 / count}%`}>
-            <Chip
-              variant="outlined"
-              color="primary"
-              sx={{ borderColor: 'primary.main' }}
-              size="small"
-              icon={<FiberManualRecordIcon fontSize="small" />}
-            />
+            <Chip variant="outlined" color="primary" sx={{ borderColor: 'primary.main' }} size="small" />
           </Skeleton>
         ))}
       </Box>
