@@ -18,7 +18,7 @@ const DEFAULT_TAGS_CONTAINER_PROPS: Partial<BoxProps> = {
   display: 'flex',
   gap: (theme: Theme) => theme.spacing(0.4),
   flexWrap: 'wrap',
-  minHeight: (theme: Theme) => theme.spacing(2),
+  minHeight: (theme: Theme) => theme.spacing(4),
 };
 
 const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeight, ...tagsContainerProps }) => {
