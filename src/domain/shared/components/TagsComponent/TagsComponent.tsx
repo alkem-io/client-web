@@ -1,11 +1,12 @@
 import React, { FC, useCallback } from 'react';
 import Chip from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, Tooltip, Typography } from '@mui/material';
+import { Box, BoxProps, Tooltip } from '@mui/material';
 import { times } from 'lodash';
 import { Theme } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
 import LinesFitter from '../LinesFitter/LinesFitter';
+import { CardText } from '../../../../core/ui/typography';
 
 interface Props {
   tags: string[];
@@ -64,9 +65,9 @@ const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeig
   if (tags.length === 0) {
     return (
       <Box paddingX={1.5} paddingY={1}>
-        <Typography color="neutral.main" variant="subtitle2">
+        <CardText color="neutral.main" variant="subtitle2">
           {t('components.tags-component.no-tags')}
-        </Typography>
+        </CardText>
       </Box>
     );
   }
