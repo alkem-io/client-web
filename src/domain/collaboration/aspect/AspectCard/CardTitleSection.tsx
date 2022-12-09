@@ -1,16 +1,16 @@
 import React, { ComponentType } from 'react';
 import { Box, styled, SvgIconProps } from '@mui/material';
-
 import Icon from '../../../shared/components/Icon';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 const RoundedIcon = styled(Box)(({ theme }) => ({
   background: theme.palette.primary.dark,
   color: theme.palette.common.white,
   borderRadius: '50%',
-  width: theme.spacing(3.5),
-  height: theme.spacing(3.5),
-  margin: theme.spacing(1.5, 2),
+  width: theme.spacing(2.5),
+  height: theme.spacing(2.5),
+  margin: theme.spacing(0.5),
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -24,20 +24,13 @@ interface CardTitleSectionProps {
 
 const CardTitleSection = ({ iconComponent, title = '', createdBy = '' }: CardTitleSectionProps) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        width: theme => theme.spacing(30),
-        height: theme => theme.spacing(9),
-        paddingX: theme => theme.spacing(2),
-      }}
-    >
+    <Box display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
       {iconComponent && (
         <RoundedIcon>
           <Icon iconComponent={iconComponent} size="small" />
         </RoundedIcon>
       )}
-      <Box sx={{ flex: 1, padding: theme => theme.spacing(1, 1, 1, 0) }}>
+      <Box flex={1} paddingX={0.5}>
         <BlockTitle>{title}</BlockTitle>
         <Caption>{createdBy}</Caption>
       </Box>

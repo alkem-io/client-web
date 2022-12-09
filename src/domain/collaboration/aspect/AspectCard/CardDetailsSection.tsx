@@ -1,20 +1,13 @@
 import React, { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
-
-import hexToRGBA from '../../../../common/utils/hexToRGBA';
-import { Caption } from '../../../../core/ui/typography';
+import { Text } from '../../../../core/ui/typography';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export const CardDescription = ({ description = '' }: { description?: string }) => {
   return (
-    <Box
-      sx={{
-        width: theme => theme.spacing(30),
-        height: theme => theme.spacing(16),
-        padding: theme => theme.spacing(2),
-      }}
-    >
-      <Caption>{description}</Caption>
+    <Box minHeight={gutters(6)} paddingX={1.5} paddingY={1}>
+      <Text>{description}</Text>
     </Box>
   );
 };
@@ -24,31 +17,13 @@ export interface CardTagsProps {
 }
 
 export const CardTags = ({ tags = [] }: CardTagsProps) => {
-  return (
-    <Box
-      sx={{
-        width: theme => theme.spacing(30),
-        height: theme => theme.spacing(4.5),
-        paddingX: theme => theme.spacing(2),
-      }}
-    >
-      <TagsComponent tags={tags} />
-    </Box>
-  );
+  return <TagsComponent tags={tags} display="flex" paddingX={1.5} paddingY={1} />;
 };
 
-export interface CardDetailsSectionProps {
-  description?: string;
-  tags: string[];
-}
-
 const CardDetailsSection = ({ children }: PropsWithChildren<{}>) => {
+  // TODO use GridItem when placed within a <PageContentBlock cards> instead of manually setting width
   return (
-    <Box
-      sx={{
-        background: theme => hexToRGBA(theme.palette.highlight.main, 0.5),
-      }}
-    >
+    <Box width={230} sx={{ backgroundColor: 'background.default' }}>
       {children}
     </Box>
   );
