@@ -27,9 +27,6 @@ const ContributeCardContainer = ({ onClick, children }: PropsWithChildren<Contri
 };
 
 export interface ContributeCardProps {
-  titleComponent?: React.ReactNode;
-  contentComponent?: React.ReactNode;
-  extraInfoComponent?: React.ReactNode;
   onClick?: (e: MouseEvent) => void;
 }
 
