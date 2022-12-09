@@ -184,24 +184,6 @@ const AspectCallout = ({
                       );
                     }
                   }}
-                  titleComponent={
-                    <CardTitleSection
-                      title={aspect?.displayName}
-                      iconComponent={BallotOutlinedIcon}
-                      createdBy={aspect?.createdBy.displayName}
-                    />
-                  }
-                  contentComponent={
-                    <CardDetailsSection>
-                      <CardDescription description={aspect?.profile!.description} />
-                      <CardTags tags={aspect?.profile?.tagset?.tags} />
-                    </CardDetailsSection>
-                  }
-                  extraInfoComponent={
-                    <CardFooterWithDate createdDate={createdDate}>
-                      <MessageCounter messageCount={aspect?.comments?.messageCount} />
-                    </CardFooterWithDate>
-                  }
                 >
                   <CardTitleSection
                     title={aspect?.displayName}

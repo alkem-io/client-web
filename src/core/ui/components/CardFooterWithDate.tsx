@@ -4,7 +4,7 @@ import { Caption } from '../typography/components';
 import { gutters } from '../grid/utils';
 
 interface CardFooterWithDateProps {
-  createdDate: Date | undefined;
+  createdDate?: Date;
 }
 
 const CardFooterWithDate = ({ createdDate, children }: PropsWithChildren<CardFooterWithDateProps>) => {

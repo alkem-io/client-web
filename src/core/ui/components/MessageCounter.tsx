@@ -8,11 +8,11 @@ interface MessageCounterProps {
   messageCount: number | undefined;
 }
 
-const MessageCounter = ({ messageCount = 0 }: PropsWithChildren<MessageCounterProps>) => {
+const MessageCounter = ({ messageCount }: PropsWithChildren<MessageCounterProps>) => {
   return (
     <Box display="flex" alignItems="center" gap={0.75} paddingX={0.5}>
       <Icon iconComponent={ForumOutlinedIcon} size="medium" />
-      <Caption>{messageCount}</Caption>
+      <Caption>{messageCount ?? ''}</Caption>
     </Box>
   );
 };
