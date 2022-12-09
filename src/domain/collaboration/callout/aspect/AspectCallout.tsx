@@ -17,10 +17,11 @@ import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apoll
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import ContributeCard from '../../aspect/AspectCard/ContributeCard';
-import CardExtraInfoSection from '../../aspect/AspectCard/CardExtraInfoSection';
 import CardDetailsSection, { CardDescription, CardTags } from '../../aspect/AspectCard/CardDetailsSection';
 import CardTitleSection from '../../aspect/AspectCard/CardTitleSection';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
+import MessageCounter from '../../../../core/ui/components/MessageCounter';
+import CardFooterWithDate from '../../../../core/ui/components/CardFooterWithDate';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -197,9 +198,24 @@ const AspectCallout = ({
                     </CardDetailsSection>
                   }
                   extraInfoComponent={
-                    <CardExtraInfoSection createdDate={createdDate} messageCount={aspect?.comments?.messageCount} />
+                    <CardFooterWithDate createdDate={createdDate}>
+                      <MessageCounter messageCount={aspect?.comments?.messageCount} />
+                    </CardFooterWithDate>
                   }
-                />
+                >
+                  <CardTitleSection
+                    title={aspect?.displayName}
+                    iconComponent={BallotOutlinedIcon}
+                    createdBy={aspect?.createdBy.displayName}
+                  />
+                  <CardDetailsSection>
+                    <CardDescription description={aspect?.profile!.description} />
+                    <CardTags tags={aspect?.profile?.tagset?.tags} />
+                  </CardDetailsSection>
+                  <CardFooterWithDate createdDate={createdDate}>
+                    <MessageCounter messageCount={aspect?.comments?.messageCount} />
+                  </CardFooterWithDate>
+                </ContributeCard>
               );
             }}
           </CardsLayout>

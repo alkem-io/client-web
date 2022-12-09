@@ -24,7 +24,7 @@ interface CardTitleSectionProps {
 
 const CardTitleSection = ({ iconComponent, title = '', createdBy = '' }: CardTitleSectionProps) => {
   return (
-    <Box display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
+    <Box width={230} display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
       {iconComponent && (
         <RoundedIcon>
           <Icon iconComponent={iconComponent} size="small" />

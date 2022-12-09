@@ -17,6 +17,7 @@ export interface CardTagsProps {
 }
 
 export const CardTags = ({ tags = [] }: CardTagsProps) => {
+  // return <></>;
   return <TagsComponent tags={tags} display="flex" paddingX={1.5} paddingY={1} />;
 };
 

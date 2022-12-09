@@ -5,7 +5,11 @@ import withElevationOnHover from '../../../shared/components/withElevationOnHove
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
-const ContributeCardContainer = ({ onClick, children }: PropsWithChildren<{ onClick?: (e: MouseEvent) => void }>) => {
+export interface ContributeCardContainerProps {
+  onClick?: (e: MouseEvent) => void;
+}
+
+const ContributeCardContainer = ({ onClick, children }: PropsWithChildren<ContributeCardContainerProps>) => {
   return (
     <ElevatedPaper
       sx={{
@@ -29,15 +33,8 @@ export interface ContributeCardProps {
   onClick?: (e: MouseEvent) => void;
 }
 
-const ContributeCard = (props: ContributeCardProps) => {
-  const { titleComponent, contentComponent, extraInfoComponent, onClick } = props;
-  return (
-    <ContributeCardContainer onClick={onClick}>
-      {titleComponent ? <>{titleComponent}</> : null}
-      {contentComponent ? <>{contentComponent}</> : null}
-      {extraInfoComponent ? <>{extraInfoComponent}</> : null}
-    </ContributeCardContainer>
-  );
+const ContributeCard = ({ children, onClick }: PropsWithChildren<ContributeCardProps>) => {
+  return <ContributeCardContainer onClick={onClick}>{children}</ContributeCardContainer>;
 };
 
 export default ContributeCard;
