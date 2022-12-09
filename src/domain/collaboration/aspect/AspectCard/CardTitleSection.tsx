@@ -24,15 +24,15 @@ interface CardTitleSectionProps {
 
 const CardTitleSection = ({ iconComponent, title = '', createdBy = '' }: CardTitleSectionProps) => {
   return (
-    <Box width={230} display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
+    <Box display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
       {iconComponent && (
-        <RoundedIcon>
+        <RoundedIcon flexShrink={0}>
           <Icon iconComponent={iconComponent} size="small" />
         </RoundedIcon>
       )}
-      <Box flex={1} paddingX={0.5}>
-        <BlockTitle>{title}</BlockTitle>
-        <Caption>{createdBy}</Caption>
+      <Box flex={1} flexBasis={0} paddingX={0.5} overflow="hidden">
+        <BlockTitle noWrap>{title}</BlockTitle>
+        <Caption noWrap>{createdBy}</Caption>
       </Box>
     </Box>
   );

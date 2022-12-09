@@ -6,10 +6,10 @@ import withElevationOnHover from '../../../shared/components/withElevationOnHove
 const ElevatedPaper = withElevationOnHover(Paper);
 
 export interface ContributeCardContainerProps {
-  onClick?: (e: MouseEvent) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const ContributeCardContainer = ({ onClick, children }: PropsWithChildren<ContributeCardContainerProps>) => {
+const ContributeCard = ({ onClick, children }: PropsWithChildren<ContributeCardContainerProps>) => {
   return (
     <ElevatedPaper
       sx={{
@@ -18,20 +18,13 @@ const ContributeCardContainer = ({ onClick, children }: PropsWithChildren<Contri
         flexDirection: 'column',
         alignItems: 'stretch',
         cursor: onClick ? 'pointer' : 'default',
+        width: 230, // TODO use GridItem when placed within a <PageContentBlock cards> instead of manually setting width
       }}
-      onClick={e => (onClick ? onClick(e as any) : null)}
+      onClick={onClick}
     >
       {children}
     </ElevatedPaper>
   );
-};
-
-export interface ContributeCardProps {
-  onClick?: (e: MouseEvent) => void;
-}
-
-const ContributeCard = ({ children, onClick }: PropsWithChildren<ContributeCardProps>) => {
-  return <ContributeCardContainer onClick={onClick}>{children}</ContributeCardContainer>;
 };
 
 export default ContributeCard;

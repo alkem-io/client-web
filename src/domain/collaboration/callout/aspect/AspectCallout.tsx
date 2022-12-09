@@ -3,7 +3,7 @@ import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import { useNavigate } from 'react-router-dom';
 
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import AspectCard, { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
+import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
@@ -148,7 +148,7 @@ const AspectCallout = ({
     () =>
       callout.state !== CalloutState.Closed ? (
         <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-          <AspectCard />
+          <ContributeCard />
         </CreateCalloutItemButton>
       ) : undefined,
     [callout.state]
