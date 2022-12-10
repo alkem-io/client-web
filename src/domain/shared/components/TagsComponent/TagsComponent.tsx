@@ -64,10 +64,8 @@ const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeig
 
   if (tags.length === 0) {
     return (
-      <Box paddingX={1.5} paddingY={1}>
-        <CardText color="neutral.main" variant="subtitle2">
-          {t('components.tags-component.no-tags')}
-        </CardText>
+      <Box {...tagsContainerProps}>
+        <CardText color="neutral.main">{t('components.tags-component.no-tags')}</CardText>
       </Box>
     );
   }
