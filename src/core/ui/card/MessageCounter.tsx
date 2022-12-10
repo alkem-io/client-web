@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import Icon from '../../../domain/shared/components/Icon';
+import Icon from '../icon/Icon';
 import { Caption } from '../typography/components';
 
 interface MessageCounterProps {
@@ -12,7 +12,7 @@ const MessageCounter = ({ messageCount }: PropsWithChildren<MessageCounterProps>
   return (
     <Box display="flex" alignItems="center" gap={0.75} paddingX={0.5}>
       <Icon iconComponent={ForumOutlinedIcon} size="medium" />
-      <Caption>{messageCount ?? ''}</Caption>
+      <Caption>{messageCount ?? ' '}</Caption>
     </Box>
   );
 };

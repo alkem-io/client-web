@@ -1,8 +1,8 @@
 import React, { ComponentType } from 'react';
 import { Box, styled, SvgIconProps } from '@mui/material';
-import Icon from '../../../shared/components/Icon';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
+import Icon from '../icon/Icon';
+import { BlockTitle, Caption } from '../typography';
+import { gutters } from '../grid/utils';
 
 const RoundedIcon = styled(Box)(({ theme }) => ({
   background: theme.palette.primary.dark,
@@ -22,7 +22,7 @@ interface CardTitleSectionProps {
   createdBy?: string;
 }
 
-const CardTitleSection = ({ iconComponent, title = '', createdBy = '' }: CardTitleSectionProps) => {
+const CardHeader = ({ iconComponent, title = '', createdBy = '' }: CardTitleSectionProps) => {
   return (
     <Box display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
       {iconComponent && (
@@ -38,4 +38,4 @@ const CardTitleSection = ({ iconComponent, title = '', createdBy = '' }: CardTit
   );
 };
 
-export default CardTitleSection;
+export default CardHeader;

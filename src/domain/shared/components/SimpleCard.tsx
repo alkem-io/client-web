@@ -2,7 +2,7 @@ import React, { ComponentType, ReactNode } from 'react';
 import withElevationOnHover from './withElevationOnHover';
 import { Box, Paper, SvgIconProps } from '@mui/material';
 import LinkNoUnderline from './LinkNoUnderline';
-import Icon, { IconProps } from './Icon';
+import Icon, { IconProps } from '../../../core/ui/icon/Icon';
 import IconLabel from './IconLabel';
 import { LinkWithState } from '../types/LinkWithState';
 

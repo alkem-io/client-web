@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import Icon from '../../../shared/components/Icon';
+import Icon from '../../../../core/ui/icon/Icon';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 

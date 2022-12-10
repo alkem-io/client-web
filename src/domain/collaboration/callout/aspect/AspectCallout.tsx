@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import { useNavigate } from 'react-router-dom';
 
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
@@ -17,11 +16,8 @@ import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apoll
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import ContributeCard from '../../aspect/AspectCard/ContributeCard';
-import CardDetailsSection, { CardDescription, CardTags } from '../../aspect/AspectCard/CardDetailsSection';
-import CardTitleSection from '../../aspect/AspectCard/CardTitleSection';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
-import MessageCounter from '../../../../core/ui/components/MessageCounter';
-import CardFooterWithDate from '../../../../core/ui/components/CardFooterWithDate';
+import AspectCard from './AspectCard';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -154,6 +150,16 @@ const AspectCallout = ({
     [callout.state]
   );
 
+  const navigateToAspect = (aspect: AspectCardAspect) => {
+    navigate(
+      buildAspectUrl(aspect.calloutNameId, aspect.nameID, {
+        hubNameId: hubNameId!,
+        challengeNameId,
+        opportunityNameId,
+      })
+    );
+  };
+
   return (
     <>
       <CalloutLayout
@@ -169,37 +175,7 @@ const AspectCallout = ({
             deps={[hubNameId, challengeNameId, opportunityNameId]}
             {...(canCreate ? { createButtonComponent } : {})}
           >
-            {aspect => {
-              const createdDate = aspect?.createdDate && new Date(aspect?.createdDate);
-              return (
-                <ContributeCard
-                  onClick={() => {
-                    if (aspect?.calloutNameId) {
-                      navigate(
-                        buildAspectUrl(aspect?.calloutNameId, aspect?.nameID, {
-                          hubNameId: hubNameId!,
-                          challengeNameId,
-                          opportunityNameId,
-                        })
-                      );
-                    }
-                  }}
-                >
-                  <CardTitleSection
-                    title={aspect?.displayName}
-                    iconComponent={BallotOutlinedIcon}
-                    createdBy={aspect?.createdBy.displayName}
-                  />
-                  <CardDetailsSection>
-                    <CardDescription description={aspect?.profile!.description} />
-                    <CardTags tags={aspect?.profile?.tagset?.tags} />
-                  </CardDetailsSection>
-                  <CardFooterWithDate createdDate={createdDate}>
-                    <MessageCounter messageCount={aspect?.comments?.messageCount} />
-                  </CardFooterWithDate>
-                </ContributeCard>
-              );
-            }}
+            {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
           </CardsLayout>
         </CardsLayoutScroller>
       </CalloutLayout>
