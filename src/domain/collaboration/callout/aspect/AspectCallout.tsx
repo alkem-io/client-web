@@ -1,7 +1,9 @@
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import AspectCard, { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
-import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
+import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
+import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
@@ -13,6 +15,9 @@ import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCall
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import ContributeCard from '../../aspect/AspectCard/ContributeCard';
+import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
+import AspectCard from './AspectCard';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -42,6 +47,7 @@ const AspectCallout = ({
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
   const handleError = useApolloErrorHandler();
+  const navigate = useNavigate();
 
   const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
     hubNameId: hubNameId || '',
@@ -138,11 +144,21 @@ const AspectCallout = ({
     () =>
       callout.state !== CalloutState.Closed ? (
         <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-          <AspectCard />
+          <ContributeCard />
         </CreateCalloutItemButton>
       ) : undefined,
     [callout.state]
   );
+
+  const navigateToAspect = (aspect: AspectCardAspect) => {
+    navigate(
+      buildAspectUrl(aspect.calloutNameId, aspect.nameID, {
+        hubNameId: hubNameId!,
+        challengeNameId,
+        opportunityNameId,
+      })
+    );
+  };
 
   return (
     <>
@@ -159,16 +175,7 @@ const AspectCallout = ({
             deps={[hubNameId, challengeNameId, opportunityNameId]}
             {...(canCreate ? { createButtonComponent } : {})}
           >
-            {aspect => (
-              <AspectCard
-                aspect={aspect}
-                hubNameId={hubNameId}
-                challengeNameId={challengeNameId}
-                opportunityNameId={opportunityNameId}
-                loading={!aspect}
-                keepScroll
-              />
-            )}
+            {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
           </CardsLayout>
         </CardsLayoutScroller>
       </CalloutLayout>

@@ -1,7 +1,7 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
 import withElevationOnHover from './withElevationOnHover';
 import { Box, Paper, styled, SvgIconProps, Typography } from '@mui/material';
-import Icon, { IconProps } from './Icon';
+import Icon, { IconProps } from '../../../core/ui/icon/Icon';
 import Image from './Image';
 import { ClampedTypography } from './ClampedTypography';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
