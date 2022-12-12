@@ -221,7 +221,6 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         aria-label={`${entityTypeName} tabs`}
         showSettings={showSettings}
         settingsUrl={settingsUrl}
-        centered
       >
         <HeaderNavigationTab
           label={t('common.dashboard')}
