@@ -4,18 +4,24 @@ import provideStaticProps from '../../utils/provideStaticProps';
 /**
  * @deprecated - the platform header is Alkemio logo
  */
-export const PlatformTitle = provideStaticProps(Typography, { variant: 'h1' });
+export const PlatformTitle = provideStaticProps(Typography, { variant: 'h1' }) as typeof Typography;
 
-export const PageTitle = provideStaticProps(Typography, { variant: 'h2' });
+export const PageTitle = provideStaticProps(Typography, { variant: 'h2' }) as typeof Typography;
 
-export const BlockTitle = provideStaticProps(Typography, { variant: 'h3' });
+export const BlockTitle = provideStaticProps(Typography, { variant: 'h3' }) as typeof Typography;
 
-export const BlockSectionTitle = provideStaticProps(Typography, { variant: 'h4' });
+export const BlockSectionTitle = provideStaticProps(Typography, { variant: 'h4' }) as typeof Typography;
 
-export const Tagline = provideStaticProps(Typography, { variant: 'subtitle1' });
+export const Tagline = provideStaticProps(Typography, { variant: 'subtitle1' }) as typeof Typography;
 
-export const Text = provideStaticProps(Typography, { variant: 'body1' });
+export const Text = provideStaticProps(Typography, { variant: 'body1' }) as typeof Typography;
 
-export const CardText = provideStaticProps(Typography, { variant: 'body2' });
+export const CardText = provideStaticProps(Typography, { variant: 'body2' }) as typeof Typography;
 
-export const Caption = provideStaticProps(Typography, { variant: 'caption', display: 'block' });
+export const Caption = provideStaticProps(Typography, { variant: 'caption', display: 'block' }) as typeof Typography;
+
+export const CaptionSmall = provideStaticProps(Caption, {
+  variant: 'caption',
+  display: 'block',
+  fontStyle: 'italic',
+}) as typeof Typography;

@@ -1,20 +1,15 @@
 import React, { FC } from 'react';
-import { Grid, Link, Tooltip, Typography as MUITypography } from '@mui/material';
+import { Tooltip } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { Reference } from '../../../../../domain/common/profile/Profile';
-import { createStyles, makeStyles } from '@mui/styles';
+import { Language } from '@mui/icons-material';
+import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
+import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
+import ItemView from '../../../../../core/ui/list/ItemView';
 
 interface ReferenceProps {
   reference: Reference;
 }
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    wrapper: {
-      marginLeft: 0,
-      marginTop: theme.spacing(1),
-    },
-  })
-);
 
 const REFERENCE_DESCRIPTION_MAX_LENGTH = 80; // characters
 
@@ -31,7 +26,7 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
 
   const descriptionText = isCut ? `${children.slice(0, REFERENCE_DESCRIPTION_MAX_LENGTH)}…` : children;
 
-  const formattedDescription = <MUITypography variant="subtitle2">{descriptionText}</MUITypography>;
+  const formattedDescription = <CardText>{descriptionText}</CardText>;
 
   if (isCut) {
     return (
@@ -45,17 +40,15 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
 };
 
 const ReferenceView: FC<ReferenceProps> = ({ reference }) => {
-  const styles = useStyles();
-
   return (
-    <Grid item container spacing={1} direction="column" className={styles.wrapper}>
+    <ItemView visual={<RoundedIcon size="medium" component={Language} />}>
       <Tooltip title={reference.uri} placement="top-start" disableInteractive>
-        <Link href={reference.uri} target="_blank">
+        <BlockSectionTitle component={Link} to={reference.uri} target="_blank">
           {reference.name}
-        </Link>
+        </BlockSectionTitle>
       </Tooltip>
       <ReferenceDescription>{reference.description}</ReferenceDescription>
-    </Grid>
+    </ItemView>
   );
 };
 

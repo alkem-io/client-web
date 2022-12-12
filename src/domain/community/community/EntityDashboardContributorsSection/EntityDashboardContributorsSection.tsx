@@ -1,11 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { EntityDashboardContributors } from './Types';
 import DashboardContributingUsers from './DashboardContributingUsers';
 import DashboardContributingOrganizations from './DashboardContributingOrganizations';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import SeeMore from '../../../../core/ui/content/SeeMore';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
+import withOptionalCount from '../../../shared/utils/withOptionalCount';
 
 const EntityDashboardContributorsSection = ({
   memberUsers,
@@ -16,19 +19,14 @@ const EntityDashboardContributorsSection = ({
   const { t } = useTranslation();
 
   return (
-    <DashboardGenericSection
-      headerText={t('contributors-section.title')}
-      navText={t('buttons.see-more')}
-      navLink={`${EntityPageSection.Dashboard}/contributors`}
-    >
-      <DashboardContributingUsers headerText={t('common.users')} users={memberUsers} usersCount={memberUsersCount} />
-      <SectionSpacer double />
-      <DashboardContributingOrganizations
-        headerText={t('common.organizations')}
-        organizations={memberOrganizations}
-        organizationsCount={memberOrganizationsCount}
-      />
-    </DashboardGenericSection>
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('contributors-section.title')} />
+      <BlockSectionTitle>{withOptionalCount(t('common.organizations'), memberOrganizationsCount)}</BlockSectionTitle>
+      <DashboardContributingOrganizations organizations={memberOrganizations} />
+      <BlockSectionTitle>{withOptionalCount(t('common.users'), memberUsersCount)}</BlockSectionTitle>
+      <DashboardContributingUsers users={memberUsers} />
+      <SeeMore subject={t('common.contributors')} to={`${EntityPageSection.Dashboard}/contributors`} />
+    </PageContentBlock>
   );
 };
 

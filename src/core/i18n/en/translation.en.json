@@ -30,7 +30,7 @@
     "next": "Next",
     "edit": "Edit",
     "see-more": "See more",
-    "see-all": "See all",
+    "see-all": "More {{subject}}",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -97,6 +97,7 @@
     "canvases": "Canvases",
     "comment": "Comment",
     "comments": "Comments",
+    "contributions": "Contributions",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
@@ -137,7 +138,7 @@
     "user": "User",
     "users": "Users",
     "update": "Update",
-    "updates": "Updates",
+    "updates": "News",
     "no-updates": "No updates",
     "no-tags": "No tags available",
     "no-references": "No references available",
@@ -520,7 +521,7 @@
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Recent Contributions"
     },
     "activity-log-view": {
       "actions": {
@@ -1582,9 +1583,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "Updates ({{count}})",
-    "dialog-title": "All Updates",
-    "no-data": "No updates available."
+    "title": "News ({{count}})",
+    "dialog-title": "All News",
+    "no-data": "No news available."
   },
   "dashboard-discussions-section": {
     "title": "Discussions ({{count}})",

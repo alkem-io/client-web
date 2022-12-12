@@ -14,7 +14,7 @@ import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMem
 export interface CommunityContributorsViewProps extends ContributingOrganizationsProps, ContributingUsersProps {
   loading?: boolean;
   organizationsCount: number | undefined;
-  usersCount: number | undefined;
+  usersCount: number | undefined; // TODO display or remove prop
   usersComponent?: ComponentType<DashboardContributingUsersProps>;
 }
 
@@ -27,7 +27,6 @@ const CommunityContributorsView = ({
   organizations = [],
   users = [],
   organizationsCount,
-  usersCount,
   noOrganizationsView,
   loading,
   usersComponent: UsersComponent = DashboardContributingUsers,
@@ -43,11 +42,7 @@ const CommunityContributorsView = ({
         noOrganizationsView={noOrganizationsView}
       />
       <SectionSpacer />
-      <UsersComponent
-        headerText={t('common.users')}
-        users={users?.map(mapUserCardPropsToContributorCardProps)}
-        usersCount={usersCount}
-      />
+      <UsersComponent users={users?.map(mapUserCardPropsToContributorCardProps)} />
     </>
   );
 };
