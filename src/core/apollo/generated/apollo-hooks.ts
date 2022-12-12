@@ -39,7 +39,8 @@ export const AspectCardFragmentDoc = gql`
     }
     createdDate
     comments {
-      messageCount
+      id
+      commentsCount
     }
     banner {
       ...VisualUri

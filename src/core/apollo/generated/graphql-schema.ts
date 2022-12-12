@@ -819,10 +819,10 @@ export type Comments = {
   __typename?: 'Comments';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The number of comments. */
+  commentsCount: Scalars['Float'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Number of messages in this Comments. */
-  messageCount?: Maybe<Scalars['Float']>;
   /** Messages in this Comments. */
   messages?: Maybe<Array<Message>>;
 };
@@ -4435,7 +4435,7 @@ export type ChallengePageQuery = {
                         type: string;
                         createdDate: Date;
                         createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
@@ -4718,7 +4718,7 @@ export type ChallengeProfileFragment = {
                     type: string;
                     createdDate: Date;
                     createdBy: { __typename?: 'User'; displayName: string };
-                    comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                     banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     profile?:
@@ -5836,7 +5836,7 @@ export type HubPageQuery = {
                       type: string;
                       createdDate: Date;
                       createdBy: { __typename?: 'User'; displayName: string };
-                      comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                       banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       profile?:
@@ -6096,7 +6096,7 @@ export type HubPageFragment = {
                     type: string;
                     createdDate: Date;
                     createdBy: { __typename?: 'User'; displayName: string };
-                    comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                     banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     profile?:
@@ -6874,7 +6874,7 @@ export type OpportunityPageQuery = {
                         type: string;
                         createdDate: Date;
                         createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
@@ -7100,7 +7100,7 @@ export type OpportunityPageFragment = {
                     type: string;
                     createdDate: Date;
                     createdBy: { __typename?: 'User'; displayName: string };
-                    comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                     banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     profile?:
@@ -9088,7 +9088,7 @@ export type AspectCardFragment = {
   type: string;
   createdDate: Date;
   createdBy: { __typename?: 'User'; displayName: string };
-  comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+  comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   profile?:
@@ -9115,7 +9115,7 @@ export type ContributeTabAspectFragment = {
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   createdBy: { __typename?: 'User'; displayName: string };
-  comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+  comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   profile?:
@@ -9705,7 +9705,7 @@ export type HubCalloutsQuery = {
                           }
                         | undefined;
                       createdBy: { __typename?: 'User'; displayName: string };
-                      comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                       banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       profile?:
@@ -9892,7 +9892,7 @@ export type ChallengeCalloutsQuery = {
                             }
                           | undefined;
                         createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
@@ -10089,7 +10089,7 @@ export type OpportunityCalloutsQuery = {
                             }
                           | undefined;
                         createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
@@ -10281,7 +10281,7 @@ export type HubCalloutQuery = {
                           }
                         | undefined;
                       createdBy: { __typename?: 'User'; displayName: string };
-                      comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                       banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       profile?:
@@ -10467,7 +10467,7 @@ export type ChallengeCalloutQuery = {
                             }
                           | undefined;
                         createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
@@ -10663,7 +10663,7 @@ export type OpportunityCalloutQuery = {
                             }
                           | undefined;
                         createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
                         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
@@ -10914,7 +10914,7 @@ export type CalloutFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         createdBy: { __typename?: 'User'; displayName: string };
-        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         profile?:
@@ -11857,7 +11857,7 @@ export type AspectsOnCalloutFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         createdBy: { __typename?: 'User'; displayName: string };
-        comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         profile?:
@@ -11894,7 +11894,7 @@ export type CalloutAspectCreatedSubscription = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       createdBy: { __typename?: 'User'; displayName: string };
-      comments?: { __typename?: 'Comments'; messageCount?: number | undefined } | undefined;
+      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
       banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       profile?:

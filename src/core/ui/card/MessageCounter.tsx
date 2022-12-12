@@ -5,14 +5,14 @@ import Icon from '../icon/Icon';
 import { Caption } from '../typography/components';
 
 interface MessageCounterProps {
-  messageCount: number | undefined;
+  commentsCount: number | undefined;
 }
 
-const MessageCounter = ({ messageCount }: PropsWithChildren<MessageCounterProps>) => {
+const MessageCounter = ({ commentsCount }: PropsWithChildren<MessageCounterProps>) => {
   return (
     <Box display="flex" alignItems="center" gap={0.75} paddingX={0.5}>
       <Icon iconComponent={ForumOutlinedIcon} size="medium" />
-      <Caption>{messageCount ?? ' '}</Caption>
+      <Caption>{commentsCount ?? ' '}</Caption>
     </Box>
   );
 };
