@@ -1,5 +1,6 @@
 import React, { ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
 import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
+import { Box, BoxProps } from '@mui/material';
 
 enum Stage {
   MEASURING_EXPECTED_HEIGHT,
@@ -75,8 +76,7 @@ const initialState: LinesFitterState = {
   expectedHeight: 0,
 };
 
-export interface LinesFitterProps<Item>
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface LinesFitterProps<Item> {
   items: Item[];
   renderItem: (item: Item, index: number) => ReactNode;
   renderMore?: (remainingItems: Item[]) => ReactNode;
@@ -88,7 +88,7 @@ export interface LinesFitterProps<Item>
  * when no items are rendered yet. So, to define the boundary you need to set `min-height` on the component
  * (using `className` or `style` - all props are proxied to the wrapper `<div>`).
  */
-const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: LinesFitterProps<Item>) => {
+const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: LinesFitterProps<Item> & BoxProps) => {
   const wrapperElementRef = useRef<HTMLDivElement>(null);
 
   const [state, dispatch] = useReducer(getNextState, initialState);
@@ -149,10 +149,10 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: 
   const getRemainingItems = () => items.slice(state.itemsToDisplayCount);
 
   return (
-    <div ref={wrapperElementRef} {...wrapperProps}>
+    <Box ref={wrapperElementRef} {...wrapperProps}>
       {visibleItems.map(renderItem)}
       {showMore && renderMore?.(getRemainingItems())}
-    </div>
+    </Box>
   );
 };
 
@@ -162,7 +162,7 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: 
  * In order not to destroy user experience in production, in case of exception an empty container is returned.
  */
 const SilentLinesFitter = <Item,>(props: LinesFitterProps<Item>) => {
-  const { items, renderItem, renderMore, ref, ...wrapperProps } = props;
+  const { items, renderItem, renderMore, ...wrapperProps } = props;
 
   return (
     <LinesFitterErrorBoundary {...wrapperProps}>

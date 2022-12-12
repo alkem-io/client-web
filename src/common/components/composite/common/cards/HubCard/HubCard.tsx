@@ -33,7 +33,6 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
         descriptionText: hub?.context?.tagline,
         mediaUrl: bannerNarrow,
         tags: hub.tagset?.tags || [],
-        tagsFor: 'hub',
         url: buildHubUrl(hub.nameID),
       }}
       label={getLabel?.(hub)}

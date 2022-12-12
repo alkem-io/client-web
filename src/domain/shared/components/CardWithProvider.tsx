@@ -1,7 +1,7 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
 import withElevationOnHover from './withElevationOnHover';
 import { Box, Paper, styled, SvgIconProps, Typography } from '@mui/material';
-import Icon, { IconProps } from './Icon';
+import Icon, { IconProps } from '../../../core/ui/icon/Icon';
 import Image from './Image';
 import { ClampedTypography } from './ClampedTypography';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
@@ -121,7 +121,7 @@ const ActionButtons = styled(Box)(({ theme }) => ({
 export interface CardWithProviderProps extends TitleBarProps {
   imageUrl?: string;
   defaultImage?: React.ReactNode;
-  onClick?: (e: MouseEvent) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   actionButtons?: React.ReactNode[];
   extraInformation?: React.ReactNode;
 }
@@ -142,7 +142,7 @@ const CardWithProvider = (props: CardWithProviderProps) => {
         alignItems: 'stretch',
         cursor: onClick ? 'pointer' : 'default',
       }}
-      onClick={e => (onClick ? onClick(e as any) : null)}
+      onClick={onClick}
     >
       <TitleBar {...props} />
       <ImageWrapper>{imageUrl ? <ImagePreview src={imageUrl} /> : defaultImage}</ImageWrapper>

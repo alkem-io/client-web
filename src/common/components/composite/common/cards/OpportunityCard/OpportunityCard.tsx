@@ -39,7 +39,6 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
         descriptionText: opportunity?.context?.tagline,
         mediaUrl: bannerNarrow,
         tags: opportunity.tagset?.tags || [],
-        tagsFor: 'opportunity',
         url: buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
       }}
       label={isMember(opportunity.id) ? EntityContributionCardLabel.Member : undefined}

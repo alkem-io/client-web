@@ -18,4 +18,4 @@ export const Text = provideStaticProps(Typography, { variant: 'body1' });
 
 export const CardText = provideStaticProps(Typography, { variant: 'body2' });
 
-export const Caption = provideStaticProps(Typography, { variant: 'caption' });
+export const Caption = provideStaticProps(Typography, { variant: 'caption', display: 'block' });

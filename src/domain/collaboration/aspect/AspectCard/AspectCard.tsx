@@ -47,7 +47,12 @@ const Root = styled('div')(({ theme }) => ({
 }));
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
-export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
+export type AspectCardAspect = Pick<Aspect, NeededFields> & {
+  bannerNarrow?: VisualUriFragment;
+  createdBy: { displayName: string };
+  comments?: { messageCount?: number | undefined };
+  createdDate: string | Date; // Apollo says Date while actually it's a string
+} & {
   calloutNameId: string;
 };
 

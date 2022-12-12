@@ -55,5 +55,6 @@ module.exports = {
     'jsx-a11y/img-redundant-alt': 'error',
     'jsx-quotes': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'error',
   },
 };

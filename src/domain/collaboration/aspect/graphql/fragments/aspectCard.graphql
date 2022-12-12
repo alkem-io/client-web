@@ -3,6 +3,13 @@ fragment AspectCard on Aspect {
   nameID
   displayName
   type
+  createdBy {
+    displayName
+  }
+  createdDate
+  comments {
+    messageCount
+  }
   banner {
     ...VisualUri
   }
