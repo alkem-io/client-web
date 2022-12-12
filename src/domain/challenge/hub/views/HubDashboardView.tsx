@@ -1,4 +1,5 @@
-import { Grid } from '@mui/material';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// TODO cleanup imports and props
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
@@ -37,8 +38,13 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Discussion } from '../../../communication/discussion/models/discussion';
-import { ActivityLogResultType, ActivitySection } from '../../../shared/components/ActivityLog';
+import { ActivityComponent, ActivityLogResultType, ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import SeeMore from '../../../../core/ui/content/SeeMore';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -113,86 +119,54 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   const showActivity = (!activities && activityLoading) || !!activities;
 
   return (
-    <>
-      <Grid container spacing={2}>
-        <DashboardColumn>
-          <DashboardGenericSection
-            headerText={t('pages.hub.about-this-hub')}
-            primaryAction={
-              <ApplicationButtonContainer>
-                {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
-              </ApplicationButtonContainer>
-            }
-            navText={t('buttons.see-more')}
-            navLink={EntityPageSection.About}
-          >
-            <WrapperMarkdown children={vision} />
-          </DashboardGenericSection>
-          <ShareButton
-            title={t('share-dialog.share-this', { entity: t('common.hub') })}
-            url={buildHubUrl(hubNameId)}
-            entityTypeName="hub"
+    <PageContent>
+      <PageContentColumn columns={4}>
+        <PageContentBlock accent>
+          <WrapperMarkdown>{vision}</WrapperMarkdown>
+        </PageContentBlock>
+        <ShareButton
+          title={t('share-dialog.share-this', { entity: t('common.hub') })}
+          url={buildHubUrl(hubNameId)}
+          entityTypeName="hub"
+        />
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('components.referenceSegment.title')} />
+          <References references={references} />
+          {/* TODO figure out the URL for references */}
+          <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
+        </PageContentBlock>
+        {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
+        {communityReadAccess && (
+          <EntityDashboardContributorsSection
+            memberUsers={memberUsers}
+            memberUsersCount={memberUsersCount}
+            memberOrganizations={memberOrganizations}
+            memberOrganizationsCount={memberOrganizationsCount}
           />
-          {communityReadAccess && (
-            <EntityDashboardLeadsSection
-              organizationsHeader={t('pages.hub.sections.dashboard.organization')}
-              usersHeader={t('community.host')}
-              leadUsers={leadUsers}
-              leadOrganizations={hostOrganizations}
+        )}
+      </PageContentColumn>
+
+      <PageContentColumn columns={8}>
+        {showActivity && (
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('components.activity-log-section.title')} />
+            <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+            <SeeMore subject={t('common.contributions')} to={EntityPageSection.Explore} />
+          </PageContentBlock>
+        )}
+        {challengesReadAccess && (
+          <PageContentBlock>
+            <PageContentBlockHeader
+              title={withOptionalCount(t('pages.hub.sections.dashboard.challenges.title'), challengesCount)}
             />
-          )}
-          {communityReadAccess && (
-            <>
-              <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
-              <SectionSpacer />
-              {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
-                <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
-              )}
-            </>
-          )}
-          {communityReadAccess && (
-            <EntityDashboardContributorsSection
-              memberUsers={memberUsers}
-              memberUsersCount={memberUsersCount}
-              memberOrganizations={memberOrganizations}
-              memberOrganizationsCount={memberOrganizationsCount}
-            />
-          )}
-        </DashboardColumn>
-        <DashboardColumn>
-          {showActivity && <ActivitySection activities={activities} journeyLocation={journeyLocation} />}
-          {!!references && references.length > 0 && (
-            <DashboardSection
-              headerText={t('components.referenceSegment.title')}
-              primaryAction={<ContextSectionIcon component={SchoolIcon} />}
-              collapsible
-            >
-              <References references={references} />
-            </DashboardSection>
-          )}
-          {challengesReadAccess && (
-            <DashboardGenericSection
-              headerText={withOptionalCount(t('pages.hub.sections.dashboard.challenges.title'), challengesCount)}
-              helpText={t('pages.hub.sections.dashboard.challenges.help-text')}
-              navText={t('buttons.see-all')}
-              navLink={'challenges'}
-            >
-              <CardsLayout items={challenges} deps={[hubNameId]}>
-                {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
-              </CardsLayout>
-            </DashboardGenericSection>
-          )}
-          <DashboardSectionAspects aspects={aspects} aspectsCount={aspectsCount} hubNameId={hubNameId} />
-          <CanvasesDashboardPreview
-            canvases={canvases}
-            canvasesCount={canvasesCount}
-            noItemsMessage={t('pages.canvas.no-canvases')}
-            buildCanvasLink={buildCanvasLink}
-            loading={loading}
-          />
-        </DashboardColumn>
-      </Grid>
-    </>
+            <CardsLayout items={challenges} deps={[hubNameId]}>
+              {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
+            </CardsLayout>
+            <SeeMore subject={t('common.challenges')} to="challenges" />
+          </PageContentBlock>
+        )}
+      </PageContentColumn>
+    </PageContent>
   );
 };
 

@@ -9,8 +9,13 @@ export interface ActivityLogSectionProps {
   journeyLocation: JourneyLocation;
 }
 
+/**
+ * @deprecated
+ */
 export const ActivitySection: FC<ActivityLogSectionProps> = props => {
   const { t } = useTranslation();
+
+  // TODO remove
 
   return (
     <DashboardGenericSection

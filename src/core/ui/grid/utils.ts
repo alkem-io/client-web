@@ -8,4 +8,7 @@ export const getColumnsWidth = (itemColumns: number, gridColumns: number) => {
   })`;
 };
 
-export const gutters = (num: number) => (theme: Theme) => theme.spacing(GUTTER_MUI * num);
+export const gutters =
+  (num: number = 1) =>
+  (theme: Theme) =>
+    theme.spacing(GUTTER_MUI * num);
