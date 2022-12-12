@@ -12,7 +12,7 @@ const HeaderNavigationButton = forwardRef<HTMLDivElement, HeaderNavigationButton
         value={value}
         icon={icon}
         disabled={disabled}
-        className={'button-tab'}
+        className="button-tab"
         onClick={onClick}
       />
     );

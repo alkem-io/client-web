@@ -1,28 +1,25 @@
 import React, { PropsWithChildren } from 'react';
-import SimplePageLayout from './SimplePageLayout';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
-import TopLevelDesktopLayout from './TopLevelDesktopLayout';
+import TopBar, { TopBarSpacer } from '../../../../common/components/composite/layout/TopBar/TopBar';
+import Footer from '../../../../common/components/composite/layout/App/Footer';
+import { FloatingActionButtons } from '../../../../common/components/core';
 
 const EntityPageLayoutDesktop = ({
   currentSection,
-  entityTypeName,
-  tabDescriptionNs = 'pages',
   children,
   pageBannerComponent: PageBanner,
   tabsComponent: Tabs,
 }: PropsWithChildren<EntityPageLayoutProps>) => {
   return (
-    <TopLevelDesktopLayout>
+    <>
+      <TopBar />
+      <TopBarSpacer />
       <PageBanner />
       {Tabs && <Tabs currentTab={currentSection} />}
-      <SimplePageLayout
-        currentSection={currentSection}
-        entityTypeName={entityTypeName}
-        tabDescriptionNs={tabDescriptionNs}
-      >
-        {children}
-      </SimplePageLayout>
-    </TopLevelDesktopLayout>
+      {children}
+      <Footer />
+      <FloatingActionButtons />
+    </>
   );
 };
 

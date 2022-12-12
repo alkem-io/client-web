@@ -31,7 +31,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
-// import { ScrollButton } from '../../../common/components/core';
 
 export interface SubEntityTabDefinition {
   label: string;
@@ -107,7 +106,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   if (mobile) {
     return (
       <>
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, borderRadius: 0 }} elevation={3}>
           <BottomNavigation
             showLabels
             value={currentTab}

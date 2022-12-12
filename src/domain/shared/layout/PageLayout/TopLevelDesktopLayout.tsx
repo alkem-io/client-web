@@ -4,6 +4,9 @@ import Main from '../../../../common/components/composite/layout/App/Main';
 import Footer from '../../../../common/components/composite/layout/App/Footer';
 import { FloatingActionButtons } from '../../../../common/components/core';
 
+/**
+ * @deprecated - left for compatibility with Pages that haven't been updated to the new design yet
+ */
 const TopLevelDesktopLayout = ({ children }: PropsWithChildren<{}>) => {
   return (
     <>
