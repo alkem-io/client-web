@@ -529,7 +529,7 @@
         "card-comment-created": "commented on '{{cardDisplayName}}'",
         "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member joined {{communityType}}",
+        "member-joined": "new member joined the {{communityType}} '{{parentDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)",
         "update-sent": "shared a new $t(common.update)"
