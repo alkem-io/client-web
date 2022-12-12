@@ -13,7 +13,7 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
 import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-import { AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { AUTH_RESET_PASSWORD_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
@@ -81,13 +81,13 @@ const LoginPage = ({ flow }: LoginPageProps) => {
       justifyContent="end"
       paddingX={2}
       component={Link}
-      to="/identity/recovery"
+      to={AUTH_RESET_PASSWORD_PATH}
       fontSize={12}
       fontFamily={theme => theme.typography.caption.fontFamily}
       fontWeight={600}
       sx={{ color: theme => theme.palette.primary.main }}
     >
-      Reset password
+      {t('pages.registration.reset-password')}
     </Box>
   );
 

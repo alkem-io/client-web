@@ -1,13 +1,17 @@
-import { Box, Container } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
+import Container from '../../../../domain/shared/layout/Container';
+import { sxCols } from '../../../../domain/shared/layout/Grid';
+import FixedHeightLogo from '../components/FixedHeightLogo';
+import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
+import { Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { PageTitle } from '../../../ui/typography';
 
 interface RegisterPageProps {
   flow?: string;
@@ -27,18 +31,14 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <KratosForm ui={verificationFlow?.ui}>
-      <Container maxWidth="lg">
-        <Grid container spacing={2} justifyContent={'center'}>
-          <Grid item sm={4}>
-            <Box marginY={3} textAlign={'center'}>
-              <WrapperTypography variant={'h3'}>{t('pages.verification.header')}</WrapperTypography>
-            </Box>
-            <Box marginY={3} textAlign={'center'}>
-              <WrapperTypography variant={'h5'}>{t('pages.verification.message')}</WrapperTypography>
-            </Box>
-            <KratosUI ui={verificationFlow?.ui} />
-          </Grid>
-        </Grid>
+      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+        <FixedHeightLogo />
+        <PageTitle>{t('pages.verification.header')}</PageTitle>
+        <SubHeading textAlign="center">{t('pages.verification.message')}</SubHeading>
+        <KratosUI ui={verificationFlow?.ui} />
+        <Button component={Link} to={'/'} variant="outlined">
+          {t('pages.verification-required.return-to-platform')}
+        </Button>
       </Container>
     </KratosForm>
   );
