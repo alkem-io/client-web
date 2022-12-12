@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import ContextTabContainer from '../../../context/ContextTabContainer/ContextTabContainer';
+import AboutPageContainer from '../../../context/ContextTabContainer/AboutPageContainer';
 import { PageProps } from '../../../shared/types/PageProps';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useHub } from '../HubContext/useHub';
@@ -13,18 +13,30 @@ const HubAboutPage: FC<HubContextPageProps> = ({}) => {
 
   return (
     <HubPageLayout currentSection={EntityPageSection.About}>
-      <ContextTabContainer hubNameId={hubNameId}>
+      <AboutPageContainer hubNameId={hubNameId}>
         {(entities, state) => (
           <HubAboutView
             name={displayName}
             tagline={entities.context?.tagline}
             tags={entities.tagset?.tags}
             who={entities.context?.who}
+            impact={entities.context?.impact}
+            background={entities.context?.background}
+            vision={entities.context?.vision}
+            communityReadAccess={entities.permissions.communityReadAccess}
+            memberUsers={entities.memberUsers}
+            memberUsersCount={entities.memberUsersCount}
+            memberOrganizations={entities.memberOrganizations}
+            memberOrganizationsCount={entities.memberOrganizationsCount}
+            leadUsers={entities.leadUsers}
+            hostOrganization={entities.hostOrganization}
+            references={entities.references}
+            metrics={entities.metrics}
             loading={state.loading}
             error={state.error}
           />
         )}
-      </ContextTabContainer>
+      </AboutPageContainer>
     </HubPageLayout>
   );
 };

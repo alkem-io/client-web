@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import ContextTabContainer from '../../../context/ContextTabContainer/ContextTabContainer';
+import AboutPageContainer from '../../../context/ContextTabContainer/AboutPageContainer';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { PageProps } from '../../../shared/types/PageProps';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -17,7 +17,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <ContextTabContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
+      <AboutPageContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
         {(entities, state) => (
           <OpportunityContextView
             entities={{
@@ -35,7 +35,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
             metrics={entities.metrics}
           />
         )}
-      </ContextTabContainer>
+      </AboutPageContainer>
     </OpportunityPageLayout>
   );
 };

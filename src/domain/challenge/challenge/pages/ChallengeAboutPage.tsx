@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useHub } from '../../hub/HubContext/useHub';
 import { useChallenge } from '../hooks/useChallenge';
-import ContextTabContainer from '../../../context/ContextTabContainer/ContextTabContainer';
+import AboutPageContainer from '../../../context/ContextTabContainer/AboutPageContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { PageProps } from '../../../shared/types/PageProps';
@@ -15,7 +15,7 @@ const ChallengeAboutPage: FC<ChallengeContextPageProps> = ({}) => {
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.About}>
-      <ContextTabContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
+      <AboutPageContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
         {(entities, state) => (
           <ChallengeAboutView
             name={challengeDisplayName}
@@ -26,7 +26,7 @@ const ChallengeAboutPage: FC<ChallengeContextPageProps> = ({}) => {
             loading={state.loading}
           />
         )}
-      </ContextTabContainer>
+      </AboutPageContainer>
     </ChallengePageLayout>
   );
 };

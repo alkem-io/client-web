@@ -17,7 +17,8 @@ export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({
   vision = '',
   loading, error
 }) => {
-  return (
+  return null;
+  /*return (
     <AboutSection
       infoBlockTitle={name}
       infoBlockText={tagline}
@@ -27,5 +28,5 @@ export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({
       loading={loading}
       error={error}
     />
-  );
+  );*/
 };
