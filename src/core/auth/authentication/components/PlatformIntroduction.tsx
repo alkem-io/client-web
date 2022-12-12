@@ -18,6 +18,7 @@ const PlatformIntroduction = ({ label }: PlatformIntroductionProps) => {
   return (
     <Box>
       <Trans
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         i18nKey={label as any /* Trans doesn't recognize its own TranslationKey as a valid type */}
         components={{
           p: <Paragraph textAlign="center" />,

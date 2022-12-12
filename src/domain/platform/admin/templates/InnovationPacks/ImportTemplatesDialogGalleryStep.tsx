@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 export interface TemplateImportCardComponentProps<Q extends TemplateInnovationPackMetaInfo> {
   template: Q;
-  onClick?: (e: MouseEvent) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   actionButtons?: React.ReactNode[];
 }
 

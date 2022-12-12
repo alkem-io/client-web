@@ -19,11 +19,15 @@ import {
   UserSegmentState,
 } from './global/ui/userSegmentMachine';
 
+// TODO replace any with correct types below
 interface GlobalStateContextProps {
   ui: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     loginNavigationService: Interpreter<LoginNavigationContext, any, LoginNavigationEvent, LoginNavigationState>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     userSegmentService: Interpreter<UserSegmentContext, any, UserSegmentEvent, UserSegmentState>;
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notificationsService: Interpreter<NotificationsContext, any, NotificationsEvent>;
 }
 export const GlobalStateContext = createContext<GlobalStateContextProps | undefined>(undefined);

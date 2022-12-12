@@ -215,7 +215,7 @@ const createActor = reference => {
 interface NewWhiteboardActorModalProps {
   show: boolean;
   onHide: () => void;
-  onSubmit: (elements: any[]) => void;
+  onSubmit: (elements: unknown[]) => void;
   actors: Actor[];
 }
 

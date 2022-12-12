@@ -223,7 +223,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     delete: c => actions.onDelete(c),
   };
 
-  const onClose = async (event: Event) => {
+  const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setOptionPopperOpen(false);
 
     const canvasApi = await excalidrawApiRef.current?.readyPromise;
