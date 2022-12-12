@@ -2,46 +2,41 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, styled, Tabs, TabsProps } from '@mui/material';
 import { FC } from 'react';
 import HeaderNavigationTab from './HeaderNavigationTab';
-
-const Root = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  // ButtonTabs are small tabs-like buttons at the end of the Tabs component, like Share button
-  '& .MuiTab-root.button-tab': {
-    flex: 'none',
-    minWidth: 24,
-    marginRight: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-  },
-  '& .MuiTabs-root': {
-    paddingLeft: theme.spacing(2),
-    paddingRight: 0,
-    [theme.breakpoints.only('xs')]: {
-      paddingLeft: 1,
-      paddingRight: 1,
-    },
-  },
-  '& .MuiTab-root.singleCenteredTab': {
-    maxWidth: '40%',
-    marginLeft: '30%',
-    marginRight: '30%',
-  },
-}));
+import { MAX_CONTENT_WIDTH_WITH_GUTTER } from '../../../../core/ui/grid/constants';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { EntityPageSection } from '../../layout/EntityPageSection';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
-  minHeight: 0,
   color: theme.palette.primary.contrastText,
   backgroundColor: theme.palette.primary.main,
-  '& .MuiTabs-indicator': {
+  '.MuiTabs-flexContainer': {
+    maxWidth: MAX_CONTENT_WIDTH_WITH_GUTTER,
+    margin: 'auto',
+    paddingLeft: gutters()(theme),
+    paddingRight: gutters()(theme),
+    gap: gutters()(theme),
+  },
+  '.MuiTabs-indicator': {
     backgroundColor: theme.palette.primary.contrastText,
     bottom: 2,
     height: 2,
   },
-  '& .MuiTab-root': {
-    fontSize: theme.typography.button.fontSize,
+  '.MuiTab-root': {
     flexGrow: 1,
     minHeight: theme.spacing(5),
     top: -2,
     marginRight: 0,
+  },
+  '.MuiTab-root.button-tab': {
+    flexGrow: 0,
+    flexShrink: 0,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+  },
+  '.MuiTab-root.singleCenteredTab': {
+    maxWidth: '40%',
+    marginLeft: '30%',
+    marginRight: '30%',
   },
 }));
 
@@ -65,20 +60,25 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
   }
 
   return (
-    <Root>
+    <Box position="relative">
       <StyledTabs
         value={value}
         aria-label={ariaLabel}
         variant="scrollable"
-        scrollButtons={'auto'}
+        scrollButtons="auto"
         allowScrollButtonsMobile
       >
         {children}
         {showSettings && (
-          <HeaderNavigationTab className="button-tab" icon={<SettingsOutlined />} value={'settings'} to={settingsUrl} />
+          <HeaderNavigationTab
+            className="button-tab"
+            icon={<SettingsOutlined />}
+            value={EntityPageSection.Settings}
+            to={settingsUrl}
+          />
         )}
       </StyledTabs>
-    </Root>
+    </Box>
   );
 };
 export default HeaderNavigationTabs;
