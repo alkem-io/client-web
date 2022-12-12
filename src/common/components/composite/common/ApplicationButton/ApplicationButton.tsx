@@ -7,6 +7,7 @@ import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
+import { PersonOutlined } from '@mui/icons-material';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
@@ -117,10 +118,13 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     if (isMember) {
       return (
         <Button
+          variant="outlined"
+          startIcon={<PersonOutlined />}
           disabled
           sx={{
             '&.Mui-disabled': {
-              color: 'secondary.main',
+              color: 'primary.main',
+              borderColor: 'primary.main',
             },
           }}
         >

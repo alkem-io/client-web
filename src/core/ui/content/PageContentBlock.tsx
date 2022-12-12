@@ -1,6 +1,7 @@
 import { Paper, PaperProps, SxProps } from '@mui/material';
 import { GUTTER_MUI } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
+import SwapColors from '../palette/SwapColors';
 
 interface PageContentBlockProps {
   accent?: boolean;
@@ -18,31 +19,22 @@ const PageContentBlock = ({
   ...props
 }: PaperProps & PageContentBlockProps) => {
   const mergedSx: Partial<SxProps> = {
-    color: accent ? 'background.default' : undefined,
-    backgroundColor: accent ? 'primary.main' : undefined,
     padding: disablePadding ? undefined : GUTTER_MUI,
     display: disableGap ? undefined : 'flex',
     flexDirection: disableGap ? undefined : 'column',
     gap: disableGap ? undefined : GUTTER_MUI,
-    flexBasis: '100%',
+    flexBasis: halfWidth ? 0 : '100%',
+    flexGrow: halfWidth ? 1 : undefined,
     ...sx,
   };
 
-  if (halfWidth) {
-    const halfWidthStyles = {
-      ...mergedSx,
-      flexGrow: 1,
-      flexBasis: 0,
-    };
-
-    return (
-      <GridProvider columns={columns => columns! / 2}>
-        <Paper sx={halfWidthStyles} {...props} />
+  return (
+    <SwapColors swap={accent}>
+      <GridProvider columns={columns => (halfWidth ? columns! / 2 : columns!)}>
+        <Paper sx={mergedSx} {...props} />
       </GridProvider>
-    );
-  }
-
-  return <Paper sx={mergedSx} {...props} />;
+    </SwapColors>
+  );
 };
 
 export default PageContentBlock;

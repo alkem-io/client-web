@@ -45,6 +45,7 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
+import HubDashboardVision from './HubDashboardVision';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -121,9 +122,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        <PageContentBlock accent>
-          <WrapperMarkdown>{vision}</WrapperMarkdown>
-        </PageContentBlock>
+        <HubDashboardVision vision={vision} />
         <ShareButton
           title={t('share-dialog.share-this', { entity: t('common.hub') })}
           url={buildHubUrl(hubNameId)}
