@@ -529,7 +529,7 @@
         "card-comment-created": "commented on '{{cardDisplayName}}'",
         "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member joined the {{communityType}} '{{parentDisplayName}}'",
+        "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)",
         "update-sent": "shared a new $t(common.update)"
@@ -538,7 +538,7 @@
         "callout-published": "{{displayName}}",
         "canvas-created": "{{displayName}}",
         "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDisplayName}}",
+        "card-created": "{{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
