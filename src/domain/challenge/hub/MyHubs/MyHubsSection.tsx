@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import DashboardHubsSection, {
   DashboardHubSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
-import { useHubsQuery } from '../../../../hooks/generated/graphql';
+import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { Loading } from '../../../../common/components/core';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';

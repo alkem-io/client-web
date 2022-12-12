@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Link, styled, Typography } from '@mui/material';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { useConfig } from '../../../../hooks';
+import { useConfig } from '../../../platform/config/useConfig';
 
 const FullscreenBox = styled(Box)(() => ({
   display: 'flex',

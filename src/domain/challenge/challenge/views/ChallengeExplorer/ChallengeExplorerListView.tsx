@@ -3,7 +3,7 @@ import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
-import { useUserContext } from '../../../../../hooks';
+import { useUserContext } from '../../../../community/contributor/user';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';

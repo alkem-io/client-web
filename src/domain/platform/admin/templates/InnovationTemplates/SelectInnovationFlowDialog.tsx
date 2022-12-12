@@ -8,7 +8,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../common
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { LifecycleType } from '../../../../../models/graphql-schema';
+import { LifecycleType } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface LifecycleTemplateInfo {
   id: string;

@@ -1,4 +1,4 @@
-import { Callout } from '../../../../models/graphql-schema';
+import { Callout } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutFormInput } from '../CalloutForm';
 import { CalloutCardTemplate } from '../creation-dialog/CalloutCreationDialog';
 

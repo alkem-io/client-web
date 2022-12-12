@@ -19,7 +19,7 @@
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
     "apply": "Apply",
-    "explore": "Explore",
+    "explore": "Contribute",
     "ok": "Ok",
     "create": "Create",
     "publish": "Publish",
@@ -112,7 +112,7 @@
     "create-new-entity": "Create new {{entity}}",
     "description": "Description",
     "about": "About",
-    "explore": "Explore",
+    "explore": "Contribute",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
     "filterby": "Filter by...",
@@ -131,7 +131,7 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
-    "communications": "Communications",
+    "communications": "Updates",
     "applications": "Applications",
     "interest": "Interest",
     "interests": "Interests",
@@ -712,7 +712,7 @@
         "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
         "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
       },
-      "file-size-error": "File size excedes the {{limit}}MB limit",
+      "file-size-error": "File size exceeds the {{limit}}MB limit",
       "file-upload-success": "File uploaded successfully"
     },
     "editHubForm": {
@@ -1473,7 +1473,8 @@
       "header": "Create an account to start using Alkemio",
       "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
-      "login": "Have an account?"
+      "login": "Have an account?",
+      "reset-password": "Reset password"
     },
     "accept-terms": {
       "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
@@ -1482,17 +1483,16 @@
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registration-success": {
-      "header": "Thank you for signing up.",
-      "subheader": "Nearly there! One last step is to verify your email."
+      "header": "Hi, thank you for signing up!"
     },
     "verification-success": {
       "header": "Thank you for verifying your email address!",
       "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all aspects of your [profile](/profile) - helps with both applying to join communities and with others being able to connect with you. "
+      "message": "Please do consider filling out all aspects of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
-      "header": "Password Reset",
-      "message": "Please enter your email address below to receive a link to reset your password."
+      "header": "Password recovery",
+      "message": "Please enter your email address below to receive a recovery code that will allow to reset your password."
     },
     "verification": {
       "header": "Email verification",
@@ -1500,8 +1500,8 @@
     },
     "verification-required": {
       "header": "Email verification is pending.",
-      "message": "Please check your inbox for an email with instructions.",
-      "link": "(If you have not received an email, click on this link to send again)"
+      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>.",
+      "return-to-platform": "Return to the platform"
     },
     "settings": {
       "header": "User Settings"

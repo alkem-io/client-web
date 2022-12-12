@@ -1,9 +1,11 @@
 import React, { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { NotificationHandler } from '../../../../../containers/NotificationHandler';
-import { useApm, useUserContext, useUserScope } from '../../../../../hooks';
-import useServerMetadata from '../../../../../hooks/useServerMetadata';
-import useCommunityUpdatesNotifier from '../../../../../hooks/subscription/CommunityUpdatesNotifier';
+import { NotificationHandler } from '../../../../../core/ui/notifications/NotificationHandler';
+import { useUserContext } from '../../../../../domain/community/contributor/user';
+import { useUserScope } from '../../../../../core/analytics/useSentry';
+import { useApm } from '../../../../../core/analytics/useApm';
+import useServerMetadata from '../../../../../domain/platform/metadata/useServerMetadata';
+import useCommunityUpdatesNotifier from '../../../../../domain/communication/updates/useCommunityUpdatesNotifier';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '../../../../../domain/platform/cookies/useAlkemioCookies';
 import CookieConsent from '../../../../../domain/platform/cookies/CookieConsent';

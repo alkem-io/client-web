@@ -1,6 +1,6 @@
-import { Maybe, Location as GraphQLLocation } from '../../../models/graphql-schema';
+import { Maybe, Location as GraphQLLocation } from '../../../core/apollo/generated/graphql-schema';
 import { Location as LocationModel } from './Location';
-import { COUNTRIES } from '../../../models/constants';
+import { COUNTRIES } from './countries.constants';
 
 /**
  * formatLocation turns a Location coming from a GraphQL query into a Location usable by the UI.

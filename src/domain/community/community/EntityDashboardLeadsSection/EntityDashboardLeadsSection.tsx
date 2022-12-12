@@ -10,7 +10,7 @@ import OrganizationCard, {
 import SectionHeader from '../../../shared/components/Section/SectionHeader';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
-import { useUserContext } from '../../../../hooks';
+import { useUserContext } from '../../contributor/user';
 import { mapToAssociatedOrganization } from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganization';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 

@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
-import CommunityGroupListPage from '../../../../pages/Admin/Community/CommunityListPage';
-import { useHub } from '../../../../hooks';
+import CommunityGroupListPage from '../community/CommunityListPage';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import useHubApplications from './providers/useHubApplications';
 import { HubCommunityAdminMembershipPreferencesSection } from './HubCommunityAdminMembershipPreferencesSection';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
@@ -18,7 +18,7 @@ import {
   useHubAvailableLeadUsersLazyQuery,
   useHubAvailableMemberUsersLazyQuery,
   useHubCommunityMembersQuery,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useMemberOrganizationAssignment from '../../../community/community/useCommunityAssignment/useMemberOrganizationAssignment';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';

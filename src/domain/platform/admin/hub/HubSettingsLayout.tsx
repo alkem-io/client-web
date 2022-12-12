@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
 import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';

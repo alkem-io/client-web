@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface CommunityContextValue {
   communityId: string;

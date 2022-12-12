@@ -12,8 +12,8 @@ import {
   ActivityLogMemberJoinedFragment,
   ActivityLogOpportunityCreatedFragment,
   ActivityLogUpdateSentFragment,
-} from '../../../../models/graphql-schema';
-import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { LATEST_ACTIVITIES_COUNT } from './constants';
 import {
   ActivityCardCommentCreatedView,
   ActivityCalloutPublishedView,

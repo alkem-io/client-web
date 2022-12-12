@@ -4,11 +4,14 @@ import { Trans, useTranslation } from 'react-i18next';
 import CanvasCreateDialog from '../CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
-import { ICanvasActions } from '../../../../containers/canvas/CanvasActionsContainer';
-import CanvasValueContainer from '../../../../containers/canvas/CanvasValueContainer';
-import { useUserContext } from '../../../../hooks';
-import { CanvasCheckoutStateEnum, CreateCanvasCanvasTemplateFragment } from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+import { ICanvasActions } from '../containers/CanvasActionsContainer';
+import CanvasValueContainer from '../containers/CanvasValueContainer';
+import { useUserContext } from '../../../community/contributor/user';
+import {
+  CanvasCheckoutStateEnum,
+  CreateCanvasCanvasTemplateFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { CanvasFragmentWithCallout } from '../../callout/useCallouts';

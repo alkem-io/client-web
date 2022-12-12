@@ -1,5 +1,5 @@
-import { Tagset } from '../../../../models/Profile';
-import { OrganizationVerificationEnum, Reference } from '../../../../models/graphql-schema';
+import { Tagset } from '../../../common/profile/Profile';
+import { OrganizationVerificationEnum, Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { Location } from '../../../common/location/Location';
 
 export interface OrganizationInput {

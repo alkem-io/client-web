@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
+import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import NewDiscussionView from '../views/NewDiscussionView';
-import { PageProps } from '../../../../pages/common';
-import { useUpdateNavigation } from '../../../../hooks';
+import { PageProps } from '../../../shared/types/PageProps';
+import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 
 export interface NewDiscussionPageProps extends PageProps {}
 
@@ -23,4 +23,5 @@ const NewDiscussionPage: FC<NewDiscussionPageProps> = ({ paths }) => {
     </DiscussionsLayout>
   );
 };
+
 export default NewDiscussionPage;

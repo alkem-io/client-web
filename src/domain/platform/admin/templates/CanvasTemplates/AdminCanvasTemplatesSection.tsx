@@ -5,12 +5,12 @@ import {
   useHubTemplatesCanvasTemplateWithValueLazyQuery,
   useInnovationPackCanvasTemplateWithValueLazyQuery,
   useUpdateCanvasTemplateMutation,
-} from '../../../../../hooks/generated/graphql';
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   AdminCanvasTemplateFragment,
   CanvasDetailsFragment,
   UpdateCanvasTemplateMutation,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
@@ -20,9 +20,9 @@ import CreateCanvasTemplateDialog, { CreateCanvasTemplateDialogProps } from './C
 import CanvasTemplatePreview from './CanvasTemplatePreview';
 import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
-import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
-import { useHub } from '../../../../../hooks';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 
 interface AdminCanvasTemplatesSectionProps {
   templateId: string | undefined;
@@ -84,11 +84,13 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
   );
 
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
-    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network' });
+    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
 
   const getImportedTemplateValue = useCallback(
-    (template: AdminCanvasTemplateFragment) => {
-      fetchInnovationPackCanvasValue({ variables: { canvasTemplateId: template.id } });
+    (template: AdminCanvasTemplateFragment & TemplateInnovationPackMetaInfo) => {
+      fetchInnovationPackCanvasValue({
+        variables: { innovationPackId: template.innovationPackId, canvasTemplateId: template.id },
+      });
     },
     [fetchInnovationPackCanvasValue]
   );
@@ -107,9 +109,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
       getTemplateValue={getTemplateValue}
       getImportedTemplateValue={getImportedTemplateValue}
       templateValue={canvasValue?.hub.templates?.canvasTemplate}
-      importedTemplateValue={
-        importedCanvasValue?.library?.innovationPacks?.flatMap(ip => ip.templates?.canvasTemplate)[0]
-      }
+      importedTemplateValue={importedCanvasValue?.library?.innovationPack?.templates?.canvasTemplate}
       createTemplateDialogComponent={CreateCanvasTemplateDialogWithCanvases}
       editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases}
       useCreateTemplateMutation={useCreateCanvasTemplateMutation}

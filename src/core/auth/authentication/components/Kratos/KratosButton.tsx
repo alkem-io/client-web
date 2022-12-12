@@ -20,7 +20,6 @@ export const KratosButton: FC<KratosButtonProps> = ({ node }) => {
           type={attributes.type as AuthActionButtonProps['type']}
           disabled={attributes.disabled}
           value={attributes.value}
-          color="primaryDark"
           onClick={onBeforeSubmit}
         >
           {getNodeTitle(node)}

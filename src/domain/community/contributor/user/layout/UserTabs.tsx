@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import { useUrlParams } from '../../../../../hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import ProfileTabs from '../../../../shared/layout/ProfileTabs';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';

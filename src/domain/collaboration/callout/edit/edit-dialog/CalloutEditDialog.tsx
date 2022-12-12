@@ -10,7 +10,7 @@ import ConfirmationDialog, {
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
-import { useHub } from '../../../../../hooks';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
 
 export interface CalloutEditDialogProps {

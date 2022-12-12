@@ -5,7 +5,9 @@ import App from '../../common/components/composite/layout/App/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
 import { HubContextProvider } from '../../domain/challenge/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../../domain/community/contributor/organization/context/OrganizationProvider';
-import { AboutPage, Error404, HomePage } from '../../pages';
+import HomePage from '../../domain/platform/pages/Home/HomePage';
+import AboutPage from '../../domain/platform/pages/About';
+import { Error404 } from '../pages/Errors/Error404';
 import ContributorsPage from '../../domain/community/contributor/ContributorsPage';
 import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
 import { MessagesRoute } from '../../domain/communication/messages/routing/MessagesRoute';
@@ -14,14 +16,15 @@ import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from './Restricted';
 import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
-import { nameOfUrl } from './url-params';
+import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
 import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing';
-import { INSPIRATION_ROUTE } from '../../models/constants';
+import { INSPIRATION_ROUTE } from './route.constants';
 import InspirationPage from '../help/pages/InspirationPage';
 import { WithApmTransaction } from '../../domain/shared/components';
+import devRoute from '../../dev/routes';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -170,6 +173,7 @@ export const TopLevelRoutes: FC = () => {
             </WithApmTransaction>
           }
         />
+        {devRoute()}
       </Route>
     </Routes>
   );

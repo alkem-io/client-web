@@ -1,4 +1,4 @@
-import { PageProps } from '../../../../../pages/common';
+import { PageProps } from '../../../../shared/types/PageProps';
 
 export interface SettingsPageProps extends PageProps {
   routePrefix?: string;

@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { CreateOrganizationGroupPage } from '../components/Organization/CreateOrganizationGroup';
-import { Error404, PageProps } from '../../../../pages';
-import { nameOfUrl } from '../../../../core/routing/url-params';
+import { PageProps } from '../../../shared/types/PageProps';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { nameOfUrl } from '../../../../core/routing/urlParams';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
-import { useAppendPaths } from '../../../../hooks/usePathUtils';
+import { useAppendPaths } from '../../../../core/routing/usePathUtils';
 
 export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('..');

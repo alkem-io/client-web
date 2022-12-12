@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useQueryParams } from '../../../../hooks';
+import { useQueryParams } from '../../../routing/useQueryParams';
 import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
 import RegistrationPage from '../pages/RegistrationPage';
 import RegistrationSuccessPage from '../pages/RegistrationSuccessPage';

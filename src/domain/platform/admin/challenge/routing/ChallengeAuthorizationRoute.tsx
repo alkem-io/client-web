@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Error404 } from '../../../../../pages';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import ChallengeAuthorizationPage from '../../../../challenge/challenge/pages/ChallengeAuthorization/ChallengeAuthorizationPage';
-import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
+import { useAppendBreadcrumb } from '../../../../../core/routing/usePathUtils';
 import AuthorizationRouteProps from '../../routing/AuthorizationRouteProps';
 
 const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId = '' }) => {

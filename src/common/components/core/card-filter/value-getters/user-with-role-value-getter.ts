@@ -1,6 +1,6 @@
-import { WithCardRole } from '../../../../../hooks';
+import { WithCardRole } from '../../../../../domain/community/contributor/user/hooks/useUserCardRoleName';
 import { ValueType } from '../filterFn';
-import { User } from '../../../../../models/graphql-schema';
+import { User } from '../../../../../core/apollo/generated/graphql-schema';
 
 export const userWithRoleValueGetter = ({
   id,

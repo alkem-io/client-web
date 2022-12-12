@@ -11,13 +11,10 @@ import DashboardColumn from '../../../../common/components/composite/sections/Da
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import { Loading } from '../../../../common/components/core';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
-import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
-import {
-  ChallengeContainerEntities,
-  ChallengeContainerState,
-} from '../../../../containers/challenge/ChallengePageContainer';
-import { useConfig } from '../../../../hooks';
-import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../../models/constants';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import { ChallengeContainerEntities, ChallengeContainerState } from '../containers/ChallengePageContainer';
+import { useConfig } from '../../../platform/config/useConfig';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
 import { buildChallengeUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';

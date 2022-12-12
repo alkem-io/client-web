@@ -1,13 +1,13 @@
-import { Excalidraw } from '@excalidraw/excalidraw';
-import { ExportedDataState, ImportedDataState } from '@excalidraw/excalidraw/types/data/types';
-import { ExcalidrawAPIRefValue, ExcalidrawProps, ExportOpts } from '@excalidraw/excalidraw/types/types';
+import { Excalidraw } from '@alkemio/excalidraw';
+import { ExportedDataState, ImportedDataState } from '@alkemio/excalidraw/types/data/types';
+import { ExcalidrawAPIRefValue, ExcalidrawProps, ExportOpts } from '@alkemio/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { forwardRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
-import { useCombinedRefs } from '../../../../../hooks/useCombinedRefs';
+import { useCombinedRefs } from '../../../../../domain/shared/utils/useCombinedRefs';
 import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
 import useAsyncInterruptibleCallback from '../../../../../domain/shared/utils/useAsyncInterruptibleCallback';
 
@@ -64,12 +64,17 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
     const value = canvas?.value;
-    const data = useMemo(() => (value ? JSON.parse(value) : initialExcalidrawState), [value]);
+    const data = useMemo(() => {
+      const parsedData = value ? JSON.parse(value) : initialExcalidrawState;
+      parsedData.zoomToFit = true;
+      return parsedData;
+    }, [value]);
 
     const refreshOnDataChange = useAsyncInterruptibleCallback(check =>
       debounce(async debouncedData => {
         const excalidraw = await check(combinedRef.current?.readyPromise);
         excalidraw?.updateScene(debouncedData);
+        excalidraw?.zoomToFit();
       }, CANVAS_UPDATE_DEBOUNCE_INTERVAL)
     );
 

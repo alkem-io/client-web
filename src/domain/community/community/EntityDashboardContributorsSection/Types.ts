@@ -1,6 +1,9 @@
 import { WithId } from '../../../../types/WithId';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
-import { AssociatedOrganizationDetailsFragment, DashboardLeadUserFragment } from '../../../../models/graphql-schema';
+import {
+  AssociatedOrganizationDetailsFragment,
+  DashboardLeadUserFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 
 export interface EntityDashboardContributors {
   memberUsers: WithId<ContributorCardProps>[] | undefined;

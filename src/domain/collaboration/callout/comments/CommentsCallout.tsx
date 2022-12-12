@@ -3,14 +3,15 @@ import React, { useCallback, useMemo } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
-import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useUserContext } from '../../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
   usePostCommentInCalloutMutation,
   useRemoveCommentFromCalloutMutation,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { Message } from '../../../shared/components/Comments/models/message';
-import { AuthorizationPrivilege, CalloutState } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 

@@ -1,4 +1,4 @@
-import { AUTH_LOGIN_PATH, AUTH_REQUIRED_PATH } from '../../models/constants';
+import { AUTH_LOGIN_PATH, AUTH_REQUIRED_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import {
   CoreEntityIdTypes,

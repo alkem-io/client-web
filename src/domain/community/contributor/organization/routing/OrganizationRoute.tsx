@@ -3,8 +3,9 @@ import { Route, Routes } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
 import { Loading } from '../../../../../common/components/core';
 import { EntityPageLayoutHolder } from '../../../../shared/layout/PageLayout';
-import { useOrganization } from '../../../../../hooks';
-import { Error404, PageProps } from '../../../../../pages';
+import { useOrganization } from '../hooks/useOrganization';
+import { PageProps } from '../../../../shared/types/PageProps';
+import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';
 
 const rootPaths = [{ value: '/', name: 'organization', real: false }];

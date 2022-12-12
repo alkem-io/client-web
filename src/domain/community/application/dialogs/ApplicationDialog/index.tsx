@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
-import { ApplicationInfoFragment } from '../../../../../models/graphql-schema';
+import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
 import Avatar from '../../../../../common/components/core/Avatar';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';

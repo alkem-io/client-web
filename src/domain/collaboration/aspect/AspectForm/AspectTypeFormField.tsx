@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import HelpButton from '../../../../common/components/core/HelpButton';
 import { InputAdornment } from '@mui/material';
-import { useHub } from '../../../../hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
 
 export interface AspectTypeFormFieldProps {

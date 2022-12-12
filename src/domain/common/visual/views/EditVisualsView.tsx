@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Box } from '@mui/material';
-import { Visual } from '../../../../models/graphql-schema';
+import { Visual } from '../../../../core/apollo/generated/graphql-schema';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
-import { getVisualByType } from '../../../../common/utils/visuals.utils';
-import { VisualName } from '../../../../models/constants/visuals.constants';
+import { getVisualByType } from '../utils/visuals.utils';
+import { VisualName } from '../constants/visuals.constants';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 

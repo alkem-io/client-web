@@ -8,7 +8,7 @@ import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
 import AuthActionButton from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
@@ -89,7 +89,6 @@ const SignUp = () => {
             <AcceptTermsButton
               hasAcceptedTerms={hasAcceptedTerms}
               startIcon={<EmailIcon />}
-              color="primaryDark"
               justifyContent="start"
               onClick={signUp}
             >
@@ -98,9 +97,7 @@ const SignUp = () => {
             <Paragraph textAlign="center" marginY={4}>
               Already have an account?
             </Paragraph>
-            <AuthActionButton color="primaryDark" onClick={signIn}>
-              Sign in
-            </AuthActionButton>
+            <AuthActionButton onClick={signIn}>Sign in</AuthActionButton>
           </KratosUI>
         </AcceptTermsContext>
       </Container>

@@ -3,11 +3,11 @@ import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AlkemioApolloProvider from './core/apollo/context/ApolloProvider';
-import { GlobalStateProvider } from './context/GlobalStateProvider';
-import { NavigationProvider } from './context/NavigationProvider';
-import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
-import ServerMetadataProvider from './context/ServerMetadataProvider';
-import { ThemeProvider } from './context/ThemeProvider';
+import { GlobalStateProvider } from './core/state/GlobalStateProvider';
+import { NavigationProvider } from './core/routing/NavigationProvider';
+import SentryErrorBoundaryProvider from './core/analytics/SentryErrorBoundaryProvider';
+import ServerMetadataProvider from './domain/platform/metadata/ServerMetadataProvider';
+import { ThemeProvider } from './core/ui/themes/ThemeProvider';
 import { UserProvider } from './domain/community/contributor/user/providers/UserProvider/UserProvider';
 import './core/i18n/config';
 import { TopLevelRoutes } from './core/routing/TopLevelRoutes';
@@ -15,7 +15,8 @@ import ScrollToTop from './core/routing/ScrollToTop';
 import { CookiesProvider } from 'react-cookie';
 import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
-import { ConfigProvider } from './config/context/ConfigProvider';
+import { ConfigProvider } from './domain/platform/config/ConfigProvider';
+import { fontFamilySourceSans } from './core/ui/typography/themeOptions';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -37,7 +38,7 @@ const useGlobalStyles = makeStyles(theme => ({
     body: {
       height: '100%',
       margin: 0,
-      fontFamily: '"Source Sans Pro", "Montserrat"',
+      fontFamily: fontFamilySourceSans,
     },
     '#root': {
       minHeight: '100%',

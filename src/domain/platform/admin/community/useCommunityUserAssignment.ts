@@ -3,12 +3,12 @@ import {
   useAssignUserAsCommunityMemberMutation,
   useRemoveUserAsCommunityLeadMutation,
   useRemoveUserAsCommunityMemberMutation,
-} from '../../../../hooks/generated/graphql';
+} from '../../../../core/apollo/generated/apollo-hooks';
 import useCommunityMembersAssignment, {
   MemberMutationHook,
   RefetchQuery,
 } from '../../../community/community/useCommunityAssignment/useCommunityMembersAssignment';
-import { Member } from '../../../../models/User';
+import { Member } from '../../../community/contributor/user/models/User';
 import { PaginationVariables } from '../../../shared/pagination/usePaginatedQuery';
 import useAvailableCommunityUsers, {
   AvailableCommunityUsersOptions,

@@ -5,10 +5,10 @@ import DashboardHubsSection, {
   DashboardHubSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useUserContext } from '../../../../hooks';
-import { useHubsQuery } from '../../../../hooks/generated/graphql';
+import { useUserContext } from '../../../community/contributor/user';
+import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MetricTooltip from '../../../platform/metrics/MetricTooltip';
-import useServerMetadata from '../../../../hooks/useServerMetadata';
+import useServerMetadata from '../../../platform/metadata/useServerMetadata';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';

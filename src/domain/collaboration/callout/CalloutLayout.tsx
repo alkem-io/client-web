@@ -10,7 +10,7 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
-} from '../../../models/graphql-schema';
+} from '../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import Heading from '../../shared/components/Heading';
 import { CalloutSummary } from './CalloutSummary';

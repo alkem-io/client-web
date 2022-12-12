@@ -1,6 +1,11 @@
-import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
-import { MessageDetailsFragmentDoc, useCalloutMessageReceivedSubscription } from '../../../hooks/generated/graphql';
-import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
+import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useConfig } from '../../platform/config/useConfig';
+import { useUserContext } from '../../community/contributor/user';
+import {
+  MessageDetailsFragmentDoc,
+  useCalloutMessageReceivedSubscription,
+} from '../../../core/apollo/generated/apollo-hooks';
+import { FEATURE_SUBSCRIPTIONS } from '../../platform/config/features.constants';
 
 const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => {
   const handleError = useApolloErrorHandler();

@@ -3,7 +3,7 @@ import { has, keyBy } from 'lodash';
 import { DocumentNode } from 'graphql';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
-import { useApolloErrorHandler } from '../../../../hooks';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { PossiblyUndefinedProps } from '../../../shared/types/PossiblyUndefinedProps';
 import somePropsNotDefined from '../../../shared/utils/somePropsNotDefined';

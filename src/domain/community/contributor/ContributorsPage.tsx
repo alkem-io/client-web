@@ -6,7 +6,7 @@ import { InputAdornment, OutlinedInput, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
 import { useUserContext } from './user';
-import { useUpdateNavigation } from '../../../hooks';
+import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import TopLevelDesktopLayout from '../../shared/layout/PageLayout/TopLevelDesktopLayout';

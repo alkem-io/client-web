@@ -7,7 +7,10 @@ import ContributorCard, {
   ContributorCardSkeleton,
 } from '../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { PaginatedResult } from './ContributorsSearch/ContributorsSearchContainer';
-import { OrganizationContributorFragment, UserContributorFragment } from '../../../models/graphql-schema';
+import {
+  OrganizationContributorFragment,
+  UserContributorFragment,
+} from '../../../core/apollo/generated/graphql-schema';
 import useLazyLoading from '../../shared/pagination/useLazyLoading';
 import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import ImageBackdrop from '../../shared/components/Backdrops/ImageBackdrop';

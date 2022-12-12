@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import LinkIcon from '@mui/icons-material/Link';
 import EmailIcon from '@mui/icons-material/MailOutline';
-import { OrganizationInfoFragment } from '../../../../../models/graphql-schema';
+import { OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { OrganizationVerifiedState } from '../OrganizationVerifiedState';
 import { Loading } from '../../../../../common/components/core';
 import TagContainer from '../../../../../common/components/core/TagContainer';

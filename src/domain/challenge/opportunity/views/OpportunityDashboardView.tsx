@@ -11,14 +11,15 @@ import ContextSectionIcon from '../../../../common/components/composite/sections
 import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
-import { useHub, useChallenge } from '../../../../hooks';
+import { useHub } from '../../hub/HubContext/useHub';
+import { useChallenge } from '../../challenge/hooks/useChallenge';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
   Reference,
-} from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import { buildOpportunityUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
@@ -36,7 +37,6 @@ import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
-  // activity: MetricsItem[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   discussions: Discussion[];

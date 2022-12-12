@@ -2,8 +2,8 @@ import { Grid } from '@mui/material';
 import { FieldArray, useField } from 'formik';
 import React, { FC, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
-import { TagsetTemplate } from '../../../../../models/graphql-schema';
-import { Tagset } from '../../../../../models/Profile';
+import { TagsetTemplate } from '../../../../../core/apollo/generated/graphql-schema';
+import { Tagset } from '../../../../common/profile/Profile';
 import { toTagsetTitle } from '../../../../../common/utils/toTagsetTitle';
 import { TagsInput } from '../../../../../common/components/core';
 

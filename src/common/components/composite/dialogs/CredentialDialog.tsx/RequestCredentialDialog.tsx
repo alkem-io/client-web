@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import {
   AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
-} from '../../../../../models/graphql-schema';
+} from '../../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';

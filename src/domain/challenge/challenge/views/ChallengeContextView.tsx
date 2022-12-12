@@ -7,15 +7,15 @@ import ApplicationButton from '../../../../common/components/composite/common/Ap
 import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
 import { ChallengeContextSection } from './ChallengeContextSection';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import {
   Context,
   ContextTabFragment,
   LifecycleContextTabFragment,
   MetricsItemFragment,
   Tagset,
-} from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';

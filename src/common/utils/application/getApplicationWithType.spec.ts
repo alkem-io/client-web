@@ -1,6 +1,6 @@
-import { ApplicationForRoleResult } from '../../../models/graphql-schema';
+import { ApplicationForRoleResult } from '../../../core/apollo/generated/graphql-schema';
 import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
-import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { ApplicationTypeEnum } from '../../../domain/community/application/constants/ApplicationType';
 
 type TestData = {
   name: string;
