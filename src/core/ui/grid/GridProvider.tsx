@@ -6,12 +6,12 @@ interface GridProviderProps {
 }
 
 const GridProvider = ({ columns, children }: PropsWithChildren<GridProviderProps>) => {
-  const parentGridColumns = useContext(GridContext);
+  const parentGridContext = useContext(GridContext);
 
   const gridProps: GridProperties = useMemo(() => {
-    const nestedGridColumns = typeof columns === 'number' ? columns : columns(parentGridColumns?.columns);
+    const nestedGridColumns = typeof columns === 'number' ? columns : columns(parentGridContext?.columns);
     return { columns: nestedGridColumns };
-  }, [columns, parentGridColumns]);
+  }, [columns, parentGridContext]);
 
   return <GridContext.Provider value={gridProps}>{children}</GridContext.Provider>;
 };
