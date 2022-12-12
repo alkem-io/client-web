@@ -31,7 +31,7 @@ const AspectCard = ({ aspect, onClick }: AspectCardProps) => {
       </CardDetails>
       <CardFooter>
         {aspect?.createdDate && <CardFooterDate date={aspect?.createdDate} />}
-        <MessageCounter messageCount={aspect?.comments?.messageCount} />
+        <MessageCounter commentsCount={aspect?.comments?.commentsCount} />
       </CardFooter>
     </ContributeCard>
   );

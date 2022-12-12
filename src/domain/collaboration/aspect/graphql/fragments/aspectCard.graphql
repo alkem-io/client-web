@@ -8,7 +8,8 @@ fragment AspectCard on Aspect {
   }
   createdDate
   comments {
-    messageCount
+    id
+    commentsCount
   }
   banner {
     ...VisualUri
