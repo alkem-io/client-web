@@ -18,7 +18,7 @@ const PageContentColumn = ({ columns, children, ...props }: PageContentColumnPro
   const nestedGridColumns = Math.min(columns, gridColumns);
 
   return (
-    <GridItem columns={columns} display="flex" flexDirection="column" gap={GUTTER_MUI} {...props}>
+    <GridItem columns={columns} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
       <GridProvider columns={nestedGridColumns}>{children}</GridProvider>
     </GridItem>
   );
