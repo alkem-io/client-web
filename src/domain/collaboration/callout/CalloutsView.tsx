@@ -29,12 +29,6 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [/* use for the Dialog */ backToCanvases, buildLinkToCanvasRaw] = useBackToParentPage(rootUrl);
 
-  const buildLinkToCanvas = useMemo(
-    () => (canvasNameId: string, calloutNameId: string) =>
-      buildLinkToCanvasRaw(`${rootUrl}/callouts/${calloutNameId}/canvases/${canvasNameId}`),
-    [rootUrl, buildLinkToCanvasRaw]
-  );
-
   const { t } = useTranslation();
 
   const {
@@ -104,7 +98,6 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
                         opportunityNameId={opportunityNameId}
-                        buildCanvasUrl={buildLinkToCanvas}
                         canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
                         onCalloutEdit={handleEdit}
                         onVisibilityChange={handleVisibilityChange}
