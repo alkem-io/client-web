@@ -5,22 +5,38 @@ import { identity } from 'lodash';
 
 const swapColors = (theme: Theme): Theme => {
   const primaryColor = theme.palette.primary.main;
-  const backgroundColor = theme.palette.background.paper;
+  const secondaryColor = theme.palette.secondary.main;
+  const backgroundColorPaper = theme.palette.background.paper;
+  const backgroundColorDefault = theme.palette.background.paper;
 
   return createTheme({
     ...theme,
     palette: {
       ...theme.palette,
       primary: {
-        ...theme.palette.primary,
-        main: backgroundColor,
+        main: backgroundColorPaper,
+      },
+      secondary: {
+        main: backgroundColorDefault,
       },
       background: {
-        ...theme.palette.background,
         paper: primaryColor,
+        default: secondaryColor,
       },
       text: {
-        primary: backgroundColor,
+        primary: backgroundColorPaper,
+      },
+    },
+    components: {
+      ...theme.components,
+      MuiButton: {
+        styleOverrides: {
+          contained: {
+            ':hover': {
+              backgroundColor: theme.palette.highlight.main,
+            },
+          },
+        },
       },
     },
   });

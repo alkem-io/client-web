@@ -139,15 +139,15 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
 
     if (canJoinCommunity) {
       return (
-        <Button onClick={handleClickJoin} variant={'contained'}>
+        <Button onClick={handleClickJoin} variant="contained">
           {t('components.application-button.join')}
         </Button>
       );
     }
 
-    if (canApplyToCommunity) {
+    if (canApplyToCommunity && applyUrl) {
       return (
-        <Button component={RouterLink} variant={'contained'} to={applyUrl || ''}>
+        <Button component={RouterLink} variant="contained" to={applyUrl}>
           {t('buttons.apply')}
         </Button>
       );
