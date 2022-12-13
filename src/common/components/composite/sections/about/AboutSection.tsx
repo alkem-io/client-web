@@ -92,18 +92,6 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <Tagline>{infoBlockText}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
           </PageContentBlock>
-        </LeftColumn>
-        <RightColumn>
-          <PageContentBlock sx={{ height: BLOCK_HEIGHT }}>
-            <Text>
-              {t('pages.about.vision')}
-            </Text>
-            <WrapperMarkdown>
-              {vision}
-            </WrapperMarkdown>
-          </PageContentBlock>
-        </RightColumn>
-        <LeftColumn>
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               organizationsHeader={t(organizationsHeader)}
@@ -112,18 +100,6 @@ export const AboutSection: FC<AboutSectionProps> = ({
               leadOrganizations={leadOrganizations}
             />
           )}
-        </LeftColumn>
-        <RightColumn>
-          <PageContentBlock sx={{ height: BLOCK_HEIGHT }}>
-            <Text>
-              {t('pages.about.background')}
-            </Text>
-            <WrapperMarkdown>
-              {background}
-            </WrapperMarkdown>
-          </PageContentBlock>
-        </RightColumn>
-        <LeftColumn>
           {communityReadAccess && (
             <EntityDashboardContributorsSection
               memberUsers={memberUsers}
@@ -134,6 +110,22 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
         </LeftColumn>
         <RightColumn>
+          <PageContentBlock sx={{ height: BLOCK_HEIGHT }}>
+            <Text>
+              {t('pages.about.vision')}
+            </Text>
+            <WrapperMarkdown>
+              {vision}
+            </WrapperMarkdown>
+          </PageContentBlock>
+          <PageContentBlock sx={{ height: BLOCK_HEIGHT }}>
+            <Text>
+              {t('pages.about.background')}
+            </Text>
+            <WrapperMarkdown>
+              {background}
+            </WrapperMarkdown>
+          </PageContentBlock>
           <PageContentBlock halfWidth>
             <Text>
               {t('pages.about.impact')}
