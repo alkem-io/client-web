@@ -35,6 +35,7 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
       nameID
       displayName
       authorization {
+        id
         myPrivileges
       }
       tagset {
@@ -91,6 +92,10 @@ fragment ContextTab on Context {
   id
   tagline
   background
+  authorization {
+    id
+    myPrivileges
+  }
   location {
     id
     city
@@ -113,4 +118,142 @@ fragment MetricsItem on NVP {
   id
   name
   value
+}
+#
+query AboutPageNonMembers(
+  $hubNameId: UUID_NAMEID!,
+  $includeChallenge: Boolean = false,
+  $includeOpportunity: Boolean = false,
+  $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+) {
+  hub(ID: $hubNameId) {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    host {
+      ...AssociatedOrganizationDetails
+    }
+    metrics {
+      ...MetricsItem
+    }
+    community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    context {
+      ...ContextTab
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      nameID
+      displayName
+      authorization {
+        id
+        myPrivileges
+      }
+      tagset {
+        id
+        name
+        tags
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTab
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTab
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+#
+query AboutPageMembers(
+  $hubNameId: UUID_NAMEID!,
+  $includeChallenge: Boolean = false,
+  $includeOpportunity: Boolean = false,
+  $communityReadAccess: Boolean!,
+  $referencesReadAccess: Boolean!,
+  $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
+) {
+  hub(ID: $hubNameId) {
+    id
+    community @include(if: $communityReadAccess) {
+      ...EntityDashboardCommunity
+    }
+    context {
+      id
+      references @include(if: $referencesReadAccess) {
+        ...ReferenceDetails
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity
+      }
+      context {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity
+      }
+      context {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
+      }
+    }
+  }
 }

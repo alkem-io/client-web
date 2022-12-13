@@ -1,4 +1,4 @@
-import InfoIcon from '@mui/icons-material/Info';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import { Button, Tooltip } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
   return (
     <>
       <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
-        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<InfoIcon />}>
+        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<CreateOutlinedIcon />}>
           {`State: ${state}`}
         </Button>
       </Tooltip>

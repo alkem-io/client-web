@@ -23,7 +23,7 @@ interface HubAboutViewProps {
   background: string | undefined;
   impact: string | undefined;
   who: string | undefined;
-  communityReadAccess: boolean | undefined;
+  communityReadAccess: boolean;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
   memberUsers: EntityDashboardContributors['memberUsers']
@@ -37,20 +37,14 @@ interface HubAboutViewProps {
 }
 
 export const HubAboutView: FC<HubAboutViewProps> = ({
-  name = '', tagline = '', tags = [], vision = '',
-  background = '',  impact = '', who = '',
-  communityReadAccess = false,
-  hostOrganization, leadUsers,
-  memberUsers, memberUsersCount, memberOrganizations, memberOrganizationsCount,
-  references, metrics,
-  loading, error
+  name = '', tagline = '', ...rest
 }) => {
   const { t } = useTranslation();
   const { hubNameId, communityId } = useHub();
 
   const leadOrganizations = useMemo(
-    () => hostOrganization ? [hostOrganization] : undefined,
-    [hostOrganization]
+    () => rest.hostOrganization ? [rest.hostOrganization] : undefined,
+    [rest.hostOrganization]
   );
 
   const metricsItems: MetricItem[] = useMemo(() => {
@@ -58,46 +52,33 @@ export const HubAboutView: FC<HubAboutViewProps> = ({
       {
         name: t('common.challenges'),
         type: MetricType.Challenge,
-        count: getMetricCount(metrics, MetricType.Challenge),
+        count: getMetricCount(rest.metrics, MetricType.Challenge),
         color: 'neutral',
       },
       {
         name: t('common.opportunities'),
-        count: getMetricCount(metrics, MetricType.Opportunity),
+        count: getMetricCount(rest.metrics, MetricType.Opportunity),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getMetricCount(metrics, MetricType.Member),
+        count: getMetricCount(rest.metrics, MetricType.Member),
         color: 'neutralMedium',
       },
     ];
-  }, [metrics, t]);
+  }, [rest.metrics, t]);
 
   return (
     <AboutSection
       entityTypeName="hub"
+      isHub
       infoBlockTitle={name}
       infoBlockText={tagline}
-      tags={tags}
-      vision={vision}
-      background={background}
-      impact={impact}
-      who={who}
-      communityReadAccess={communityReadAccess}
-      loading={loading}
-      error={error}
-      isHub
+      metricsItems={metricsItems}
       leadOrganizations={leadOrganizations}
-      leadUsers={leadUsers}
-      memberUsers={memberUsers}
-      memberUsersCount={memberUsersCount}
-      memberOrganizations={memberOrganizations}
-      memberOrganizationsCount={memberOrganizationsCount}
       hubNameId={hubNameId}
       communityId={communityId}
-      references={references}
-      metricsItems={metricsItems}
+      {...rest}
     />
   );
 };

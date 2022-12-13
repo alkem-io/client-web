@@ -11,7 +11,7 @@ import TagsComponent from '../../../../../domain/shared/components/TagsComponent
 import EntityDashboardLeadsSection
   from '../../../../../domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import {
-  AssociatedOrganizationDetailsFragment, MetricsItemFragment,
+  AssociatedOrganizationDetailsFragment, LifecycleContextTabFragment, MetricsItemFragment,
   Reference,
   ReferenceDetailsFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -25,6 +25,11 @@ import DashboardUpdatesSection from '../../../../../domain/shared/components/Das
 import References from '../../common/References/References';
 import ActivityView from '../../../../../domain/platform/metrics/views/MetricsView';
 import { MetricItem } from '../../common/MetricsPanel/Metrics';
+import ApplicationButton from '../../common/ApplicationButton/ApplicationButton';
+import ApplicationButtonContainer
+  from '../../../../../domain/community/application/containers/ApplicationButtonContainer';
+import Box from '@mui/material/Box';
+import LifecycleState from '../../../../../domain/platform/admin/templates/InnovationTemplates/LifecycleState';
 
 type JourneyTypeName = 'hub' | 'challenge' | 'opportunity';
 
@@ -32,12 +37,12 @@ interface AboutSectionProps {
   entityTypeName: JourneyTypeName
   infoBlockTitle: string;
   infoBlockText: string | undefined;
-  tags: string[];
+  tags: string[] | undefined;
   vision: string | undefined;
   background: string | undefined;
   impact: string | undefined;
   who: string | undefined;
-  loading: boolean | undefined;
+  loading?: boolean;
   error?: ApolloError,
   communityReadAccess: boolean,
   isHub: boolean;
@@ -51,6 +56,7 @@ interface AboutSectionProps {
   communityId: string | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   metricsItems: MetricItem[];
+  lifecycle?: LifecycleContextTabFragment;
 }
 
 const BLOCK_HEIGHT = 260;
@@ -69,15 +75,16 @@ const LeftColumn = styled(props => <PageContentColumn {...props} columns={4} />)
  */
 export const AboutSection: FC<AboutSectionProps> = ({
   entityTypeName,
-  infoBlockTitle, infoBlockText, tags,
+  infoBlockTitle, infoBlockText, tags = [],
   vision = '', background = '', impact = '', who = '',
-  loading = false, error,
+  loading = false,
   communityReadAccess,
   leadUsers, leadOrganizations,
   memberUsers, memberUsersCount, memberOrganizations, memberOrganizationsCount,
   isHub,
   hubNameId, communityId,
   references, metricsItems,
+  lifecycle,
 }) => {
   const { t } = useTranslation();
 
@@ -92,6 +99,12 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <Text>{infoBlockTitle}</Text>
             <Tagline>{infoBlockText}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
+            <Box display="flex" justifyContent="end">
+              {lifecycle && <LifecycleState lifecycle={lifecycle} />}
+              <ApplicationButtonContainer>
+                {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+              </ApplicationButtonContainer>
+            </Box>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection
@@ -108,6 +121,14 @@ export const AboutSection: FC<AboutSectionProps> = ({
               memberOrganizations={memberOrganizations}
               memberOrganizationsCount={memberOrganizationsCount}
             />
+          )}
+          {!communityReadAccess && (
+            <PageContentBlock halfWidth>
+              <Text>
+                {t('pages.hub.sections.dashboard.activity')}
+              </Text>
+              <ActivityView activity={metricsItems} loading={loading} />
+            </PageContentBlock>
           )}
         </LeftColumn>
         <RightColumn>
@@ -146,15 +167,19 @@ export const AboutSection: FC<AboutSectionProps> = ({
           {communityReadAccess && (
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
           )}
-          <PageContentBlock halfWidth>
-            <References references={references} />
-          </PageContentBlock>
-          <PageContentBlock halfWidth>
-            <Text>
-              {t('pages.hub.sections.dashboard.activity')}
-            </Text>
-            <ActivityView activity={metricsItems} loading={loading} />
-          </PageContentBlock>
+          {references && (
+            <PageContentBlock halfWidth>
+              <References references={references} />
+            </PageContentBlock>
+          )}
+          {communityReadAccess && (
+            <PageContentBlock halfWidth>
+              <Text>
+                {t('pages.hub.sections.dashboard.activity')}
+              </Text>
+              <ActivityView activity={metricsItems} loading={loading} />
+            </PageContentBlock>
+          )}
         </RightColumn>
       </PageContent>
     </>
