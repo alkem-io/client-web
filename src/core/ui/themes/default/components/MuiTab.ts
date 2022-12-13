@@ -1,25 +1,23 @@
-import { Components, Theme } from '@mui/material/styles';
+import { Components } from '@mui/material/styles';
 
-const MuiTab = (theme: Theme): Components['MuiTab'] => {
-  return {
-    styleOverrides: {
-      root: {
-        '&.Mui-selected': {
-          fontWeight: 600,
-        },
-        padding: 0,
-        minWidth: 'auto',
-        minHeight: 48,
-        marginRight: theme.spacing(2),
+const MuiTab: Components['MuiTab'] = {
+  styleOverrides: {
+    root: {
+      '&.Mui-selected': {
+        fontWeight: 600, // TODO check
       },
-      textColorInherit: {
-        opacity: 1,
-      },
+      padding: 0,
+      minWidth: 'auto',
+      minHeight: 48,
+      // marginRight: theme.spacing(2),
     },
-    defaultProps: {
-      color: 'inherit',
+    textColorInherit: {
+      opacity: 1,
     },
-  };
+  },
+  defaultProps: {
+    color: 'inherit',
+  },
 };
 
 export default MuiTab;

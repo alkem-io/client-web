@@ -39,11 +39,10 @@ export const theme: ThemeOptions = {
   avatarSizeXs: SPACING * AVATAR_SIZE_XS,
   avatarSize: SPACING * AVATAR_SIZE,
   avatarSizeLg: SPACING * AVATAR_SIZE_LG,
+  components: componentsOverride as ThemeOptions['components'],
 };
 
-const defaultMUITheme = createTheme(theme);
-
-theme.components = componentsOverride(defaultMUITheme);
+export const defaultTheme = createTheme(theme);
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -81,5 +80,3 @@ declare module '@mui/material' {
     dark: string;
   }
 }
-
-export const defaultTheme = createTheme(theme);
