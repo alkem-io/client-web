@@ -1,18 +1,14 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OrganizationCard, {
   OrganizationCardProps,
 } from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
-import SectionHeader from '../../../shared/components/Section/SectionHeader';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../contributor/user';
 import { mapToAssociatedOrganization } from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganization';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 

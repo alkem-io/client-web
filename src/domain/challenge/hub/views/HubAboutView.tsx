@@ -9,8 +9,6 @@ import {
   EntityDashboardContributors,
   EntityDashboardLeads,
 } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import EntityDashboardContributorsSection
-  from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { useHub } from '../HubContext/useHub';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import { MetricType } from '../../../platform/metrics/MetricType';
