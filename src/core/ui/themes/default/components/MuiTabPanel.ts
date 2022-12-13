@@ -1,4 +1,5 @@
 import { Components, Theme } from '@mui/material/styles';
+import type {} from '@mui/lab/themeAugmentation';
 
 const MuiTabPanel = (_theme: Theme): Components['MuiTabPanel'] => {
   return {

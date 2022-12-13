@@ -1,36 +1,25 @@
 import React from 'react';
-import { Box, Typography as MUITypography } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { BlockTitle } from '../../../../ui/typography';
+import translateWithElements from '../../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import { AUTH_VERIFY_PATH } from '../../../authentication/constants/authentication.constants';
+import { Button } from '@mui/material';
 
 const EmailVerificationNotice = () => {
   const { t } = useTranslation();
+  const tLink = translateWithElements(<Link to="" />);
 
   return (
     <>
-      <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-        <ErrorOutlineIcon
-          color="primary"
-          sx={theme => ({
-            fontSize: '3rem',
-            marginRight: theme.spacing(3),
-          })}
-        />
-        <MUITypography variant="h3" sx={{ fontWeight: 'normal' }}>
-          {t('pages.verification-required.message')}
-        </MUITypography>
-      </Box>
-      <Box
-        component={Link}
-        to="/identity/verify"
-        sx={{
-          fontSize: '1.5rem',
-          color: 'text.primary',
-        }}
-      >
-        {t('pages.verification-required.link')}
-      </Box>
+      <BlockTitle sx={{ textAlign: 'center', marginBottom: theme => theme.spacing(4) }}>
+        {tLink('pages.verification-required.message', {
+          again: { to: AUTH_VERIFY_PATH },
+        })}
+      </BlockTitle>
+      <Button component={Link} to={'/'} variant="contained">
+        {t('pages.verification-required.return-to-platform')}
+      </Button>
     </>
   );
 };

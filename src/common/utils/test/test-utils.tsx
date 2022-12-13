@@ -2,7 +2,7 @@ import { Theme } from '@mui/material/styles';
 import { render, RenderOptions } from '@testing-library/react';
 import React, { FC, ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { ThemeProvider } from '../../../core/ui/theme/ThemeProvider';
+import { ThemeProvider } from '../../../core/ui/themes/ThemeProvider';
 import i18n from '../../../core/i18n/config';
 
 declare module '@mui/styles/defaultTheme' {
