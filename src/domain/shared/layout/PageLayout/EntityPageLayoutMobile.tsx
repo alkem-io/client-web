@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 import TopBar, { TopBarSpacer } from '../../../../common/components/composite/layout/TopBar/TopBar';
-import Main from '../../../../common/components/composite/layout/App/Main';
 
 const EntityPageLayoutMobile = ({
   currentSection,
@@ -14,7 +13,7 @@ const EntityPageLayoutMobile = ({
       <TopBar />
       <TopBarSpacer />
       <PageBanner />
-      <Main sx={{ marginTop: 2, marginBottom: 9 }}>{children}</Main>
+      {children}
       {Tabs && <Tabs currentTab={currentSection} mobile />}
     </>
   );
