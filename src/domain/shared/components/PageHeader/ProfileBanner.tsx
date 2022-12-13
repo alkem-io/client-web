@@ -1,7 +1,7 @@
 import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
-import { DEFAULT_BANNER_URL, BANNER_ASPECT_RATIO } from './EntityPageBanner';
+import { DEFAULT_BANNER_URL } from './EntityPageBanner';
 import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../common/location/LocationView';
@@ -10,6 +10,8 @@ import { ContactDetail } from '../ContactDetails/ContactDetails';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
+
+const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
