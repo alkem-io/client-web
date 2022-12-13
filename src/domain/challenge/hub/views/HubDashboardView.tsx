@@ -128,6 +128,14 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           url={buildHubUrl(hubNameId)}
           entityTypeName="hub"
         />
+        {communityReadAccess && (
+          <EntityDashboardLeadsSection
+            usersHeader={t('community.host')}
+            organizationsHeader={t('pages.hub.sections.dashboard.organization')}
+            leadUsers={leadUsers}
+            leadOrganizations={hostOrganizations}
+          />
+        )}
         <PageContentBlock>
           <PageContentBlockHeader title={t('components.referenceSegment.title')} />
           <References references={references} />
