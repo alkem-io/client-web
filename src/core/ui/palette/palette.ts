@@ -5,7 +5,7 @@ export const paletteOptions: PaletteOptions = {
   primary: { main: '#065F6B' },
   secondary: { main: '#00a88f' },
   text: {
-    primary: '#181828',
+    primary: '#000000',
   },
   positive: { main: '#00D4B4' },
   negative: { main: '#D40062' },
