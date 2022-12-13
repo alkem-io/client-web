@@ -16,7 +16,7 @@ import { CookiesProvider } from 'react-cookie';
 import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
-import { fontFamilySourceSans } from './core/ui/typography/themeOptions';
+import { fontFamilySourceSans } from './core/ui/typography/themeTypographyOptions';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {

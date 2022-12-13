@@ -1,11 +1,9 @@
-import { Components, Theme } from '@mui/material/styles';
+import { Components } from '@mui/material/styles';
 
-const MuiLink = (_theme: Theme): Components['MuiLink'] => {
-  return {
-    defaultProps: {
-      underline: 'none',
-    },
-  };
+const MuiLink: Components['MuiLink'] = {
+  defaultProps: {
+    underline: 'none',
+  },
 };
 
 export default MuiLink;

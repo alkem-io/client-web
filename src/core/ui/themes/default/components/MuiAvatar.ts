@@ -1,11 +1,9 @@
-import { Components, Theme } from '@mui/material/styles';
+import { Components } from '@mui/material/styles';
 
-const MuiAvatar = (_theme: Theme): Components['MuiAvatar'] => {
-  return {
-    defaultProps: {
-      variant: 'rounded',
-    },
-  };
+const MuiAvatar: Components['MuiAvatar'] = {
+  defaultProps: {
+    variant: 'rounded',
+  },
 };
 
 export default MuiAvatar;
