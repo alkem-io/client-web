@@ -1,8 +1,7 @@
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useMemo, useState } from 'react';
-import SimpleCard from '../../../shared/components/SimpleCard';
-import { CanvasIcon } from '../../../../common/icons/CanvasIcon';
-import { LinkWithState } from '../../../shared/types/LinkWithState';
+import { useNavigate } from 'react-router-dom';
+
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
@@ -13,16 +12,18 @@ import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutS
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import CanvasCard from './CanvasCard';
+import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
-export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId' | 'createdDate';
+export type CanvasCardCanvas = Pick<CanvasFragmentWithCallout, NeededFields>;
 
 interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
-    canvases: CanvasCard[];
+    canvases: CanvasCardCanvas[];
   };
   calloutNames: string[];
-  buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
   canCreate?: boolean;
 }
@@ -34,7 +35,6 @@ const CanvasCallout = ({
   hubNameId,
   challengeNameId,
   opportunityNameId,
-  buildCanvasUrl,
   canCreate = false,
   onCalloutEdit,
   onVisibilityChange,
@@ -44,15 +44,26 @@ const CanvasCallout = ({
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
   const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
   const { templates } = useHub();
+  const navigate = useNavigate();
   const createButtonComponent = useMemo(
     () =>
       callout.state !== CalloutState.Closed ? (
         <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-          <SimpleCard to={''} />
+          <ContributeCard />
         </CreateCalloutItemButton>
       ) : undefined,
     [callout.state]
   );
+
+  const navigateToCanvas = (canvas: CanvasCardCanvas) => {
+    navigate(
+      buildCanvasUrl(canvas.calloutNameId, canvas.nameID, {
+        hubNameId: hubNameId!,
+        challengeNameId,
+        opportunityNameId,
+      })
+    );
+  };
 
   return (
     <>
@@ -70,17 +81,7 @@ const CanvasCallout = ({
             {...(canCreate ? { createButtonComponent } : {})}
           >
             {canvas =>
-              canvas ? (
-                <SimpleCard
-                  key={canvas.id}
-                  {...buildCanvasUrl(canvas.nameID, canvas.calloutNameId)}
-                  title={canvas.displayName}
-                  imageUrl={canvas.preview?.uri}
-                  iconComponent={CanvasIcon}
-                />
-              ) : (
-                <Skeleton />
-              )
+              canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
             }
           </CardsLayout>
         </CardsLayoutScroller>

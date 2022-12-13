@@ -21,7 +21,7 @@ import {
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { buildHubUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
+import { CanvasCardCanvas } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
@@ -59,7 +59,7 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
-  canvases: CanvasCard[];
+  canvases: CanvasCardCanvas[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   community?: unknown;
