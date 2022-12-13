@@ -14,26 +14,18 @@ const HubAboutPage: FC<HubContextPageProps> = ({}) => {
   return (
     <HubPageLayout currentSection={EntityPageSection.About}>
       <AboutPageContainer hubNameId={hubNameId}>
-        {(entities, state) => (
+        {({ tagset, context, permissions, ...rest }, state) => (
           <HubAboutView
             name={displayName}
-            tagline={entities.context?.tagline}
-            tags={entities.tagset?.tags}
-            who={entities.context?.who}
-            impact={entities.context?.impact}
-            background={entities.context?.background}
-            vision={entities.context?.vision}
-            communityReadAccess={entities.permissions.communityReadAccess}
-            memberUsers={entities.memberUsers}
-            memberUsersCount={entities.memberUsersCount}
-            memberOrganizations={entities.memberOrganizations}
-            memberOrganizationsCount={entities.memberOrganizationsCount}
-            leadUsers={entities.leadUsers}
-            hostOrganization={entities.hostOrganization}
-            references={entities.references}
-            metrics={entities.metrics}
-            loading={state.loading}
-            error={state.error}
+            tagline={context?.tagline}
+            tags={tagset?.tags}
+            who={context?.who}
+            impact={context?.impact}
+            background={context?.background}
+            vision={context?.vision}
+            communityReadAccess={permissions.communityReadAccess}
+            {...rest}
+            {...state}
           />
         )}
       </AboutPageContainer>

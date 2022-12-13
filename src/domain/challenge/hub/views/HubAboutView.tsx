@@ -16,13 +16,13 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { useTranslation } from 'react-i18next';
 
 interface HubAboutViewProps {
-  name?: string;
-  tagline?: string;
-  tags?: string[];
-  vision?: string;
-  background?: string;
-  impact?: string;
-  who?: string;
+  name: string | undefined;
+  tagline: string | undefined;
+  tags: string[] | undefined;
+  vision: string | undefined;
+  background: string | undefined;
+  impact: string | undefined;
+  who: string | undefined;
   communityReadAccess: boolean | undefined;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
@@ -76,6 +76,7 @@ export const HubAboutView: FC<HubAboutViewProps> = ({
 
   return (
     <AboutSection
+      entityTypeName="hub"
       infoBlockTitle={name}
       infoBlockText={tagline}
       tags={tags}

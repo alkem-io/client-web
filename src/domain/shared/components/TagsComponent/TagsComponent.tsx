@@ -12,7 +12,7 @@ interface Props {
   tags: string[];
   count?: number;
   loading?: boolean;
-  variant?: ChipProps['variant']
+  variant?: ChipProps['variant'];
 }
 
 const DEFAULT_TAGS_CONTAINER_PROPS: Partial<BoxProps> = {

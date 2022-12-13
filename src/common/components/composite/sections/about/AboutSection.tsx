@@ -24,12 +24,12 @@ import EntityDashboardContributorsSection
 import DashboardUpdatesSection from '../../../../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import References from '../../common/References/References';
 import ActivityView from '../../../../../domain/platform/metrics/views/MetricsView';
-import DashboardGenericSection from '../../../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { MetricItem } from '../../common/MetricsPanel/Metrics';
-import { MetricType } from '../../../../../domain/platform/metrics/MetricType';
-import getMetricCount from '../../../../../domain/platform/metrics/utils/getMetricCount';
+
+type JourneyTypeName = 'hub' | 'challenge' | 'opportunity';
 
 interface AboutSectionProps {
+  entityTypeName: JourneyTypeName
   infoBlockTitle: string;
   infoBlockText: string | undefined;
   tags: string[];
@@ -68,6 +68,7 @@ const LeftColumn = styled(props => <PageContentColumn {...props} columns={4} />)
  * - references
  */
 export const AboutSection: FC<AboutSectionProps> = ({
+  entityTypeName,
   infoBlockTitle, infoBlockText, tags,
   vision = '', background = '', impact = '', who = '',
   loading = false, error,
@@ -112,7 +113,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
         <RightColumn>
           <PageContentBlock sx={{ height: BLOCK_HEIGHT }}>
             <Text>
-              {t('pages.about.vision')}
+              {t(`context.${entityTypeName}.vision.title` as const)}
             </Text>
             <WrapperMarkdown>
               {vision}
@@ -120,7 +121,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
           </PageContentBlock>
           <PageContentBlock sx={{ height: BLOCK_HEIGHT }}>
             <Text>
-              {t('pages.about.background')}
+              {t(`context.${entityTypeName}.background.title` as const)}
             </Text>
             <WrapperMarkdown>
               {background}
@@ -128,7 +129,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
           </PageContentBlock>
           <PageContentBlock halfWidth>
             <Text>
-              {t('pages.about.impact')}
+              {t(`context.${entityTypeName}.impact.title` as const)}
             </Text>
             <WrapperMarkdown>
               {impact}
@@ -136,7 +137,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
           </PageContentBlock>
           <PageContentBlock halfWidth>
             <Text>
-              {t('pages.about.who')}
+              {t(`context.${entityTypeName}.who.title` as const)}
             </Text>
             <WrapperMarkdown>
               {who}
