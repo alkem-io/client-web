@@ -7,7 +7,7 @@ const swapColors = (theme: Theme): Theme => {
   const primaryColor = theme.palette.primary.main;
   const secondaryColor = theme.palette.secondary.main;
   const backgroundColorPaper = theme.palette.background.paper;
-  const backgroundColorDefault = theme.palette.background.paper;
+  const backgroundColorDefault = theme.palette.background.default;
 
   return createTheme({
     ...theme,
