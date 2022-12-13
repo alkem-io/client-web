@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material';
 import { ThemeOptions } from '@mui/material/styles';
 import componentsOverride from './components';
 import { paletteOptions } from '../../palette/palette';
-import { typographyOptions } from '../../typography/themeOptions';
+import { themeTypographyOptions } from '../../typography/themeTypographyOptions';
 
 // use theme constant instead of these
 const SPACING = 10;
@@ -12,7 +12,7 @@ const AVATAR_SIZE_LG = 9;
 
 export const theme: ThemeOptions = {
   palette: paletteOptions,
-  typography: typographyOptions,
+  typography: themeTypographyOptions,
   shape: { borderRadius: 12 },
   spacing: SPACING,
   cards: {

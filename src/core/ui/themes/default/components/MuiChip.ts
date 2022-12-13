@@ -1,5 +1,5 @@
 import { Components, Theme } from '@mui/material/styles';
-import { typographyOptions } from '../../../typography/themeOptions';
+import { themeTypographyOptions } from '../../../typography/themeTypographyOptions';
 
 const MuiChip: Components<Theme>['MuiChip'] = {
   styleOverrides: {
@@ -13,7 +13,7 @@ const MuiChip: Components<Theme>['MuiChip'] = {
     }),
     labelSmall: ({ theme }) => ({
       ...theme.typography.body2,
-      lineHeight: `calc(${typographyOptions.body2?.lineHeight} - 2px)`,
+      lineHeight: `calc(${themeTypographyOptions.body2?.lineHeight} - 2px)`,
     }),
   },
   defaultProps: {
