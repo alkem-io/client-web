@@ -21,7 +21,6 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import { buildOpportunityUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { CanvasCardCanvas } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
@@ -33,6 +32,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { ActivityLogResultType, ActivitySection } from '../../../shared/components/ActivityLog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import { CanvasCardCanvas } from '../../../collaboration/callout/canvas/types';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {

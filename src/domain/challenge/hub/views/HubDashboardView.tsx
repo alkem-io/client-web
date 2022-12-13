@@ -21,7 +21,6 @@ import {
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { buildHubUrl, buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { CanvasCardCanvas } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
@@ -46,6 +45,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import HubDashboardVision from './HubDashboardVision';
+import { CanvasCardCanvas } from '../../../collaboration/callout/canvas/types';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
