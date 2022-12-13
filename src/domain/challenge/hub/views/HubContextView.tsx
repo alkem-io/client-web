@@ -36,7 +36,7 @@ interface HubContextViewProps
   extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {
   metrics: MetricsItemFragment[] | undefined;
 }
-
+// todo remove
 export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, entities, state }) => {
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;

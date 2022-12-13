@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import Chip from '@mui/material/Chip';
+import Chip, { ChipProps } from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
 import { Box, BoxProps, Tooltip } from '@mui/material';
 import { times } from 'lodash';
@@ -12,6 +12,7 @@ interface Props {
   tags: string[];
   count?: number;
   loading?: boolean;
+  variant?: ChipProps['variant'];
 }
 
 const DEFAULT_TAGS_CONTAINER_PROPS: Partial<BoxProps> = {
@@ -21,7 +22,7 @@ const DEFAULT_TAGS_CONTAINER_PROPS: Partial<BoxProps> = {
   minHeight: (theme: Theme) => theme.spacing(4),
 };
 
-const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeight, ...tagsContainerProps }) => {
+const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, variant = 'outlined', minHeight, ...tagsContainerProps }) => {
   const { t } = useTranslation();
 
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
@@ -31,14 +32,13 @@ const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, minHeig
       <Tooltip key={i} title={item} arrow placement="bottom">
         <Chip
           label={item}
-          variant="outlined"
-          color="primary"
-          sx={{ borderColor: 'primary.main', maxWidth: '100%' }}
+          variant={variant}
+          sx={{ maxWidth: '100%' }}
           size="small"
         />
       </Tooltip>
     ),
-    []
+    [variant]
   );
 
   const renderMore = useCallback(

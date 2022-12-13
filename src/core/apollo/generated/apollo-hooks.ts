@@ -16721,6 +16721,9 @@ export const HubContextDocument = gql`
       id
       nameID
       displayName
+      host {
+        ...AssociatedOrganizationDetails
+      }
       tagset {
         id
         name
@@ -16732,10 +16735,15 @@ export const HubContextDocument = gql`
       metrics {
         ...MetricsItem
       }
+      community {
+        ...EntityDashboardCommunity
+      }
     }
   }
+  ${AssociatedOrganizationDetailsFragmentDoc}
   ${ContextTabFragmentDoc}
   ${MetricsItemFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
 `;
 
 /**
@@ -16808,12 +16816,16 @@ export const ChallengeContextDocument = gql`
         metrics {
           ...MetricsItem
         }
+        community {
+          ...EntityDashboardCommunity
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
   ${MetricsItemFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
 `;
 
 /**
@@ -16886,12 +16898,16 @@ export const OpportunityContextDocument = gql`
         metrics {
           ...MetricsItem
         }
+        community {
+          ...EntityDashboardCommunity
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
   ${MetricsItemFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
 `;
 
 /**

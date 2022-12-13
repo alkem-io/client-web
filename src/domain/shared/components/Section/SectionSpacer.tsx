@@ -5,7 +5,9 @@ type SectionSpacerProps = {
   double?: boolean;
   half?: boolean;
 };
-
+/**
+ * @deprecated Use flex gap instead
+ */
 const SectionSpacer: FC<SectionSpacerProps> = ({ double, half }) => {
   let size = 1;
   if (double) {
