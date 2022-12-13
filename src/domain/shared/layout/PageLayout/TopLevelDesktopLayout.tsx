@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import TopBar, { TopBarSpacer } from '../../../../common/components/composite/layout/TopBar/TopBar';
 import Main from '../../../../common/components/composite/layout/App/Main';
-import Footer from '../../../../common/components/composite/layout/App/Footer';
+import Footer from '../../../../core/ui/layout/Footer/Footer';
 import { FloatingActionButtons } from '../../../../common/components/core';
 
 /**

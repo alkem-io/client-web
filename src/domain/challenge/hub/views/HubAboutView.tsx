@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AboutSection } from '../../../../common/components/composite/sections/about/AboutSection';
+import { AboutSection } from '../../common/tabs/AboutSection';
 import {
-  AssociatedOrganizationDetailsFragment, MetricsItemFragment,
+  AssociatedOrganizationDetailsFragment,
+  MetricsItemFragment,
   ReferenceDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import {
@@ -26,32 +27,40 @@ interface HubAboutViewProps {
   communityReadAccess: boolean | undefined;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
-  memberUsers: EntityDashboardContributors['memberUsers']
-  memberUsersCount: EntityDashboardContributors['memberUsersCount']
-  memberOrganizations: EntityDashboardContributors['memberOrganizations']
-  memberOrganizationsCount: EntityDashboardContributors['memberOrganizationsCount']
+  memberUsers: EntityDashboardContributors['memberUsers'];
+  memberUsersCount: EntityDashboardContributors['memberUsersCount'];
+  memberOrganizations: EntityDashboardContributors['memberOrganizations'];
+  memberOrganizationsCount: EntityDashboardContributors['memberOrganizationsCount'];
   references: ReferenceDetailsFragment[] | undefined;
   metrics: MetricsItemFragment[] | undefined;
   loading: boolean | undefined;
-  error?: ApolloError
+  error?: ApolloError;
 }
 
 export const HubAboutView: FC<HubAboutViewProps> = ({
-  name = '', tagline = '', tags = [], vision = '',
-  background = '',  impact = '', who = '',
+  name = '',
+  tagline = '',
+  tags = [],
+  vision = '',
+  background = '',
+  impact = '',
+  who = '',
   communityReadAccess = false,
-  hostOrganization, leadUsers,
-  memberUsers, memberUsersCount, memberOrganizations, memberOrganizationsCount,
-  references, metrics,
-  loading, error
+  hostOrganization,
+  leadUsers,
+  memberUsers,
+  memberUsersCount,
+  memberOrganizations,
+  memberOrganizationsCount,
+  references,
+  metrics,
+  loading,
+  error,
 }) => {
   const { t } = useTranslation();
   const { hubNameId, communityId } = useHub();
 
-  const leadOrganizations = useMemo(
-    () => hostOrganization ? [hostOrganization] : undefined,
-    [hostOrganization]
-  );
+  const leadOrganizations = useMemo(() => (hostOrganization ? [hostOrganization] : undefined), [hostOrganization]);
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
