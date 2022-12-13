@@ -8,6 +8,7 @@ export interface ActivityCardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   card: NameableEntity;
   cardType: string;
+  cardDescription: string;
 }
 
 export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props => {
@@ -22,6 +23,7 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props =
   const description = t('components.activity-log-view.activity-description.card-created', {
     cardDisplayName: props.card.displayName,
     cardType: props.cardType,
+    cardDescription: props.cardDescription,
     interpolation: {
       escapeValue: false,
     },
