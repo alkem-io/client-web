@@ -7,7 +7,6 @@ import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CanvasFragmentWithCallout } from '../useCallouts';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
@@ -15,9 +14,7 @@ import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
-
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId' | 'createdDate';
-export type CanvasCardCanvas = Pick<CanvasFragmentWithCallout, NeededFields>;
+import { CanvasCardCanvas } from './types';
 
 interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
@@ -74,7 +71,7 @@ const CanvasCallout = ({
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayoutScroller maxHeight={176}>
+        <CardsLayoutScroller maxHeight={600}>
           <CardsLayout
             items={loading ? [undefined, undefined] : callout.canvases}
             deps={[hubNameId, challengeNameId, opportunityNameId]}
