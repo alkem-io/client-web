@@ -59,7 +59,9 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
       <PageContent>
         <PageContentColumn columns={4}>
           <PageContentBlock>
-            <PageContentBlockHeader title={t('pages.hub.sections.challenges.list')} />
+            <PageContentBlockHeader
+              title={t('pages.generic.sections.subentities.list', { entities: t('common.challenges') })}
+            />
             <LinksList
               items={entities.challenges.map(challenge => ({
                 title: challenge.displayName,

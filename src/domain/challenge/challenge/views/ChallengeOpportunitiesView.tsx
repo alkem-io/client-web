@@ -10,7 +10,7 @@ import {
   entityValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import { OpportunityIcon } from '../../../../common/icons/OpportunityIcon';
+import { OpportunityIcon } from '../../../shared/icons/OpportunityIcon';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { Opportunity } from '../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -47,7 +47,9 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
     <PageContent>
       <PageContentColumn columns={4}>
         <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.hub.sections.challenges.list')} />
+          <PageContentBlockHeader
+            title={t('pages.generic.sections.subentities.list', { entities: t('common.opportunities') })}
+          />
           <LinksList
             items={opportunities.map(opportunity => ({
               title: opportunity.displayName,
