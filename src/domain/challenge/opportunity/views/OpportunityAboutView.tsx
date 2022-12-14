@@ -16,7 +16,7 @@ import {
   EntityDashboardContributors,
   EntityDashboardLeads,
 } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import { useChallenge } from '../hooks/useChallenge';
+import { useOpportunity } from '../hooks/useOpportunity';
 
 interface ChallengeAboutViewProps {
   name: string | undefined;
@@ -40,7 +40,7 @@ interface ChallengeAboutViewProps {
   error?: ApolloError;
 }
 
-export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({
+export const OpportunityAboutView: FC<ChallengeAboutViewProps> = ({
   name = '',
   tagline = '',
   tags = [],
@@ -62,27 +62,27 @@ export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({
   error,
 }) => {
   const { t } = useTranslation();
-  const { hubNameId, communityId } = useChallenge();
+  const { hubNameId, communityId } = useOpportunity();
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
-        name: t('common.opportunities'),
-        type: MetricType.Opportunity,
-        count: getMetricCount(metrics, MetricType.Opportunity),
-        color: 'neutral',
-      },
-      {
         name: t('common.members'),
+        type: MetricType.Member,
         count: getMetricCount(metrics, MetricType.Member),
         color: 'neutralMedium',
+      },
+      {
+        name: t('common.interests'),
+        count: getMetricCount(metrics, MetricType.Relation),
+        color: 'primary',
       },
     ];
   }, [metrics, t]);
 
   return (
     <AboutSection
-      entityTypeName="challenge"
+      entityTypeName="opportunity"
       infoBlockTitle={name}
       infoBlockText={tagline}
       tags={tags}

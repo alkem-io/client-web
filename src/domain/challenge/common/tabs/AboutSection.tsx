@@ -103,7 +103,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <Text>{infoBlockTitle}</Text>
             <Tagline>{infoBlockText}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <Box display="flex" justifyContent="end">
+            <Box display="flex" justifyContent="end" gap={1}>
               {lifecycle && <LifecycleState lifecycle={lifecycle} />}
               <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
