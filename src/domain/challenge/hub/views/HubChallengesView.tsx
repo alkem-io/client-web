@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ChallengeCard from '../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
@@ -11,10 +10,17 @@ import {
   entityValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import { ViewProps } from '../../../../core/container/view';
+import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
+import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 import { Challenge, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { ViewProps } from '../../../../core/container/view';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import LinksList from '../../../../core/ui/list/LinksList';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
+import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 
 interface Permissions {
   canReadChallenges: boolean;
@@ -50,30 +56,41 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
 
   return (
     <MembershipBackdrop show={!canReadChallenges} blockName={t('pages.hub.sections.challenges.header')}>
-      {state.error && (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
-          </Grid>
-        </Grid>
-      )}
-      {!state.loading && !challenges.length ? (
-        <Box paddingBottom={2} display="flex" justifyContent="center">
-          <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
-        </Box>
-      ) : (
-        <CardFilter
-          data={challenges as Challenge[] /* TODO remove type casting */}
-          tagsValueGetter={entityTagsValueGetter}
-          valueGetter={entityValueGetter}
-        >
-          {filteredData => (
-            <CardsLayout items={state.loading ? [undefined, undefined] : filteredData} deps={[hubNameId]}>
-              {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} loading={!challenge} />}
-            </CardsLayout>
+      <PageContent>
+        <PageContentColumn columns={4}>
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('pages.hub.sections.challenges.list')} />
+            <LinksList
+              items={entities.challenges.map(challenge => ({
+                title: challenge.displayName,
+                url: buildChallengeUrl(hubNameId, challenge.nameID),
+                icon: <ChallengeIcon />,
+              }))}
+            />
+          </PageContentBlock>
+        </PageContentColumn>
+
+        <PageContentColumn columns={8}>
+          {state.error && <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />}
+          {!state.loading && !challenges.length ? (
+            <Box paddingBottom={2} display="flex" justifyContent="center">
+              <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
+            </Box>
+          ) : (
+            <CardFilter
+              data={challenges as Challenge[] /* TODO remove type casting */}
+              tagsValueGetter={entityTagsValueGetter}
+              valueGetter={entityValueGetter}
+            >
+              {filteredData => (
+                <CardsLayout items={state.loading ? [undefined, undefined] : filteredData} deps={[hubNameId]}>
+                  {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} loading={!challenge} />}
+                </CardsLayout>
+              )}
+            </CardFilter>
           )}
-        </CardFilter>
-      )}
+        </PageContentColumn>
+      </PageContent>
     </MembershipBackdrop>
   );
 };
