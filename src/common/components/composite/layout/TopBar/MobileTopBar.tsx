@@ -15,7 +15,7 @@ import { buildLoginUrl, buildUserProfileUrl } from '../../../../utils/urlBuilder
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Divider from '@mui/material/Divider';
-import { ChallengeIcon } from '../../../../icons/ChallengeIcon';
+import { ChallengeIcon } from '../../../../../domain/shared/icons/ChallengeIcon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';

@@ -6,8 +6,8 @@ import {
   useHubNameQuery,
   useOpportunityNameQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { HubIcon } from '../../../common/icons/HubIcon';
-import { ChallengeIcon } from '../../../common/icons/ChallengeIcon';
+import { HubIcon } from '../../shared/icons/HubIcon';
+import { ChallengeIcon } from '../../shared/icons/ChallengeIcon';
 import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 
 export interface BreadcrumbsItem {

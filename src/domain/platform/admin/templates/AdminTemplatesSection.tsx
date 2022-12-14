@@ -12,7 +12,7 @@ import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPacks/InnovationPack';
-import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
+import { LibraryIcon } from '../../../shared/icons/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';

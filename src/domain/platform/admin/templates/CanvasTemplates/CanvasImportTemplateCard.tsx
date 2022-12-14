@@ -2,7 +2,7 @@ import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
 import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
-import { CanvasIcon } from '../../../../../common/icons/CanvasIcon';
+import { CanvasIcon } from '../../../../shared/icons/CanvasIcon';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 

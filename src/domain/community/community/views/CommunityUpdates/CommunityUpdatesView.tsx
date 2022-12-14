@@ -32,8 +32,8 @@ import MarkdownInput from '../../../../platform/admin/components/Common/Markdown
 import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
-import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
+import { FontDownloadIcon } from '../../../../shared/icons/FontDownloadIcon';
+import { FontDownloadOffIcon } from '../../../../shared/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';

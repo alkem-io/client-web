@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
-import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
+import { ChallengeIcon } from '../../icons/ChallengeIcon';
 import SearchJourneyWithParentCard, { SearchJourneyWithParentImplProps } from './SearchJourneyWithParentCard';
 
 export interface SearchOpportunityCardProps extends SearchJourneyWithParentImplProps {}

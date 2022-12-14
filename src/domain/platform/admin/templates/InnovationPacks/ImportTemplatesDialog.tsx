@@ -4,7 +4,7 @@ import React, { ComponentType, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogActions } from '../../../../../common/components/core/dialog';
 import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
-import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
+import { LibraryIcon } from '../../../../shared/icons/LibraryIcon';
 import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
