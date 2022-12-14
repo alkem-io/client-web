@@ -75,13 +75,6 @@ const TagsComponent: FC<Props & BoxProps> = ({
     );
   }
 
-  console.log(
-    {
-      ...DEFAULT_TAGS_CONTAINER_PROPS,
-      ...tagsContainerProps,
-    }.minHeight
-  );
-
   return (
     <LinesFitter
       items={tags}
