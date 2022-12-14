@@ -1,5 +1,6 @@
-import { Box, Typography } from '@mui/material';
-import React, { FC } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import OpportunityCard from '../../../../common/components/composite/common/cards/OpportunityCard/OpportunityCard';
 import { Loading } from '../../../../common/components/core';
@@ -9,9 +10,16 @@ import {
   entityValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import { ChallengeContainerEntities, ChallengeContainerState } from '../containers/ChallengePageContainer';
+import { OpportunityIcon } from '../../../../common/icons/OpportunityIcon';
+import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { Opportunity } from '../../../../core/apollo/generated/graphql-schema';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import LinksList from '../../../../core/ui/list/LinksList';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
+import { ChallengeContainerEntities, ChallengeContainerState } from '../containers/ChallengePageContainer';
 import { useChallenge } from '../hooks/useChallenge';
 
 interface ChallengeOpportunitiesViewProps {
@@ -35,21 +43,42 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
     );
   }
 
-  if (opportunities.length <= 0) {
-    return (
-      <Box paddingBottom={2} display="flex" justifyContent="center">
-        <Typography>{t('pages.challenge.sections.opportunities.body-missing')}</Typography>
-      </Box>
-    );
-  }
-
   return (
-    <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
-      {filteredData => (
-        <CardsLayout items={filteredData} deps={[hubNameId, challengeNameId]}>
-          {opp => <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />}
-        </CardsLayout>
-      )}
-    </CardFilter>
+    <PageContent>
+      <PageContentColumn columns={4}>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.hub.sections.challenges.list')} />
+          <LinksList
+            items={opportunities.map(opportunity => ({
+              title: opportunity.displayName,
+              url: buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
+              icon: <OpportunityIcon />,
+            }))}
+          />
+        </PageContentBlock>
+      </PageContentColumn>
+
+      <PageContentColumn columns={8}>
+        {!state.loading && !opportunities.length ? (
+          <Box paddingBottom={2} display="flex" justifyContent="center">
+            <Typography>{t('pages.challenge.sections.opportunities.body-missing')}</Typography>
+          </Box>
+        ) : (
+          <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
+            {filteredData => (
+              <CardsLayout items={state.loading ? [undefined, undefined] : filteredData} deps={[hubNameId]}>
+                {opp =>
+                  opp ? (
+                    <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+                  ) : (
+                    <></>
+                  )
+                }
+              </CardsLayout>
+            )}
+          </CardFilter>
+        )}
+      </PageContentColumn>
+    </PageContent>
   );
 };

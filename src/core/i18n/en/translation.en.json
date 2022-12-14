@@ -1300,6 +1300,7 @@
         },
         "challenges": {
           "header": "Challenges",
+          "list": "List of Challenges",
           "subheader": "There is no final frontier",
           "body": "",
           "no-data": "No challenges available for this hub",
@@ -1330,7 +1331,8 @@
         },
         "opportunities": {
           "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
-          "body-missing": "No opportunities found for this challenge"
+          "body-missing": "No opportunities found for this challenge",
+          "list": "List of Opportunities"
         }
       }
     },
