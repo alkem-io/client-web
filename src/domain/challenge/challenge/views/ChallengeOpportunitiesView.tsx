@@ -57,6 +57,10 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
               url: buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
               icon: <OpportunityIcon />,
             }))}
+            emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+              entities: t('common.opportunities'),
+              parentEntity: t('common.challenge'),
+            })}
           />
         </PageContentBlock>
       </PageContentColumn>

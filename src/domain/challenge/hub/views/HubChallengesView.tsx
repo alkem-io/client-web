@@ -69,6 +69,10 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
                 url: buildChallengeUrl(hubNameId, challenge.nameID),
                 icon: <ChallengeIcon />,
               }))}
+              emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+                entities: t('common.challenges'),
+                parentEntity: t('common.hub'),
+              })}
             />
           </PageContentBlock>
         </PageContentColumn>
