@@ -52,6 +52,7 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
           />
           <LinksList
             items={opportunities.map(opportunity => ({
+              id: opportunity.id,
               title: opportunity.displayName,
               url: buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
               icon: <OpportunityIcon />,

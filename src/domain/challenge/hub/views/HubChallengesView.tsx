@@ -64,6 +64,7 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
             />
             <LinksList
               items={entities.challenges.map(challenge => ({
+                id: challenge.id,
                 title: challenge.displayName,
                 url: buildChallengeUrl(hubNameId, challenge.nameID),
                 icon: <ChallengeIcon />,

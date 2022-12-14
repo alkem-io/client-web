@@ -13,6 +13,7 @@ const ListItem = styled(MuiListItem)(() => ({
 const ListItemIcon = styled(MuiListItemIcon)(({ theme }) => ({ minWidth: 'auto', marginRight: theme.spacing(1) }));
 
 interface Item {
+  id: string;
   title: string;
   url: string;
   icon?: ReactElement;
@@ -26,7 +27,7 @@ const LinksList: FC<LinksListProps> = ({ items }) => {
   return (
     <List>
       {items.map(item => (
-        <ListItem>
+        <ListItem key={item.id}>
           {item.icon ? <ListItemIcon>{item.icon}</ListItemIcon> : undefined}
           <ListItemText
             primary={
