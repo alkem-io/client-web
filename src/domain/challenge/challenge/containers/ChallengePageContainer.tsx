@@ -10,7 +10,11 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
-import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  ChallengeProfileFragment,
+  Reference,
+} from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
@@ -21,7 +25,6 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import { Reference } from '../../../common/profile/Profile';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
@@ -53,6 +56,7 @@ export interface ChallengeContainerActions {}
 export interface ChallengeContainerState {
   loading: boolean;
   error?: ApolloError;
+  activityLoading: boolean;
 }
 
 export interface ChallengePageContainerProps
@@ -78,7 +82,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
-  const { activities } = useActivityOnCollaboration(collaborationID);
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
@@ -136,7 +140,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           ...contributors,
           activities,
         },
-        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
+        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions, activityLoading },
         {}
       )}
     </>

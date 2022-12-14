@@ -14,7 +14,7 @@ import InputField from '../../../../domain/platform/admin/components/Common/Inpu
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
-import { JourneyType } from '../../../../domain/challenge/JourneyType';
+import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
 
 export interface ProfileFormValues {
   name: string;
@@ -28,7 +28,7 @@ export interface ProfileFormValues {
 
 interface Props {
   context?: Context;
-  journeyType: JourneyType;
+  journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
   tagset?: Tagset;

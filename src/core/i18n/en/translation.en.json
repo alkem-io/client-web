@@ -968,7 +968,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
+          "about": "About this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
@@ -1277,7 +1278,6 @@
     },
     "hub": {
       "title": "Hub",
-      "about-this-hub": "About this Hub",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
       "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
@@ -1309,7 +1309,6 @@
     },
     "challenge": {
       "title": "Challenge",
-      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -1336,7 +1335,6 @@
     },
     "opportunity": {
       "title": "Opportunity",
-      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {

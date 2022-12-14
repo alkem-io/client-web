@@ -25,8 +25,7 @@ import DashboardUpdatesSection from '../../../shared/components/DashboardSection
 import References from '../../../../common/components/composite/common/References/References';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-
-type JourneyTypeName = 'hub' | 'challenge' | 'opportunity';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
 interface AboutSectionProps {
   entityTypeName: JourneyTypeName;
