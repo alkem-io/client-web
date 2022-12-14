@@ -6,7 +6,6 @@ import BreadcrumbsView from './BreadcrumbsView';
 import { EntityTypeName } from '../../layout/PageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
 
-export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
 export const TITLE_HEIGHT = 7;
 
@@ -56,8 +55,7 @@ const Image = styled('img')(({ theme }) => ({
   objectFit: 'cover',
   objectPosition: '50% 50%',
   width: '100%',
-  minHeight: theme.spacing(10),
-  aspectRatio: BANNER_ASPECT_RATIO,
+  height: theme.spacing(18),
 }));
 
 const PageNotice = styled('div')(({ theme }) => ({

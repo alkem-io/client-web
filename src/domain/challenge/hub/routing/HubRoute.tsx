@@ -13,7 +13,7 @@ import HubChallengesPage from '../pages/HubChallengesPage';
 import { routes } from '../routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
-import HubContextPage from '../pages/HubContextPage';
+import HubAboutPage from '../pages/HubAboutPage';
 import HubDashboardPage from '../pages/HubDashboardPage';
 import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 import HubPageLayout from '../layout/HubPageLayout';
@@ -37,7 +37,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={routes.About} element={<HubContextPage paths={currentPaths} />} />
+        <Route path={routes.About} element={<HubAboutPage paths={currentPaths} />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
 
         <Route

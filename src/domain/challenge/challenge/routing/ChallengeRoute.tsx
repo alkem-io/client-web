@@ -16,7 +16,7 @@ import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
-import ChallengeContextPage from '../pages/ChallengeContextPage';
+import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
@@ -50,7 +50,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="challenge" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />
+        <Route path={routes.About} element={<ChallengeAboutPage paths={currentPaths} />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
 
         <Route

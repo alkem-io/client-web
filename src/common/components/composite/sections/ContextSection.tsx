@@ -14,11 +14,11 @@ import ContextSectionIcon from './ContextSectionIcon';
 import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/DashboardColumn';
 import LocationView from '../../../../domain/common/location/LocationView';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
-import { JourneyType } from '../../../../domain/challenge/JourneyType';
+import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
 
 export interface ContextSectionProps {
   contextId?: string;
-  contextType: JourneyType;
+  contextType: JourneyTypeName;
   primaryAction?: ReactNode;
   displayName?: string;
   tagline?: string;

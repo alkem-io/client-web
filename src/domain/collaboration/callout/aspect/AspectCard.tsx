@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
-import ContributeCard from '../../aspect/AspectCard/ContributeCard';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../core/ui/card/CardDescription';

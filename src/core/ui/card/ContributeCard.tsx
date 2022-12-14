@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Paper } from '@mui/material';
 
-import withElevationOnHover from '../../../shared/components/withElevationOnHover';
+import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
