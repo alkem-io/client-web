@@ -25,7 +25,6 @@ const Title = styled(Box)(({ theme }) => ({
   width: '100%',
   bottom: 0,
   textAlign: 'center',
-  padding: theme.spacing(1, 2, 0.5, 2),
   height: theme.spacing(TITLE_HEIGHT),
   zIndex: 20,
   [theme.breakpoints.down('lg')]: {

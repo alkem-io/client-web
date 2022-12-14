@@ -8,7 +8,7 @@ import { RouterLink } from '../../../core/RouterLink';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
 import { TopBarHeight } from './TopBar';
-import { ChallengeIcon } from '../../../../icons/ChallengeIcon';
+import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 
 const PREFIX = 'TopNavIcons';
 
