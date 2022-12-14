@@ -19,7 +19,7 @@ import { formatLocation } from '../../../../domain/common/location/LocationUtils
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { InnovationFlowTemplateSegment } from '../../../../domain/platform/admin/components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
-import { JourneyType } from '../../../../domain/challenge/JourneyType';
+import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
 
 export interface ProfileFormValuesType {
   name: string;
@@ -49,7 +49,7 @@ interface LifecycleTemplate {
 
 interface ProfileFormWithContextProps {
   context?: Context;
-  journeyType: JourneyType;
+  journeyType: JourneyTypeName;
   contextSegment: ElementType<ContextSegmentProps>;
   name?: string;
   nameID?: string;

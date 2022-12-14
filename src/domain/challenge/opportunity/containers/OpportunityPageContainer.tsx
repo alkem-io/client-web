@@ -1,7 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { FC, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { FC, useMemo, useState } from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunityPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -12,7 +10,6 @@ import {
   AuthorizationPrivilege,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
-  Project,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { replaceAll } from '../../../../common/utils/replaceAll';
@@ -30,16 +27,11 @@ import { useAuthenticationContext } from '../../../../core/auth/authentication/h
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
-interface OpportunityProject {
-  title: string;
-  type: 'display' | 'add' | 'more';
-  description?: string;
-  onSelect?: () => void;
-}
-
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
-  opportunity: OpportunityPageFragment;
+  hubNameId: string;
+  challengeNameId: string;
+  opportunity: OpportunityPageFragment | undefined;
   permissions: {
     canEdit: boolean;
     projectWrite: boolean;
@@ -55,10 +47,9 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   hideMeme: boolean;
   showInterestModal: boolean;
   showActorGroupModal: boolean;
-  url: string;
+  url: string | undefined;
   meme?: Reference;
   links: Reference[];
-  opportunityProjects: OpportunityProject[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   relations: {
@@ -85,6 +76,7 @@ export interface OpportunityContainerActions {
 export interface OpportunityContainerState {
   loading: boolean;
   error?: ApolloError;
+  activityLoading: boolean;
 }
 
 export interface OpportunityPageContainerProps
@@ -92,12 +84,10 @@ export interface OpportunityPageContainerProps
 
 // todo: Do cleanup when the aspect are extended further
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
+  // TODO don't use context, fetch all the data with a query
   const { hubId, hubNameId, challengeId, challengeNameId, opportunityId, opportunityNameId } = useOpportunity();
 
   const { isAuthenticated } = useAuthenticationContext();
@@ -114,13 +104,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     errorPolicy: 'all',
   });
 
-  const opportunity = useMemo(
-    () => (query?.hub.opportunity ?? {}) as OpportunityPageFragment,
-    [query?.hub.opportunity]
-  );
+  const opportunity = query?.hub.opportunity;
   const collaborationID = opportunity?.collaboration?.id;
 
-  const { activities } = useActivityOnCollaboration(collaborationID);
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
 
   const permissions = useMemo(() => {
     const isAdmin = user?.isOpportunityAdmin(hubId, challengeId, opportunityId) || false;
@@ -137,7 +124,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, collaboration, metrics = [] } = opportunity;
+  const { context, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
@@ -158,37 +145,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
-  const onProjectTransition = useCallback(
-    (project?: { nameID: string }) => {
-      navigate(project?.nameID ?? 'new');
-    },
-    [navigate]
-  );
-
-  const opportunityProjects = useMemo(() => {
-    // Note: Projects are removed from the graphql query until we add them back in properly.
-    const projectList: OpportunityProject[] = ([] as Project[]).map(p => ({
-      title: p.displayName,
-      description: p.description,
-      type: 'display',
-      onSelect: () => onProjectTransition(p),
-    }));
-    projectList.push({
-      title: t('pages.opportunity.sections.projects.more-projects'),
-      type: 'more',
-    });
-
-    if (permissions.projectWrite) {
-      projectList.push({
-        title: t('pages.opportunity.sections.projects.new-project.header'),
-        type: 'add',
-        onSelect: () => onProjectTransition(),
-      });
-    }
-
-    return projectList;
-  }, [onProjectTransition, permissions.projectWrite, t]);
-
   const aspectsCount = useAspectsCount(metrics);
 
   const canvasesCount = useCanvasesCount(metrics);
@@ -200,8 +156,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       {children(
         {
           hubId,
+          hubNameId,
+          challengeNameId,
           opportunity,
-          url: buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
+          url: opportunity && buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
           meme,
           links,
           permissions: {
@@ -213,7 +171,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           hideMeme,
           showInterestModal,
           showActorGroupModal,
-          opportunityProjects,
           availableActorGroupNames,
           existingAspectNames,
           relations: {
@@ -226,12 +183,13 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           canvases,
           canvasesCount,
           references,
-          activities,
           ...contributors,
+          activities,
         },
         {
-          loading: loadingOpportunity, // || loadingDiscussions,
+          loading: loadingOpportunity,
           error: errorOpportunity,
+          activityLoading,
         },
         {
           onMemeError: () => setHideMeme(true),

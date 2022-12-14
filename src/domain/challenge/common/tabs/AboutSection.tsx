@@ -25,8 +25,7 @@ import DashboardUpdatesSection from '../../../shared/components/DashboardSection
 import References from '../../../../common/components/composite/common/References/References';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-
-type JourneyTypeName = 'hub' | 'challenge' | 'opportunity';
+import { JourneyTypeName } from '../../JourneyTypeName';
 
 interface AboutSectionProps {
   entityTypeName: JourneyTypeName;
@@ -40,7 +39,6 @@ interface AboutSectionProps {
   loading: boolean | undefined;
   error?: ApolloError;
   communityReadAccess: boolean;
-  isHub: boolean;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
   memberUsers: EntityDashboardContributors['memberUsers'];
@@ -83,7 +81,6 @@ export const AboutSection: FC<AboutSectionProps> = ({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-  isHub,
   hubNameId,
   communityId,
   references,
@@ -91,8 +88,11 @@ export const AboutSection: FC<AboutSectionProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
-  const usersHeader = isHub ? 'community.host' : 'community.leads';
+  const isHub = entityTypeName === 'hub';
+  const leadOrganizationsHeader = isHub
+    ? 'pages.hub.sections.dashboard.organization'
+    : 'community.leading-organizations';
+  const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
 
   return (
     <>
@@ -105,8 +105,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection
-              organizationsHeader={t(organizationsHeader)}
-              usersHeader={t(usersHeader)}
+              organizationsHeader={t(leadOrganizationsHeader)}
+              usersHeader={t(leadUsersHeader)}
               leadUsers={leadUsers}
               leadOrganizations={leadOrganizations}
             />

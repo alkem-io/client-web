@@ -96,7 +96,6 @@ export const HubAboutView: FC<HubAboutViewProps> = ({
       communityReadAccess={communityReadAccess}
       loading={loading}
       error={error}
-      isHub
       leadOrganizations={leadOrganizations}
       leadUsers={leadUsers}
       memberUsers={memberUsers}
