@@ -10,7 +10,7 @@ import {
   entityValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import { OpportunityIcon } from '../../../shared/icons/OpportunityIcon';
+import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { Opportunity } from '../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../core/ui/content/PageContent';
