@@ -5,7 +5,7 @@ import { useHub } from '../HubContext/useHub';
 import { buildAdminHubUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useTranslation } from 'react-i18next';
-import { ChallengeIcon } from '../../../shared/icons/ChallengeIcon';
+import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 
 const HubTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();

@@ -10,7 +10,7 @@ import {
   entityValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import { ChallengeIcon } from '../../../shared/icons/ChallengeIcon';
+import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 import { Challenge, ChallengeCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';

@@ -5,7 +5,7 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
-import { CanvasIcon } from '../../../shared/icons/CanvasIcon';
+import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
 import { CanvasCardCanvas } from './types';
 
 interface CanvasCardProps {
