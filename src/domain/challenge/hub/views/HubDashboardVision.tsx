@@ -8,7 +8,6 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 
 interface HubDashboardVisionProps {
   vision: string;
@@ -28,7 +27,6 @@ const HubDashboardVision = ({ vision }: HubDashboardVisionProps) => {
           {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
         </ApplicationButtonContainer>
       </Box>
-      <TagsComponent tags={['one', 'two', 'three']} />
     </PageContentBlock>
   );
 };
