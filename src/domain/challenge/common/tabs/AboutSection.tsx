@@ -65,7 +65,6 @@ const LeftColumn = styled(props => <PageContentColumn {...props} columns={4} />)
  * - info block tags
  * - loading
  * - error
- * - references
  */
 export const AboutSection: FC<AboutSectionProps> = ({
   entityTypeName,

@@ -396,6 +396,43 @@ export const OpportunitiesOnChallengeFragmentDoc = gql`
   }
   ${OpportunityCardFragmentDoc}
 `;
+export const ContextTabFragmentDoc = gql`
+  fragment ContextTab on Context {
+    id
+    tagline
+    background
+    authorization {
+      id
+      myPrivileges
+    }
+    location {
+      id
+      city
+      country
+    }
+    vision
+    impact
+    who
+    visuals {
+      ...VisualFull
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
+export const LifecycleContextTabFragmentDoc = gql`
+  fragment LifecycleContextTab on Lifecycle {
+    id
+    state
+    machineDef
+  }
+`;
+export const MetricsItemFragmentDoc = gql`
+  fragment MetricsItem on NVP {
+    id
+    name
+    value
+  }
+`;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -1688,43 +1725,6 @@ export const UserRolesDetailsFragmentDoc = gql`
       challengeID
       opportunityID
     }
-  }
-`;
-export const ContextTabFragmentDoc = gql`
-  fragment ContextTab on Context {
-    id
-    tagline
-    background
-    authorization {
-      id
-      myPrivileges
-    }
-    location {
-      id
-      city
-      country
-    }
-    vision
-    impact
-    who
-    visuals {
-      ...VisualFull
-    }
-  }
-  ${VisualFullFragmentDoc}
-`;
-export const LifecycleContextTabFragmentDoc = gql`
-  fragment LifecycleContextTab on Lifecycle {
-    id
-    state
-    machineDef
-  }
-`;
-export const MetricsItemFragmentDoc = gql`
-  fragment MetricsItem on NVP {
-    id
-    name
-    value
   }
 `;
 export const AvailableUserFragmentDoc = gql`
@@ -4179,6 +4179,624 @@ export function useOpportunityCreatedSubscription(
 export type OpportunityCreatedSubscriptionHookResult = ReturnType<typeof useOpportunityCreatedSubscription>;
 export type OpportunityCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.OpportunityCreatedSubscription>;
+export const HubContextDocument = gql`
+  query HubContext($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      nameID
+      displayName
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      tagset {
+        id
+        name
+        tags
+      }
+      context {
+        ...ContextTab
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        ...EntityDashboardCommunity
+      }
+    }
+  }
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ContextTabFragmentDoc}
+  ${MetricsItemFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+`;
+
+/**
+ * __useHubContextQuery__
+ *
+ * To run a query within a React component, call `useHubContextQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubContextQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useHubContextQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>(
+    HubContextDocument,
+    options
+  );
+}
+export function useHubContextLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>(
+    HubContextDocument,
+    options
+  );
+}
+export type HubContextQueryHookResult = ReturnType<typeof useHubContextQuery>;
+export type HubContextLazyQueryHookResult = ReturnType<typeof useHubContextLazyQuery>;
+export type HubContextQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubContextQuery,
+  SchemaTypes.HubContextQueryVariables
+>;
+export function refetchHubContextQuery(variables: SchemaTypes.HubContextQueryVariables) {
+  return { query: HubContextDocument, variables: variables };
+}
+export const ChallengeContextDocument = gql`
+  query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      nameID
+      displayName
+      challenge(ID: $challengeNameId) {
+        id
+        nameID
+        displayName
+        authorization {
+          id
+          myPrivileges
+        }
+        tagset {
+          id
+          name
+          tags
+        }
+        lifecycle {
+          ...LifecycleContextTab
+        }
+        context {
+          ...ContextTab
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          ...EntityDashboardCommunity
+        }
+      }
+    }
+  }
+  ${LifecycleContextTabFragmentDoc}
+  ${ContextTabFragmentDoc}
+  ${MetricsItemFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+`;
+
+/**
+ * __useChallengeContextQuery__
+ *
+ * To run a query within a React component, call `useChallengeContextQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeContextQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *   },
+ * });
+ */
+export function useChallengeContextQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeContextQuery, SchemaTypes.ChallengeContextQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeContextQuery, SchemaTypes.ChallengeContextQueryVariables>(
+    ChallengeContextDocument,
+    options
+  );
+}
+export function useChallengeContextLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeContextQuery,
+    SchemaTypes.ChallengeContextQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeContextQuery, SchemaTypes.ChallengeContextQueryVariables>(
+    ChallengeContextDocument,
+    options
+  );
+}
+export type ChallengeContextQueryHookResult = ReturnType<typeof useChallengeContextQuery>;
+export type ChallengeContextLazyQueryHookResult = ReturnType<typeof useChallengeContextLazyQuery>;
+export type ChallengeContextQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeContextQuery,
+  SchemaTypes.ChallengeContextQueryVariables
+>;
+export function refetchChallengeContextQuery(variables: SchemaTypes.ChallengeContextQueryVariables) {
+  return { query: ChallengeContextDocument, variables: variables };
+}
+export const OpportunityContextDocument = gql`
+  query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      nameID
+      opportunity(ID: $opportunityNameId) {
+        id
+        nameID
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        lifecycle {
+          ...LifecycleContextTab
+        }
+        context {
+          ...ContextTab
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          ...EntityDashboardCommunity
+        }
+      }
+    }
+  }
+  ${LifecycleContextTabFragmentDoc}
+  ${ContextTabFragmentDoc}
+  ${MetricsItemFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+`;
+
+/**
+ * __useOpportunityContextQuery__
+ *
+ * To run a query within a React component, call `useOpportunityContextQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityContextQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useOpportunityContextQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityContextQuery,
+    SchemaTypes.OpportunityContextQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityContextQuery, SchemaTypes.OpportunityContextQueryVariables>(
+    OpportunityContextDocument,
+    options
+  );
+}
+export function useOpportunityContextLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityContextQuery,
+    SchemaTypes.OpportunityContextQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityContextQuery, SchemaTypes.OpportunityContextQueryVariables>(
+    OpportunityContextDocument,
+    options
+  );
+}
+export type OpportunityContextQueryHookResult = ReturnType<typeof useOpportunityContextQuery>;
+export type OpportunityContextLazyQueryHookResult = ReturnType<typeof useOpportunityContextLazyQuery>;
+export type OpportunityContextQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityContextQuery,
+  SchemaTypes.OpportunityContextQueryVariables
+>;
+export function refetchOpportunityContextQuery(variables: SchemaTypes.OpportunityContextQueryVariables) {
+  return { query: OpportunityContextDocument, variables: variables };
+}
+export const AboutPageNonMembersDocument = gql`
+  query AboutPageNonMembers(
+    $hubNameId: UUID_NAMEID!
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      context {
+        ...ContextTab
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        nameID
+        displayName
+        authorization {
+          id
+          myPrivileges
+        }
+        tagset {
+          id
+          name
+          tags
+        }
+        lifecycle {
+          ...LifecycleContextTab
+        }
+        context {
+          ...ContextTab
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        nameID
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        lifecycle {
+          ...LifecycleContextTab
+        }
+        context {
+          ...ContextTab
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${MetricsItemFragmentDoc}
+  ${ContextTabFragmentDoc}
+  ${LifecycleContextTabFragmentDoc}
+`;
+
+/**
+ * __useAboutPageNonMembersQuery__
+ *
+ * To run a query within a React component, call `useAboutPageNonMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAboutPageNonMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAboutPageNonMembersQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useAboutPageNonMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AboutPageNonMembersQuery,
+    SchemaTypes.AboutPageNonMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
+    AboutPageNonMembersDocument,
+    options
+  );
+}
+export function useAboutPageNonMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AboutPageNonMembersQuery,
+    SchemaTypes.AboutPageNonMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
+    AboutPageNonMembersDocument,
+    options
+  );
+}
+export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
+export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
+export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AboutPageNonMembersQuery,
+  SchemaTypes.AboutPageNonMembersQueryVariables
+>;
+export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPageNonMembersQueryVariables) {
+  return { query: AboutPageNonMembersDocument, variables: variables };
+}
+export const AboutPageMembersDocument = gql`
+  query AboutPageMembers(
+    $hubNameId: UUID_NAMEID!
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $skipHubCommunity: Boolean = false
+    $communityReadAccess: Boolean!
+    $referencesReadAccess: Boolean!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity @skip(if: $skipHubCommunity)
+      }
+      context {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        community @include(if: $communityReadAccess) {
+          ...EntityDashboardCommunity
+        }
+        context {
+          id
+          references @include(if: $referencesReadAccess) {
+            ...ReferenceDetails
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        community @include(if: $communityReadAccess) {
+          ...EntityDashboardCommunity
+        }
+        context {
+          id
+          references @include(if: $referencesReadAccess) {
+            ...ReferenceDetails
+          }
+        }
+      }
+    }
+  }
+  ${EntityDashboardCommunityFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
+`;
+
+/**
+ * __useAboutPageMembersQuery__
+ *
+ * To run a query within a React component, call `useAboutPageMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAboutPageMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAboutPageMembersQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      skipHubCommunity: // value for 'skipHubCommunity'
+ *      communityReadAccess: // value for 'communityReadAccess'
+ *      referencesReadAccess: // value for 'referencesReadAccess'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useAboutPageMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
+    AboutPageMembersDocument,
+    options
+  );
+}
+export function useAboutPageMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AboutPageMembersQuery,
+    SchemaTypes.AboutPageMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
+    AboutPageMembersDocument,
+    options
+  );
+}
+export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
+export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
+export type AboutPageMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AboutPageMembersQuery,
+  SchemaTypes.AboutPageMembersQueryVariables
+>;
+export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMembersQueryVariables) {
+  return { query: AboutPageMembersDocument, variables: variables };
+}
+export const CommunityFeedbackTemplatesDocument = gql`
+  query communityFeedbackTemplates {
+    configuration {
+      template {
+        challenges {
+          feedback {
+            name
+            questions {
+              question
+              required
+              sortOrder
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCommunityFeedbackTemplatesQuery__
+ *
+ * To run a query within a React component, call `useCommunityFeedbackTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityFeedbackTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityFeedbackTemplatesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCommunityFeedbackTemplatesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >(CommunityFeedbackTemplatesDocument, options);
+}
+export function useCommunityFeedbackTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >(CommunityFeedbackTemplatesDocument, options);
+}
+export type CommunityFeedbackTemplatesQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesQuery>;
+export type CommunityFeedbackTemplatesLazyQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesLazyQuery>;
+export type CommunityFeedbackTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityFeedbackTemplatesQuery,
+  SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+>;
+export function refetchCommunityFeedbackTemplatesQuery(
+  variables?: SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+) {
+  return { query: CommunityFeedbackTemplatesDocument, variables: variables };
+}
+export const CreateFeedbackOnCommunityContextDocument = gql`
+  mutation createFeedbackOnCommunityContext($feedbackData: CreateFeedbackOnCommunityContextInput!) {
+    createFeedbackOnCommunityContext(feedbackData: $feedbackData)
+  }
+`;
+export type CreateFeedbackOnCommunityContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+  SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+>;
+
+/**
+ * __useCreateFeedbackOnCommunityContextMutation__
+ *
+ * To run a mutation, you first call `useCreateFeedbackOnCommunityContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFeedbackOnCommunityContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFeedbackOnCommunityContextMutation, { data, loading, error }] = useCreateFeedbackOnCommunityContextMutation({
+ *   variables: {
+ *      feedbackData: // value for 'feedbackData'
+ *   },
+ * });
+ */
+export function useCreateFeedbackOnCommunityContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+    SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+    SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+  >(CreateFeedbackOnCommunityContextDocument, options);
+}
+export type CreateFeedbackOnCommunityContextMutationHookResult = ReturnType<
+  typeof useCreateFeedbackOnCommunityContextMutation
+>;
+export type CreateFeedbackOnCommunityContextMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateFeedbackOnCommunityContextMutation>;
+export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+  SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+>;
 export const HubProviderDocument = gql`
   query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -16720,622 +17338,6 @@ export function refetchOpportunityContributionDetailsQuery(
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
-export const HubContextDocument = gql`
-  query HubContext($hubNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      displayName
-      host {
-        ...AssociatedOrganizationDetails
-      }
-      tagset {
-        id
-        name
-        tags
-      }
-      context {
-        ...ContextTab
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        ...EntityDashboardCommunity
-      }
-    }
-  }
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${ContextTabFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-`;
-
-/**
- * __useHubContextQuery__
- *
- * To run a query within a React component, call `useHubContextQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubContextQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *   },
- * });
- */
-export function useHubContextQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>(
-    HubContextDocument,
-    options
-  );
-}
-export function useHubContextLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubContextQuery, SchemaTypes.HubContextQueryVariables>(
-    HubContextDocument,
-    options
-  );
-}
-export type HubContextQueryHookResult = ReturnType<typeof useHubContextQuery>;
-export type HubContextLazyQueryHookResult = ReturnType<typeof useHubContextLazyQuery>;
-export type HubContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubContextQuery,
-  SchemaTypes.HubContextQueryVariables
->;
-export function refetchHubContextQuery(variables: SchemaTypes.HubContextQueryVariables) {
-  return { query: HubContextDocument, variables: variables };
-}
-export const ChallengeContextDocument = gql`
-  query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      displayName
-      challenge(ID: $challengeNameId) {
-        id
-        nameID
-        displayName
-        authorization {
-          id
-          myPrivileges
-        }
-        tagset {
-          id
-          name
-          tags
-        }
-        lifecycle {
-          ...LifecycleContextTab
-        }
-        context {
-          ...ContextTab
-        }
-        metrics {
-          ...MetricsItem
-        }
-        community {
-          ...EntityDashboardCommunity
-        }
-      }
-    }
-  }
-  ${LifecycleContextTabFragmentDoc}
-  ${ContextTabFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-`;
-
-/**
- * __useChallengeContextQuery__
- *
- * To run a query within a React component, call `useChallengeContextQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeContextQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *   },
- * });
- */
-export function useChallengeContextQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeContextQuery, SchemaTypes.ChallengeContextQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeContextQuery, SchemaTypes.ChallengeContextQueryVariables>(
-    ChallengeContextDocument,
-    options
-  );
-}
-export function useChallengeContextLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeContextQuery,
-    SchemaTypes.ChallengeContextQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeContextQuery, SchemaTypes.ChallengeContextQueryVariables>(
-    ChallengeContextDocument,
-    options
-  );
-}
-export type ChallengeContextQueryHookResult = ReturnType<typeof useChallengeContextQuery>;
-export type ChallengeContextLazyQueryHookResult = ReturnType<typeof useChallengeContextLazyQuery>;
-export type ChallengeContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeContextQuery,
-  SchemaTypes.ChallengeContextQueryVariables
->;
-export function refetchChallengeContextQuery(variables: SchemaTypes.ChallengeContextQueryVariables) {
-  return { query: ChallengeContextDocument, variables: variables };
-}
-export const OpportunityContextDocument = gql`
-  query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      opportunity(ID: $opportunityNameId) {
-        id
-        nameID
-        displayName
-        tagset {
-          id
-          name
-          tags
-        }
-        lifecycle {
-          ...LifecycleContextTab
-        }
-        context {
-          ...ContextTab
-        }
-        metrics {
-          ...MetricsItem
-        }
-        community {
-          ...EntityDashboardCommunity
-        }
-      }
-    }
-  }
-  ${LifecycleContextTabFragmentDoc}
-  ${ContextTabFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-`;
-
-/**
- * __useOpportunityContextQuery__
- *
- * To run a query within a React component, call `useOpportunityContextQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityContextQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *   },
- * });
- */
-export function useOpportunityContextQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityContextQuery,
-    SchemaTypes.OpportunityContextQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityContextQuery, SchemaTypes.OpportunityContextQueryVariables>(
-    OpportunityContextDocument,
-    options
-  );
-}
-export function useOpportunityContextLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityContextQuery,
-    SchemaTypes.OpportunityContextQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityContextQuery, SchemaTypes.OpportunityContextQueryVariables>(
-    OpportunityContextDocument,
-    options
-  );
-}
-export type OpportunityContextQueryHookResult = ReturnType<typeof useOpportunityContextQuery>;
-export type OpportunityContextLazyQueryHookResult = ReturnType<typeof useOpportunityContextLazyQuery>;
-export type OpportunityContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityContextQuery,
-  SchemaTypes.OpportunityContextQueryVariables
->;
-export function refetchOpportunityContextQuery(variables: SchemaTypes.OpportunityContextQueryVariables) {
-  return { query: OpportunityContextDocument, variables: variables };
-}
-export const AboutPageNonMembersDocument = gql`
-  query AboutPageNonMembers(
-    $hubNameId: UUID_NAMEID!
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      displayName
-      tagset {
-        id
-        name
-        tags
-      }
-      host {
-        ...AssociatedOrganizationDetails
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-      context {
-        ...ContextTab
-      }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-        id
-        nameID
-        displayName
-        authorization {
-          id
-          myPrivileges
-        }
-        tagset {
-          id
-          name
-          tags
-        }
-        lifecycle {
-          ...LifecycleContextTab
-        }
-        context {
-          ...ContextTab
-        }
-        metrics {
-          ...MetricsItem
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        nameID
-        displayName
-        tagset {
-          id
-          name
-          tags
-        }
-        lifecycle {
-          ...LifecycleContextTab
-        }
-        context {
-          ...ContextTab
-        }
-        metrics {
-          ...MetricsItem
-        }
-        community {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-        }
-      }
-    }
-  }
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${MetricsItemFragmentDoc}
-  ${ContextTabFragmentDoc}
-  ${LifecycleContextTabFragmentDoc}
-`;
-
-/**
- * __useAboutPageNonMembersQuery__
- *
- * To run a query within a React component, call `useAboutPageNonMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAboutPageNonMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAboutPageNonMembersQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *   },
- * });
- */
-export function useAboutPageNonMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AboutPageNonMembersQuery,
-    SchemaTypes.AboutPageNonMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
-    AboutPageNonMembersDocument,
-    options
-  );
-}
-export function useAboutPageNonMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AboutPageNonMembersQuery,
-    SchemaTypes.AboutPageNonMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AboutPageNonMembersQuery, SchemaTypes.AboutPageNonMembersQueryVariables>(
-    AboutPageNonMembersDocument,
-    options
-  );
-}
-export type AboutPageNonMembersQueryHookResult = ReturnType<typeof useAboutPageNonMembersQuery>;
-export type AboutPageNonMembersLazyQueryHookResult = ReturnType<typeof useAboutPageNonMembersLazyQuery>;
-export type AboutPageNonMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AboutPageNonMembersQuery,
-  SchemaTypes.AboutPageNonMembersQueryVariables
->;
-export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPageNonMembersQueryVariables) {
-  return { query: AboutPageNonMembersDocument, variables: variables };
-}
-export const AboutPageMembersDocument = gql`
-  query AboutPageMembers(
-    $hubNameId: UUID_NAMEID!
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-    $communityReadAccess: Boolean!
-    $referencesReadAccess: Boolean!
-    $challengeNameId: UUID_NAMEID = "mockid"
-    $opportunityNameId: UUID_NAMEID = "mockid"
-  ) {
-    hub(ID: $hubNameId) {
-      id
-      community @include(if: $communityReadAccess) {
-        ...EntityDashboardCommunity
-      }
-      context {
-        id
-        references @include(if: $referencesReadAccess) {
-          ...ReferenceDetails
-        }
-      }
-      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
-        id
-        community @include(if: $communityReadAccess) {
-          ...EntityDashboardCommunity
-        }
-        context {
-          id
-          references @include(if: $referencesReadAccess) {
-            ...ReferenceDetails
-          }
-        }
-      }
-      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
-        id
-        community @include(if: $communityReadAccess) {
-          ...EntityDashboardCommunity
-        }
-        context {
-          id
-          references @include(if: $referencesReadAccess) {
-            ...ReferenceDetails
-          }
-        }
-      }
-    }
-  }
-  ${EntityDashboardCommunityFragmentDoc}
-  ${ReferenceDetailsFragmentDoc}
-`;
-
-/**
- * __useAboutPageMembersQuery__
- *
- * To run a query within a React component, call `useAboutPageMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAboutPageMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAboutPageMembersQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
- *      communityReadAccess: // value for 'communityReadAccess'
- *      referencesReadAccess: // value for 'referencesReadAccess'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *   },
- * });
- */
-export function useAboutPageMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
-    AboutPageMembersDocument,
-    options
-  );
-}
-export function useAboutPageMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AboutPageMembersQuery,
-    SchemaTypes.AboutPageMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AboutPageMembersQuery, SchemaTypes.AboutPageMembersQueryVariables>(
-    AboutPageMembersDocument,
-    options
-  );
-}
-export type AboutPageMembersQueryHookResult = ReturnType<typeof useAboutPageMembersQuery>;
-export type AboutPageMembersLazyQueryHookResult = ReturnType<typeof useAboutPageMembersLazyQuery>;
-export type AboutPageMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AboutPageMembersQuery,
-  SchemaTypes.AboutPageMembersQueryVariables
->;
-export function refetchAboutPageMembersQuery(variables: SchemaTypes.AboutPageMembersQueryVariables) {
-  return { query: AboutPageMembersDocument, variables: variables };
-}
-export const CommunityFeedbackTemplatesDocument = gql`
-  query communityFeedbackTemplates {
-    configuration {
-      template {
-        challenges {
-          feedback {
-            name
-            questions {
-              question
-              required
-              sortOrder
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useCommunityFeedbackTemplatesQuery__
- *
- * To run a query within a React component, call `useCommunityFeedbackTemplatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityFeedbackTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityFeedbackTemplatesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCommunityFeedbackTemplatesQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityFeedbackTemplatesQuery,
-    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CommunityFeedbackTemplatesQuery,
-    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
-  >(CommunityFeedbackTemplatesDocument, options);
-}
-export function useCommunityFeedbackTemplatesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityFeedbackTemplatesQuery,
-    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CommunityFeedbackTemplatesQuery,
-    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
-  >(CommunityFeedbackTemplatesDocument, options);
-}
-export type CommunityFeedbackTemplatesQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesQuery>;
-export type CommunityFeedbackTemplatesLazyQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesLazyQuery>;
-export type CommunityFeedbackTemplatesQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityFeedbackTemplatesQuery,
-  SchemaTypes.CommunityFeedbackTemplatesQueryVariables
->;
-export function refetchCommunityFeedbackTemplatesQuery(
-  variables?: SchemaTypes.CommunityFeedbackTemplatesQueryVariables
-) {
-  return { query: CommunityFeedbackTemplatesDocument, variables: variables };
-}
-export const CreateFeedbackOnCommunityContextDocument = gql`
-  mutation createFeedbackOnCommunityContext($feedbackData: CreateFeedbackOnCommunityContextInput!) {
-    createFeedbackOnCommunityContext(feedbackData: $feedbackData)
-  }
-`;
-export type CreateFeedbackOnCommunityContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateFeedbackOnCommunityContextMutation,
-  SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
->;
-
-/**
- * __useCreateFeedbackOnCommunityContextMutation__
- *
- * To run a mutation, you first call `useCreateFeedbackOnCommunityContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateFeedbackOnCommunityContextMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createFeedbackOnCommunityContextMutation, { data, loading, error }] = useCreateFeedbackOnCommunityContextMutation({
- *   variables: {
- *      feedbackData: // value for 'feedbackData'
- *   },
- * });
- */
-export function useCreateFeedbackOnCommunityContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateFeedbackOnCommunityContextMutation,
-    SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateFeedbackOnCommunityContextMutation,
-    SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
-  >(CreateFeedbackOnCommunityContextDocument, options);
-}
-export type CreateFeedbackOnCommunityContextMutationHookResult = ReturnType<
-  typeof useCreateFeedbackOnCommunityContextMutation
->;
-export type CreateFeedbackOnCommunityContextMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreateFeedbackOnCommunityContextMutation>;
-export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateFeedbackOnCommunityContextMutation,
-  SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
->;
 export const ChallengeApplicationsDocument = gql`
   query challengeApplications($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {

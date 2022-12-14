@@ -14,14 +14,18 @@ const ChallengeAboutPage: FC<ChallengeContextPageProps> = () => {
   return (
     <ChallengePageLayout currentSection={EntityPageSection.About}>
       <AboutPageContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
-        {(entities, state) => (
+        {({ context, tagset, permissions, ...rest }, state) => (
           <ChallengeAboutView
             name={challengeDisplayName}
-            tagline={entities.context?.tagline}
-            tags={entities.tagset?.tags}
-            who={entities.context?.who}
-            vision={entities.context?.vision}
-            loading={state.loading}
+            tagline={context?.tagline}
+            tags={tagset?.tags}
+            who={context?.who}
+            impact={context?.impact}
+            background={context?.background}
+            vision={context?.vision}
+            communityReadAccess={permissions.communityReadAccess}
+            {...rest}
+            {...state}
           />
         )}
       </AboutPageContainer>

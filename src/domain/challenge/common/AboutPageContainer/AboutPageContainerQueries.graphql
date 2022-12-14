@@ -215,6 +215,7 @@ query AboutPageMembers(
   $hubNameId: UUID_NAMEID!,
   $includeChallenge: Boolean = false,
   $includeOpportunity: Boolean = false,
+  $skipHubCommunity: Boolean = false,
   $communityReadAccess: Boolean!,
   $referencesReadAccess: Boolean!,
   $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
@@ -223,7 +224,7 @@ query AboutPageMembers(
   hub(ID: $hubNameId) {
     id
     community @include(if: $communityReadAccess) {
-      ...EntityDashboardCommunity
+      ...EntityDashboardCommunity @skip(if: $skipHubCommunity)
     }
     context {
       id

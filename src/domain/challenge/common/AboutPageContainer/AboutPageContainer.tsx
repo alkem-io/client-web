@@ -100,6 +100,7 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
       opportunityNameId,
       includeChallenge: !!challengeNameId,
       includeOpportunity: !!opportunityNameId,
+      skipHubCommunity: Boolean(challengeNameId || opportunityNameId),
       referencesReadAccess,
       communityReadAccess,
     },
