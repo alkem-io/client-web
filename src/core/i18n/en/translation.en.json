@@ -356,7 +356,8 @@
     "member-organizations": "Member Organizations",
     "leads": "Leads",
     "members": "Members",
-    "host": "Host"
+    "host": "Host",
+    "members-count": "Members ({{count}})"
   },
   "callout": {
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
@@ -1368,7 +1369,6 @@
         "help-text": "The Organization that is facilitating this Hub."
       },
       "members": {
-        "title": "Members ({{count}})",
         "help-text": "Shows members is this community, including the role they have",
         "no-data": "No members available"
       },

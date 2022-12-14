@@ -9,8 +9,9 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import HubPageLayout from '../layout/HubPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
-import ChallengeCard from '../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
+import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
+import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -47,7 +48,12 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 activities={entities.activities}
                 activityLoading={entities.activityLoading}
                 renderChildEntityCard={challenge => (
-                  <ChallengeCard challenge={challenge} hubNameId={entities.hub?.nameID} />
+                  <ChallengeCard
+                    bannerUri={getVisualBanner(challenge.context?.visuals)!}
+                    displayName={challenge.displayName}
+                    tags={challenge.tagset?.tags!}
+                    tagline={challenge.context?.tagline!}
+                  />
                 )}
                 journeyTypeName="hub"
                 childEntityTitle={t('common.challenges')}

@@ -1,14 +1,13 @@
-import { BoxProps } from '@mui/material';
 import { GRID_COLUMNS_BLOCK_WITH_CARDS } from '../grid/constants';
-import GridContainer from '../grid/GridContainer';
+import GridContainer, { GridContainerProps } from '../grid/GridContainer';
 import GridProvider from '../grid/GridProvider';
 import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
 
-interface PageContentBlockGridProps {
+export interface PageContentBlockGridProps extends GridContainerProps {
   cards?: boolean;
 }
 
-const PageContentBlockGrid = ({ cards = false, children, ...props }: BoxProps & PageContentBlockGridProps) => {
+const PageContentBlockGrid = ({ cards = false, children, ...props }: PageContentBlockGridProps) => {
   const breakpoint = useCurrentBreakpoint();
 
   const columns = (gridColumns: number | undefined) =>

@@ -1,8 +1,7 @@
-import { BoxProps } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import GridProvider from '../grid/GridProvider';
-import GridItem from '../grid/GridItem';
-import { useColumns } from '../grid/GridContext';
 import { GUTTER_MUI } from '../grid/constants';
+import { useGridItem } from '../grid/utils';
 
 interface PageContentColumnProps extends BoxProps {
   columns: number;
@@ -13,14 +12,12 @@ interface PageContentColumnProps extends BoxProps {
  * @constructor
  */
 const PageContentColumn = ({ columns, children, ...props }: PageContentColumnProps) => {
-  const gridColumns = useColumns();
-
-  const nestedGridColumns = Math.min(columns, gridColumns);
+  const getGridItemStyle = useGridItem();
 
   return (
-    <GridItem columns={columns} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
-      <GridProvider columns={nestedGridColumns}>{children}</GridProvider>
-    </GridItem>
+    <Box display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...getGridItemStyle(columns)} {...props}>
+      <GridProvider columns={parentGridColumns => Math.min(columns, parentGridColumns!)}>{children}</GridProvider>
+    </Box>
   );
 };
 

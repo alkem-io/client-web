@@ -132,7 +132,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
         {childEntityReadAccess && renderChildEntityCard && childEntityTitle && (
           <PageContentBlock>
             <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
-            <CardsLayout items={childEntities} deps={[hubNameId]}>
+            <CardsLayout items={childEntities} deps={[hubNameId]} disablePadding>
               {renderChildEntityCard}
             </CardsLayout>
             <SeeMore subject={childEntityTitle} to="challenges" />
