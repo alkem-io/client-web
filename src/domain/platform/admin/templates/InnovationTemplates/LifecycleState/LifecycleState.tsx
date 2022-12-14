@@ -9,7 +9,7 @@ export interface LifecycleProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
-const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
+export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const state = lifecycle?.state || '';
   const { t } = useTranslation();
@@ -33,5 +33,3 @@ const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
     </>
   );
 };
-
-export default LifecycleState;

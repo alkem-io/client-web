@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import AboutPageContainer from '../../../context/ContextTabContainer/AboutPageContainer';
+import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { PageProps } from '../../../shared/types/PageProps';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
