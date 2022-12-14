@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
-import { HubIcon } from '../../../../../common/icons/HubIcon';
+import { HubIcon } from '../../../hub/icon/HubIcon';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
 import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';

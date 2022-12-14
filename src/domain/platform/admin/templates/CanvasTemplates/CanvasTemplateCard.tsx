@@ -1,5 +1,5 @@
 import React from 'react';
-import { CanvasIcon } from '../../../../../common/icons/CanvasIcon';
+import { CanvasIcon } from '../../../../collaboration/canvas/icon/CanvasIcon';
 import SimpleCard, { SimpleCardProps } from '../../../../shared/components/SimpleCard';
 
 interface CanvasTemplateCardProps extends Omit<SimpleCardProps, 'iconComponent'> {}
