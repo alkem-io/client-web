@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material';
 import { ThemeOptions } from '@mui/material/styles';
 import componentsOverride from './components';
 import { paletteOptions } from '../../palette/palette';
-import { typographyOptions } from '../../typography/themeOptions';
+import { themeTypographyOptions } from '../../typography/themeTypographyOptions';
 
 // use theme constant instead of these
 const SPACING = 10;
@@ -12,7 +12,7 @@ const AVATAR_SIZE_LG = 9;
 
 export const theme: ThemeOptions = {
   palette: paletteOptions,
-  typography: typographyOptions,
+  typography: themeTypographyOptions,
   shape: { borderRadius: 12 },
   spacing: SPACING,
   cards: {
@@ -39,11 +39,10 @@ export const theme: ThemeOptions = {
   avatarSizeXs: SPACING * AVATAR_SIZE_XS,
   avatarSize: SPACING * AVATAR_SIZE,
   avatarSizeLg: SPACING * AVATAR_SIZE_LG,
+  components: componentsOverride as ThemeOptions['components'],
 };
 
-const defaultMUITheme = createTheme(theme);
-
-theme.components = componentsOverride(defaultMUITheme);
+export const defaultTheme = createTheme(theme);
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -81,5 +80,3 @@ declare module '@mui/material' {
     dark: string;
   }
 }
-
-export const defaultTheme = createTheme(theme);

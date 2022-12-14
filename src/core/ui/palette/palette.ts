@@ -1,6 +1,8 @@
 import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 
+const COLOR_POSITIVE_CONTAINER = '#CDE7ED';
+
 export const paletteOptions: PaletteOptions = {
   primary: { main: '#065F6B' },
   secondary: { main: '#00a88f' },
@@ -24,7 +26,7 @@ export const paletteOptions: PaletteOptions = {
     dark: grey[400],
   },
   highlight: {
-    main: '#DEEFF6',
+    main: COLOR_POSITIVE_CONTAINER,
     contrastText: '#1D384A',
   },
   hub: {

@@ -1,13 +1,11 @@
-import { Components, Theme } from '@mui/material/styles';
+import { Components } from '@mui/material/styles';
 
-const MuiPaper = (_theme: Theme): Components['MuiPaper'] => {
-  return {
-    styleOverrides: {
-      rounded: {
-        overflow: 'hidden',
-      },
+const MuiPaper: Components['MuiPaper'] = {
+  styleOverrides: {
+    rounded: {
+      overflow: 'hidden',
     },
-  };
+  },
 };
 
 export default MuiPaper;

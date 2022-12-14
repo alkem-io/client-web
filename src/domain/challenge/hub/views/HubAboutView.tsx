@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AboutSection } from '../../../../common/components/composite/sections/about/AboutSection';
+import { AboutSection } from '../../common/tabs/AboutSection';
 import {
-  AssociatedOrganizationDetailsFragment, MetricsItemFragment,
+  AssociatedOrganizationDetailsFragment,
+  MetricsItemFragment,
   ReferenceDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import {
@@ -23,62 +24,88 @@ interface HubAboutViewProps {
   background: string | undefined;
   impact: string | undefined;
   who: string | undefined;
-  communityReadAccess: boolean;
+  communityReadAccess: boolean | undefined;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
-  memberUsers: EntityDashboardContributors['memberUsers']
-  memberUsersCount: EntityDashboardContributors['memberUsersCount']
-  memberOrganizations: EntityDashboardContributors['memberOrganizations']
-  memberOrganizationsCount: EntityDashboardContributors['memberOrganizationsCount']
+  memberUsers: EntityDashboardContributors['memberUsers'];
+  memberUsersCount: EntityDashboardContributors['memberUsersCount'];
+  memberOrganizations: EntityDashboardContributors['memberOrganizations'];
+  memberOrganizationsCount: EntityDashboardContributors['memberOrganizationsCount'];
   references: ReferenceDetailsFragment[] | undefined;
   metrics: MetricsItemFragment[] | undefined;
   loading: boolean | undefined;
-  error?: ApolloError
+  error?: ApolloError;
 }
 
 export const HubAboutView: FC<HubAboutViewProps> = ({
-  name = '', tagline = '', ...rest
+  name = '',
+  tagline = '',
+  tags = [],
+  vision = '',
+  background = '',
+  impact = '',
+  who = '',
+  communityReadAccess = false,
+  hostOrganization,
+  leadUsers,
+  memberUsers,
+  memberUsersCount,
+  memberOrganizations,
+  memberOrganizationsCount,
+  references,
+  metrics,
+  loading,
+  error,
 }) => {
   const { t } = useTranslation();
   const { hubNameId, communityId } = useHub();
 
-  const leadOrganizations = useMemo(
-    () => rest.hostOrganization ? [rest.hostOrganization] : undefined,
-    [rest.hostOrganization]
-  );
+  const leadOrganizations = useMemo(() => (hostOrganization ? [hostOrganization] : undefined), [hostOrganization]);
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.challenges'),
         type: MetricType.Challenge,
-        count: getMetricCount(rest.metrics, MetricType.Challenge),
+        count: getMetricCount(metrics, MetricType.Challenge),
         color: 'neutral',
       },
       {
         name: t('common.opportunities'),
-        count: getMetricCount(rest.metrics, MetricType.Opportunity),
+        count: getMetricCount(metrics, MetricType.Opportunity),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getMetricCount(rest.metrics, MetricType.Member),
+        count: getMetricCount(metrics, MetricType.Member),
         color: 'neutralMedium',
       },
     ];
-  }, [rest.metrics, t]);
+  }, [metrics, t]);
 
   return (
     <AboutSection
       entityTypeName="hub"
-      isHub
       infoBlockTitle={name}
       infoBlockText={tagline}
-      metricsItems={metricsItems}
+      tags={tags}
+      vision={vision}
+      background={background}
+      impact={impact}
+      who={who}
+      communityReadAccess={communityReadAccess}
+      loading={loading}
+      error={error}
       leadOrganizations={leadOrganizations}
+      leadUsers={leadUsers}
+      memberUsers={memberUsers}
+      memberUsersCount={memberUsersCount}
+      memberOrganizations={memberOrganizations}
+      memberOrganizationsCount={memberOrganizationsCount}
       hubNameId={hubNameId}
       communityId={communityId}
-      {...rest}
+      references={references}
+      metricsItems={metricsItems}
     />
   );
 };

@@ -15,7 +15,7 @@ import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCall
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
-import ContributeCard from '../../aspect/AspectCard/ContributeCard';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard from './AspectCard';
 

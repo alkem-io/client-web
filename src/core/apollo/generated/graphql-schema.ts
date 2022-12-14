@@ -4465,6 +4465,7 @@ export type ChallengePageQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -4746,6 +4747,7 @@ export type ChallengeProfileFragment = {
                     id: string;
                     nameID: string;
                     displayName: string;
+                    createdDate: Date;
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -5866,6 +5868,7 @@ export type HubPageQuery = {
                       id: string;
                       nameID: string;
                       displayName: string;
+                      createdDate: Date;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -6124,6 +6127,7 @@ export type HubPageFragment = {
                     id: string;
                     nameID: string;
                     displayName: string;
+                    createdDate: Date;
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -6904,6 +6908,7 @@ export type OpportunityPageQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -7128,6 +7133,7 @@ export type OpportunityPageFragment = {
                     id: string;
                     nameID: string;
                     displayName: string;
+                    createdDate: Date;
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -9735,6 +9741,7 @@ export type HubCalloutsQuery = {
                       id: string;
                       nameID: string;
                       displayName: string;
+                      createdDate: Date;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -9922,6 +9929,7 @@ export type ChallengeCalloutsQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10119,6 +10127,7 @@ export type OpportunityCalloutsQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10311,6 +10320,7 @@ export type HubCalloutQuery = {
                       id: string;
                       nameID: string;
                       displayName: string;
+                      createdDate: Date;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -10497,6 +10507,7 @@ export type ChallengeCalloutQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10693,6 +10704,7 @@ export type OpportunityCalloutQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10936,6 +10948,7 @@ export type CalloutFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        createdDate: Date;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -11083,6 +11096,7 @@ export type CanvasDetailsFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  createdDate: Date;
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -11119,7 +11133,13 @@ export type CanvasDetailsFragment = {
     | undefined;
 };
 
-export type CanvasSummaryFragment = { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+export type CanvasSummaryFragment = {
+  __typename?: 'Canvas';
+  id: string;
+  nameID: string;
+  displayName: string;
+  createdDate: Date;
+};
 
 export type CanvasValueFragment = { __typename?: 'Canvas'; id: string; value: string };
 
@@ -11188,6 +11208,7 @@ export type CollaborationWithCanvasDetailsFragment = {
               id: string;
               nameID: string;
               displayName: string;
+              createdDate: Date;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -11265,6 +11286,7 @@ export type HubCanvasesQuery = {
                       id: string;
                       nameID: string;
                       displayName: string;
+                      createdDate: Date;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -11346,6 +11368,7 @@ export type HubCanvasValuesQuery = {
                       value: string;
                       nameID: string;
                       displayName: string;
+                      createdDate: Date;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -11430,6 +11453,7 @@ export type ChallengeCanvasesQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11520,6 +11544,7 @@ export type ChallengeCanvasValuesQuery = {
                         value: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11609,6 +11634,7 @@ export type OpportunityCanvasesQuery = {
                         id: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11699,6 +11725,7 @@ export type OpportunityCanvasValuesQuery = {
                         value: string;
                         nameID: string;
                         displayName: string;
+                        createdDate: Date;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11762,6 +11789,7 @@ export type CreateCanvasOnCalloutMutation = {
     id: string;
     nameID: string;
     displayName: string;
+    createdDate: Date;
     authorization?:
       | {
           __typename?: 'Authorization';
@@ -11805,7 +11833,7 @@ export type DeleteCanvasMutationVariables = Exact<{
 
 export type DeleteCanvasMutation = {
   __typename?: 'Mutation';
-  deleteCanvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+  deleteCanvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string; createdDate: Date };
 };
 
 export type UpdateCanvasMutationVariables = Exact<{

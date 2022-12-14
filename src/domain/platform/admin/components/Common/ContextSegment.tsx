@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import { JourneyType } from '../../../../challenge/JourneyType';
+import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import MarkdownInput from './MarkdownInput';
 
@@ -18,7 +18,10 @@ export interface ContextSegmentProps {
   loading?: boolean;
 }
 
-export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ loading, contextType }) => {
+export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyTypeName }> = ({
+  loading,
+  contextType,
+}) => {
   const { t } = useTranslation();
 
   return (

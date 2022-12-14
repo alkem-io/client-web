@@ -7,12 +7,12 @@ export const fontFamilySourceSans = '"Source Sans Pro", sans-serif';
 
 const fontWeightRegular = 400;
 const fontWeightMedium = 500;
-const fontWeightBold = 700;
+export const fontWeightBold = 700;
 
 const lineHeightSingle = rem(GUTTER_PX);
 const lineHeightDouble = rem(GUTTER_PX * 2);
 
-export const typographyOptions: TypographyOptions = {
+export const themeTypographyOptions: TypographyOptions = {
   h1: {
     fontFamily: fontFamilyMontserrat,
     fontSize: rem(25),

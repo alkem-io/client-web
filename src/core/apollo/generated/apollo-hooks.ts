@@ -71,6 +71,7 @@ export const CanvasSummaryFragmentDoc = gql`
     id
     nameID
     displayName
+    createdDate
   }
 `;
 export const CheckoutDetailsFragmentDoc = gql`

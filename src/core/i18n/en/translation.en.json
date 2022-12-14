@@ -968,7 +968,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
+          "about": "About this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
@@ -1277,7 +1278,6 @@
     },
     "hub": {
       "title": "Hub",
-      "about-this-hub": "About this Hub",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
       "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
@@ -1292,10 +1292,6 @@
         "dashboard": {
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
-          "challenges": {
-            "title": "Challenges",
-            "help-text": "This shows the different challenges you can contribute to in this hub."
-          },
           "community": "Community"
         },
         "challenges": {
@@ -1309,7 +1305,6 @@
     },
     "challenge": {
       "title": "Challenge",
-      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -1318,10 +1313,6 @@
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
-          },
-          "opportunities": {
-            "title": "Opportunities",
-            "help-text": "Opportunities related to this challenge"
           },
           "projects": {
             "title": "Projects",
@@ -1336,7 +1327,6 @@
     },
     "opportunity": {
       "title": "Opportunity",
-      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {

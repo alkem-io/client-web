@@ -5,6 +5,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ChallengeCardFragment,
   HubPageFragment,
@@ -51,6 +52,7 @@ export interface HubContainerEntities {
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
+  hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
 }
 
 export interface HubContainerActions {}
@@ -113,6 +115,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const references = referencesData?.hub?.context?.references;
 
+  const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
+
   return (
     <>
       {children(
@@ -133,6 +137,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           activities,
           activityLoading,
           ...contributors,
+          hostOrganizations,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,
