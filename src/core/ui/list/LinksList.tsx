@@ -27,20 +27,20 @@ export interface LinksListProps {
 const LinksList: FC<LinksListProps> = ({ items, emptyListCaption }) => {
   return (
     <List>
-      {items.length > 0
-        ? items.map(item => (
-            <ListItem key={item.id}>
-              {item.icon ? <ListItemIcon>{item.icon}</ListItemIcon> : undefined}
-              <ListItemText
-                primary={
-                  <Text component={RouterLink} to={item.url}>
-                    {item.title}
-                  </Text>
-                }
-              />
-            </ListItem>
-          ))
-        : emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
+      {items.length > 0 &&
+        items.map(item => (
+          <ListItem key={item.id}>
+            {item.icon ? <ListItemIcon>{item.icon}</ListItemIcon> : undefined}
+            <ListItemText
+              primary={
+                <Text component={RouterLink} to={item.url}>
+                  {item.title}
+                </Text>
+              }
+            />
+          </ListItem>
+        ))}
+      {items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
     </List>
   );
 };
