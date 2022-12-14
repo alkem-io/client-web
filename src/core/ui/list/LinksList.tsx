@@ -4,7 +4,7 @@ import { List as MuiList, ListItem as MuiListItem, ListItemIcon as MuiListItemIc
 import { Text } from '../typography';
 import RouterLink from '../link/RouterLink';
 
-const Root = styled(MuiList)(() => ({
+const List = styled(MuiList)(() => ({
   padding: 0,
 }));
 const ListItem = styled(MuiListItem)(() => ({
@@ -24,7 +24,7 @@ export interface LinksListProps {
 
 const LinksList: FC<LinksListProps> = ({ items }) => {
   return (
-    <Root>
+    <List>
       {items.map(item => (
         <ListItem>
           {item.icon ? <ListItemIcon>{item.icon}</ListItemIcon> : undefined}
@@ -37,7 +37,7 @@ const LinksList: FC<LinksListProps> = ({ items }) => {
           />
         </ListItem>
       ))}
-    </Root>
+    </List>
   );
 };
 
