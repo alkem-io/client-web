@@ -50,7 +50,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   <ChallengeCard challenge={challenge} hubNameId={entities.hub?.nameID} />
                 )}
                 journeyTypeName="hub"
-                childEntityTitle={t('pages.hub.sections.dashboard.challenges.title')}
+                childEntityTitle={t('common.challenges')}
               />
               <CommunityUpdatesDialog
                 open={dialog === 'updates'}

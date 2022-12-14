@@ -135,7 +135,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <CardsLayout items={childEntities} deps={[hubNameId]}>
               {renderChildEntityCard}
             </CardsLayout>
-            <SeeMore subject={t('common.challenges')} to="challenges" />
+            <SeeMore subject={childEntityTitle} to="challenges" />
           </PageContentBlock>
         )}
       </PageContentColumn>

@@ -54,7 +54,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   />
                 )}
                 journeyTypeName="challenge"
-                childEntityTitle={t('pages.challenge.sections.dashboard.opportunities.title')}
+                childEntityTitle={t('common.opportunities')}
               />
               <CommunityUpdatesDialog
                 open={dialog === 'updates'}

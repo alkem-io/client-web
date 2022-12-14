@@ -1292,10 +1292,6 @@
         "dashboard": {
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
-          "challenges": {
-            "title": "Challenges",
-            "help-text": "This shows the different challenges you can contribute to in this hub."
-          },
           "community": "Community"
         },
         "challenges": {
@@ -1317,10 +1313,6 @@
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
-          },
-          "opportunities": {
-            "title": "Opportunities",
-            "help-text": "Opportunities related to this challenge"
           },
           "projects": {
             "title": "Projects",
