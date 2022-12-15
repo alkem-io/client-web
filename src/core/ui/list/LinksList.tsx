@@ -1,16 +1,28 @@
 import React, { FC, ReactElement } from 'react';
 import { styled } from '@mui/styles';
 import { List as MuiList, ListItem as MuiListItem, ListItemIcon as MuiListItemIcon, ListItemText } from '@mui/material';
-import { CaptionSmall, Text } from '../typography';
+import { BlockSectionTitle, CaptionSmall } from '../typography';
 import RouterLink from '../link/RouterLink';
 
-const List = styled(MuiList)(() => ({
-  padding: 0,
+const List = styled(MuiList)(() => ({ padding: 0 }));
+
+const ListItem = styled(MuiListItem)(({ theme }) => ({
+  padding: theme.spacing(0.5, 0, 0.6, 0),
 }));
-const ListItem = styled(MuiListItem)(() => ({
-  padding: 0,
+
+const ListItemIcon = styled(MuiListItemIcon)(({ theme }) => ({
+  minWidth: 'auto',
+  marginRight: theme.spacing(0.7),
+  color: theme.palette.common.black,
 }));
-const ListItemIcon = styled(MuiListItemIcon)(({ theme }) => ({ minWidth: 'auto', marginRight: theme.spacing(1) }));
+
+// Override links color in these LinksLists
+const Link = styled(RouterLink)(({ theme }) => ({
+  color: theme.palette.common.black,
+  '&:hover': {
+    color: theme.palette.primary.main,
+  },
+}));
 
 interface Item {
   id: string;
@@ -20,11 +32,11 @@ interface Item {
 }
 
 export interface LinksListProps {
-  items: Item[];
+  items: Item[] | undefined;
   emptyListCaption?: string;
 }
 
-const LinksList: FC<LinksListProps> = ({ items, emptyListCaption }) => {
+const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption }) => {
   return (
     <List>
       {items.length > 0 &&
@@ -33,9 +45,9 @@ const LinksList: FC<LinksListProps> = ({ items, emptyListCaption }) => {
             {item.icon ? <ListItemIcon>{item.icon}</ListItemIcon> : undefined}
             <ListItemText
               primary={
-                <Text component={RouterLink} to={item.url}>
+                <BlockSectionTitle component={Link} to={item.url}>
                   {item.title}
-                </Text>
+                </BlockSectionTitle>
               }
             />
           </ListItem>
