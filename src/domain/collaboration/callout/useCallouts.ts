@@ -27,7 +27,9 @@ interface CalloutChildTypePropName {
 }
 
 export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
+
 export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
+
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 interface CalloutChildPropValue {
@@ -116,6 +118,17 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
 
   const canCreateCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout);
 
+  const getItemsCount = (callout: TypedCallout) => {
+    switch (callout.type) {
+      case CalloutType.Card:
+        return callout.aspects.length;
+      case CalloutType.Canvas:
+        return callout.canvases.length;
+      case CalloutType.Comments:
+        return callout.comments.commentsCount;
+    }
+  };
+
   const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
     const draft = callout?.visibility === CalloutVisibility.Draft;
     const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
@@ -149,6 +162,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
   return {
     callouts,
     canCreateCallout,
+    getItemsCount,
     loading: hubCalloutsLoading || challengeCalloutsLoading || opportunityCalloutsLoading,
     reloadCallouts,
   };

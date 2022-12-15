@@ -1,8 +1,13 @@
 export type Maybe<T> = T | undefined;
+
 export type InputMaybe<T> = T | undefined;
+
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -9512,6 +9517,7 @@ export type CreateCalloutMutation = {
       | {
           __typename?: 'Comments';
           id: string;
+          commentsCount: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -9786,6 +9792,7 @@ export type HubCalloutsQuery = {
                   | {
                       __typename?: 'Comments';
                       id: string;
+                      commentsCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -9978,6 +9985,7 @@ export type ChallengeCalloutsQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10176,6 +10184,7 @@ export type OpportunityCalloutsQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10365,6 +10374,7 @@ export type HubCalloutQuery = {
                   | {
                       __typename?: 'Comments';
                       id: string;
+                      commentsCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -10556,6 +10566,7 @@ export type ChallengeCalloutQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10753,6 +10764,7 @@ export type OpportunityCalloutQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10989,6 +11001,7 @@ export type CalloutFragment = {
     | {
         __typename?: 'Comments';
         id: string;
+        commentsCount: number;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -18632,6 +18645,7 @@ export type ActivityLogUpdateSentFragment = {
 export type CommentsWithMessagesFragment = {
   __typename?: 'Comments';
   id: string;
+  commentsCount: number;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
