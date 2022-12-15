@@ -2,7 +2,6 @@ import React, { ComponentType, FC, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import PageTabs, { TabDefinition } from '../../../../../common/components/core/PageTabs/PageTabs';
 import { useTranslation } from 'react-i18next';
-import { EntityLinkComponentProps } from '../../components/EntityLinkComponent';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
 import SimplePageLayout from '../../../../shared/layout/PageLayout/SimplePageLayout';
@@ -13,7 +12,7 @@ import TopLevelDesktopLayout from '../../../../shared/layout/PageLayout/TopLevel
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
-type EntitySettingsLayoutProps = EntityLinkComponentProps & {
+type EntitySettingsLayoutProps = {
   pageBannerComponent: ComponentType;
   tabsComponent: ComponentType<EntityTabsProps>;
   entityTypeName: EntityTypeName;
