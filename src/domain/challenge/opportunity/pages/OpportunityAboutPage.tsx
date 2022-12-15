@@ -9,7 +9,7 @@ import { OpportunityAboutView } from '../views/OpportunityAboutView';
 export interface OpportunityAboutPageProps extends PageProps {}
 
 const OpportunityAboutPage: FC<OpportunityAboutPageProps> = () => {
-  const { hubNameId, opportunityNameId, displayName } = useOpportunity();
+  const { hubNameId, opportunityNameId, displayName, communityId } = useOpportunity();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
@@ -24,6 +24,8 @@ const OpportunityAboutPage: FC<OpportunityAboutPageProps> = () => {
             background={context?.background}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
+            hubNameId={hubNameId}
+            communityId={communityId}
             {...rest}
             {...state}
           />

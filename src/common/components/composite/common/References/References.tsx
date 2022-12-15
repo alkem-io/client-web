@@ -12,7 +12,7 @@ interface ReferencesProps {
 const References: FC<ReferencesProps> = ({ references, noItemsView }) => {
   return (
     <Box display="flex" flexDirection="column" gap={gutters()}>
-      {!references ? null : references.map((reference, i) => <ReferenceView key={i} reference={reference} />)}
+      {!references ? null : references.map(reference => <ReferenceView key={reference.id} reference={reference} />)}
       {references && !references.length && noItemsView}
     </Box>
   );

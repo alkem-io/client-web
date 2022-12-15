@@ -9,7 +9,7 @@ import { ChallengeAboutView } from '../views/ChallengeAboutView';
 export interface ChallengeContextPageProps extends PageProps {}
 
 const ChallengeAboutPage: FC<ChallengeContextPageProps> = () => {
-  const { hubNameId, displayName: challengeDisplayName, challengeNameId } = useChallenge();
+  const { hubNameId, displayName: challengeDisplayName, challengeNameId, communityId } = useChallenge();
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.About}>
@@ -24,6 +24,8 @@ const ChallengeAboutPage: FC<ChallengeContextPageProps> = () => {
             background={context?.background}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
+            hubNameId={hubNameId}
+            communityId={communityId}
             {...rest}
             {...state}
           />

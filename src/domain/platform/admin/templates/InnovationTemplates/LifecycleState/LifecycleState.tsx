@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
 import { LifecycleModal } from '../../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
-import { ReactComponent as RebaseEditIcon } from './RebaseEditIcon.svg';
+import { ReactComponent as LifecycleStateIcon } from './LifecycleStateIcon.svg';
 
 export interface LifecycleProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
@@ -17,7 +17,7 @@ export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
   return (
     <>
       <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
-        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<RebaseEditIcon />}>
+        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<LifecycleStateIcon />}>
           {`State: ${state}`}
         </Button>
       </Tooltip>

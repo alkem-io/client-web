@@ -8,7 +8,6 @@ import {
   LifecycleContextTabFragment,
   MetricsItemFragment,
   ReferenceDetailsFragment,
-  Scalars,
   Tagset,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
@@ -17,17 +16,18 @@ import useCommunityMembersAsCardProps from '../../../community/community/utils/u
 import { ContainerChildProps } from '../../../../core/container/container';
 import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
+import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 
-interface ContextTabPermissions {
+interface AboutPagePermissions {
   canCreateCommunityContextReview: boolean;
   communityReadAccess: boolean;
 }
 
-export interface ContextTabContainerEntities {
+export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
-  permissions: ContextTabPermissions;
+  permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
@@ -39,21 +39,18 @@ export interface ContextTabContainerEntities {
   references: ReferenceDetailsFragment[] | undefined;
 }
 
-export interface ContextTabContainerActions {}
+export interface AboutPageContainerActions {}
 
-export interface ContextTabContainerState {
+export interface AboutPageContainerState {
   loading: boolean;
   error?: ApolloError;
 }
 
-export interface ContextTabContainerProps
-  extends ContainerChildProps<ContextTabContainerEntities, ContextTabContainerActions, ContextTabContainerState> {
-  hubNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: Scalars['UUID_NAMEID'];
-  opportunityNameId?: Scalars['UUID_NAMEID'];
-}
+export interface AboutPageContainerProps
+  extends ContainerChildProps<AboutPageContainerEntities, AboutPageContainerActions, AboutPageContainerState>,
+    CoreEntityIdTypes {}
 
-const AboutPageContainer: FC<ContextTabContainerProps> = ({
+const AboutPageContainer: FC<AboutPageContainerProps> = ({
   children,
   hubNameId,
   challengeNameId,
@@ -125,7 +122,7 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
   const leadUsers = memberJourney?.community?.leadUsers;
   const leadOrganizations = memberJourney?.community?.leadOrganizations;
   const references = memberContext?.references;
-  //
+
   const metrics = nonMemberJourney?.metrics;
 
   const contributors = useCommunityMembersAsCardProps(community);
@@ -135,7 +132,7 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
       AuthorizationPrivilege.CommunityContextReview
     ) ?? false;
 
-  const permissions: ContextTabPermissions = {
+  const permissions: AboutPagePermissions = {
     canCreateCommunityContextReview,
     communityReadAccess,
   };
@@ -164,4 +161,5 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
     </>
   );
 };
+
 export default AboutPageContainer;

@@ -566,7 +566,7 @@ export type ChallengeKeySpecifier = (
   | 'hubID'
   | 'id'
   | 'lifecycle'
-  | 'metrics'
+  | 'metricsItems'
   | 'nameID'
   | 'opportunities'
   | 'preferences'
@@ -930,7 +930,7 @@ export type HubKeySpecifier = (
   | 'groupsWithTag'
   | 'host'
   | 'id'
-  | 'metrics'
+  | 'metricsItems'
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
@@ -1054,7 +1054,7 @@ export type MessageFieldPolicy = {
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MetadataKeySpecifier = ('metrics' | 'services' | MetadataKeySpecifier)[];
+export type MetadataKeySpecifier = ('metricsItems' | 'services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   services?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1350,7 +1350,7 @@ export type OpportunityKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'lifecycle'
-  | 'metrics'
+  | 'metricsItems'
   | 'nameID'
   | 'parentNameID'
   | 'projects'
@@ -1400,7 +1400,7 @@ export type OrganizationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'legalEntityName'
-  | 'metrics'
+  | 'metricsItems'
   | 'nameID'
   | 'preferences'
   | 'profile'

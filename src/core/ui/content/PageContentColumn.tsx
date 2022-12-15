@@ -4,7 +4,7 @@ import GridItem from '../grid/GridItem';
 import { useColumns } from '../grid/GridContext';
 import { GUTTER_MUI } from '../grid/constants';
 
-interface PageContentColumnProps extends BoxProps {
+export interface PageContentColumnProps extends BoxProps {
   columns: number;
 }
 
