@@ -6564,7 +6564,7 @@ export function refetchOpportunityWithActivityQuery(variables: SchemaTypes.Oppor
   return { query: OpportunityWithActivityDocument, variables: variables };
 }
 export const HubAspectDocument = gql`
-  query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID!, $calloutNameId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -6618,8 +6618,8 @@ export const ChallengeAspectDocument = gql`
   query ChallengeAspect(
     $hubNameId: UUID_NAMEID!
     $challengeNameId: UUID_NAMEID!
-    $aspectNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $aspectNameId: UUID!
+    $calloutNameId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -6684,8 +6684,8 @@ export const OpportunityAspectDocument = gql`
   query OpportunityAspect(
     $hubNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
-    $aspectNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $aspectNameId: UUID!
+    $calloutNameId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -6812,7 +6812,7 @@ export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAspectMutationVariables
 >;
 export const HubAspectSettingsDocument = gql`
-  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID!, $calloutNameId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -6878,8 +6878,8 @@ export const ChallengeAspectSettingsDocument = gql`
   query ChallengeAspectSettings(
     $hubNameId: UUID_NAMEID!
     $challengeNameId: UUID_NAMEID!
-    $aspectNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $aspectNameId: UUID!
+    $calloutNameId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -6953,8 +6953,8 @@ export const OpportunityAspectSettingsDocument = gql`
   query OpportunityAspectSettings(
     $hubNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
-    $aspectNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $aspectNameId: UUID!
+    $calloutNameId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -7025,7 +7025,7 @@ export function refetchOpportunityAspectSettingsQuery(variables: SchemaTypes.Opp
   return { query: OpportunityAspectSettingsDocument, variables: variables };
 }
 export const HubAspectProviderDocument = gql`
-  query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID!, $calloutNameId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -7088,8 +7088,8 @@ export const ChallengeAspectProviderDocument = gql`
   query ChallengeAspectProvider(
     $hubNameId: UUID_NAMEID!
     $challengeNameId: UUID_NAMEID!
-    $aspectNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $aspectNameId: UUID!
+    $calloutNameId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -7160,8 +7160,8 @@ export const OpportunityAspectProviderDocument = gql`
   query OpportunityAspectProvider(
     $hubNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
-    $aspectNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $aspectNameId: UUID!
+    $calloutNameId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -7914,7 +7914,7 @@ export function refetchCanvasTemplateValueQuery(variables: SchemaTypes.CanvasTem
   return { query: CanvasTemplateValueDocument, variables: variables };
 }
 export const HubCalloutCardTemplateDocument = gql`
-  query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+  query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -7993,11 +7993,7 @@ export function refetchHubCalloutCardTemplateQuery(variables: SchemaTypes.HubCal
   return { query: HubCalloutCardTemplateDocument, variables: variables };
 }
 export const ChallengeCalloutCardTemplateDocument = gql`
-  query ChallengeCalloutCardTemplate(
-    $hubNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID!
-  ) {
+  query ChallengeCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID!, $challengeNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
@@ -8086,7 +8082,7 @@ export function refetchChallengeCalloutCardTemplateQuery(
 export const OpportunityCalloutCardTemplateDocument = gql`
   query OpportunityCalloutCardTemplate(
     $hubNameId: UUID_NAMEID!
-    $calloutNameId: UUID_NAMEID!
+    $calloutNameId: UUID!
     $opportunityNameId: UUID_NAMEID!
   ) {
     hub(ID: $hubNameId) {
@@ -8904,7 +8900,7 @@ export function refetchOpportunityCalloutsQuery(variables: SchemaTypes.Opportuni
   return { query: OpportunityCalloutsDocument, variables: variables };
 }
 export const HubCalloutDocument = gql`
-  query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -8967,7 +8963,7 @@ export function refetchHubCalloutQuery(variables: SchemaTypes.HubCalloutQueryVar
   return { query: HubCalloutDocument, variables: variables };
 }
 export const ChallengeCalloutDocument = gql`
-  query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
@@ -9037,7 +9033,7 @@ export function refetchChallengeCalloutQuery(variables: SchemaTypes.ChallengeCal
   return { query: ChallengeCalloutDocument, variables: variables };
 }
 export const OpportunityCalloutDocument = gql`
-  query OpportunityCallout($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  query OpportunityCallout($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
@@ -9473,7 +9469,7 @@ export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryV
   return { query: HubCanvasesDocument, variables: variables };
 }
 export const HubCanvasValuesDocument = gql`
-  query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID!) {
+  query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
       collaboration {
@@ -9605,12 +9601,7 @@ export function refetchChallengeCanvasesQuery(variables: SchemaTypes.ChallengeCa
   return { query: ChallengeCanvasesDocument, variables: variables };
 }
 export const ChallengeCanvasValuesDocument = gql`
-  query challengeCanvasValues(
-    $hubId: UUID_NAMEID!
-    $challengeId: UUID_NAMEID!
-    $calloutId: UUID_NAMEID!
-    $canvasId: UUID!
-  ) {
+  query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
@@ -9758,7 +9749,7 @@ export const OpportunityCanvasValuesDocument = gql`
   query opportunityCanvasValues(
     $hubId: UUID_NAMEID!
     $opportunityId: UUID_NAMEID!
-    $calloutId: UUID_NAMEID!
+    $calloutId: UUID!
     $canvasId: UUID!
   ) {
     hub(ID: $hubId) {

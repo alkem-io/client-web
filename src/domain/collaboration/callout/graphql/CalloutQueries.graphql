@@ -56,7 +56,7 @@ query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAM
     }
   }
 }
-query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
@@ -72,7 +72,7 @@ query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
   }
 }
 
-query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
@@ -91,7 +91,7 @@ query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!,
   }
 }
 
-query OpportunityCallout($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query OpportunityCallout($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {

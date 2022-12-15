@@ -68,7 +68,7 @@ query CanvasTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
   }
 }
 
-query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
+query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
@@ -96,7 +96,7 @@ query HubCalloutCardTemplate($hubNameId: UUID_NAMEID!, $calloutNameId: UUID_NAME
 }
 query ChallengeCalloutCardTemplate(
   $hubNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
+  $calloutNameId: UUID!
   $challengeNameId: UUID_NAMEID!
 ) {
   hub(ID: $hubNameId) {
@@ -130,7 +130,7 @@ query ChallengeCalloutCardTemplate(
 
 query OpportunityCalloutCardTemplate(
   $hubNameId: UUID_NAMEID!
-  $calloutNameId: UUID_NAMEID!
+  $calloutNameId: UUID!
   $opportunityNameId: UUID_NAMEID!
 ) {
   hub(ID: $hubNameId) {

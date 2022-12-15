@@ -601,7 +601,7 @@ export type Callout = {
 };
 
 export type CalloutAspectsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
@@ -810,15 +810,18 @@ export type Collaboration = {
 };
 
 export type CollaborationCalloutsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
+  sortActivity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Comments = {
   __typename?: 'Comments';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The number of comments. */
+  commentsCount: Scalars['Float'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Messages in this Comments. */
@@ -2035,7 +2038,7 @@ export type Mutation = {
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
-  /** Removes a User as a member of the specified Community. */
+  /** Removes a User as a Lead of the specified Community. */
   removeUserAsCommunityLead: Community;
   /** Removes a User as a member of the specified Community. */
   removeUserAsCommunityMember: Community;
@@ -2933,6 +2936,7 @@ export enum PreferenceType {
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
+  NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -2944,6 +2948,8 @@ export enum PreferenceType {
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
+  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -4058,6 +4064,7 @@ export enum UserPreferenceType {
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
+  NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -4069,6 +4076,8 @@ export enum UserPreferenceType {
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
+  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -7910,8 +7919,8 @@ export type OpportunityWithActivityQuery = {
 
 export type HubAspectQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type HubAspectQuery = {
@@ -8031,8 +8040,8 @@ export type HubAspectQuery = {
 export type ChallengeAspectQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectQuery = {
@@ -8156,8 +8165,8 @@ export type ChallengeAspectQuery = {
 export type OpportunityAspectQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectQuery = {
@@ -8467,8 +8476,8 @@ export type UpdateAspectMutation = {
 
 export type HubAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type HubAspectSettingsQuery = {
@@ -8559,8 +8568,8 @@ export type HubAspectSettingsQuery = {
 export type ChallengeAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectSettingsQuery = {
@@ -8655,8 +8664,8 @@ export type ChallengeAspectSettingsQuery = {
 export type OpportunityAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectSettingsQuery = {
@@ -8858,8 +8867,8 @@ export type AspectSettingsCalloutFragment = {
 
 export type HubAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type HubAspectProviderQuery = {
@@ -8901,8 +8910,8 @@ export type HubAspectProviderQuery = {
 export type ChallengeAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectProviderQuery = {
@@ -8948,8 +8957,8 @@ export type ChallengeAspectProviderQuery = {
 export type OpportunityAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectProviderQuery = {
@@ -9334,7 +9343,7 @@ export type CanvasTemplateValueQuery = {
 
 export type HubCalloutCardTemplateQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID'];
 }>;
 
 export type HubCalloutCardTemplateQuery = {
@@ -9372,7 +9381,7 @@ export type HubCalloutCardTemplateQuery = {
 
 export type ChallengeCalloutCardTemplateQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID'];
   challengeNameId: Scalars['UUID_NAMEID'];
 }>;
 
@@ -9415,7 +9424,7 @@ export type ChallengeCalloutCardTemplateQuery = {
 
 export type OpportunityCalloutCardTemplateQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
 }>;
 
@@ -10205,7 +10214,7 @@ export type OpportunityCalloutsQuery = {
 
 export type HubCalloutQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type HubCalloutQuery = {
@@ -10385,7 +10394,7 @@ export type HubCalloutQuery = {
 export type ChallengeCalloutQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type ChallengeCalloutQuery = {
@@ -10578,7 +10587,7 @@ export type ChallengeCalloutQuery = {
 export type OpportunityCalloutQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type OpportunityCalloutQuery = {
@@ -11267,7 +11276,7 @@ export type HubCanvasesQuery = {
 
 export type HubCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
@@ -11438,7 +11447,7 @@ export type ChallengeCanvasesQuery = {
 export type ChallengeCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
@@ -11617,7 +11626,7 @@ export type OpportunityCanvasesQuery = {
 export type OpportunityCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
-  calloutId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
