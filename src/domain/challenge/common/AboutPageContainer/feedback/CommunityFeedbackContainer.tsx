@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../../core/container/container';
+import { ContainerChildProps } from '../../../../../core/container/container';
 import {
   useCommunityFeedbackTemplatesQuery,
   useCreateFeedbackOnCommunityContextMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { CreateNvpInput, FeedbackTemplate } from '../../../../core/apollo/generated/graphql-schema';
-import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import { CreateNvpInput, FeedbackTemplate } from '../../../../../core/apollo/generated/graphql-schema';
+import { useCommunityContext } from '../../../../community/community/CommunityContext';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useTranslation } from 'react-i18next';
 
 export type FeedbackDataEntry = { question: string; answer: string; sortOrder: number };
@@ -75,4 +75,5 @@ const CommunityFeedbackContainer: FC<CommunityFeedbackContainerProps> = ({ child
 
   return <>{children({ templates }, { loading, error, isSubmitting, submitError }, { onFeedbackSubmit })}</>;
 };
+
 export default CommunityFeedbackContainer;

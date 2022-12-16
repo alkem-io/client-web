@@ -40,4 +40,5 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
     </Container>
   );
 };
+
 export default RecoveryPage;

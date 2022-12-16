@@ -114,4 +114,5 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     </>
   );
 };
+
 export default DiscussionView;

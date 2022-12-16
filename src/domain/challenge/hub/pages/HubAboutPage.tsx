@@ -1,15 +1,12 @@
 import React, { FC } from 'react';
-import AboutPageContainer from '../../../context/ContextTabContainer/AboutPageContainer';
-import { PageProps } from '../../../shared/types/PageProps';
+import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useHub } from '../HubContext/useHub';
 import HubPageLayout from '../layout/HubPageLayout';
 import { HubAboutView } from '../views/HubAboutView';
 
-export interface HubContextPageProps extends PageProps {}
-
-const HubAboutPage: FC<HubContextPageProps> = ({}) => {
-  const {  hubNameId, displayName } = useHub();
+const HubAboutPage: FC = () => {
+  const { hubNameId, displayName, communityId } = useHub();
 
   return (
     <HubPageLayout currentSection={EntityPageSection.About}>
@@ -24,6 +21,8 @@ const HubAboutPage: FC<HubContextPageProps> = ({}) => {
             background={context?.background}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
+            hubNameId={hubNameId}
+            communityId={communityId}
             {...rest}
             {...state}
           />
@@ -32,22 +31,5 @@ const HubAboutPage: FC<HubContextPageProps> = ({}) => {
     </HubPageLayout>
   );
 };
-export default HubAboutPage;
 
-{/*
-<HubContextView
-  entities={{
-    hubId: hubId,
-    hubNameId: hubNameId,
-    hubDisplayName: displayName,
-    hubTagSet: entities.tagset,
-    context: entities.context,
-  }}
-  state={{
-    loading: state.loading,
-    error: state.error,
-  }}
-  options={{}}
-  actions={{}}
-  metrics={entities.metrics}
-/>*/}
+export default HubAboutPage;

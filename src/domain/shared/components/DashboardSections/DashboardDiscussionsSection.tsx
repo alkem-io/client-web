@@ -39,4 +39,5 @@ const DashboardDiscussionsSection: FC<DashboardDiscussionsSectionProps> = ({ dis
     </DashboardGenericSection>
   );
 };
+
 export default DashboardDiscussionsSection;

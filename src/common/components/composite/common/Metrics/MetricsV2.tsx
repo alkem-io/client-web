@@ -21,4 +21,5 @@ const MetricsV2: FC<MetricsV2Props> = ({ metrics }) => {
     </Grid>
   );
 };
+
 export default MetricsV2;

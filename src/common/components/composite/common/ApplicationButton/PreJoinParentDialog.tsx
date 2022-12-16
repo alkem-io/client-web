@@ -32,4 +32,5 @@ const PreJoinParentDialog: FC<PreJoinParentDialogProps> = ({ open, onClose, onJo
     </Dialog>
   );
 };
+
 export default PreJoinParentDialog;

@@ -115,4 +115,5 @@ const AspectCard: FC<AspectCardProps> = ({
     </EntityContributionCard>
   );
 };
+
 export default AspectCard;

@@ -39,4 +39,5 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
     </AspectLayout>
   );
 };
+
 export default AspectDashboardPage;

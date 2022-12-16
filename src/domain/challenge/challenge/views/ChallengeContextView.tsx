@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client';
 import Button from '@mui/material/Button';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
+import { LifecycleState } from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
 import { ChallengeContextSection } from './ChallengeContextSection';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';

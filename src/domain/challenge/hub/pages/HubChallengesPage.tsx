@@ -87,4 +87,5 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
     </HubPageLayout>
   );
 };
+
 export default HubChallengesPage;

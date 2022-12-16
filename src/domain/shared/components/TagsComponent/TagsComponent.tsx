@@ -12,6 +12,8 @@ interface Props {
   tags: string[];
   count?: number;
   loading?: boolean;
+  color?: ChipProps['color'];
+  size?: ChipProps['size'];
   variant?: ChipProps['variant'];
 }
 
@@ -22,7 +24,15 @@ const DEFAULT_TAGS_CONTAINER_PROPS: Partial<BoxProps> = {
   minHeight: (theme: Theme) => theme.spacing(4),
 };
 
-const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, variant = 'outlined', minHeight, ...tagsContainerProps }) => {
+const TagsComponent: FC<Props & BoxProps> = ({
+  tags,
+  count = 3,
+  loading,
+  color,
+  size = 'small',
+  variant = 'outlined',
+  ...tagsContainerProps
+}) => {
   const { t } = useTranslation();
 
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
@@ -30,15 +40,10 @@ const TagsComponent: FC<Props & BoxProps> = ({ tags, count = 3, loading, variant
   const renderTag = useCallback(
     (item: string, i: number) => (
       <Tooltip key={i} title={item} arrow placement="bottom">
-        <Chip
-          label={item}
-          variant={variant}
-          sx={{ maxWidth: '100%' }}
-          size="small"
-        />
+        <Chip label={item} color={color} size={size} variant={variant} sx={{ maxWidth: '100%' }} />
       </Tooltip>
     ),
-    [variant]
+    [color, size, variant]
   );
 
   const renderMore = useCallback(

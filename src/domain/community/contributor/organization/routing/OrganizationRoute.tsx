@@ -34,4 +34,5 @@ const OrganizationRoute: FC<PageProps> = () => {
     </Routes>
   );
 };
+
 export default OrganizationRoute;

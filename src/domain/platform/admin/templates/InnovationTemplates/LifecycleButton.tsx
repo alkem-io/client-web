@@ -13,4 +13,5 @@ const LifecycleButton: FC<LifecycleButtonProps> = ({ stateName, onClick }) => {
     </Button>
   );
 };
+
 export default LifecycleButton;

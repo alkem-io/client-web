@@ -44,4 +44,5 @@ const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
     </UserSettingsLayout>
   );
 };
+
 export default UserMembershipPage;

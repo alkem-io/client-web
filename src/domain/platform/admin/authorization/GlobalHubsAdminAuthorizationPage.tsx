@@ -85,4 +85,5 @@ const GlobalHubsAdminAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
     </AdminLayout>
   );
 };
+
 export default GlobalHubsAdminAuthorizationPage;

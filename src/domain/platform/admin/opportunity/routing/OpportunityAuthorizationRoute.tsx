@@ -17,4 +17,5 @@ const OpportunityAuthorizationRoute: FC<OpportunityAuthorizationRouteProps> = ({
     </Routes>
   );
 };
+
 export default OpportunityAuthorizationRoute;

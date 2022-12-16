@@ -1,11 +1,11 @@
 import React from 'react';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import { AspectIcon } from '../../../../collaboration/aspect/icon/AspectIcon';
 import SimpleCard, { SimpleCardProps } from '../../../../shared/components/SimpleCard';
 
 interface AspectTemplateCardProps extends Omit<SimpleCardProps, 'iconComponent'> {}
 
 const AspectTemplateCard = (props: AspectTemplateCardProps) => {
-  return <SimpleCard {...props} iconComponent={BallotOutlinedIcon} />;
+  return <SimpleCard {...props} iconComponent={AspectIcon} />;
 };
 
 export default AspectTemplateCard;

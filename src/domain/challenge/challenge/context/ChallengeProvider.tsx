@@ -15,6 +15,7 @@ interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
   challengeId: string;
   challengeNameId: string;
+  communityId: string;
   hubId: string;
   hubNameId: string;
   displayName: string;
@@ -26,6 +27,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   loading: true,
   challengeId: '',
   challengeNameId: '',
+  communityId: '',
   hubId: '',
   hubNameId: '',
   displayName: '',
@@ -51,6 +53,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
   const challenge = data?.hub?.challenge;
   const challengeId = challenge?.id || '';
   const displayName = challenge?.displayName || '';
+  const communityId = challenge?.community?.id ?? '';
 
   const myPrivileges = useMemo(
     () => challenge?.authorization?.myPrivileges ?? [],
@@ -77,6 +80,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         challenge,
         challengeId,
         challengeNameId,
+        communityId,
         hubId,
         hubNameId,
         permissions,

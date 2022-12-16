@@ -13,4 +13,5 @@ const queryRequest = async <TResponseData = unknown>(url: string, queryDocument:
     }
   );
 };
+
 export default queryRequest;

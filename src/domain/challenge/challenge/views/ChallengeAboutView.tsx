@@ -1,37 +1,41 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { FC } from 'react';
-import { ApolloError } from '@apollo/client';
-import { AboutSection } from '../../common/tabs/AboutSection';
+import React, { FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AboutSection } from '../../common/tabs/About/AboutSection';
+import { MetricType } from '../../../platform/metrics/MetricType';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
+import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
+import { useChallenge } from '../hooks/useChallenge';
+import { JourneyAboutWithLead } from '../../common/tabs/About/Types';
 
-interface ChallengeAboutViewProps {
-  name?: string;
-  tagline?: string;
-  tags?: string[];
-  who?: string;
-  vision?: string;
-  loading: boolean | undefined;
-  error?: ApolloError;
-}
+interface ChallengeAboutViewProps extends JourneyAboutWithLead {}
 
-export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({
-  name = '',
-  tagline = '',
-  tags = [],
-  who = '',
-  vision = '',
-  loading,
-  error,
-}) => {
-  return null;
-  /*return (
+export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({ metrics, ...rest }) => {
+  const { t } = useTranslation();
+  const { hubNameId, communityId } = useChallenge();
+
+  const metricsItems: MetricItem[] = useMemo(() => {
+    return [
+      {
+        name: t('common.opportunities'),
+        type: MetricType.Opportunity,
+        count: getMetricCount(metrics, MetricType.Opportunity),
+        color: 'neutral',
+      },
+      {
+        name: t('common.members'),
+        count: getMetricCount(metrics, MetricType.Member),
+        color: 'neutralMedium',
+      },
+    ];
+  }, [metrics, t]);
+
+  return (
     <AboutSection
-      infoBlockTitle={name}
-      infoBlockText={tagline}
-      tags={tags}
-      who={who}
-      vision={vision}
-      loading={loading}
-      error={error}
+      journeyTypeName="challenge"
+      hubNameId={hubNameId}
+      communityId={communityId}
+      metricsItems={metricsItems}
+      {...rest}
     />
-  );*/
+  );
 };

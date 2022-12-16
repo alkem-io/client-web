@@ -18,4 +18,5 @@ const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resou
     </Routes>
   );
 };
+
 export default ChallengeAuthorizationRoute;

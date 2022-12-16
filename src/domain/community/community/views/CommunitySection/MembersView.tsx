@@ -47,4 +47,5 @@ export const MembersView: FC<MembersProps> = ({ shuffle = false, users, entityId
     </UserCardsContainer>
   );
 };
+
 export default MembersView;

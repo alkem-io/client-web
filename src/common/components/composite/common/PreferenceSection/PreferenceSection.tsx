@@ -53,4 +53,5 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
     </DashboardGenericSection>
   );
 };
+
 export default PreferenceSection;

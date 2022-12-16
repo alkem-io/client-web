@@ -57,4 +57,5 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
     />
   );
 };
+
 export default HubCard;

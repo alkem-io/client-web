@@ -101,4 +101,5 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
     </MembershipBackdrop>
   );
 };
+
 export default HubChallengesView;

@@ -80,4 +80,5 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
     </Box>
   );
 };
+
 export default HeaderNavigationTabs;

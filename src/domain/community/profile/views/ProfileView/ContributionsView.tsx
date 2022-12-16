@@ -66,4 +66,5 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
     </ProfileCard>
   );
 };
+
 export default ContributionsView;

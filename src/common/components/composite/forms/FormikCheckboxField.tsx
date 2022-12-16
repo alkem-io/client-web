@@ -25,4 +25,5 @@ export const FormikCheckboxField: FC<CheckboxFieldProps> = ({ title, name, requi
     </FormControl>
   );
 };
+
 export default FormikCheckboxField;

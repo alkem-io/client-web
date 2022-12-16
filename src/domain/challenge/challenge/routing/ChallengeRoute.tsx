@@ -50,7 +50,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="challenge" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={routes.About} element={<ChallengeAboutPage paths={currentPaths} />} />
+        <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
 
         <Route
@@ -95,4 +95,5 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
     </Routes>
   );
 };
+
 export default ChallengeRoute;
