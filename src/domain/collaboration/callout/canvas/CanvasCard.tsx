@@ -6,7 +6,7 @@ import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import CardImage from '../../../../core/ui/card/CardImage';
-import { CanvasIcon } from '../../../../common/icons/CanvasIcon';
+import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
 import { CanvasCardCanvas } from './types';
 
 interface CanvasCardProps {

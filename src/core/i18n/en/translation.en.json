@@ -991,6 +991,10 @@
         },
         "profile": {
           "description": ""
+        },
+        "subentities": {
+          "list": "List of {{entities}}",
+          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
         }
       }
     },

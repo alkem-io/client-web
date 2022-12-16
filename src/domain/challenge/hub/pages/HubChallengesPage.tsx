@@ -11,7 +11,7 @@ import ChallengesCardContainer from '../containers/ChallengesCardContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import HubPageLayout from '../layout/HubPageLayout';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
-import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
+import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
 import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
@@ -87,4 +87,5 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
     </HubPageLayout>
   );
 };
+
 export default HubChallengesPage;
