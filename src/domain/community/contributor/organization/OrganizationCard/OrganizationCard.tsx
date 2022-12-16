@@ -1,38 +1,14 @@
-import React, { FC, PropsWithChildren } from 'react';
-import { Paper, Avatar, Box, CardHeader, Skeleton } from '@mui/material';
+import React, { FC } from 'react';
+import { Avatar, Box, CardHeader, Skeleton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Caption, PageTitle } from '../typography/components';
-import CircleTag from '../../../common/components/core/CircleTag';
-import { VerifiedStatus } from '../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
-
-const ElevatedPaper = withElevationOnHover(Paper);
-
-export interface OrganizationCardContainerProps {
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-}
-
-const OrganizationCardContainer = ({ onClick, children }: PropsWithChildren<OrganizationCardContainerProps>) => {
-  return (
-    <ElevatedPaper
-      sx={{
-        background: theme => theme.palette.background.paper,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        cursor: onClick ? 'pointer' : 'default',
-      }}
-      onClick={onClick}
-      elevationDisabled={!onClick}
-    >
-      {children}
-    </ElevatedPaper>
-  );
-};
+import { Caption, PageTitle } from '../../../../../core/ui/typography/components';
+import CircleTag from '../../../../../common/components/core/CircleTag';
+import { VerifiedStatus } from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import OrganizationCardContainer from './OrganizationCardContainer';
 
 interface OrganizationCardProps {
   name?: string;
@@ -116,7 +92,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
           startIcon={<CloseIcon />}
           onClick={event => {
             handleRemoveSelfFromOrganization();
-            event.preventDefault();
+            event.stopPropagation();
           }}
           loading={removingFromOrganization}
         >
