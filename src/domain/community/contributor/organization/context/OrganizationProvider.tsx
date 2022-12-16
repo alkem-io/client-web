@@ -41,4 +41,5 @@ const OrganizationProvider: FC = ({ children }) => {
     </OrganizationContext.Provider>
   );
 };
+
 export { OrganizationProvider, OrganizationContext };

@@ -95,4 +95,5 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
     </Routes>
   );
 };
+
 export default ChallengeRoute;

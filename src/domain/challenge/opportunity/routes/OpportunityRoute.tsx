@@ -67,4 +67,5 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
     </Routes>
   );
 };
+
 export default OpportunityRoute;

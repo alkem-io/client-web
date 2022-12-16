@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import { AspectIcon } from '../../aspect/icon/AspectIcon';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
@@ -20,11 +20,7 @@ const AspectCard = ({ aspect, onClick }: AspectCardProps) => {
 
   return (
     <ContributeCard onClick={handleClick}>
-      <CardHeader
-        title={aspect?.displayName}
-        iconComponent={BallotOutlinedIcon}
-        createdBy={aspect?.createdBy.displayName}
-      />
+      <CardHeader title={aspect?.displayName} iconComponent={AspectIcon} createdBy={aspect?.createdBy.displayName} />
       <CardDetails>
         <CardDescription>{aspect?.profile?.description}</CardDescription>
         <CardTags tags={aspect?.profile?.tagset?.tags} />

@@ -48,4 +48,5 @@ const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
     },
   });
 };
+
 export default useCommunityUpdatesNotifier;

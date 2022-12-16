@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import CalloutsView from './CalloutsView';
+import CalloutsView from './CalloutsView/CalloutsView';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;

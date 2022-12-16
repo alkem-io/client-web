@@ -90,4 +90,5 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     </>
   );
 };
+
 export default UserNotificationsContainer;

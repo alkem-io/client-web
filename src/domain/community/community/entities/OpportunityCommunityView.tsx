@@ -54,4 +54,5 @@ const OpportunityCommunityView: FC = () => {
     </>
   );
 };
+
 export default OpportunityCommunityView;

@@ -19,4 +19,5 @@ export const UserRoute: FC = () => {
     </Routes>
   );
 };
+
 export default UserRoute;

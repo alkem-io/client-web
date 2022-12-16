@@ -37,4 +37,5 @@ const HubContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dial
     </>
   );
 };
+
 export default HubContributorsDialogContent;

@@ -99,4 +99,5 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
     </>
   );
 };
+
 export default DiscussionPage;

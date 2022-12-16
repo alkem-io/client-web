@@ -52,4 +52,5 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
     </Dialog>
   );
 };
+
 export default PreApplicationDialog;

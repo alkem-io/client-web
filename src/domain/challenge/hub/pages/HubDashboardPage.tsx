@@ -76,4 +76,5 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
     </DiscussionsProvider>
   );
 };
+
 export default HubDashboardPage;

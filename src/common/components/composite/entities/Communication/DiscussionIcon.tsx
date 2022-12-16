@@ -35,4 +35,5 @@ export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) =
 
   return createElement(categoryIcon, { ...rest });
 };
+
 export default DiscussionIcon;

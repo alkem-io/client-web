@@ -75,4 +75,5 @@ const CommunityFeedbackContainer: FC<CommunityFeedbackContainerProps> = ({ child
 
   return <>{children({ templates }, { loading, error, isSubmitting, submitError }, { onFeedbackSubmit })}</>;
 };
+
 export default CommunityFeedbackContainer;

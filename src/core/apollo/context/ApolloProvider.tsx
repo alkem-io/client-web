@@ -14,4 +14,5 @@ const AlkemioApolloProvider: FC<Props> = ({ children, apiUrl }) => {
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 };
+
 export default AlkemioApolloProvider;

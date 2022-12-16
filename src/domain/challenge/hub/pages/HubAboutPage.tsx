@@ -1,15 +1,12 @@
 import React, { FC } from 'react';
 import AboutPageContainer from '../../../context/ContextTabContainer/AboutPageContainer';
-import { PageProps } from '../../../shared/types/PageProps';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useHub } from '../HubContext/useHub';
 import HubPageLayout from '../layout/HubPageLayout';
 import { HubAboutView } from '../views/HubAboutView';
 
-export interface HubContextPageProps extends PageProps {}
-
-const HubAboutPage: FC<HubContextPageProps> = ({}) => {
-  const {  hubNameId, displayName } = useHub();
+const HubAboutPage: FC = () => {
+  const { hubNameId, displayName } = useHub();
 
   return (
     <HubPageLayout currentSection={EntityPageSection.About}>
@@ -32,9 +29,11 @@ const HubAboutPage: FC<HubContextPageProps> = ({}) => {
     </HubPageLayout>
   );
 };
+
 export default HubAboutPage;
 
-{/*
+{
+  /*
 <HubContextView
   entities={{
     hubId: hubId,
@@ -50,4 +49,5 @@ export default HubAboutPage;
   options={{}}
   actions={{}}
   metrics={entities.metrics}
-/>*/}
+/>*/
+}

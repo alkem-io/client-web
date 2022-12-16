@@ -27,4 +27,5 @@ const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
 
   return 0;
 };
+
 export default sortApplications;

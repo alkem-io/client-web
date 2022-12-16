@@ -27,4 +27,5 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
     </AuthenticationLayout>
   );
 };
+
 export default VerificationSuccessPage;

@@ -62,4 +62,5 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
     />
   );
 };
+
 export default ChallengeCard;

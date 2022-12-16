@@ -61,4 +61,5 @@ const _buildGraph = async (
   const visualization = new LifecycleVisualization(ref, lifecycleData, width, height, options);
   visualization.displayLifecycle();
 };
+
 export default InnovationFlowVisualizer;

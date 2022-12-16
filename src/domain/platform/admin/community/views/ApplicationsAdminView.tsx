@@ -76,6 +76,7 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
     </DashboardGenericSection>
   );
 };
+
 export default ApplicationsAdminView;
 
 const getColumnDefinitions = (t: TFunction) =>

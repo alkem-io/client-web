@@ -109,4 +109,5 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     </>
   );
 };
+
 export default ContributionDetailsContainer;

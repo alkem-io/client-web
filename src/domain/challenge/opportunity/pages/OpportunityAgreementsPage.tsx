@@ -17,4 +17,5 @@ const OpportunityAgreementsPage: FC<OpportunityProjectsPageProps> = ({ paths }) 
     </OpportunityPageLayout>
   );
 };
+
 export default OpportunityAgreementsPage;
