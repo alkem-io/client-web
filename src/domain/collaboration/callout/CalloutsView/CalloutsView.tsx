@@ -20,7 +20,7 @@ import useCallouts, { TypedCallout } from '../useCallouts';
 import { AspectIcon } from '../../aspect/icon/AspectIcon';
 import { CanvasAltIcon } from '../../canvas/icon/CanvasAltIcon';
 import CalloutsListTitle from './CalloutsListTitle';
-import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute';
+import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CalloutsPageProps {
