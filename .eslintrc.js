@@ -58,7 +58,10 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'error',
     'padding-line-between-statements': [
       'error',
-      { blankLine: 'always', prev: '*', next: 'export' },
+      { blankLine: 'always', prev: 'block', next: 'export' },
+      { blankLine: 'always', prev: 'block-like', next: 'export' },
+      { blankLine: 'always', prev: 'class', next: 'export' },
+      { blankLine: 'always', prev: 'function', next: 'export' },
     ],
   },
 };
