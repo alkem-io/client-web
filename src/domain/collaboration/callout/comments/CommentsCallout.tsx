@@ -1,5 +1,5 @@
 import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
-import React, { useCallback, useMemo } from 'react';
+import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
@@ -27,133 +27,139 @@ interface CommentsCalloutProps extends BaseCalloutImpl {
   loading?: boolean;
 }
 
-const CommentsCallout = ({
-  callout,
-  calloutNames,
-  loading,
-  onCalloutEdit,
-  onVisibilityChange,
-  onCalloutDelete,
-  isSubscribedToComments,
-  contributionsCount,
-}: CommentsCalloutProps) => {
-  const handleError = useApolloErrorHandler();
-  const { user: userMetadata, isAuthenticated } = useUserContext();
-  const user = userMetadata?.user;
+const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
+  (
+    {
+      callout,
+      calloutNames,
+      loading,
+      onCalloutEdit,
+      onVisibilityChange,
+      onCalloutDelete,
+      isSubscribedToComments,
+      contributionsCount,
+    },
+    ref
+  ) => {
+    const handleError = useApolloErrorHandler();
+    const { user: userMetadata, isAuthenticated } = useUserContext();
+    const user = userMetadata?.user;
 
-  const commentsId = callout.comments.id;
-  const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
-  const messages = useMemo<Message[]>(
-    () =>
-      _messages?.map(x => ({
-        id: x.id,
-        body: x.message,
-        author: x?.sender.id ? buildAuthorFromUser(x.sender) : undefined,
-        createdAt: new Date(x.timestamp),
-      })),
-    [_messages]
-  );
+    const commentsId = callout.comments.id;
+    const _messages = useMemo(() => callout?.comments?.messages ?? [], [callout]);
+    const messages = useMemo<Message[]>(
+      () =>
+        _messages?.map(x => ({
+          id: x.id,
+          body: x.message,
+          author: x?.sender.id ? buildAuthorFromUser(x.sender) : undefined,
+          createdAt: new Date(x.timestamp),
+        })),
+      [_messages]
+    );
 
-  const isAuthor = useCallback(
-    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
-    [messages]
-  );
+    const isAuthor = useCallback(
+      (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
+      [messages]
+    );
 
-  const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteMessage = useCallback(
-    msgId => canDeleteMessages || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [user, isAuthenticated, isAuthor, canDeleteMessages]
-  );
+    const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
+    const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
+    const canDeleteMessage = useCallback(
+      msgId => canDeleteMessages || (isAuthenticated && isAuthor(msgId, user?.id)),
+      [user, isAuthenticated, isAuthor, canDeleteMessages]
+    );
 
-  const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostMessages =
-    commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
+    const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
+    const canPostMessages =
+      commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
 
-  const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
-    onError: handleError,
-    update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
-  });
-
-  const handleDeleteMessage = (commentsId: string, messageId: string) =>
-    deleteMessage({
-      variables: {
-        messageData: {
-          commentsID: commentsId,
-          messageID: messageId,
-        },
-      },
+    const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
+      onError: handleError,
+      update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
     });
 
-  const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
-    onError: handleError,
-    update: (cache, { data }) => {
-      if (isSubscribedToComments) {
-        return;
-      }
-
-      const cacheCommentsId = cache.identify({
-        id: commentsId,
-        __typename: 'Comments',
-      });
-
-      if (!cacheCommentsId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheCommentsId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendMessageOnCallout,
-              fragment: MessageDetailsFragmentDoc,
-              fragmentName: 'MessageDetails',
-            });
-            return [...existingMessages, newMessage];
+    const handleDeleteMessage = (commentsId: string, messageId: string) =>
+      deleteMessage({
+        variables: {
+          messageData: {
+            commentsID: commentsId,
+            messageID: messageId,
           },
         },
       });
-    },
-  });
 
-  const handlePostMessage = async (commentsId: string, message: string) =>
-    postMessage({
-      variables: {
-        data: {
-          calloutID: callout.id,
-          message,
-        },
+    const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
+      onError: handleError,
+      update: (cache, { data }) => {
+        if (isSubscribedToComments) {
+          return;
+        }
+
+        const cacheCommentsId = cache.identify({
+          id: commentsId,
+          __typename: 'Comments',
+        });
+
+        if (!cacheCommentsId) {
+          return;
+        }
+
+        cache.modify({
+          id: cacheCommentsId,
+          fields: {
+            messages(existingMessages = []) {
+              if (!data) {
+                return existingMessages;
+              }
+
+              const newMessage = cache.writeFragment({
+                data: data?.sendMessageOnCallout,
+                fragment: MessageDetailsFragmentDoc,
+                fragmentName: 'MessageDetails',
+              });
+              return [...existingMessages, newMessage];
+            },
+          },
+        });
       },
     });
 
-  return (
-    <>
-      <CalloutLayout
-        callout={callout}
-        calloutNames={calloutNames}
-        contributionsCount={contributionsCount}
-        onVisibilityChange={onVisibilityChange}
-        onCalloutEdit={onCalloutEdit}
-        onCalloutDelete={onCalloutDelete}
-      >
-        <CommentsComponent
-          messages={messages}
-          commentsId={commentsId}
-          canReadMessages={canReadMessages}
-          canPostMessages={canPostMessages}
-          handlePostMessage={handlePostMessage}
-          canDeleteMessage={canDeleteMessage}
-          handleDeleteMessage={handleDeleteMessage}
-          loading={loading || postingComment || deletingMessage}
-        />
-      </CalloutLayout>
-    </>
-  );
-};
+    const handlePostMessage = async (commentsId: string, message: string) =>
+      postMessage({
+        variables: {
+          data: {
+            calloutID: callout.id,
+            message,
+          },
+        },
+      });
+
+    return (
+      <>
+        <CalloutLayout
+          ref={ref}
+          callout={callout}
+          calloutNames={calloutNames}
+          contributionsCount={contributionsCount}
+          onVisibilityChange={onVisibilityChange}
+          onCalloutEdit={onCalloutEdit}
+          onCalloutDelete={onCalloutDelete}
+        >
+          <CommentsComponent
+            messages={messages}
+            commentsId={commentsId}
+            canReadMessages={canReadMessages}
+            canPostMessages={canPostMessages}
+            handlePostMessage={handlePostMessage}
+            canDeleteMessage={canDeleteMessage}
+            handleDeleteMessage={handleDeleteMessage}
+            loading={loading || postingComment || deletingMessage}
+          />
+        </CalloutLayout>
+      </>
+    );
+  }
+);
 
 export default CommentsCallout;

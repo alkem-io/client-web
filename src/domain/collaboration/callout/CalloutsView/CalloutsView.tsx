@@ -21,11 +21,18 @@ import { AspectIcon } from '../../aspect/icon/AspectIcon';
 import { CanvasAltIcon } from '../../canvas/icon/CanvasAltIcon';
 import CalloutsListTitle from './CalloutsListTitle';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CalloutsPageProps {
   rootUrl: string;
   scrollToCallout?: boolean;
 }
+
+const calloutIcons = {
+  [CalloutType.Card]: <AspectIcon />,
+  [CalloutType.Canvas]: <CanvasAltIcon />,
+  [CalloutType.Comments]: <ForumOutlined />,
+} as const;
 
 const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
@@ -37,15 +44,6 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
   });
 
   const { t } = useTranslation();
-
-  const calloutIcons = useMemo(
-    () => ({
-      [CalloutType.Card]: <AspectIcon />,
-      [CalloutType.Canvas]: <CanvasAltIcon />,
-      [CalloutType.Comments]: <ForumOutlined />,
-    }),
-    []
-  );
 
   const buildCalloutTitle = (callout: TypedCallout) => {
     return (
@@ -70,7 +68,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
   const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
 
   // Scroll to Callout handler:
-  const addElement = useScrollToElement(scrollToCallout, calloutNameId);
+  const onElementAdded = useScrollToElement(calloutNameId, scrollToCallout);
 
   return (
     <PageContent>
@@ -99,70 +97,68 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <Box display="flex" flexDirection="column" gap={3.5}>
+        <Box display="flex" flexDirection="column" gap={gutters()}>
           {callouts?.map(callout => {
-            return (
-              <React.Fragment key={callout.nameID}>
-                <div id={`callout-${callout.nameID}`} ref={element => addElement(callout.nameID, element)} />
-                {(callout => {
-                  switch (callout.type) {
-                    case CalloutType.Card:
-                      return (
-                        <AspectCallout
-                          key={callout.id}
-                          callout={callout}
-                          calloutNames={calloutNames}
-                          contributionsCount={getItemsCount(callout)}
-                          loading={loading}
-                          hubNameId={hubNameId!}
-                          challengeNameId={challengeNameId}
-                          opportunityNameId={opportunityNameId}
-                          canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
-                          onCalloutEdit={handleEdit}
-                          onVisibilityChange={handleVisibilityChange}
-                          onCalloutDelete={handleDelete}
-                        />
-                      );
-                    case CalloutType.Canvas:
-                      return (
-                        <CanvasCallout
-                          key={callout.id}
-                          callout={callout}
-                          calloutNames={calloutNames}
-                          contributionsCount={getItemsCount(callout)}
-                          loading={loading}
-                          hubNameId={hubNameId!}
-                          challengeNameId={challengeNameId}
-                          opportunityNameId={opportunityNameId}
-                          canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
-                          onCalloutEdit={handleEdit}
-                          onVisibilityChange={handleVisibilityChange}
-                          onCalloutDelete={handleDelete}
-                        />
-                      );
-                    case CalloutType.Comments:
-                      return (
-                        <CommentsCallout
-                          key={callout.id}
-                          callout={callout}
-                          calloutNames={calloutNames}
-                          contributionsCount={getItemsCount(callout)}
-                          loading={loading}
-                          hubNameId={hubNameId!}
-                          challengeNameId={challengeNameId}
-                          opportunityNameId={opportunityNameId}
-                          onCalloutEdit={handleEdit}
-                          onVisibilityChange={handleVisibilityChange}
-                          onCalloutDelete={handleDelete}
-                          isSubscribedToComments={callout.isSubscribedToComments}
-                        />
-                      );
-                    default:
-                      throw new Error('Unexpected Callout type');
-                  }
-                })(callout)}
-              </React.Fragment>
-            );
+            return (callout => {
+              switch (callout.type) {
+                case CalloutType.Card:
+                  return (
+                    <AspectCallout
+                      key={callout.id}
+                      ref={element => onElementAdded(element, callout.nameID)}
+                      callout={callout}
+                      calloutNames={calloutNames}
+                      contributionsCount={getItemsCount(callout)}
+                      loading={loading}
+                      hubNameId={hubNameId!}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
+                      onCalloutEdit={handleEdit}
+                      onVisibilityChange={handleVisibilityChange}
+                      onCalloutDelete={handleDelete}
+                    />
+                  );
+                case CalloutType.Canvas:
+                  return (
+                    <CanvasCallout
+                      key={callout.id}
+                      ref={element => onElementAdded(element, callout.nameID)}
+                      callout={callout}
+                      calloutNames={calloutNames}
+                      contributionsCount={getItemsCount(callout)}
+                      loading={loading}
+                      hubNameId={hubNameId!}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
+                      onCalloutEdit={handleEdit}
+                      onVisibilityChange={handleVisibilityChange}
+                      onCalloutDelete={handleDelete}
+                    />
+                  );
+                case CalloutType.Comments:
+                  return (
+                    <CommentsCallout
+                      key={callout.id}
+                      ref={element => onElementAdded(element, callout.nameID)}
+                      callout={callout}
+                      calloutNames={calloutNames}
+                      contributionsCount={getItemsCount(callout)}
+                      loading={loading}
+                      hubNameId={hubNameId!}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      onCalloutEdit={handleEdit}
+                      onVisibilityChange={handleVisibilityChange}
+                      onCalloutDelete={handleDelete}
+                      isSubscribedToComments={callout.isSubscribedToComments}
+                    />
+                  );
+                default:
+                  throw new Error('Unexpected Callout type');
+              }
+            })(callout);
           })}
         </Box>
         <CalloutCreationDialog
