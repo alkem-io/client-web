@@ -3,13 +3,11 @@ import * as SchemaTypes from './graphql-schema';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-
 export const MyPrivilegesFragmentDoc = gql`
   fragment MyPrivileges on Authorization {
     myPrivileges
   }
 `;
-
 export const VisualFullFragmentDoc = gql`
   fragment VisualFull on Visual {
     id
@@ -23,7 +21,6 @@ export const VisualFullFragmentDoc = gql`
     minWidth
   }
 `;
-
 export const VisualUriFragmentDoc = gql`
   fragment VisualUri on Visual {
     id
@@ -31,7 +28,6 @@ export const VisualUriFragmentDoc = gql`
     name
   }
 `;
-
 export const AspectCardFragmentDoc = gql`
   fragment AspectCard on Aspect {
     id
@@ -70,7 +66,6 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
@@ -79,7 +74,6 @@ export const CanvasSummaryFragmentDoc = gql`
     createdDate
   }
 `;
-
 export const CheckoutDetailsFragmentDoc = gql`
   fragment CheckoutDetails on CanvasCheckout {
     id
@@ -95,7 +89,6 @@ export const CheckoutDetailsFragmentDoc = gql`
     }
   }
 `;
-
 export const CanvasDetailsFragmentDoc = gql`
   fragment CanvasDetails on Canvas {
     ...CanvasSummary
@@ -115,7 +108,6 @@ export const CanvasDetailsFragmentDoc = gql`
   ${CheckoutDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
-
 export const DashboardLeadUserFragmentDoc = gql`
   fragment DashboardLeadUser on User {
     id
@@ -139,7 +131,6 @@ export const DashboardLeadUserFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
     id
@@ -162,7 +153,6 @@ export const DashboardContributingUserFragmentDoc = gql`
     }
   }
 `;
-
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
     id
@@ -187,7 +177,6 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const DashboardContributingOrganizationFragmentDoc = gql`
   fragment DashboardContributingOrganization on Organization {
     id
@@ -203,7 +192,6 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
     }
   }
 `;
-
 export const EntityDashboardCommunityFragmentDoc = gql`
   fragment EntityDashboardCommunity on Community {
     id
@@ -229,7 +217,6 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
-
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -260,7 +247,6 @@ export const ContextDetailsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const OpportunityCardFragmentDoc = gql`
   fragment OpportunityCard on Opportunity {
     id
@@ -296,7 +282,6 @@ export const OpportunityCardFragmentDoc = gql`
   }
   ${ContextDetailsFragmentDoc}
 `;
-
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
@@ -360,7 +345,6 @@ export const ChallengeProfileFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${OpportunityCardFragmentDoc}
 `;
-
 export const ChallengeInfoFragmentDoc = gql`
   fragment ChallengeInfo on Challenge {
     id
@@ -396,7 +380,6 @@ export const ChallengeInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
@@ -404,7 +387,6 @@ export const NewChallengeFragmentDoc = gql`
     displayName
   }
 `;
-
 export const OpportunitiesOnChallengeFragmentDoc = gql`
   fragment OpportunitiesOnChallenge on Challenge {
     id
@@ -414,7 +396,6 @@ export const OpportunitiesOnChallengeFragmentDoc = gql`
   }
   ${OpportunityCardFragmentDoc}
 `;
-
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -440,7 +421,6 @@ export const HubDetailsFragmentDoc = gql`
   }
   ${ContextDetailsFragmentDoc}
 `;
-
 export const HubInfoFragmentDoc = gql`
   fragment HubInfo on Hub {
     ...HubDetails
@@ -506,7 +486,6 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -532,7 +511,6 @@ export const ChallengeCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const HubPageFragmentDoc = gql`
   fragment HubPage on Hub {
     id
@@ -598,7 +576,6 @@ export const HubPageFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
-
 export const AdminHubFragmentDoc = gql`
   fragment AdminHub on Hub {
     id
@@ -610,7 +587,6 @@ export const AdminHubFragmentDoc = gql`
     }
   }
 `;
-
 export const ChallengesOnHubFragmentDoc = gql`
   fragment ChallengesOnHub on Hub {
     id
@@ -620,7 +596,6 @@ export const ChallengesOnHubFragmentDoc = gql`
   }
   ${ChallengeCardFragmentDoc}
 `;
-
 export const ContextDetailsProviderFragmentDoc = gql`
   fragment ContextDetailsProvider on Context {
     id
@@ -635,7 +610,6 @@ export const ContextDetailsProviderFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const HubDetailsProviderFragmentDoc = gql`
   fragment HubDetailsProvider on Hub {
     id
@@ -663,7 +637,6 @@ export const HubDetailsProviderFragmentDoc = gql`
   }
   ${ContextDetailsProviderFragmentDoc}
 `;
-
 export const HubNameFragmentDoc = gql`
   fragment HubName on Hub {
     id
@@ -671,7 +644,6 @@ export const HubNameFragmentDoc = gql`
     displayName
   }
 `;
-
 export const OpportunityPageFragmentDoc = gql`
   fragment OpportunityPage on Opportunity {
     id
@@ -745,7 +717,6 @@ export const OpportunityPageFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
 `;
-
 export const OpportunityPageRelationsFragmentDoc = gql`
   fragment OpportunityPageRelations on Relation {
     id
@@ -756,7 +727,6 @@ export const OpportunityPageRelationsFragmentDoc = gql`
     description
   }
 `;
-
 export const OpportunityProviderFragmentDoc = gql`
   fragment OpportunityProvider on Opportunity {
     id
@@ -793,7 +763,6 @@ export const OpportunityProviderFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const NewOpportunityFragmentDoc = gql`
   fragment NewOpportunity on Opportunity {
     id
@@ -801,7 +770,6 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
-
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
@@ -833,7 +801,6 @@ export const MessageDetailsFragmentDoc = gql`
     }
   }
 `;
-
 export const AspectDashboardFragmentDoc = gql`
   fragment AspectDashboard on Aspect {
     id
@@ -887,7 +854,6 @@ export const AspectDashboardFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${MessageDetailsFragmentDoc}
 `;
-
 export const AspectDashboardDataFragmentDoc = gql`
   fragment AspectDashboardData on Collaboration {
     id
@@ -905,7 +871,6 @@ export const AspectDashboardDataFragmentDoc = gql`
   }
   ${AspectDashboardFragmentDoc}
 `;
-
 export const AspectSettingsFragmentDoc = gql`
   fragment AspectSettings on Aspect {
     id
@@ -940,7 +905,6 @@ export const AspectSettingsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const AspectSettingsCalloutFragmentDoc = gql`
   fragment AspectSettingsCallout on Callout {
     id
@@ -955,7 +919,6 @@ export const AspectSettingsCalloutFragmentDoc = gql`
   }
   ${AspectSettingsFragmentDoc}
 `;
-
 export const AspectProvidedFragmentDoc = gql`
   fragment AspectProvided on Aspect {
     id
@@ -967,7 +930,6 @@ export const AspectProvidedFragmentDoc = gql`
     }
   }
 `;
-
 export const AspectProviderDataFragmentDoc = gql`
   fragment AspectProviderData on Collaboration {
     id
@@ -981,7 +943,6 @@ export const AspectProviderDataFragmentDoc = gql`
   }
   ${AspectProvidedFragmentDoc}
 `;
-
 export const CalloutAspectInfoFragmentDoc = gql`
   fragment CalloutAspectInfo on Collaboration {
     id
@@ -996,14 +957,12 @@ export const CalloutAspectInfoFragmentDoc = gql`
     }
   }
 `;
-
 export const TemplateTitleFragmentDoc = gql`
   fragment TemplateTitle on TemplateInfo {
     id
     title
   }
 `;
-
 export const PrivilegesOnCollaborationFragmentDoc = gql`
   fragment PrivilegesOnCollaboration on Collaboration {
     id
@@ -1013,7 +972,6 @@ export const PrivilegesOnCollaborationFragmentDoc = gql`
     }
   }
 `;
-
 export const ContributeTabAspectFragmentDoc = gql`
   fragment ContributeTabAspect on Aspect {
     ...AspectCard
@@ -1024,7 +982,6 @@ export const ContributeTabAspectFragmentDoc = gql`
   }
   ${AspectCardFragmentDoc}
 `;
-
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Comments {
     id
@@ -1039,7 +996,6 @@ export const CommentsWithMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-
 export const CardTemplateFragmentDoc = gql`
   fragment CardTemplate on Callout {
     cardTemplate {
@@ -1059,7 +1015,6 @@ export const CardTemplateFragmentDoc = gql`
     }
   }
 `;
-
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -1089,14 +1044,12 @@ export const CalloutFragmentDoc = gql`
   ${CommentsWithMessagesFragmentDoc}
   ${CardTemplateFragmentDoc}
 `;
-
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
     id
     value
   }
 `;
-
 export const CreateCanvasCanvasTemplateFragmentDoc = gql`
   fragment CreateCanvasCanvasTemplate on CanvasTemplate {
     id
@@ -1107,7 +1060,6 @@ export const CreateCanvasCanvasTemplateFragmentDoc = gql`
     value
   }
 `;
-
 export const CollaborationWithCanvasDetailsFragmentDoc = gql`
   fragment CollaborationWithCanvasDetails on Collaboration {
     id
@@ -1127,7 +1079,6 @@ export const CollaborationWithCanvasDetailsFragmentDoc = gql`
   }
   ${CanvasDetailsFragmentDoc}
 `;
-
 export const AspectsOnCalloutFragmentDoc = gql`
   fragment AspectsOnCallout on Callout {
     id
@@ -1137,7 +1088,6 @@ export const AspectsOnCalloutFragmentDoc = gql`
   }
   ${ContributeTabAspectFragmentDoc}
 `;
-
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
@@ -1152,7 +1102,6 @@ export const DiscussionDetailsFragmentDoc = gql`
     }
   }
 `;
-
 export const DiscussionDetailsNoAuthFragmentDoc = gql`
   fragment DiscussionDetailsNoAuth on Discussion {
     id
@@ -1164,7 +1113,6 @@ export const DiscussionDetailsNoAuthFragmentDoc = gql`
     commentsCount
   }
 `;
-
 export const ApplicationInfoFragmentDoc = gql`
   fragment ApplicationInfo on Application {
     id
@@ -1194,7 +1142,6 @@ export const ApplicationInfoFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
@@ -1208,7 +1155,6 @@ export const CommunityDetailsFragmentDoc = gql`
     }
   }
 `;
-
 export const UserCardFragmentDoc = gql`
   fragment UserCard on User {
     id
@@ -1240,7 +1186,6 @@ export const UserCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const OrganizationCardFragmentDoc = gql`
   fragment OrganizationCard on Organization {
     id
@@ -1265,7 +1210,6 @@ export const OrganizationCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const CommunityMembersFragmentDoc = gql`
   fragment CommunityMembers on Community {
     leadUsers {
@@ -1284,7 +1228,6 @@ export const CommunityMembersFragmentDoc = gql`
   ${UserCardFragmentDoc}
   ${OrganizationCardFragmentDoc}
 `;
-
 export const CommunityMessagesFragmentDoc = gql`
   fragment CommunityMessages on Community {
     id
@@ -1300,7 +1243,6 @@ export const CommunityMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-
 export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
@@ -1333,14 +1275,12 @@ export const CommunityPageMembersFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
     displayName
   }
 `;
-
 export const BasicOrganizationDetailsFragmentDoc = gql`
   fragment BasicOrganizationDetails on Organization {
     id
@@ -1355,7 +1295,6 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const CommunityMemberUserFragmentDoc = gql`
   fragment CommunityMemberUser on User {
     id
@@ -1365,7 +1304,6 @@ export const CommunityMemberUserFragmentDoc = gql`
     email
   }
 `;
-
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
@@ -1390,7 +1328,6 @@ export const OrganizationContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const PageInfoFragmentDoc = gql`
   fragment PageInfo on PageInfo {
     startCursor
@@ -1398,7 +1335,6 @@ export const PageInfoFragmentDoc = gql`
     hasNextPage
   }
 `;
-
 export const OrganizationContributorPaginatedFragmentDoc = gql`
   fragment OrganizationContributorPaginated on PaginatedOrganization {
     organization {
@@ -1411,7 +1347,6 @@ export const OrganizationContributorPaginatedFragmentDoc = gql`
   ${OrganizationContributorFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-
 export const UserContributorFragmentDoc = gql`
   fragment UserContributor on User {
     id
@@ -1443,7 +1378,6 @@ export const UserContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const UserContributorPaginatedFragmentDoc = gql`
   fragment UserContributorPaginated on PaginatedUsers {
     users {
@@ -1456,7 +1390,6 @@ export const UserContributorPaginatedFragmentDoc = gql`
   ${UserContributorFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
     id
@@ -1480,7 +1413,6 @@ export const OrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {
     id
@@ -1545,7 +1477,6 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
@@ -1584,7 +1515,6 @@ export const OrganizationProfileInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
     id
@@ -1612,14 +1542,12 @@ export const UserAgentSsiFragmentDoc = gql`
     }
   }
 `;
-
 export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
     name
   }
 `;
-
 export const GroupInfoFragmentDoc = gql`
   fragment GroupInfo on UserGroup {
     id
@@ -1645,7 +1573,6 @@ export const GroupInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
@@ -1655,7 +1582,6 @@ export const GroupMembersFragmentDoc = gql`
     email
   }
 `;
-
 export const UserAgentFragmentDoc = gql`
   fragment UserAgent on User {
     agent {
@@ -1669,7 +1595,6 @@ export const UserAgentFragmentDoc = gql`
     }
   }
 `;
-
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
@@ -1712,14 +1637,12 @@ export const UserDetailsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
     id
     displayName
   }
 `;
-
 export const UserRolesDetailsFragmentDoc = gql`
   fragment UserRolesDetails on ContributorRoles {
     hubs {
@@ -1768,7 +1691,6 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
-
 export const ContextTabFragmentDoc = gql`
   fragment ContextTab on Context {
     id
@@ -1788,7 +1710,6 @@ export const ContextTabFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const LifecycleContextTabFragmentDoc = gql`
   fragment LifecycleContextTab on Lifecycle {
     id
@@ -1796,7 +1717,6 @@ export const LifecycleContextTabFragmentDoc = gql`
     machineDef
   }
 `;
-
 export const MetricsItemFragmentDoc = gql`
   fragment MetricsItem on NVP {
     id
@@ -1804,7 +1724,6 @@ export const MetricsItemFragmentDoc = gql`
     value
   }
 `;
-
 export const AvailableUserFragmentDoc = gql`
   fragment AvailableUser on User {
     id
@@ -1812,7 +1731,6 @@ export const AvailableUserFragmentDoc = gql`
     email
   }
 `;
-
 export const CommunityAvailableLeadUsersFragmentDoc = gql`
   fragment CommunityAvailableLeadUsers on Community {
     id
@@ -1828,7 +1746,6 @@ export const CommunityAvailableLeadUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-
 export const CommunityAvailableMemberUsersFragmentDoc = gql`
   fragment CommunityAvailableMemberUsers on Community {
     id
@@ -1844,7 +1761,6 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-
 export const TemplateInfoFragmentDoc = gql`
   fragment TemplateInfo on TemplateInfo {
     id
@@ -1860,7 +1776,6 @@ export const TemplateInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-
 export const AdminLifecycleTemplateFragmentDoc = gql`
   fragment AdminLifecycleTemplate on LifecycleTemplate {
     id
@@ -1872,7 +1787,6 @@ export const AdminLifecycleTemplateFragmentDoc = gql`
   }
   ${TemplateInfoFragmentDoc}
 `;
-
 export const AdminAspectTemplateFragmentDoc = gql`
   fragment AdminAspectTemplate on AspectTemplate {
     id
@@ -1884,7 +1798,6 @@ export const AdminAspectTemplateFragmentDoc = gql`
   }
   ${TemplateInfoFragmentDoc}
 `;
-
 export const AdminCanvasTemplateFragmentDoc = gql`
   fragment AdminCanvasTemplate on CanvasTemplate {
     id
@@ -1894,14 +1807,12 @@ export const AdminCanvasTemplateFragmentDoc = gql`
   }
   ${TemplateInfoFragmentDoc}
 `;
-
 export const AdminCanvasTemplateValueFragmentDoc = gql`
   fragment AdminCanvasTemplateValue on CanvasTemplate {
     id
     value
   }
 `;
-
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {
     authentication {
@@ -1961,7 +1872,6 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
-
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
     id
@@ -1980,7 +1890,6 @@ export const SearchResultProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const SearchResultUserFragmentDoc = gql`
   fragment SearchResultUser on SearchResultUser {
     user {
@@ -1994,7 +1903,6 @@ export const SearchResultUserFragmentDoc = gql`
   }
   ${SearchResultProfileFragmentDoc}
 `;
-
 export const SearchResultOrganizationFragmentDoc = gql`
   fragment SearchResultOrganization on SearchResultOrganization {
     organization {
@@ -2008,7 +1916,6 @@ export const SearchResultOrganizationFragmentDoc = gql`
   }
   ${SearchResultProfileFragmentDoc}
 `;
-
 export const SearchResultHubFragmentDoc = gql`
   fragment SearchResultHub on SearchResultHub {
     hub {
@@ -2030,7 +1937,6 @@ export const SearchResultHubFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const SearchResultChallengeFragmentDoc = gql`
   fragment SearchResultChallenge on SearchResultChallenge {
     challenge {
@@ -2061,7 +1967,6 @@ export const SearchResultChallengeFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const SearchResultOpportunityFragmentDoc = gql`
   fragment SearchResultOpportunity on SearchResultOpportunity {
     opportunity {
@@ -2093,7 +1998,6 @@ export const SearchResultOpportunityFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
     id
@@ -2102,7 +2006,6 @@ export const ReferenceDetailsFragmentDoc = gql`
     description
   }
 `;
-
 export const ActivityLogMemberJoinedFragmentDoc = gql`
   fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     communityType
@@ -2137,7 +2040,6 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogCalloutPublishedFragmentDoc = gql`
   fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
     callout {
@@ -2148,7 +2050,6 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
     callout {
@@ -2164,7 +2065,6 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogCalloutCardCommentFragmentDoc = gql`
   fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
     callout {
@@ -2179,7 +2079,6 @@ export const ActivityLogCalloutCardCommentFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
   fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
     callout {
@@ -2194,7 +2093,6 @@ export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
   fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
     callout {
@@ -2204,7 +2102,6 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogChallengeCreatedFragmentDoc = gql`
   fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
     challenge {
@@ -2218,7 +2115,6 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogOpportunityCreatedFragmentDoc = gql`
   fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
     opportunity {
@@ -2232,7 +2128,6 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
     }
   }
 `;
-
 export const ActivityLogOnCollaborationFragmentDoc = gql`
   fragment ActivityLogOnCollaboration on ActivityLogEntry {
     id
@@ -2298,7 +2193,6 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
   ${ActivityLogChallengeCreatedFragmentDoc}
   ${ActivityLogOpportunityCreatedFragmentDoc}
 `;
-
 export const ActivityLogUpdateSentFragmentDoc = gql`
   fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
     updates {
@@ -2307,13 +2201,11 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     message
   }
 `;
-
 export const UploadFileDocument = gql`
   mutation UploadFile($file: Upload!) {
     uploadFile(file: $file)
   }
 `;
-
 export type UploadFileMutationFn = Apollo.MutationFunction<
   SchemaTypes.UploadFileMutation,
   SchemaTypes.UploadFileMutationVariables
@@ -2347,14 +2239,11 @@ export function useUploadFileMutation(
 }
 
 export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
-
 export type UploadFileMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileMutation>;
-
 export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileMutation,
   SchemaTypes.UploadFileMutationVariables
 >;
-
 export const AssignUserAsChallengeAdminDocument = gql`
   mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
     assignUserAsChallengeAdmin(membershipData: $input) {
@@ -2363,7 +2252,6 @@ export const AssignUserAsChallengeAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsChallengeAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsChallengeAdminMutation,
   SchemaTypes.AssignUserAsChallengeAdminMutationVariables
@@ -2400,15 +2288,12 @@ export function useAssignUserAsChallengeAdminMutation(
 }
 
 export type AssignUserAsChallengeAdminMutationHookResult = ReturnType<typeof useAssignUserAsChallengeAdminMutation>;
-
 export type AssignUserAsChallengeAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsChallengeAdminMutation>;
-
 export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsChallengeAdminMutation,
   SchemaTypes.AssignUserAsChallengeAdminMutationVariables
 >;
-
 export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
     assignUserAsGlobalAdmin(membershipData: $input) {
@@ -2417,7 +2302,6 @@ export const AssignUserAsGlobalAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsGlobalAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsGlobalAdminMutation,
   SchemaTypes.AssignUserAsGlobalAdminMutationVariables
@@ -2454,14 +2338,11 @@ export function useAssignUserAsGlobalAdminMutation(
 }
 
 export type AssignUserAsGlobalAdminMutationHookResult = ReturnType<typeof useAssignUserAsGlobalAdminMutation>;
-
 export type AssignUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalAdminMutation>;
-
 export type AssignUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsGlobalAdminMutation,
   SchemaTypes.AssignUserAsGlobalAdminMutationVariables
 >;
-
 export const AssignUserAsGlobalCommunityAdminDocument = gql`
   mutation assignUserAsGlobalCommunityAdmin($input: AssignGlobalCommunityAdminInput!) {
     assignUserAsGlobalCommunityAdmin(membershipData: $input) {
@@ -2470,7 +2351,6 @@ export const AssignUserAsGlobalCommunityAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsGlobalCommunityAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
   SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
@@ -2509,15 +2389,12 @@ export function useAssignUserAsGlobalCommunityAdminMutation(
 export type AssignUserAsGlobalCommunityAdminMutationHookResult = ReturnType<
   typeof useAssignUserAsGlobalCommunityAdminMutation
 >;
-
 export type AssignUserAsGlobalCommunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalCommunityAdminMutation>;
-
 export type AssignUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
   SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
 >;
-
 export const AssignUserAsGlobalHubsAdminDocument = gql`
   mutation assignUserAsGlobalHubsAdmin($input: AssignGlobalHubsAdminInput!) {
     assignUserAsGlobalHubsAdmin(membershipData: $input) {
@@ -2526,7 +2403,6 @@ export const AssignUserAsGlobalHubsAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsGlobalHubsAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsGlobalHubsAdminMutation,
   SchemaTypes.AssignUserAsGlobalHubsAdminMutationVariables
@@ -2563,15 +2439,12 @@ export function useAssignUserAsGlobalHubsAdminMutation(
 }
 
 export type AssignUserAsGlobalHubsAdminMutationHookResult = ReturnType<typeof useAssignUserAsGlobalHubsAdminMutation>;
-
 export type AssignUserAsGlobalHubsAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsGlobalHubsAdminMutation>;
-
 export type AssignUserAsGlobalHubsAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsGlobalHubsAdminMutation,
   SchemaTypes.AssignUserAsGlobalHubsAdminMutationVariables
 >;
-
 export const AssignUserAsHubAdminDocument = gql`
   mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
     assignUserAsHubAdmin(membershipData: $input) {
@@ -2580,7 +2453,6 @@ export const AssignUserAsHubAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsHubAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsHubAdminMutation,
   SchemaTypes.AssignUserAsHubAdminMutationVariables
@@ -2617,14 +2489,11 @@ export function useAssignUserAsHubAdminMutation(
 }
 
 export type AssignUserAsHubAdminMutationHookResult = ReturnType<typeof useAssignUserAsHubAdminMutation>;
-
 export type AssignUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsHubAdminMutation>;
-
 export type AssignUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsHubAdminMutation,
   SchemaTypes.AssignUserAsHubAdminMutationVariables
 >;
-
 export const AssignUserAsOrganizationOwnerDocument = gql`
   mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
     assignUserAsOrganizationOwner(membershipData: $input) {
@@ -2633,7 +2502,6 @@ export const AssignUserAsOrganizationOwnerDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsOrganizationOwnerMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsOrganizationOwnerMutation,
   SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
@@ -2672,15 +2540,12 @@ export function useAssignUserAsOrganizationOwnerMutation(
 export type AssignUserAsOrganizationOwnerMutationHookResult = ReturnType<
   typeof useAssignUserAsOrganizationOwnerMutation
 >;
-
 export type AssignUserAsOrganizationOwnerMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsOrganizationOwnerMutation>;
-
 export type AssignUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsOrganizationOwnerMutation,
   SchemaTypes.AssignUserAsOrganizationOwnerMutationVariables
 >;
-
 export const RemoveUserAsChallengeAdminDocument = gql`
   mutation removeUserAsChallengeAdmin($input: RemoveChallengeAdminInput!) {
     removeUserAsChallengeAdmin(membershipData: $input) {
@@ -2689,7 +2554,6 @@ export const RemoveUserAsChallengeAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsChallengeAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsChallengeAdminMutation,
   SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
@@ -2726,15 +2590,12 @@ export function useRemoveUserAsChallengeAdminMutation(
 }
 
 export type RemoveUserAsChallengeAdminMutationHookResult = ReturnType<typeof useRemoveUserAsChallengeAdminMutation>;
-
 export type RemoveUserAsChallengeAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsChallengeAdminMutation>;
-
 export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsChallengeAdminMutation,
   SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
 >;
-
 export const RemoveUserAsGlobalAdminDocument = gql`
   mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
     removeUserAsGlobalAdmin(membershipData: $input) {
@@ -2743,7 +2604,6 @@ export const RemoveUserAsGlobalAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsGlobalAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsGlobalAdminMutation,
   SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
@@ -2780,14 +2640,11 @@ export function useRemoveUserAsGlobalAdminMutation(
 }
 
 export type RemoveUserAsGlobalAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalAdminMutation>;
-
 export type RemoveUserAsGlobalAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalAdminMutation>;
-
 export type RemoveUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalAdminMutation,
   SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
 >;
-
 export const RemoveUserAsGlobalHubsAdminDocument = gql`
   mutation removeUserAsGlobalHubsAdmin($input: RemoveGlobalHubsAdminInput!) {
     removeUserAsGlobalHubsAdmin(membershipData: $input) {
@@ -2796,7 +2653,6 @@ export const RemoveUserAsGlobalHubsAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsGlobalHubsAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
   SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
@@ -2833,15 +2689,12 @@ export function useRemoveUserAsGlobalHubsAdminMutation(
 }
 
 export type RemoveUserAsGlobalHubsAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalHubsAdminMutation>;
-
 export type RemoveUserAsGlobalHubsAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalHubsAdminMutation>;
-
 export type RemoveUserAsGlobalHubsAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
   SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
 >;
-
 export const RemoveUserAsGlobalCommunityAdminDocument = gql`
   mutation removeUserAsGlobalCommunityAdmin($input: RemoveGlobalCommunityAdminInput!) {
     removeUserAsGlobalCommunityAdmin(membershipData: $input) {
@@ -2850,7 +2703,6 @@ export const RemoveUserAsGlobalCommunityAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsGlobalCommunityAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
@@ -2889,15 +2741,12 @@ export function useRemoveUserAsGlobalCommunityAdminMutation(
 export type RemoveUserAsGlobalCommunityAdminMutationHookResult = ReturnType<
   typeof useRemoveUserAsGlobalCommunityAdminMutation
 >;
-
 export type RemoveUserAsGlobalCommunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation>;
-
 export type RemoveUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
 >;
-
 export const RemoveUserAsHubAdminDocument = gql`
   mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
     removeUserAsHubAdmin(membershipData: $input) {
@@ -2906,7 +2755,6 @@ export const RemoveUserAsHubAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsHubAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsHubAdminMutation,
   SchemaTypes.RemoveUserAsHubAdminMutationVariables
@@ -2943,14 +2791,11 @@ export function useRemoveUserAsHubAdminMutation(
 }
 
 export type RemoveUserAsHubAdminMutationHookResult = ReturnType<typeof useRemoveUserAsHubAdminMutation>;
-
 export type RemoveUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsHubAdminMutation>;
-
 export type RemoveUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsHubAdminMutation,
   SchemaTypes.RemoveUserAsHubAdminMutationVariables
 >;
-
 export const RemoveUserAsOrganizationOwnerDocument = gql`
   mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
     removeUserAsOrganizationOwner(membershipData: $input) {
@@ -2959,7 +2804,6 @@ export const RemoveUserAsOrganizationOwnerDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsOrganizationOwnerMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
@@ -2998,15 +2842,12 @@ export function useRemoveUserAsOrganizationOwnerMutation(
 export type RemoveUserAsOrganizationOwnerMutationHookResult = ReturnType<
   typeof useRemoveUserAsOrganizationOwnerMutation
 >;
-
 export type RemoveUserAsOrganizationOwnerMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsOrganizationOwnerMutation>;
-
 export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
 >;
-
 export const ChallengeExplorerPageDocument = gql`
   query ChallengeExplorerPage($rolesData: RolesUserInput!) {
     rolesUser(rolesData: $rolesData) {
@@ -3065,14 +2906,11 @@ export function useChallengeExplorerPageLazyQuery(
 }
 
 export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
-
 export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
-
 export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerPageQuery,
   SchemaTypes.ChallengeExplorerPageQueryVariables
 >;
-
 export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
   return { query: ChallengeExplorerPageDocument, variables: variables };
 }
@@ -3134,14 +2972,11 @@ export function useChallengeExplorerSearchLazyQuery(
 }
 
 export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
-
 export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
-
 export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerSearchQuery,
   SchemaTypes.ChallengeExplorerSearchQueryVariables
 >;
-
 export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
   return { query: ChallengeExplorerSearchDocument, variables: variables };
 }
@@ -3221,14 +3056,11 @@ export function useChallengeExplorerDataLazyQuery(
 }
 
 export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
-
 export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
-
 export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerDataQuery,
   SchemaTypes.ChallengeExplorerDataQueryVariables
 >;
-
 export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
   return { query: ChallengeExplorerDataDocument, variables: variables };
 }
@@ -3283,14 +3115,11 @@ export function useChallengePageLazyQuery(
 }
 
 export type ChallengePageQueryHookResult = ReturnType<typeof useChallengePageQuery>;
-
 export type ChallengePageLazyQueryHookResult = ReturnType<typeof useChallengePageLazyQuery>;
-
 export type ChallengePageQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePageQuery,
   SchemaTypes.ChallengePageQueryVariables
 >;
-
 export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQueryVariables) {
   return { query: ChallengePageDocument, variables: variables };
 }
@@ -3359,16 +3188,13 @@ export function useChallengeDashboardReferencesLazyQuery(
 }
 
 export type ChallengeDashboardReferencesQueryHookResult = ReturnType<typeof useChallengeDashboardReferencesQuery>;
-
 export type ChallengeDashboardReferencesLazyQueryHookResult = ReturnType<
   typeof useChallengeDashboardReferencesLazyQuery
 >;
-
 export type ChallengeDashboardReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeDashboardReferencesQuery,
   SchemaTypes.ChallengeDashboardReferencesQueryVariables
 >;
-
 export function refetchChallengeDashboardReferencesQuery(
   variables: SchemaTypes.ChallengeDashboardReferencesQueryVariables
 ) {
@@ -3383,7 +3209,6 @@ export const CreateChallengeDocument = gql`
   }
   ${ChallengeCardFragmentDoc}
 `;
-
 export type CreateChallengeMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
@@ -3420,14 +3245,11 @@ export function useCreateChallengeMutation(
 }
 
 export type CreateChallengeMutationHookResult = ReturnType<typeof useCreateChallengeMutation>;
-
 export type CreateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.CreateChallengeMutation>;
-
 export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
 >;
-
 export const DeleteChallengeDocument = gql`
   mutation deleteChallenge($input: DeleteChallengeInput!) {
     deleteChallenge(deleteData: $input) {
@@ -3436,7 +3258,6 @@ export const DeleteChallengeDocument = gql`
     }
   }
 `;
-
 export type DeleteChallengeMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteChallengeMutation,
   SchemaTypes.DeleteChallengeMutationVariables
@@ -3473,14 +3294,11 @@ export function useDeleteChallengeMutation(
 }
 
 export type DeleteChallengeMutationHookResult = ReturnType<typeof useDeleteChallengeMutation>;
-
 export type DeleteChallengeMutationResult = Apollo.MutationResult<SchemaTypes.DeleteChallengeMutation>;
-
 export type DeleteChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteChallengeMutation,
   SchemaTypes.DeleteChallengeMutationVariables
 >;
-
 export const UpdateChallengeDocument = gql`
   mutation updateChallenge($input: UpdateChallengeInput!) {
     updateChallenge(challengeData: $input) {
@@ -3490,7 +3308,6 @@ export const UpdateChallengeDocument = gql`
     }
   }
 `;
-
 export type UpdateChallengeMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
@@ -3527,14 +3344,11 @@ export function useUpdateChallengeMutation(
 }
 
 export type UpdateChallengeMutationHookResult = ReturnType<typeof useUpdateChallengeMutation>;
-
 export type UpdateChallengeMutationResult = Apollo.MutationResult<SchemaTypes.UpdateChallengeMutation>;
-
 export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
 >;
-
 export const UpdateChallengeInnovationFlowDocument = gql`
   mutation updateChallengeInnovationFlow($input: UpdateChallengeInnovationFlowInput!) {
     updateChallengeInnovationFlow(challengeData: $input) {
@@ -3543,7 +3357,6 @@ export const UpdateChallengeInnovationFlowDocument = gql`
     }
   }
 `;
-
 export type UpdateChallengeInnovationFlowMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateChallengeInnovationFlowMutation,
   SchemaTypes.UpdateChallengeInnovationFlowMutationVariables
@@ -3582,15 +3395,12 @@ export function useUpdateChallengeInnovationFlowMutation(
 export type UpdateChallengeInnovationFlowMutationHookResult = ReturnType<
   typeof useUpdateChallengeInnovationFlowMutation
 >;
-
 export type UpdateChallengeInnovationFlowMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateChallengeInnovationFlowMutation>;
-
 export type UpdateChallengeInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeInnovationFlowMutation,
   SchemaTypes.UpdateChallengeInnovationFlowMutationVariables
 >;
-
 export const ChallengeActivityDocument = gql`
   query challengeActivity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -3647,14 +3457,11 @@ export function useChallengeActivityLazyQuery(
 }
 
 export type ChallengeActivityQueryHookResult = ReturnType<typeof useChallengeActivityQuery>;
-
 export type ChallengeActivityLazyQueryHookResult = ReturnType<typeof useChallengeActivityLazyQuery>;
-
 export type ChallengeActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeActivityQuery,
   SchemaTypes.ChallengeActivityQueryVariables
 >;
-
 export function refetchChallengeActivityQuery(variables: SchemaTypes.ChallengeActivityQueryVariables) {
   return { query: ChallengeActivityDocument, variables: variables };
 }
@@ -3721,16 +3528,13 @@ export function useChallengeApplicationTemplateLazyQuery(
 }
 
 export type ChallengeApplicationTemplateQueryHookResult = ReturnType<typeof useChallengeApplicationTemplateQuery>;
-
 export type ChallengeApplicationTemplateLazyQueryHookResult = ReturnType<
   typeof useChallengeApplicationTemplateLazyQuery
 >;
-
 export type ChallengeApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationTemplateQuery,
   SchemaTypes.ChallengeApplicationTemplateQueryVariables
 >;
-
 export function refetchChallengeApplicationTemplateQuery(
   variables?: SchemaTypes.ChallengeApplicationTemplateQueryVariables
 ) {
@@ -3788,14 +3592,11 @@ export function useChallengeCardLazyQuery(
 }
 
 export type ChallengeCardQueryHookResult = ReturnType<typeof useChallengeCardQuery>;
-
 export type ChallengeCardLazyQueryHookResult = ReturnType<typeof useChallengeCardLazyQuery>;
-
 export type ChallengeCardQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCardQuery,
   SchemaTypes.ChallengeCardQueryVariables
 >;
-
 export function refetchChallengeCardQuery(variables: SchemaTypes.ChallengeCardQueryVariables) {
   return { query: ChallengeCardDocument, variables: variables };
 }
@@ -3849,14 +3650,11 @@ export function useChallengeCardsLazyQuery(
 }
 
 export type ChallengeCardsQueryHookResult = ReturnType<typeof useChallengeCardsQuery>;
-
 export type ChallengeCardsLazyQueryHookResult = ReturnType<typeof useChallengeCardsLazyQuery>;
-
 export type ChallengeCardsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCardsQuery,
   SchemaTypes.ChallengeCardsQueryVariables
 >;
-
 export function refetchChallengeCardsQuery(variables: SchemaTypes.ChallengeCardsQueryVariables) {
   return { query: ChallengeCardsDocument, variables: variables };
 }
@@ -3915,14 +3713,11 @@ export function useChallengeGroupsLazyQuery(
 }
 
 export type ChallengeGroupsQueryHookResult = ReturnType<typeof useChallengeGroupsQuery>;
-
 export type ChallengeGroupsLazyQueryHookResult = ReturnType<typeof useChallengeGroupsLazyQuery>;
-
 export type ChallengeGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeGroupsQuery,
   SchemaTypes.ChallengeGroupsQueryVariables
 >;
-
 export function refetchChallengeGroupsQuery(variables: SchemaTypes.ChallengeGroupsQueryVariables) {
   return { query: ChallengeGroupsDocument, variables: variables };
 }
@@ -3978,14 +3773,11 @@ export function useChallengeInfoLazyQuery(
 }
 
 export type ChallengeInfoQueryHookResult = ReturnType<typeof useChallengeInfoQuery>;
-
 export type ChallengeInfoLazyQueryHookResult = ReturnType<typeof useChallengeInfoLazyQuery>;
-
 export type ChallengeInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeInfoQuery,
   SchemaTypes.ChallengeInfoQueryVariables
 >;
-
 export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQueryVariables) {
   return { query: ChallengeInfoDocument, variables: variables };
 }
@@ -4053,14 +3845,11 @@ export function useChallengeLifecycleLazyQuery(
 }
 
 export type ChallengeLifecycleQueryHookResult = ReturnType<typeof useChallengeLifecycleQuery>;
-
 export type ChallengeLifecycleLazyQueryHookResult = ReturnType<typeof useChallengeLifecycleLazyQuery>;
-
 export type ChallengeLifecycleQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeLifecycleQuery,
   SchemaTypes.ChallengeLifecycleQueryVariables
 >;
-
 export function refetchChallengeLifecycleQuery(variables: SchemaTypes.ChallengeLifecycleQueryVariables) {
   return { query: ChallengeLifecycleDocument, variables: variables };
 }
@@ -4125,14 +3914,11 @@ export function useChallengeMembersLazyQuery(
 }
 
 export type ChallengeMembersQueryHookResult = ReturnType<typeof useChallengeMembersQuery>;
-
 export type ChallengeMembersLazyQueryHookResult = ReturnType<typeof useChallengeMembersLazyQuery>;
-
 export type ChallengeMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeMembersQuery,
   SchemaTypes.ChallengeMembersQueryVariables
 >;
-
 export function refetchChallengeMembersQuery(variables: SchemaTypes.ChallengeMembersQueryVariables) {
   return { query: ChallengeMembersDocument, variables: variables };
 }
@@ -4189,14 +3975,11 @@ export function useChallengeNameLazyQuery(
 }
 
 export type ChallengeNameQueryHookResult = ReturnType<typeof useChallengeNameQuery>;
-
 export type ChallengeNameLazyQueryHookResult = ReturnType<typeof useChallengeNameLazyQuery>;
-
 export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQuery,
   SchemaTypes.ChallengeNameQueryVariables
 >;
-
 export function refetchChallengeNameQuery(variables: SchemaTypes.ChallengeNameQueryVariables) {
   return { query: ChallengeNameDocument, variables: variables };
 }
@@ -4274,14 +4057,11 @@ export function useChallengeProfileInfoLazyQuery(
 }
 
 export type ChallengeProfileInfoQueryHookResult = ReturnType<typeof useChallengeProfileInfoQuery>;
-
 export type ChallengeProfileInfoLazyQueryHookResult = ReturnType<typeof useChallengeProfileInfoLazyQuery>;
-
 export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileInfoQuery,
   SchemaTypes.ChallengeProfileInfoQueryVariables
 >;
-
 export function refetchChallengeProfileInfoQuery(variables: SchemaTypes.ChallengeProfileInfoQueryVariables) {
   return { query: ChallengeProfileInfoDocument, variables: variables };
 }
@@ -4342,14 +4122,11 @@ export function useChallengeUserIdsLazyQuery(
 }
 
 export type ChallengeUserIdsQueryHookResult = ReturnType<typeof useChallengeUserIdsQuery>;
-
 export type ChallengeUserIdsLazyQueryHookResult = ReturnType<typeof useChallengeUserIdsLazyQuery>;
-
 export type ChallengeUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeUserIdsQuery,
   SchemaTypes.ChallengeUserIdsQueryVariables
 >;
-
 export function refetchChallengeUserIdsQuery(variables: SchemaTypes.ChallengeUserIdsQueryVariables) {
   return { query: ChallengeUserIdsDocument, variables: variables };
 }
@@ -4416,14 +4193,11 @@ export function useChallengesLazyQuery(
 }
 
 export type ChallengesQueryHookResult = ReturnType<typeof useChallengesQuery>;
-
 export type ChallengesLazyQueryHookResult = ReturnType<typeof useChallengesLazyQuery>;
-
 export type ChallengesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesQuery,
   SchemaTypes.ChallengesQueryVariables
 >;
-
 export function refetchChallengesQuery(variables: SchemaTypes.ChallengesQueryVariables) {
   return { query: ChallengesDocument, variables: variables };
 }
@@ -4469,10 +4243,8 @@ export function useOpportunityCreatedSubscription(
 }
 
 export type OpportunityCreatedSubscriptionHookResult = ReturnType<typeof useOpportunityCreatedSubscription>;
-
 export type OpportunityCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.OpportunityCreatedSubscription>;
-
 export const HubProviderDocument = gql`
   query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -4519,14 +4291,11 @@ export function useHubProviderLazyQuery(
 }
 
 export type HubProviderQueryHookResult = ReturnType<typeof useHubProviderQuery>;
-
 export type HubProviderLazyQueryHookResult = ReturnType<typeof useHubProviderLazyQuery>;
-
 export type HubProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.HubProviderQuery,
   SchemaTypes.HubProviderQueryVariables
 >;
-
 export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
   return { query: HubProviderDocument, variables: variables };
 }
@@ -4571,11 +4340,8 @@ export function useHubPageLazyQuery(
 }
 
 export type HubPageQueryHookResult = ReturnType<typeof useHubPageQuery>;
-
 export type HubPageLazyQueryHookResult = ReturnType<typeof useHubPageLazyQuery>;
-
 export type HubPageQueryResult = Apollo.QueryResult<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>;
-
 export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables) {
   return { query: HubPageDocument, variables: variables };
 }
@@ -4640,14 +4406,11 @@ export function useHubDashboardReferencesLazyQuery(
 }
 
 export type HubDashboardReferencesQueryHookResult = ReturnType<typeof useHubDashboardReferencesQuery>;
-
 export type HubDashboardReferencesLazyQueryHookResult = ReturnType<typeof useHubDashboardReferencesLazyQuery>;
-
 export type HubDashboardReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubDashboardReferencesQuery,
   SchemaTypes.HubDashboardReferencesQueryVariables
 >;
-
 export function refetchHubDashboardReferencesQuery(variables: SchemaTypes.HubDashboardReferencesQueryVariables) {
   return { query: HubDashboardReferencesDocument, variables: variables };
 }
@@ -4660,7 +4423,6 @@ export const CreateHubDocument = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-
 export type CreateHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateHubMutation,
   SchemaTypes.CreateHubMutationVariables
@@ -4694,14 +4456,11 @@ export function useCreateHubMutation(
 }
 
 export type CreateHubMutationHookResult = ReturnType<typeof useCreateHubMutation>;
-
 export type CreateHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateHubMutation>;
-
 export type CreateHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateHubMutation,
   SchemaTypes.CreateHubMutationVariables
 >;
-
 export const DeleteHubDocument = gql`
   mutation deleteHub($input: DeleteHubInput!) {
     deleteHub(deleteData: $input) {
@@ -4711,7 +4470,6 @@ export const DeleteHubDocument = gql`
     }
   }
 `;
-
 export type DeleteHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteHubMutation,
   SchemaTypes.DeleteHubMutationVariables
@@ -4745,14 +4503,11 @@ export function useDeleteHubMutation(
 }
 
 export type DeleteHubMutationHookResult = ReturnType<typeof useDeleteHubMutation>;
-
 export type DeleteHubMutationResult = Apollo.MutationResult<SchemaTypes.DeleteHubMutation>;
-
 export type DeleteHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteHubMutation,
   SchemaTypes.DeleteHubMutationVariables
 >;
-
 export const UpdateHubDocument = gql`
   mutation updateHub($input: UpdateHubInput!) {
     updateHub(hubData: $input) {
@@ -4761,7 +4516,6 @@ export const UpdateHubDocument = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-
 export type UpdateHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateHubMutation,
   SchemaTypes.UpdateHubMutationVariables
@@ -4795,14 +4549,11 @@ export function useUpdateHubMutation(
 }
 
 export type UpdateHubMutationHookResult = ReturnType<typeof useUpdateHubMutation>;
-
 export type UpdateHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateHubMutation>;
-
 export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateHubMutation,
   SchemaTypes.UpdateHubMutationVariables
 >;
-
 export const AdminHubsListDocument = gql`
   query adminHubsList {
     hubs(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
@@ -4849,14 +4600,11 @@ export function useAdminHubsListLazyQuery(
 }
 
 export type AdminHubsListQueryHookResult = ReturnType<typeof useAdminHubsListQuery>;
-
 export type AdminHubsListLazyQueryHookResult = ReturnType<typeof useAdminHubsListLazyQuery>;
-
 export type AdminHubsListQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminHubsListQuery,
   SchemaTypes.AdminHubsListQueryVariables
 >;
-
 export function refetchAdminHubsListQuery(variables?: SchemaTypes.AdminHubsListQueryVariables) {
   return { query: AdminHubsListDocument, variables: variables };
 }
@@ -4910,14 +4658,11 @@ export function useHubActivityLazyQuery(
 }
 
 export type HubActivityQueryHookResult = ReturnType<typeof useHubActivityQuery>;
-
 export type HubActivityLazyQueryHookResult = ReturnType<typeof useHubActivityLazyQuery>;
-
 export type HubActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.HubActivityQuery,
   SchemaTypes.HubActivityQueryVariables
 >;
-
 export function refetchHubActivityQuery(variables: SchemaTypes.HubActivityQueryVariables) {
   return { query: HubActivityDocument, variables: variables };
 }
@@ -4984,14 +4729,11 @@ export function useHubApplicationTemplateLazyQuery(
 }
 
 export type HubApplicationTemplateQueryHookResult = ReturnType<typeof useHubApplicationTemplateQuery>;
-
 export type HubApplicationTemplateLazyQueryHookResult = ReturnType<typeof useHubApplicationTemplateLazyQuery>;
-
 export type HubApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.HubApplicationTemplateQuery,
   SchemaTypes.HubApplicationTemplateQueryVariables
 >;
-
 export function refetchHubApplicationTemplateQuery(variables?: SchemaTypes.HubApplicationTemplateQueryVariables) {
   return { query: HubApplicationTemplateDocument, variables: variables };
 }
@@ -5036,11 +4778,8 @@ export function useHubCardLazyQuery(
 }
 
 export type HubCardQueryHookResult = ReturnType<typeof useHubCardQuery>;
-
 export type HubCardLazyQueryHookResult = ReturnType<typeof useHubCardLazyQuery>;
-
 export type HubCardQueryResult = Apollo.QueryResult<SchemaTypes.HubCardQuery, SchemaTypes.HubCardQueryVariables>;
-
 export function refetchHubCardQuery(variables: SchemaTypes.HubCardQueryVariables) {
   return { query: HubCardDocument, variables: variables };
 }
@@ -5089,11 +4828,8 @@ export function useHubGroupLazyQuery(
 }
 
 export type HubGroupQueryHookResult = ReturnType<typeof useHubGroupQuery>;
-
 export type HubGroupLazyQueryHookResult = ReturnType<typeof useHubGroupLazyQuery>;
-
 export type HubGroupQueryResult = Apollo.QueryResult<SchemaTypes.HubGroupQuery, SchemaTypes.HubGroupQueryVariables>;
-
 export function refetchHubGroupQuery(variables: SchemaTypes.HubGroupQueryVariables) {
   return { query: HubGroupDocument, variables: variables };
 }
@@ -5147,14 +4883,11 @@ export function useHubGroupsListLazyQuery(
 }
 
 export type HubGroupsListQueryHookResult = ReturnType<typeof useHubGroupsListQuery>;
-
 export type HubGroupsListLazyQueryHookResult = ReturnType<typeof useHubGroupsListLazyQuery>;
-
 export type HubGroupsListQueryResult = Apollo.QueryResult<
   SchemaTypes.HubGroupsListQuery,
   SchemaTypes.HubGroupsListQueryVariables
 >;
-
 export function refetchHubGroupsListQuery(variables: SchemaTypes.HubGroupsListQueryVariables) {
   return { query: HubGroupsListDocument, variables: variables };
 }
@@ -5216,14 +4949,11 @@ export function useHubHostReferencesLazyQuery(
 }
 
 export type HubHostReferencesQueryHookResult = ReturnType<typeof useHubHostReferencesQuery>;
-
 export type HubHostReferencesLazyQueryHookResult = ReturnType<typeof useHubHostReferencesLazyQuery>;
-
 export type HubHostReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubHostReferencesQuery,
   SchemaTypes.HubHostReferencesQueryVariables
 >;
-
 export function refetchHubHostReferencesQuery(variables: SchemaTypes.HubHostReferencesQueryVariables) {
   return { query: HubHostReferencesDocument, variables: variables };
 }
@@ -5291,14 +5021,11 @@ export function useHubLifecycleTemplatesLazyQuery(
 }
 
 export type HubLifecycleTemplatesQueryHookResult = ReturnType<typeof useHubLifecycleTemplatesQuery>;
-
 export type HubLifecycleTemplatesLazyQueryHookResult = ReturnType<typeof useHubLifecycleTemplatesLazyQuery>;
-
 export type HubLifecycleTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubLifecycleTemplatesQuery,
   SchemaTypes.HubLifecycleTemplatesQueryVariables
 >;
-
 export function refetchHubLifecycleTemplatesQuery(variables: SchemaTypes.HubLifecycleTemplatesQueryVariables) {
   return { query: HubLifecycleTemplatesDocument, variables: variables };
 }
@@ -5358,14 +5085,11 @@ export function useHubMembersLazyQuery(
 }
 
 export type HubMembersQueryHookResult = ReturnType<typeof useHubMembersQuery>;
-
 export type HubMembersLazyQueryHookResult = ReturnType<typeof useHubMembersLazyQuery>;
-
 export type HubMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.HubMembersQuery,
   SchemaTypes.HubMembersQueryVariables
 >;
-
 export function refetchHubMembersQuery(variables: SchemaTypes.HubMembersQueryVariables) {
   return { query: HubMembersDocument, variables: variables };
 }
@@ -5410,11 +5134,8 @@ export function useHubNameLazyQuery(
 }
 
 export type HubNameQueryHookResult = ReturnType<typeof useHubNameQuery>;
-
 export type HubNameLazyQueryHookResult = ReturnType<typeof useHubNameLazyQuery>;
-
 export type HubNameQueryResult = Apollo.QueryResult<SchemaTypes.HubNameQuery, SchemaTypes.HubNameQueryVariables>;
-
 export function refetchHubNameQuery(variables: SchemaTypes.HubNameQueryVariables) {
   return { query: HubNameDocument, variables: variables };
 }
@@ -5470,14 +5191,11 @@ export function useHubUserIdsLazyQuery(
 }
 
 export type HubUserIdsQueryHookResult = ReturnType<typeof useHubUserIdsQuery>;
-
 export type HubUserIdsLazyQueryHookResult = ReturnType<typeof useHubUserIdsLazyQuery>;
-
 export type HubUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.HubUserIdsQuery,
   SchemaTypes.HubUserIdsQueryVariables
 >;
-
 export function refetchHubUserIdsQuery(variables: SchemaTypes.HubUserIdsQueryVariables) {
   return { query: HubUserIdsDocument, variables: variables };
 }
@@ -5530,11 +5248,8 @@ export function useHubVisualLazyQuery(
 }
 
 export type HubVisualQueryHookResult = ReturnType<typeof useHubVisualQuery>;
-
 export type HubVisualLazyQueryHookResult = ReturnType<typeof useHubVisualLazyQuery>;
-
 export type HubVisualQueryResult = Apollo.QueryResult<SchemaTypes.HubVisualQuery, SchemaTypes.HubVisualQueryVariables>;
-
 export function refetchHubVisualQuery(variables: SchemaTypes.HubVisualQueryVariables) {
   return { query: HubVisualDocument, variables: variables };
 }
@@ -5578,11 +5293,8 @@ export function useHubsLazyQuery(
 }
 
 export type HubsQueryHookResult = ReturnType<typeof useHubsQuery>;
-
 export type HubsLazyQueryHookResult = ReturnType<typeof useHubsLazyQuery>;
-
 export type HubsQueryResult = Apollo.QueryResult<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>;
-
 export function refetchHubsQuery(variables?: SchemaTypes.HubsQueryVariables) {
   return { query: HubsDocument, variables: variables };
 }
@@ -5628,9 +5340,7 @@ export function useChallengeCreatedSubscription(
 }
 
 export type ChallengeCreatedSubscriptionHookResult = ReturnType<typeof useChallengeCreatedSubscription>;
-
 export type ChallengeCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ChallengeCreatedSubscription>;
-
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
     assignUserAsOpportunityAdmin(membershipData: $input) {
@@ -5639,7 +5349,6 @@ export const AssignUserAsOpportunityAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsOpportunityAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsOpportunityAdminMutation,
   SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
@@ -5676,15 +5385,12 @@ export function useAssignUserAsOpportunityAdminMutation(
 }
 
 export type AssignUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useAssignUserAsOpportunityAdminMutation>;
-
 export type AssignUserAsOpportunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsOpportunityAdminMutation>;
-
 export type AssignUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsOpportunityAdminMutation,
   SchemaTypes.AssignUserAsOpportunityAdminMutationVariables
 >;
-
 export const RemoveUserAsOpportunityAdminDocument = gql`
   mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
     removeUserAsOpportunityAdmin(membershipData: $input) {
@@ -5693,7 +5399,6 @@ export const RemoveUserAsOpportunityAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsOpportunityAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsOpportunityAdminMutation,
   SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
@@ -5730,15 +5435,12 @@ export function useRemoveUserAsOpportunityAdminMutation(
 }
 
 export type RemoveUserAsOpportunityAdminMutationHookResult = ReturnType<typeof useRemoveUserAsOpportunityAdminMutation>;
-
 export type RemoveUserAsOpportunityAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsOpportunityAdminMutation>;
-
 export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOpportunityAdminMutation,
   SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
 >;
-
 export const OpportunityPageDocument = gql`
   query opportunityPage($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -5789,14 +5491,11 @@ export function useOpportunityPageLazyQuery(
 }
 
 export type OpportunityPageQueryHookResult = ReturnType<typeof useOpportunityPageQuery>;
-
 export type OpportunityPageLazyQueryHookResult = ReturnType<typeof useOpportunityPageLazyQuery>;
-
 export type OpportunityPageQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityPageQuery,
   SchemaTypes.OpportunityPageQueryVariables
 >;
-
 export function refetchOpportunityPageQuery(variables: SchemaTypes.OpportunityPageQueryVariables) {
   return { query: OpportunityPageDocument, variables: variables };
 }
@@ -5813,7 +5512,6 @@ export const EventOnOpportunityDocument = gql`
     }
   }
 `;
-
 export type EventOnOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.EventOnOpportunityMutation,
   SchemaTypes.EventOnOpportunityMutationVariables
@@ -5851,14 +5549,11 @@ export function useEventOnOpportunityMutation(
 }
 
 export type EventOnOpportunityMutationHookResult = ReturnType<typeof useEventOnOpportunityMutation>;
-
 export type EventOnOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.EventOnOpportunityMutation>;
-
 export type EventOnOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnOpportunityMutation,
   SchemaTypes.EventOnOpportunityMutationVariables
 >;
-
 export const OpportunityProviderDocument = gql`
   query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -5916,14 +5611,11 @@ export function useOpportunityProviderLazyQuery(
 }
 
 export type OpportunityProviderQueryHookResult = ReturnType<typeof useOpportunityProviderQuery>;
-
 export type OpportunityProviderLazyQueryHookResult = ReturnType<typeof useOpportunityProviderLazyQuery>;
-
 export type OpportunityProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProviderQuery,
   SchemaTypes.OpportunityProviderQueryVariables
 >;
-
 export function refetchOpportunityProviderQuery(variables: SchemaTypes.OpportunityProviderQueryVariables) {
   return { query: OpportunityProviderDocument, variables: variables };
 }
@@ -5936,7 +5628,6 @@ export const CreateOpportunityDocument = gql`
   }
   ${OpportunityCardFragmentDoc}
 `;
-
 export type CreateOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateOpportunityMutation,
   SchemaTypes.CreateOpportunityMutationVariables
@@ -5973,14 +5664,11 @@ export function useCreateOpportunityMutation(
 }
 
 export type CreateOpportunityMutationHookResult = ReturnType<typeof useCreateOpportunityMutation>;
-
 export type CreateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateOpportunityMutation>;
-
 export type CreateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateOpportunityMutation,
   SchemaTypes.CreateOpportunityMutationVariables
 >;
-
 export const DeleteOpportunityDocument = gql`
   mutation deleteOpportunity($input: DeleteOpportunityInput!) {
     deleteOpportunity(deleteData: $input) {
@@ -5989,7 +5677,6 @@ export const DeleteOpportunityDocument = gql`
     }
   }
 `;
-
 export type DeleteOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteOpportunityMutation,
   SchemaTypes.DeleteOpportunityMutationVariables
@@ -6026,14 +5713,11 @@ export function useDeleteOpportunityMutation(
 }
 
 export type DeleteOpportunityMutationHookResult = ReturnType<typeof useDeleteOpportunityMutation>;
-
 export type DeleteOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOpportunityMutation>;
-
 export type DeleteOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOpportunityMutation,
   SchemaTypes.DeleteOpportunityMutationVariables
 >;
-
 export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($input: UpdateOpportunityInput!) {
     updateOpportunity(opportunityData: $input) {
@@ -6042,7 +5726,6 @@ export const UpdateOpportunityDocument = gql`
     }
   }
 `;
-
 export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateOpportunityMutation,
   SchemaTypes.UpdateOpportunityMutationVariables
@@ -6079,14 +5762,11 @@ export function useUpdateOpportunityMutation(
 }
 
 export type UpdateOpportunityMutationHookResult = ReturnType<typeof useUpdateOpportunityMutation>;
-
 export type UpdateOpportunityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOpportunityMutation>;
-
 export type UpdateOpportunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOpportunityMutation,
   SchemaTypes.UpdateOpportunityMutationVariables
 >;
-
 export const UpdateOpportunityInnovationFlowDocument = gql`
   mutation updateOpportunityInnovationFlow($input: UpdateOpportunityInnovationFlowInput!) {
     updateOpportunityInnovationFlow(opportunityData: $input) {
@@ -6095,7 +5775,6 @@ export const UpdateOpportunityInnovationFlowDocument = gql`
     }
   }
 `;
-
 export type UpdateOpportunityInnovationFlowMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateOpportunityInnovationFlowMutation,
   SchemaTypes.UpdateOpportunityInnovationFlowMutationVariables
@@ -6134,15 +5813,12 @@ export function useUpdateOpportunityInnovationFlowMutation(
 export type UpdateOpportunityInnovationFlowMutationHookResult = ReturnType<
   typeof useUpdateOpportunityInnovationFlowMutation
 >;
-
 export type UpdateOpportunityInnovationFlowMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateOpportunityInnovationFlowMutation>;
-
 export type UpdateOpportunityInnovationFlowMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOpportunityInnovationFlowMutation,
   SchemaTypes.UpdateOpportunityInnovationFlowMutationVariables
 >;
-
 export const AllOpportunitiesDocument = gql`
   query allOpportunities($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -6195,14 +5871,11 @@ export function useAllOpportunitiesLazyQuery(
 }
 
 export type AllOpportunitiesQueryHookResult = ReturnType<typeof useAllOpportunitiesQuery>;
-
 export type AllOpportunitiesLazyQueryHookResult = ReturnType<typeof useAllOpportunitiesLazyQuery>;
-
 export type AllOpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.AllOpportunitiesQuery,
   SchemaTypes.AllOpportunitiesQueryVariables
 >;
-
 export function refetchAllOpportunitiesQuery(variables: SchemaTypes.AllOpportunitiesQueryVariables) {
   return { query: AllOpportunitiesDocument, variables: variables };
 }
@@ -6261,14 +5934,11 @@ export function useOpportunitiesLazyQuery(
 }
 
 export type OpportunitiesQueryHookResult = ReturnType<typeof useOpportunitiesQuery>;
-
 export type OpportunitiesLazyQueryHookResult = ReturnType<typeof useOpportunitiesLazyQuery>;
-
 export type OpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunitiesQuery,
   SchemaTypes.OpportunitiesQueryVariables
 >;
-
 export function refetchOpportunitiesQuery(variables: SchemaTypes.OpportunitiesQueryVariables) {
   return { query: OpportunitiesDocument, variables: variables };
 }
@@ -6332,14 +6002,11 @@ export function useOpportunityActivityLazyQuery(
 }
 
 export type OpportunityActivityQueryHookResult = ReturnType<typeof useOpportunityActivityQuery>;
-
 export type OpportunityActivityLazyQueryHookResult = ReturnType<typeof useOpportunityActivityLazyQuery>;
-
 export type OpportunityActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActivityQuery,
   SchemaTypes.OpportunityActivityQueryVariables
 >;
-
 export function refetchOpportunityActivityQuery(variables: SchemaTypes.OpportunityActivityQueryVariables) {
   return { query: OpportunityActivityDocument, variables: variables };
 }
@@ -6417,14 +6084,11 @@ export function useOpportunityActorGroupsLazyQuery(
 }
 
 export type OpportunityActorGroupsQueryHookResult = ReturnType<typeof useOpportunityActorGroupsQuery>;
-
 export type OpportunityActorGroupsLazyQueryHookResult = ReturnType<typeof useOpportunityActorGroupsLazyQuery>;
-
 export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActorGroupsQuery,
   SchemaTypes.OpportunityActorGroupsQueryVariables
 >;
-
 export function refetchOpportunityActorGroupsQuery(variables: SchemaTypes.OpportunityActorGroupsQueryVariables) {
   return { query: OpportunityActorGroupsDocument, variables: variables };
 }
@@ -6494,14 +6158,11 @@ export function useOpportunityAspectsOldLazyQuery(
 }
 
 export type OpportunityAspectsOldQueryHookResult = ReturnType<typeof useOpportunityAspectsOldQuery>;
-
 export type OpportunityAspectsOldLazyQueryHookResult = ReturnType<typeof useOpportunityAspectsOldLazyQuery>;
-
 export type OpportunityAspectsOldQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectsOldQuery,
   SchemaTypes.OpportunityAspectsOldQueryVariables
 >;
-
 export function refetchOpportunityAspectsOldQuery(variables: SchemaTypes.OpportunityAspectsOldQueryVariables) {
   return { query: OpportunityAspectsOldDocument, variables: variables };
 }
@@ -6577,14 +6238,11 @@ export function useOpportunityEcosystemDetailsLazyQuery(
 }
 
 export type OpportunityEcosystemDetailsQueryHookResult = ReturnType<typeof useOpportunityEcosystemDetailsQuery>;
-
 export type OpportunityEcosystemDetailsLazyQueryHookResult = ReturnType<typeof useOpportunityEcosystemDetailsLazyQuery>;
-
 export type OpportunityEcosystemDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityEcosystemDetailsQuery,
   SchemaTypes.OpportunityEcosystemDetailsQueryVariables
 >;
-
 export function refetchOpportunityEcosystemDetailsQuery(
   variables: SchemaTypes.OpportunityEcosystemDetailsQueryVariables
 ) {
@@ -6648,14 +6306,11 @@ export function useOpportunityGroupsLazyQuery(
 }
 
 export type OpportunityGroupsQueryHookResult = ReturnType<typeof useOpportunityGroupsQuery>;
-
 export type OpportunityGroupsLazyQueryHookResult = ReturnType<typeof useOpportunityGroupsLazyQuery>;
-
 export type OpportunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityGroupsQuery,
   SchemaTypes.OpportunityGroupsQueryVariables
 >;
-
 export function refetchOpportunityGroupsQuery(variables: SchemaTypes.OpportunityGroupsQueryVariables) {
   return { query: OpportunityGroupsDocument, variables: variables };
 }
@@ -6723,14 +6378,11 @@ export function useOpportunityLifecycleLazyQuery(
 }
 
 export type OpportunityLifecycleQueryHookResult = ReturnType<typeof useOpportunityLifecycleQuery>;
-
 export type OpportunityLifecycleLazyQueryHookResult = ReturnType<typeof useOpportunityLifecycleLazyQuery>;
-
 export type OpportunityLifecycleQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityLifecycleQuery,
   SchemaTypes.OpportunityLifecycleQueryVariables
 >;
-
 export function refetchOpportunityLifecycleQuery(variables: SchemaTypes.OpportunityLifecycleQueryVariables) {
   return { query: OpportunityLifecycleDocument, variables: variables };
 }
@@ -6785,14 +6437,11 @@ export function useOpportunityNameLazyQuery(
 }
 
 export type OpportunityNameQueryHookResult = ReturnType<typeof useOpportunityNameQuery>;
-
 export type OpportunityNameLazyQueryHookResult = ReturnType<typeof useOpportunityNameLazyQuery>;
-
 export type OpportunityNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameQuery,
   SchemaTypes.OpportunityNameQueryVariables
 >;
-
 export function refetchOpportunityNameQuery(variables: SchemaTypes.OpportunityNameQueryVariables) {
   return { query: OpportunityNameDocument, variables: variables };
 }
@@ -6863,14 +6512,11 @@ export function useOpportunityProfileInfoLazyQuery(
 }
 
 export type OpportunityProfileInfoQueryHookResult = ReturnType<typeof useOpportunityProfileInfoQuery>;
-
 export type OpportunityProfileInfoLazyQueryHookResult = ReturnType<typeof useOpportunityProfileInfoLazyQuery>;
-
 export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileInfoQuery,
   SchemaTypes.OpportunityProfileInfoQueryVariables
 >;
-
 export function refetchOpportunityProfileInfoQuery(variables: SchemaTypes.OpportunityProfileInfoQueryVariables) {
   return { query: OpportunityProfileInfoDocument, variables: variables };
 }
@@ -6940,14 +6586,11 @@ export function useOpportunityRelationsLazyQuery(
 }
 
 export type OpportunityRelationsQueryHookResult = ReturnType<typeof useOpportunityRelationsQuery>;
-
 export type OpportunityRelationsLazyQueryHookResult = ReturnType<typeof useOpportunityRelationsLazyQuery>;
-
 export type OpportunityRelationsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityRelationsQuery,
   SchemaTypes.OpportunityRelationsQueryVariables
 >;
-
 export function refetchOpportunityRelationsQuery(variables: SchemaTypes.OpportunityRelationsQueryVariables) {
   return { query: OpportunityRelationsDocument, variables: variables };
 }
@@ -7011,14 +6654,11 @@ export function useOpportunityUserIdsLazyQuery(
 }
 
 export type OpportunityUserIdsQueryHookResult = ReturnType<typeof useOpportunityUserIdsQuery>;
-
 export type OpportunityUserIdsLazyQueryHookResult = ReturnType<typeof useOpportunityUserIdsLazyQuery>;
-
 export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityUserIdsQuery,
   SchemaTypes.OpportunityUserIdsQueryVariables
 >;
-
 export function refetchOpportunityUserIdsQuery(variables: SchemaTypes.OpportunityUserIdsQueryVariables) {
   return { query: OpportunityUserIdsDocument, variables: variables };
 }
@@ -7094,14 +6734,11 @@ export function useOpportunityWithActivityLazyQuery(
 }
 
 export type OpportunityWithActivityQueryHookResult = ReturnType<typeof useOpportunityWithActivityQuery>;
-
 export type OpportunityWithActivityLazyQueryHookResult = ReturnType<typeof useOpportunityWithActivityLazyQuery>;
-
 export type OpportunityWithActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityWithActivityQuery,
   SchemaTypes.OpportunityWithActivityQueryVariables
 >;
-
 export function refetchOpportunityWithActivityQuery(variables: SchemaTypes.OpportunityWithActivityQueryVariables) {
   return { query: OpportunityWithActivityDocument, variables: variables };
 }
@@ -7154,11 +6791,8 @@ export function useHubAspectLazyQuery(
 }
 
 export type HubAspectQueryHookResult = ReturnType<typeof useHubAspectQuery>;
-
 export type HubAspectLazyQueryHookResult = ReturnType<typeof useHubAspectLazyQuery>;
-
 export type HubAspectQueryResult = Apollo.QueryResult<SchemaTypes.HubAspectQuery, SchemaTypes.HubAspectQueryVariables>;
-
 export function refetchHubAspectQuery(variables: SchemaTypes.HubAspectQueryVariables) {
   return { query: HubAspectDocument, variables: variables };
 }
@@ -7223,14 +6857,11 @@ export function useChallengeAspectLazyQuery(
 }
 
 export type ChallengeAspectQueryHookResult = ReturnType<typeof useChallengeAspectQuery>;
-
 export type ChallengeAspectLazyQueryHookResult = ReturnType<typeof useChallengeAspectLazyQuery>;
-
 export type ChallengeAspectQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeAspectQuery,
   SchemaTypes.ChallengeAspectQueryVariables
 >;
-
 export function refetchChallengeAspectQuery(variables: SchemaTypes.ChallengeAspectQueryVariables) {
   return { query: ChallengeAspectDocument, variables: variables };
 }
@@ -7298,14 +6929,11 @@ export function useOpportunityAspectLazyQuery(
 }
 
 export type OpportunityAspectQueryHookResult = ReturnType<typeof useOpportunityAspectQuery>;
-
 export type OpportunityAspectLazyQueryHookResult = ReturnType<typeof useOpportunityAspectLazyQuery>;
-
 export type OpportunityAspectQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectQuery,
   SchemaTypes.OpportunityAspectQueryVariables
 >;
-
 export function refetchOpportunityAspectQuery(variables: SchemaTypes.OpportunityAspectQueryVariables) {
   return { query: OpportunityAspectDocument, variables: variables };
 }
@@ -7335,7 +6963,6 @@ export const UpdateAspectDocument = gql`
     }
   }
 `;
-
 export type UpdateAspectMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateAspectMutation,
   SchemaTypes.UpdateAspectMutationVariables
@@ -7369,14 +6996,11 @@ export function useUpdateAspectMutation(
 }
 
 export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
-
 export type UpdateAspectMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectMutation>;
-
 export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAspectMutation,
   SchemaTypes.UpdateAspectMutationVariables
 >;
-
 export const HubAspectSettingsDocument = gql`
   query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -7434,14 +7058,11 @@ export function useHubAspectSettingsLazyQuery(
 }
 
 export type HubAspectSettingsQueryHookResult = ReturnType<typeof useHubAspectSettingsQuery>;
-
 export type HubAspectSettingsLazyQueryHookResult = ReturnType<typeof useHubAspectSettingsLazyQuery>;
-
 export type HubAspectSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.HubAspectSettingsQuery,
   SchemaTypes.HubAspectSettingsQueryVariables
 >;
-
 export function refetchHubAspectSettingsQuery(variables: SchemaTypes.HubAspectSettingsQueryVariables) {
   return { query: HubAspectSettingsDocument, variables: variables };
 }
@@ -7515,14 +7136,11 @@ export function useChallengeAspectSettingsLazyQuery(
 }
 
 export type ChallengeAspectSettingsQueryHookResult = ReturnType<typeof useChallengeAspectSettingsQuery>;
-
 export type ChallengeAspectSettingsLazyQueryHookResult = ReturnType<typeof useChallengeAspectSettingsLazyQuery>;
-
 export type ChallengeAspectSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeAspectSettingsQuery,
   SchemaTypes.ChallengeAspectSettingsQueryVariables
 >;
-
 export function refetchChallengeAspectSettingsQuery(variables: SchemaTypes.ChallengeAspectSettingsQueryVariables) {
   return { query: ChallengeAspectSettingsDocument, variables: variables };
 }
@@ -7596,14 +7214,11 @@ export function useOpportunityAspectSettingsLazyQuery(
 }
 
 export type OpportunityAspectSettingsQueryHookResult = ReturnType<typeof useOpportunityAspectSettingsQuery>;
-
 export type OpportunityAspectSettingsLazyQueryHookResult = ReturnType<typeof useOpportunityAspectSettingsLazyQuery>;
-
 export type OpportunityAspectSettingsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectSettingsQuery,
   SchemaTypes.OpportunityAspectSettingsQueryVariables
 >;
-
 export function refetchOpportunityAspectSettingsQuery(variables: SchemaTypes.OpportunityAspectSettingsQueryVariables) {
   return { query: OpportunityAspectSettingsDocument, variables: variables };
 }
@@ -7662,14 +7277,11 @@ export function useHubAspectProviderLazyQuery(
 }
 
 export type HubAspectProviderQueryHookResult = ReturnType<typeof useHubAspectProviderQuery>;
-
 export type HubAspectProviderLazyQueryHookResult = ReturnType<typeof useHubAspectProviderLazyQuery>;
-
 export type HubAspectProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.HubAspectProviderQuery,
   SchemaTypes.HubAspectProviderQueryVariables
 >;
-
 export function refetchHubAspectProviderQuery(variables: SchemaTypes.HubAspectProviderQueryVariables) {
   return { query: HubAspectProviderDocument, variables: variables };
 }
@@ -7740,14 +7352,11 @@ export function useChallengeAspectProviderLazyQuery(
 }
 
 export type ChallengeAspectProviderQueryHookResult = ReturnType<typeof useChallengeAspectProviderQuery>;
-
 export type ChallengeAspectProviderLazyQueryHookResult = ReturnType<typeof useChallengeAspectProviderLazyQuery>;
-
 export type ChallengeAspectProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeAspectProviderQuery,
   SchemaTypes.ChallengeAspectProviderQueryVariables
 >;
-
 export function refetchChallengeAspectProviderQuery(variables: SchemaTypes.ChallengeAspectProviderQueryVariables) {
   return { query: ChallengeAspectProviderDocument, variables: variables };
 }
@@ -7818,14 +7427,11 @@ export function useOpportunityAspectProviderLazyQuery(
 }
 
 export type OpportunityAspectProviderQueryHookResult = ReturnType<typeof useOpportunityAspectProviderQuery>;
-
 export type OpportunityAspectProviderLazyQueryHookResult = ReturnType<typeof useOpportunityAspectProviderLazyQuery>;
-
 export type OpportunityAspectProviderQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectProviderQuery,
   SchemaTypes.OpportunityAspectProviderQueryVariables
 >;
-
 export function refetchOpportunityAspectProviderQuery(variables: SchemaTypes.OpportunityAspectProviderQueryVariables) {
   return { query: OpportunityAspectProviderDocument, variables: variables };
 }
@@ -7842,7 +7448,6 @@ export const PostCommentInAspectDocument = gql`
     }
   }
 `;
-
 export type PostCommentInAspectMutationFn = Apollo.MutationFunction<
   SchemaTypes.PostCommentInAspectMutation,
   SchemaTypes.PostCommentInAspectMutationVariables
@@ -7879,20 +7484,16 @@ export function usePostCommentInAspectMutation(
 }
 
 export type PostCommentInAspectMutationHookResult = ReturnType<typeof usePostCommentInAspectMutation>;
-
 export type PostCommentInAspectMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInAspectMutation>;
-
 export type PostCommentInAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostCommentInAspectMutation,
   SchemaTypes.PostCommentInAspectMutationVariables
 >;
-
 export const RemoveCommentFromAspectDocument = gql`
   mutation RemoveCommentFromAspect($messageData: CommentsRemoveMessageInput!) {
     removeComment(messageData: $messageData)
   }
 `;
-
 export type RemoveCommentFromAspectMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveCommentFromAspectMutation,
   SchemaTypes.RemoveCommentFromAspectMutationVariables
@@ -7929,14 +7530,11 @@ export function useRemoveCommentFromAspectMutation(
 }
 
 export type RemoveCommentFromAspectMutationHookResult = ReturnType<typeof useRemoveCommentFromAspectMutation>;
-
 export type RemoveCommentFromAspectMutationResult = Apollo.MutationResult<SchemaTypes.RemoveCommentFromAspectMutation>;
-
 export type RemoveCommentFromAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommentFromAspectMutation,
   SchemaTypes.RemoveCommentFromAspectMutationVariables
 >;
-
 export const CreateAspectDocument = gql`
   mutation CreateAspect($aspectData: CreateAspectOnCalloutInput!) {
     createAspectOnCallout(aspectData: $aspectData) {
@@ -7963,7 +7561,6 @@ export const CreateAspectDocument = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export type CreateAspectMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateAspectMutation,
   SchemaTypes.CreateAspectMutationVariables
@@ -7997,14 +7594,11 @@ export function useCreateAspectMutation(
 }
 
 export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
-
 export type CreateAspectMutationResult = Apollo.MutationResult<SchemaTypes.CreateAspectMutation>;
-
 export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectMutation,
   SchemaTypes.CreateAspectMutationVariables
 >;
-
 export const CreateReferenceOnCardProfileDocument = gql`
   mutation createReferenceOnCardProfile($referenceInput: CreateReferenceOnCardProfileInput!) {
     createReferenceOnCardProfile(referenceData: $referenceInput) {
@@ -8015,7 +7609,6 @@ export const CreateReferenceOnCardProfileDocument = gql`
     }
   }
 `;
-
 export type CreateReferenceOnCardProfileMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateReferenceOnCardProfileMutation,
   SchemaTypes.CreateReferenceOnCardProfileMutationVariables
@@ -8052,15 +7645,12 @@ export function useCreateReferenceOnCardProfileMutation(
 }
 
 export type CreateReferenceOnCardProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnCardProfileMutation>;
-
 export type CreateReferenceOnCardProfileMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateReferenceOnCardProfileMutation>;
-
 export type CreateReferenceOnCardProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateReferenceOnCardProfileMutation,
   SchemaTypes.CreateReferenceOnCardProfileMutationVariables
 >;
-
 export const DeleteAspectDocument = gql`
   mutation deleteAspect($input: DeleteAspectInput!) {
     deleteAspect(deleteData: $input) {
@@ -8068,7 +7658,6 @@ export const DeleteAspectDocument = gql`
     }
   }
 `;
-
 export type DeleteAspectMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteAspectMutation,
   SchemaTypes.DeleteAspectMutationVariables
@@ -8102,14 +7691,11 @@ export function useDeleteAspectMutation(
 }
 
 export type DeleteAspectMutationHookResult = ReturnType<typeof useDeleteAspectMutation>;
-
 export type DeleteAspectMutationResult = Apollo.MutationResult<SchemaTypes.DeleteAspectMutation>;
-
 export type DeleteAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectMutation,
   SchemaTypes.DeleteAspectMutationVariables
 >;
-
 export const MoveAspectToCalloutDocument = gql`
   mutation MoveAspectToCallout($aspectId: UUID!, $calloutId: UUID!) {
     moveAspectToCallout(moveAspectData: { aspectID: $aspectId, calloutID: $calloutId }) {
@@ -8122,7 +7708,6 @@ export const MoveAspectToCalloutDocument = gql`
     }
   }
 `;
-
 export type MoveAspectToCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.MoveAspectToCalloutMutation,
   SchemaTypes.MoveAspectToCalloutMutationVariables
@@ -8160,14 +7745,11 @@ export function useMoveAspectToCalloutMutation(
 }
 
 export type MoveAspectToCalloutMutationHookResult = ReturnType<typeof useMoveAspectToCalloutMutation>;
-
 export type MoveAspectToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.MoveAspectToCalloutMutation>;
-
 export type MoveAspectToCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.MoveAspectToCalloutMutation,
   SchemaTypes.MoveAspectToCalloutMutationVariables
 >;
-
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
@@ -8211,10 +7793,8 @@ export function useAspectCommentsMessageReceivedSubscription(
 export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
   typeof useAspectCommentsMessageReceivedSubscription
 >;
-
 export type AspectCommentsMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
-
 export const PostCommentInCalloutDocument = gql`
   mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
     sendMessageOnCallout(data: $data) {
@@ -8223,7 +7803,6 @@ export const PostCommentInCalloutDocument = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-
 export type PostCommentInCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.PostCommentInCalloutMutation,
   SchemaTypes.PostCommentInCalloutMutationVariables
@@ -8260,14 +7839,11 @@ export function usePostCommentInCalloutMutation(
 }
 
 export type PostCommentInCalloutMutationHookResult = ReturnType<typeof usePostCommentInCalloutMutation>;
-
 export type PostCommentInCalloutMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInCalloutMutation>;
-
 export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostCommentInCalloutMutation,
   SchemaTypes.PostCommentInCalloutMutationVariables
 >;
-
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -8331,16 +7907,13 @@ export function useAspectTemplatesOnCalloutCreationLazyQuery(
 export type AspectTemplatesOnCalloutCreationQueryHookResult = ReturnType<
   typeof useAspectTemplatesOnCalloutCreationQuery
 >;
-
 export type AspectTemplatesOnCalloutCreationLazyQueryHookResult = ReturnType<
   typeof useAspectTemplatesOnCalloutCreationLazyQuery
 >;
-
 export type AspectTemplatesOnCalloutCreationQueryResult = Apollo.QueryResult<
   SchemaTypes.AspectTemplatesOnCalloutCreationQuery,
   SchemaTypes.AspectTemplatesOnCalloutCreationQueryVariables
 >;
-
 export function refetchAspectTemplatesOnCalloutCreationQuery(
   variables: SchemaTypes.AspectTemplatesOnCalloutCreationQueryVariables
 ) {
@@ -8410,16 +7983,13 @@ export function useCanvasTemplatesOnCalloutCreationLazyQuery(
 export type CanvasTemplatesOnCalloutCreationQueryHookResult = ReturnType<
   typeof useCanvasTemplatesOnCalloutCreationQuery
 >;
-
 export type CanvasTemplatesOnCalloutCreationLazyQueryHookResult = ReturnType<
   typeof useCanvasTemplatesOnCalloutCreationLazyQuery
 >;
-
 export type CanvasTemplatesOnCalloutCreationQueryResult = Apollo.QueryResult<
   SchemaTypes.CanvasTemplatesOnCalloutCreationQuery,
   SchemaTypes.CanvasTemplatesOnCalloutCreationQueryVariables
 >;
-
 export function refetchCanvasTemplatesOnCalloutCreationQuery(
   variables: SchemaTypes.CanvasTemplatesOnCalloutCreationQueryVariables
 ) {
@@ -8494,14 +8064,11 @@ export function useAspectTemplateValueLazyQuery(
 }
 
 export type AspectTemplateValueQueryHookResult = ReturnType<typeof useAspectTemplateValueQuery>;
-
 export type AspectTemplateValueLazyQueryHookResult = ReturnType<typeof useAspectTemplateValueLazyQuery>;
-
 export type AspectTemplateValueQueryResult = Apollo.QueryResult<
   SchemaTypes.AspectTemplateValueQuery,
   SchemaTypes.AspectTemplateValueQueryVariables
 >;
-
 export function refetchAspectTemplateValueQuery(variables: SchemaTypes.AspectTemplateValueQueryVariables) {
   return { query: AspectTemplateValueDocument, variables: variables };
 }
@@ -8565,14 +8132,11 @@ export function useCanvasTemplateValueLazyQuery(
 }
 
 export type CanvasTemplateValueQueryHookResult = ReturnType<typeof useCanvasTemplateValueQuery>;
-
 export type CanvasTemplateValueLazyQueryHookResult = ReturnType<typeof useCanvasTemplateValueLazyQuery>;
-
 export type CanvasTemplateValueQueryResult = Apollo.QueryResult<
   SchemaTypes.CanvasTemplateValueQuery,
   SchemaTypes.CanvasTemplateValueQueryVariables
 >;
-
 export function refetchCanvasTemplateValueQuery(variables: SchemaTypes.CanvasTemplateValueQueryVariables) {
   return { query: CanvasTemplateValueDocument, variables: variables };
 }
@@ -8650,14 +8214,11 @@ export function useHubCalloutCardTemplateLazyQuery(
 }
 
 export type HubCalloutCardTemplateQueryHookResult = ReturnType<typeof useHubCalloutCardTemplateQuery>;
-
 export type HubCalloutCardTemplateLazyQueryHookResult = ReturnType<typeof useHubCalloutCardTemplateLazyQuery>;
-
 export type HubCalloutCardTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCalloutCardTemplateQuery,
   SchemaTypes.HubCalloutCardTemplateQueryVariables
 >;
-
 export function refetchHubCalloutCardTemplateQuery(variables: SchemaTypes.HubCalloutCardTemplateQueryVariables) {
   return { query: HubCalloutCardTemplateDocument, variables: variables };
 }
@@ -8743,16 +8304,13 @@ export function useChallengeCalloutCardTemplateLazyQuery(
 }
 
 export type ChallengeCalloutCardTemplateQueryHookResult = ReturnType<typeof useChallengeCalloutCardTemplateQuery>;
-
 export type ChallengeCalloutCardTemplateLazyQueryHookResult = ReturnType<
   typeof useChallengeCalloutCardTemplateLazyQuery
 >;
-
 export type ChallengeCalloutCardTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCalloutCardTemplateQuery,
   SchemaTypes.ChallengeCalloutCardTemplateQueryVariables
 >;
-
 export function refetchChallengeCalloutCardTemplateQuery(
   variables: SchemaTypes.ChallengeCalloutCardTemplateQueryVariables
 ) {
@@ -8840,16 +8398,13 @@ export function useOpportunityCalloutCardTemplateLazyQuery(
 }
 
 export type OpportunityCalloutCardTemplateQueryHookResult = ReturnType<typeof useOpportunityCalloutCardTemplateQuery>;
-
 export type OpportunityCalloutCardTemplateLazyQueryHookResult = ReturnType<
   typeof useOpportunityCalloutCardTemplateLazyQuery
 >;
-
 export type OpportunityCalloutCardTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCalloutCardTemplateQuery,
   SchemaTypes.OpportunityCalloutCardTemplateQueryVariables
 >;
-
 export function refetchOpportunityCalloutCardTemplateQuery(
   variables: SchemaTypes.OpportunityCalloutCardTemplateQueryVariables
 ) {
@@ -8883,7 +8438,6 @@ export const CreateCalloutDocument = gql`
   }
   ${CommentsWithMessagesFragmentDoc}
 `;
-
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCalloutMutation,
   SchemaTypes.CreateCalloutMutationVariables
@@ -8920,14 +8474,11 @@ export function useCreateCalloutMutation(
 }
 
 export type CreateCalloutMutationHookResult = ReturnType<typeof useCreateCalloutMutation>;
-
 export type CreateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalloutMutation>;
-
 export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutation,
   SchemaTypes.CreateCalloutMutationVariables
 >;
-
 export const HubCollaborationIdDocument = gql`
   query hubCollaborationId($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -8982,14 +8533,11 @@ export function useHubCollaborationIdLazyQuery(
 }
 
 export type HubCollaborationIdQueryHookResult = ReturnType<typeof useHubCollaborationIdQuery>;
-
 export type HubCollaborationIdLazyQueryHookResult = ReturnType<typeof useHubCollaborationIdLazyQuery>;
-
 export type HubCollaborationIdQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCollaborationIdQuery,
   SchemaTypes.HubCollaborationIdQueryVariables
 >;
-
 export function refetchHubCollaborationIdQuery(variables: SchemaTypes.HubCollaborationIdQueryVariables) {
   return { query: HubCollaborationIdDocument, variables: variables };
 }
@@ -9052,14 +8600,11 @@ export function useChallengeCollaborationIdLazyQuery(
 }
 
 export type ChallengeCollaborationIdQueryHookResult = ReturnType<typeof useChallengeCollaborationIdQuery>;
-
 export type ChallengeCollaborationIdLazyQueryHookResult = ReturnType<typeof useChallengeCollaborationIdLazyQuery>;
-
 export type ChallengeCollaborationIdQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCollaborationIdQuery,
   SchemaTypes.ChallengeCollaborationIdQueryVariables
 >;
-
 export function refetchChallengeCollaborationIdQuery(variables: SchemaTypes.ChallengeCollaborationIdQueryVariables) {
   return { query: ChallengeCollaborationIdDocument, variables: variables };
 }
@@ -9122,14 +8667,11 @@ export function useOpportunityCollaborationIdLazyQuery(
 }
 
 export type OpportunityCollaborationIdQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdQuery>;
-
 export type OpportunityCollaborationIdLazyQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdLazyQuery>;
-
 export type OpportunityCollaborationIdQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCollaborationIdQuery,
   SchemaTypes.OpportunityCollaborationIdQueryVariables
 >;
-
 export function refetchOpportunityCollaborationIdQuery(
   variables: SchemaTypes.OpportunityCollaborationIdQueryVariables
 ) {
@@ -9150,7 +8692,6 @@ export const UpdateCalloutDocument = gql`
   }
   ${CardTemplateFragmentDoc}
 `;
-
 export type UpdateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutMutation,
   SchemaTypes.UpdateCalloutMutationVariables
@@ -9187,14 +8728,11 @@ export function useUpdateCalloutMutation(
 }
 
 export type UpdateCalloutMutationHookResult = ReturnType<typeof useUpdateCalloutMutation>;
-
 export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutMutation>;
-
 export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutMutation,
   SchemaTypes.UpdateCalloutMutationVariables
 >;
-
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
     updateCalloutVisibility(calloutData: $calloutData) {
@@ -9203,7 +8741,6 @@ export const UpdateCalloutVisibilityDocument = gql`
     }
   }
 `;
-
 export type UpdateCalloutVisibilityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutVisibilityMutation,
   SchemaTypes.UpdateCalloutVisibilityMutationVariables
@@ -9240,14 +8777,11 @@ export function useUpdateCalloutVisibilityMutation(
 }
 
 export type UpdateCalloutVisibilityMutationHookResult = ReturnType<typeof useUpdateCalloutVisibilityMutation>;
-
 export type UpdateCalloutVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutVisibilityMutation>;
-
 export type UpdateCalloutVisibilityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutVisibilityMutation,
   SchemaTypes.UpdateCalloutVisibilityMutationVariables
 >;
-
 export const DeleteCalloutDocument = gql`
   mutation DeleteCallout($calloutId: UUID!) {
     deleteCallout(deleteData: { ID: $calloutId }) {
@@ -9255,7 +8789,6 @@ export const DeleteCalloutDocument = gql`
     }
   }
 `;
-
 export type DeleteCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
@@ -9292,14 +8825,11 @@ export function useDeleteCalloutMutation(
 }
 
 export type DeleteCalloutMutationHookResult = ReturnType<typeof useDeleteCalloutMutation>;
-
 export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutMutation>;
-
 export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
 >;
-
 export const CreateAspectFromContributeTabDocument = gql`
   mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
     createAspectOnCallout(aspectData: $aspectData) {
@@ -9326,7 +8856,6 @@ export const CreateAspectFromContributeTabDocument = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export type CreateAspectFromContributeTabMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateAspectFromContributeTabMutation,
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
@@ -9365,21 +8894,17 @@ export function useCreateAspectFromContributeTabMutation(
 export type CreateAspectFromContributeTabMutationHookResult = ReturnType<
   typeof useCreateAspectFromContributeTabMutation
 >;
-
 export type CreateAspectFromContributeTabMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateAspectFromContributeTabMutation>;
-
 export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectFromContributeTabMutation,
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
-
 export const RemoveCommentFromCalloutDocument = gql`
   mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
     removeComment(messageData: $messageData)
   }
 `;
-
 export type RemoveCommentFromCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
@@ -9416,15 +8941,12 @@ export function useRemoveCommentFromCalloutMutation(
 }
 
 export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
-
 export type RemoveCommentFromCalloutMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
-
 export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
-
 export const HubCalloutsDocument = gql`
   query HubCallouts($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -9482,14 +9004,11 @@ export function useHubCalloutsLazyQuery(
 }
 
 export type HubCalloutsQueryHookResult = ReturnType<typeof useHubCalloutsQuery>;
-
 export type HubCalloutsLazyQueryHookResult = ReturnType<typeof useHubCalloutsLazyQuery>;
-
 export type HubCalloutsQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCalloutsQuery,
   SchemaTypes.HubCalloutsQueryVariables
 >;
-
 export function refetchHubCalloutsQuery(variables: SchemaTypes.HubCalloutsQueryVariables) {
   return { query: HubCalloutsDocument, variables: variables };
 }
@@ -9559,14 +9078,11 @@ export function useChallengeCalloutsLazyQuery(
 }
 
 export type ChallengeCalloutsQueryHookResult = ReturnType<typeof useChallengeCalloutsQuery>;
-
 export type ChallengeCalloutsLazyQueryHookResult = ReturnType<typeof useChallengeCalloutsLazyQuery>;
-
 export type ChallengeCalloutsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCalloutsQuery,
   SchemaTypes.ChallengeCalloutsQueryVariables
 >;
-
 export function refetchChallengeCalloutsQuery(variables: SchemaTypes.ChallengeCalloutsQueryVariables) {
   return { query: ChallengeCalloutsDocument, variables: variables };
 }
@@ -9639,14 +9155,11 @@ export function useOpportunityCalloutsLazyQuery(
 }
 
 export type OpportunityCalloutsQueryHookResult = ReturnType<typeof useOpportunityCalloutsQuery>;
-
 export type OpportunityCalloutsLazyQueryHookResult = ReturnType<typeof useOpportunityCalloutsLazyQuery>;
-
 export type OpportunityCalloutsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCalloutsQuery,
   SchemaTypes.OpportunityCalloutsQueryVariables
 >;
-
 export function refetchOpportunityCalloutsQuery(variables: SchemaTypes.OpportunityCalloutsQueryVariables) {
   return { query: OpportunityCalloutsDocument, variables: variables };
 }
@@ -9708,14 +9221,11 @@ export function useHubCalloutLazyQuery(
 }
 
 export type HubCalloutQueryHookResult = ReturnType<typeof useHubCalloutQuery>;
-
 export type HubCalloutLazyQueryHookResult = ReturnType<typeof useHubCalloutLazyQuery>;
-
 export type HubCalloutQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCalloutQuery,
   SchemaTypes.HubCalloutQueryVariables
 >;
-
 export function refetchHubCalloutQuery(variables: SchemaTypes.HubCalloutQueryVariables) {
   return { query: HubCalloutDocument, variables: variables };
 }
@@ -9784,14 +9294,11 @@ export function useChallengeCalloutLazyQuery(
 }
 
 export type ChallengeCalloutQueryHookResult = ReturnType<typeof useChallengeCalloutQuery>;
-
 export type ChallengeCalloutLazyQueryHookResult = ReturnType<typeof useChallengeCalloutLazyQuery>;
-
 export type ChallengeCalloutQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCalloutQuery,
   SchemaTypes.ChallengeCalloutQueryVariables
 >;
-
 export function refetchChallengeCalloutQuery(variables: SchemaTypes.ChallengeCalloutQueryVariables) {
   return { query: ChallengeCalloutDocument, variables: variables };
 }
@@ -9863,14 +9370,11 @@ export function useOpportunityCalloutLazyQuery(
 }
 
 export type OpportunityCalloutQueryHookResult = ReturnType<typeof useOpportunityCalloutQuery>;
-
 export type OpportunityCalloutLazyQueryHookResult = ReturnType<typeof useOpportunityCalloutLazyQuery>;
-
 export type OpportunityCalloutQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCalloutQuery,
   SchemaTypes.OpportunityCalloutQueryVariables
 >;
-
 export function refetchOpportunityCalloutQuery(variables: SchemaTypes.OpportunityCalloutQueryVariables) {
   return { query: OpportunityCalloutDocument, variables: variables };
 }
@@ -9930,16 +9434,13 @@ export function usePrivilegesOnHubCollaborationLazyQuery(
 }
 
 export type PrivilegesOnHubCollaborationQueryHookResult = ReturnType<typeof usePrivilegesOnHubCollaborationQuery>;
-
 export type PrivilegesOnHubCollaborationLazyQueryHookResult = ReturnType<
   typeof usePrivilegesOnHubCollaborationLazyQuery
 >;
-
 export type PrivilegesOnHubCollaborationQueryResult = Apollo.QueryResult<
   SchemaTypes.PrivilegesOnHubCollaborationQuery,
   SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
 >;
-
 export function refetchPrivilegesOnHubCollaborationQuery(
   variables: SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
 ) {
@@ -10007,16 +9508,13 @@ export function usePrivilegesOnChallengeCollaborationLazyQuery(
 export type PrivilegesOnChallengeCollaborationQueryHookResult = ReturnType<
   typeof usePrivilegesOnChallengeCollaborationQuery
 >;
-
 export type PrivilegesOnChallengeCollaborationLazyQueryHookResult = ReturnType<
   typeof usePrivilegesOnChallengeCollaborationLazyQuery
 >;
-
 export type PrivilegesOnChallengeCollaborationQueryResult = Apollo.QueryResult<
   SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
   SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
 >;
-
 export function refetchPrivilegesOnChallengeCollaborationQuery(
   variables: SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
 ) {
@@ -10084,16 +9582,13 @@ export function usePrivilegesOnOpportunityCollaborationLazyQuery(
 export type PrivilegesOnOpportunityCollaborationQueryHookResult = ReturnType<
   typeof usePrivilegesOnOpportunityCollaborationQuery
 >;
-
 export type PrivilegesOnOpportunityCollaborationLazyQueryHookResult = ReturnType<
   typeof usePrivilegesOnOpportunityCollaborationLazyQuery
 >;
-
 export type PrivilegesOnOpportunityCollaborationQueryResult = Apollo.QueryResult<
   SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
   SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
 >;
-
 export function refetchPrivilegesOnOpportunityCollaborationQuery(
   variables: SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
 ) {
@@ -10142,10 +9637,8 @@ export function useCalloutMessageReceivedSubscription(
 }
 
 export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
-
 export type CalloutMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
-
 export const CanvasTemplatesDocument = gql`
   query canvasTemplates($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -10198,14 +9691,11 @@ export function useCanvasTemplatesLazyQuery(
 }
 
 export type CanvasTemplatesQueryHookResult = ReturnType<typeof useCanvasTemplatesQuery>;
-
 export type CanvasTemplatesLazyQueryHookResult = ReturnType<typeof useCanvasTemplatesLazyQuery>;
-
 export type CanvasTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.CanvasTemplatesQuery,
   SchemaTypes.CanvasTemplatesQueryVariables
 >;
-
 export function refetchCanvasTemplatesQuery(variables: SchemaTypes.CanvasTemplatesQueryVariables) {
   return { query: CanvasTemplatesDocument, variables: variables };
 }
@@ -10259,14 +9749,11 @@ export function useHubCanvasesLazyQuery(
 }
 
 export type HubCanvasesQueryHookResult = ReturnType<typeof useHubCanvasesQuery>;
-
 export type HubCanvasesLazyQueryHookResult = ReturnType<typeof useHubCanvasesLazyQuery>;
-
 export type HubCanvasesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCanvasesQuery,
   SchemaTypes.HubCanvasesQueryVariables
 >;
-
 export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryVariables) {
   return { query: HubCanvasesDocument, variables: variables };
 }
@@ -10335,14 +9822,11 @@ export function useHubCanvasValuesLazyQuery(
 }
 
 export type HubCanvasValuesQueryHookResult = ReturnType<typeof useHubCanvasValuesQuery>;
-
 export type HubCanvasValuesLazyQueryHookResult = ReturnType<typeof useHubCanvasValuesLazyQuery>;
-
 export type HubCanvasValuesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCanvasValuesQuery,
   SchemaTypes.HubCanvasValuesQueryVariables
 >;
-
 export function refetchHubCanvasValuesQuery(variables: SchemaTypes.HubCanvasValuesQueryVariables) {
   return { query: HubCanvasValuesDocument, variables: variables };
 }
@@ -10403,14 +9887,11 @@ export function useChallengeCanvasesLazyQuery(
 }
 
 export type ChallengeCanvasesQueryHookResult = ReturnType<typeof useChallengeCanvasesQuery>;
-
 export type ChallengeCanvasesLazyQueryHookResult = ReturnType<typeof useChallengeCanvasesLazyQuery>;
-
 export type ChallengeCanvasesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCanvasesQuery,
   SchemaTypes.ChallengeCanvasesQueryVariables
 >;
-
 export function refetchChallengeCanvasesQuery(variables: SchemaTypes.ChallengeCanvasesQueryVariables) {
   return { query: ChallengeCanvasesDocument, variables: variables };
 }
@@ -10494,14 +9975,11 @@ export function useChallengeCanvasValuesLazyQuery(
 }
 
 export type ChallengeCanvasValuesQueryHookResult = ReturnType<typeof useChallengeCanvasValuesQuery>;
-
 export type ChallengeCanvasValuesLazyQueryHookResult = ReturnType<typeof useChallengeCanvasValuesLazyQuery>;
-
 export type ChallengeCanvasValuesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCanvasValuesQuery,
   SchemaTypes.ChallengeCanvasValuesQueryVariables
 >;
-
 export function refetchChallengeCanvasValuesQuery(variables: SchemaTypes.ChallengeCanvasValuesQueryVariables) {
   return { query: ChallengeCanvasValuesDocument, variables: variables };
 }
@@ -10565,14 +10043,11 @@ export function useOpportunityCanvasesLazyQuery(
 }
 
 export type OpportunityCanvasesQueryHookResult = ReturnType<typeof useOpportunityCanvasesQuery>;
-
 export type OpportunityCanvasesLazyQueryHookResult = ReturnType<typeof useOpportunityCanvasesLazyQuery>;
-
 export type OpportunityCanvasesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCanvasesQuery,
   SchemaTypes.OpportunityCanvasesQueryVariables
 >;
-
 export function refetchOpportunityCanvasesQuery(variables: SchemaTypes.OpportunityCanvasesQueryVariables) {
   return { query: OpportunityCanvasesDocument, variables: variables };
 }
@@ -10656,14 +10131,11 @@ export function useOpportunityCanvasValuesLazyQuery(
 }
 
 export type OpportunityCanvasValuesQueryHookResult = ReturnType<typeof useOpportunityCanvasValuesQuery>;
-
 export type OpportunityCanvasValuesLazyQueryHookResult = ReturnType<typeof useOpportunityCanvasValuesLazyQuery>;
-
 export type OpportunityCanvasValuesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCanvasValuesQuery,
   SchemaTypes.OpportunityCanvasValuesQueryVariables
 >;
-
 export function refetchOpportunityCanvasValuesQuery(variables: SchemaTypes.OpportunityCanvasValuesQueryVariables) {
   return { query: OpportunityCanvasValuesDocument, variables: variables };
 }
@@ -10676,7 +10148,6 @@ export const CreateCanvasOnCalloutDocument = gql`
   }
   ${CanvasDetailsFragmentDoc}
 `;
-
 export type CreateCanvasOnCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCanvasOnCalloutMutation,
   SchemaTypes.CreateCanvasOnCalloutMutationVariables
@@ -10713,14 +10184,11 @@ export function useCreateCanvasOnCalloutMutation(
 }
 
 export type CreateCanvasOnCalloutMutationHookResult = ReturnType<typeof useCreateCanvasOnCalloutMutation>;
-
 export type CreateCanvasOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateCanvasOnCalloutMutation>;
-
 export type CreateCanvasOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCanvasOnCalloutMutation,
   SchemaTypes.CreateCanvasOnCalloutMutationVariables
 >;
-
 export const DeleteCanvasDocument = gql`
   mutation deleteCanvas($input: DeleteCanvasInput!) {
     deleteCanvas(canvasData: $input) {
@@ -10729,7 +10197,6 @@ export const DeleteCanvasDocument = gql`
   }
   ${CanvasSummaryFragmentDoc}
 `;
-
 export type DeleteCanvasMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteCanvasMutation,
   SchemaTypes.DeleteCanvasMutationVariables
@@ -10763,14 +10230,11 @@ export function useDeleteCanvasMutation(
 }
 
 export type DeleteCanvasMutationHookResult = ReturnType<typeof useDeleteCanvasMutation>;
-
 export type DeleteCanvasMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasMutation>;
-
 export type DeleteCanvasMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCanvasMutation,
   SchemaTypes.DeleteCanvasMutationVariables
 >;
-
 export const UpdateCanvasDocument = gql`
   mutation updateCanvas($input: UpdateCanvasDirectInput!) {
     updateCanvas(canvasData: $input) {
@@ -10780,7 +10244,6 @@ export const UpdateCanvasDocument = gql`
     }
   }
 `;
-
 export type UpdateCanvasMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCanvasMutation,
   SchemaTypes.UpdateCanvasMutationVariables
@@ -10814,14 +10277,11 @@ export function useUpdateCanvasMutation(
 }
 
 export type UpdateCanvasMutationHookResult = ReturnType<typeof useUpdateCanvasMutation>;
-
 export type UpdateCanvasMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasMutation>;
-
 export type UpdateCanvasMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCanvasMutation,
   SchemaTypes.UpdateCanvasMutationVariables
 >;
-
 export const CheckoutCanvasDocument = gql`
   mutation checkoutCanvas($input: CanvasCheckoutEventInput!) {
     eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
@@ -10830,7 +10290,6 @@ export const CheckoutCanvasDocument = gql`
   }
   ${CheckoutDetailsFragmentDoc}
 `;
-
 export type CheckoutCanvasMutationFn = Apollo.MutationFunction<
   SchemaTypes.CheckoutCanvasMutation,
   SchemaTypes.CheckoutCanvasMutationVariables
@@ -10867,14 +10326,11 @@ export function useCheckoutCanvasMutation(
 }
 
 export type CheckoutCanvasMutationHookResult = ReturnType<typeof useCheckoutCanvasMutation>;
-
 export type CheckoutCanvasMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutCanvasMutation>;
-
 export type CheckoutCanvasMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CheckoutCanvasMutation,
   SchemaTypes.CheckoutCanvasMutationVariables
 >;
-
 export const CanvasContentUpdatedDocument = gql`
   subscription canvasContentUpdated {
     canvasContentUpdated {
@@ -10913,10 +10369,8 @@ export function useCanvasContentUpdatedSubscription(
 }
 
 export type CanvasContentUpdatedSubscriptionHookResult = ReturnType<typeof useCanvasContentUpdatedSubscription>;
-
 export type CanvasContentUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CanvasContentUpdatedSubscription>;
-
 export const CalloutAspectCreatedDocument = gql`
   subscription CalloutAspectCreated($calloutID: UUID!) {
     calloutAspectCreated(calloutID: $calloutID) {
@@ -10958,10 +10412,8 @@ export function useCalloutAspectCreatedSubscription(
 }
 
 export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
-
 export type CalloutAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
-
 export const ProfileVerifiedCredentialDocument = gql`
   subscription profileVerifiedCredential {
     profileVerifiedCredential {
@@ -11001,10 +10453,8 @@ export function useProfileVerifiedCredentialSubscription(
 export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
   typeof useProfileVerifiedCredentialSubscription
 >;
-
 export type ProfileVerifiedCredentialSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
-
 export const ChallengePreferencesDocument = gql`
   query challengePreferences($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -11072,14 +10522,11 @@ export function useChallengePreferencesLazyQuery(
 }
 
 export type ChallengePreferencesQueryHookResult = ReturnType<typeof useChallengePreferencesQuery>;
-
 export type ChallengePreferencesLazyQueryHookResult = ReturnType<typeof useChallengePreferencesLazyQuery>;
-
 export type ChallengePreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengePreferencesQuery,
   SchemaTypes.ChallengePreferencesQueryVariables
 >;
-
 export function refetchChallengePreferencesQuery(variables: SchemaTypes.ChallengePreferencesQueryVariables) {
   return { query: ChallengePreferencesDocument, variables: variables };
 }
@@ -11092,7 +10539,6 @@ export const UpdatePreferenceOnChallengeDocument = gql`
     }
   }
 `;
-
 export type UpdatePreferenceOnChallengeMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdatePreferenceOnChallengeMutation,
   SchemaTypes.UpdatePreferenceOnChallengeMutationVariables
@@ -11129,15 +10575,12 @@ export function useUpdatePreferenceOnChallengeMutation(
 }
 
 export type UpdatePreferenceOnChallengeMutationHookResult = ReturnType<typeof useUpdatePreferenceOnChallengeMutation>;
-
 export type UpdatePreferenceOnChallengeMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnChallengeMutation>;
-
 export type UpdatePreferenceOnChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnChallengeMutation,
   SchemaTypes.UpdatePreferenceOnChallengeMutationVariables
 >;
-
 export const OrganizationPreferencesDocument = gql`
   query organizationPreferences($orgId: UUID_NAMEID!) {
     organization(ID: $orgId) {
@@ -11201,14 +10644,11 @@ export function useOrganizationPreferencesLazyQuery(
 }
 
 export type OrganizationPreferencesQueryHookResult = ReturnType<typeof useOrganizationPreferencesQuery>;
-
 export type OrganizationPreferencesLazyQueryHookResult = ReturnType<typeof useOrganizationPreferencesLazyQuery>;
-
 export type OrganizationPreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationPreferencesQuery,
   SchemaTypes.OrganizationPreferencesQueryVariables
 >;
-
 export function refetchOrganizationPreferencesQuery(variables: SchemaTypes.OrganizationPreferencesQueryVariables) {
   return { query: OrganizationPreferencesDocument, variables: variables };
 }
@@ -11221,7 +10661,6 @@ export const UpdatePreferenceOnOrganizationDocument = gql`
     }
   }
 `;
-
 export type UpdatePreferenceOnOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdatePreferenceOnOrganizationMutation,
   SchemaTypes.UpdatePreferenceOnOrganizationMutationVariables
@@ -11260,15 +10699,12 @@ export function useUpdatePreferenceOnOrganizationMutation(
 export type UpdatePreferenceOnOrganizationMutationHookResult = ReturnType<
   typeof useUpdatePreferenceOnOrganizationMutation
 >;
-
 export type UpdatePreferenceOnOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnOrganizationMutation>;
-
 export type UpdatePreferenceOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnOrganizationMutation,
   SchemaTypes.UpdatePreferenceOnOrganizationMutationVariables
 >;
-
 export const HubPreferencesDocument = gql`
   query hubPreferences($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -11326,14 +10762,11 @@ export function useHubPreferencesLazyQuery(
 }
 
 export type HubPreferencesQueryHookResult = ReturnType<typeof useHubPreferencesQuery>;
-
 export type HubPreferencesLazyQueryHookResult = ReturnType<typeof useHubPreferencesLazyQuery>;
-
 export type HubPreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubPreferencesQuery,
   SchemaTypes.HubPreferencesQueryVariables
 >;
-
 export function refetchHubPreferencesQuery(variables: SchemaTypes.HubPreferencesQueryVariables) {
   return { query: HubPreferencesDocument, variables: variables };
 }
@@ -11346,7 +10779,6 @@ export const UpdatePreferenceOnHubDocument = gql`
     }
   }
 `;
-
 export type UpdatePreferenceOnHubMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdatePreferenceOnHubMutation,
   SchemaTypes.UpdatePreferenceOnHubMutationVariables
@@ -11383,14 +10815,11 @@ export function useUpdatePreferenceOnHubMutation(
 }
 
 export type UpdatePreferenceOnHubMutationHookResult = ReturnType<typeof useUpdatePreferenceOnHubMutation>;
-
 export type UpdatePreferenceOnHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnHubMutation>;
-
 export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnHubMutation,
   SchemaTypes.UpdatePreferenceOnHubMutationVariables
 >;
-
 export const CreateTagsetOnProfileDocument = gql`
   mutation createTagsetOnProfile($input: CreateTagsetOnProfileInput!) {
     createTagsetOnProfile(tagsetData: $input) {
@@ -11400,7 +10829,6 @@ export const CreateTagsetOnProfileDocument = gql`
     }
   }
 `;
-
 export type CreateTagsetOnProfileMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateTagsetOnProfileMutation,
   SchemaTypes.CreateTagsetOnProfileMutationVariables
@@ -11437,14 +10865,11 @@ export function useCreateTagsetOnProfileMutation(
 }
 
 export type CreateTagsetOnProfileMutationHookResult = ReturnType<typeof useCreateTagsetOnProfileMutation>;
-
 export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTypes.CreateTagsetOnProfileMutation>;
-
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
   SchemaTypes.CreateTagsetOnProfileMutationVariables
 >;
-
 export const TagsetsTemplateDocument = gql`
   query tagsetsTemplate {
     configuration {
@@ -11502,14 +10927,11 @@ export function useTagsetsTemplateLazyQuery(
 }
 
 export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplateQuery>;
-
 export type TagsetsTemplateLazyQueryHookResult = ReturnType<typeof useTagsetsTemplateLazyQuery>;
-
 export type TagsetsTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.TagsetsTemplateQuery,
   SchemaTypes.TagsetsTemplateQueryVariables
 >;
-
 export function refetchTagsetsTemplateQuery(variables?: SchemaTypes.TagsetsTemplateQueryVariables) {
   return { query: TagsetsTemplateDocument, variables: variables };
 }
@@ -11522,7 +10944,6 @@ export const UploadVisualDocument = gql`
     }
   }
 `;
-
 export type UploadVisualMutationFn = Apollo.MutationFunction<
   SchemaTypes.UploadVisualMutation,
   SchemaTypes.UploadVisualMutationVariables
@@ -11557,14 +10978,11 @@ export function useUploadVisualMutation(
 }
 
 export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
-
 export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
-
 export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadVisualMutation,
   SchemaTypes.UploadVisualMutationVariables
 >;
-
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID!]!) {
     usersById(IDs: $ids) {
@@ -11613,14 +11031,11 @@ export function useAuthorDetailsLazyQuery(
 }
 
 export type AuthorDetailsQueryHookResult = ReturnType<typeof useAuthorDetailsQuery>;
-
 export type AuthorDetailsLazyQueryHookResult = ReturnType<typeof useAuthorDetailsLazyQuery>;
-
 export type AuthorDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.AuthorDetailsQuery,
   SchemaTypes.AuthorDetailsQueryVariables
 >;
-
 export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQueryVariables) {
   return { query: AuthorDetailsDocument, variables: variables };
 }
@@ -11633,7 +11048,6 @@ export const DeleteDiscussionDocument = gql`
     }
   }
 `;
-
 export type DeleteDiscussionMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteDiscussionMutation,
   SchemaTypes.DeleteDiscussionMutationVariables
@@ -11670,14 +11084,11 @@ export function useDeleteDiscussionMutation(
 }
 
 export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
-
 export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
-
 export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDiscussionMutation,
   SchemaTypes.DeleteDiscussionMutationVariables
 >;
-
 export const CommunityDiscussionDocument = gql`
   query communityDiscussion($hubId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
     hub(ID: $hubId) {
@@ -11748,14 +11159,11 @@ export function useCommunityDiscussionLazyQuery(
 }
 
 export type CommunityDiscussionQueryHookResult = ReturnType<typeof useCommunityDiscussionQuery>;
-
 export type CommunityDiscussionLazyQueryHookResult = ReturnType<typeof useCommunityDiscussionLazyQuery>;
-
 export type CommunityDiscussionQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityDiscussionQuery,
   SchemaTypes.CommunityDiscussionQueryVariables
 >;
-
 export function refetchCommunityDiscussionQuery(variables: SchemaTypes.CommunityDiscussionQueryVariables) {
   return { query: CommunityDiscussionDocument, variables: variables };
 }
@@ -11825,14 +11233,11 @@ export function useCommunityDiscussionListLazyQuery(
 }
 
 export type CommunityDiscussionListQueryHookResult = ReturnType<typeof useCommunityDiscussionListQuery>;
-
 export type CommunityDiscussionListLazyQueryHookResult = ReturnType<typeof useCommunityDiscussionListLazyQuery>;
-
 export type CommunityDiscussionListQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityDiscussionListQuery,
   SchemaTypes.CommunityDiscussionListQueryVariables
 >;
-
 export function refetchCommunityDiscussionListQuery(variables: SchemaTypes.CommunityDiscussionListQueryVariables) {
   return { query: CommunityDiscussionListDocument, variables: variables };
 }
@@ -11845,7 +11250,6 @@ export const PostDiscussionCommentDocument = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-
 export type PostDiscussionCommentMutationFn = Apollo.MutationFunction<
   SchemaTypes.PostDiscussionCommentMutation,
   SchemaTypes.PostDiscussionCommentMutationVariables
@@ -11882,14 +11286,11 @@ export function usePostDiscussionCommentMutation(
 }
 
 export type PostDiscussionCommentMutationHookResult = ReturnType<typeof usePostDiscussionCommentMutation>;
-
 export type PostDiscussionCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostDiscussionCommentMutation>;
-
 export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostDiscussionCommentMutation,
   SchemaTypes.PostDiscussionCommentMutationVariables
 >;
-
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
@@ -11898,7 +11299,6 @@ export const CreateDiscussionDocument = gql`
   }
   ${DiscussionDetailsFragmentDoc}
 `;
-
 export type CreateDiscussionMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateDiscussionMutation,
   SchemaTypes.CreateDiscussionMutationVariables
@@ -11935,14 +11335,11 @@ export function useCreateDiscussionMutation(
 }
 
 export type CreateDiscussionMutationHookResult = ReturnType<typeof useCreateDiscussionMutation>;
-
 export type CreateDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.CreateDiscussionMutation>;
-
 export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
   SchemaTypes.CreateDiscussionMutationVariables
 >;
-
 export const CommunicationDiscussionMessageReceivedDocument = gql`
   subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
     communicationDiscussionMessageReceived(discussionID: $discussionID) {
@@ -11987,10 +11384,8 @@ export function useCommunicationDiscussionMessageReceivedSubscription(
 export type CommunicationDiscussionMessageReceivedSubscriptionHookResult = ReturnType<
   typeof useCommunicationDiscussionMessageReceivedSubscription
 >;
-
 export type CommunicationDiscussionMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionMessageReceivedSubscription>;
-
 export const CommunicationDiscussionUpdatedDocument = gql`
   subscription communicationDiscussionUpdated($communicationID: UUID!) {
     communicationDiscussionUpdated(communicationID: $communicationID) {
@@ -12037,16 +11432,13 @@ export function useCommunicationDiscussionUpdatedSubscription(
 export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
   typeof useCommunicationDiscussionUpdatedSubscription
 >;
-
 export type CommunicationDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
-
 export const RemoveMessageFromDiscussionDocument = gql`
   mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
     removeMessageFromDiscussion(messageData: $messageData)
   }
 `;
-
 export type RemoveMessageFromDiscussionMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
@@ -12083,15 +11475,12 @@ export function useRemoveMessageFromDiscussionMutation(
 }
 
 export type RemoveMessageFromDiscussionMutationHookResult = ReturnType<typeof useRemoveMessageFromDiscussionMutation>;
-
 export type RemoveMessageFromDiscussionMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveMessageFromDiscussionMutation>;
-
 export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
-
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {
@@ -12155,14 +11544,11 @@ export function useCommunityUpdatesLazyQuery(
 }
 
 export type CommunityUpdatesQueryHookResult = ReturnType<typeof useCommunityUpdatesQuery>;
-
 export type CommunityUpdatesLazyQueryHookResult = ReturnType<typeof useCommunityUpdatesLazyQuery>;
-
 export type CommunityUpdatesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityUpdatesQuery,
   SchemaTypes.CommunityUpdatesQueryVariables
 >;
-
 export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpdatesQueryVariables) {
   return { query: CommunityUpdatesDocument, variables: variables };
 }
@@ -12175,7 +11561,6 @@ export const SendUpdateDocument = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-
 export type SendUpdateMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendUpdateMutation,
   SchemaTypes.SendUpdateMutationVariables
@@ -12209,20 +11594,16 @@ export function useSendUpdateMutation(
 }
 
 export type SendUpdateMutationHookResult = ReturnType<typeof useSendUpdateMutation>;
-
 export type SendUpdateMutationResult = Apollo.MutationResult<SchemaTypes.SendUpdateMutation>;
-
 export type SendUpdateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.SendUpdateMutation,
   SchemaTypes.SendUpdateMutationVariables
 >;
-
 export const RemoveUpdateCommunityDocument = gql`
   mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
     removeUpdate(messageData: $msgData)
   }
 `;
-
 export type RemoveUpdateCommunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUpdateCommunityMutation,
   SchemaTypes.RemoveUpdateCommunityMutationVariables
@@ -12259,14 +11640,11 @@ export function useRemoveUpdateCommunityMutation(
 }
 
 export type RemoveUpdateCommunityMutationHookResult = ReturnType<typeof useRemoveUpdateCommunityMutation>;
-
 export type RemoveUpdateCommunityMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUpdateCommunityMutation>;
-
 export type RemoveUpdateCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUpdateCommunityMutation,
   SchemaTypes.RemoveUpdateCommunityMutationVariables
 >;
-
 export const CommunicationUpdateMessageReceivedDocument = gql`
   subscription communicationUpdateMessageReceived {
     communicationUpdateMessageReceived {
@@ -12310,10 +11688,8 @@ export function useCommunicationUpdateMessageReceivedSubscription(
 export type CommunicationUpdateMessageReceivedSubscriptionHookResult = ReturnType<
   typeof useCommunicationUpdateMessageReceivedSubscription
 >;
-
 export type CommunicationUpdateMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationUpdateMessageReceivedSubscription>;
-
 export const CommunityUserPrivilegesDocument = gql`
   query communityUserPrivileges($hubNameId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubNameId) {
@@ -12380,14 +11756,11 @@ export function useCommunityUserPrivilegesLazyQuery(
 }
 
 export type CommunityUserPrivilegesQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesQuery>;
-
 export type CommunityUserPrivilegesLazyQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesLazyQuery>;
-
 export type CommunityUserPrivilegesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityUserPrivilegesQuery,
   SchemaTypes.CommunityUserPrivilegesQueryVariables
 >;
-
 export function refetchCommunityUserPrivilegesQuery(variables: SchemaTypes.CommunityUserPrivilegesQueryVariables) {
   return { query: CommunityUserPrivilegesDocument, variables: variables };
 }
@@ -12399,7 +11772,6 @@ export const JoinCommunityDocument = gql`
     }
   }
 `;
-
 export type JoinCommunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.JoinCommunityMutation,
   SchemaTypes.JoinCommunityMutationVariables
@@ -12436,14 +11808,11 @@ export function useJoinCommunityMutation(
 }
 
 export type JoinCommunityMutationHookResult = ReturnType<typeof useJoinCommunityMutation>;
-
 export type JoinCommunityMutationResult = Apollo.MutationResult<SchemaTypes.JoinCommunityMutation>;
-
 export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinCommunityMutation,
   SchemaTypes.JoinCommunityMutationVariables
 >;
-
 export const ApplyForCommunityMembershipDocument = gql`
   mutation applyForCommunityMembership($input: CommunityApplyInput!) {
     applyForCommunityMembership(applicationData: $input) {
@@ -12451,7 +11820,6 @@ export const ApplyForCommunityMembershipDocument = gql`
     }
   }
 `;
-
 export type ApplyForCommunityMembershipMutationFn = Apollo.MutationFunction<
   SchemaTypes.ApplyForCommunityMembershipMutation,
   SchemaTypes.ApplyForCommunityMembershipMutationVariables
@@ -12488,15 +11856,12 @@ export function useApplyForCommunityMembershipMutation(
 }
 
 export type ApplyForCommunityMembershipMutationHookResult = ReturnType<typeof useApplyForCommunityMembershipMutation>;
-
 export type ApplyForCommunityMembershipMutationResult =
   Apollo.MutationResult<SchemaTypes.ApplyForCommunityMembershipMutation>;
-
 export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ApplyForCommunityMembershipMutation,
   SchemaTypes.ApplyForCommunityMembershipMutationVariables
 >;
-
 export const DeleteUserApplicationDocument = gql`
   mutation deleteUserApplication($input: DeleteApplicationInput!) {
     deleteUserApplication(deleteData: $input) {
@@ -12504,7 +11869,6 @@ export const DeleteUserApplicationDocument = gql`
     }
   }
 `;
-
 export type DeleteUserApplicationMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteUserApplicationMutation,
   SchemaTypes.DeleteUserApplicationMutationVariables
@@ -12541,14 +11905,11 @@ export function useDeleteUserApplicationMutation(
 }
 
 export type DeleteUserApplicationMutationHookResult = ReturnType<typeof useDeleteUserApplicationMutation>;
-
 export type DeleteUserApplicationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserApplicationMutation>;
-
 export type DeleteUserApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserApplicationMutation,
   SchemaTypes.DeleteUserApplicationMutationVariables
 >;
-
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
     eventOnApplication(applicationEventData: $input) {
@@ -12561,7 +11922,6 @@ export const EventOnApplicationDocument = gql`
     }
   }
 `;
-
 export type EventOnApplicationMutationFn = Apollo.MutationFunction<
   SchemaTypes.EventOnApplicationMutation,
   SchemaTypes.EventOnApplicationMutationVariables
@@ -12598,14 +11958,11 @@ export function useEventOnApplicationMutation(
 }
 
 export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
-
 export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
-
 export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutation,
   SchemaTypes.EventOnApplicationMutationVariables
 >;
-
 export const EventOnChallengeDocument = gql`
   mutation eventOnChallenge($input: ChallengeEventInput!) {
     eventOnChallenge(challengeEventData: $input) {
@@ -12618,7 +11975,6 @@ export const EventOnChallengeDocument = gql`
     }
   }
 `;
-
 export type EventOnChallengeMutationFn = Apollo.MutationFunction<
   SchemaTypes.EventOnChallengeMutation,
   SchemaTypes.EventOnChallengeMutationVariables
@@ -12655,14 +12011,11 @@ export function useEventOnChallengeMutation(
 }
 
 export type EventOnChallengeMutationHookResult = ReturnType<typeof useEventOnChallengeMutation>;
-
 export type EventOnChallengeMutationResult = Apollo.MutationResult<SchemaTypes.EventOnChallengeMutation>;
-
 export type EventOnChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnChallengeMutation,
   SchemaTypes.EventOnChallengeMutationVariables
 >;
-
 export const ApplicationByHubDocument = gql`
   query applicationByHub($hubId: UUID_NAMEID!, $appId: UUID!) {
     hub(ID: $hubId) {
@@ -12722,14 +12075,11 @@ export function useApplicationByHubLazyQuery(
 }
 
 export type ApplicationByHubQueryHookResult = ReturnType<typeof useApplicationByHubQuery>;
-
 export type ApplicationByHubLazyQueryHookResult = ReturnType<typeof useApplicationByHubLazyQuery>;
-
 export type ApplicationByHubQueryResult = Apollo.QueryResult<
   SchemaTypes.ApplicationByHubQuery,
   SchemaTypes.ApplicationByHubQueryVariables
 >;
-
 export function refetchApplicationByHubQuery(variables: SchemaTypes.ApplicationByHubQueryVariables) {
   return { query: ApplicationByHubDocument, variables: variables };
 }
@@ -12797,14 +12147,11 @@ export function useChallengeApplicationLazyQuery(
 }
 
 export type ChallengeApplicationQueryHookResult = ReturnType<typeof useChallengeApplicationQuery>;
-
 export type ChallengeApplicationLazyQueryHookResult = ReturnType<typeof useChallengeApplicationLazyQuery>;
-
 export type ChallengeApplicationQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationQuery,
   SchemaTypes.ChallengeApplicationQueryVariables
 >;
-
 export function refetchChallengeApplicationQuery(variables: SchemaTypes.ChallengeApplicationQueryVariables) {
   return { query: ChallengeApplicationDocument, variables: variables };
 }
@@ -12866,14 +12213,11 @@ export function useHubApplicationLazyQuery(
 }
 
 export type HubApplicationQueryHookResult = ReturnType<typeof useHubApplicationQuery>;
-
 export type HubApplicationLazyQueryHookResult = ReturnType<typeof useHubApplicationLazyQuery>;
-
 export type HubApplicationQueryResult = Apollo.QueryResult<
   SchemaTypes.HubApplicationQuery,
   SchemaTypes.HubApplicationQueryVariables
 >;
-
 export function refetchHubApplicationQuery(variables: SchemaTypes.HubApplicationQueryVariables) {
   return { query: HubApplicationDocument, variables: variables };
 }
@@ -12921,11 +12265,8 @@ export function useHubNameIdLazyQuery(
 }
 
 export type HubNameIdQueryHookResult = ReturnType<typeof useHubNameIdQuery>;
-
 export type HubNameIdLazyQueryHookResult = ReturnType<typeof useHubNameIdLazyQuery>;
-
 export type HubNameIdQueryResult = Apollo.QueryResult<SchemaTypes.HubNameIdQuery, SchemaTypes.HubNameIdQueryVariables>;
-
 export function refetchHubNameIdQuery(variables: SchemaTypes.HubNameIdQueryVariables) {
   return { query: HubNameIdDocument, variables: variables };
 }
@@ -12981,14 +12322,11 @@ export function useChallengeNameIdLazyQuery(
 }
 
 export type ChallengeNameIdQueryHookResult = ReturnType<typeof useChallengeNameIdQuery>;
-
 export type ChallengeNameIdLazyQueryHookResult = ReturnType<typeof useChallengeNameIdLazyQuery>;
-
 export type ChallengeNameIdQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameIdQuery,
   SchemaTypes.ChallengeNameIdQueryVariables
 >;
-
 export function refetchChallengeNameIdQuery(variables: SchemaTypes.ChallengeNameIdQueryVariables) {
   return { query: ChallengeNameIdDocument, variables: variables };
 }
@@ -13048,14 +12386,11 @@ export function useOpportunityNameIdLazyQuery(
 }
 
 export type OpportunityNameIdQueryHookResult = ReturnType<typeof useOpportunityNameIdQuery>;
-
 export type OpportunityNameIdLazyQueryHookResult = ReturnType<typeof useOpportunityNameIdLazyQuery>;
-
 export type OpportunityNameIdQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameIdQuery,
   SchemaTypes.OpportunityNameIdQueryVariables
 >;
-
 export function refetchOpportunityNameIdQuery(variables: SchemaTypes.OpportunityNameIdQueryVariables) {
   return { query: OpportunityNameIdDocument, variables: variables };
 }
@@ -13119,14 +12454,11 @@ export function useChallengeCommunityLazyQuery(
 }
 
 export type ChallengeCommunityQueryHookResult = ReturnType<typeof useChallengeCommunityQuery>;
-
 export type ChallengeCommunityLazyQueryHookResult = ReturnType<typeof useChallengeCommunityLazyQuery>;
-
 export type ChallengeCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityQuery,
   SchemaTypes.ChallengeCommunityQueryVariables
 >;
-
 export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeCommunityQueryVariables) {
   return { query: ChallengeCommunityDocument, variables: variables };
 }
@@ -13180,14 +12512,11 @@ export function useHubCommunityLazyQuery(
 }
 
 export type HubCommunityQueryHookResult = ReturnType<typeof useHubCommunityQuery>;
-
 export type HubCommunityLazyQueryHookResult = ReturnType<typeof useHubCommunityLazyQuery>;
-
 export type HubCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCommunityQuery,
   SchemaTypes.HubCommunityQueryVariables
 >;
-
 export function refetchHubCommunityQuery(variables: SchemaTypes.HubCommunityQueryVariables) {
   return { query: HubCommunityDocument, variables: variables };
 }
@@ -13251,14 +12580,11 @@ export function useOpportunityCommunityLazyQuery(
 }
 
 export type OpportunityCommunityQueryHookResult = ReturnType<typeof useOpportunityCommunityQuery>;
-
 export type OpportunityCommunityLazyQueryHookResult = ReturnType<typeof useOpportunityCommunityLazyQuery>;
-
 export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityQuery,
   SchemaTypes.OpportunityCommunityQueryVariables
 >;
-
 export function refetchOpportunityCommunityQuery(variables: SchemaTypes.OpportunityCommunityQueryVariables) {
   return { query: OpportunityCommunityDocument, variables: variables };
 }
@@ -13331,14 +12657,11 @@ export function useHubCommunityContributorsLazyQuery(
 }
 
 export type HubCommunityContributorsQueryHookResult = ReturnType<typeof useHubCommunityContributorsQuery>;
-
 export type HubCommunityContributorsLazyQueryHookResult = ReturnType<typeof useHubCommunityContributorsLazyQuery>;
-
 export type HubCommunityContributorsQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCommunityContributorsQuery,
   SchemaTypes.HubCommunityContributorsQueryVariables
 >;
-
 export function refetchHubCommunityContributorsQuery(variables: SchemaTypes.HubCommunityContributorsQueryVariables) {
   return { query: HubCommunityContributorsDocument, variables: variables };
 }
@@ -13403,16 +12726,13 @@ export function useChallengeCommunityContributorsLazyQuery(
 }
 
 export type ChallengeCommunityContributorsQueryHookResult = ReturnType<typeof useChallengeCommunityContributorsQuery>;
-
 export type ChallengeCommunityContributorsLazyQueryHookResult = ReturnType<
   typeof useChallengeCommunityContributorsLazyQuery
 >;
-
 export type ChallengeCommunityContributorsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityContributorsQuery,
   SchemaTypes.ChallengeCommunityContributorsQueryVariables
 >;
-
 export function refetchChallengeCommunityContributorsQuery(
   variables: SchemaTypes.ChallengeCommunityContributorsQueryVariables
 ) {
@@ -13481,16 +12801,13 @@ export function useOpportunityCommunityContributorsLazyQuery(
 export type OpportunityCommunityContributorsQueryHookResult = ReturnType<
   typeof useOpportunityCommunityContributorsQuery
 >;
-
 export type OpportunityCommunityContributorsLazyQueryHookResult = ReturnType<
   typeof useOpportunityCommunityContributorsLazyQuery
 >;
-
 export type OpportunityCommunityContributorsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityContributorsQuery,
   SchemaTypes.OpportunityCommunityContributorsQueryVariables
 >;
-
 export function refetchOpportunityCommunityContributorsQuery(
   variables: SchemaTypes.OpportunityCommunityContributorsQueryVariables
 ) {
@@ -13565,14 +12882,11 @@ export function useContributingUsersLazyQuery(
 }
 
 export type ContributingUsersQueryHookResult = ReturnType<typeof useContributingUsersQuery>;
-
 export type ContributingUsersLazyQueryHookResult = ReturnType<typeof useContributingUsersLazyQuery>;
-
 export type ContributingUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributingUsersQuery,
   SchemaTypes.ContributingUsersQueryVariables
 >;
-
 export function refetchContributingUsersQuery(variables?: SchemaTypes.ContributingUsersQueryVariables) {
   return { query: ContributingUsersDocument, variables: variables };
 }
@@ -13639,14 +12953,11 @@ export function useContributingOrganizationsLazyQuery(
 }
 
 export type ContributingOrganizationsQueryHookResult = ReturnType<typeof useContributingOrganizationsQuery>;
-
 export type ContributingOrganizationsLazyQueryHookResult = ReturnType<typeof useContributingOrganizationsLazyQuery>;
-
 export type ContributingOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributingOrganizationsQuery,
   SchemaTypes.ContributingOrganizationsQueryVariables
 >;
-
 export function refetchContributingOrganizationsQuery(variables?: SchemaTypes.ContributingOrganizationsQueryVariables) {
   return { query: ContributingOrganizationsDocument, variables: variables };
 }
@@ -13659,7 +12970,6 @@ export const CreateGroupOnCommunityDocument = gql`
   }
   ${GroupDetailsFragmentDoc}
 `;
-
 export type CreateGroupOnCommunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
@@ -13696,14 +13006,11 @@ export function useCreateGroupOnCommunityMutation(
 }
 
 export type CreateGroupOnCommunityMutationHookResult = ReturnType<typeof useCreateGroupOnCommunityMutation>;
-
 export type CreateGroupOnCommunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateGroupOnCommunityMutation>;
-
 export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-
 export const AllCommunitiesDocument = gql`
   query allCommunities($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -13762,14 +13069,11 @@ export function useAllCommunitiesLazyQuery(
 }
 
 export type AllCommunitiesQueryHookResult = ReturnType<typeof useAllCommunitiesQuery>;
-
 export type AllCommunitiesLazyQueryHookResult = ReturnType<typeof useAllCommunitiesLazyQuery>;
-
 export type AllCommunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.AllCommunitiesQuery,
   SchemaTypes.AllCommunitiesQueryVariables
 >;
-
 export function refetchAllCommunitiesQuery(variables: SchemaTypes.AllCommunitiesQueryVariables) {
   return { query: AllCommunitiesDocument, variables: variables };
 }
@@ -13834,14 +13138,11 @@ export function useChallengesWithCommunityLazyQuery(
 }
 
 export type ChallengesWithCommunityQueryHookResult = ReturnType<typeof useChallengesWithCommunityQuery>;
-
 export type ChallengesWithCommunityLazyQueryHookResult = ReturnType<typeof useChallengesWithCommunityLazyQuery>;
-
 export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesWithCommunityQuery,
   SchemaTypes.ChallengesWithCommunityQueryVariables
 >;
-
 export function refetchChallengesWithCommunityQuery(variables: SchemaTypes.ChallengesWithCommunityQueryVariables) {
   return { query: ChallengesWithCommunityDocument, variables: variables };
 }
@@ -13900,14 +13201,11 @@ export function useCommunityGroupsLazyQuery(
 }
 
 export type CommunityGroupsQueryHookResult = ReturnType<typeof useCommunityGroupsQuery>;
-
 export type CommunityGroupsLazyQueryHookResult = ReturnType<typeof useCommunityGroupsLazyQuery>;
-
 export type CommunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityGroupsQuery,
   SchemaTypes.CommunityGroupsQueryVariables
 >;
-
 export function refetchCommunityGroupsQuery(variables: SchemaTypes.CommunityGroupsQueryVariables) {
   return { query: CommunityGroupsDocument, variables: variables };
 }
@@ -13968,14 +13266,11 @@ export function useCommunityMembersLazyQuery(
 }
 
 export type CommunityMembersQueryHookResult = ReturnType<typeof useCommunityMembersQuery>;
-
 export type CommunityMembersLazyQueryHookResult = ReturnType<typeof useCommunityMembersLazyQuery>;
-
 export type CommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityMembersQuery,
   SchemaTypes.CommunityMembersQueryVariables
 >;
-
 export function refetchCommunityMembersQuery(variables: SchemaTypes.CommunityMembersQueryVariables) {
   return { query: CommunityMembersDocument, variables: variables };
 }
@@ -14033,14 +13328,11 @@ export function useCommunityMessagesLazyQuery(
 }
 
 export type CommunityMessagesQueryHookResult = ReturnType<typeof useCommunityMessagesQuery>;
-
 export type CommunityMessagesLazyQueryHookResult = ReturnType<typeof useCommunityMessagesLazyQuery>;
-
 export type CommunityMessagesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityMessagesQuery,
   SchemaTypes.CommunityMessagesQueryVariables
 >;
-
 export function refetchCommunityMessagesQuery(variables: SchemaTypes.CommunityMessagesQueryVariables) {
   return { query: CommunityMessagesDocument, variables: variables };
 }
@@ -14099,14 +13391,11 @@ export function useAvailableUsersLazyQuery(
 }
 
 export type AvailableUsersQueryHookResult = ReturnType<typeof useAvailableUsersQuery>;
-
 export type AvailableUsersLazyQueryHookResult = ReturnType<typeof useAvailableUsersLazyQuery>;
-
 export type AvailableUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.AvailableUsersQuery,
   SchemaTypes.AvailableUsersQueryVariables
 >;
-
 export function refetchAvailableUsersQuery(variables: SchemaTypes.AvailableUsersQueryVariables) {
   return { query: AvailableUsersDocument, variables: variables };
 }
@@ -14168,14 +13457,11 @@ export function useAllOrganizationsLazyQuery(
 }
 
 export type AllOrganizationsQueryHookResult = ReturnType<typeof useAllOrganizationsQuery>;
-
 export type AllOrganizationsLazyQueryHookResult = ReturnType<typeof useAllOrganizationsLazyQuery>;
-
 export type AllOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.AllOrganizationsQuery,
   SchemaTypes.AllOrganizationsQueryVariables
 >;
-
 export function refetchAllOrganizationsQuery(variables: SchemaTypes.AllOrganizationsQueryVariables) {
   return { query: AllOrganizationsDocument, variables: variables };
 }
@@ -14252,14 +13538,11 @@ export function useChallengeCommunityMembersLazyQuery(
 }
 
 export type ChallengeCommunityMembersQueryHookResult = ReturnType<typeof useChallengeCommunityMembersQuery>;
-
 export type ChallengeCommunityMembersLazyQueryHookResult = ReturnType<typeof useChallengeCommunityMembersLazyQuery>;
-
 export type ChallengeCommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityMembersQuery,
   SchemaTypes.ChallengeCommunityMembersQueryVariables
 >;
-
 export function refetchChallengeCommunityMembersQuery(variables: SchemaTypes.ChallengeCommunityMembersQueryVariables) {
   return { query: ChallengeCommunityMembersDocument, variables: variables };
 }
@@ -14329,14 +13612,11 @@ export function useHubCommunityMembersLazyQuery(
 }
 
 export type HubCommunityMembersQueryHookResult = ReturnType<typeof useHubCommunityMembersQuery>;
-
 export type HubCommunityMembersLazyQueryHookResult = ReturnType<typeof useHubCommunityMembersLazyQuery>;
-
 export type HubCommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.HubCommunityMembersQuery,
   SchemaTypes.HubCommunityMembersQueryVariables
 >;
-
 export function refetchHubCommunityMembersQuery(variables: SchemaTypes.HubCommunityMembersQueryVariables) {
   return { query: HubCommunityMembersDocument, variables: variables };
 }
@@ -14349,7 +13629,6 @@ export const AssignUserAsCommunityMemberDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsCommunityMemberMutation,
   SchemaTypes.AssignUserAsCommunityMemberMutationVariables
@@ -14387,15 +13666,12 @@ export function useAssignUserAsCommunityMemberMutation(
 }
 
 export type AssignUserAsCommunityMemberMutationHookResult = ReturnType<typeof useAssignUserAsCommunityMemberMutation>;
-
 export type AssignUserAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityMemberMutation>;
-
 export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsCommunityMemberMutation,
   SchemaTypes.AssignUserAsCommunityMemberMutationVariables
 >;
-
 export const AssignUserAsCommunityLeadDocument = gql`
   mutation assignUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
     assignUserAsCommunityLead(leadershipData: { communityID: $communityId, userID: $memberId }) {
@@ -14403,7 +13679,6 @@ export const AssignUserAsCommunityLeadDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsCommunityLeadMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsCommunityLeadMutation,
   SchemaTypes.AssignUserAsCommunityLeadMutationVariables
@@ -14441,15 +13716,12 @@ export function useAssignUserAsCommunityLeadMutation(
 }
 
 export type AssignUserAsCommunityLeadMutationHookResult = ReturnType<typeof useAssignUserAsCommunityLeadMutation>;
-
 export type AssignUserAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityLeadMutation>;
-
 export type AssignUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsCommunityLeadMutation,
   SchemaTypes.AssignUserAsCommunityLeadMutationVariables
 >;
-
 export const RemoveUserAsCommunityMemberDocument = gql`
   mutation removeUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
     removeUserAsCommunityMember(membershipData: { communityID: $communityId, userID: $memberId }) {
@@ -14457,7 +13729,6 @@ export const RemoveUserAsCommunityMemberDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsCommunityMemberMutation,
   SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
@@ -14495,15 +13766,12 @@ export function useRemoveUserAsCommunityMemberMutation(
 }
 
 export type RemoveUserAsCommunityMemberMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityMemberMutation>;
-
 export type RemoveUserAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityMemberMutation>;
-
 export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsCommunityMemberMutation,
   SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
 >;
-
 export const RemoveUserAsCommunityLeadDocument = gql`
   mutation removeUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
     removeUserAsCommunityLead(leadershipData: { communityID: $communityId, userID: $memberId }) {
@@ -14511,7 +13779,6 @@ export const RemoveUserAsCommunityLeadDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsCommunityLeadMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsCommunityLeadMutation,
   SchemaTypes.RemoveUserAsCommunityLeadMutationVariables
@@ -14549,15 +13816,12 @@ export function useRemoveUserAsCommunityLeadMutation(
 }
 
 export type RemoveUserAsCommunityLeadMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityLeadMutation>;
-
 export type RemoveUserAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityLeadMutation>;
-
 export type RemoveUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsCommunityLeadMutation,
   SchemaTypes.RemoveUserAsCommunityLeadMutationVariables
 >;
-
 export const AssignOrganizationAsCommunityMemberDocument = gql`
   mutation assignOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
     assignOrganizationAsCommunityMember(membershipData: { communityID: $communityId, organizationID: $memberId }) {
@@ -14565,7 +13829,6 @@ export const AssignOrganizationAsCommunityMemberDocument = gql`
     }
   }
 `;
-
 export type AssignOrganizationAsCommunityMemberMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignOrganizationAsCommunityMemberMutation,
   SchemaTypes.AssignOrganizationAsCommunityMemberMutationVariables
@@ -14605,15 +13868,12 @@ export function useAssignOrganizationAsCommunityMemberMutation(
 export type AssignOrganizationAsCommunityMemberMutationHookResult = ReturnType<
   typeof useAssignOrganizationAsCommunityMemberMutation
 >;
-
 export type AssignOrganizationAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignOrganizationAsCommunityMemberMutation>;
-
 export type AssignOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignOrganizationAsCommunityMemberMutation,
   SchemaTypes.AssignOrganizationAsCommunityMemberMutationVariables
 >;
-
 export const AssignOrganizationAsCommunityLeadDocument = gql`
   mutation assignOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
     assignOrganizationAsCommunityLead(leadershipData: { communityID: $communityId, organizationID: $memberId }) {
@@ -14621,7 +13881,6 @@ export const AssignOrganizationAsCommunityLeadDocument = gql`
     }
   }
 `;
-
 export type AssignOrganizationAsCommunityLeadMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
   SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
@@ -14661,15 +13920,12 @@ export function useAssignOrganizationAsCommunityLeadMutation(
 export type AssignOrganizationAsCommunityLeadMutationHookResult = ReturnType<
   typeof useAssignOrganizationAsCommunityLeadMutation
 >;
-
 export type AssignOrganizationAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignOrganizationAsCommunityLeadMutation>;
-
 export type AssignOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
   SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
 >;
-
 export const RemoveOrganizationAsCommunityMemberDocument = gql`
   mutation removeOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
     removeOrganizationAsCommunityMember(membershipData: { communityID: $communityId, organizationID: $memberId }) {
@@ -14677,7 +13933,6 @@ export const RemoveOrganizationAsCommunityMemberDocument = gql`
     }
   }
 `;
-
 export type RemoveOrganizationAsCommunityMemberMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveOrganizationAsCommunityMemberMutation,
   SchemaTypes.RemoveOrganizationAsCommunityMemberMutationVariables
@@ -14717,15 +13972,12 @@ export function useRemoveOrganizationAsCommunityMemberMutation(
 export type RemoveOrganizationAsCommunityMemberMutationHookResult = ReturnType<
   typeof useRemoveOrganizationAsCommunityMemberMutation
 >;
-
 export type RemoveOrganizationAsCommunityMemberMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveOrganizationAsCommunityMemberMutation>;
-
 export type RemoveOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveOrganizationAsCommunityMemberMutation,
   SchemaTypes.RemoveOrganizationAsCommunityMemberMutationVariables
 >;
-
 export const RemoveOrganizationAsCommunityLeadDocument = gql`
   mutation removeOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
     removeOrganizationAsCommunityLead(leadershipData: { communityID: $communityId, organizationID: $memberId }) {
@@ -14733,7 +13985,6 @@ export const RemoveOrganizationAsCommunityLeadDocument = gql`
     }
   }
 `;
-
 export type RemoveOrganizationAsCommunityLeadMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
   SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
@@ -14773,15 +14024,12 @@ export function useRemoveOrganizationAsCommunityLeadMutation(
 export type RemoveOrganizationAsCommunityLeadMutationHookResult = ReturnType<
   typeof useRemoveOrganizationAsCommunityLeadMutation
 >;
-
 export type RemoveOrganizationAsCommunityLeadMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveOrganizationAsCommunityLeadMutation>;
-
 export type RemoveOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
   SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
 >;
-
 export const OpportunityCommunityMembersDocument = gql`
   query opportunityCommunityMembers($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -14854,14 +14102,11 @@ export function useOpportunityCommunityMembersLazyQuery(
 }
 
 export type OpportunityCommunityMembersQueryHookResult = ReturnType<typeof useOpportunityCommunityMembersQuery>;
-
 export type OpportunityCommunityMembersLazyQueryHookResult = ReturnType<typeof useOpportunityCommunityMembersLazyQuery>;
-
 export type OpportunityCommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityMembersQuery,
   SchemaTypes.OpportunityCommunityMembersQueryVariables
 >;
-
 export function refetchOpportunityCommunityMembersQuery(
   variables: SchemaTypes.OpportunityCommunityMembersQueryVariables
 ) {
@@ -14922,16 +14167,13 @@ export function useContributorsPageOrganizationsLazyQuery(
 }
 
 export type ContributorsPageOrganizationsQueryHookResult = ReturnType<typeof useContributorsPageOrganizationsQuery>;
-
 export type ContributorsPageOrganizationsLazyQueryHookResult = ReturnType<
   typeof useContributorsPageOrganizationsLazyQuery
 >;
-
 export type ContributorsPageOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributorsPageOrganizationsQuery,
   SchemaTypes.ContributorsPageOrganizationsQueryVariables
 >;
-
 export function refetchContributorsPageOrganizationsQuery(
   variables: SchemaTypes.ContributorsPageOrganizationsQueryVariables
 ) {
@@ -14992,14 +14234,11 @@ export function useContributorsPageUsersLazyQuery(
 }
 
 export type ContributorsPageUsersQueryHookResult = ReturnType<typeof useContributorsPageUsersQuery>;
-
 export type ContributorsPageUsersLazyQueryHookResult = ReturnType<typeof useContributorsPageUsersLazyQuery>;
-
 export type ContributorsPageUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributorsPageUsersQuery,
   SchemaTypes.ContributorsPageUsersQueryVariables
 >;
-
 export function refetchContributorsPageUsersQuery(variables: SchemaTypes.ContributorsPageUsersQueryVariables) {
   return { query: ContributorsPageUsersDocument, variables: variables };
 }
@@ -15056,14 +14295,11 @@ export function useAssociatedOrganizationLazyQuery(
 }
 
 export type AssociatedOrganizationQueryHookResult = ReturnType<typeof useAssociatedOrganizationQuery>;
-
 export type AssociatedOrganizationLazyQueryHookResult = ReturnType<typeof useAssociatedOrganizationLazyQuery>;
-
 export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
   SchemaTypes.AssociatedOrganizationQuery,
   SchemaTypes.AssociatedOrganizationQueryVariables
 >;
-
 export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
   return { query: AssociatedOrganizationDocument, variables: variables };
 }
@@ -15076,7 +14312,6 @@ export const AssignUserToOrganizationDocument = gql`
     }
   }
 `;
-
 export type AssignUserToOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserToOrganizationMutation,
   SchemaTypes.AssignUserToOrganizationMutationVariables
@@ -15113,15 +14348,12 @@ export function useAssignUserToOrganizationMutation(
 }
 
 export type AssignUserToOrganizationMutationHookResult = ReturnType<typeof useAssignUserToOrganizationMutation>;
-
 export type AssignUserToOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserToOrganizationMutation>;
-
 export type AssignUserToOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserToOrganizationMutation,
   SchemaTypes.AssignUserToOrganizationMutationVariables
 >;
-
 export const RemoveUserFromOrganizationDocument = gql`
   mutation removeUserFromOrganization($input: RemoveOrganizationAssociateInput!) {
     removeUserFromOrganization(membershipData: $input) {
@@ -15130,7 +14362,6 @@ export const RemoveUserFromOrganizationDocument = gql`
     }
   }
 `;
-
 export type RemoveUserFromOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserFromOrganizationMutation,
   SchemaTypes.RemoveUserFromOrganizationMutationVariables
@@ -15167,15 +14398,12 @@ export function useRemoveUserFromOrganizationMutation(
 }
 
 export type RemoveUserFromOrganizationMutationHookResult = ReturnType<typeof useRemoveUserFromOrganizationMutation>;
-
 export type RemoveUserFromOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserFromOrganizationMutation>;
-
 export type RemoveUserFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromOrganizationMutation,
   SchemaTypes.RemoveUserFromOrganizationMutationVariables
 >;
-
 export const AssignUserAsOrganizationAdminDocument = gql`
   mutation assignUserAsOrganizationAdmin($input: AssignOrganizationAdminInput!) {
     assignUserAsOrganizationAdmin(membershipData: $input) {
@@ -15184,7 +14412,6 @@ export const AssignUserAsOrganizationAdminDocument = gql`
     }
   }
 `;
-
 export type AssignUserAsOrganizationAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserAsOrganizationAdminMutation,
   SchemaTypes.AssignUserAsOrganizationAdminMutationVariables
@@ -15223,15 +14450,12 @@ export function useAssignUserAsOrganizationAdminMutation(
 export type AssignUserAsOrganizationAdminMutationHookResult = ReturnType<
   typeof useAssignUserAsOrganizationAdminMutation
 >;
-
 export type AssignUserAsOrganizationAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.AssignUserAsOrganizationAdminMutation>;
-
 export type AssignUserAsOrganizationAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsOrganizationAdminMutation,
   SchemaTypes.AssignUserAsOrganizationAdminMutationVariables
 >;
-
 export const RemoveUserAsOrganizationAdminDocument = gql`
   mutation removeUserAsOrganizationAdmin($input: RemoveOrganizationAdminInput!) {
     removeUserAsOrganizationAdmin(membershipData: $input) {
@@ -15240,7 +14464,6 @@ export const RemoveUserAsOrganizationAdminDocument = gql`
     }
   }
 `;
-
 export type RemoveUserAsOrganizationAdminMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserAsOrganizationAdminMutation,
   SchemaTypes.RemoveUserAsOrganizationAdminMutationVariables
@@ -15279,15 +14502,12 @@ export function useRemoveUserAsOrganizationAdminMutation(
 export type RemoveUserAsOrganizationAdminMutationHookResult = ReturnType<
   typeof useRemoveUserAsOrganizationAdminMutation
 >;
-
 export type RemoveUserAsOrganizationAdminMutationResult =
   Apollo.MutationResult<SchemaTypes.RemoveUserAsOrganizationAdminMutation>;
-
 export type RemoveUserAsOrganizationAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsOrganizationAdminMutation,
   SchemaTypes.RemoveUserAsOrganizationAdminMutationVariables
 >;
-
 export const OrganizationAssociatesDocument = gql`
   query organizationAssociates($id: UUID_NAMEID!) {
     organization(ID: $id) {
@@ -15343,14 +14563,11 @@ export function useOrganizationAssociatesLazyQuery(
 }
 
 export type OrganizationAssociatesQueryHookResult = ReturnType<typeof useOrganizationAssociatesQuery>;
-
 export type OrganizationAssociatesLazyQueryHookResult = ReturnType<typeof useOrganizationAssociatesLazyQuery>;
-
 export type OrganizationAssociatesQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationAssociatesQuery,
   SchemaTypes.OrganizationAssociatesQueryVariables
 >;
-
 export function refetchOrganizationAssociatesQuery(variables: SchemaTypes.OrganizationAssociatesQueryVariables) {
   return { query: OrganizationAssociatesDocument, variables: variables };
 }
@@ -15415,14 +14632,11 @@ export function useRolesOrganizationLazyQuery(
 }
 
 export type RolesOrganizationQueryHookResult = ReturnType<typeof useRolesOrganizationQuery>;
-
 export type RolesOrganizationLazyQueryHookResult = ReturnType<typeof useRolesOrganizationLazyQuery>;
-
 export type RolesOrganizationQueryResult = Apollo.QueryResult<
   SchemaTypes.RolesOrganizationQuery,
   SchemaTypes.RolesOrganizationQueryVariables
 >;
-
 export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
   return { query: RolesOrganizationDocument, variables: variables };
 }
@@ -15435,7 +14649,6 @@ export const CreateGroupOnOrganizationDocument = gql`
     }
   }
 `;
-
 export type CreateGroupOnOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateGroupOnOrganizationMutation,
   SchemaTypes.CreateGroupOnOrganizationMutationVariables
@@ -15472,15 +14685,12 @@ export function useCreateGroupOnOrganizationMutation(
 }
 
 export type CreateGroupOnOrganizationMutationHookResult = ReturnType<typeof useCreateGroupOnOrganizationMutation>;
-
 export type CreateGroupOnOrganizationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateGroupOnOrganizationMutation>;
-
 export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnOrganizationMutation,
   SchemaTypes.CreateGroupOnOrganizationMutationVariables
 >;
-
 export const CreateOrganizationDocument = gql`
   mutation createOrganization($input: CreateOrganizationInput!) {
     createOrganization(organizationData: $input) {
@@ -15490,7 +14700,6 @@ export const CreateOrganizationDocument = gql`
     }
   }
 `;
-
 export type CreateOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateOrganizationMutation,
   SchemaTypes.CreateOrganizationMutationVariables
@@ -15527,14 +14736,11 @@ export function useCreateOrganizationMutation(
 }
 
 export type CreateOrganizationMutationHookResult = ReturnType<typeof useCreateOrganizationMutation>;
-
 export type CreateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.CreateOrganizationMutation>;
-
 export type CreateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateOrganizationMutation,
   SchemaTypes.CreateOrganizationMutationVariables
 >;
-
 export const DeleteOrganizationDocument = gql`
   mutation deleteOrganization($input: DeleteOrganizationInput!) {
     deleteOrganization(deleteData: $input) {
@@ -15542,7 +14748,6 @@ export const DeleteOrganizationDocument = gql`
     }
   }
 `;
-
 export type DeleteOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteOrganizationMutation,
   SchemaTypes.DeleteOrganizationMutationVariables
@@ -15579,14 +14784,11 @@ export function useDeleteOrganizationMutation(
 }
 
 export type DeleteOrganizationMutationHookResult = ReturnType<typeof useDeleteOrganizationMutation>;
-
 export type DeleteOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteOrganizationMutation>;
-
 export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOrganizationMutation,
   SchemaTypes.DeleteOrganizationMutationVariables
 >;
-
 export const UpdateOrganizationDocument = gql`
   mutation updateOrganization($input: UpdateOrganizationInput!) {
     updateOrganization(organizationData: $input) {
@@ -15595,7 +14797,6 @@ export const UpdateOrganizationDocument = gql`
   }
   ${OrganizationProfileInfoFragmentDoc}
 `;
-
 export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateOrganizationMutation,
   SchemaTypes.UpdateOrganizationMutationVariables
@@ -15632,14 +14833,11 @@ export function useUpdateOrganizationMutation(
 }
 
 export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
-
 export type UpdateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOrganizationMutation>;
-
 export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOrganizationMutation,
   SchemaTypes.UpdateOrganizationMutationVariables
 >;
-
 export const OrganizationGroupDocument = gql`
   query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
     organization(ID: $organizationId) {
@@ -15697,14 +14895,11 @@ export function useOrganizationGroupLazyQuery(
 }
 
 export type OrganizationGroupQueryHookResult = ReturnType<typeof useOrganizationGroupQuery>;
-
 export type OrganizationGroupLazyQueryHookResult = ReturnType<typeof useOrganizationGroupLazyQuery>;
-
 export type OrganizationGroupQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupQuery,
   SchemaTypes.OrganizationGroupQueryVariables
 >;
-
 export function refetchOrganizationGroupQuery(variables: SchemaTypes.OrganizationGroupQueryVariables) {
   return { query: OrganizationGroupDocument, variables: variables };
 }
@@ -15787,14 +14982,11 @@ export function useOrganizationDetailsLazyQuery(
 }
 
 export type OrganizationDetailsQueryHookResult = ReturnType<typeof useOrganizationDetailsQuery>;
-
 export type OrganizationDetailsLazyQueryHookResult = ReturnType<typeof useOrganizationDetailsLazyQuery>;
-
 export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationDetailsQuery,
   SchemaTypes.OrganizationDetailsQueryVariables
 >;
-
 export function refetchOrganizationDetailsQuery(variables: SchemaTypes.OrganizationDetailsQueryVariables) {
   return { query: OrganizationDetailsDocument, variables: variables };
 }
@@ -15854,14 +15046,11 @@ export function useOrganizationGroupsLazyQuery(
 }
 
 export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
-
 export type OrganizationGroupsLazyQueryHookResult = ReturnType<typeof useOrganizationGroupsLazyQuery>;
-
 export type OrganizationGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupsQuery,
   SchemaTypes.OrganizationGroupsQueryVariables
 >;
-
 export function refetchOrganizationGroupsQuery(variables: SchemaTypes.OrganizationGroupsQueryVariables) {
   return { query: OrganizationGroupsDocument, variables: variables };
 }
@@ -15915,14 +15104,11 @@ export function useOrganizationInfoLazyQuery(
 }
 
 export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
-
 export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
-
 export type OrganizationInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationInfoQuery,
   SchemaTypes.OrganizationInfoQueryVariables
 >;
-
 export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
   return { query: OrganizationInfoDocument, variables: variables };
 }
@@ -15976,14 +15162,11 @@ export function useOrganizationNameLazyQuery(
 }
 
 export type OrganizationNameQueryHookResult = ReturnType<typeof useOrganizationNameQuery>;
-
 export type OrganizationNameLazyQueryHookResult = ReturnType<typeof useOrganizationNameLazyQuery>;
-
 export type OrganizationNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationNameQuery,
   SchemaTypes.OrganizationNameQueryVariables
 >;
-
 export function refetchOrganizationNameQuery(variables: SchemaTypes.OrganizationNameQueryVariables) {
   return { query: OrganizationNameDocument, variables: variables };
 }
@@ -16040,14 +15223,11 @@ export function useOrganizationProfileInfoLazyQuery(
 }
 
 export type OrganizationProfileInfoQueryHookResult = ReturnType<typeof useOrganizationProfileInfoQuery>;
-
 export type OrganizationProfileInfoLazyQueryHookResult = ReturnType<typeof useOrganizationProfileInfoLazyQuery>;
-
 export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationProfileInfoQuery,
   SchemaTypes.OrganizationProfileInfoQueryVariables
 >;
-
 export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
   return { query: OrganizationProfileInfoDocument, variables: variables };
 }
@@ -16111,14 +15291,11 @@ export function useOrganizationsListLazyQuery(
 }
 
 export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
-
 export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
-
 export type OrganizationsListQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationsListQuery,
   SchemaTypes.OrganizationsListQueryVariables
 >;
-
 export function refetchOrganizationsListQuery(variables?: SchemaTypes.OrganizationsListQueryVariables) {
   return { query: OrganizationsListDocument, variables: variables };
 }
@@ -16178,16 +15355,13 @@ export function useGetSupportedCredentialMetadataLazyQuery(
 }
 
 export type GetSupportedCredentialMetadataQueryHookResult = ReturnType<typeof useGetSupportedCredentialMetadataQuery>;
-
 export type GetSupportedCredentialMetadataLazyQueryHookResult = ReturnType<
   typeof useGetSupportedCredentialMetadataLazyQuery
 >;
-
 export type GetSupportedCredentialMetadataQueryResult = Apollo.QueryResult<
   SchemaTypes.GetSupportedCredentialMetadataQuery,
   SchemaTypes.GetSupportedCredentialMetadataQueryVariables
 >;
-
 export function refetchGetSupportedCredentialMetadataQuery(
   variables?: SchemaTypes.GetSupportedCredentialMetadataQueryVariables
 ) {
@@ -16202,7 +15376,6 @@ export const BeginCredentialRequestInteractionDocument = gql`
     }
   }
 `;
-
 export type BeginCredentialRequestInteractionMutationFn = Apollo.MutationFunction<
   SchemaTypes.BeginCredentialRequestInteractionMutation,
   SchemaTypes.BeginCredentialRequestInteractionMutationVariables
@@ -16241,15 +15414,12 @@ export function useBeginCredentialRequestInteractionMutation(
 export type BeginCredentialRequestInteractionMutationHookResult = ReturnType<
   typeof useBeginCredentialRequestInteractionMutation
 >;
-
 export type BeginCredentialRequestInteractionMutationResult =
   Apollo.MutationResult<SchemaTypes.BeginCredentialRequestInteractionMutation>;
-
 export type BeginCredentialRequestInteractionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.BeginCredentialRequestInteractionMutation,
   SchemaTypes.BeginCredentialRequestInteractionMutationVariables
 >;
-
 export const BeginAlkemioUserCredentialOfferInteractionDocument = gql`
   mutation beginAlkemioUserCredentialOfferInteraction {
     beginAlkemioUserVerifiedCredentialOfferInteraction {
@@ -16258,7 +15428,6 @@ export const BeginAlkemioUserCredentialOfferInteractionDocument = gql`
     }
   }
 `;
-
 export type BeginAlkemioUserCredentialOfferInteractionMutationFn = Apollo.MutationFunction<
   SchemaTypes.BeginAlkemioUserCredentialOfferInteractionMutation,
   SchemaTypes.BeginAlkemioUserCredentialOfferInteractionMutationVariables
@@ -16296,15 +15465,12 @@ export function useBeginAlkemioUserCredentialOfferInteractionMutation(
 export type BeginAlkemioUserCredentialOfferInteractionMutationHookResult = ReturnType<
   typeof useBeginAlkemioUserCredentialOfferInteractionMutation
 >;
-
 export type BeginAlkemioUserCredentialOfferInteractionMutationResult =
   Apollo.MutationResult<SchemaTypes.BeginAlkemioUserCredentialOfferInteractionMutation>;
-
 export type BeginAlkemioUserCredentialOfferInteractionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.BeginAlkemioUserCredentialOfferInteractionMutation,
   SchemaTypes.BeginAlkemioUserCredentialOfferInteractionMutationVariables
 >;
-
 export const BeginCommunityMemberCredentialOfferInteractionDocument = gql`
   mutation beginCommunityMemberCredentialOfferInteraction($communityID: String!) {
     beginCommunityMemberVerifiedCredentialOfferInteraction(communityID: $communityID) {
@@ -16313,7 +15479,6 @@ export const BeginCommunityMemberCredentialOfferInteractionDocument = gql`
     }
   }
 `;
-
 export type BeginCommunityMemberCredentialOfferInteractionMutationFn = Apollo.MutationFunction<
   SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutation,
   SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutationVariables
@@ -16352,15 +15517,12 @@ export function useBeginCommunityMemberCredentialOfferInteractionMutation(
 export type BeginCommunityMemberCredentialOfferInteractionMutationHookResult = ReturnType<
   typeof useBeginCommunityMemberCredentialOfferInteractionMutation
 >;
-
 export type BeginCommunityMemberCredentialOfferInteractionMutationResult =
   Apollo.MutationResult<SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutation>;
-
 export type BeginCommunityMemberCredentialOfferInteractionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutation,
   SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutationVariables
 >;
-
 export const UserSsiDocument = gql`
   query userSsi {
     me {
@@ -16400,11 +15562,8 @@ export function useUserSsiLazyQuery(
 }
 
 export type UserSsiQueryHookResult = ReturnType<typeof useUserSsiQuery>;
-
 export type UserSsiLazyQueryHookResult = ReturnType<typeof useUserSsiLazyQuery>;
-
 export type UserSsiQueryResult = Apollo.QueryResult<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>;
-
 export function refetchUserSsiQuery(variables?: SchemaTypes.UserSsiQueryVariables) {
   return { query: UserSsiDocument, variables: variables };
 }
@@ -16472,14 +15631,11 @@ export function useUserAvatarsLazyQuery(
 }
 
 export type UserAvatarsQueryHookResult = ReturnType<typeof useUserAvatarsQuery>;
-
 export type UserAvatarsLazyQueryHookResult = ReturnType<typeof useUserAvatarsLazyQuery>;
-
 export type UserAvatarsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserAvatarsQuery,
   SchemaTypes.UserAvatarsQueryVariables
 >;
-
 export function refetchUserAvatarsQuery(variables: SchemaTypes.UserAvatarsQueryVariables) {
   return { query: UserAvatarsDocument, variables: variables };
 }
@@ -16561,14 +15717,11 @@ export function useUserCardsContainerLazyQuery(
 }
 
 export type UserCardsContainerQueryHookResult = ReturnType<typeof useUserCardsContainerQuery>;
-
 export type UserCardsContainerLazyQueryHookResult = ReturnType<typeof useUserCardsContainerLazyQuery>;
-
 export type UserCardsContainerQueryResult = Apollo.QueryResult<
   SchemaTypes.UserCardsContainerQuery,
   SchemaTypes.UserCardsContainerQueryVariables
 >;
-
 export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
 }
@@ -16584,7 +15737,6 @@ export const AssignUserToGroupDocument = gql`
   }
   ${GroupMembersFragmentDoc}
 `;
-
 export type AssignUserToGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.AssignUserToGroupMutation,
   SchemaTypes.AssignUserToGroupMutationVariables
@@ -16621,14 +15773,11 @@ export function useAssignUserToGroupMutation(
 }
 
 export type AssignUserToGroupMutationHookResult = ReturnType<typeof useAssignUserToGroupMutation>;
-
 export type AssignUserToGroupMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserToGroupMutation>;
-
 export type AssignUserToGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserToGroupMutation,
   SchemaTypes.AssignUserToGroupMutationVariables
 >;
-
 export const CreateUserDocument = gql`
   mutation createUser($input: CreateUserInput!) {
     createUser(userData: $input) {
@@ -16637,7 +15786,6 @@ export const CreateUserDocument = gql`
   }
   ${UserDetailsFragmentDoc}
 `;
-
 export type CreateUserMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateUserMutation,
   SchemaTypes.CreateUserMutationVariables
@@ -16671,14 +15819,11 @@ export function useCreateUserMutation(
 }
 
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
-
 export type CreateUserMutationResult = Apollo.MutationResult<SchemaTypes.CreateUserMutation>;
-
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateUserMutation,
   SchemaTypes.CreateUserMutationVariables
 >;
-
 export const CreateUserNewRegistrationDocument = gql`
   mutation createUserNewRegistration {
     createUserNewRegistration {
@@ -16687,7 +15832,6 @@ export const CreateUserNewRegistrationDocument = gql`
   }
   ${UserDetailsFragmentDoc}
 `;
-
 export type CreateUserNewRegistrationMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateUserNewRegistrationMutation,
   SchemaTypes.CreateUserNewRegistrationMutationVariables
@@ -16723,15 +15867,12 @@ export function useCreateUserNewRegistrationMutation(
 }
 
 export type CreateUserNewRegistrationMutationHookResult = ReturnType<typeof useCreateUserNewRegistrationMutation>;
-
 export type CreateUserNewRegistrationMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateUserNewRegistrationMutation>;
-
 export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateUserNewRegistrationMutation,
   SchemaTypes.CreateUserNewRegistrationMutationVariables
 >;
-
 export const DeleteGroupDocument = gql`
   mutation deleteGroup($input: DeleteUserGroupInput!) {
     deleteUserGroup(deleteData: $input) {
@@ -16740,7 +15881,6 @@ export const DeleteGroupDocument = gql`
     }
   }
 `;
-
 export type DeleteGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteGroupMutation,
   SchemaTypes.DeleteGroupMutationVariables
@@ -16774,14 +15914,11 @@ export function useDeleteGroupMutation(
 }
 
 export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
-
 export type DeleteGroupMutationResult = Apollo.MutationResult<SchemaTypes.DeleteGroupMutation>;
-
 export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteGroupMutation,
   SchemaTypes.DeleteGroupMutationVariables
 >;
-
 export const DeleteUserDocument = gql`
   mutation deleteUser($input: DeleteUserInput!) {
     deleteUser(deleteData: $input) {
@@ -16789,7 +15926,6 @@ export const DeleteUserDocument = gql`
     }
   }
 `;
-
 export type DeleteUserMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
@@ -16823,14 +15959,11 @@ export function useDeleteUserMutation(
 }
 
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
-
 export type DeleteUserMutationResult = Apollo.MutationResult<SchemaTypes.DeleteUserMutation>;
-
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
-
 export const RemoveUserFromGroupDocument = gql`
   mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
     removeUserFromGroup(membershipData: $input) {
@@ -16843,7 +15976,6 @@ export const RemoveUserFromGroupDocument = gql`
   }
   ${GroupMembersFragmentDoc}
 `;
-
 export type RemoveUserFromGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.RemoveUserFromGroupMutation,
   SchemaTypes.RemoveUserFromGroupMutationVariables
@@ -16880,14 +16012,11 @@ export function useRemoveUserFromGroupMutation(
 }
 
 export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
-
 export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserFromGroupMutation>;
-
 export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserFromGroupMutation,
   SchemaTypes.RemoveUserFromGroupMutationVariables
 >;
-
 export const UpdateGroupDocument = gql`
   mutation updateGroup($input: UpdateUserGroupInput!) {
     updateUserGroup(userGroupData: $input) {
@@ -16913,7 +16042,6 @@ export const UpdateGroupDocument = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-
 export type UpdateGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateGroupMutation,
   SchemaTypes.UpdateGroupMutationVariables
@@ -16947,14 +16075,11 @@ export function useUpdateGroupMutation(
 }
 
 export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
-
 export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.UpdateGroupMutation>;
-
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateGroupMutation,
   SchemaTypes.UpdateGroupMutationVariables
 >;
-
 export const UpdateUserDocument = gql`
   mutation updateUser($input: UpdateUserInput!) {
     updateUser(userData: $input) {
@@ -16963,7 +16088,6 @@ export const UpdateUserDocument = gql`
   }
   ${UserDetailsFragmentDoc}
 `;
-
 export type UpdateUserMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateUserMutation,
   SchemaTypes.UpdateUserMutationVariables
@@ -16997,14 +16121,11 @@ export function useUpdateUserMutation(
 }
 
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
-
 export type UpdateUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserMutation>;
-
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateUserMutation,
   SchemaTypes.UpdateUserMutationVariables
 >;
-
 export const UpdatePreferenceOnUserDocument = gql`
   mutation updatePreferenceOnUser($input: UpdateUserPreferenceInput!) {
     updatePreferenceOnUser(preferenceData: $input) {
@@ -17013,7 +16134,6 @@ export const UpdatePreferenceOnUserDocument = gql`
     }
   }
 `;
-
 export type UpdatePreferenceOnUserMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdatePreferenceOnUserMutation,
   SchemaTypes.UpdatePreferenceOnUserMutationVariables
@@ -17050,14 +16170,11 @@ export function useUpdatePreferenceOnUserMutation(
 }
 
 export type UpdatePreferenceOnUserMutationHookResult = ReturnType<typeof useUpdatePreferenceOnUserMutation>;
-
 export type UpdatePreferenceOnUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnUserMutation>;
-
 export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnUserMutation,
   SchemaTypes.UpdatePreferenceOnUserMutationVariables
 >;
-
 export const RolesUserDocument = gql`
   query rolesUser($input: RolesUserInput!) {
     rolesUser(rolesData: $input) {
@@ -17102,11 +16219,8 @@ export function useRolesUserLazyQuery(
 }
 
 export type RolesUserQueryHookResult = ReturnType<typeof useRolesUserQuery>;
-
 export type RolesUserLazyQueryHookResult = ReturnType<typeof useRolesUserLazyQuery>;
-
 export type RolesUserQueryResult = Apollo.QueryResult<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>;
-
 export function refetchRolesUserQuery(variables: SchemaTypes.RolesUserQueryVariables) {
   return { query: RolesUserDocument, variables: variables };
 }
@@ -17153,11 +16267,8 @@ export function useUserLazyQuery(
 }
 
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
-
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
-
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
-
 export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
@@ -17220,14 +16331,11 @@ export function useUserApplicationDetailsLazyQuery(
 }
 
 export type UserApplicationDetailsQueryHookResult = ReturnType<typeof useUserApplicationDetailsQuery>;
-
 export type UserApplicationDetailsLazyQueryHookResult = ReturnType<typeof useUserApplicationDetailsLazyQuery>;
-
 export type UserApplicationDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserApplicationDetailsQuery,
   SchemaTypes.UserApplicationDetailsQueryVariables
 >;
-
 export function refetchUserApplicationDetailsQuery(variables: SchemaTypes.UserApplicationDetailsQueryVariables) {
   return { query: UserApplicationDetailsDocument, variables: variables };
 }
@@ -17289,14 +16397,11 @@ export function useUserApplicationsLazyQuery(
 }
 
 export type UserApplicationsQueryHookResult = ReturnType<typeof useUserApplicationsQuery>;
-
 export type UserApplicationsLazyQueryHookResult = ReturnType<typeof useUserApplicationsLazyQuery>;
-
 export type UserApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserApplicationsQuery,
   SchemaTypes.UserApplicationsQueryVariables
 >;
-
 export function refetchUserApplicationsQuery(variables: SchemaTypes.UserApplicationsQueryVariables) {
   return { query: UserApplicationsDocument, variables: variables };
 }
@@ -17341,11 +16446,8 @@ export function useUserCardLazyQuery(
 }
 
 export type UserCardQueryHookResult = ReturnType<typeof useUserCardQuery>;
-
 export type UserCardLazyQueryHookResult = ReturnType<typeof useUserCardLazyQuery>;
-
 export type UserCardQueryResult = Apollo.QueryResult<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>;
-
 export function refetchUserCardQuery(variables: SchemaTypes.UserCardQueryVariables) {
   return { query: UserCardDocument, variables: variables };
 }
@@ -17413,16 +16515,13 @@ export function useUserNotificationsPreferencesLazyQuery(
 }
 
 export type UserNotificationsPreferencesQueryHookResult = ReturnType<typeof useUserNotificationsPreferencesQuery>;
-
 export type UserNotificationsPreferencesLazyQueryHookResult = ReturnType<
   typeof useUserNotificationsPreferencesLazyQuery
 >;
-
 export type UserNotificationsPreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.UserNotificationsPreferencesQuery,
   SchemaTypes.UserNotificationsPreferencesQueryVariables
 >;
-
 export function refetchUserNotificationsPreferencesQuery(
   variables: SchemaTypes.UserNotificationsPreferencesQueryVariables
 ) {
@@ -17486,14 +16585,11 @@ export function useUserProfileLazyQuery(
 }
 
 export type UserProfileQueryHookResult = ReturnType<typeof useUserProfileQuery>;
-
 export type UserProfileLazyQueryHookResult = ReturnType<typeof useUserProfileLazyQuery>;
-
 export type UserProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.UserProfileQuery,
   SchemaTypes.UserProfileQueryVariables
 >;
-
 export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryVariables) {
   return { query: UserProfileDocument, variables: variables };
 }
@@ -17556,14 +16652,11 @@ export function useUserProfileApplicationsLazyQuery(
 }
 
 export type UserProfileApplicationsQueryHookResult = ReturnType<typeof useUserProfileApplicationsQuery>;
-
 export type UserProfileApplicationsLazyQueryHookResult = ReturnType<typeof useUserProfileApplicationsLazyQuery>;
-
 export type UserProfileApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserProfileApplicationsQuery,
   SchemaTypes.UserProfileApplicationsQueryVariables
 >;
-
 export function refetchUserProfileApplicationsQuery(variables: SchemaTypes.UserProfileApplicationsQueryVariables) {
   return { query: UserProfileApplicationsDocument, variables: variables };
 }
@@ -17630,14 +16723,11 @@ export function useUsersWithCredentialsLazyQuery(
 }
 
 export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
-
 export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
-
 export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
   SchemaTypes.UsersWithCredentialsQuery,
   SchemaTypes.UsersWithCredentialsQueryVariables
 >;
-
 export function refetchUsersWithCredentialsQuery(variables: SchemaTypes.UsersWithCredentialsQueryVariables) {
   return { query: UsersWithCredentialsDocument, variables: variables };
 }
@@ -17697,16 +16787,13 @@ export function useUsersWithCredentialsSimpleListLazyQuery(
 }
 
 export type UsersWithCredentialsSimpleListQueryHookResult = ReturnType<typeof useUsersWithCredentialsSimpleListQuery>;
-
 export type UsersWithCredentialsSimpleListLazyQueryHookResult = ReturnType<
   typeof useUsersWithCredentialsSimpleListLazyQuery
 >;
-
 export type UsersWithCredentialsSimpleListQueryResult = Apollo.QueryResult<
   SchemaTypes.UsersWithCredentialsSimpleListQuery,
   SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
 >;
-
 export function refetchUsersWithCredentialsSimpleListQuery(
   variables: SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
 ) {
@@ -17764,14 +16851,11 @@ export function usePlatformLevelAuthorizationLazyQuery(
 }
 
 export type PlatformLevelAuthorizationQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationQuery>;
-
 export type PlatformLevelAuthorizationLazyQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationLazyQuery>;
-
 export type PlatformLevelAuthorizationQueryResult = Apollo.QueryResult<
   SchemaTypes.PlatformLevelAuthorizationQuery,
   SchemaTypes.PlatformLevelAuthorizationQueryVariables
 >;
-
 export function refetchPlatformLevelAuthorizationQuery(
   variables?: SchemaTypes.PlatformLevelAuthorizationQueryVariables
 ) {
@@ -17817,11 +16901,8 @@ export function useMeLazyQuery(
 }
 
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
-
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
-
 export type MeQueryResult = Apollo.QueryResult<SchemaTypes.MeQuery, SchemaTypes.MeQueryVariables>;
-
 export function refetchMeQuery(variables?: SchemaTypes.MeQueryVariables) {
   return { query: MeDocument, variables: variables };
 }
@@ -17868,14 +16949,11 @@ export function useMeHasProfileLazyQuery(
 }
 
 export type MeHasProfileQueryHookResult = ReturnType<typeof useMeHasProfileQuery>;
-
 export type MeHasProfileLazyQueryHookResult = ReturnType<typeof useMeHasProfileLazyQuery>;
-
 export type MeHasProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.MeHasProfileQuery,
   SchemaTypes.MeHasProfileQueryVariables
 >;
-
 export function refetchMeHasProfileQuery(variables?: SchemaTypes.MeHasProfileQueryVariables) {
   return { query: MeHasProfileDocument, variables: variables };
 }
@@ -17930,11 +17008,8 @@ export function useUserListLazyQuery(
 }
 
 export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
-
 export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
-
 export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
-
 export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
   return { query: UserListDocument, variables: variables };
 }
@@ -18007,14 +17082,11 @@ export function useHubContributionDetailsLazyQuery(
 }
 
 export type HubContributionDetailsQueryHookResult = ReturnType<typeof useHubContributionDetailsQuery>;
-
 export type HubContributionDetailsLazyQueryHookResult = ReturnType<typeof useHubContributionDetailsLazyQuery>;
-
 export type HubContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.HubContributionDetailsQuery,
   SchemaTypes.HubContributionDetailsQueryVariables
 >;
-
 export function refetchHubContributionDetailsQuery(variables: SchemaTypes.HubContributionDetailsQueryVariables) {
   return { query: HubContributionDetailsDocument, variables: variables };
 }
@@ -18092,16 +17164,13 @@ export function useChallengeContributionDetailsLazyQuery(
 }
 
 export type ChallengeContributionDetailsQueryHookResult = ReturnType<typeof useChallengeContributionDetailsQuery>;
-
 export type ChallengeContributionDetailsLazyQueryHookResult = ReturnType<
   typeof useChallengeContributionDetailsLazyQuery
 >;
-
 export type ChallengeContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeContributionDetailsQuery,
   SchemaTypes.ChallengeContributionDetailsQueryVariables
 >;
-
 export function refetchChallengeContributionDetailsQuery(
   variables: SchemaTypes.ChallengeContributionDetailsQueryVariables
 ) {
@@ -18182,16 +17251,13 @@ export function useOpportunityContributionDetailsLazyQuery(
 }
 
 export type OpportunityContributionDetailsQueryHookResult = ReturnType<typeof useOpportunityContributionDetailsQuery>;
-
 export type OpportunityContributionDetailsLazyQueryHookResult = ReturnType<
   typeof useOpportunityContributionDetailsLazyQuery
 >;
-
 export type OpportunityContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityContributionDetailsQuery,
   SchemaTypes.OpportunityContributionDetailsQueryVariables
 >;
-
 export function refetchOpportunityContributionDetailsQuery(
   variables: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
@@ -18266,14 +17332,11 @@ export function useHubContextLazyQuery(
 }
 
 export type HubContextQueryHookResult = ReturnType<typeof useHubContextQuery>;
-
 export type HubContextLazyQueryHookResult = ReturnType<typeof useHubContextLazyQuery>;
-
 export type HubContextQueryResult = Apollo.QueryResult<
   SchemaTypes.HubContextQuery,
   SchemaTypes.HubContextQueryVariables
 >;
-
 export function refetchHubContextQuery(variables: SchemaTypes.HubContextQueryVariables) {
   return { query: HubContextDocument, variables: variables };
 }
@@ -18358,14 +17421,11 @@ export function useChallengeContextLazyQuery(
 }
 
 export type ChallengeContextQueryHookResult = ReturnType<typeof useChallengeContextQuery>;
-
 export type ChallengeContextLazyQueryHookResult = ReturnType<typeof useChallengeContextLazyQuery>;
-
 export type ChallengeContextQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeContextQuery,
   SchemaTypes.ChallengeContextQueryVariables
 >;
-
 export function refetchChallengeContextQuery(variables: SchemaTypes.ChallengeContextQueryVariables) {
   return { query: ChallengeContextDocument, variables: variables };
 }
@@ -18449,14 +17509,11 @@ export function useOpportunityContextLazyQuery(
 }
 
 export type OpportunityContextQueryHookResult = ReturnType<typeof useOpportunityContextQuery>;
-
 export type OpportunityContextLazyQueryHookResult = ReturnType<typeof useOpportunityContextLazyQuery>;
-
 export type OpportunityContextQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityContextQuery,
   SchemaTypes.OpportunityContextQueryVariables
 >;
-
 export function refetchOpportunityContextQuery(variables: SchemaTypes.OpportunityContextQueryVariables) {
   return { query: OpportunityContextDocument, variables: variables };
 }
@@ -18522,14 +17579,11 @@ export function useCommunityFeedbackTemplatesLazyQuery(
 }
 
 export type CommunityFeedbackTemplatesQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesQuery>;
-
 export type CommunityFeedbackTemplatesLazyQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesLazyQuery>;
-
 export type CommunityFeedbackTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityFeedbackTemplatesQuery,
   SchemaTypes.CommunityFeedbackTemplatesQueryVariables
 >;
-
 export function refetchCommunityFeedbackTemplatesQuery(
   variables?: SchemaTypes.CommunityFeedbackTemplatesQueryVariables
 ) {
@@ -18541,7 +17595,6 @@ export const CreateFeedbackOnCommunityContextDocument = gql`
     createFeedbackOnCommunityContext(feedbackData: $feedbackData)
   }
 `;
-
 export type CreateFeedbackOnCommunityContextMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateFeedbackOnCommunityContextMutation,
   SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
@@ -18580,15 +17633,12 @@ export function useCreateFeedbackOnCommunityContextMutation(
 export type CreateFeedbackOnCommunityContextMutationHookResult = ReturnType<
   typeof useCreateFeedbackOnCommunityContextMutation
 >;
-
 export type CreateFeedbackOnCommunityContextMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateFeedbackOnCommunityContextMutation>;
-
 export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateFeedbackOnCommunityContextMutation,
   SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
 >;
-
 export const ChallengeApplicationsDocument = gql`
   query challengeApplications($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -18651,14 +17701,11 @@ export function useChallengeApplicationsLazyQuery(
 }
 
 export type ChallengeApplicationsQueryHookResult = ReturnType<typeof useChallengeApplicationsQuery>;
-
 export type ChallengeApplicationsLazyQueryHookResult = ReturnType<typeof useChallengeApplicationsLazyQuery>;
-
 export type ChallengeApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationsQuery,
   SchemaTypes.ChallengeApplicationsQueryVariables
 >;
-
 export function refetchChallengeApplicationsQuery(variables: SchemaTypes.ChallengeApplicationsQueryVariables) {
   return { query: ChallengeApplicationsDocument, variables: variables };
 }
@@ -18720,14 +17767,11 @@ export function useHubAvailableLeadUsersLazyQuery(
 }
 
 export type HubAvailableLeadUsersQueryHookResult = ReturnType<typeof useHubAvailableLeadUsersQuery>;
-
 export type HubAvailableLeadUsersLazyQueryHookResult = ReturnType<typeof useHubAvailableLeadUsersLazyQuery>;
-
 export type HubAvailableLeadUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.HubAvailableLeadUsersQuery,
   SchemaTypes.HubAvailableLeadUsersQueryVariables
 >;
-
 export function refetchHubAvailableLeadUsersQuery(variables: SchemaTypes.HubAvailableLeadUsersQueryVariables) {
   return { query: HubAvailableLeadUsersDocument, variables: variables };
 }
@@ -18789,14 +17833,11 @@ export function useHubAvailableMemberUsersLazyQuery(
 }
 
 export type HubAvailableMemberUsersQueryHookResult = ReturnType<typeof useHubAvailableMemberUsersQuery>;
-
 export type HubAvailableMemberUsersLazyQueryHookResult = ReturnType<typeof useHubAvailableMemberUsersLazyQuery>;
-
 export type HubAvailableMemberUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.HubAvailableMemberUsersQuery,
   SchemaTypes.HubAvailableMemberUsersQueryVariables
 >;
-
 export function refetchHubAvailableMemberUsersQuery(variables: SchemaTypes.HubAvailableMemberUsersQueryVariables) {
   return { query: HubAvailableMemberUsersDocument, variables: variables };
 }
@@ -18867,14 +17908,11 @@ export function useChallengeAvailableLeadUsersLazyQuery(
 }
 
 export type ChallengeAvailableLeadUsersQueryHookResult = ReturnType<typeof useChallengeAvailableLeadUsersQuery>;
-
 export type ChallengeAvailableLeadUsersLazyQueryHookResult = ReturnType<typeof useChallengeAvailableLeadUsersLazyQuery>;
-
 export type ChallengeAvailableLeadUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeAvailableLeadUsersQuery,
   SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
 >;
-
 export function refetchChallengeAvailableLeadUsersQuery(
   variables: SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
 ) {
@@ -18947,16 +17985,13 @@ export function useChallengeAvailableMemberUsersLazyQuery(
 }
 
 export type ChallengeAvailableMemberUsersQueryHookResult = ReturnType<typeof useChallengeAvailableMemberUsersQuery>;
-
 export type ChallengeAvailableMemberUsersLazyQueryHookResult = ReturnType<
   typeof useChallengeAvailableMemberUsersLazyQuery
 >;
-
 export type ChallengeAvailableMemberUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeAvailableMemberUsersQuery,
   SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
 >;
-
 export function refetchChallengeAvailableMemberUsersQuery(
   variables: SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
 ) {
@@ -19029,16 +18064,13 @@ export function useOpportunityAvailableLeadUsersLazyQuery(
 }
 
 export type OpportunityAvailableLeadUsersQueryHookResult = ReturnType<typeof useOpportunityAvailableLeadUsersQuery>;
-
 export type OpportunityAvailableLeadUsersLazyQueryHookResult = ReturnType<
   typeof useOpportunityAvailableLeadUsersLazyQuery
 >;
-
 export type OpportunityAvailableLeadUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAvailableLeadUsersQuery,
   SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
 >;
-
 export function refetchOpportunityAvailableLeadUsersQuery(
   variables: SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
 ) {
@@ -19111,16 +18143,13 @@ export function useOpportunityAvailableMemberUsersLazyQuery(
 }
 
 export type OpportunityAvailableMemberUsersQueryHookResult = ReturnType<typeof useOpportunityAvailableMemberUsersQuery>;
-
 export type OpportunityAvailableMemberUsersLazyQueryHookResult = ReturnType<
   typeof useOpportunityAvailableMemberUsersLazyQuery
 >;
-
 export type OpportunityAvailableMemberUsersQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAvailableMemberUsersQuery,
   SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
 >;
-
 export function refetchOpportunityAvailableMemberUsersQuery(
   variables: SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
 ) {
@@ -19179,14 +18208,11 @@ export function useHubApplicationsLazyQuery(
 }
 
 export type HubApplicationsQueryHookResult = ReturnType<typeof useHubApplicationsQuery>;
-
 export type HubApplicationsLazyQueryHookResult = ReturnType<typeof useHubApplicationsLazyQuery>;
-
 export type HubApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.HubApplicationsQuery,
   SchemaTypes.HubApplicationsQueryVariables
 >;
-
 export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
   return { query: HubApplicationsDocument, variables: variables };
 }
@@ -19252,16 +18278,13 @@ export function useAdminGlobalOrganizationsListLazyQuery(
 }
 
 export type AdminGlobalOrganizationsListQueryHookResult = ReturnType<typeof useAdminGlobalOrganizationsListQuery>;
-
 export type AdminGlobalOrganizationsListLazyQueryHookResult = ReturnType<
   typeof useAdminGlobalOrganizationsListLazyQuery
 >;
-
 export type AdminGlobalOrganizationsListQueryResult = Apollo.QueryResult<
   SchemaTypes.AdminGlobalOrganizationsListQuery,
   SchemaTypes.AdminGlobalOrganizationsListQueryVariables
 >;
-
 export function refetchAdminGlobalOrganizationsListQuery(
   variables: SchemaTypes.AdminGlobalOrganizationsListQueryVariables
 ) {
@@ -19282,7 +18305,6 @@ export const UpdateAspectTemplateDocument = gql`
     }
   }
 `;
-
 export type UpdateAspectTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateAspectTemplateMutation,
   SchemaTypes.UpdateAspectTemplateMutationVariables
@@ -19322,14 +18344,11 @@ export function useUpdateAspectTemplateMutation(
 }
 
 export type UpdateAspectTemplateMutationHookResult = ReturnType<typeof useUpdateAspectTemplateMutation>;
-
 export type UpdateAspectTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectTemplateMutation>;
-
 export type UpdateAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAspectTemplateMutation,
   SchemaTypes.UpdateAspectTemplateMutationVariables
 >;
-
 export const CreateAspectTemplateDocument = gql`
   mutation createAspectTemplate(
     $templatesSetId: UUID!
@@ -19349,7 +18368,6 @@ export const CreateAspectTemplateDocument = gql`
     }
   }
 `;
-
 export type CreateAspectTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateAspectTemplateMutation,
   SchemaTypes.CreateAspectTemplateMutationVariables
@@ -19389,14 +18407,11 @@ export function useCreateAspectTemplateMutation(
 }
 
 export type CreateAspectTemplateMutationHookResult = ReturnType<typeof useCreateAspectTemplateMutation>;
-
 export type CreateAspectTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreateAspectTemplateMutation>;
-
 export type CreateAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectTemplateMutation,
   SchemaTypes.CreateAspectTemplateMutationVariables
 >;
-
 export const DeleteAspectTemplateDocument = gql`
   mutation deleteAspectTemplate($templateId: UUID!) {
     deleteAspectTemplate(deleteData: { ID: $templateId }) {
@@ -19404,7 +18419,6 @@ export const DeleteAspectTemplateDocument = gql`
     }
   }
 `;
-
 export type DeleteAspectTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteAspectTemplateMutation,
   SchemaTypes.DeleteAspectTemplateMutationVariables
@@ -19441,14 +18455,11 @@ export function useDeleteAspectTemplateMutation(
 }
 
 export type DeleteAspectTemplateMutationHookResult = ReturnType<typeof useDeleteAspectTemplateMutation>;
-
 export type DeleteAspectTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteAspectTemplateMutation>;
-
 export type DeleteAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectTemplateMutation,
   SchemaTypes.DeleteAspectTemplateMutationVariables
 >;
-
 export const UpdateCanvasTemplateDocument = gql`
   mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $info: UpdateTemplateInfoInput) {
     updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, info: $info }) {
@@ -19456,7 +18467,6 @@ export const UpdateCanvasTemplateDocument = gql`
     }
   }
 `;
-
 export type UpdateCanvasTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCanvasTemplateMutation,
   SchemaTypes.UpdateCanvasTemplateMutationVariables
@@ -19495,14 +18505,11 @@ export function useUpdateCanvasTemplateMutation(
 }
 
 export type UpdateCanvasTemplateMutationHookResult = ReturnType<typeof useUpdateCanvasTemplateMutation>;
-
 export type UpdateCanvasTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasTemplateMutation>;
-
 export type UpdateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCanvasTemplateMutation,
   SchemaTypes.UpdateCanvasTemplateMutationVariables
 >;
-
 export const CreateCanvasTemplateDocument = gql`
   mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $info: CreateTemplateInfoInput!) {
     createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, info: $info }) {
@@ -19510,7 +18517,6 @@ export const CreateCanvasTemplateDocument = gql`
     }
   }
 `;
-
 export type CreateCanvasTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCanvasTemplateMutation,
   SchemaTypes.CreateCanvasTemplateMutationVariables
@@ -19549,14 +18555,11 @@ export function useCreateCanvasTemplateMutation(
 }
 
 export type CreateCanvasTemplateMutationHookResult = ReturnType<typeof useCreateCanvasTemplateMutation>;
-
 export type CreateCanvasTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreateCanvasTemplateMutation>;
-
 export type CreateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCanvasTemplateMutation,
   SchemaTypes.CreateCanvasTemplateMutationVariables
 >;
-
 export const DeleteCanvasTemplateDocument = gql`
   mutation deleteCanvasTemplate($templateId: UUID!) {
     deleteCanvasTemplate(deleteData: { ID: $templateId }) {
@@ -19564,7 +18567,6 @@ export const DeleteCanvasTemplateDocument = gql`
     }
   }
 `;
-
 export type DeleteCanvasTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteCanvasTemplateMutation,
   SchemaTypes.DeleteCanvasTemplateMutationVariables
@@ -19601,14 +18603,11 @@ export function useDeleteCanvasTemplateMutation(
 }
 
 export type DeleteCanvasTemplateMutationHookResult = ReturnType<typeof useDeleteCanvasTemplateMutation>;
-
 export type DeleteCanvasTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasTemplateMutation>;
-
 export type DeleteCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCanvasTemplateMutation,
   SchemaTypes.DeleteCanvasTemplateMutationVariables
 >;
-
 export const HubTemplatesDocument = gql`
   query HubTemplates($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -19673,14 +18672,11 @@ export function useHubTemplatesLazyQuery(
 }
 
 export type HubTemplatesQueryHookResult = ReturnType<typeof useHubTemplatesQuery>;
-
 export type HubTemplatesLazyQueryHookResult = ReturnType<typeof useHubTemplatesLazyQuery>;
-
 export type HubTemplatesQueryResult = Apollo.QueryResult<
   SchemaTypes.HubTemplatesQuery,
   SchemaTypes.HubTemplatesQueryVariables
 >;
-
 export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
   return { query: HubTemplatesDocument, variables: variables };
 }
@@ -19746,16 +18742,13 @@ export function useHubTemplatesCanvasTemplateWithValueLazyQuery(
 export type HubTemplatesCanvasTemplateWithValueQueryHookResult = ReturnType<
   typeof useHubTemplatesCanvasTemplateWithValueQuery
 >;
-
 export type HubTemplatesCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
   typeof useHubTemplatesCanvasTemplateWithValueLazyQuery
 >;
-
 export type HubTemplatesCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
   SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
   SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
 >;
-
 export function refetchHubTemplatesCanvasTemplateWithValueQuery(
   variables: SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
 ) {
@@ -19838,14 +18831,11 @@ export function useInnovationPacksLazyQuery(
 }
 
 export type InnovationPacksQueryHookResult = ReturnType<typeof useInnovationPacksQuery>;
-
 export type InnovationPacksLazyQueryHookResult = ReturnType<typeof useInnovationPacksLazyQuery>;
-
 export type InnovationPacksQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationPacksQuery,
   SchemaTypes.InnovationPacksQueryVariables
 >;
-
 export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPacksQueryVariables) {
   return { query: InnovationPacksDocument, variables: variables };
 }
@@ -19913,16 +18903,13 @@ export function useInnovationPackCanvasTemplateWithValueLazyQuery(
 export type InnovationPackCanvasTemplateWithValueQueryHookResult = ReturnType<
   typeof useInnovationPackCanvasTemplateWithValueQuery
 >;
-
 export type InnovationPackCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
   typeof useInnovationPackCanvasTemplateWithValueLazyQuery
 >;
-
 export type InnovationPackCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
   SchemaTypes.InnovationPackCanvasTemplateWithValueQuery,
   SchemaTypes.InnovationPackCanvasTemplateWithValueQueryVariables
 >;
-
 export function refetchInnovationPackCanvasTemplateWithValueQuery(
   variables: SchemaTypes.InnovationPackCanvasTemplateWithValueQueryVariables
 ) {
@@ -19940,7 +18927,6 @@ export const UpdateInnovationTemplateDocument = gql`
     }
   }
 `;
-
 export type UpdateInnovationTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateInnovationTemplateMutation,
   SchemaTypes.UpdateInnovationTemplateMutationVariables
@@ -19979,15 +18965,12 @@ export function useUpdateInnovationTemplateMutation(
 }
 
 export type UpdateInnovationTemplateMutationHookResult = ReturnType<typeof useUpdateInnovationTemplateMutation>;
-
 export type UpdateInnovationTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.UpdateInnovationTemplateMutation>;
-
 export type UpdateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationTemplateMutation,
   SchemaTypes.UpdateInnovationTemplateMutationVariables
 >;
-
 export const CreateInnovationTemplateDocument = gql`
   mutation createInnovationTemplate(
     $templatesSetId: UUID!
@@ -20002,7 +18985,6 @@ export const CreateInnovationTemplateDocument = gql`
     }
   }
 `;
-
 export type CreateInnovationTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateInnovationTemplateMutation,
   SchemaTypes.CreateInnovationTemplateMutationVariables
@@ -20042,15 +19024,12 @@ export function useCreateInnovationTemplateMutation(
 }
 
 export type CreateInnovationTemplateMutationHookResult = ReturnType<typeof useCreateInnovationTemplateMutation>;
-
 export type CreateInnovationTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateInnovationTemplateMutation>;
-
 export type CreateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateInnovationTemplateMutation,
   SchemaTypes.CreateInnovationTemplateMutationVariables
 >;
-
 export const DeleteInnovationTemplateDocument = gql`
   mutation deleteInnovationTemplate($templateId: UUID!) {
     deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
@@ -20058,7 +19037,6 @@ export const DeleteInnovationTemplateDocument = gql`
     }
   }
 `;
-
 export type DeleteInnovationTemplateMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteInnovationTemplateMutation,
   SchemaTypes.DeleteInnovationTemplateMutationVariables
@@ -20095,15 +19073,12 @@ export function useDeleteInnovationTemplateMutation(
 }
 
 export type DeleteInnovationTemplateMutationHookResult = ReturnType<typeof useDeleteInnovationTemplateMutation>;
-
 export type DeleteInnovationTemplateMutationResult =
   Apollo.MutationResult<SchemaTypes.DeleteInnovationTemplateMutation>;
-
 export type DeleteInnovationTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationTemplateMutation,
   SchemaTypes.DeleteInnovationTemplateMutationVariables
 >;
-
 export const ConfigurationDocument = gql`
   query configuration {
     configuration {
@@ -20149,14 +19124,11 @@ export function useConfigurationLazyQuery(
 }
 
 export type ConfigurationQueryHookResult = ReturnType<typeof useConfigurationQuery>;
-
 export type ConfigurationLazyQueryHookResult = ReturnType<typeof useConfigurationLazyQuery>;
-
 export type ConfigurationQueryResult = Apollo.QueryResult<
   SchemaTypes.ConfigurationQuery,
   SchemaTypes.ConfigurationQueryVariables
 >;
-
 export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
   return { query: ConfigurationDocument, variables: variables };
 }
@@ -20213,14 +19185,11 @@ export function useServerMetadataLazyQuery(
 }
 
 export type ServerMetadataQueryHookResult = ReturnType<typeof useServerMetadataQuery>;
-
 export type ServerMetadataLazyQueryHookResult = ReturnType<typeof useServerMetadataLazyQuery>;
-
 export type ServerMetadataQueryResult = Apollo.QueryResult<
   SchemaTypes.ServerMetadataQuery,
   SchemaTypes.ServerMetadataQueryVariables
 >;
-
 export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadataQueryVariables) {
   return { query: ServerMetadataDocument, variables: variables };
 }
@@ -20287,11 +19256,8 @@ export function useSearchLazyQuery(
 }
 
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-
 export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
-
 export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
   return { query: SearchDocument, variables: variables };
 }
@@ -20363,14 +19329,11 @@ export function useUserRolesSearchCardsLazyQuery(
 }
 
 export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
-
 export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
-
 export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserRolesSearchCardsQuery,
   SchemaTypes.UserRolesSearchCardsQueryVariables
 >;
-
 export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
   return { query: UserRolesSearchCardsDocument, variables: variables };
 }
@@ -20383,7 +19346,6 @@ export const CreateReferenceOnContextDocument = gql`
   }
   ${ReferenceDetailsFragmentDoc}
 `;
-
 export type CreateReferenceOnContextMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateReferenceOnContextMutation,
   SchemaTypes.CreateReferenceOnContextMutationVariables
@@ -20420,15 +19382,12 @@ export function useCreateReferenceOnContextMutation(
 }
 
 export type CreateReferenceOnContextMutationHookResult = ReturnType<typeof useCreateReferenceOnContextMutation>;
-
 export type CreateReferenceOnContextMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateReferenceOnContextMutation>;
-
 export type CreateReferenceOnContextMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateReferenceOnContextMutation,
   SchemaTypes.CreateReferenceOnContextMutationVariables
 >;
-
 export const CreateReferenceOnProfileDocument = gql`
   mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
     createReferenceOnProfile(referenceInput: $input) {
@@ -20437,7 +19396,6 @@ export const CreateReferenceOnProfileDocument = gql`
   }
   ${ReferenceDetailsFragmentDoc}
 `;
-
 export type CreateReferenceOnProfileMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateReferenceOnProfileMutation,
   SchemaTypes.CreateReferenceOnProfileMutationVariables
@@ -20474,15 +19432,12 @@ export function useCreateReferenceOnProfileMutation(
 }
 
 export type CreateReferenceOnProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnProfileMutation>;
-
 export type CreateReferenceOnProfileMutationResult =
   Apollo.MutationResult<SchemaTypes.CreateReferenceOnProfileMutation>;
-
 export type CreateReferenceOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateReferenceOnProfileMutation,
   SchemaTypes.CreateReferenceOnProfileMutationVariables
 >;
-
 export const DeleteReferenceDocument = gql`
   mutation deleteReference($input: DeleteReferenceInput!) {
     deleteReference(deleteData: $input) {
@@ -20490,7 +19445,6 @@ export const DeleteReferenceDocument = gql`
     }
   }
 `;
-
 export type DeleteReferenceMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteReferenceMutation,
   SchemaTypes.DeleteReferenceMutationVariables
@@ -20527,14 +19481,11 @@ export function useDeleteReferenceMutation(
 }
 
 export type DeleteReferenceMutationHookResult = ReturnType<typeof useDeleteReferenceMutation>;
-
 export type DeleteReferenceMutationResult = Apollo.MutationResult<SchemaTypes.DeleteReferenceMutation>;
-
 export type DeleteReferenceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteReferenceMutation,
   SchemaTypes.DeleteReferenceMutationVariables
 >;
-
 export const CreateRelationDocument = gql`
   mutation createRelation($input: CreateRelationOnCollaborationInput!) {
     createRelationOnCollaboration(relationData: $input) {
@@ -20542,7 +19493,6 @@ export const CreateRelationDocument = gql`
     }
   }
 `;
-
 export type CreateRelationMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
@@ -20579,14 +19529,11 @@ export function useCreateRelationMutation(
 }
 
 export type CreateRelationMutationHookResult = ReturnType<typeof useCreateRelationMutation>;
-
 export type CreateRelationMutationResult = Apollo.MutationResult<SchemaTypes.CreateRelationMutation>;
-
 export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
 >;
-
 export const ActivityCreatedDocument = gql`
   subscription activityCreated($collaborationID: UUID!) {
     activityCreated(collaborationID: $collaborationID) {
@@ -20628,9 +19575,7 @@ export function useActivityCreatedSubscription(
 }
 
 export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
-
 export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
-
 export const ActivityLogOnCollaborationDocument = gql`
   query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     activityLogOnCollaboration(queryData: $queryData) {
@@ -20746,14 +19691,11 @@ export function useActivityLogOnCollaborationLazyQuery(
 }
 
 export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
-
 export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
-
 export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
   SchemaTypes.ActivityLogOnCollaborationQuery,
   SchemaTypes.ActivityLogOnCollaborationQueryVariables
 >;
-
 export function refetchActivityLogOnCollaborationQuery(
   variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
 ) {
