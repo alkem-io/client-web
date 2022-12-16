@@ -56,7 +56,7 @@ type CalloutTypesWithChildTypes = {
   [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]>;
 };
 
-type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'authorization'> &
+export type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'authorization'> &
   (
     | CalloutTypesWithChildTypes[CalloutType.Card]
     | CalloutTypesWithChildTypes[CalloutType.Canvas]

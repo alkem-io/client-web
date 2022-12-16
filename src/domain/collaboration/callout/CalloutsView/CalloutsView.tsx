@@ -1,29 +1,30 @@
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { Box, Button } from '@mui/material';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import LinksList from '../../../core/ui/list/LinksList';
-import { RouterLink } from '../../../common/components/core/RouterLink';
-import { AuthorizationPrivilege, CalloutType } from '../../../core/apollo/generated/graphql-schema';
-import { INSPIRATION_ROUTE } from '../../../core/routing/route.constants';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import useScrollToElement from '../../shared/utils/scroll/useScrollToElement';
-import useBackToParentPage from '../../shared/utils/useBackToParentPage';
-import AspectCallout from './aspect/AspectCallout';
-import CanvasCallout from './canvas/CanvasCallout';
-import CommentsCallout from './comments/CommentsCallout';
-import CalloutCreationDialog from './creation-dialog/CalloutCreationDialog';
-import { useCalloutCreation } from './creation-dialog/useCalloutCreation/useCalloutCreation';
-import { useCalloutEdit } from './edit/useCalloutEdit/useCalloutEdit';
-import useCallouts from './useCallouts';
-import { AspectIcon } from '../aspect/icon/AspectIcon';
-import { CanvasAltIcon } from '../canvas/icon/CanvasAltIcon';
+import PageContent from '../../../../core/ui/content/PageContent';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import LinksList from '../../../../core/ui/list/LinksList';
+import { RouterLink } from '../../../../common/components/core/RouterLink';
+import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { INSPIRATION_ROUTE } from '../../../../core/routing/route.constants';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
+import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
+import AspectCallout from '../aspect/AspectCallout';
+import CanvasCallout from '../canvas/CanvasCallout';
+import CommentsCallout from '../comments/CommentsCallout';
+import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
+import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
+import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
+import useCallouts, { TypedCallout } from '../useCallouts';
+import { AspectIcon } from '../../aspect/icon/AspectIcon';
+import { CanvasAltIcon } from '../../canvas/icon/CanvasAltIcon';
 import { ForumOutlined } from '@mui/icons-material';
+import CalloutsListTitle from './CalloutsListTitle';
 
 interface CalloutsPageProps {
   rootUrl: string;
@@ -52,10 +53,15 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
     []
   );
 
-  const buildCalloutTitle = useCallback(
-    callout => `${callout.displayName} (${getItemsCount(callout)})`,
-    [getItemsCount]
-  );
+  const buildCalloutTitle = (callout: TypedCallout) => {
+    return (
+      <CalloutsListTitle
+        displayName={callout.displayName}
+        contributionsCount={getItemsCount(callout)}
+        calloutUrl={callout.url}
+      />
+    );
+  };
 
   const {
     isCalloutCreationDialogOpen,
@@ -83,7 +89,6 @@ const CalloutsView = ({ rootUrl, scrollToCallout = false }: CalloutsPageProps) =
             items={callouts?.map(callout => ({
               id: callout.id,
               title: buildCalloutTitle(callout),
-              url: callout.url,
               icon: calloutIcons[callout.type],
             }))}
             emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
