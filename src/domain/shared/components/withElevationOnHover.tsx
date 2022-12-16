@@ -7,7 +7,7 @@ interface ComponentProps<Element> extends Pick<DOMAttributes<Element>, 'onMouseO
   elevation?: number;
 }
 
-type Props<El, P extends ComponentProps<El>> = P & {
+type WithElevationProps<El, P extends ComponentProps<El>> = P & {
   elevationDisabled?: boolean;
 };
 
@@ -17,7 +17,7 @@ interface Options {
 }
 
 const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: ComponentType<P>, options: Options = {}) =>
-  forwardRef((props: Props<El, P>, ref: Ref<El>) => {
+  forwardRef((props: WithElevationProps<El, P>, ref: Ref<El>) => {
     const { initialElevation = INITIAL_ELEVATION, finalElevation = FINAL_ELEVATION } = options;
 
     const { elevationDisabled = false, ...componentProps } = props;

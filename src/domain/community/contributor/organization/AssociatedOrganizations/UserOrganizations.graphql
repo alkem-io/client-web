@@ -1,0 +1,20 @@
+query userOrganizations($input: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $input }) {
+    id
+    ...UserOrganizationsDetails
+  }
+}
+
+fragment UserOrganizationsDetails on ContributorRoles {
+  organizations {
+    id
+    nameID
+    displayName
+    userGroups {
+      id
+      nameID
+      displayName
+    }
+    roles
+  }
+}
