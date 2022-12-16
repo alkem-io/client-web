@@ -15289,6 +15289,38 @@ export type AssociatedOrganizationDetailsFragment = {
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
+export type UserOrganizationsQueryVariables = Exact<{
+  input: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type UserOrganizationsQuery = {
+  __typename?: 'Query';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
+    id: string;
+    organizations: Array<{
+      __typename?: 'RolesResultOrganization';
+      id: string;
+      nameID: string;
+      displayName: string;
+      roles: Array<string>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+    }>;
+  };
+};
+
+export type UserOrganizationsDetailsFragment = {
+  __typename?: 'ContributorRoles';
+  organizations: Array<{
+    __typename?: 'RolesResultOrganization';
+    id: string;
+    nameID: string;
+    displayName: string;
+    roles: Array<string>;
+    userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+  }>;
+};
+
 export type AssignUserToOrganizationMutationVariables = Exact<{
   input: AssignOrganizationAssociateInput;
 }>;

@@ -1431,6 +1431,21 @@ export const UserContributorPaginatedFragmentDoc = gql`
   ${UserContributorFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
+export const UserOrganizationsDetailsFragmentDoc = gql`
+  fragment UserOrganizationsDetails on ContributorRoles {
+    organizations {
+      id
+      nameID
+      displayName
+      userGroups {
+        id
+        nameID
+        displayName
+      }
+      roles
+    }
+  }
+`;
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
     id
@@ -14947,6 +14962,65 @@ export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
 >;
 export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
   return { query: AssociatedOrganizationDocument, variables: variables };
+}
+
+export const UserOrganizationsDocument = gql`
+  query userOrganizations($input: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $input }) {
+      id
+      ...UserOrganizationsDetails
+    }
+  }
+  ${UserOrganizationsDetailsFragmentDoc}
+`;
+
+/**
+ * __useUserOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useUserOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserOrganizationsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUserOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserOrganizationsQuery, SchemaTypes.UserOrganizationsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserOrganizationsQuery, SchemaTypes.UserOrganizationsQueryVariables>(
+    UserOrganizationsDocument,
+    options
+  );
+}
+
+export function useUserOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserOrganizationsQuery,
+    SchemaTypes.UserOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserOrganizationsQuery, SchemaTypes.UserOrganizationsQueryVariables>(
+    UserOrganizationsDocument,
+    options
+  );
+}
+
+export type UserOrganizationsQueryHookResult = ReturnType<typeof useUserOrganizationsQuery>;
+export type UserOrganizationsLazyQueryHookResult = ReturnType<typeof useUserOrganizationsLazyQuery>;
+export type UserOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserOrganizationsQuery,
+  SchemaTypes.UserOrganizationsQueryVariables
+>;
+export function refetchUserOrganizationsQuery(variables: SchemaTypes.UserOrganizationsQueryVariables) {
+  return { query: UserOrganizationsDocument, variables: variables };
 }
 
 export const AssignUserToOrganizationDocument = gql`
