@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
@@ -15,14 +13,12 @@ import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { CanvasCardCanvas } from './types';
+import { BaseCalloutImpl } from '../Types';
 
-interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+interface CanvasCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCardCanvas[];
   };
-  calloutNames: string[];
-  loading?: boolean;
-  canCreate?: boolean;
 }
 
 const CanvasCallout = ({
@@ -36,6 +32,7 @@ const CanvasCallout = ({
   onCalloutEdit,
   onVisibilityChange,
   onCalloutDelete,
+  contributionsCount,
 }: CanvasCalloutProps) => {
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
@@ -72,6 +69,7 @@ const CanvasCallout = ({
       <CalloutLayout
         callout={callout}
         calloutNames={calloutNames}
+        contributionsCount={contributionsCount}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}

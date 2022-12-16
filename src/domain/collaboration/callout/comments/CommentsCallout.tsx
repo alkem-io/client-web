@@ -1,6 +1,5 @@
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
 import React, { useCallback, useMemo } from 'react';
-import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
@@ -14,11 +13,12 @@ import { Message } from '../../../shared/components/Comments/models/message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
+import { BaseCalloutImpl } from '../Types';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
-interface CommentsCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+interface CommentsCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData;
   };
@@ -35,6 +35,7 @@ const CommentsCallout = ({
   onVisibilityChange,
   onCalloutDelete,
   isSubscribedToComments,
+  contributionsCount,
 }: CommentsCalloutProps) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
@@ -135,6 +136,7 @@ const CommentsCallout = ({
       <CalloutLayout
         callout={callout}
         calloutNames={calloutNames}
+        contributionsCount={contributionsCount}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}

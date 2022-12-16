@@ -112,6 +112,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                           key={callout.id}
                           callout={callout}
                           calloutNames={calloutNames}
+                          contributionsCount={getItemsCount(callout)}
                           loading={loading}
                           hubNameId={hubNameId!}
                           challengeNameId={challengeNameId}
@@ -128,6 +129,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                           key={callout.id}
                           callout={callout}
                           calloutNames={calloutNames}
+                          contributionsCount={getItemsCount(callout)}
                           loading={loading}
                           hubNameId={hubNameId!}
                           challengeNameId={challengeNameId}
@@ -144,6 +146,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                           key={callout.id}
                           callout={callout}
                           calloutNames={calloutNames}
+                          contributionsCount={getItemsCount(callout)}
                           loading={loading}
                           hubNameId={hubNameId!}
                           challengeNameId={challengeNameId}

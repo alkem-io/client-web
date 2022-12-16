@@ -2,11 +2,9 @@ import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import {
   Authorization,
   AuthorizationPrivilege,
-  Callout,
   CalloutState,
   CalloutType,
   CalloutVisibility,
@@ -21,12 +19,8 @@ import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from './Contribute/CalloutBlockMarginal';
 import { gutters } from '../../../core/ui/grid/utils';
-
-export interface CalloutLayoutEvents {
-  onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
-  onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
-  onCalloutDelete: (callout: CalloutEditType) => Promise<void>;
-}
+import { BlockTitle, Caption } from '../../../core/ui/typography';
+import { CalloutLayoutEvents } from './Types';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -42,6 +36,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     cardTemplate?: CalloutCardTemplate;
   };
   calloutNames: string[];
+  contributionsCount: number;
 }
 
 const TitleBar = styled(Box)(() => ({
@@ -57,6 +52,26 @@ const CalloutActionsBar = styled(Box)(({ theme }) => ({
   flexFlow: 'row-reverse',
 }));
 
+const CalloutDetailsBar = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  margin: theme.spacing(2),
+  marginBottom: 0,
+}));
+
+const CalloutDetails = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(1),
+}));
+
+const CalloutMisc = styled(Box)(() => ({
+  display: 'flex',
+  flexGrow: 1,
+  justifyContent: 'space-between',
+}));
+
+const CalloutDate = ({ date }: { date: Date | string }) => <Caption alignSelf="end">{date}</Caption>;
+
 const CalloutLayout = ({
   callout,
   children,
@@ -64,6 +79,7 @@ const CalloutLayout = ({
   onCalloutEdit,
   onCalloutDelete,
   calloutNames,
+  contributionsCount,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -123,25 +139,32 @@ const CalloutLayout = ({
             <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
           </Box>
         )}
-        <Box m={2}>
+        <CalloutDetailsBar>
+          <CalloutMisc>
+            <CalloutDetails>
+              <Box sx={{ background: 'grey', height: 20, width: 20 }} />
+              <Caption>{`${'Author Name'} • ${t('callout.contributions', { count: contributionsCount })}`}</Caption>
+            </CalloutDetails>
+            <CalloutDate date={'99/99/9999'} />
+          </CalloutMisc>
+          <CalloutActionsBar>
+            {callout.editable && (
+              <IconButton
+                id="callout-settings-button"
+                aria-haspopup="true"
+                aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
+                aria-expanded={settingsOpened ? 'true' : undefined}
+                onClick={handleSettingsOpened}
+              >
+                <SettingsOutlinedIcon />
+              </IconButton>
+            )}
+            <ShareButton url={callout.url} entityTypeName="callout" />
+          </CalloutActionsBar>
+        </CalloutDetailsBar>
+        <Box m={2} mt={1}>
           <TitleBar>
-            <Heading sx={{ display: 'flex', gap: 2.5, alignItems: 'center' }}>
-              <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
-            </Heading>
-            <CalloutActionsBar>
-              {callout.editable && (
-                <IconButton
-                  id="callout-settings-button"
-                  aria-haspopup="true"
-                  aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-                  aria-expanded={settingsOpened ? 'true' : undefined}
-                  onClick={handleSettingsOpened}
-                >
-                  <SettingsOutlinedIcon />
-                </IconButton>
-              )}
-              <ShareButton url={callout.url} entityTypeName="callout" />
-            </CalloutActionsBar>
+            <BlockTitle>{callout.displayName}</BlockTitle>
           </TitleBar>
           <Box sx={{ pt: gutters(), pb: gutters() }}>
             <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>

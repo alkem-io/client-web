@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
 import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
   AspectCardFragmentDoc,
@@ -18,16 +17,14 @@ import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutS
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard from './AspectCard';
+import { BaseCalloutImpl } from '../Types';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+interface AspectCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
     aspects: AspectCardAspect[];
   };
-  calloutNames: string[];
-  loading?: boolean;
-  canCreate?: boolean;
 }
 
 const AspectCallout = ({
@@ -41,6 +38,7 @@ const AspectCallout = ({
   onCalloutEdit,
   onVisibilityChange,
   onCalloutDelete,
+  contributionsCount,
 }: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
@@ -168,6 +166,7 @@ const AspectCallout = ({
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
+        contributionsCount={contributionsCount}
       >
         <CardsLayoutScroller maxHeight={425}>
           <CardsLayout
