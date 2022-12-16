@@ -40,26 +40,26 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/updates`} element={<OpportunityDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<OpportunityDashboardPage dialog="contributors" />} />
         <Route
-          path={routes.Explore}
-          element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
+          path={routes.Contribute}
+          element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Contribute}`} />}
         />
         <Route path={routes.About} element={<OpportunityAboutPage />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
 
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
           element={
             <CalloutsPage
               entityTypeName="opportunity"
-              rootUrl={`${resolved.pathname}/${routes.Explore}`}
+              rootUrl={`${resolved.pathname}/${routes.Contribute}`}
               scrollToCallout
             />
           }
         />
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'opportunity'} />
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName={'opportunity'} />
           }
         />
       </Route>

@@ -126,7 +126,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.activity-log-section.title')} />
             <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-            <SeeMore subject={t('common.contributions')} to={EntityPageSection.Explore} />
+            <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
           </PageContentBlock>
         )}
         {childEntityReadAccess && renderChildEntityCard && childEntityTitle && (

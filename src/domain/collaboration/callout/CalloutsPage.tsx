@@ -20,7 +20,7 @@ const CalloutsPage = ({
 
   return (
     <>
-      <PageLayout currentSection={EntityPageSection.Explore}>
+      <PageLayout currentSection={EntityPageSection.Contribute}>
         <CalloutsView rootUrl={rootUrl} scrollToCallout={scrollToCallout} />
       </PageLayout>
       {children}

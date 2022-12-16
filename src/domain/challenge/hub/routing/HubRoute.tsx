@@ -34,21 +34,21 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
         <Route
-          path={routes.Explore}
-          element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
+          path={routes.Contribute}
+          element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Contribute}`} />}
         />
         <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
 
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
           element={
-            <CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} scrollToCallout />
+            <CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Contribute}`} scrollToCallout />
           }
         />
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={<CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName="hub" />}
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          element={<CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="hub" />}
         />
       </Route>
       <Route
