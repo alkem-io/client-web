@@ -18,7 +18,7 @@ import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
-import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
+import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 
 interface ChallengeRootProps extends PageProps {}
@@ -48,7 +48,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
         <Route
           path={routes.Contribute}
-          element={<CalloutsPage entityTypeName="challenge" rootUrl={`${resolved.pathname}/${routes.Contribute}`} />}
+          element={<ContributePage entityTypeName="challenge" rootUrl={`${resolved.pathname}/${routes.Contribute}`} />}
         />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
@@ -56,7 +56,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
           element={
-            <CalloutsPage
+            <ContributePage
               entityTypeName="challenge"
               rootUrl={`${resolved.pathname}/${routes.Contribute}`}
               scrollToCallout

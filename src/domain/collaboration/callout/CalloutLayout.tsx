@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback, useState, useMemo } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
@@ -19,6 +19,8 @@ import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
+import CalloutBlockMarginal from './Contribute/CalloutBlockMarginal';
+import { gutters } from '../../../core/ui/grid/utils';
 
 export interface CalloutLayoutEvents {
   onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
@@ -98,6 +100,16 @@ const CalloutLayout = ({
     [onCalloutEdit, setEditDialogOpened]
   );
 
+  const calloutNotOpenStateName = useMemo(() => {
+    const state = callout?.state;
+
+    if (!state || state === CalloutState.Open) {
+      return undefined;
+    }
+
+    return t(`common.enums.callout-state.${state}` as const);
+  }, [callout?.state, t]);
+
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   if (dontShow) {
     return null;
@@ -113,7 +125,7 @@ const CalloutLayout = ({
         )}
         <Box m={3}>
           <TitleBar>
-            <Heading sx={{ display: 'flex', gap: 2.5 }}>
+            <Heading sx={{ display: 'flex', gap: 2.5, alignItems: 'center' }}>
               <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
             </Heading>
             <CalloutActionsBar>
@@ -131,9 +143,14 @@ const CalloutLayout = ({
               <ShareButton url={callout.url} entityTypeName="callout" />
             </CalloutActionsBar>
           </TitleBar>
-          <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
+          <Box sx={{ pt: gutters(), pb: gutters() }}>
+            <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
+          </Box>
           {children}
         </Box>
+        {calloutNotOpenStateName && (
+          <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
+        )}
       </Card>
       <Menu
         id="callout-settings-menu"

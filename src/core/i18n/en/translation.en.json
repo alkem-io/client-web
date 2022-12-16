@@ -195,6 +195,11 @@
       "not-verified": ""
     },
     "enums": {
+      "callout-state": {
+        "ARCHIVED": "Archived",
+        "CLOSED": "Closed",
+        "OPEN": "Open"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -1000,10 +1005,8 @@
       }
     },
     "contribute": {
+      "initial-text": "**Contribute** your insights to understanding the context. It is about surfacing up the wisdom of the community.",
       "no-cards": "No Card found"
-    },
-    "explore": {
-      "create-callout": "Create new Callout"
     },
     "admin": {
       "generic": {

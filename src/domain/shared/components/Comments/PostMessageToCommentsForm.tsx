@@ -9,8 +9,8 @@ import { useUserContext } from '../../../community/contributor/user';
 import FormikCommentInputField from '../../../../common/components/composite/forms/FormikCommentInputField';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.avatarSize,
-  width: theme.avatarSize,
+  height: theme.avatarSizeXs,
+  width: theme.avatarSizeXs,
 }));
 
 const PreFormatedPopper = styled(Popper)(() => ({

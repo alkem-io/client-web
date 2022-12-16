@@ -116,7 +116,8 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
 
   const subscribedToComments = useSubscribeOnCommentCallouts(commentCalloutIds);
 
-  const canCreateCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout);
+  const canCreateCallout =
+    collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
 
   const getItemsCount = (callout: TypedCallout) => {
     switch (callout.type) {
