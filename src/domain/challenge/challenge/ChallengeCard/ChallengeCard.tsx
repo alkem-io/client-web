@@ -7,7 +7,7 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
-import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
+import { ChallengeIcon } from '../icon/ChallengeIcon';
 
 interface ChallengeCardProps {
   bannerUri: string;
