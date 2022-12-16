@@ -8,7 +8,7 @@ interface CardImageProps extends BoxProps<'img'> {
 }
 
 const CardImage = ({ aspectRatio = CARD_IMAGE_ASPECT_RATIO_DEFAULT, ...props }: CardImageProps) => {
-  return <Box component="img" sx={{ aspectRatio, objectFit: 'cover' }} {...props} />;
+  return <Box component="img" display="block" maxWidth="100%" sx={{ aspectRatio, objectFit: 'cover' }} {...props} />;
 };
 
 export default CardImage;

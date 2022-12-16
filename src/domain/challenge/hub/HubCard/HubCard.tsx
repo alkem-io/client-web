@@ -1,10 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { HubOutlined } from '@mui/icons-material';
 import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 
-interface HubCardProps extends Omit<JourneyCardProps, 'header'> {
+interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent'> {
   displayName: string;
   membersCount: number;
 }
@@ -14,6 +15,7 @@ const HubCard = ({ displayName, membersCount, tagline, ...props }: HubCardProps)
 
   return (
     <JourneyCard
+      iconComponent={HubOutlined}
       tagline={tagline}
       header={
         <>

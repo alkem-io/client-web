@@ -9,8 +9,10 @@ import CommunityUpdatesDialog from '../../../community/community/CommunityUpdate
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
-import OpportunityCard from '../../../../common/components/composite/common/cards/OpportunityCard/OpportunityCard';
+import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import { useTranslation } from 'react-i18next';
+import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -48,9 +50,11 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 activityLoading={state.activityLoading}
                 renderChildEntityCard={opportunity => (
                   <OpportunityCard
-                    opportunity={opportunity}
-                    hubNameId={entities.hubNameId}
-                    challengeNameId={entities.challenge!.nameID}
+                    displayName={opportunity.displayName}
+                    tagline={opportunity.context?.tagline!}
+                    tags={opportunity.tagset?.tags!}
+                    bannerUri={getVisualBanner(opportunity.context?.visuals)!}
+                    journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
                   />
                 )}
                 journeyTypeName="challenge"

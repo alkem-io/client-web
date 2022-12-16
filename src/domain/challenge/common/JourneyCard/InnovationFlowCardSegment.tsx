@@ -9,7 +9,7 @@ interface InnovationFlowCardSegmentProps {
 
 const InnovationFlowCardSegment = ({ children }: InnovationFlowCardSegmentProps) => {
   return (
-    <Box display="flex" gap={1} justifyContent="end" marginBottom={-1}>
+    <Box display="flex" gap={1} justifyContent="end" paddingY={1}>
       <Caption>{children}</Caption>
       <LifecycleStateIcon />
     </Box>

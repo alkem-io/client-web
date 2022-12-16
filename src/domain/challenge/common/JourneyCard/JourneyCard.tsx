@@ -1,30 +1,52 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
+import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
+import { Box, SvgIconProps } from '@mui/material';
 import CardImage from '../../../../core/ui/card/CardImage';
 import ItemView from '../../../../core/ui/list/ItemView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { HubOutlined } from '@mui/icons-material';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import CardContent from '../../../../core/ui/card/CardContent';
 import { GUTTER_PX } from '../../../../core/ui/grid/constants';
+import CardContent from '../../../../core/ui/card/CardContent';
+import { gutters } from '../../../../core/ui/grid/utils';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
-export interface JourneyCardProps {
+export interface JourneyCardProps extends ContributeCardContainerProps {
+  iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
   tagline: string;
   bannerUri: string;
   tags: string[];
+  journeyUri: string;
 }
 
-const JourneyCard = ({ header, tagline, bannerUri, tags, children }: PropsWithChildren<JourneyCardProps>) => {
+const JourneyCard = ({
+  iconComponent: Icon,
+  header,
+  tagline,
+  bannerUri,
+  tags,
+  journeyUri,
+  children,
+  ...containerProps
+}: PropsWithChildren<JourneyCardProps>) => {
   return (
-    <ContributeCard>
-      <CardImage src={bannerUri} alt={tagline} />
+    <ContributeCard {...containerProps}>
+      <Box component={RouterLink} to={journeyUri}>
+        <CardImage src={bannerUri} alt={tagline} />
+      </Box>
       <CardContent flexGrow={1}>
-        <ItemView visual={<RoundedIcon size="small" component={HubOutlined} />} gap={1}>
+        <ItemView
+          component={RouterLink}
+          to={journeyUri}
+          visual={<RoundedIcon size="small" component={Icon} />}
+          gap={1}
+          height={gutters(3)}
+          paddingY={1}
+        >
           {header}
         </ItemView>
         {children}
-        <TagsComponent tags={tags} variant="filled" height={GUTTER_PX * 2.5} color="primary" />
+        <TagsComponent tags={tags} variant="filled" height={GUTTER_PX * 2.5} color="primary" marginTop={gutters()} />
       </CardContent>
     </ContributeCard>
   );

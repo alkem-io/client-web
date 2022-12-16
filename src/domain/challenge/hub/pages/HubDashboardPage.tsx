@@ -12,6 +12,7 @@ import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardVi
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -54,6 +55,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     tags={challenge.tagset?.tags!}
                     tagline={challenge.context?.tagline!}
                     innovationFlowState={challenge.lifecycle?.state}
+                    journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
                   />
                 )}
                 journeyTypeName="hub"

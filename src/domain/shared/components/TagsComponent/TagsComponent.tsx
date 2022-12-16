@@ -20,7 +20,8 @@ interface TagsComponentProps extends BoxProps {
 
 const getDefaultTagsContainerProps = (hasHeight?: boolean): Partial<BoxProps> => ({
   display: 'flex',
-  gap: (theme: Theme) => theme.spacing(0.4),
+  gap: theme => theme.spacing(0.4),
+  rowGap: theme => theme.spacing(1),
   flexWrap: 'wrap',
   // TODO this is left for compatibility with older components that don't specify height on TagsComponent
   minHeight: hasHeight ? undefined : (theme: Theme) => theme.spacing(4),
