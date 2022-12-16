@@ -15,6 +15,7 @@
     "add-entity": "Add {{entity}}"
   },
   "buttons": {
+    "leave": "Leave",
     "learn-more": "Learn more",
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
@@ -510,6 +511,12 @@
     }
   },
   "components": {
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Leaving {{displayName}}",
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+      }
+    },
     "error-display": {
       "title": "Ooops!",
       "went-wrong": "Looks like something went wrong.",
