@@ -61,7 +61,7 @@ const TagsComponent = ({
 
   if (loading) {
     return (
-      <Box {...getDefaultTagsContainerProps} {...tagsContainerProps}>
+      <Box {...tagsContainerProps}>
         {times(count, i => (
           <Skeleton key={i} width={`${100 / count}%`}>
             <Chip variant="outlined" color="primary" sx={{ borderColor: 'primary.main' }} size="small" />
