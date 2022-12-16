@@ -60,6 +60,7 @@ module.exports = {
       'error',
       { blankLine: 'always', prev: 'block', next: 'export' },
       { blankLine: 'always', prev: 'block-like', next: 'export' },
+      { blankLine: 'always', prev: 'class', next: 'export' },
       { blankLine: 'always', prev: 'function', next: 'export' },
     ],
   },
