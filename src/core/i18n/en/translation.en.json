@@ -992,6 +992,7 @@
           "description": ""
         },
         "subentities": {
+          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
           "list": "List of {{entities}}",
           "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
         }
