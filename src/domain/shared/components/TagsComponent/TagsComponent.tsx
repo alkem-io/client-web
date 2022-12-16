@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
 import { Box, BoxProps, Tooltip } from '@mui/material';
@@ -8,31 +8,34 @@ import Skeleton from '@mui/material/Skeleton';
 import LinesFitter from '../LinesFitter/LinesFitter';
 import { CardText } from '../../../../core/ui/typography';
 
-interface Props {
+interface TagsComponentProps extends BoxProps {
   tags: string[];
   count?: number;
   loading?: boolean;
+  height?: number;
   color?: ChipProps['color'];
   size?: ChipProps['size'];
   variant?: ChipProps['variant'];
 }
 
-const DEFAULT_TAGS_CONTAINER_PROPS: Partial<BoxProps> = {
+const getDefaultTagsContainerProps = (hasHeight?: boolean): Partial<BoxProps> => ({
   display: 'flex',
   gap: (theme: Theme) => theme.spacing(0.4),
   flexWrap: 'wrap',
-  minHeight: (theme: Theme) => theme.spacing(4),
-};
+  // TODO this is left for compatibility with older components that don't specify height on TagsComponent
+  minHeight: hasHeight ? undefined : (theme: Theme) => theme.spacing(4),
+});
 
-const TagsComponent: FC<Props & BoxProps> = ({
+const TagsComponent = ({
   tags,
   count = 3,
   loading,
   color,
   size = 'small',
   variant = 'outlined',
+  height,
   ...tagsContainerProps
-}) => {
+}: TagsComponentProps) => {
   const { t } = useTranslation();
 
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
@@ -57,7 +60,7 @@ const TagsComponent: FC<Props & BoxProps> = ({
 
   if (loading) {
     return (
-      <Box {...DEFAULT_TAGS_CONTAINER_PROPS} {...tagsContainerProps}>
+      <Box {...getDefaultTagsContainerProps} {...tagsContainerProps}>
         {times(count, i => (
           <Skeleton key={i} width={`${100 / count}%`}>
             <Chip variant="outlined" color="primary" sx={{ borderColor: 'primary.main' }} size="small" />
@@ -80,8 +83,9 @@ const TagsComponent: FC<Props & BoxProps> = ({
       items={tags}
       renderItem={renderTag}
       renderMore={renderMore}
-      {...DEFAULT_TAGS_CONTAINER_PROPS}
+      {...getDefaultTagsContainerProps(typeof height === 'number')}
       {...tagsContainerProps}
+      height={height}
     />
   );
 };

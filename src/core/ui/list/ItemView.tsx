@@ -8,7 +8,7 @@ interface ViewProps {
 
 const ItemView = ({ visual, children, ...containerProps }: PropsWithChildren<ViewProps> & BoxProps) => {
   return (
-    <Box display="flex" alignItems="center" gap={gutters()} {...containerProps}>
+    <Box display="flex" alignItems="center" gap={gutters()} height={gutters(2)} {...containerProps}>
       {visual && cloneElement(visual, { flexShrink: 0 })}
       <Box overflow="hidden">{children}</Box>
     </Box>

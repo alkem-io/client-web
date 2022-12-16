@@ -545,6 +545,10 @@ export const ChallengeCardFragmentDoc = gql`
       name
       tags
     }
+    lifecycle {
+      id
+      state
+    }
   }
   ${VisualUriFragmentDoc}
 `;

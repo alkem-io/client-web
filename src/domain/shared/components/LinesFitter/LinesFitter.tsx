@@ -70,16 +70,17 @@ const getNextState = (state: LinesFitterState, action: HandledAction): LinesFitt
   }
 };
 
-const initialState: LinesFitterState = {
-  stage: Stage.MEASURING_EXPECTED_HEIGHT,
+const getInitialState = (expectedHeight?: number): LinesFitterState => ({
+  stage: typeof expectedHeight === 'undefined' ? Stage.MEASURING_EXPECTED_HEIGHT : Stage.FILLING_WITH_CHILDREN,
   itemsToDisplayCount: 0,
-  expectedHeight: 0,
-};
+  expectedHeight: expectedHeight ?? 0,
+});
 
-export interface LinesFitterProps<Item> {
+export interface LinesFitterProps<Item> extends BoxProps {
   items: Item[];
   renderItem: (item: Item, index: number) => ReactNode;
   renderMore?: (remainingItems: Item[]) => ReactNode;
+  height?: number;
 }
 
 /**
@@ -88,10 +89,10 @@ export interface LinesFitterProps<Item> {
  * when no items are rendered yet. So, to define the boundary you need to set `min-height` on the component
  * (using `className` or `style` - all props are proxied to the wrapper `<div>`).
  */
-const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: LinesFitterProps<Item> & BoxProps) => {
+const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperProps }: LinesFitterProps<Item>) => {
   const wrapperElementRef = useRef<HTMLDivElement>(null);
 
-  const [state, dispatch] = useReducer(getNextState, initialState);
+  const [state, dispatch] = useReducer(getNextState, getInitialState(height));
 
   const measureWrapperHeight = () => {
     const element = wrapperElementRef.current!;
@@ -162,7 +163,7 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: 
  * In order not to destroy user experience in production, in case of exception an empty container is returned.
  */
 const SilentLinesFitter = <Item,>(props: LinesFitterProps<Item>) => {
-  const { items, renderItem, renderMore, ...wrapperProps } = props;
+  const { items, renderItem, renderMore, ref, ...wrapperProps } = props;
 
   return (
     <LinesFitterErrorBoundary {...wrapperProps}>

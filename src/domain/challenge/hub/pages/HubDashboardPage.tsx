@@ -53,6 +53,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     displayName={challenge.displayName}
                     tags={challenge.tagset?.tags!}
                     tagline={challenge.context?.tagline!}
+                    innovationFlowState={challenge.lifecycle?.state}
                   />
                 )}
                 journeyTypeName="hub"

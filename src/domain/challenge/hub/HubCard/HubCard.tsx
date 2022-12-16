@@ -1,42 +1,34 @@
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardImage from '../../../../core/ui/card/CardImage';
-import ItemView from '../../../../core/ui/list/ItemView';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { HubOutlined } from '@mui/icons-material';
-import { CardText, BlockTitle, Caption } from '../../../../core/ui/typography';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import CardContent from '../../../../core/ui/card/CardContent';
+import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
+import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 
-interface HubCardProps {
-  bannerUri: string;
-  tagline: string;
+interface HubCardProps extends Omit<JourneyCardProps, 'header'> {
   displayName: string;
-  tags: string[];
   membersCount: number;
 }
 
-const HubCard = ({ bannerUri, tagline, displayName, tags, membersCount }: HubCardProps) => {
+const HubCard = ({ displayName, membersCount, tagline, ...props }: HubCardProps) => {
   const { t } = useTranslation();
 
   return (
-    <ContributeCard>
-      <CardImage src={bannerUri} alt={tagline} />
-      <CardContent>
-        <ItemView visual={<RoundedIcon size="small" component={HubOutlined} />} gap={1}>
+    <JourneyCard
+      tagline={tagline}
+      header={
+        <>
           <BlockTitle noWrap component="dt">
             {displayName}
           </BlockTitle>
           <Caption noWrap component="dd">
             {t('community.members-count', { count: membersCount })}
           </Caption>
-        </ItemView>
-        <CardText sx={webkitLineClamp(2)}>{tagline}</CardText>
-        <TagsComponent tags={tags} variant="filled" minHeight={gutters()} color="primary" />
-      </CardContent>
-    </ContributeCard>
+        </>
+      }
+      {...props}
+    >
+      <JourneyCardTagline>{tagline}</JourneyCardTagline>
+    </JourneyCard>
   );
 };
 
