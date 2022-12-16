@@ -82,4 +82,5 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
     </Grid>
   );
 };
+
 export default MessageView;

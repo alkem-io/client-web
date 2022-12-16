@@ -146,4 +146,5 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
     </Grid>
   );
 };
+
 export default EditChallengePage;

@@ -16,4 +16,5 @@ const LifecycleSection: FC<LifecycleSectionProps> = ({ lifecycle }) => {
     </DashboardGenericSection>
   );
 };
+
 export default LifecycleSection;

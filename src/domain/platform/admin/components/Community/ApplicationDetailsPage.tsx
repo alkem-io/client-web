@@ -10,4 +10,5 @@ export const ApplicationDetailsPage: FC = () => {
     </>
   );
 };
+
 export default ApplicationDetailsPage;

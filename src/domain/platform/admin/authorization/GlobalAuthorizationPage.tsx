@@ -85,4 +85,5 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
     </AdminLayout>
   );
 };
+
 export default GlobalAuthorizationPage;

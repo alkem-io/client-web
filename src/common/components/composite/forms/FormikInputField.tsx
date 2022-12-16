@@ -104,4 +104,5 @@ export const FormikInputField: FC<InputFieldProps> = ({
     </>
   );
 };
+
 export default FormikInputField;

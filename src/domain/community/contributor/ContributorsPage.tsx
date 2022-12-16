@@ -62,4 +62,5 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
     </TopLevelDesktopLayout>
   );
 };
+
 export default ContributorsPage;

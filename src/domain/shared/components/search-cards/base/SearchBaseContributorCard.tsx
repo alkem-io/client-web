@@ -59,4 +59,5 @@ const SearchBaseContributorCard: FC<SearchBaseContributorCardProps> = ({
     </SearchBaseCard>
   );
 };
+
 export default SearchBaseContributorCard;

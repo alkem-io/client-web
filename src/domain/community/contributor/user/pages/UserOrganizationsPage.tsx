@@ -38,4 +38,5 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
     </UserSettingsLayout>
   );
 };
+
 export default UserOrganizationsPage;

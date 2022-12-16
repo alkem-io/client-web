@@ -33,4 +33,5 @@ export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
     </UserPageLayout>
   );
 };
+
 export default UserProfilePage;

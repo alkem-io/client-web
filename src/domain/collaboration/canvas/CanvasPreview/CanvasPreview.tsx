@@ -22,4 +22,5 @@ const CanvasPreview: FC<{ value: string; loading: boolean | undefined }> = ({ va
     />
   );
 };
+
 export default CanvasPreview;

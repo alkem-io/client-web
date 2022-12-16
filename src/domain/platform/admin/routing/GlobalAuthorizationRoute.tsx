@@ -28,4 +28,5 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
     </Routes>
   );
 };
+
 export default GlobalAuthorizationRoute;

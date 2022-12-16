@@ -32,4 +32,5 @@ const PreJoinDialog: FC<PreApplicationDialogProps> = ({ open, onClose, onJoin })
     </Dialog>
   );
 };
+
 export default PreJoinDialog;

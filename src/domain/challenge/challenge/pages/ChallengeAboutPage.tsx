@@ -3,12 +3,9 @@ import { useChallenge } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { PageProps } from '../../../shared/types/PageProps';
 import { ChallengeAboutView } from '../views/ChallengeAboutView';
 
-export interface ChallengeContextPageProps extends PageProps {}
-
-const ChallengeAboutPage: FC<ChallengeContextPageProps> = () => {
+const ChallengeAboutPage: FC = () => {
   const { hubNameId, displayName: challengeDisplayName, challengeNameId, communityId } = useChallenge();
 
   return (
@@ -34,4 +31,5 @@ const ChallengeAboutPage: FC<ChallengeContextPageProps> = () => {
     </ChallengePageLayout>
   );
 };
+
 export default ChallengeAboutPage;

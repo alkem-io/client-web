@@ -18,4 +18,5 @@ const HubAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId 
     </Routes>
   );
 };
+
 export default HubAuthorizationRoute;

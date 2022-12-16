@@ -43,7 +43,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={routes.About} element={<OpportunityAboutPage paths={currentPaths} />} />
+        <Route path={routes.About} element={<OpportunityAboutPage />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
 
         <Route
@@ -67,4 +67,5 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
     </Routes>
   );
 };
+
 export default OpportunityRoute;

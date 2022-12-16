@@ -60,4 +60,5 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
     </Grid>
   );
 };
+
 export default UserProfilePageView;

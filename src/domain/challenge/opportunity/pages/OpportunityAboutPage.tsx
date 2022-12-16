@@ -1,14 +1,11 @@
 import React, { FC } from 'react';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import { PageProps } from '../../../shared/types/PageProps';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useOpportunity } from '../hooks/useOpportunity';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import { OpportunityAboutView } from '../views/OpportunityAboutView';
 
-export interface OpportunityAboutPageProps extends PageProps {}
-
-const OpportunityAboutPage: FC<OpportunityAboutPageProps> = () => {
+const OpportunityAboutPage: FC = () => {
   const { hubNameId, opportunityNameId, displayName, communityId } = useOpportunity();
 
   return (
@@ -34,4 +31,5 @@ const OpportunityAboutPage: FC<OpportunityAboutPageProps> = () => {
     </OpportunityPageLayout>
   );
 };
+
 export default OpportunityAboutPage;

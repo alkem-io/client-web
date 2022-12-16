@@ -25,4 +25,5 @@ export const HelpButton: FC<HelpButtonProps> = ({ helpText, fontSize = 'small' }
     </Tooltip>
   );
 };
+
 export default HelpButton;

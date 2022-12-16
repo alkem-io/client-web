@@ -37,4 +37,5 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
     </Routes>
   );
 };
+
 export default UserSettingsRoute;

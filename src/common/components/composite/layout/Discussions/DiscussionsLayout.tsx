@@ -108,4 +108,5 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
     </Grid>
   );
 };
+
 export default DiscussionsLayout;

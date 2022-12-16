@@ -18,4 +18,5 @@ const ContextLayout: FC<ContextLayoutProps> = ({ rightPanel, leftPanel, children
     </Grid>
   );
 };
+
 export default ContextLayout;

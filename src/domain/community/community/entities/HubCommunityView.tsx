@@ -86,4 +86,5 @@ const HubCommunityView: FC = () => {
     </>
   );
 };
+
 export default HubCommunityView;

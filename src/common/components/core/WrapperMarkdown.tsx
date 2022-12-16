@@ -30,9 +30,8 @@ interface LinkProps
 
 const LinkNewTab = ({ node, children, ...props }: LinkProps) => {
   return (
-    <a target="_blank" {...props}>
-      {children}
-    </a>
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    <a target="_blank" {...props} />
   );
 };
 

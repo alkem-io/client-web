@@ -41,4 +41,5 @@ const SearchResultSection: FC<ResultSectionProps> = ({
     </DashboardGenericSection>
   );
 };
+
 export default SearchResultSection;

@@ -47,4 +47,5 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
     />
   );
 };
+
 export default OpportunityCard;

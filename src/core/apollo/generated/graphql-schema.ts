@@ -10441,6 +10441,7 @@ export type CreateCalloutMutation = {
       | {
           __typename?: 'Comments';
           id: string;
+          commentsCount: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -10715,6 +10716,7 @@ export type HubCalloutsQuery = {
                   | {
                       __typename?: 'Comments';
                       id: string;
+                      commentsCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -10907,6 +10909,7 @@ export type ChallengeCalloutsQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11105,6 +11108,7 @@ export type OpportunityCalloutsQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11294,6 +11298,7 @@ export type HubCalloutQuery = {
                   | {
                       __typename?: 'Comments';
                       id: string;
+                      commentsCount: number;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -11485,6 +11490,7 @@ export type ChallengeCalloutQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11682,6 +11688,7 @@ export type OpportunityCalloutQuery = {
                     | {
                         __typename?: 'Comments';
                         id: string;
+                        commentsCount: number;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11918,6 +11925,7 @@ export type CalloutFragment = {
     | {
         __typename?: 'Comments';
         id: string;
+        commentsCount: number;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -19103,6 +19111,7 @@ export type ActivityLogUpdateSentFragment = {
 export type CommentsWithMessagesFragment = {
   __typename?: 'Comments';
   id: string;
+  commentsCount: number;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;

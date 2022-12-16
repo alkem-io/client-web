@@ -105,4 +105,5 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
     />
   );
 };
+
 export default OpportunityContextView;

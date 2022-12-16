@@ -34,4 +34,5 @@ const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type
     </Routes>
   );
 };
+
 export default ApplyRoute;

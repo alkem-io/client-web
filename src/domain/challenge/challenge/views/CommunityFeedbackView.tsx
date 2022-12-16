@@ -137,4 +137,5 @@ const CommunityFeedbackView: FC<CommunityFeedbackViewProps> = ({ entities, actio
     </>
   );
 };
+
 export default CommunityFeedbackView;

@@ -96,4 +96,5 @@ const CheckboxesFilter = <T extends Identifiable>({
     </Root>
   );
 };
+
 export default CheckboxesFilter;
