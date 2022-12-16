@@ -2037,7 +2037,7 @@ export type Mutation = {
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
-  /** Removes a User as a member of the specified Community. */
+  /** Removes a User as a Lead of the specified Community. */
   removeUserAsCommunityLead: Community;
   /** Removes a User as a member of the specified Community. */
   removeUserAsCommunityMember: Community;
