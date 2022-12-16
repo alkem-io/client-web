@@ -70,4 +70,5 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
     </Card>
   );
 };
+
 export default UserProfileView;

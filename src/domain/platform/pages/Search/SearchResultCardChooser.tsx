@@ -32,4 +32,5 @@ const SearchResultCardChooser = ({
   }
   throw new Error(`Unrecognized result typename: ${result.__typename}`);
 };
+
 export default SearchResultCardChooser;

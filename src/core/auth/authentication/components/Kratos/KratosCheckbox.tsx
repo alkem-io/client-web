@@ -40,4 +40,5 @@ const KratosCheckbox: FC<KratosCheckboxProps> = ({ node }) => {
     </Grid>
   );
 };
+
 export default KratosCheckbox;

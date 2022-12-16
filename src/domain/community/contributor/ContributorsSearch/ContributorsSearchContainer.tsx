@@ -114,4 +114,5 @@ const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ sea
   const error = users.error || organizations.error;
   return <>{children({ users, organizations }, { loading, error }, {})}</>;
 };
+
 export default ContributorsSearchContainer;

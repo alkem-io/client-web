@@ -7,7 +7,10 @@ import {
   ContextTabFragment,
   LifecycleContextTabFragment,
   Scalars,
-  Tagset, DashboardLeadUserFragment, AssociatedOrganizationDetailsFragment, ReferenceDetailsFragment,
+  Tagset,
+  DashboardLeadUserFragment,
+  AssociatedOrganizationDetailsFragment,
+  ReferenceDetailsFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import {
   useChallengeContextQuery,
@@ -91,7 +94,9 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
   const challengeCommunity = challengeData?.hub.challenge?.community;
   const challengePrivileges = challengeData?.hub.challenge?.authorization?.myPrivileges ?? [];
   const canCreateCommunityContextReview = challengePrivileges.includes(AuthorizationPrivilege.CommunityContextReview);
-  const challengeCommunityReadAccess = challengeCommunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  const challengeCommunityReadAccess = challengeCommunity?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
 
   const {
     data: opportunityData,
@@ -106,14 +111,16 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
   const opportunityTagset = opportunityData?.hub?.opportunity?.tagset;
   const opportunityLifecycle = opportunityData?.hub?.opportunity?.lifecycle;
   const opportunityCommunity = opportunityData?.hub.opportunity?.community;
-  const opportunityCommunityReadAccess =
-    opportunityCommunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  const opportunityCommunityReadAccess = opportunityCommunity?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
 
   const context = hubContext ?? challengeContext ?? opportunityContext;
   const tagset = hugTagset ?? challengeTagset ?? opportunityTagset;
   const lifecycle = challengeLifecycle ?? opportunityLifecycle;
   const community = hubCommunity ?? challengeCommunity ?? opportunityCommunity;
-  const communityReadAccess = hubCommunityReadAccess ?? challengeCommunityReadAccess ?? opportunityCommunityReadAccess ?? false;
+  const communityReadAccess =
+    hubCommunityReadAccess ?? challengeCommunityReadAccess ?? opportunityCommunityReadAccess ?? false;
   const leadUsers = community?.leadUsers;
   const leadOrganizations = community?.leadOrganizations;
   const hostOrganization = hubData?.hub?.host;
@@ -124,7 +131,7 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
 
   const permissions: ContextTabPermissions = {
     canCreateCommunityContextReview,
-    communityReadAccess
+    communityReadAccess,
   };
 
   const contributors = useCommunityMembersAsCardProps(community);
@@ -132,16 +139,23 @@ const AboutPageContainer: FC<ContextTabContainerProps> = ({
   return (
     <>
       {children(
-      {
-        context, tagset, lifecycle, permissions, metrics,
-        leadUsers, leadOrganizations, hostOrganization,
-        references: [], // todo implement
-        ...contributors
-      },
-      { loading, error },
-      {}
+        {
+          context,
+          tagset,
+          lifecycle,
+          permissions,
+          metrics,
+          leadUsers,
+          leadOrganizations,
+          hostOrganization,
+          references: [], // todo implement
+          ...contributors,
+        },
+        { loading, error },
+        {}
       )}
     </>
   );
 };
+
 export default AboutPageContainer;

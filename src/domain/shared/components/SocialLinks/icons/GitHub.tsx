@@ -7,4 +7,5 @@ export interface GitHubProps {}
 const GitHub: FC<SvgIconProps> = props => {
   return <MUIGitHub htmlColor="#000000" {...props} />;
 };
+
 export default GitHub;

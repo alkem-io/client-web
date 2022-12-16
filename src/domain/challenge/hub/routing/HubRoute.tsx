@@ -37,7 +37,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={routes.About} element={<HubAboutPage paths={currentPaths} />} />
+        <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
 
         <Route

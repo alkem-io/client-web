@@ -1,3 +1,3 @@
-import { BatchPrediction } from '@mui/icons-material';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 
-export const OpportunityIcon = BatchPrediction;
+export const OpportunityIcon = LightbulbOutlinedIcon;

@@ -107,4 +107,5 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
     </FormGroup>
   );
 };
+
 export default FormikCommentInputField;

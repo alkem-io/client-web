@@ -75,4 +75,5 @@ const PendingApplicationsView: FC<PendingApplicationsViewProps> = ({
     </Box>
   );
 };
+
 export default PendingApplicationsView;

@@ -109,4 +109,5 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
     </AdminLayout>
   );
 };
+
 export default NewHub;

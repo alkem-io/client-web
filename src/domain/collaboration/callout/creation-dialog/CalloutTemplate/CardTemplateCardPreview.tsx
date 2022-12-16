@@ -71,4 +71,5 @@ const CardTemplatePreviewCard: FC<CardTemplatePreviewProps> = ({ cardTemplate, k
     </EntityContributionCard>
   );
 };
+
 export default CardTemplatePreviewCard;

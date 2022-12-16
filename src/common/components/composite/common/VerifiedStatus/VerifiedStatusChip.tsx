@@ -42,4 +42,5 @@ export const VerifiedStatusChip: FC<VerifiedStatusChipProps> = ({ verified, to }
     />
   );
 };
+
 export default VerifiedStatusChip;

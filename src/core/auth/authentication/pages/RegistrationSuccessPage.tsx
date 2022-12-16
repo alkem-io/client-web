@@ -36,4 +36,5 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
     </AuthenticationLayout>
   );
 };
+
 export default RegistrationSuccessPage;

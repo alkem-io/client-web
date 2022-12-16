@@ -80,4 +80,5 @@ export const HubProfile: FC = () => {
     </Container>
   );
 };
+
 export default HubProfile;

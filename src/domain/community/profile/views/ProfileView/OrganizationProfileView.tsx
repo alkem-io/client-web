@@ -76,4 +76,5 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
     </Card>
   );
 };
+
 export default OrganizationProfileView;

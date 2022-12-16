@@ -30,4 +30,5 @@ const CommunityContextFeedbackPage: FC<PageProps> = ({ paths }) => {
     </CommunityContextFeedbackContainer>
   );
 };
+
 export default CommunityContextFeedbackPage;

@@ -41,4 +41,5 @@ const TagLabel: FC<TagLabelProps> = ({ children, className, sx }) => {
     </Root>
   );
 };
+
 export default TagLabel;

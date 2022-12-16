@@ -32,4 +32,5 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
 
   return <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} readOnly={!profileId || readOnly} {...rest} />;
 };
+
 export default ProfileReferenceSegment;

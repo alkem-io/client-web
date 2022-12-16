@@ -59,4 +59,5 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
     </Routes>
   );
 };
+
 export default DiscussionsRoute;

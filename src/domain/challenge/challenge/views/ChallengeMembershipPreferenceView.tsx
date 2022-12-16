@@ -47,4 +47,5 @@ const ChallengeMembershipPreferenceView: FC<ChallengeMembershipPreferenceViewPro
     />
   );
 };
+
 export default ChallengeMembershipPreferenceView;

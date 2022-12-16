@@ -15,4 +15,5 @@ const nameOf = <T>() => {
     [P in keyof T]: P;
   };
 };
+
 export default nameOf;
