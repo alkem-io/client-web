@@ -1,18 +1,40 @@
-import { Avatar, Box, CardHeader, Skeleton } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import React, { FC, PropsWithChildren } from 'react';
+import { Paper, Avatar, Box, CardHeader, Skeleton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import LinkCard from '../../../common/components/core/LinkCard/LinkCard';
-import CircleTag from '../../../common/components/core/CircleTag';
-import VerifiedStatus from '../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 import { LoadingButton } from '@mui/lab';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 import { Caption, PageTitle } from '../typography/components';
+import CircleTag from '../../../common/components/core/CircleTag';
+import { VerifiedStatus } from '../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 
-const LINES_TO_SHOW = 4;
+const ElevatedPaper = withElevationOnHover(Paper);
 
-export interface OrganizationCardProps {
+export interface OrganizationCardContainerProps {
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+}
+
+const OrganizationCardContainer = ({ onClick, children }: PropsWithChildren<OrganizationCardContainerProps>) => {
+  return (
+    <ElevatedPaper
+      sx={{
+        background: theme => theme.palette.background.paper,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        cursor: onClick ? 'pointer' : 'default',
+      }}
+      onClick={onClick}
+      elevationDisabled={!onClick}
+    >
+      {children}
+    </ElevatedPaper>
+  );
+};
+
+interface OrganizationCardProps {
   name?: string;
   avatar?: string;
   description?: string;
@@ -21,33 +43,9 @@ export interface OrganizationCardProps {
   verified?: boolean;
   loading?: boolean;
   url?: string;
-  transparent?: boolean;
   handleRemoveSelfFromOrganization: () => void;
   removingFromOrganization?: boolean;
 }
-
-const useStyles = makeStyles(theme =>
-  createStyles({
-    card: {
-      background: theme.palette.background.default,
-    },
-    cardHeader: {
-      padding: theme.spacing(1),
-      alignItems: 'flex-start',
-    },
-    cardHeaderAction: {
-      margin: 0,
-      paddingRight: theme.spacing(3),
-    },
-    multiLineEllipsis: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: '-webkit-box',
-      '-webkit-line-clamp': LINES_TO_SHOW,
-      '-webkit-box-orient': 'vertical',
-    },
-  })
-);
 
 const OrganizationCard: FC<OrganizationCardProps> = ({
   name,
@@ -58,27 +56,18 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   verified,
   loading,
   url,
-  transparent = false,
   handleRemoveSelfFromOrganization,
   removingFromOrganization = false,
 }) => {
-  const styles = useStyles();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const navigateToOrganization = () => {
+    if (url) navigate(url);
+  };
   return (
-    <LinkCard
-      to={url}
-      aria-label="associated-organization-card"
-      classes={{
-        root: transparent ? undefined : styles.card,
-      }}
-      elevationDisabled={transparent}
-    >
+    <OrganizationCardContainer onClick={navigateToOrganization}>
       <CardHeader
-        className={styles.cardHeader}
-        classes={{
-          action: styles.cardHeaderAction,
-        }}
         title={<PageTitle>{loading ? <Skeleton width="80%" /> : name}</PageTitle>}
         subheader={
           <>
@@ -134,7 +123,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
           {t('common.disassociate')}
         </LoadingButton>
       </Box>
-    </LinkCard>
+    </OrganizationCardContainer>
   );
 };
 
