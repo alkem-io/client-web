@@ -14,6 +14,7 @@ export interface OpportunityContextProps {
   opportunity?: OpportunityProviderFragment;
   opportunityId: string;
   opportunityNameId: string;
+  communityId: string;
   challengeId: string;
   challengeNameId: string;
   hubId: string;
@@ -27,6 +28,7 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   loading: true,
   opportunityId: '',
   opportunityNameId: '',
+  communityId: '',
   challengeId: '',
   challengeNameId: '',
   hubId: '',
@@ -50,6 +52,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const hubId = data?.hub?.id || '';
   const opportunity = data?.hub?.opportunity;
   const opportunityId = opportunity?.id || '';
+  const communityId = opportunity?.community?.id ?? '';
   // using the challenge provider
   const { challengeId } = useChallenge();
   const displayName = opportunity?.displayName || '';
@@ -75,6 +78,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         challengeNameId,
         opportunityId,
         opportunityNameId,
+        communityId,
         displayName,
         permissions,
         loading,

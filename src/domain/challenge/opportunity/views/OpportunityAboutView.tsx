@@ -1,37 +1,37 @@
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { AboutSection } from '../../common/tabs/About/AboutSection';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-import { useChallenge } from '../hooks/useChallenge';
+import { useTranslation } from 'react-i18next';
+import { useOpportunity } from '../hooks/useOpportunity';
 import { JourneyAboutWithLead } from '../../common/tabs/About/Types';
 
-interface ChallengeAboutViewProps extends JourneyAboutWithLead {}
+interface OpportunityAboutViewProps extends JourneyAboutWithLead {}
 
-export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({ metrics, ...rest }) => {
+export const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({ metrics, ...rest }) => {
   const { t } = useTranslation();
-  const { hubNameId, communityId } = useChallenge();
+  const { hubNameId, communityId } = useOpportunity();
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
-        name: t('common.opportunities'),
-        type: MetricType.Opportunity,
-        count: getMetricCount(metrics, MetricType.Opportunity),
-        color: 'neutral',
-      },
-      {
         name: t('common.members'),
+        type: MetricType.Member,
         count: getMetricCount(metrics, MetricType.Member),
         color: 'neutralMedium',
+      },
+      {
+        name: t('common.interests'),
+        count: getMetricCount(metrics, MetricType.Relation),
+        color: 'primary',
       },
     ];
   }, [metrics, t]);
 
   return (
     <AboutSection
-      journeyTypeName="challenge"
+      journeyTypeName="opportunity"
       hubNameId={hubNameId}
       communityId={communityId}
       metricsItems={metricsItems}

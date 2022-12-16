@@ -10,7 +10,7 @@ import { nameOfUrl } from '../../../../core/routing/urlParams';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
-import OpportunityContextPage from '../pages/OpportunityContextPage';
+import OpportunityAboutPage from '../pages/OpportunityAboutPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
 
@@ -43,7 +43,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
+        <Route path={routes.About} element={<OpportunityAboutPage />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
 
         <Route

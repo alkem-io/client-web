@@ -3,7 +3,7 @@ import GridProvider from '../grid/GridProvider';
 import { GUTTER_MUI } from '../grid/constants';
 import GridItem from '../grid/GridItem';
 
-interface PageContentColumnProps extends BoxProps {
+export interface PageContentColumnProps extends BoxProps {
   columns: number;
 }
 

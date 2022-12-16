@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
+import { LifecycleState } from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
 import { OpportunityContextSection } from './OpportunityContextSection';
 import {
   ContextTabFragment,

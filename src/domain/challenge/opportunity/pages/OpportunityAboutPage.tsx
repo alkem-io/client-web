@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
-import { useChallenge } from '../hooks/useChallenge';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { ChallengeAboutView } from '../views/ChallengeAboutView';
+import { useOpportunity } from '../hooks/useOpportunity';
+import OpportunityPageLayout from '../layout/OpportunityPageLayout';
+import { OpportunityAboutView } from '../views/OpportunityAboutView';
 
-const ChallengeAboutPage: FC = () => {
-  const { hubNameId, displayName: challengeDisplayName, challengeNameId, communityId } = useChallenge();
+const OpportunityAboutPage: FC = () => {
+  const { hubNameId, opportunityNameId, displayName, communityId } = useOpportunity();
 
   return (
-    <ChallengePageLayout currentSection={EntityPageSection.About}>
-      <AboutPageContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
+    <OpportunityPageLayout currentSection={EntityPageSection.About}>
+      <AboutPageContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
         {({ context, tagset, permissions, ...rest }, state) => (
-          <ChallengeAboutView
-            name={challengeDisplayName}
+          <OpportunityAboutView
+            name={displayName}
             tagline={context?.tagline}
             tags={tagset?.tags}
             who={context?.who}
@@ -28,8 +28,8 @@ const ChallengeAboutPage: FC = () => {
           />
         )}
       </AboutPageContainer>
-    </ChallengePageLayout>
+    </OpportunityPageLayout>
   );
 };
 
-export default ChallengeAboutPage;
+export default OpportunityAboutPage;

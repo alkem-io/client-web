@@ -1,15 +1,15 @@
-import InfoIcon from '@mui/icons-material/Info';
 import { Button, Tooltip } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
-import { LifecycleModal } from '../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
+import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
+import { LifecycleModal } from '../../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
+import { ReactComponent as LifecycleStateIcon } from './LifecycleStateIcon.svg';
 
 export interface LifecycleProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
-const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
+export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const state = lifecycle?.state || '';
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
   return (
     <>
       <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
-        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<InfoIcon />}>
+        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<LifecycleStateIcon />}>
           {`State: ${state}`}
         </Button>
       </Tooltip>
@@ -33,5 +33,3 @@ const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
     </>
   );
 };
-
-export default LifecycleState;
