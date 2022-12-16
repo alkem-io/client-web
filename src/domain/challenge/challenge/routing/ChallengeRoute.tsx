@@ -18,7 +18,7 @@ import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
-import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
+import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 
 interface ChallengeRootProps extends PageProps {}
@@ -46,27 +46,18 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
-        <Route
-          path={routes.Explore}
-          element={<CalloutsPage entityTypeName="challenge" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
-        />
+        <Route path={routes.Contribute} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
 
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={
-            <CalloutsPage
-              entityTypeName="challenge"
-              rootUrl={`${resolved.pathname}/${routes.Explore}`}
-              scrollToCallout
-            />
-          }
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<ContributePage entityTypeName="challenge" scrollToCallout />}
         />
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName="challenge" />
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
           }
         />
       </Route>

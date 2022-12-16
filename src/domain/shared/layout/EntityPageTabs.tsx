@@ -144,7 +144,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
               icon={<DashboardOutlined />}
             />
             <BottomNavigationAction
-              value={EntityPageSection.Explore}
+              value={EntityPageSection.Contribute}
               label={t('common.contribute')}
               icon={<CampaignOutlined />}
             />
@@ -229,8 +229,8 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         />
         <HeaderNavigationTab
           label={t('common.explore')}
-          value={EntityPageSection.Explore}
-          to={`${rootUrl}/${EntityPageSection.Explore}`}
+          value={EntityPageSection.Contribute}
+          to={`${rootUrl}/${EntityPageSection.Contribute}`}
         />
         {subEntityTab && (
           <HeaderNavigationTab

@@ -1,10 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
 import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
   AspectCardFragmentDoc,
@@ -18,182 +17,188 @@ import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutS
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard from './AspectCard';
+import { BaseCalloutImpl } from '../Types';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+interface AspectCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
     aspects: AspectCardAspect[];
   };
-  calloutNames: string[];
-  loading?: boolean;
-  canCreate?: boolean;
 }
 
-const AspectCallout = ({
-  callout,
-  calloutNames,
-  loading,
-  canCreate = false,
-  hubNameId,
-  challengeNameId,
-  opportunityNameId,
-  onCalloutEdit,
-  onVisibilityChange,
-  onCalloutDelete,
-}: AspectCalloutProps) => {
-  // Dialog handling
-  const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
-  const handleCreateDialogOpened = () => setAspectDialogOpen(true);
-  const handleCreateDialogClosed = () => setAspectDialogOpen(false);
-  const handleError = useApolloErrorHandler();
-  const navigate = useNavigate();
-
-  const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
-    hubNameId: hubNameId || '',
-    calloutId: callout.id,
-    challengeNameId,
-    opportunityNameId,
-  });
-
-  const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
-    onError: handleError,
-    update: (cache, { data }) => {
-      if (subscriptionEnabled || !data) {
-        return;
-      }
-
-      const { createAspectOnCallout } = data;
-
-      const calloutRefId = cache.identify({
-        __typename: 'Callout',
-        id: callout.id,
-      });
-
-      if (!calloutRefId) {
-        return;
-      }
-
-      cache.modify({
-        id: calloutRefId,
-        fields: {
-          aspects(existingAspects = []) {
-            const newAspectRef = cache.writeFragment({
-              data: createAspectOnCallout,
-              fragment: AspectCardFragmentDoc,
-              fragmentName: 'AspectCard',
-            });
-            return [...existingAspects, newAspectRef];
-          },
-        },
-      });
+const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
+  (
+    {
+      callout,
+      calloutNames,
+      loading,
+      canCreate = false,
+      hubNameId,
+      challengeNameId,
+      opportunityNameId,
+      onCalloutEdit,
+      onVisibilityChange,
+      onCalloutDelete,
+      contributionsCount,
     },
-  });
+    ref
+  ) => {
+    // Dialog handling
+    const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
+    const handleCreateDialogOpened = () => setAspectDialogOpen(true);
+    const handleCreateDialogClosed = () => setAspectDialogOpen(false);
+    const handleError = useApolloErrorHandler();
+    const navigate = useNavigate();
 
-  const onCreate = async (aspect: OnCreateInput) => {
-    const { data } = await createAspect({
-      variables: {
-        aspectData: {
-          calloutID: callout.id,
-          displayName: aspect.displayName,
-          profileData: {
-            description: aspect.profileData?.description,
-            tags: aspect.profileData?.tags,
-          },
-          type: aspect.type,
-          visualUri: aspect.visualUri,
-        },
-      },
-      optimisticResponse: {
-        createAspectOnCallout: {
-          __typename: 'Aspect',
-          id: '',
-          nameID: '',
-          displayName: aspect.displayName ?? '',
-          profile: {
-            id: '',
-            description: aspect.profileData?.description || '',
-            tagset: {
-              id: '-1',
-              name: 'default',
-              tags: aspect.profileData?.tags ?? [],
+    const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
+      hubNameId: hubNameId || '',
+      calloutId: callout.id,
+      challengeNameId,
+      opportunityNameId,
+    });
+
+    const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
+      onError: handleError,
+      update: (cache, { data }) => {
+        if (subscriptionEnabled || !data) {
+          return;
+        }
+
+        const { createAspectOnCallout } = data;
+
+        const calloutRefId = cache.identify({
+          __typename: 'Callout',
+          id: callout.id,
+        });
+
+        if (!calloutRefId) {
+          return;
+        }
+
+        cache.modify({
+          id: calloutRefId,
+          fields: {
+            aspects(existingAspects = []) {
+              const newAspectRef = cache.writeFragment({
+                data: createAspectOnCallout,
+                fragment: AspectCardFragmentDoc,
+                fragmentName: 'AspectCard',
+              });
+              return [...existingAspects, newAspectRef];
             },
           },
-          type: aspect.type,
-          banner: {
-            id: '-1',
-            name: '',
-            uri: aspect.visualUri ?? '',
-          },
-          bannerNarrow: {
-            id: '-1',
-            name: '',
-            uri: aspect.visualUri ?? '',
-          },
-        },
+        });
       },
     });
 
-    const nameID = data?.createAspectOnCallout.nameID;
+    const onCreate = async (aspect: OnCreateInput) => {
+      const { data } = await createAspect({
+        variables: {
+          aspectData: {
+            calloutID: callout.id,
+            displayName: aspect.displayName,
+            profileData: {
+              description: aspect.profileData?.description,
+              tags: aspect.profileData?.tags,
+            },
+            type: aspect.type,
+            visualUri: aspect.visualUri,
+          },
+        },
+        optimisticResponse: {
+          createAspectOnCallout: {
+            __typename: 'Aspect',
+            id: '',
+            nameID: '',
+            displayName: aspect.displayName ?? '',
+            profile: {
+              id: '',
+              description: aspect.profileData?.description || '',
+              tagset: {
+                id: '-1',
+                name: 'default',
+                tags: aspect.profileData?.tags ?? [],
+              },
+            },
+            type: aspect.type,
+            banner: {
+              id: '-1',
+              name: '',
+              uri: aspect.visualUri ?? '',
+            },
+            bannerNarrow: {
+              id: '-1',
+              name: '',
+              uri: aspect.visualUri ?? '',
+            },
+          },
+        },
+      });
 
-    return nameID ? { nameID } : undefined;
-  };
+      const nameID = data?.createAspectOnCallout.nameID;
 
-  const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
-  const createButtonComponent = useMemo(
-    () =>
-      callout.state !== CalloutState.Closed ? (
-        <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-          <ContributeCard />
-        </CreateCalloutItemButton>
-      ) : undefined,
-    [callout.state]
-  );
+      return nameID ? { nameID } : undefined;
+    };
 
-  const navigateToAspect = (aspect: AspectCardAspect) => {
-    navigate(
-      buildAspectUrl(aspect.calloutNameId, aspect.nameID, {
-        hubNameId: hubNameId!,
-        challengeNameId,
-        opportunityNameId,
-      })
+    const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
+    const createButtonComponent = useMemo(
+      () =>
+        callout.state !== CalloutState.Closed ? (
+          <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+            <ContributeCard />
+          </CreateCalloutItemButton>
+        ) : undefined,
+      [callout.state]
     );
-  };
 
-  return (
-    <>
-      <CalloutLayout
-        callout={callout}
-        calloutNames={calloutNames}
-        onVisibilityChange={onVisibilityChange}
-        onCalloutEdit={onCalloutEdit}
-        onCalloutDelete={onCalloutDelete}
-      >
-        <CardsLayoutScroller maxHeight={372}>
-          <CardsLayout
-            items={loading ? [undefined, undefined] : callout.aspects}
-            deps={[hubNameId, challengeNameId, opportunityNameId]}
-            {...(canCreate ? { createButtonComponent } : {})}
-          >
-            {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
-          </CardsLayout>
-        </CardsLayoutScroller>
-      </CalloutLayout>
-      <AspectCreationDialog
-        open={aspectDialogOpen}
-        onClose={handleCreateDialogClosed}
-        onCreate={onCreate}
-        aspectNames={aspectNames}
-        calloutDisplayName={callout.displayName}
-        hubNameId={hubNameId!}
-        challengeNameId={challengeNameId}
-        opportunityNameId={opportunityNameId}
-        calloutId={callout.id}
-        cardTemplate={callout.cardTemplate}
-        isCreating={isCreatingAspect}
-      />
-    </>
-  );
-};
+    const navigateToAspect = (aspect: AspectCardAspect) => {
+      navigate(
+        buildAspectUrl(aspect.calloutNameId, aspect.nameID, {
+          hubNameId: hubNameId!,
+          challengeNameId,
+          opportunityNameId,
+        })
+      );
+    };
+
+    return (
+      <>
+        <CalloutLayout
+          ref={ref}
+          callout={callout}
+          calloutNames={calloutNames}
+          onVisibilityChange={onVisibilityChange}
+          onCalloutEdit={onCalloutEdit}
+          onCalloutDelete={onCalloutDelete}
+          contributionsCount={contributionsCount}
+        >
+          <CardsLayoutScroller maxHeight={425}>
+            <CardsLayout
+              items={loading ? [undefined, undefined] : callout.aspects}
+              deps={[hubNameId, challengeNameId, opportunityNameId]}
+              {...(canCreate ? { createButtonComponent } : {})}
+            >
+              {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
+            </CardsLayout>
+          </CardsLayoutScroller>
+        </CalloutLayout>
+        <AspectCreationDialog
+          open={aspectDialogOpen}
+          onClose={handleCreateDialogClosed}
+          onCreate={onCreate}
+          aspectNames={aspectNames}
+          calloutDisplayName={callout.displayName}
+          hubNameId={hubNameId!}
+          challengeNameId={challengeNameId}
+          opportunityNameId={opportunityNameId}
+          calloutId={callout.id}
+          cardTemplate={callout.cardTemplate}
+          isCreating={isCreatingAspect}
+        />
+      </>
+    );
+  }
+);
 
 export default AspectCallout;

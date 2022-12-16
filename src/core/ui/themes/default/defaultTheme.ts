@@ -6,7 +6,7 @@ import { themeTypographyOptions } from '../../typography/themeTypographyOptions'
 
 // use theme constant instead of these
 const SPACING = 10;
-const AVATAR_SIZE_XS = 5;
+const AVATAR_SIZE_XS = 4;
 const AVATAR_SIZE = 7;
 const AVATAR_SIZE_LG = 9;
 

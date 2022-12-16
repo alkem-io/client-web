@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
 import { Message } from './models/message';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
+import { Caption } from '../../../../core/ui/typography';
 
 const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => ({
   overflowWrap: 'break-word',
@@ -22,6 +23,11 @@ interface MessageViewProps {
 
 export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete, isRootComment }) => {
   const { author, body, id } = message;
+
+  const authorLabel = useMemo(
+    () => (author?.roleName ? `${author?.displayName} • ${author?.roleName}` : author?.displayName),
+    [author?.displayName, author?.roleName]
+  );
 
   return (
     <Grid container spacing={1.5}>
@@ -41,15 +47,8 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
           <Grid container direction="column">
             <Grid item>
               <Grid container spacing={1}>
-                <Grid item>
-                  <Typography variant="h6" fontWeight={600}>
-                    {author?.displayName}
-                  </Typography>
-                </Grid>
                 <Grid item xs>
-                  <Typography variant="h6" color="neutralMedium.dark" sx={{ fontStyle: 'italic' }}>
-                    {author?.roleName}
-                  </Typography>
+                  <Caption>{authorLabel}</Caption>
                 </Grid>
                 <Grid item>
                   {canDelete && onDelete && (

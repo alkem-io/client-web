@@ -196,6 +196,11 @@
       "not-verified": ""
     },
     "enums": {
+      "callout-state": {
+        "ARCHIVED": "Archived",
+        "CLOSED": "Closed",
+        "OPEN": "Open"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -362,6 +367,8 @@
     "members-count": "Members ({{count}})"
   },
   "callout": {
+    "contributions": "{{count}} Contribution",
+    "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
@@ -1002,10 +1009,8 @@
       }
     },
     "contribute": {
+      "initial-text": "**Contribute** your insights to understanding the context. It is about surfacing up the wisdom of the community.",
       "no-cards": "No Card found"
-    },
-    "explore": {
-      "create-callout": "Create new Callout"
     },
     "admin": {
       "generic": {

@@ -24,7 +24,7 @@ const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, as
   }
 
   return (
-    <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink={EntityPageSection.Explore}>
+    <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink={EntityPageSection.Contribute}>
       <CardsLayout
         items={aspects}
         deps={[parentEntityIds.hubNameId, parentEntityIds.challengeNameId, parentEntityIds.opportunityNameId]}

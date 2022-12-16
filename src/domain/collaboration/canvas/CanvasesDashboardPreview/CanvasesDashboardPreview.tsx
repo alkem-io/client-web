@@ -41,7 +41,7 @@ const CanvasesDashboardPreview = ({
       headerText={headerText}
       {...sectionProps}
       navText={t('buttons.see-all')}
-      navLink={EntityPageSection.Explore}
+      navLink={EntityPageSection.Contribute}
     >
       <SimpleCardsList>
         {canvases.map(canvas => (
