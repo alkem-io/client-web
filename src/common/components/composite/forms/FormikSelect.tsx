@@ -98,4 +98,5 @@ export const FormikSelect: FC<FormikSelectProps> = ({
     </FormControl>
   );
 };
+
 export default FormikSelect;

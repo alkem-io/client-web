@@ -82,4 +82,5 @@ const HubAuthorizationView: FC<HubAuthorizationViewProps> = ({ credential, resou
     </Container>
   );
 };
+
 export default HubAuthorizationView;

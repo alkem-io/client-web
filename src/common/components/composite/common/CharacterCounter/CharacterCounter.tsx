@@ -34,4 +34,5 @@ export const CharacterCounter: FC<CharacterCounterProps> = ({ count = 0, separat
     </Container>
   );
 };
+
 export default CharacterCounter;

@@ -37,4 +37,5 @@ const CalloutCanvasTemplate: FC<CalloutCanvasTemplateProps> = ({ callout, onChan
     />
   );
 };
+
 export default CalloutCanvasTemplate;

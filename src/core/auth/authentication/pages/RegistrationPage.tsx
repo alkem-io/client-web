@@ -56,4 +56,5 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
     </AuthenticationLayout>
   );
 };
+
 export default RegistrationPage;

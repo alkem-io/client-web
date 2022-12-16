@@ -73,4 +73,5 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
 
   return <>{children({ applications: appsWithType }, { handleDelete }, { isDeleting, loading: loadingMembership })}</>;
 };
+
 export default PendingApplicationsContainer;

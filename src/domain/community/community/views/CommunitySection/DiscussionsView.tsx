@@ -53,4 +53,5 @@ export const DiscussionsView: FC<DiscussionsProps> = ({ discussions, canCreate }
 
   return <div className={styles.container}>{messagesComponent}</div>;
 };
+
 export default DiscussionsView;

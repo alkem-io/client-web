@@ -40,4 +40,5 @@ const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, cont
     </>
   );
 };
+
 export default SingleUpdateView;

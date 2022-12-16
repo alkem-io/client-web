@@ -16,4 +16,5 @@ export const KratosFeedback: FC<KratosFeedbackProps> = ({ node }) => {
     </>
   ) : null;
 };
+
 export default KratosFeedback;

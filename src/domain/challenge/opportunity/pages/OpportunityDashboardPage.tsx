@@ -61,4 +61,5 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     </OpportunityPageLayout>
   );
 };
+
 export default OpportunityDashboardPage;

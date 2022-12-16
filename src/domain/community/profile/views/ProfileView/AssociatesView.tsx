@@ -46,4 +46,5 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = AS
     </ProfileCard>
   );
 };
+
 export default AssociatesView;

@@ -146,4 +146,5 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     </>
   );
 };
+
 export default ChallengePageContainer;

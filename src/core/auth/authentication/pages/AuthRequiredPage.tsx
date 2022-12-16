@@ -43,4 +43,5 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
     </AuthenticationLayout>
   );
 };
+
 export default AuthRequiredPage;

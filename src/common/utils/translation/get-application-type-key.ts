@@ -13,4 +13,5 @@ const getApplicationTypeKey = (type: ApplicationTypeEnum): TranslationKey => {
       return 'common.empty-string';
   }
 };
+
 export default getApplicationTypeKey;

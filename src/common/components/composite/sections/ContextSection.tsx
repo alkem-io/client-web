@@ -95,4 +95,5 @@ const ContextSection: FC<ContextSectionProps> = ({
     </>
   );
 };
+
 export default ContextSection;

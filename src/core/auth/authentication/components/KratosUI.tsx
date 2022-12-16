@@ -171,6 +171,7 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
     </KratosUIProvider>
   );
 };
+
 export default KratosUI;
 
 interface KratosUIContextProps {

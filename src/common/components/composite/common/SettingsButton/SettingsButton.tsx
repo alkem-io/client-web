@@ -32,4 +32,5 @@ export const SettingsButton: FC<SettingsButtonProps> = ({ color, htmlColor = 'wh
     </Tooltip>
   );
 };
+
 export default SettingsButton;

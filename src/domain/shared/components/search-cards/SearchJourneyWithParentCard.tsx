@@ -27,4 +27,5 @@ const SearchJourneyWithParentCard: FC<SearchJourneyWithParentCardProps> = ({
     </SearchBaseJourneyCard>
   );
 };
+
 export default SearchJourneyWithParentCard;

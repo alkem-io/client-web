@@ -79,4 +79,5 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
     </Grid>
   );
 };
+
 export default UserNotificationsPageView;

@@ -147,4 +147,5 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     </>
   );
 };
+
 export default HubPageContainer;

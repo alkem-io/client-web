@@ -55,4 +55,5 @@ const AspectTabs: FC<AspectTabsProps> = ({ currentTab, onClose }) => {
     </RightAlignedTabs>
   );
 };
+
 export default AspectTabs;

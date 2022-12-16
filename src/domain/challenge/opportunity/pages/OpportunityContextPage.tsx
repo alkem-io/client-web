@@ -39,4 +39,5 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
     </OpportunityPageLayout>
   );
 };
+
 export default OpportunityContextPage;

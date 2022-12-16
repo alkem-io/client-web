@@ -91,4 +91,5 @@ const Root: FC = () => {
     </StyledEngineProvider>
   );
 };
+
 export default Root;

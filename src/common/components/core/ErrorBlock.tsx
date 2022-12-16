@@ -17,4 +17,5 @@ const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
     </Grid>
   );
 };
+
 export default ErrorBlock;

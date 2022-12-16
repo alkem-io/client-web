@@ -40,4 +40,5 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
     </Container>
   );
 };
+
 export default VerificationPage;

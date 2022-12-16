@@ -147,4 +147,5 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     </Section>
   );
 };
+
 export default CommunitySection;
