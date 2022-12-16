@@ -19,4 +19,8 @@ fragment ChallengeCard on Challenge {
     name
     tags
   }
+  lifecycle {
+    id
+    state
+  }
 }

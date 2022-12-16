@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { lighten, Typography } from '@mui/material';
 import provideStaticProps from '../../utils/provideStaticProps';
 
 /**
@@ -16,7 +16,10 @@ export const Tagline = provideStaticProps(Typography, { variant: 'subtitle1' }) 
 
 export const Text = provideStaticProps(Typography, { variant: 'body1' }) as typeof Typography;
 
-export const CardText = provideStaticProps(Typography, { variant: 'body2' }) as typeof Typography;
+export const CardText = provideStaticProps(Typography, {
+  variant: 'body2',
+  color: theme => lighten(theme.palette.text.primary, 0.4),
+}) as typeof Typography;
 
 export const Caption = provideStaticProps(Typography, { variant: 'caption', display: 'block' }) as typeof Typography;
 
