@@ -58,7 +58,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
   };
 
   return (
-    <Grid container spacing={1.5}>
+    <Grid container gap={1} alignItems="start">
       <Grid item>
         <UserAvatar src={userAvatarUri} variant="rounded" sx={{ borderRadius: 1.5 }} />
       </Grid>
@@ -75,6 +75,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
                 <Grid item xs={12}>
                   <FormikCommentInputField
                     name="post"
+                    size="small"
                     title={title}
                     placeholder={placeholder}
                     disabled={disabled}
@@ -91,7 +92,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
         </Formik>
       </Grid>
       <Grid item>
-        <Box display={'flex'} alignItems={'center'} height="100%">
+        <Box display={'flex'} alignItems={'center'} height="100%" pt={0.5} pb={1}>
           <Tooltip
             title={t('components.post-comment.tooltip.markdown-help')}
             arrow

@@ -123,7 +123,7 @@ const CalloutLayout = ({
             <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
           </Box>
         )}
-        <Box m={3}>
+        <Box m={2}>
           <TitleBar>
             <Heading sx={{ display: 'flex', gap: 2.5, alignItems: 'center' }}>
               <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
