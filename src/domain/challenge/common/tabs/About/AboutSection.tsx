@@ -12,7 +12,7 @@ import {
 import { MetricItem } from '../../../../../common/components/composite/common/MetricsPanel/Metrics';
 import PageContentColumn, { PageContentColumnProps } from '../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../core/ui/content/PageContent';
-import { Tagline, Text } from '../../../../../core/ui/typography';
+import { Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { LifecycleState } from '../../../../platform/admin/templates/InnovationTemplates/LifecycleState';
@@ -130,19 +130,19 @@ export const AboutSection: FC<AboutSectionProps> = ({
         </LeftColumn>
         <RightColumn>
           <FixedHeightContentBlock>
-            <Text>{t(`context.${journeyTypeName}.vision.title` as const)}</Text>
+            <PageContentBlockHeader title={t(`context.${journeyTypeName}.vision.title` as const)} />
             <WrapperMarkdown>{vision}</WrapperMarkdown>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock>
-            <Text>{t(`context.${journeyTypeName}.background.title` as const)}</Text>
+            <PageContentBlockHeader title={t(`context.${journeyTypeName}.background.title` as const)} />
             <WrapperMarkdown>{background}</WrapperMarkdown>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock halfWidth>
-            <Text>{t(`context.${journeyTypeName}.impact.title` as const)}</Text>
+            <PageContentBlockHeader title={t(`context.${journeyTypeName}.impact.title` as const)} />
             <WrapperMarkdown>{impact}</WrapperMarkdown>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock halfWidth>
-            <Text>{t(`context.${journeyTypeName}.who.title` as const)}</Text>
+            <PageContentBlockHeader title={t(`context.${journeyTypeName}.who.title` as const)} />
             <WrapperMarkdown>{who}</WrapperMarkdown>
           </FixedHeightContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
@@ -152,7 +152,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
           </PageContentBlock>
           {communityReadAccess && (
             <PageContentBlock halfWidth>
-              <Text>{t('pages.hub.sections.dashboard.activity')}</Text>
+              <PageContentBlockHeader title={t('pages.hub.sections.dashboard.activity')} />
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
