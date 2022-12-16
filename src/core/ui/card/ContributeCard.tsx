@@ -23,7 +23,6 @@ const ContributeCard = ({ onClick, children }: PropsWithChildren<ContributeCardC
           cursor: onClick ? 'pointer' : 'default',
         }}
         onClick={onClick}
-        elevationDisabled={!onClick}
       >
         {children}
       </ElevatedPaper>
