@@ -9,7 +9,7 @@ const DESCRIPTION_TEXT_MAX_LINES = 5;
 export const CardDescription = ({ children }: PropsWithChildren<{}>) => {
   return (
     <Box height={gutters(DESCRIPTION_TEXT_MAX_LINES + 1)} paddingX={1.5} paddingY={1}>
-      <Text maxHeight="100%" overflow="hidden" sx={webkitLineClamp(DESCRIPTION_TEXT_MAX_LINES)}>
+      <Text maxHeight="100%" sx={webkitLineClamp(DESCRIPTION_TEXT_MAX_LINES)}>
         {children}
       </Text>
     </Box>

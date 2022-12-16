@@ -1,5 +1,6 @@
 import { GUTTER_MUI, GUTTER_PX } from './constants';
 import { Theme } from '@mui/material/styles';
+import { useColumns } from './GridContext';
 
 export const getColumnsWidth = (itemColumns: number, gridColumns: number) => {
   const columns = Math.min(itemColumns, gridColumns);
@@ -12,3 +13,21 @@ export const gutters =
   (num: number = 1) =>
   (theme: Theme) =>
     theme.spacing(GUTTER_MUI * num);
+
+interface UseGridItemProvided {
+  (columns?: number): {
+    width: string | 0;
+    flexGrow: number;
+    flexShrink: 0;
+  };
+}
+
+export const useGridItem = (): UseGridItemProvided => {
+  const gridColumns = useColumns();
+
+  return (columns?: number) => ({
+    width: columns ? getColumnsWidth(columns, gridColumns) : 0,
+    flexGrow: columns ? 0 : 1,
+    flexShrink: 0,
+  });
+};
