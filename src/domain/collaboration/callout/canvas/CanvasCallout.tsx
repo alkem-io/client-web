@@ -62,6 +62,11 @@ const CanvasCallout = ({
     );
   };
 
+  const showCards = useMemo(
+    () => (!loading && callout.canvases.length > 0) || callout.state !== CalloutState.Closed,
+    [loading, callout.canvases.length, callout.state]
+  );
+
   return (
     <>
       <CalloutLayout
@@ -71,17 +76,19 @@ const CanvasCallout = ({
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayoutScroller maxHeight={176}>
-          <CardsLayout
-            items={loading ? [undefined, undefined] : callout.canvases}
-            deps={[hubNameId, challengeNameId, opportunityNameId]}
-            {...(canCreate ? { createButtonComponent } : {})}
-          >
-            {canvas =>
-              canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
-            }
-          </CardsLayout>
-        </CardsLayoutScroller>
+        {showCards && (
+          <CardsLayoutScroller maxHeight={425}>
+            <CardsLayout
+              items={loading ? [undefined, undefined] : callout.canvases}
+              deps={[hubNameId, challengeNameId, opportunityNameId]}
+              {...(canCreate ? { createButtonComponent } : {})}
+            >
+              {canvas =>
+                canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
+              }
+            </CardsLayout>
+          </CardsLayoutScroller>
+        )}
       </CalloutLayout>
       <CanvasActionsContainer>
         {(entities, actionsState, actions) => (
