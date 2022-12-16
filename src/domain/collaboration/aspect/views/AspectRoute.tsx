@@ -25,7 +25,7 @@ const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath, entityTypeName }) =
         <Route
           path={AspectDialogSection.Dashboard}
           element={
-            <ContributePage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+            <ContributePage entityTypeName={entityTypeName}>
               <AspectDashboardPage onClose={onClose} />
             </ContributePage>
           }
@@ -33,7 +33,7 @@ const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath, entityTypeName }) =
         <Route
           path={AspectDialogSection.Share}
           element={
-            <ContributePage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+            <ContributePage entityTypeName={entityTypeName}>
               <AspectSharePage onClose={onClose} />
             </ContributePage>
           }
@@ -41,7 +41,7 @@ const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath, entityTypeName }) =
         <Route
           path={AspectDialogSection.Settings}
           element={
-            <ContributePage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+            <ContributePage entityTypeName={entityTypeName}>
               <AspectSettingsPage onClose={onClose} />
             </ContributePage>
           }

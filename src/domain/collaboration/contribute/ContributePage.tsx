@@ -6,13 +6,11 @@ import CalloutsView from '../callout/CalloutsView/CalloutsView';
 
 interface ContributePageProps {
   entityTypeName: EntityTypeName;
-  rootUrl: string;
   scrollToCallout?: boolean;
 }
 
 const ContributePage = ({
   entityTypeName,
-  rootUrl,
   scrollToCallout = false,
   children,
 }: PropsWithChildren<ContributePageProps>) => {
@@ -21,7 +19,7 @@ const ContributePage = ({
   return (
     <>
       <PageLayout currentSection={EntityPageSection.Contribute}>
-        <CalloutsView rootUrl={rootUrl} scrollToCallout={scrollToCallout} />
+        <CalloutsView scrollToCallout={scrollToCallout} />
       </PageLayout>
       {children}
     </>

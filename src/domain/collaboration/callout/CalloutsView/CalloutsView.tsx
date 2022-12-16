@@ -24,7 +24,6 @@ import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribu
 import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CalloutsPageProps {
-  rootUrl: string;
   scrollToCallout?: boolean;
 }
 

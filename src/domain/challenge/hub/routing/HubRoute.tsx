@@ -33,22 +33,13 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
-        <Route
-          path={routes.Contribute}
-          element={<ContributePage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Contribute}`} />}
-        />
+        <Route path={routes.Contribute} element={<ContributePage entityTypeName="hub" />} />
         <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
 
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={
-            <ContributePage
-              entityTypeName="hub"
-              rootUrl={`${resolved.pathname}/${routes.Contribute}`}
-              scrollToCallout
-            />
-          }
+          element={<ContributePage entityTypeName="hub" scrollToCallout />}
         />
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
