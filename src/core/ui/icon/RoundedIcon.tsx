@@ -1,5 +1,5 @@
-import { Box, BoxProps, styled, useTheme } from '@mui/material';
-import { SvgIconComponent } from '@mui/icons-material';
+import React, { ComponentType } from 'react';
+import { Box, BoxProps, styled, SvgIconProps, useTheme } from '@mui/material';
 
 const RoundedIconContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.primary.dark,
@@ -14,7 +14,7 @@ type RoundedIconSize = 'medium' | 'small';
 
 interface RoundedIconProps {
   size: RoundedIconSize;
-  component: SvgIconComponent;
+  component: ComponentType<SvgIconProps>;
 }
 
 const getSizeInSpacing = (size: RoundedIconSize) => {

@@ -37,4 +37,5 @@ export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified, helpText }) 
     </WrapperTypography>
   );
 };
+
 export default VerifiedStatus;

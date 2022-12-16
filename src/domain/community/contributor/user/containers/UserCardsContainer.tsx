@@ -50,4 +50,5 @@ export const UserCardsContainer: FC<UserCardsContainerProps> = ({ children, user
     </>
   );
 };
+
 export default UserCardsContainer;

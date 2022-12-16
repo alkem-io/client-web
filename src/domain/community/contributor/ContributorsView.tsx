@@ -175,4 +175,5 @@ const ContributorsView: FC<ContributorsViewProps> = ({
     </>
   );
 };
+
 export default ContributorsView;

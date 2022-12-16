@@ -106,6 +106,7 @@ const AspectProvider: FC = ({ children }) => {
     </AspectContext.Provider>
   );
 };
+
 export default AspectProvider;
 
 export const useAspect = () => useContext(AspectContext);

@@ -1,62 +1,15 @@
 import React, { FC, useMemo } from 'react';
-import { ApolloError } from '@apollo/client';
-import { AboutSection } from '../../common/tabs/AboutSection';
-import {
-  AssociatedOrganizationDetailsFragment,
-  MetricsItemFragment,
-  ReferenceDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import {
-  EntityDashboardContributors,
-  EntityDashboardLeads,
-} from '../../../community/community/EntityDashboardContributorsSection/Types';
-import { useHub } from '../HubContext/useHub';
+import { useTranslation } from 'react-i18next';
+import { AboutSection } from '../../common/tabs/About/AboutSection';
+import { JourneyAboutWithHost } from '../../common/tabs/About/Types';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { useTranslation } from 'react-i18next';
+import { useHub } from '../HubContext/useHub';
 
-interface HubAboutViewProps {
-  name: string | undefined;
-  tagline: string | undefined;
-  tags: string[] | undefined;
-  vision: string | undefined;
-  background: string | undefined;
-  impact: string | undefined;
-  who: string | undefined;
-  communityReadAccess: boolean | undefined;
-  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
-  leadUsers: EntityDashboardLeads['leadUsers'];
-  memberUsers: EntityDashboardContributors['memberUsers'];
-  memberUsersCount: EntityDashboardContributors['memberUsersCount'];
-  memberOrganizations: EntityDashboardContributors['memberOrganizations'];
-  memberOrganizationsCount: EntityDashboardContributors['memberOrganizationsCount'];
-  references: ReferenceDetailsFragment[] | undefined;
-  metrics: MetricsItemFragment[] | undefined;
-  loading: boolean | undefined;
-  error?: ApolloError;
-}
+interface HubAboutViewProps extends JourneyAboutWithHost {}
 
-export const HubAboutView: FC<HubAboutViewProps> = ({
-  name = '',
-  tagline = '',
-  tags = [],
-  vision = '',
-  background = '',
-  impact = '',
-  who = '',
-  communityReadAccess = false,
-  hostOrganization,
-  leadUsers,
-  memberUsers,
-  memberUsersCount,
-  memberOrganizations,
-  memberOrganizationsCount,
-  references,
-  metrics,
-  loading,
-  error,
-}) => {
+export const HubAboutView: FC<HubAboutViewProps> = ({ hostOrganization, metrics, ...rest }) => {
   const { t } = useTranslation();
   const { hubNameId, communityId } = useHub();
 
@@ -85,27 +38,12 @@ export const HubAboutView: FC<HubAboutViewProps> = ({
 
   return (
     <AboutSection
-      entityTypeName="hub"
-      infoBlockTitle={name}
-      infoBlockText={tagline}
-      tags={tags}
-      vision={vision}
-      background={background}
-      impact={impact}
-      who={who}
-      communityReadAccess={communityReadAccess}
-      loading={loading}
-      error={error}
+      journeyTypeName="hub"
       leadOrganizations={leadOrganizations}
-      leadUsers={leadUsers}
-      memberUsers={memberUsers}
-      memberUsersCount={memberUsersCount}
-      memberOrganizations={memberOrganizations}
-      memberOrganizationsCount={memberOrganizationsCount}
       hubNameId={hubNameId}
       communityId={communityId}
-      references={references}
       metricsItems={metricsItems}
+      {...rest}
     />
   );
 };

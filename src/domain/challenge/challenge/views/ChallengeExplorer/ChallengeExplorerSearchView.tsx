@@ -87,6 +87,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
     </>
   );
 };
+
 export default ChallengeExplorerSearchView;
 
 const getGroupKey = (groupBy: ChallengeExplorerGroupByType): keyof SimpleChallengeWithSearchTerms | undefined => {

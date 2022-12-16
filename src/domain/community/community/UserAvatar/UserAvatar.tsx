@@ -20,4 +20,5 @@ export const UserAvatar: FC<UserAvatarProps> = ({ url, ...rest }) => {
     </ConditionalLink>
   );
 };
+
 export default UserAvatar;

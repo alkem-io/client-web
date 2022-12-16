@@ -1,22 +1,40 @@
-import { Box, BoxProps } from '@mui/material';
-import { useColumns } from './GridContext';
-import { getColumnsWidth } from './utils';
+import { cloneElement, ReactElement } from 'react';
+import { SxProps } from '@mui/material';
+import { useGridItem } from './utils';
 
-export type GridItemProps = BoxProps & {
+export interface GridItemProps {
   columns?: number;
-};
+}
 
-const GridItem = ({ columns, ...props }: GridItemProps) => {
-  const gridColumns = useColumns();
+interface GridItemPropsWithChildElement<ChildProps extends { sx?: SxProps }> extends GridItemProps {
+  children?: ReactElement<ChildProps>;
+}
 
-  return (
-    <Box
-      flexBasis={columns ? getColumnsWidth(columns, gridColumns) : 0}
-      flexGrow={columns ? 0 : 1}
-      flexShrink={0}
-      {...props}
-    />
-  );
+/**
+ * Use to make an element take horizontal space according to the grid.
+ * This does not create an extra HTML element that wraps the underlying one.
+ * @param columns - the number of columns the element takes
+ * @param children - the element which size should be set
+ * @constructor
+ */
+const GridItem = <ChildProps extends { sx?: SxProps }>({
+  columns,
+  children,
+}: GridItemPropsWithChildElement<ChildProps>) => {
+  const getGridItemStyle = useGridItem();
+
+  if (!children) {
+    return null;
+  }
+
+  const { sx } = children.props;
+
+  const mergedSx = {
+    ...getGridItemStyle(columns),
+    ...sx,
+  };
+
+  return cloneElement(children, { sx: mergedSx } as ChildProps);
 };
 
 export default GridItem;

@@ -1,8 +1,8 @@
 import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
-import {} from '../../components/ContributionCard/ContributionCardV2';
 import getDepsValueFromObject from '../../utils/getDepsValueFromObject';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../core/ui/content/PageContentBlockGrid';
 
 export interface CreateButtonProps {
   onClick?: () => void;
@@ -51,14 +51,10 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
 export default CardsLayout;
 
-interface CardLayoutContainerProps extends BoxProps {}
+interface CardLayoutContainerProps extends PageContentBlockGridProps {}
 
-export const CardLayoutContainer: FC<CardLayoutContainerProps> = ({ sx, children, ...boxProps }) => {
-  return (
-    <Box gap={2} {...boxProps} sx={{ display: 'flex', flexWrap: 'wrap', ...sx }}>
-      {children}
-    </Box>
-  );
+export const CardLayoutContainer: FC<CardLayoutContainerProps> = props => {
+  return <PageContentBlockGrid cards {...props} />;
 };
 
 interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow'> {

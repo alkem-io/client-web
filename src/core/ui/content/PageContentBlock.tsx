@@ -3,7 +3,7 @@ import { GUTTER_MUI } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import SwapColors from '../palette/SwapColors';
 
-interface PageContentBlockProps {
+export interface PageContentBlockProps extends PaperProps {
   accent?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;
@@ -17,7 +17,7 @@ const PageContentBlock = ({
   halfWidth = false,
   sx,
   ...props
-}: PaperProps & PageContentBlockProps) => {
+}: PageContentBlockProps) => {
   const mergedSx: Partial<SxProps> = {
     padding: disablePadding ? undefined : GUTTER_MUI,
     display: disableGap ? undefined : 'flex',

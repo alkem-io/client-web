@@ -39,4 +39,5 @@ const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
     </AspectLayout>
   );
 };
+
 export default AspectSharePage;

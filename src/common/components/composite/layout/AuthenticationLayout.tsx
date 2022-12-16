@@ -32,4 +32,5 @@ export const AuthenticationLayout: FC<AuthenticationLayoutProps> = ({ children, 
     </Container>
   );
 };
+
 export default AuthenticationLayout;

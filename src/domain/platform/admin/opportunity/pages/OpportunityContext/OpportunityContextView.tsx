@@ -69,4 +69,5 @@ const OpportunityContextView: FC = () => {
     </Grid>
   );
 };
+
 export default OpportunityContextView;

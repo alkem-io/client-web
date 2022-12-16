@@ -78,4 +78,5 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
     </DiscussionsLayout>
   );
 };
+
 export default DiscussionListPage;

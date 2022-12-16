@@ -85,4 +85,5 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew }) =>
     </Grid>
   );
 };
+
 export default SocialSegment;

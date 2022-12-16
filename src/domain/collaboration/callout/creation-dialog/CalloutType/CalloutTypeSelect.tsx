@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Box, Typography } from '@mui/material';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
-import ModeOutlinedIcon from '@mui/icons-material/ModeOutlined';
+import { AspectIcon } from '../../../aspect/icon/AspectIcon';
+import { CanvasAltIcon } from '../../../canvas/icon/CanvasAltIcon';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
 import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
@@ -27,10 +27,10 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ name, disabled =
         <RadioButton key={CalloutType.Comments} value={CalloutType.Comments} iconComponent={ForumOutlinedIcon}>
           {t('common.discussion')}
         </RadioButton>
-        <RadioButton key={CalloutType.Card} value={CalloutType.Card} iconComponent={BallotOutlinedIcon}>
+        <RadioButton key={CalloutType.Card} value={CalloutType.Card} iconComponent={AspectIcon}>
           {t('common.cards')}
         </RadioButton>
-        <RadioButton key={CalloutType.Canvas} value={CalloutType.Canvas} iconComponent={ModeOutlinedIcon}>
+        <RadioButton key={CalloutType.Canvas} value={CalloutType.Canvas} iconComponent={CanvasAltIcon}>
           {t('common.canvases')}
         </RadioButton>
       </RadioButtonGroup>

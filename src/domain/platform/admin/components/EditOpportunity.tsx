@@ -145,4 +145,5 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
     </Grid>
   );
 };
+
 export default EditOpportunity;

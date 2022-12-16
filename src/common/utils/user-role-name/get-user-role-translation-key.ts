@@ -43,4 +43,5 @@ const getUserRoleTranslationKey = (
     undefined
   );
 };
+
 export default getUserRoleTranslationKey;

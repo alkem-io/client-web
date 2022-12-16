@@ -102,4 +102,5 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
     />
   );
 };
+
 export default HubContextView;
