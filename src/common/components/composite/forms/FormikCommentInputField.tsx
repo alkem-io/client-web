@@ -39,6 +39,7 @@ interface CommentInputField extends InputProps {
   maxLength?: number;
   withCounter?: boolean;
   submitOnReturnKey?: boolean;
+  size?: OutlinedInputProps['size'];
 }
 
 export const FormikCommentInputField: FC<CommentInputField> = ({
@@ -49,6 +50,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   maxLength,
   withCounter = false,
   submitOnReturnKey = false,
+  size = 'medium',
 }) => {
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
@@ -82,6 +84,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           onKeyDown={onKeyDown}
           readOnly={inactive}
           color={inactive ? ('neutralMedium' as OutlinedInputProps['color']) : 'primary'}
+          size={size}
           endAdornment={
             <InputAdornment position="end">
               <IconButton aria-label="post comment" size={'small'} type="submit" disabled={inactive}>

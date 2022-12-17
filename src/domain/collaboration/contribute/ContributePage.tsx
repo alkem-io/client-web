@@ -2,30 +2,28 @@ import React, { PropsWithChildren } from 'react';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import CalloutsView from './CalloutsView/CalloutsView';
+import CalloutsView from '../callout/CalloutsView/CalloutsView';
 
-interface CalloutsPageProps {
+interface ContributePageProps {
   entityTypeName: EntityTypeName;
-  rootUrl: string;
   scrollToCallout?: boolean;
 }
 
-const CalloutsPage = ({
+const ContributePage = ({
   entityTypeName,
-  rootUrl,
   scrollToCallout = false,
   children,
-}: PropsWithChildren<CalloutsPageProps>) => {
+}: PropsWithChildren<ContributePageProps>) => {
   const PageLayout = usePageLayoutByEntity(entityTypeName);
 
   return (
     <>
-      <PageLayout currentSection={EntityPageSection.Explore}>
-        <CalloutsView rootUrl={rootUrl} scrollToCallout={scrollToCallout} />
+      <PageLayout currentSection={EntityPageSection.Contribute}>
+        <CalloutsView scrollToCallout={scrollToCallout} />
       </PageLayout>
       {children}
     </>
   );
 };
 
-export default CalloutsPage;
+export default ContributePage;

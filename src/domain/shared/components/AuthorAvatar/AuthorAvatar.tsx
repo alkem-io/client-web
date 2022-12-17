@@ -4,8 +4,8 @@ import UserCard from '../../../../common/components/composite/common/cards/user-
 import { Author } from './models/author';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.avatarSize,
-  width: theme.avatarSize,
+  height: theme.avatarSizeXs,
+  width: theme.avatarSizeXs,
 }));
 
 export interface AuthorAvatarProps {
