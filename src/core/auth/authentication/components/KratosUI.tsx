@@ -1,16 +1,9 @@
+import React, { ComponentType, FC, ReactNode, useMemo } from 'react';
+import { isMatch, some } from 'lodash';
 import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
-import React, { ComponentType, FC, ReactNode, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  getNodeName,
-  getNodeValue,
-  guessVariant,
-  isHiddenInput,
-  isInputNode,
-  isAnchorNode,
-  isSubmitButton,
-} from './Kratos/helpers';
+import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
 import KratosHidden from './Kratos/KratosHidden';
@@ -26,6 +19,7 @@ import { UiNodeInput } from './Kratos/UiNodeTypes';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import { useKratosFormContext } from './Kratos/KratosForm';
 import KratosSocialButton from './Kratos/KratosSocialButton';
+import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from './Kratos/constants';
 
 interface KratosUIProps {
   ui?: UiContainer;
@@ -34,7 +28,7 @@ interface KratosUIProps {
   renderAcceptTermsCheckbox?: (checkbox: UiNodeInput) => ReactNode;
   buttonComponent?: ComponentType<AuthActionButtonProps>;
   // TODO Make hidden fields actually consume zero space by changing them into type="hidden" in the UI array
-  hideFields?: string[];
+  removedFields?: readonly KratosRemovedFieldAttributes[];
   /**
    * @deprecated - needed to store hasAcceptedTerms before submit.
    * Remove once we're able to make Kratos keep traits.accepted_terms on error.
@@ -80,6 +74,7 @@ export const KratosUI: FC<KratosUIProps> = ({
   buttonComponent = AuthActionButton,
   renderAcceptTermsCheckbox = checkbox => <KratosAcceptTermsCheckbox node={checkbox} />,
   children,
+  removedFields = KRATOS_REMOVED_FIELDS_DEFAULT,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -88,8 +83,16 @@ export const KratosUI: FC<KratosUIProps> = ({
 
   const { t: kratosT } = useKratosT();
 
+  const renderedNodes = useMemo(
+    () =>
+      ui?.nodes.filter(node => {
+        return !some(removedFields, fieldDef => isMatch(node.attributes, fieldDef));
+      }),
+    [ui, removedFields]
+  );
+
   const nodesByGroup = useMemo(() => {
-    return ui?.nodes.reduce(
+    return renderedNodes?.reduce(
       (acc, node) => {
         if (isHiddenInput(node)) {
           return { ...acc, hidden: [...acc.hidden, node] };
@@ -110,7 +113,7 @@ export const KratosUI: FC<KratosUIProps> = ({
       },
       { default: [], oidc: [], password: [], rest: [], submit: [], hidden: [] } as NodeGroups
     );
-  }, [ui]);
+  }, [renderedNodes]);
 
   if (!nodesByGroup || !ui) return null;
 
@@ -200,7 +203,6 @@ export const KratosUI: FC<KratosUIProps> = ({
 export default KratosUI;
 
 interface KratosUIContextProps {
-  isHidden: (node: UiNode) => boolean;
   /**
    * @deprecated - it's needed to store hasAcceptedTerms before submit because Kratos can reset the form state.
    * Remove once we're able to make Kratos keep traits.accepted_terms on error.
@@ -208,10 +210,9 @@ interface KratosUIContextProps {
   onBeforeSubmit?: () => void;
 }
 
-export const KratosUIContext = React.createContext<KratosUIContextProps>({ isHidden: (_node: UiNode) => false });
+export const KratosUIContext = React.createContext<KratosUIContextProps>({});
 
 interface KratosUIProviderProps {
-  hideFields?: string[];
   /**
    * @deprecated - it's needed to store hasAcceptedTerms before submit because Kratos can reset the form state.
    * Remove once we're able to make Kratos keep traits.accepted_terms on error.
@@ -219,29 +220,6 @@ interface KratosUIProviderProps {
   onBeforeSubmit?: () => void;
 }
 
-export const KratosUIProvider: FC<KratosUIProviderProps> = ({ hideFields, onBeforeSubmit, children }) => {
-  const isHidden = useCallback(
-    (node: UiNode) => {
-      if (!hideFields) return false;
-      const name = getNodeName(node);
-
-      if (name === 'method') {
-        const value = getNodeValue(node)?.toString() || '';
-        return hideFields.includes(value);
-      }
-      return hideFields.includes(name);
-    },
-    [hideFields]
-  );
-
-  return (
-    <KratosUIContext.Provider
-      value={{
-        isHidden,
-        onBeforeSubmit,
-      }}
-    >
-      {children}
-    </KratosUIContext.Provider>
-  );
+export const KratosUIProvider: FC<KratosUIProviderProps> = ({ onBeforeSubmit, children }) => {
+  return <KratosUIContext.Provider value={{ onBeforeSubmit }}>{children}</KratosUIContext.Provider>;
 };

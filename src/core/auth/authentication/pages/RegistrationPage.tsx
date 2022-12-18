@@ -90,7 +90,6 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
               ui={registrationFlowWithAcceptedTerms?.ui}
               onBeforeSubmit={storeHasAcceptedTerms}
               acceptTermsComponent={AcceptTerms}
-              hideFields={['traits.picture']}
             />
           </>
         )}
