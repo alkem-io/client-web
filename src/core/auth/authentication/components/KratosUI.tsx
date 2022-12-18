@@ -1,20 +1,28 @@
-import { Alert, Box } from '@mui/material';
+import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import React, { ComponentType, FC, ReactNode, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getNodeName, getNodeValue, guessVariant, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
+import {
+  getNodeName,
+  getNodeValue,
+  guessVariant,
+  isHiddenInput,
+  isInputNode,
+  isAnchorNode,
+  isSubmitButton,
+} from './Kratos/helpers';
 import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
 import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
-import { KratosFriendlierMessageMapper } from './Kratos/messages';
+import { useKratosT } from './Kratos/messages';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
-import { UiNodeInput } from './Kratos/UiNodeInput';
+import { UiNodeInput } from './Kratos/UiNodeTypes';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';
 import { useKratosFormContext } from './Kratos/KratosForm';
 import KratosSocialButton from './Kratos/KratosSocialButton';
@@ -43,14 +51,13 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
-  const { t } = useTranslation();
-  const getFriendlierMessage = useMemo(() => KratosFriendlierMessageMapper(t), [t]);
+  const { t } = useKratosT();
 
   return (
     <>
       {messages?.map(message => (
         <Alert key={message.id} severity={toAlertVariant(message.type)}>
-          {getFriendlierMessage(message)}
+          {t(message)}
         </Alert>
       ))}
     </>
@@ -79,6 +86,8 @@ export const KratosUI: FC<KratosUIProps> = ({
 
   const kratosFormContext = useKratosFormContext();
 
+  const { t: kratosT } = useKratosT();
+
   const nodesByGroup = useMemo(() => {
     return ui?.nodes.reduce(
       (acc, node) => {
@@ -106,6 +115,14 @@ export const KratosUI: FC<KratosUIProps> = ({
   if (!nodesByGroup || !ui) return null;
 
   const toUiControl = (node: UiNode, key: number) => {
+    if (isAnchorNode(node)) {
+      return (
+        <Button href={node.attributes.href} variant="contained">
+          {kratosT(node.attributes.title)}
+        </Button>
+      );
+    }
+
     if (!isInputNode(node)) {
       return <KratosInput key={key} node={node} />;
     }

@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
@@ -11,7 +10,6 @@ import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle } from '../../../ui/typography';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import { Link } from 'react-router-dom';
 
 interface RegisterPageProps {
   flow: string;
@@ -36,9 +34,6 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
         <PageTitle>{t('pages.recovery.header')}</PageTitle>
         <SubHeading textAlign="center">{t('pages.recovery.message')}</SubHeading>
         <KratosUI ui={recoveryFlow?.ui} />
-        <Button component={Link} to={'/'} variant="outlined">
-          {t('pages.verification-required.return-to-platform')}
-        </Button>
       </Container>
     </KratosForm>
   );
