@@ -133,6 +133,7 @@ const ActivityViewChooser = ({
           card={activityCalloutCardCreated.card}
           author={author}
           cardType={activityCalloutCardCreated.card.type}
+          cardDescription={activityCalloutCardCreated.card.profile?.description!}
           {...activity}
           {...rest}
         />

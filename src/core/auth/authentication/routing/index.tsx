@@ -12,6 +12,7 @@ import RecoveryRoute from './RecoveryRoute';
 import RegistrationRoute from './RegistrationRoute';
 import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
+import SignUp from '../pages/SignUp';
 
 export const IdentityRoute: FC = () => {
   const {
@@ -43,6 +44,7 @@ export const IdentityRoute: FC = () => {
         }
       />
       <Route path="*" element={<Error404 />} />
+      <Route path="sign_up" element={<SignUp />} />
     </Routes>
   );
 };

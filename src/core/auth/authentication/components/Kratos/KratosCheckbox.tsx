@@ -5,7 +5,6 @@ import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode } from './helpers';
 import KratosFeedback from './KratosFeedback';
 import { KratosProps } from './KratosProps';
-import KratosTermsLabel from './KratosTermsLabel';
 
 interface KratosCheckboxProps extends KratosProps {}
 
@@ -15,15 +14,13 @@ const KratosCheckbox: FC<KratosCheckboxProps> = ({ node }) => {
   const [state, setState] = useState(Boolean(getNodeValue(node)));
 
   const invalid = isInvalidNode(node);
-  const updatedTitle = attributes.name === 'traits.accepted_terms' ? <KratosTermsLabel /> : getNodeTitle(node);
 
   const checkbox = (
     <Checkbox
       name={getNodeName(node)}
       checked={state}
       onChange={() => setState(oldState => !oldState)}
-      color={'primary'}
-      value={String(state)}
+      color="primary"
     />
   );
 
@@ -32,7 +29,7 @@ const KratosCheckbox: FC<KratosCheckboxProps> = ({ node }) => {
       {!isHidden(node) && (
         <FormControl required={attributes.required} error={invalid}>
           <FormGroup row>
-            <FormControlLabel control={checkbox} label={updatedTitle} />
+            <FormControlLabel control={checkbox} label={getNodeTitle(node)} />
           </FormGroup>
           <KratosFeedback node={node} />
         </FormControl>

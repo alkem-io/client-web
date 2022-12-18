@@ -2085,6 +2085,9 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
       nameID
       displayName
       type
+      profile {
+        description
+      }
     }
   }
 `;
