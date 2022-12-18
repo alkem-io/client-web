@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import { EntityPageSection } from './EntityPageSection';
-import { EntityTypeName } from './PageLayout/SimplePageLayout';
+import { EntityTypeName } from './LegacyPageLayout/SimplePageLayout';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { ShareDialog } from '../components/ShareDialog';

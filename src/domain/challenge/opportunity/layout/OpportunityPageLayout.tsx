@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../shared/layout/PageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
 import OpportunityPageBanner from './OpportunityPageBanner';
 import OpportunityTabs from './OpportunityTabs';
 import { PropsWithChildren } from 'react';

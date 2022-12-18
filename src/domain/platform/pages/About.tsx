@@ -6,7 +6,7 @@ import { makeStyles } from '@mui/styles';
 import WrapperButton from '../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import useServerMetadata from '../metadata/useServerMetadata';
-import TopLevelDesktopLayout from '../../shared/layout/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
 
 const useAboutStyles = makeStyles(theme => ({
   content: {

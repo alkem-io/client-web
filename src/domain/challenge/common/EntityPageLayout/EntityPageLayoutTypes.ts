@@ -1,5 +1,5 @@
-import { SimplePageLayoutProps } from './SimplePageLayout';
-import { EntityPageSection } from '../EntityPageSection';
+import { SimplePageLayoutProps } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { ComponentType } from 'react';
 
 export interface EntityTabsProps {

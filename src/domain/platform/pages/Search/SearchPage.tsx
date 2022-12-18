@@ -27,7 +27,7 @@ import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import { escape } from 'lodash';
-import TopLevelDesktopLayout from '../../../shared/layout/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
 
 const tagsetNames = ['skills', 'keywords'];
 // todo translate

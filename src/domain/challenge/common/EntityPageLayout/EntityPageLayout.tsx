@@ -10,9 +10,7 @@ const EntityPageLayout = (props: PropsWithChildren<EntityPageLayoutProps>) => {
 
   const Layout = isMobile ? EntityPageLayoutMobile : EntityPageLayoutDesktop;
 
-  return (
-    <Layout {...props} />
-  );
+  return <Layout {...props} />;
 };
 
 export default EntityPageLayout;

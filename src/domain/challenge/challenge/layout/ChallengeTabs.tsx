@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChallenge } from '../hooks/useChallenge';
 import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout';
+import { EntityTabsProps } from '../../common/EntityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
 import { BatchPredictionOutlined } from '@mui/icons-material';

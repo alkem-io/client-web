@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../shared/layout/PageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
 import ChallengePageBanner from './ChallengePageBanner';
 import ChallengeTabs from './ChallengeTabs';
 import { PropsWithChildren } from 'react';
