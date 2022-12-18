@@ -513,7 +513,7 @@
   "components": {
     "associated-organization": {
       "confirmation-dialog": {
-        "title": "Leaving {{displayName}}",
+        "title": "Leaving {{organization}}",
         "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
       }
     },

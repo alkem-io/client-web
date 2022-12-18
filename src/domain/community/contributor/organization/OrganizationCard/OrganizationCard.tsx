@@ -38,7 +38,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [dialogOpened, setDialogOpened] = useState(false);
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
 
   const navigateToOrganization = () => {
     if (url) navigate(url);
@@ -50,11 +50,11 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   };
 
   const handleOpenModal = () => {
-    setDialogOpened(true);
+    setIsDialogOpened(true);
   };
 
   const handleClose = () => {
-    setDialogOpened(false);
+    setIsDialogOpened(false);
   };
 
   return (
@@ -115,9 +115,9 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
           {t('common.disassociate')}
         </LoadingButton>
       </Box>
-      <Dialog open={dialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
+      <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
         <DialogTitle id="confirm-innovation-flow">
-          {t('components.associated-organization.confirmation-dialog.title', { displayName: name })}
+          {t('components.associated-organization.confirmation-dialog.title', { organization: name })}
         </DialogTitle>
         <DialogContent sx={{ paddingX: 2 }}>
           {t('components.associated-organization.confirmation-dialog.text')}
