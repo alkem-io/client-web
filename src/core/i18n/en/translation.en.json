@@ -1492,7 +1492,9 @@
     },
     "recovery": {
       "header": "Password recovery",
-      "message": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      "message": {
+        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      }
     },
     "verification": {
       "header": "Email verification",
