@@ -6,7 +6,7 @@ import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useQueryParams } from '../../../routing/useQueryParams';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import { AUTH_REGISTER_PATH } from '../constants/authentication.constants';
+import { AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { Box } from '@mui/material';
 import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
 
@@ -33,12 +33,7 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
           style={{ marginLeft: 20 }}
           text={t('authentication.sign-in')}
         />
-        <WrapperButton
-          as={Link}
-          to={AUTH_REGISTER_PATH}
-          style={{ marginLeft: 20 }}
-          text={t('authentication.sign-up')}
-        />
+        <WrapperButton as={Link} to={AUTH_SIGN_UP_PATH} style={{ marginLeft: 20 }} text={t('authentication.sign-up')} />
       </Box>
     </AuthenticationLayout>
   );
