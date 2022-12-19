@@ -2037,7 +2037,7 @@ export type Mutation = {
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
-  /** Removes a User as a member of the specified Community. */
+  /** Removes a User as a Lead of the specified Community. */
   removeUserAsCommunityLead: Community;
   /** Removes a User as a member of the specified Community. */
   removeUserAsCommunityMember: Community;
@@ -2935,6 +2935,7 @@ export enum PreferenceType {
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
+  NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -2946,6 +2947,8 @@ export enum PreferenceType {
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
+  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -4060,6 +4063,7 @@ export enum UserPreferenceType {
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
+  NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -4071,6 +4075,8 @@ export enum UserPreferenceType {
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
+  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -18309,7 +18315,14 @@ export type ActivityCreatedSubscription = {
               | undefined;
           };
           callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-          card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
+          card: {
+            __typename?: 'Aspect';
+            id: string;
+            nameID: string;
+            displayName: string;
+            type: string;
+            profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+          };
         }
       | {
           __typename: 'ActivityLogEntryCalloutDiscussionComment';
@@ -18580,7 +18593,14 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
       | undefined;
   };
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    type: string;
+    profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragment = {
@@ -18871,7 +18891,14 @@ export type ActivityLogOnCollaborationQuery = {
             | undefined;
         };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-        card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
+        card: {
+          __typename?: 'Aspect';
+          id: string;
+          nameID: string;
+          displayName: string;
+          type: string;
+          profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutDiscussionComment';
@@ -19094,7 +19121,14 @@ export type ActivityLogCalloutPublishedFragment = {
 export type ActivityLogCalloutCardCreatedFragment = {
   __typename?: 'ActivityLogEntryCalloutCardCreated';
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string; type: string };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    type: string;
+    profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+  };
 };
 
 export type ActivityLogCalloutCardCommentFragment = {

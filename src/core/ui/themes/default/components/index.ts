@@ -13,7 +13,7 @@ import MuiTab from './MuiTab';
 import MuiTabPanel from './MuiTabPanel';
 import MuiSelect from './MuiSelect';
 import MuiBottomNavigationAction from './MuiBottomNavigationAction';
-import type {} from '@mui/lab/themeAugmentation';
+// import type {} from '@mui/lab/themeAugmentation';
 
 const componentsOverride: Components<Theme> = {
   MuiAvatar,

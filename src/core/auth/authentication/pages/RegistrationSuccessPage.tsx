@@ -1,39 +1,24 @@
-import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
-import WrapperButton from '../../../../common/components/core/WrapperButton';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import { Box } from '@mui/material';
 import EmailVerificationNotice from '../../verification/components/EmailVerificationNotice/EmailVerificationNotice';
+import Container from '../../../../domain/shared/layout/Container';
+import FixedHeightLogo from '../components/FixedHeightLogo';
+import { sxCols } from '../../../../domain/shared/layout/Grid';
+import { useUserContext } from '../../../../domain/community/contributor/user';
+import { PageTitle } from '../../../ui/typography';
 
 interface RegistrationSuccessPageProps {}
 
 export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   const { t } = useTranslation();
+  const { user } = useUserContext();
 
   return (
-    <AuthenticationLayout sx={{ flexGrow: 1, display: 'flex', flexFlow: 'column nowrap' }}>
-      <Box textAlign={'center'}>
-        <WrapperTypography variant={'h2'}>
-          <CheckCircleOutline
-            color="primary"
-            sx={{
-              fontSize: '8.25rem',
-            }}
-          />
-        </WrapperTypography>
-        <WrapperTypography variant={'h2'}>{t('pages.registration-success.header')}</WrapperTypography>
-        <WrapperTypography variant={'h3'}>{t('pages.registration-success.subheader')}</WrapperTypography>
-      </Box>
-      <Box flex="1 0 0" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <EmailVerificationNotice />
-      </Box>
-      <Box marginTop={4} textAlign={'center'}>
-        <WrapperButton as={RouterLink} to={'/'} text={t('buttons.home')} />
-      </Box>
-    </AuthenticationLayout>
+    <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <FixedHeightLogo />
+      <PageTitle>{t('pages.registration-success.header', { firstName: user?.user?.firstName })}</PageTitle>
+      <EmailVerificationNotice />
+    </Container>
   );
 };
 

@@ -108,6 +108,9 @@ export interface ButtonProps extends Record<string, unknown> {
   disabled?: boolean;
 }
 
+/**
+ * @deprecated - use Mui Button directly
+ */
 const WrapperButton: FC<ButtonProps> = forwardRef(
   (
     {
@@ -137,6 +140,7 @@ const WrapperButton: FC<ButtonProps> = forwardRef(
       ...rest,
     };
 
+    // @ts-ignore
     return (
       <MuiButton
         ref={ref}

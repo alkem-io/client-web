@@ -13,10 +13,15 @@ export interface ActivityMemberJoinedViewProps extends ActivityViewProps {
 
 export const ActivityMemberJoinedView: FC<ActivityMemberJoinedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.member-joined');
+  const action = t('components.activity-log-view.actions.member-joined', {
+    journeyType: props.communityType,
+    journeyDisplayName: props.community.displayName,
+    interpolation: {
+      escapeValue: false,
+    },
+  });
   const url = props.member.url;
   const description = t('components.activity-log-view.activity-description.member-joined', {
-    communityType: props.communityType,
     userDisplayName: props.member.displayName,
     interpolation: {
       escapeValue: false,
