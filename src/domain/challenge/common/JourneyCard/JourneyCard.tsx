@@ -1,4 +1,4 @@
-import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import { Box, SvgIconProps } from '@mui/material';
 import CardImage from '../../../../core/ui/card/CardImage';
@@ -9,6 +9,7 @@ import { GUTTER_PX } from '../../../../core/ui/grid/constants';
 import CardContent from '../../../../core/ui/card/CardContent';
 import { gutters } from '../../../../core/ui/grid/utils';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -29,6 +30,10 @@ const JourneyCard = ({
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
+
   return (
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
@@ -43,10 +48,15 @@ const JourneyCard = ({
           {header}
         </ItemView>
       </Box>
-      <CardContent flexGrow={1}>
-        {children}
-        <TagsComponent tags={tags} variant="filled" height={GUTTER_PX * 2.5} color="primary" marginTop={gutters()} />
-      </CardContent>
+      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }}>
+        <CardContent flexGrow={1}>{children}</CardContent>
+        <Box flexGrow={1} display="flex" justifyContent="space-between" paddingY={1} paddingLeft={1.5} paddingRight={1}>
+          <TagsComponent tags={tags} variant="filled" height={GUTTER_PX * 2.5} color="primary" />
+          <Box display="flex" alignItems="end" color="primary.main">
+            {isExpanded ? <ExpandLess /> : <ExpandMore />}
+          </Box>
+        </Box>
+      </Box>
     </ContributeCard>
   );
 };

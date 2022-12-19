@@ -89,10 +89,10 @@ export interface LinesFitterProps<Item> extends BoxProps {
  * when no items are rendered yet. So, to define the boundary you need to set `min-height` on the component
  * (using `className` or `style` - all props are proxied to the wrapper `<div>`).
  */
-const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperProps }: LinesFitterProps<Item>) => {
+const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: LinesFitterProps<Item>) => {
   const wrapperElementRef = useRef<HTMLDivElement>(null);
 
-  const [state, dispatch] = useReducer(getNextState, getInitialState(height));
+  const [state, dispatch] = useReducer(getNextState, getInitialState(wrapperProps.height));
 
   const measureWrapperHeight = () => {
     const element = wrapperElementRef.current!;

@@ -7,10 +7,11 @@ import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 
 interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent'> {
   displayName: string;
+  vision: string;
   membersCount: number;
 }
 
-const HubCard = ({ displayName, membersCount, tagline, ...props }: HubCardProps) => {
+const HubCard = ({ displayName, vision, membersCount, tagline, ...props }: HubCardProps) => {
   const { t } = useTranslation();
 
   return (
@@ -30,6 +31,7 @@ const HubCard = ({ displayName, membersCount, tagline, ...props }: HubCardProps)
       {...props}
     >
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
+      <JourneyCardTagline>{vision}</JourneyCardTagline>
     </JourneyCard>
   );
 };

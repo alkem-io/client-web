@@ -2,15 +2,24 @@ import React from 'react';
 import { BlockTitle } from '../../../../core/ui/typography';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import JourneyCard, { JourneyCardProps } from '../JourneyCard/JourneyCard';
-import JourneyCardTagline from '../JourneyCard/JourneyCardTagline';
 import InnovationFlowCardSegment from '../JourneyCard/InnovationFlowCardSegment';
+import JourneyCardTagline from '../JourneyCard/JourneyCardTagline';
+import JourneyCardVision from '../JourneyCard/JourneyCardVision';
+import { Collapse } from '@mui/material';
 
 export interface HubChildJourneyCardProps extends Omit<JourneyCardProps, 'header'> {
   displayName: string;
+  vision: string;
   innovationFlowState?: string;
 }
 
-const HubChildJourneyCard = ({ displayName, tagline, innovationFlowState, ...props }: HubChildJourneyCardProps) => {
+const HubChildJourneyCard = ({
+  displayName,
+  tagline,
+  vision,
+  innovationFlowState,
+  ...props
+}: HubChildJourneyCardProps) => {
   return (
     <JourneyCard
       tagline={tagline}
@@ -23,6 +32,9 @@ const HubChildJourneyCard = ({ displayName, tagline, innovationFlowState, ...pro
     >
       {innovationFlowState && <InnovationFlowCardSegment>{innovationFlowState}</InnovationFlowCardSegment>}
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
+      <Collapse>
+        <JourneyCardVision>{vision}</JourneyCardVision>
+      </Collapse>
     </JourneyCard>
   );
 };
