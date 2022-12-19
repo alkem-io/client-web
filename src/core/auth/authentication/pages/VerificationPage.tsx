@@ -10,13 +10,13 @@ import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import { PageTitle } from '../../../ui/typography';
-import { SelfServiceRecoveryFlow, SelfServiceVerificationFlow } from '@ory/kratos-client';
+import { SelfServiceVerificationFlow } from '@ory/kratos-client';
 
 interface RegisterPageProps {
   flow?: string;
 }
 
-const hasPassedChallenge = (flow: SelfServiceVerificationFlow | undefined) =>
+const hideVerificationMessage = (flow: SelfServiceVerificationFlow | undefined) =>
   (flow?.state === 'passed_challenge' || flow?.state === 'sent_email') ?? false;
 
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
@@ -36,7 +36,7 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
       <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
         <FixedHeightLogo />
         <PageTitle>{t('pages.verification.header')}</PageTitle>
-        {!hasPassedChallenge(verificationFlow) && (
+        {!hideVerificationMessage(verificationFlow) && (
           <SubHeading textAlign="center">{t('pages.verification.message')}</SubHeading>
         )}
         <KratosUI ui={verificationFlow?.ui} />
