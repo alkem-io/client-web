@@ -33,18 +33,17 @@ const JourneyCard = ({
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
         <CardImage src={bannerUri} alt={tagline} />
-      </Box>
-      <CardContent flexGrow={1}>
         <ItemView
-          component={RouterLink}
-          to={journeyUri}
           visual={<RoundedIcon size="small" component={Icon} />}
           gap={1}
           height={gutters(3)}
           paddingY={1}
+          paddingX={1.5}
         >
           {header}
         </ItemView>
+      </Box>
+      <CardContent flexGrow={1}>
         {children}
         <TagsComponent tags={tags} variant="filled" height={GUTTER_PX * 2.5} color="primary" marginTop={gutters()} />
       </CardContent>
