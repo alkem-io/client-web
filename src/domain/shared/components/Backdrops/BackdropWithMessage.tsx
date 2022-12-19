@@ -23,7 +23,7 @@ const useBackdropStyles = makeStyles(theme => ({
 
 export interface BackdropProps {
   show?: boolean;
-  blockName?: string;
+  blockName?: React.ReactNode;
   message?: string;
   template?: React.ReactNode;
 }
