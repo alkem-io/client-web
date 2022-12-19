@@ -19,7 +19,7 @@
     "load-more": "Laad meer",
     "load-count-more": "Laad {{count}} meer",
     "apply": "Schrijf in",
-    "explore": "Verken",
+    "explore": "Bijdragen",
     "ok": "Oké",
     "create": "Maak aan",
     "publish": "Publiceer",
@@ -58,8 +58,11 @@
     "confirm": "Bevestig",
     "change-template": "Verander template",
     "change": "Verander",
-    "import": "Importeer...",
-    "share": "Deel"
+    "library": "Bibliotheek",
+    "share": "Delen",
+    "preview": "Voorbeeld",
+    "import": "Importeer",
+    "importing": "Importeren..."
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -75,9 +78,17 @@
     "register": "Registreer",
     "validation": {
       "fill-fields": "Vul alsjeblieft de vereiste velden in!"
+    },
+    "social-login": {
+      "connect": "Verbinden met {{provider}}",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft"
+      }
     }
   },
   "common": {
+    "or": "Of",
     "permission": "Toestemming",
     "permissions": "Rechten",
     "error-generic": "Fout bij het laden",
@@ -101,7 +112,7 @@
     "create-new-entity": "Maak nieuwe {{entity}} aan",
     "description": "Omschrijving",
     "about": "Over",
-    "explore": "Explore",
+    "explore": "Bijdragen",
     "edit-entity": "Pas {{entity}} aan",
     "filter": "Filter",
     "filterby": "Filter op...",
@@ -120,7 +131,7 @@
     "opportunities": "Opportunities",
     "organization": "Organisatie",
     "organizations": "Organisaties",
-    "communications": "Communicatie",
+    "communications": "Updates",
     "applications": "Aanmeldingen",
     "interest": "Interesse",
     "interests": "Interesses",
@@ -177,7 +188,9 @@
     "loading": "Laden...",
     "language": "Taal",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation flows",
     "more": "Meer",
+    "url": "URL",
     "genders": {
       "notSpecified": "niet gespecificeerd",
       "male": "man",
@@ -501,6 +514,16 @@
     }
   },
   "components": {
+    "error-display": {
+      "title": "Oeps!",
+      "went-wrong": "Het lijkt erop dat er iets mis is gegaan.",
+      "contact-support-sentence": "Als het probleem aanhoudt, neem dan contact op met support.",
+      "buttons": {
+        "reload": "Herlaad",
+        "take-me-home": "Naar startpagina",
+        "contact-support": "Contact opnemen"
+      }
+    },
     "search-cards": {
       "matched-terms": "Gematchte Termen"
     },
@@ -511,22 +534,24 @@
       "actions": {
         "callout-published": "heeft een nieuwe $t(common.callout) gepubliceerd",
         "canvas-created": "heeft een $t(common.canvas) toegevoegd aan '{{parentDisplayName}}'",
-        "card-comment-created": "heeft gereageerd op $t(common.aspect) '{{cardDisplayName}}'",
-        "card-created": "heeft een $t(common.aspect) toegevoegd aan '{{calloutDisplayName}}'",
+        "card-comment-created": "heeft gereageerd op '{{cardDisplayName}}'",
+        "card-created": "voegde een {{cardType}} Kaart toe aan '{{calloutDisplayName}}'",
         "discussion-comment-created": "heeft gereageerd op '{{calloutDisplayName}}'",
-        "member-joined": "nieuw lid",
+        "member-joined": "nieuw lid toegetreden tot {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "heeft een nieuwe $t(common.challenge) aangemaakt",
-        "opportunity-created": "heeft een nieuwe $t(common.opportunity) aangemaakt"
+        "opportunity-created": "heeft een nieuwe $t(common.opportunity) aangemaakt",
+        "update-sent": "heeft een nieuwe $t(common.update) gedeeld"
       },
       "activity-description": {
-        "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "[name] {{displayName}}",
-        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
-        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "callout-published": "{{displayName}}",
+        "canvas-created": "{{displayName}}",
+        "card-comment-created": "{{comment}}",
+        "card-created": "{{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
-        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}"
+        "opportunity-created": "{{displayName}}",
+        "update-sent": "{{update}}"
       }
     },
     "lifecycle-visualizer": {
@@ -551,7 +576,8 @@
         "type-cards": "Kaarten",
         "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
         "type-canvases": "Canvasen",
-        "type-canvases-help": "Selecteer ‘Canvasen’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven."
+        "type-canvases-help": "Selecteer ‘Canvasen’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
+        "unique-title-validation-text": "Deze titel wordt al gebruikt voor een andere $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",
@@ -677,7 +703,17 @@
       "tooltips": {
         "add-reference": "Voeg een referentie toe",
         "remove-reference": "Verwijder de referentie"
-      }
+      },
+      "url-helper-text": "Houd er rekening mee dat alle geüploade bestanden toegankelijk worden voor iedereen met de link en alleen verwijderd kunnen worden door het Alkemio team.<br/> <terms>Klik hier</terms> voor de algemene voorwaarden."
+    },
+    "file-upload": {
+      "confirm-dialog": {
+        "title": "Document uploaden",
+        "confirm-text": "Zorg ervoor dat dit document voldoet aan de inhoudsnormen van Alkemio. <aup>Klik hier</aup> om het Acceptabele Gebruiksbeleid (sectie 7) te bekijken.",
+        "checkbox-label": "Dit document voldoet aan de voorwaarden van Alkemio "
+      },
+      "file-size-error": "Bestandsgrootte overschrijdt de limiet van {{limit}}MB",
+      "file-upload-success": "Bestand succesvol geüpload"
     },
     "editHubForm": {
       "host": {
@@ -993,8 +1029,11 @@
             "canvas-templates": "Templates voor Canvasen",
             "innovation-templates": "Templates voor Innovation Flows",
             "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?",
-            "import-innovation-packs": {
-              "title": "Importeren uit een innovatiepakket"
+            "import": {
+              "title": "Sjabloon bibliotheek: {{templateType}}",
+              "subtitle": "Vind templates voor gebruik in uw Hub, Challenge of Opportunity. Selecteer een template en klik op 'Importeren' om deze toe te voegen aan uw templateset.",
+              "no-templates": "Kon geen template vinden van dit type",
+              "imported-successfully-notification": "Template succesvol geïmporteerd"
             }
           },
           "my-profile": {
@@ -1028,6 +1067,11 @@
         }
       },
       "challenge": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "Hier kan je de $t(common.challenge) authorisatie voorkeuren aanpassen"
+          }
+        },
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
@@ -1399,8 +1443,8 @@
       }
     },
     "login": {
-      "title": "Log in",
-      "register": "Geen account?"
+      "title": "Aanmelden bij Alkemio",
+      "register": "Heeft u nog geen Alkemio account? <signup>Klik hier om u aan te melden.</signup>"
     },
     "about": {
       "title": "Samenwerking hervormen",
@@ -1427,21 +1471,30 @@
     },
     "registration": {
       "header": "Maak een account aan om Alkemio te gebruiken",
+      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
-      "login": "Heb je een account?"
+      "login": "Heb je een account?",
+      "reset-password": "Wachtwoord resetten"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "greeting": "Hallo {{user}}, welkom bij Alkemio!",
+      "continue": "Doorgaan naar het platform",
+      "tooltip": "Lees en accepteer de Gebruiksvoorwaarden en het Privacybeleid voordat u doorgaat"
     },
     "registration-success": {
-      "header": "Bedankt voor uw inschrijving",
-      "subheader": "Bijna klaar! Een laatste stap is de validatie van je emailadres."
+      "header": "Bedankt voor je registratie!"
     },
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
       "subheader": "Uw profiel is nu volledig geactiveerd op het platform. Veel plezier!",
-      "message": "Overweeg alle aspecten van uw profiel [profiel](/profile) in te vullen. Dat helpt bij zowel het lid worden van communities als uw vindbaarheid voor andere gebruikers. "
+      "message": "Overweeg alle aspecten van jouw profiel in te vullen. Dat helpt bij zowel het lid worden van communities als jouw vindbaarheid voor andere gebruikers."
     },
     "recovery": {
-      "header": "Wachtwoord Reset",
-      "message": "Vul hieronder uw email adres in om een link te ontvangen waarmee uw wachtwoord gereset kan worden."
+      "header": "Wachtwoordherstel",
+      "message": {
+        "initial": "Vul hieronder jouw email adres in om een link te ontvangen waarmee jouw wachtwoord gereset kan worden."
+      }
     },
     "verification": {
       "header": "Email verificatie",
@@ -1449,8 +1502,7 @@
     },
     "verification-required": {
       "header": "Email validatie is nog open.",
-      "message": "Kijk in je inbox voor een email met instructies.",
-      "link": "(Als je geen email hebt ontvangen, klik op deze link om nog een te laten sturen)"
+      "message": "Je bent er bijna... De laatste stap is het verifiëren van je e-mailadres. <br />Controleer je inbox voor een e-mail met instructies.<br /><br /><again>Als je geen e-mail hebt ontvangen, klik dan op deze link om opnieuw te verzenden</again>."
     },
     "settings": {
       "header": "Instellingen gebruiker"
@@ -1536,7 +1588,8 @@
     "messages": {
       "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
       "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
-      "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
+      "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
+      "verification-flow-continue": "Terug naar het platform"
     }
   },
   "apollo": {
