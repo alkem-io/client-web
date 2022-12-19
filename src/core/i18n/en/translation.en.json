@@ -1492,7 +1492,9 @@
     },
     "recovery": {
       "header": "Password recovery",
-      "message": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      "message": {
+        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      }
     },
     "verification": {
       "header": "Email verification",
@@ -1500,8 +1502,7 @@
     },
     "verification-required": {
       "header": "Email verification is pending.",
-      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>.",
-      "return-to-platform": "Return to the platform"
+      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>."
     },
     "settings": {
       "header": "User Settings"
@@ -1587,7 +1588,8 @@
     "messages": {
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
-      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
+      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
+      "verification-flow-continue": "Return to the platform"
     }
   },
   "apollo": {

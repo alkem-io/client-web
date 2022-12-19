@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
@@ -11,11 +10,20 @@ import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle } from '../../../ui/typography';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import { Link } from 'react-router-dom';
+import { isInputNode } from '../components/Kratos/helpers';
+import { UiContainer } from '@ory/kratos-client/dist/api';
 
 interface RegisterPageProps {
   flow: string;
 }
+
+enum RecoveryFlowStage {
+  Email = 'email',
+  Code = 'code',
+}
+
+const hasCodeInput = (ui: UiContainer) =>
+  ui.nodes.some(node => isInputNode(node) && node.attributes.node_type === 'input' && node.attributes.name === 'code');
 
 export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
@@ -29,16 +37,17 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
     return <ErrorDisplay />;
   }
 
+  const flowStage = recoveryFlow && (hasCodeInput(recoveryFlow.ui) ? RecoveryFlowStage.Code : RecoveryFlowStage.Email);
+
   return (
     <KratosForm ui={recoveryFlow?.ui}>
       <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
         <FixedHeightLogo />
         <PageTitle>{t('pages.recovery.header')}</PageTitle>
-        <SubHeading textAlign="center">{t('pages.recovery.message')}</SubHeading>
+        {flowStage === RecoveryFlowStage.Email && (
+          <SubHeading textAlign="center">{t('pages.recovery.message.initial')}</SubHeading>
+        )}
         <KratosUI ui={recoveryFlow?.ui} />
-        <Button component={Link} to={'/'} variant="outlined">
-          {t('pages.verification-required.return-to-platform')}
-        </Button>
       </Container>
     </KratosForm>
   );
