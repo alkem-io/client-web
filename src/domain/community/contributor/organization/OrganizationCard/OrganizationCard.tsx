@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { Avatar, Box, CardHeader, Skeleton } from '@mui/material';
+import React, { FC, useState } from 'react';
+import { Avatar, Box, Button, CardHeader, Dialog, Skeleton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Caption, PageTitle } from '../../../../../core/ui/typography/components
 import CircleTag from '../../../../../common/components/core/CircleTag';
 import { VerifiedStatus } from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 import OrganizationCardContainer from './OrganizationCardContainer';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
 
 interface OrganizationCardProps {
   name?: string;
@@ -37,10 +38,25 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const [isDialogOpened, setIsDialogOpened] = useState(false);
 
   const navigateToOrganization = () => {
     if (url) navigate(url);
   };
+
+  const handleSubmit = () => {
+    handleRemoveSelfFromOrganization();
+    handleClose();
+  };
+
+  const handleOpenModal = () => {
+    setIsDialogOpened(true);
+  };
+
+  const handleClose = () => {
+    setIsDialogOpened(false);
+  };
+
   return (
     <OrganizationCardContainer onClick={navigateToOrganization}>
       <CardHeader
@@ -91,7 +107,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
           variant="outlined"
           startIcon={<CloseIcon />}
           onClick={event => {
-            handleRemoveSelfFromOrganization();
+            handleOpenModal();
             event.stopPropagation();
           }}
           loading={removingFromOrganization}
@@ -99,6 +115,35 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
           {t('common.disassociate')}
         </LoadingButton>
       </Box>
+      <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
+        <DialogTitle id="confirm-innovation-flow">
+          {t('components.associated-organization.confirmation-dialog.title', { organization: name })}
+        </DialogTitle>
+        <DialogContent sx={{ paddingX: 2 }}>
+          {t('components.associated-organization.confirmation-dialog.text')}
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'end' }}>
+          {handleClose && (
+            <Button
+              onClick={event => {
+                handleClose();
+                event.stopPropagation();
+              }}
+            >
+              {t('buttons.cancel')}
+            </Button>
+          )}
+          <Button
+            onClick={event => {
+              handleSubmit();
+              event.stopPropagation();
+            }}
+            disabled={loading}
+          >
+            {t('buttons.leave')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </OrganizationCardContainer>
   );
 };
