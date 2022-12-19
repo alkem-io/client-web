@@ -17,8 +17,8 @@ const EmailVerificationNotice = () => {
           again: { to: AUTH_VERIFY_PATH },
         })}
       </BlockTitle>
-      <Button component={Link} to={'/'} variant="contained">
-        {t('pages.verification-required.return-to-platform')}
+      <Button component={Link} to="/" variant="contained">
+        {t('kratos.messages.verification-flow-continue')}
       </Button>
     </>
   );

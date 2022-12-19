@@ -108,6 +108,9 @@ export interface ButtonProps extends Record<string, unknown> {
   disabled?: boolean;
 }
 
+/**
+ * @deprecated - Please use MUI Button directly
+ */
 const WrapperButton: FC<ButtonProps> = forwardRef(
   (
     {

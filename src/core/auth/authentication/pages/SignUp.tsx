@@ -8,7 +8,7 @@ import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
 import AuthActionButton from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../constants/authentication.constants';
+import { AUTH_LOGIN_PATH, _AUTH_REGISTER_PATH } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
@@ -55,7 +55,7 @@ const SignUp = () => {
   // Sign Up inits a new flow, otherwise Kratos complains about missing fields like email
   // which a user had no chance to fill because they weren't even on the page.
   const signUp = () => {
-    navigate(AUTH_REGISTER_PATH, {
+    navigate(_AUTH_REGISTER_PATH, {
       replace: true,
       state: {
         hasAcceptedTerms: true,
