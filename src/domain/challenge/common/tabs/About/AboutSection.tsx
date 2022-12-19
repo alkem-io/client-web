@@ -27,7 +27,7 @@ import EntityDashboardLeadsSection from '../../../../community/community/EntityD
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
+import { Actions } from '../../../../../core/ui/actions/Actions';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -98,12 +98,12 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <PageContentBlockActions justifyContent="end">
+            <Actions justifyContent="end">
               {lifecycle && <LifecycleState lifecycle={lifecycle} />}
               <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
-            </PageContentBlockActions>
+            </Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

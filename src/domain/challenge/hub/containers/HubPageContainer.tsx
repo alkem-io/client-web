@@ -29,7 +29,7 @@ import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
 export interface HubContainerEntities {
-  hub?: HubPageFragment;
+  hub: HubPageFragment | undefined;
   isPrivate: boolean;
   permissions: {
     canEdit: boolean;

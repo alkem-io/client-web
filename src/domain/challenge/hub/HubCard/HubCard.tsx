@@ -4,8 +4,10 @@ import { HubOutlined } from '@mui/icons-material';
 import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
+import JourneyCardVision from '../../common/JourneyCard/JourneyCardVision';
+import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
 
-interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent'> {
+interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
   displayName: string;
   vision: string;
   membersCount: number;
@@ -17,6 +19,7 @@ const HubCard = ({ displayName, vision, membersCount, tagline, ...props }: HubCa
   return (
     <JourneyCard
       iconComponent={HubOutlined}
+      journeyTypeName="hub"
       tagline={tagline}
       header={
         <>
@@ -28,10 +31,15 @@ const HubCard = ({ displayName, vision, membersCount, tagline, ...props }: HubCa
           </Caption>
         </>
       }
+      expansion={
+        <>
+          <JourneyCardVision>{vision}</JourneyCardVision>
+          <JourneyCardSpacing />
+        </>
+      }
       {...props}
     >
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
-      <JourneyCardTagline>{vision}</JourneyCardTagline>
     </JourneyCard>
   );
 };

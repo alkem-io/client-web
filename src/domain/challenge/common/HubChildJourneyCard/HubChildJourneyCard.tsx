@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { BlockTitle } from '../../../../core/ui/typography';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import JourneyCard, { JourneyCardProps } from '../JourneyCard/JourneyCard';
 import InnovationFlowCardSegment from '../JourneyCard/InnovationFlowCardSegment';
 import JourneyCardTagline from '../JourneyCard/JourneyCardTagline';
 import JourneyCardVision from '../JourneyCard/JourneyCardVision';
-import { Collapse } from '@mui/material';
+import JourneyCardSpacing from '../JourneyCard/JourneyCardSpacing';
 
-export interface HubChildJourneyCardProps extends Omit<JourneyCardProps, 'header'> {
+export interface HubChildJourneyCardProps extends Omit<JourneyCardProps, 'header' | 'expansion'> {
   displayName: string;
   vision: string;
   innovationFlowState?: string;
+  parentSegment?: ReactNode;
 }
 
 const HubChildJourneyCard = ({
@@ -18,6 +19,7 @@ const HubChildJourneyCard = ({
   tagline,
   vision,
   innovationFlowState,
+  parentSegment,
   ...props
 }: HubChildJourneyCardProps) => {
   return (
@@ -28,13 +30,16 @@ const HubChildJourneyCard = ({
           {displayName}
         </BlockTitle>
       }
+      expansion={
+        <>
+          <JourneyCardVision>{vision}</JourneyCardVision>
+          {parentSegment ?? <JourneyCardSpacing />}
+        </>
+      }
       {...props}
     >
       {innovationFlowState && <InnovationFlowCardSegment>{innovationFlowState}</InnovationFlowCardSegment>}
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
-      <Collapse>
-        <JourneyCardVision>{vision}</JourneyCardVision>
-      </Collapse>
     </JourneyCard>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import { useTranslation } from 'react-i18next';
-import { Box, BoxProps, Tooltip } from '@mui/material';
+import { Box, BoxProps, Tooltip, useTheme } from '@mui/material';
 import { times } from 'lodash';
 import { Theme } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
@@ -12,7 +12,7 @@ interface TagsComponentProps extends BoxProps {
   tags: string[];
   count?: number;
   loading?: boolean;
-  height?: number;
+  height?: number | string | ((theme: Theme) => number | string);
   color?: ChipProps['color'];
   size?: ChipProps['size'];
   variant?: ChipProps['variant'];
@@ -38,6 +38,8 @@ const TagsComponent = ({
   ...tagsContainerProps
 }: TagsComponentProps) => {
   const { t } = useTranslation();
+
+  const theme = useTheme();
 
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
 
@@ -79,14 +81,16 @@ const TagsComponent = ({
     );
   }
 
+  const computedHeight = typeof height === 'function' ? height(theme) : height;
+
   return (
     <LinesFitter
       items={tags}
       renderItem={renderTag}
       renderMore={renderMore}
-      {...getDefaultTagsContainerProps(typeof height === 'number')}
+      {...getDefaultTagsContainerProps(typeof height !== 'undefined')}
       {...tagsContainerProps}
-      height={height}
+      height={computedHeight}
     />
   );
 };

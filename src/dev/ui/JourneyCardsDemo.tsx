@@ -69,6 +69,8 @@ const JourneyCardsDemo = () => {
                 tags={['challenge', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                hubDisplayName="Parent Hub"
+                hubUri=""
               />
               <ChallengeCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
@@ -78,6 +80,8 @@ const JourneyCardsDemo = () => {
                 tags={['challenge', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                hubDisplayName="Parent Hub"
+                hubUri=""
               />
               <ChallengeCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
@@ -98,6 +102,8 @@ const JourneyCardsDemo = () => {
                 ]}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                hubDisplayName="Parent Hub"
+                hubUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>
@@ -112,6 +118,8 @@ const JourneyCardsDemo = () => {
                 tags={['opportunity', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                challengeDisplayName="Parent Challenge"
+                challengeUri=""
               />
               <OpportunityCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
@@ -121,6 +129,8 @@ const JourneyCardsDemo = () => {
                 tags={['opportunity', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                challengeDisplayName="Parent Challenge"
+                challengeUri=""
               />
               <OpportunityCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
@@ -141,6 +151,8 @@ const JourneyCardsDemo = () => {
                 ]}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                challengeDisplayName="Parent Challenge"
+                challengeUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>

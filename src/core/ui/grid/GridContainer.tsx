@@ -11,6 +11,7 @@ const GridContainer = ({ disablePadding, ...props }: GridContainerProps) => {
       display="flex"
       flexDirection="row"
       flexWrap="wrap"
+      alignItems="start"
       gap={GUTTER_MUI}
       padding={disablePadding ? undefined : GUTTER_MUI}
       {...props}

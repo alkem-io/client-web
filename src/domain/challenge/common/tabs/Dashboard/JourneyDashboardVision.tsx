@@ -9,7 +9,7 @@ import ApplicationButtonContainer from '../../../../community/application/contai
 import ApplicationButton from '../../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
+import { Actions } from '../../../../../core/ui/actions/Actions';
 
 interface JourneyDashboardVisionProps {
   vision: string;
@@ -22,14 +22,14 @@ const JourneyDashboardVision = ({ vision, journeyTypeName }: JourneyDashboardVis
   return (
     <PageContentBlock accent>
       <WrapperMarkdown>{vision}</WrapperMarkdown>
-      <PageContentBlockActions justifyContent="space-between">
+      <Actions justifyContent="space-between">
         <Button component={Link} to={EntityPageSection.About} startIcon={<ArrowForward />}>
           {t('pages.generic.sections.dashboard.about', { entity: t(`common.${journeyTypeName}` as const) })}
         </Button>
         <ApplicationButtonContainer>
           {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
         </ApplicationButtonContainer>
-      </PageContentBlockActions>
+      </Actions>
     </PageContentBlock>
   );
 };

@@ -1,15 +1,17 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
-import { Box, SvgIconProps } from '@mui/material';
+import { Box, Button, Collapse, SvgIconProps } from '@mui/material';
 import CardImage from '../../../../core/ui/card/CardImage';
 import ItemView from '../../../../core/ui/list/ItemView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { GUTTER_PX } from '../../../../core/ui/grid/constants';
-import CardContent from '../../../../core/ui/card/CardContent';
 import { gutters } from '../../../../core/ui/grid/utils';
+import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Add, ArrowForward, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { JourneyTypeName } from '../../JourneyTypeName';
+import JourneyCardActions from './JourneyCardActions';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -18,6 +20,8 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   bannerUri: string;
   tags: string[];
   journeyUri: string;
+  expansion?: ReactNode;
+  journeyTypeName: JourneyTypeName;
 }
 
 const JourneyCard = ({
@@ -27,12 +31,16 @@ const JourneyCard = ({
   bannerUri,
   tags,
   journeyUri,
+  expansion,
+  journeyTypeName,
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
+
+  const { t } = useTranslation();
 
   return (
     <ContributeCard {...containerProps}>
@@ -48,14 +56,47 @@ const JourneyCard = ({
           {header}
         </ItemView>
       </Box>
-      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }}>
+      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
         <CardContent flexGrow={1}>{children}</CardContent>
-        <Box flexGrow={1} display="flex" justifyContent="space-between" paddingY={1} paddingLeft={1.5} paddingRight={1}>
-          <TagsComponent tags={tags} variant="filled" height={GUTTER_PX * 2.5} color="primary" />
-          <Box display="flex" alignItems="end" color="primary.main">
-            {isExpanded ? <ExpandLess /> : <ExpandMore />}
-          </Box>
+        <Box
+          flexGrow={1}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="end"
+          height={gutters(1.5)}
+          paddingLeft={1.5}
+          paddingRight={1}
+        >
+          <TagsComponent
+            tags={tags}
+            variant="filled"
+            height={gutters()}
+            color="primary"
+            visibility={isExpanded ? 'hidden' : 'visible'}
+          />
+          {isExpanded ? <ExpandLess /> : <ExpandMore />}
         </Box>
+        <Collapse in={isExpanded}>
+          <CardContent>
+            {expansion}
+            <TagsComponent tags={tags} variant="filled" height={gutters(2.5)} marginTop={0.5} color="primary" />
+            <JourneyCardActions>
+              <Button
+                startIcon={<ArrowForward />}
+                sx={{ whiteSpace: 'nowrap', paddingX: 0, '.MuiButton-startIcon': { marginRight: 0.5 } }}
+              >
+                {t('buttons.go-to-entity', { entity: t(`common.${journeyTypeName}` as const) })}
+              </Button>
+              <Button
+                startIcon={<Add />}
+                variant="outlined"
+                sx={{ paddingX: 1, '.MuiButton-startIcon': { marginRight: 0.5 } }}
+              >
+                {t('components.application-button.join')}
+              </Button>
+            </JourneyCardActions>
+          </CardContent>
+        </Collapse>
       </Box>
     </ContributeCard>
   );
