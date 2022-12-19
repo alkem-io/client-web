@@ -1,6 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
+import { DialogContent } from '@mui/material';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
 import {
   LifecycleContextTabFragment,
   ReferenceDetailsFragment,
@@ -12,7 +15,7 @@ import {
 import { MetricItem } from '../../../../../common/components/composite/common/MetricsPanel/Metrics';
 import PageContentColumn, { PageContentColumnProps } from '../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../core/ui/content/PageContent';
-import { Tagline } from '../../../../../core/ui/typography';
+import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { LifecycleState } from '../../../../platform/admin/templates/InnovationTemplates/LifecycleState';
@@ -28,6 +31,8 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
+import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
+import DialogTitle from '../../../../../common/components/core/dialog/DialogTitle';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -85,10 +90,35 @@ export const AboutSection: FC<AboutSectionProps> = ({
   lifecycle,
 }) => {
   const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
 
   const isHub = journeyTypeName === 'hub';
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
   const usersHeader = isHub ? 'community.host' : 'community.leads';
+
+  const handleDialogOpen = (_sectionName: 'vision' | 'background' | 'impact' | 'who') => setOpen(true);
+  const handleDialogClose = () => setOpen(false);
+
+  const dialog = useMemo(
+    () => (
+      <Dialog open={open} fullWidth maxWidth={false} onClose={handleDialogClose}>
+        <DialogTitle onClose={handleDialogClose}>{t('common.context')}</DialogTitle>
+        <DialogContent>
+          <Box display="flex" gap={2} flexDirection="column">
+            <BlockTitle>{t(`context.${journeyTypeName}.vision.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{vision}</WrapperMarkdown>
+            <BlockTitle>{t(`context.${journeyTypeName}.background.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{background}</WrapperMarkdown>
+            <BlockTitle>{t(`context.${journeyTypeName}.impact.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{impact}</WrapperMarkdown>
+            <BlockTitle>{t(`context.${journeyTypeName}.who.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{who}</WrapperMarkdown>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    ),
+    [t, open, journeyTypeName, vision, background, impact, who]
+  );
 
   return (
     <>
@@ -130,19 +160,31 @@ export const AboutSection: FC<AboutSectionProps> = ({
         </LeftColumn>
         <RightColumn>
           <FixedHeightContentBlock>
-            <PageContentBlockHeader title={t(`context.${journeyTypeName}.vision.title` as const)} />
+            <PageContentBlockHeaderWithDialogAction
+              title={t(`context.${journeyTypeName}.vision.title` as const)}
+              onDialogOpen={() => handleDialogOpen('vision')}
+            />
             <WrapperMarkdown>{vision}</WrapperMarkdown>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock>
-            <PageContentBlockHeader title={t(`context.${journeyTypeName}.background.title` as const)} />
+            <PageContentBlockHeaderWithDialogAction
+              title={t(`context.${journeyTypeName}.background.title` as const)}
+              onDialogOpen={() => handleDialogOpen('background')}
+            />
             <WrapperMarkdown>{background}</WrapperMarkdown>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock halfWidth>
-            <PageContentBlockHeader title={t(`context.${journeyTypeName}.impact.title` as const)} />
+            <PageContentBlockHeaderWithDialogAction
+              title={t(`context.${journeyTypeName}.impact.title` as const)}
+              onDialogOpen={() => handleDialogOpen('impact')}
+            />
             <WrapperMarkdown>{impact}</WrapperMarkdown>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock halfWidth>
-            <PageContentBlockHeader title={t(`context.${journeyTypeName}.who.title` as const)} />
+            <PageContentBlockHeaderWithDialogAction
+              title={t(`context.${journeyTypeName}.who.title` as const)}
+              onDialogOpen={() => handleDialogOpen('who')}
+            />
             <WrapperMarkdown>{who}</WrapperMarkdown>
           </FixedHeightContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
@@ -158,6 +200,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
         </RightColumn>
       </PageContent>
+      {dialog}
     </>
   );
 };
