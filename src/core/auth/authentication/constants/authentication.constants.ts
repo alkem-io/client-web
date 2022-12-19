@@ -1,5 +1,7 @@
 /**
- * @deprecated - not to be used directly on user-facing buttons etc.
+ * @deprecated
+ * Before getting to _AUTH_REGISTER_PATH the user must accept the Platform Terms which is done on AUTH_SIGN_UP_PATH,
+ * so please use AUTH_SIGN_UP_PATH for buttons/links that take a user to the registration flow.
  */
 export const _AUTH_REGISTER_PATH = '/identity/registration';
 
