@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   journeyCardTagsGetter,
   journeyCardValueGetter,
-} from '../../../../common/components/core/card-filter/value-getters/journey-card-value-getter';
+} from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
