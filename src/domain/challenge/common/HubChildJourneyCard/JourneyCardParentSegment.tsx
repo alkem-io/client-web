@@ -14,12 +14,15 @@ const JourneyCardParentSegment = ({
   parentJourneyUri,
   children,
 }: PropsWithChildren<JourneyCardParentSegmentProps>) => {
+  const stopPropagation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation();
+
   return (
     <CardSegmentCaption
       component={RouterLink}
       to={parentJourneyUri}
       icon={<Icon fontSize="small" color="primary" />}
       align="left"
+      onClick={stopPropagation}
     >
       <Caption noWrap>{children}</Caption>
     </CardSegmentCaption>

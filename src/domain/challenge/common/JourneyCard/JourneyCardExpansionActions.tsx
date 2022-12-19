@@ -2,7 +2,7 @@ import React, { PropsWithChildren } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Actions } from '../../../../core/ui/actions/Actions';
 
-const JourneyCardActions = (props: PropsWithChildren<{}>) => {
+const JourneyCardExpansionActions = (props: PropsWithChildren<{}>) => {
   const stopPropagation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation();
 
   return (
@@ -19,4 +19,4 @@ const JourneyCardActions = (props: PropsWithChildren<{}>) => {
   );
 };
 
-export default JourneyCardActions;
+export default JourneyCardExpansionActions;

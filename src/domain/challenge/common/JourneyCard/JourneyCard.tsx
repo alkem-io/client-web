@@ -1,6 +1,6 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
-import { Box, Button, Collapse, SvgIconProps } from '@mui/material';
+import { Box, Collapse, SvgIconProps } from '@mui/material';
 import CardImage from '../../../../core/ui/card/CardImage';
 import ItemView from '../../../../core/ui/list/ItemView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
@@ -11,7 +11,8 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import { Add, ArrowForward, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { JourneyTypeName } from '../../JourneyTypeName';
-import JourneyCardActions from './JourneyCardActions';
+import JourneyCardExpansionActions from './JourneyCardExpansionActions';
+import JourneyCardExpansionButton from './JourneyCardExpansionButton';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -80,21 +81,14 @@ const JourneyCard = ({
           <CardContent>
             {expansion}
             <TagsComponent tags={tags} variant="filled" height={gutters(2.5)} marginTop={0.5} color="primary" />
-            <JourneyCardActions>
-              <Button
-                startIcon={<ArrowForward />}
-                sx={{ whiteSpace: 'nowrap', paddingX: 0, '.MuiButton-startIcon': { marginRight: 0.5 } }}
-              >
+            <JourneyCardExpansionActions>
+              <JourneyCardExpansionButton startIcon={<ArrowForward />}>
                 {t('buttons.go-to-entity', { entity: t(`common.${journeyTypeName}` as const) })}
-              </Button>
-              <Button
-                startIcon={<Add />}
-                variant="outlined"
-                sx={{ paddingX: 1, '.MuiButton-startIcon': { marginRight: 0.5 } }}
-              >
+              </JourneyCardExpansionButton>
+              <JourneyCardExpansionButton startIcon={<Add />} variant="outlined">
                 {t('components.application-button.join')}
-              </Button>
-            </JourneyCardActions>
+              </JourneyCardExpansionButton>
+            </JourneyCardExpansionActions>
           </CardContent>
         </Collapse>
       </Box>
