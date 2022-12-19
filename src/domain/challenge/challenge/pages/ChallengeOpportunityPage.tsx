@@ -1,4 +1,3 @@
-import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -80,7 +79,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
             createSubentityDialog={
               <JourneyCreationDialog
                 open={createDialogOpen}
-                icon={<BatchPredictionOutlinedIcon />}
+                icon={<OpportunityIcon />}
                 journeyName={t('common.opportunity')}
                 onClose={() => setCreateDialogOpen(false)}
                 OnCreate={handleCreate}
