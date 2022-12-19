@@ -1,6 +1,10 @@
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import {
+  journeyCardTagsGetter,
+  journeyCardValueGetter,
+} from '../../../../common/components/core/card-filter/value-getters/journey-card-value-getter';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
@@ -56,6 +60,8 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             childEntities={entities.challenges}
             childEntitiesIcon={<ChallengeIcon />}
             childEntityReadAccess={permissions.canReadChallenges}
+            childEntityValueGetter={journeyCardValueGetter}
+            childEntityTagsGetter={journeyCardTagsGetter}
             getChildEntityUrl={entity => buildChallengeUrl(hubNameId, entity.nameID)}
             journeyTypeName="hub"
             state={{ loading: state.loading, error: state.error }}

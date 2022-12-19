@@ -2,6 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { Skeleton } from '@mui/material';
 import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
+import { ValueType } from '../../../../../common/components/core/card-filter/filterFn';
 import ErrorBlock from '../../../../../common/components/core/ErrorBlock';
 import getJourneyChildrenTranslationKey from '../../../../../common/utils/translation/getJourneyChildrenTranslationKey';
 import PageContent from '../../../../../core/ui/content/PageContent';
@@ -29,6 +31,8 @@ export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntity>
   childEntitiesIcon?: ReactElement;
   childEntityReadAccess?: boolean;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
+  childEntityValueGetter: (childEntity: ChildEntity) => ValueType;
+  childEntityTagsGetter: (childEntity: ChildEntity) => string[];
   getChildEntityUrl: (childEntity: ChildEntity) => string;
   childEntityCreateAccess?: boolean;
   childEntityOnCreate?: () => void;
@@ -43,6 +47,8 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
   childEntitiesIcon,
   childEntityReadAccess,
   renderChildEntityCard,
+  childEntityValueGetter,
+  childEntityTagsGetter,
   getChildEntityUrl,
   childEntityCreateAccess = false,
   childEntityOnCreate,
@@ -50,13 +56,6 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
   state,
 }: JourneySubentitiesViewProps<ChildEntity>) => {
   const { t } = useTranslation();
-  /*
-    entityTagsValueGetter: (childEntity: ChildEntity) => string[];
-  entityValueGetter: (childEntity: ChildEntity) => ValueType;
-
-  <CardFilter data={childEntities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
-  </CardFilter>
-*/
 
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={t(`common.${journeyTypeName}` as const)}>
@@ -100,9 +99,18 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
                 </Text>
               )}
               {!state.loading && childEntities.length > 0 && (
-                <CardsLayout items={childEntities} deps={[hubNameId]} disablePadding>
-                  {renderChildEntityCard}
-                </CardsLayout>
+                <CardFilter
+                  data={childEntities}
+                  valueGetter={childEntityValueGetter}
+                  tagsValueGetter={childEntityTagsGetter}
+                  keepOpen={false}
+                >
+                  {filteredEntities => (
+                    <CardsLayout items={filteredEntities} deps={[hubNameId]} disablePadding>
+                      {renderChildEntityCard}
+                    </CardsLayout>
+                  )}
+                </CardFilter>
               )}
             </PageContentBlock>
           )}

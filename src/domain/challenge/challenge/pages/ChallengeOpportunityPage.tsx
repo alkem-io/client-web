@@ -2,6 +2,10 @@ import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutl
 import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import {
+  journeyCardTagsGetter,
+  journeyCardValueGetter,
+} from '../../../../common/components/core/card-filter/value-getters/journey-card-value-getter';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
@@ -58,6 +62,8 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
             getChildEntityUrl={entity => buildOpportunityUrl(hubNameId, challengeNameId, entity.nameID)}
+            childEntityValueGetter={journeyCardValueGetter}
+            childEntityTagsGetter={journeyCardTagsGetter}
             journeyTypeName="challenge"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={opportunity => (
