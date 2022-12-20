@@ -16,7 +16,7 @@ const SCROLL_OPTIONS = { behavior: 'smooth' } as const;
 
 type ScrollMethod = 'window' | 'element';
 
-interface Opts {
+interface Options {
   enabled?: boolean;
   method?: ScrollMethod;
   defer?: boolean;
@@ -38,7 +38,7 @@ const deferred =
 
 const useScrollToElement = (
   elementAliasToScrollTo: string | undefined,
-  { enabled = true, method = 'window', defer: shouldDefer = false }: Opts = {}
+  { enabled = true, method = 'window', defer: shouldDefer = false }: Options = {}
 ) => {
   const elements = useRef<Record<string, HTMLElement | null>>({}).current;
 
