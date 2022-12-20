@@ -6,21 +6,28 @@ import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 import JourneyCardVision from '../../common/JourneyCard/JourneyCardVision';
 import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
+import { useUserContext } from '../../../community/contributor/user';
 
 interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
+  hubId?: string;
   displayName: string;
   vision: string;
   membersCount: number;
 }
 
-const HubCard = ({ displayName, vision, membersCount, tagline, ...props }: HubCardProps) => {
+const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }: HubCardProps) => {
   const { t } = useTranslation();
+
+  const { user } = useUserContext();
+
+  const isMember = hubId ? user?.ofHub(hubId) : undefined;
 
   return (
     <JourneyCard
       iconComponent={HubOutlined}
       journeyTypeName="hub"
       tagline={tagline}
+      member={isMember}
       header={
         <>
           <BlockTitle noWrap component="dt">
