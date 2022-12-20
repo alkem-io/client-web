@@ -99,13 +99,16 @@ export const AboutSection: FC<AboutSectionProps> = ({
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
   const usersHeader = isHub ? 'community.host' : 'community.leads';
 
-  const onElementAdded = useScrollToElement(sectionName);
+  const { scrollable } = useScrollToElement(sectionName, { method: 'element', defer: true });
 
   const handleDialogOpen = (_sectionName: 'vision' | 'background' | 'impact' | 'who') => {
     setOpen(true);
     setSectionName(_sectionName);
   };
-  const handleDialogClose = () => setOpen(false);
+  const handleDialogClose = () => {
+    setOpen(false);
+    setSectionName(undefined);
+  };
 
   return (
     <>
@@ -197,9 +200,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <WrapperMarkdown>{background}</WrapperMarkdown>
             <BlockTitle>{t(`context.${journeyTypeName}.impact.title` as const)}</BlockTitle>
             <WrapperMarkdown>{impact}</WrapperMarkdown>
-            <BlockTitle ref={el => onElementAdded(el, 'who')}>
-              {t(`context.${journeyTypeName}.who.title` as const)}
-            </BlockTitle>
+            <BlockTitle ref={scrollable('who')}>{t(`context.${journeyTypeName}.who.title` as const)}</BlockTitle>
             <WrapperMarkdown>{who}</WrapperMarkdown>
           </Box>
         </DialogContent>
