@@ -8,7 +8,7 @@ import TagsComponent from '../../../shared/components/TagsComponent/TagsComponen
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import { Add, ArrowForward, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Add, ArrowForward, BeenhereOutlined, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import JourneyCardExpansionActions from './JourneyCardExpansionActions';
@@ -23,6 +23,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   journeyUri: string;
   expansion?: ReactNode;
   journeyTypeName: JourneyTypeName;
+  member?: boolean;
 }
 
 const JourneyCard = ({
@@ -34,6 +35,7 @@ const JourneyCard = ({
   journeyUri,
   expansion,
   journeyTypeName,
+  member,
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
@@ -46,7 +48,18 @@ const JourneyCard = ({
   return (
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
-        <CardImage src={bannerUri} alt={tagline} />
+        <Box position="relative">
+          <CardImage src={bannerUri} alt={tagline} />
+          {member && (
+            <RoundedIcon
+              size="small"
+              component={BeenhereOutlined}
+              position="absolute"
+              right={gutters(0.5)}
+              top={gutters(0.5)}
+            />
+          )}
+        </Box>
         <ItemView
           visual={<RoundedIcon size="small" component={Icon} />}
           gap={1}

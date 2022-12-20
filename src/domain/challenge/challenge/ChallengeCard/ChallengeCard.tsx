@@ -3,16 +3,21 @@ import HubChildJourneyCard, { HubChildJourneyCardProps } from '../../common/HubC
 import { ChallengeIcon } from '../icon/ChallengeIcon';
 import JourneyCardParentSegment from '../../common/HubChildJourneyCard/JourneyCardParentSegment';
 import { HubIcon } from '../../hub/icon/HubIcon';
+import { useUserContext } from '../../../community/contributor/user';
 
 interface ChallengeCardProps
   extends Omit<HubChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
-  displayName: string;
+  challengeId?: string;
   hubUri?: string;
   hubDisplayName?: string;
   innovationFlowState?: string;
 }
 
-const ChallengeCard = ({ hubDisplayName, hubUri, ...props }: ChallengeCardProps) => {
+const ChallengeCard = ({ challengeId, hubDisplayName, hubUri, ...props }: ChallengeCardProps) => {
+  const { user } = useUserContext();
+
+  const isMember = challengeId ? user?.ofChallenge(challengeId) : undefined;
+
   return (
     <HubChildJourneyCard
       iconComponent={ChallengeIcon}
@@ -25,6 +30,7 @@ const ChallengeCard = ({ hubDisplayName, hubUri, ...props }: ChallengeCardProps)
           </JourneyCardParentSegment>
         )
       }
+      member={isMember}
       {...props}
     />
   );

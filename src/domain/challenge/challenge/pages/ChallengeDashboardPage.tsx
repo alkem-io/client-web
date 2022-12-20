@@ -50,6 +50,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 activityLoading={state.activityLoading}
                 renderChildEntityCard={opportunity => (
                   <OpportunityCard
+                    opportunityId={opportunity.id}
                     displayName={opportunity.displayName}
                     tagline={opportunity.context?.tagline!}
                     vision={opportunity.context?.vision!}
