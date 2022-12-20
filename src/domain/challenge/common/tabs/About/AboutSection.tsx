@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { DialogContent } from '@mui/material';
@@ -33,6 +33,7 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
 import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogTitle from '../../../../../common/components/core/dialog/DialogTitle';
+import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -91,34 +92,20 @@ export const AboutSection: FC<AboutSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  // todo change string
+  const [sectionName, setSectionName] = useState<string>();
 
   const isHub = journeyTypeName === 'hub';
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
   const usersHeader = isHub ? 'community.host' : 'community.leads';
 
-  const handleDialogOpen = (_sectionName: 'vision' | 'background' | 'impact' | 'who') => setOpen(true);
-  const handleDialogClose = () => setOpen(false);
+  const onElementAdded = useScrollToElement(sectionName);
 
-  const dialog = useMemo(
-    () => (
-      <Dialog open={open} fullWidth maxWidth={false} onClose={handleDialogClose}>
-        <DialogTitle onClose={handleDialogClose}>{t('common.context')}</DialogTitle>
-        <DialogContent>
-          <Box display="flex" gap={2} flexDirection="column">
-            <BlockTitle>{t(`context.${journeyTypeName}.vision.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{vision}</WrapperMarkdown>
-            <BlockTitle>{t(`context.${journeyTypeName}.background.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{background}</WrapperMarkdown>
-            <BlockTitle>{t(`context.${journeyTypeName}.impact.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{impact}</WrapperMarkdown>
-            <BlockTitle>{t(`context.${journeyTypeName}.who.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{who}</WrapperMarkdown>
-          </Box>
-        </DialogContent>
-      </Dialog>
-    ),
-    [t, open, journeyTypeName, vision, background, impact, who]
-  );
+  const handleDialogOpen = (_sectionName: 'vision' | 'background' | 'impact' | 'who') => {
+    setOpen(true);
+    setSectionName(_sectionName);
+  };
+  const handleDialogClose = () => setOpen(false);
 
   return (
     <>
@@ -200,7 +187,23 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
         </RightColumn>
       </PageContent>
-      {dialog}
+      <Dialog open={open} fullWidth maxWidth={false} onClose={handleDialogClose}>
+        <DialogTitle onClose={handleDialogClose}>{t('common.context')}</DialogTitle>
+        <DialogContent>
+          <Box display="flex" gap={2} flexDirection="column">
+            <BlockTitle>{t(`context.${journeyTypeName}.vision.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{vision}</WrapperMarkdown>
+            <BlockTitle>{t(`context.${journeyTypeName}.background.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{background}</WrapperMarkdown>
+            <BlockTitle>{t(`context.${journeyTypeName}.impact.title` as const)}</BlockTitle>
+            <WrapperMarkdown>{impact}</WrapperMarkdown>
+            <BlockTitle ref={el => onElementAdded(el, 'who')}>
+              {t(`context.${journeyTypeName}.who.title` as const)}
+            </BlockTitle>
+            <WrapperMarkdown>{who}</WrapperMarkdown>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
