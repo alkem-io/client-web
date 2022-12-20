@@ -1,18 +1,14 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import { Box, Collapse, SvgIconProps } from '@mui/material';
+import { BeenhereOutlined, ExpandLess, ExpandMore } from '@mui/icons-material';
+import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import CardImage from '../../../../core/ui/card/CardImage';
 import ItemView from '../../../../core/ui/list/ItemView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import { Add, ArrowForward, BeenhereOutlined, ExpandLess, ExpandMore } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
-import { JourneyTypeName } from '../../JourneyTypeName';
-import JourneyCardExpansionActions from './JourneyCardExpansionActions';
-import JourneyCardExpansionButton from './JourneyCardExpansionButton';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -22,7 +18,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   tags: string[];
   journeyUri: string;
   expansion?: ReactNode;
-  journeyTypeName: JourneyTypeName;
+  expansionActions?: ReactNode;
   member?: boolean;
 }
 
@@ -34,7 +30,7 @@ const JourneyCard = ({
   tags,
   journeyUri,
   expansion,
-  journeyTypeName,
+  expansionActions,
   member,
   children,
   ...containerProps
@@ -42,8 +38,6 @@ const JourneyCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
-
-  const { t } = useTranslation();
 
   return (
     <ContributeCard {...containerProps}>
@@ -77,31 +71,17 @@ const JourneyCard = ({
           display="flex"
           justifyContent="space-between"
           alignItems="end"
-          height={gutters(1.5)}
           paddingLeft={1.5}
           paddingRight={1}
         >
-          <TagsComponent
-            tags={tags}
-            variant="filled"
-            height={gutters()}
-            color="primary"
-            visibility={isExpanded ? 'hidden' : 'visible'}
-          />
+          <CardTags tags={tags} visibility={isExpanded ? 'hidden' : 'visible'} />
           {isExpanded ? <ExpandLess /> : <ExpandMore />}
         </Box>
         <Collapse in={isExpanded}>
           <CardContent>
             {expansion}
-            <TagsComponent tags={tags} variant="filled" height={gutters(2.5)} marginTop={0.5} color="primary" />
-            <JourneyCardExpansionActions>
-              <JourneyCardExpansionButton startIcon={<ArrowForward />}>
-                {t('buttons.go-to-entity', { entity: t(`common.${journeyTypeName}` as const) })}
-              </JourneyCardExpansionButton>
-              <JourneyCardExpansionButton startIcon={<Add />} variant="outlined">
-                {t('components.application-button.join')}
-              </JourneyCardExpansionButton>
-            </JourneyCardExpansionActions>
+            <CardTags tags={tags} rows={2} />
+            {expansionActions}
           </CardContent>
         </Collapse>
       </Box>

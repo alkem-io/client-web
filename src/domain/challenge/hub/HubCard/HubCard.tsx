@@ -7,6 +7,9 @@ import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
 import JourneyCardVision from '../../common/JourneyCard/JourneyCardVision';
 import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
 import { useUserContext } from '../../../community/contributor/user';
+import CardActions from '../../../../core/ui/card/CardActions';
+import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
+import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
 
 interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
   hubId?: string;
@@ -25,7 +28,6 @@ const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }
   return (
     <JourneyCard
       iconComponent={HubOutlined}
-      journeyTypeName="hub"
       tagline={tagline}
       member={isMember}
       header={
@@ -43,6 +45,12 @@ const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }
           <JourneyCardVision>{vision}</JourneyCardVision>
           <JourneyCardSpacing />
         </>
+      }
+      expansionActions={
+        <CardActions>
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="hub" />
+          <JourneyCardJoinButton />
+        </CardActions>
       }
       {...props}
     >

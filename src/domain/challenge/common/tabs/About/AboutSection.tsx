@@ -28,6 +28,7 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Actions } from '../../../../../core/ui/actions/Actions';
+import { useChallenge } from '../../../challenge/hooks/useChallenge';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -90,6 +91,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
   const usersHeader = isHub ? 'community.host' : 'community.leads';
 
+  const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
+
   return (
     <>
       <PageContent>
@@ -100,7 +103,11 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <TagsComponent tags={tags} variant="filled" loading={loading} />
             <Actions justifyContent="end">
               {lifecycle && <LifecycleState lifecycle={lifecycle} />}
-              <ApplicationButtonContainer>
+              <ApplicationButtonContainer
+                challengeId={challengeId}
+                challengeNameId={challengeNameId}
+                challengeName={challengeName}
+              >
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
             </Actions>

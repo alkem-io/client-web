@@ -51,6 +51,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 renderChildEntityCard={challenge => (
                   <ChallengeCard
                     challengeId={challenge.id}
+                    challengeNameId={challenge.nameID}
                     bannerUri={getVisualBanner(challenge.context?.visuals)!}
                     displayName={challenge.displayName}
                     tags={challenge.tagset?.tags!}

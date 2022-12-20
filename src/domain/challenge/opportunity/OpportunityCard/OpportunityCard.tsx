@@ -4,6 +4,8 @@ import { OpportunityIcon } from '../icon/OpportunityIcon';
 import JourneyCardParentSegment from '../../common/HubChildJourneyCard/JourneyCardParentSegment';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
 import { useUserContext } from '../../../community/contributor/user';
+import CardActions from '../../../../core/ui/card/CardActions';
+import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 
 interface OpportunityCardProps
   extends Omit<HubChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
@@ -21,7 +23,6 @@ const OpportunityCard = ({ opportunityId, challengeDisplayName, challengeUri, ..
   return (
     <HubChildJourneyCard
       iconComponent={OpportunityIcon}
-      journeyTypeName="opportunity"
       parentSegment={
         challengeUri &&
         challengeDisplayName && (
@@ -29,6 +30,11 @@ const OpportunityCard = ({ opportunityId, challengeDisplayName, challengeUri, ..
             {challengeDisplayName}
           </JourneyCardParentSegment>
         )
+      }
+      expansionActions={
+        <CardActions>
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="opportunity" />
+        </CardActions>
       }
       member={isMember}
       {...props}

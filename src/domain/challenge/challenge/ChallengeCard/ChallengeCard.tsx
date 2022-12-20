@@ -4,16 +4,20 @@ import { ChallengeIcon } from '../icon/ChallengeIcon';
 import JourneyCardParentSegment from '../../common/HubChildJourneyCard/JourneyCardParentSegment';
 import { HubIcon } from '../../hub/icon/HubIcon';
 import { useUserContext } from '../../../community/contributor/user';
+import CardActions from '../../../../core/ui/card/CardActions';
+import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
+import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
 
 interface ChallengeCardProps
   extends Omit<HubChildJourneyCardProps, 'iconComponent' | 'journeyTypeName' | 'parentSegment'> {
   challengeId?: string;
+  challengeNameId?: string;
   hubUri?: string;
   hubDisplayName?: string;
   innovationFlowState?: string;
 }
 
-const ChallengeCard = ({ challengeId, hubDisplayName, hubUri, ...props }: ChallengeCardProps) => {
+const ChallengeCard = ({ challengeId, challengeNameId, hubDisplayName, hubUri, ...props }: ChallengeCardProps) => {
   const { user } = useUserContext();
 
   const isMember = challengeId ? user?.ofChallenge(challengeId) : undefined;
@@ -21,7 +25,7 @@ const ChallengeCard = ({ challengeId, hubDisplayName, hubUri, ...props }: Challe
   return (
     <HubChildJourneyCard
       iconComponent={ChallengeIcon}
-      journeyTypeName="challenge"
+      member={isMember}
       parentSegment={
         hubUri &&
         hubDisplayName && (
@@ -30,7 +34,18 @@ const ChallengeCard = ({ challengeId, hubDisplayName, hubUri, ...props }: Challe
           </JourneyCardParentSegment>
         )
       }
-      member={isMember}
+      expansionActions={
+        <CardActions>
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="challenge" />
+          {challengeId && challengeNameId && (
+            <JourneyCardJoinButton
+              challengeId={challengeId}
+              challengeNameId={challengeNameId}
+              challengeName={props.displayName}
+            />
+          )}
+        </CardActions>
+      }
       {...props}
     />
   );

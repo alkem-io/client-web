@@ -8,7 +8,7 @@ import Skeleton from '@mui/material/Skeleton';
 import LinesFitter from '../LinesFitter/LinesFitter';
 import { CardText } from '../../../../core/ui/typography';
 
-interface TagsComponentProps extends BoxProps {
+export interface TagsComponentProps extends BoxProps {
   tags: string[];
   count?: number;
   loading?: boolean;
