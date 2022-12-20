@@ -14,7 +14,7 @@ import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
-import { UiNodeInput } from '../components/Kratos/UiNodeInput';
+import { UiNodeInput } from '../components/Kratos/UiNodeTypes';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
 
@@ -90,7 +90,6 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
               ui={registrationFlowWithAcceptedTerms?.ui}
               onBeforeSubmit={storeHasAcceptedTerms}
               acceptTermsComponent={AcceptTerms}
-              hideFields={['traits.picture']}
             />
           </>
         )}

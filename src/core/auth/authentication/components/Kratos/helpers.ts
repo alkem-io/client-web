@@ -7,7 +7,7 @@ import {
   UiNodeTextAttributes,
 } from '@ory/kratos-client';
 import { FormEvent } from 'react';
-import { UiNodeInput } from './UiNodeInput';
+import { UiNodeAnchor, UiNodeInput } from './UiNodeTypes';
 import { KRATOS_REQUIRED_FIELDS } from './constants';
 
 export function isUiNodeAnchorAttributes(pet: UiNodeAttributes): pet is UiNodeAnchorAttributes {
@@ -96,6 +96,8 @@ export const isSubmittingPasswordFlow = (event: FormEvent<HTMLFormElement>) => {
 };
 
 export const isInputNode = (node: UiNode): node is UiNodeInput => node.type === 'input';
+
+export const isAnchorNode = (node: UiNode): node is UiNodeAnchor => node.type === 'a';
 
 export const isSubmitButton = (node: UiNode): node is UiNodeInput =>
   isInputNode(node) && node.attributes.type === 'submit';
