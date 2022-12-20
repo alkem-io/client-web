@@ -52,7 +52,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   <ChallengeCard
                     challengeId={challenge.id}
                     challengeNameId={challenge.nameID}
-                    bannerUri={getVisualBanner(challenge.context?.visuals)!}
+                    bannerUri={getVisualBanner(challenge.context?.visuals)}
                     displayName={challenge.displayName}
                     tags={challenge.tagset?.tags!}
                     tagline={challenge.context?.tagline!}

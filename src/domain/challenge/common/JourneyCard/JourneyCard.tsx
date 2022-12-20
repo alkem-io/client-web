@@ -9,12 +9,13 @@ import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import JourneyCardBannerPlaceholder from './JourneyCardBannerPlaceholder';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
   tagline: string;
-  bannerUri: string;
+  bannerUri?: string;
   tags: string[];
   journeyUri: string;
   expansion?: ReactNode;
@@ -43,7 +44,7 @@ const JourneyCard = ({
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
         <Box position="relative">
-          <CardImage src={bannerUri} alt={tagline} />
+          {bannerUri ? <CardImage src={bannerUri} alt={tagline} /> : <JourneyCardBannerPlaceholder />}
           {member && (
             <RoundedIcon
               size="small"
