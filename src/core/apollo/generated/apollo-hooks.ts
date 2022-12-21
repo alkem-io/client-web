@@ -264,6 +264,12 @@ export const ContextDetailsFragmentDoc = gql`
       uri
       description
     }
+    recommendations {
+      id
+      name
+      uri
+      description
+    }
     visuals {
       ...VisualFull
     }

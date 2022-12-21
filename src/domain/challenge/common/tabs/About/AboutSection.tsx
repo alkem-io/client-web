@@ -23,7 +23,7 @@ import EntityDashboardContributorsSection from '../../../../community/community/
 import WrapperMarkdown, { MarkdownProps } from '../../../../../common/components/core/WrapperMarkdown';
 import ActivityView from '../../../../platform/metrics/views/MetricsView';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import References from '../../../../../common/components/composite/common/References/References';
+import References from '../../../../shared/components/References/References';
 import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { JourneyTypeName } from '../../../JourneyTypeName';

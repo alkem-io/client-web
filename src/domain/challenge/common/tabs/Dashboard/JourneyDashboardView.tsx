@@ -25,6 +25,7 @@ import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
+import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -34,6 +35,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
+  recommendations: Reference[] | undefined;
   community?: unknown;
   communityReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
@@ -55,6 +57,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   communityId = '',
   childEntitiesCount,
   references,
+  recommendations,
   communityReadAccess = false,
   childEntityReadAccess = false,
   memberUsers,
@@ -126,7 +129,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
 
       <PageContentColumn columns={8}>
         <PageContentBlock halfWidth>
-          <PageContentBlockHeader title={'Recommendations'} />
+          <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
+          <References references={recommendations} icon={RecommendationIcon} />
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <PageContentBlockHeader title="Top Callouts" />

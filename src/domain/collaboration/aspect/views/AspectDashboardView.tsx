@@ -12,7 +12,7 @@ import MessageView from '../../../shared/components/Comments/MessageView';
 import { Message } from '../../../shared/components/Comments/models/message';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
-import References from '../../../../common/components/composite/common/References/References';
+import References from '../../../shared/components/References/References';
 import TagLabel from '../../../../common/components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import { mapWithSeparator } from '../../../shared/utils/joinNodes';

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
-import References from '../../../../../common/components/composite/common/References/References';
+import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
 import { UserMetadata } from '../../../contributor/user/hooks/useUserMetadataWrapper';
 import { isSocialNetworkSupported } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
