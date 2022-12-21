@@ -1,52 +1,44 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import { useTheme } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
 import BannerImage from './BannerImage';
-import HeaderLink from './HeaderLink';
 import { useConfig } from '../../config/useConfig';
+import { PageTitle } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
+
+const Separator = () => <Box lineHeight={gutters()}> • </Box>;
 
 const WelcomeSection = () => {
   const { t } = useTranslation();
 
-  const tLinks = TranslateWithElements(<HeaderLink target="_blank" />);
-  const theme = useTheme();
+  const tLinks = TranslateWithElements(<Button component="a" target="_blank" />);
+
   const { platform } = useConfig();
 
   return (
     <>
       <BannerImage />
-      <Typography
-        variant="h1"
-        textAlign="center"
-        fontSize={theme.typography.h6.fontSize}
-        fontWeight="bold"
-        lineHeight={theme.spacing(4)}
-        sx={{
-          marginTop: theme.spacing(2),
-          [theme.breakpoints.only('lg')]: {
-            marginLeft: '4em',
-            marginRight: '4em',
-          },
-        }}
-      >
+      <PageTitle textAlign="center" paddingY={1} paddingX={2}>
         {t('pages.home.sections.welcome.head')}
-      </Typography>
+      </PageTitle>
       <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height={gutters(2)}
         sx={{
           textAlign: 'center',
-          lineHeight: theme.spacing(2),
-          marginTop: theme.spacing(1),
-          marginBottom: theme.spacing(1),
         }}
       >
         {tLinks('pages.home.sections.welcome.impact', {
           impact: { href: platform?.impact },
         })}
+        <Separator />
         {tLinks('pages.home.sections.welcome.opensource', {
           opensource: { href: platform?.opensource },
         })}
+        <Separator />
         {tLinks('pages.home.sections.welcome.foundation', {
           foundation: { href: platform?.foundation },
         })}
