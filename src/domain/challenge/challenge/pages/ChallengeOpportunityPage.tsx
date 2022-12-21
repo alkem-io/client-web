@@ -26,7 +26,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
   const navigate = useNavigate();
   const { hubNameId, challengeId, challengeNameId, permissions } = useChallenge();
 
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
   const { createOpportunity } = useJourneyCreation();
 
@@ -79,7 +79,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={
               <JourneyCreationDialog
-                open={createDialogOpen}
+                open={isCreateDialogOpen}
                 icon={<OpportunityIcon />}
                 journeyName={t('common.opportunity')}
                 onClose={() => setCreateDialogOpen(false)}
