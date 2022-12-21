@@ -71,6 +71,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 displayName={challenge.displayName}
                 tags={challenge.tagset?.tags!}
                 tagline={challenge.context?.tagline!}
+                vision={challenge.context?.vision!}
                 innovationFlowState={challenge.lifecycle?.state}
                 journeyUri={buildChallengeUrl(hubNameId, challenge.nameID)}
               />

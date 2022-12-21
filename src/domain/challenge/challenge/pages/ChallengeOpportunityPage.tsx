@@ -69,6 +69,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
               <OpportunityCard
                 displayName={opportunity.displayName}
                 tagline={opportunity.context?.tagline!}
+                vision={opportunity.context?.vision!}
                 tags={opportunity.tagset?.tags!}
                 bannerUri={getVisualBanner(opportunity.context?.visuals)!}
                 journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
