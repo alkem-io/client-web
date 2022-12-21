@@ -4283,6 +4283,7 @@ export type ChallengeCardFragment = {
         __typename?: 'Context';
         id: string;
         tagline?: string | undefined;
+        vision?: string | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
@@ -5105,6 +5106,7 @@ export type CreateChallengeMutation = {
           __typename?: 'Context';
           id: string;
           tagline?: string | undefined;
+          vision?: string | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
@@ -5208,6 +5210,7 @@ export type ChallengeCardQuery = {
             __typename?: 'Context';
             id: string;
             tagline?: string | undefined;
+            vision?: string | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
@@ -5238,6 +5241,7 @@ export type ChallengeCardsQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -6934,6 +6938,7 @@ export type HubPageQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -7194,6 +7199,7 @@ export type HubPageFragment = {
               __typename?: 'Context';
               id: string;
               tagline?: string | undefined;
+              vision?: string | undefined;
               visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
             }
           | undefined;
@@ -7229,6 +7235,7 @@ export type ChallengesOnHubFragment = {
               __typename?: 'Context';
               id: string;
               tagline?: string | undefined;
+              vision?: string | undefined;
               visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
             }
           | undefined;
@@ -7730,6 +7737,7 @@ export type ChallengeCreatedSubscription = {
             __typename?: 'Context';
             id: string;
             tagline?: string | undefined;
+            vision?: string | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
