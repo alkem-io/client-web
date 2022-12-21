@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from '@mui/material';
+import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -26,6 +26,7 @@ export interface ApplicationButtonProps {
   canApplyToParentCommunity?: boolean;
   onJoin: () => void;
   loading: boolean;
+  component?: typeof MuiButton;
 }
 
 export const ApplicationButton: FC<ApplicationButtonProps> = ({
@@ -45,6 +46,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   canApplyToParentCommunity,
   onJoin,
   loading = false,
+  component: Button = MuiButton,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -102,7 +104,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
        <li>"Membership not available"</li>
      </ol>
    */
-  const applicationButtonState = useMemo(() => {
+  const applicationButton = useMemo(() => {
     if (loading) {
       return <Button disabled startIcon={<CircularProgress size={24} />} />;
     }
@@ -188,6 +190,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
       </Button>
     );
   }, [
+    Button,
     loading,
     isAuthenticated,
     isMember,
@@ -209,7 +212,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
 
   return (
     <>
-      {applicationButtonState}
+      {applicationButton}
       <PreApplicationDialog
         open={isApplyDialogOpen}
         onClose={handleClose}

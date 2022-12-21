@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
-import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
+import { Actions } from '../../../../../core/ui/actions/Actions';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { RouterLink } from '../../../../../common/components/core/RouterLink';
 import { INSPIRATION_ROUTE } from '../../../../../core/routing/route.constants';
@@ -21,7 +21,7 @@ export const ContributeCreationBlock: FC<ContributeCreationBlockProps> = ({ canC
     <PageContentBlock accent>
       <WrapperMarkdown>{t('pages.contribute.initial-text')}</WrapperMarkdown>
       {canCreate && (
-        <PageContentBlockActions justifyContent="end">
+        <Actions justifyContent="end">
           <Button
             variant="text"
             startIcon={<TipsAndUpdatesOutlinedIcon />}
@@ -35,7 +35,7 @@ export const ContributeCreationBlock: FC<ContributeCreationBlockProps> = ({ canC
           <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={handleCreate}>
             {t('common.create')}
           </Button>
-        </PageContentBlockActions>
+        </Actions>
       )}
     </PageContentBlock>
   );

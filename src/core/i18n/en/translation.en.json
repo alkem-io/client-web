@@ -63,7 +63,8 @@
     "share": "Share",
     "preview": "Preview",
     "import": "Import",
-    "importing": "Importing..."
+    "importing": "Importing...",
+    "go-to-entity": "Go to {{entity}}"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

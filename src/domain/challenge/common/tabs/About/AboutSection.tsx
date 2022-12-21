@@ -1,9 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { DialogContent } from '@mui/material';
-import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
+import { Box, Dialog, DialogContent } from '@mui/material';
 import {
   LifecycleContextTabFragment,
   ReferenceDetailsFragment,
@@ -30,10 +28,11 @@ import EntityDashboardLeadsSection from '../../../../community/community/EntityD
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
+import { Actions } from '../../../../../core/ui/actions/Actions';
 import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogTitle from '../../../../../common/components/core/dialog/DialogTitle';
 import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
+import { useChallenge } from '../../../challenge/hooks/useChallenge';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -99,6 +98,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
   const usersHeader = isHub ? 'community.host' : 'community.leads';
 
+  const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
+
   const { scrollable } = useScrollToElement(sectionName, { method: 'element', defer: true });
 
   const handleDialogOpen = (_sectionName: 'vision' | 'background' | 'impact' | 'who') => {
@@ -118,12 +119,16 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
-            <PageContentBlockActions justifyContent="end">
+            <Actions justifyContent="end">
               {lifecycle && <LifecycleState lifecycle={lifecycle} />}
-              <ApplicationButtonContainer>
+              <ApplicationButtonContainer
+                challengeId={challengeId}
+                challengeNameId={challengeNameId}
+                challengeName={challengeName}
+              >
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
-            </PageContentBlockActions>
+            </Actions>
           </PageContentBlock>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

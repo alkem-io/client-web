@@ -80,8 +80,19 @@ export interface LinesFitterProps<Item> extends BoxProps {
   items: Item[];
   renderItem: (item: Item, index: number) => ReactNode;
   renderMore?: (remainingItems: Item[]) => ReactNode;
-  height?: number;
+  height?: number | string;
 }
+
+const getInitialHeight = (height: number | string | undefined) => {
+  if (typeof height === 'string') {
+    const numericHeight = parseInt(height);
+    if (isNaN(numericHeight)) {
+      return undefined;
+    }
+    return numericHeight;
+  }
+  return height;
+};
 
 /**
  * A component that limits the number of items in a Flex container with the flex-flow = row-wrap.
@@ -92,7 +103,9 @@ export interface LinesFitterProps<Item> extends BoxProps {
 const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperProps }: LinesFitterProps<Item>) => {
   const wrapperElementRef = useRef<HTMLDivElement>(null);
 
-  const [state, dispatch] = useReducer(getNextState, getInitialState(height));
+  const initialHeight = getInitialHeight(height);
+
+  const [state, dispatch] = useReducer(getNextState, getInitialState(initialHeight));
 
   const measureWrapperHeight = () => {
     const element = wrapperElementRef.current!;
@@ -149,8 +162,10 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
 
   const getRemainingItems = () => items.slice(state.itemsToDisplayCount);
 
+  const hasFixedHeight = state.stage === Stage.MEASURING_EXPECTED_HEIGHT || state.stage === Stage.FINISHED;
+
   return (
-    <Box ref={wrapperElementRef} {...wrapperProps}>
+    <Box ref={wrapperElementRef} {...wrapperProps} maxHeight={hasFixedHeight ? height : undefined}>
       {visibleItems.map(renderItem)}
       {showMore && renderMore?.(getRemainingItems())}
     </Box>
