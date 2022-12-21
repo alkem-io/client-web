@@ -1,14 +1,17 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { ContributionCardV2Details } from '../../../../common/components/composite/common/cards';
 import {
+  refetchRolesUserQuery,
   useChallengeContributionDetailsQuery,
   useHubContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
+  useRemoveUserAsCommunityMemberMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../contributor/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionCardV2Details;
@@ -16,9 +19,12 @@ export interface EntityDetailsContainerEntities {
 
 export interface EntityDetailsContainerState {
   loading: boolean;
+  isLeavingCommunity: boolean;
 }
 
-export interface EntityDetailsContainerActions {}
+export interface EntityDetailsContainerActions {
+  leaveCommunity: () => void;
+}
 
 export interface EntityDetailsContainerProps
   extends ContainerChildProps<
@@ -35,6 +41,8 @@ const buildDomainObject = (communityID: string | undefined) => {
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
   const { hubId, challengeId, opportunityId } = entities;
+  const { user: userMetadata } = useUserContext();
+  const userId = userMetadata?.user?.id;
   const { data: hubData, loading: hubLoading } = useHubContributionDetailsQuery({
     variables: {
       hubId: hubId,
@@ -58,6 +66,8 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     skip: !opportunityId,
   });
 
+  const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
+
   const details = useMemo<ContributionCardV2Details | undefined>(() => {
     if (hubData) {
       return {
@@ -67,6 +77,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         tags: hubData.hub.tagset?.tags || [],
         url: buildHubUrl(hubData.hub.nameID),
         domain: buildDomainObject(hubData.hub.community?.id),
+        descriptionText: hubData.hub.context?.tagline,
       };
     }
 
@@ -97,14 +108,26 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     }
   }, [hubData, challengeData, opportunityData]);
 
+  const handleLeaveCommunity = useCallback(async () => {
+    if (details?.domain?.communityID && userId)
+      await leaveCommunity({
+        variables: {
+          memberId: userId,
+          communityId: details?.domain?.communityID,
+        },
+        refetchQueries: [refetchRolesUserQuery({ input: { userID: userId } })],
+        awaitRefetchQueries: true,
+      });
+  }, [userId, details?.domain?.communityID, leaveCommunity]);
   return (
     <>
       {children(
         { details },
         {
           loading: hubLoading || challengeLoading || opportunityLoading,
+          isLeavingCommunity,
         },
-        {}
+        { leaveCommunity: handleLeaveCommunity }
       )}
     </>
   );

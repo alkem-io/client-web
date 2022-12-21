@@ -1,5 +1,5 @@
-import { Grid, Skeleton } from '@mui/material';
-import React from 'react';
+import { Box, Grid, Skeleton, Button, Dialog } from '@mui/material';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer from '../../ContributionDetailsContainer/ContributionDetailsContainer';
 import { ContributionItem } from '../../../contributor/contribution';
@@ -12,6 +12,10 @@ import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import PageContentBlockGrid from '../../../../../core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
+import { LoadingButton } from '@mui/lab';
+import CloseIcon from '@mui/icons-material/Close';
+import { DialogTitle, DialogActions, DialogContent } from '../../../../../common/components/core/dialog';
 
 export interface ContributionViewProps {
   title: string;
@@ -58,6 +62,8 @@ const getIcon = ({ challengeId, opportunityId }: ContributionItem) => {
 
 export const ContributionsView = ({ title, subtitle, contributions, loading }: ContributionViewProps) => {
   const { t } = useTranslation();
+  const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
@@ -72,24 +78,77 @@ export const ContributionsView = ({ title, subtitle, contributions, loading }: C
         {!loading &&
           contributions.map(contributionItem => (
             <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
-              {({ details }, { loading }) => {
+              {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
                 const Icon = getIcon(contributionItem);
                 if (loading) {
                   return null;
                 }
                 return (
-                  <JourneyCard
-                    bannerUri={details?.mediaUrl!}
-                    iconComponent={Icon}
-                    header={
-                      <BlockTitle component="div" sx={webkitLineClamp(2)}>
-                        {details?.headerText}
-                      </BlockTitle>
-                    }
-                    tagline={details?.descriptionText!}
-                    tags={details?.tags ?? []}
-                    journeyUri={details?.url!}
-                  />
+                  <>
+                    <JourneyCard
+                      bannerUri={details?.mediaUrl!}
+                      iconComponent={Icon}
+                      header={
+                        <BlockTitle component="div" sx={webkitLineClamp(2)}>
+                          {details?.headerText}
+                        </BlockTitle>
+                      }
+                      tagline={details?.descriptionText!}
+                      tags={details?.tags ?? []}
+                      journeyUri={details?.url!}
+                    >
+                      <JourneyCardTagline>{details?.descriptionText || ''}</JourneyCardTagline>
+
+                      <Box display="flex" justifyContent="flex-end">
+                        <LoadingButton
+                          variant="outlined"
+                          startIcon={<CloseIcon />}
+                          onClick={event => {
+                            setLeavingCommunityId(details?.domain?.communityID);
+                            event.stopPropagation();
+                          }}
+                          loading={isLeavingCommunity}
+                        >
+                          {t('buttons.leave')}
+                        </LoadingButton>
+                      </Box>
+                    </JourneyCard>
+                    <Dialog
+                      open={leavingCommunityId === details?.domain?.communityID}
+                      maxWidth="xs"
+                      aria-labelledby="confirm-leave-organization"
+                    >
+                      <DialogTitle id="confirm-innovation-flow">
+                        {t('components.associated-organization.confirmation-dialog.title', {
+                          organization: details?.headerText,
+                        })}
+                      </DialogTitle>
+                      <DialogContent sx={{ paddingX: 2 }}>
+                        {t('components.associated-organization.confirmation-dialog.text')}
+                      </DialogContent>
+                      <DialogActions sx={{ justifyContent: 'end' }}>
+                        <Button
+                          onClick={event => {
+                            setLeavingCommunityId(undefined);
+                            event.stopPropagation();
+                          }}
+                        >
+                          {t('buttons.cancel')}
+                        </Button>
+
+                        <Button
+                          onClick={event => {
+                            leaveCommunity();
+                            setLeavingCommunityId(undefined);
+                            event.stopPropagation();
+                          }}
+                          disabled={loading}
+                        >
+                          {t('buttons.leave')}
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </>
                 );
               }}
             </ContributionDetailsContainer>

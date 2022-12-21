@@ -566,6 +566,7 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
+  UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateCanvas = 'UPDATE_CANVAS',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
@@ -590,6 +591,10 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The user that published this Callout */
+  publishedBy?: Maybe<User>;
+  /** The timestamp for the publishing of this Callout. */
+  publishedDate?: Maybe<Scalars['Float']>;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float'];
   /** State of the Callout. */
@@ -2077,6 +2082,8 @@ export type Mutation = {
   updateAspectTemplate: AspectTemplate;
   /** Update a Callout. */
   updateCallout: Callout;
+  /** Update the information describing the publishing of the specified Callout. */
+  updateCalloutPublishInfo: Callout;
   /** Update the visibility of the specified Callout. */
   updateCalloutVisibility: Callout;
   /** Updates the specified Canvas. */
@@ -2559,6 +2566,10 @@ export type MutationUpdateAspectTemplateArgs = {
 
 export type MutationUpdateCalloutArgs = {
   calloutData: UpdateCalloutInput;
+};
+
+export type MutationUpdateCalloutPublishInfoArgs = {
+  calloutData: UpdateCalloutPublishInfoInput;
 };
 
 export type MutationUpdateCalloutVisibilityArgs = {
@@ -3717,6 +3728,15 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+};
+
+export type UpdateCalloutPublishInfoInput = {
+  /** The identifier for the Callout whose publisher is to be updated. */
+  calloutID: Scalars['String'];
+  /** The timestamp to set for the publishing of the Callout. */
+  publishDate?: InputMaybe<Scalars['Float']>;
+  /** The identifier of the publisher of the Callout. */
+  publisherID?: InputMaybe<Scalars['UUID_NAMEID_EMAIL']>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -16898,6 +16918,7 @@ export type HubContributionDetailsQuery = {
       | {
           __typename?: 'Context';
           id: string;
+          tagline?: string | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
@@ -16926,6 +16947,7 @@ export type ChallengeContributionDetailsQuery = {
         | {
             __typename?: 'Context';
             id: string;
+            tagline?: string | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
@@ -16956,6 +16978,7 @@ export type OpportunityContributionDetailsQuery = {
         | {
             __typename?: 'Context';
             id: string;
+            tagline?: string | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
