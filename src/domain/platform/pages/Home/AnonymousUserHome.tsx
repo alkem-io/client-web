@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
   AUTH_LOGIN_PATH,
-  AUTH_REGISTER_PATH,
+  AUTH_SIGN_UP_PATH,
 } from '../../../../core/auth/authentication/constants/authentication.constants';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -54,7 +54,7 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
               variant="contained"
               aria-label="Sign up"
               component={RouterLink}
-              to={AUTH_REGISTER_PATH}
+              to={AUTH_SIGN_UP_PATH}
               sx={{
                 marginRight: theme => theme.spacing(1),
               }}

@@ -5,7 +5,7 @@ import microsoftTheme from '../AuthProviders/MicrosoftTheme';
 import { ReactComponent as MicrosoftIcon } from '../AuthProviders/Microsoft.svg';
 import TranslationKey from '../../../../../types/TranslationKey';
 import ButtonStyling from '../AuthProviders/ButtonStyling';
-import { UiNodeInput } from './UiNodeInput';
+import { UiNodeInput } from './UiNodeTypes';
 import { useTranslation } from 'react-i18next';
 import { AuthActionButtonProps } from '../Button';
 

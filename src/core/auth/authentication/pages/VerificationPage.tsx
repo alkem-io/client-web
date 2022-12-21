@@ -9,13 +9,15 @@ import Container from '../../../../domain/shared/layout/Container';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { PageTitle } from '../../../ui/typography';
+import { SelfServiceVerificationFlow } from '@ory/kratos-client';
 
 interface RegisterPageProps {
   flow?: string;
 }
+
+const hideVerificationMessage = (flow: SelfServiceVerificationFlow | undefined) =>
+  (flow?.state === 'passed_challenge' || flow?.state === 'sent_email') ?? false;
 
 export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
@@ -34,11 +36,10 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
       <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
         <FixedHeightLogo />
         <PageTitle>{t('pages.verification.header')}</PageTitle>
-        <SubHeading textAlign="center">{t('pages.verification.message')}</SubHeading>
+        {!hideVerificationMessage(verificationFlow) && (
+          <SubHeading textAlign="center">{t('pages.verification.message')}</SubHeading>
+        )}
         <KratosUI ui={verificationFlow?.ui} />
-        <Button component={Link} to={'/'} variant="outlined">
-          {t('pages.verification-required.return-to-platform')}
-        </Button>
       </Container>
     </KratosForm>
   );

@@ -8,7 +8,6 @@ import { styled } from '@mui/material';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 
-const DEFAULT_LINE_HEIGHT = 1.5;
 const LINE_CLAMP = 4;
 
 const PREFIX = 'AspectCard';
@@ -20,7 +19,7 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.clampContainer}`]: {
-    height: `${LINE_CLAMP * ((theme?.typography?.body1?.lineHeight ?? DEFAULT_LINE_HEIGHT) as number)}em`,
+    height: `${LINE_CLAMP * parseInt(theme?.typography?.body1?.lineHeight as string)}em`,
     marginBottom: theme.spacing(1),
     position: 'relative',
     overflow: 'hidden',

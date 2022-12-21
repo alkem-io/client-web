@@ -1,5 +1,5 @@
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import { UiNodeInput } from '../components/Kratos/UiNodeInput';
+import { UiNodeInput } from '../components/Kratos/UiNodeTypes';
 import KratosVisibleAcceptTermsCheckbox from '../components/KratosVisibleAcceptTermsCheckbox';
 import { useState } from 'react';
 import KratosAcceptTermsButton from '../components/KratosAcceptTermsButton';

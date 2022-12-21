@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { BackdropProps } from './BackdropWithMessage';
 import {
   AUTH_LOGIN_PATH,
-  AUTH_REGISTER_PATH,
+  AUTH_SIGN_UP_PATH,
 } from '../../../../core/auth/authentication/constants/authentication.constants';
 import Image from '../Image';
 import { Box, Button, styled, Typography, TypographyProps } from '@mui/material';
@@ -78,7 +78,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
               <Button variant={'contained'} onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })}>
                 {t('authentication.sign-in')}
               </Button>
-              <Button variant={'contained'} onClick={() => navigate(AUTH_REGISTER_PATH, { replace: true })}>
+              <Button variant={'contained'} onClick={() => navigate(AUTH_SIGN_UP_PATH, { replace: true })}>
                 {t('authentication.sign-up')}
               </Button>
             </ButtonsWrapper>

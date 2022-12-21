@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
@@ -9,19 +9,24 @@ import Container from '../../../../domain/shared/layout/Container';
 import { sxCols } from '../../../../domain/shared/layout/Grid';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle } from '../../../ui/typography';
+import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from '../components/Kratos/constants';
 
 interface SettingsPageProps {
   flow: string;
 }
 
+const REMOVED_FIELDS: readonly KratosRemovedFieldAttributes[] = [
+  ...KRATOS_REMOVED_FIELDS_DEFAULT,
+  { name: 'traits.name.first' },
+  { name: 'traits.name.last' },
+  { name: 'traits.accepted_terms' },
+  { type: 'submit', value: 'profile' },
+  { name: 'traits.email' },
+];
+
 export const SettingsPage: FC<SettingsPageProps> = ({ flow }) => {
   const { t } = useTranslation();
   const { flow: settingsFlow, loading, error } = useKratosFlow(FlowTypeName.Settings, flow);
-
-  const hideFields = useMemo(
-    () => ['traits.name.first', 'traits.name.last', 'traits.accepted_terms', 'profile', 'traits.email'],
-    []
-  );
 
   if (loading) {
     return <Loading text={t('kratos.loading-flow')} />;
@@ -36,7 +41,7 @@ export const SettingsPage: FC<SettingsPageProps> = ({ flow }) => {
       <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
         <FixedHeightLogo />
         <PageTitle>{t('pages.settings.header')}</PageTitle>
-        <KratosUI ui={settingsFlow?.ui} hideFields={hideFields} />
+        <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} />
       </Container>
     </KratosForm>
   );
