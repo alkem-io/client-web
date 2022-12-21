@@ -17750,6 +17750,7 @@ export const HubContributionDetailsDocument = gql`
       }
       context {
         id
+        tagline
         visuals {
           ...VisualUri
         }
@@ -17830,6 +17831,7 @@ export const ChallengeContributionDetailsDocument = gql`
         }
         context {
           id
+          tagline
           visuals {
             ...VisualUri
           }
@@ -17917,6 +17919,7 @@ export const OpportunityContributionDetailsDocument = gql`
         }
         context {
           id
+          tagline
           visuals {
             ...VisualUri
           }

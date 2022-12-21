@@ -10,6 +10,7 @@ query hubContributionDetails($hubId: UUID_NAMEID!) {
     }
     context {
       id
+      tagline
       visuals {
         ...VisualUri
       }
@@ -35,6 +36,7 @@ query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAME
       }
       context {
         id
+        tagline
         visuals {
           ...VisualUri
         }
@@ -62,6 +64,7 @@ query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_
       }
       context {
         id
+        tagline
         visuals {
           ...VisualUri
         }

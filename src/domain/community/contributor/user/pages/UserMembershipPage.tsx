@@ -9,6 +9,8 @@ import { ContributionsView } from '../../../profile/views/ProfileView';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import { useUserMetadata } from '../hooks/useUserMetadata';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
 export interface UserMembershipPageProps extends PageProps {}
 
@@ -23,15 +25,17 @@ const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Membership}>
+      <GridProvider columns={12}>
+        <ContributionsView
+          title={t('common.my-memberships')}
+          helpText={t('pages.user-profile.communities.help')}
+          contributions={userMetadata?.contributions || []}
+          loading={loading}
+          enableLeave
+        />
+      </GridProvider>
+      <SectionSpacer />
       <Grid container rowSpacing={4}>
-        <Grid item xs={12}>
-          <ContributionsView
-            title={t('common.my-memberships')}
-            helpText={t('pages.user-profile.communities.help')}
-            contributions={userMetadata?.contributions || []}
-            loading={loading}
-          />
-        </Grid>
         <Grid item xs={12}>
           <ContributionsView
             title={t('pages.user-profile.pending-applications.title')}

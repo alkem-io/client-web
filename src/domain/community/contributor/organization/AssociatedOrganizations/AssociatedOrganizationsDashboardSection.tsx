@@ -13,6 +13,7 @@ export interface AssociatedOrganizationsDashboardSectionProps<
   canCreateOrganization?: boolean;
   title: string;
   helpText?: string;
+  enableLeave?: boolean;
 }
 
 export const AssociatedOrganizationsDashboardSection = <
