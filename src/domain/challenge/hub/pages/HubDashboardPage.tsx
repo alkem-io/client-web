@@ -12,7 +12,7 @@ import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardVi
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
-import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -50,12 +50,17 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 activityLoading={entities.activityLoading}
                 renderChildEntityCard={challenge => (
                   <ChallengeCard
-                    bannerUri={getVisualBanner(challenge.context?.visuals)!}
+                    challengeId={challenge.id}
+                    challengeNameId={challenge.nameID}
+                    bannerUri={getVisualBanner(challenge.context?.visuals)}
                     displayName={challenge.displayName}
                     tags={challenge.tagset?.tags!}
                     tagline={challenge.context?.tagline!}
+                    vision={challenge.context?.vision!}
                     innovationFlowState={challenge.lifecycle?.state}
                     journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
+                    hubDisplayName={entities.hub!.displayName}
+                    hubUri={buildHubUrl(entities.hub!.nameID)}
                   />
                 )}
                 journeyTypeName="hub"

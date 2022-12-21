@@ -536,6 +536,7 @@ export const ChallengeCardFragmentDoc = gql`
     context {
       id
       tagline
+      vision
       visuals {
         ...VisualUri
       }
