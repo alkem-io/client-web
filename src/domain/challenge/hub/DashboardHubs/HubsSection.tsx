@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import DashboardHubsSection, {
   DashboardHubSectionProps,
@@ -16,6 +15,7 @@ import { UserRolesInEntity } from '../../../community/contributor/user/providers
 import { Loading } from '../../../../common/components/core';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
+import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -23,7 +23,7 @@ interface HubsSectionProps {
 }
 
 const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslationWithLineBreaks();
   const { user } = useUserContext();
   const { data: hubsData, loading: areHubsLoading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
 
