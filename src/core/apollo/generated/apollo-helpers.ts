@@ -444,6 +444,7 @@ export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutKeySpecifier = (
+  | 'activity'
   | 'aspects'
   | 'authorization'
   | 'canvases'
@@ -462,6 +463,7 @@ export type CalloutKeySpecifier = (
   | CalloutKeySpecifier
 )[];
 export type CalloutFieldPolicy = {
+  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   canvases?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -792,6 +794,7 @@ export type ContextKeySpecifier = (
   | 'id'
   | 'impact'
   | 'location'
+  | 'recommendations'
   | 'references'
   | 'tagline'
   | 'vision'
@@ -806,6 +809,7 @@ export type ContextFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
+  recommendations?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -26,6 +26,7 @@ import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../c
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import { TopCallout } from '../../hub/containers/HubPageContainer';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -63,6 +64,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
+  topCallouts: TopCallout[] | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -151,6 +153,19 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const contributors = useCommunityMembersAsCardProps(opportunity?.community);
 
+  const topCallouts = collaboration?.callouts
+    ? collaboration?.callouts.slice(0, 3).map(
+        ({ id, activity, displayName, description, type }) =>
+          ({
+            id,
+            activity,
+            displayName,
+            description,
+            type,
+          } as TopCallout)
+      )
+    : undefined;
+
   return (
     <>
       {children(
@@ -185,6 +200,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           references,
           ...contributors,
           activities,
+          topCallouts,
         },
         {
           loading: loadingOpportunity,

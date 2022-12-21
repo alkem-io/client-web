@@ -48,6 +48,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 leadOrganizations={entities.challenge?.community?.leadOrganizations}
                 activities={entities.activities}
                 activityLoading={state.activityLoading}
+                topCallouts={entities.topCallouts}
                 renderChildEntityCard={opportunity => (
                   <OpportunityCard
                     opportunityId={opportunity.id}

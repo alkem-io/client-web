@@ -314,9 +314,11 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     collaboration {
       id
-      callouts {
+      callouts(sortByActivity: true) {
         id
         nameID
+        displayName
+        description
         type
         visibility
         aspects(limit: 2, shuffle: true) {
@@ -325,6 +327,7 @@ export const ChallengeProfileFragmentDoc = gql`
         canvases(limit: 2, shuffle: true) {
           ...CanvasDetails
         }
+        activity
       }
     }
     community {
@@ -586,9 +589,11 @@ export const HubPageFragmentDoc = gql`
     }
     collaboration {
       id
-      callouts {
+      callouts(sortByActivity: true) {
         id
         nameID
+        displayName
+        description
         type
         visibility
         aspects(limit: 2, shuffle: true) {
@@ -597,6 +602,7 @@ export const HubPageFragmentDoc = gql`
         canvases(limit: 2, shuffle: true) {
           ...CanvasDetails
         }
+        activity
       }
     }
     community {
@@ -718,9 +724,11 @@ export const OpportunityPageFragmentDoc = gql`
         actorType
         description
       }
-      callouts {
+      callouts(sortByActivity: true) {
         id
         nameID
+        displayName
+        description
         type
         visibility
         aspects(limit: 2, shuffle: true) {
@@ -729,6 +737,7 @@ export const OpportunityPageFragmentDoc = gql`
         canvases(limit: 2, shuffle: true) {
           ...CanvasDetails
         }
+        activity
       }
     }
     context {
