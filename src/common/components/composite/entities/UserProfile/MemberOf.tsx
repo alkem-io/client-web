@@ -58,4 +58,5 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, hubs, 
     </Box>
   );
 };
+
 export default MemberOf;

@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
 import { Loading } from '../../../../../common/components/core';
-import { EntityPageLayoutHolder } from '../../../../shared/layout/PageLayout';
+import { EntityPageLayoutHolder } from '../../../../challenge/common/EntityPageLayout';
 import { useOrganization } from '../hooks/useOrganization';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
@@ -34,4 +34,5 @@ const OrganizationRoute: FC<PageProps> = () => {
     </Routes>
   );
 };
+
 export default OrganizationRoute;

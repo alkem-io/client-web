@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useChallenge } from '../hooks/useChallenge';
 import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout';
+import { EntityTabsProps } from '../../common/EntityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
-import { BatchPredictionOutlined } from '@mui/icons-material';
+import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 
 export interface ChallengeTabsProps extends EntityTabsProps {}
 
@@ -27,7 +27,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
       subEntityTab={{
         label: t('common.opportunities'),
         section: EntityPageSection.Opportunities,
-        icon: <BatchPredictionOutlined />,
+        icon: <OpportunityIcon />,
       }}
     />
   );

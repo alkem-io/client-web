@@ -25,4 +25,5 @@ const FormikEffectFactory = <T,>() => {
 
   return Instance;
 };
+
 export default FormikEffectFactory;

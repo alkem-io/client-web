@@ -453,6 +453,8 @@ export type CalloutKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'nameID'
+  | 'publishedBy'
+  | 'publishedDate'
   | 'sortOrder'
   | 'state'
   | 'type'
@@ -469,6 +471,8 @@ export type CalloutFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -614,9 +618,10 @@ export type CollaborationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommentsKeySpecifier = ('authorization' | 'id' | 'messages' | CommentsKeySpecifier)[];
+export type CommentsKeySpecifier = ('authorization' | 'commentsCount' | 'id' | 'messages' | CommentsKeySpecifier)[];
 export type CommentsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1170,6 +1175,7 @@ export type MutationKeySpecifier = (
   | 'updateAspect'
   | 'updateAspectTemplate'
   | 'updateCallout'
+  | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCanvas'
   | 'updateCanvasTemplate'
@@ -1309,6 +1315,7 @@ export type MutationFieldPolicy = {
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;

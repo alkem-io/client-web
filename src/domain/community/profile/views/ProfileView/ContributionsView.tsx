@@ -1,16 +1,30 @@
-import { Grid, Skeleton } from '@mui/material';
-import React, { FC } from 'react';
+import { Button, Dialog, Grid, Skeleton } from '@mui/material';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ContributionCardV2 } from '../../../../../common/components/composite/common/cards';
-import ProfileCard, {
-  ProfileCardProps,
-} from '../../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import ContributionDetailsContainer from '../../ContributionDetailsContainer/ContributionDetailsContainer';
 import { ContributionItem } from '../../../contributor/contribution';
+import JourneyCard from '../../../../challenge/common/JourneyCard/JourneyCard';
+import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
+import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
+import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
+import { BlockTitle, Caption } from '../../../../../core/ui/typography';
+import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
+import PageContentBlockGrid from '../../../../../core/ui/content/PageContentBlockGrid';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
+import { LoadingButton } from '@mui/lab';
+import CloseIcon from '@mui/icons-material/Close';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import CardActions from '../../../../../core/ui/card/CardActions';
 
-export interface ContributionViewProps extends ProfileCardProps {
+export interface ContributionViewProps {
+  title: string;
+  subtitle?: string;
+  helpText?: string; // TODO it's unused: either find a way to use or remove
   contributions: ContributionItem[];
   loading?: boolean;
+  enableLeave?: boolean;
 }
 
 const getContributionItemKey = ({ hubId, challengeId, opportunityId }: ContributionItem) =>
@@ -38,11 +52,25 @@ const SkeletonItem = () => (
   </Grid>
 );
 
-export const ContributionsView: FC<ContributionViewProps> = ({ contributions, loading, ...rest }) => {
+const getIcon = ({ challengeId, opportunityId }: ContributionItem) => {
+  if (opportunityId) {
+    return OpportunityIcon;
+  }
+  if (challengeId) {
+    return ChallengeIcon;
+  }
+  return HubIcon;
+};
+
+export const ContributionsView = ({ title, subtitle, contributions, loading, enableLeave }: ContributionViewProps) => {
   const { t } = useTranslation();
+  const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
+
   return (
-    <ProfileCard {...rest}>
-      <Grid container spacing={2}>
+    <PageContentBlock>
+      <PageContentBlockHeader title={title} />
+      {subtitle && <Caption>{subtitle}</Caption>}
+      <PageContentBlockGrid disablePadding>
         {loading && (
           <>
             <SkeletonItem />
@@ -51,19 +79,95 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
         )}
         {!loading &&
           contributions.map(contributionItem => (
-            <Grid item key={getContributionItemKey(contributionItem)}>
-              <ContributionDetailsContainer entities={contributionItem}>
-                {({ details }, state) => <ContributionCardV2 details={details} loading={state.loading} />}
-              </ContributionDetailsContainer>
-            </Grid>
+            <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
+              {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
+                const Icon = getIcon(contributionItem);
+                if (loading) {
+                  return null;
+                }
+                return (
+                  <>
+                    <JourneyCard
+                      bannerUri={details?.mediaUrl!}
+                      iconComponent={Icon}
+                      header={
+                        <BlockTitle component="div" sx={webkitLineClamp(2)}>
+                          {details?.headerText}
+                        </BlockTitle>
+                      }
+                      tagline={details?.descriptionText!}
+                      tags={details?.tags ?? []}
+                      journeyUri={details?.url!}
+                      actions={
+                        enableLeave && (
+                          <CardActions justifyContent="end" flexBasis="100%">
+                            <LoadingButton
+                              variant="outlined"
+                              startIcon={<CloseIcon />}
+                              onClick={event => {
+                                setLeavingCommunityId(details?.domain?.communityID);
+                                event.stopPropagation();
+                              }}
+                              loading={isLeavingCommunity}
+                            >
+                              {t('buttons.leave')}
+                            </LoadingButton>
+                          </CardActions>
+                        )
+                      }
+                    >
+                      <JourneyCardTagline>{details?.descriptionText || ''}</JourneyCardTagline>
+                    </JourneyCard>
+                    {enableLeave && (
+                      <Dialog
+                        open={leavingCommunityId === details?.domain?.communityID}
+                        maxWidth="xs"
+                        aria-labelledby="confirm-leave-organization"
+                      >
+                        <DialogTitle id="confirm-innovation-flow">
+                          {t('components.associated-organization.confirmation-dialog.title', {
+                            organization: details?.headerText,
+                          })}
+                        </DialogTitle>
+                        <DialogContent sx={{ paddingX: 2 }}>
+                          {t('components.associated-organization.confirmation-dialog.text')}
+                        </DialogContent>
+                        <DialogActions sx={{ justifyContent: 'end' }}>
+                          <Button
+                            onClick={event => {
+                              setLeavingCommunityId(undefined);
+                              event.stopPropagation();
+                            }}
+                          >
+                            {t('buttons.cancel')}
+                          </Button>
+
+                          <Button
+                            onClick={event => {
+                              leaveCommunity();
+                              setLeavingCommunityId(undefined);
+                              event.stopPropagation();
+                            }}
+                            disabled={loading}
+                          >
+                            {t('buttons.leave')}
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    )}
+                  </>
+                );
+              }}
+            </ContributionDetailsContainer>
           ))}
         {!contributions.length && (
           <Grid item flexGrow={1} flexBasis={'50%'}>
-            {t('contributions-view.no-data', { name: rest.title })}
+            {t('contributions-view.no-data', { name: title })}
           </Grid>
         )}
-      </Grid>
-    </ProfileCard>
+      </PageContentBlockGrid>
+    </PageContentBlock>
   );
 };
+
 export default ContributionsView;

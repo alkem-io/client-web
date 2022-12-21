@@ -3,7 +3,6 @@ import { ApplicationButtonProps } from '../../../../common/components/composite/
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../contributor/user';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
-import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
@@ -26,9 +25,18 @@ interface ApplicationContainerState {
 }
 
 interface ApplicationContainerProps
-  extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {}
+  extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
+  challengeId?: string;
+  challengeNameId?: string;
+  challengeName?: string;
+}
 
-export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ children }) => {
+export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
+  challengeId,
+  challengeNameId,
+  challengeName,
+  children,
+}) => {
   const { isAuthenticated } = useAuthenticationContext();
   const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
@@ -37,7 +45,6 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
   const { hubId, hubNameId, displayName: hubName, refetchHub } = useHub();
-  const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
 
   const { communityId } = useCommunityContext();
   const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({

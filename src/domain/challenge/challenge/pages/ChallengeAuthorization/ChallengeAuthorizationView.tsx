@@ -82,4 +82,5 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
     </Container>
   );
 };
+
 export default ChallengeAuthorizationView;

@@ -16,4 +16,5 @@ const HideOnScroll = (props: HideOnScrollProps) => {
     </Slide>
   );
 };
+
 export default HideOnScroll;

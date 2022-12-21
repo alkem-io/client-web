@@ -19,4 +19,5 @@ export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
     </div>
   );
 };
+
 export default Loading;

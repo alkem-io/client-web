@@ -11,6 +11,9 @@ const useMainStyles = makeStyles(() => ({
   },
 }));
 
+/**
+ * @deprecated - left for compatibility with Pages that haven't been updated to the new design yet
+ */
 export const Main = (props: ContainerProps) => {
   const styles = useMainStyles();
   const breakpoint = useCurrentBreakpoint();

@@ -54,7 +54,6 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
         descriptionText: challenge?.context?.tagline,
         mediaUrl: bannerNarrow,
         tags: challenge?.tagset?.tags || [],
-        tagsFor: 'challenge',
         url,
       }}
       label={isMember(id) ? EntityContributionCardLabel.Member : undefined}
@@ -63,4 +62,5 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
     />
   );
 };
+
 export default ChallengeCard;

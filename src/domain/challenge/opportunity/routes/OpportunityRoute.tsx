@@ -7,12 +7,12 @@ import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
 import { nameOfUrl } from '../../../../core/routing/urlParams';
-import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
+import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
-import OpportunityContextPage from '../pages/OpportunityContextPage';
+import OpportunityAboutPage from '../pages/OpportunityAboutPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
-import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
+import ContributePage from '../../../collaboration/contribute/ContributePage';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -39,27 +39,18 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<OpportunityDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<OpportunityDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<OpportunityDashboardPage dialog="contributors" />} />
-        <Route
-          path={routes.Explore}
-          element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
-        />
-        <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
+        <Route path={routes.Contribute} element={<ContributePage entityTypeName="opportunity" />} />
+        <Route path={routes.About} element={<OpportunityAboutPage />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
 
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={
-            <CalloutsPage
-              entityTypeName="opportunity"
-              rootUrl={`${resolved.pathname}/${routes.Explore}`}
-              scrollToCallout
-            />
-          }
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<ContributePage entityTypeName="opportunity" scrollToCallout />}
         />
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'opportunity'} />
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName={'opportunity'} />
           }
         />
       </Route>
@@ -67,4 +58,5 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
     </Routes>
   );
 };
+
 export default OpportunityRoute;

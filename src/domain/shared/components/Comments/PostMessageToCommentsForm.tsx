@@ -9,8 +9,8 @@ import { useUserContext } from '../../../community/contributor/user';
 import FormikCommentInputField from '../../../../common/components/composite/forms/FormikCommentInputField';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.avatarSize,
-  width: theme.avatarSize,
+  height: theme.avatarSizeXs,
+  width: theme.avatarSizeXs,
 }));
 
 const PreFormatedPopper = styled(Popper)(() => ({
@@ -58,7 +58,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
   };
 
   return (
-    <Grid container spacing={1.5}>
+    <Grid container gap={1} alignItems="start">
       <Grid item>
         <UserAvatar src={userAvatarUri} variant="rounded" sx={{ borderRadius: 1.5 }} />
       </Grid>
@@ -75,6 +75,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
                 <Grid item xs={12}>
                   <FormikCommentInputField
                     name="post"
+                    size="small"
                     title={title}
                     placeholder={placeholder}
                     disabled={disabled}
@@ -91,7 +92,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
         </Formik>
       </Grid>
       <Grid item>
-        <Box display={'flex'} alignItems={'center'} height="100%">
+        <Box display={'flex'} alignItems={'center'} height="100%" pt={0.5} pb={1}>
           <Tooltip
             title={t('components.post-comment.tooltip.markdown-help')}
             arrow
@@ -106,4 +107,5 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
     </Grid>
   );
 };
+
 export default PostMessageToCommentsForm;

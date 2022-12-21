@@ -3,7 +3,7 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import UserProfilePage from '../pages/UserProfilePage';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import UserSettingsRoute from './UserSettingsRoute';
-import { EntityPageLayoutHolder } from '../../../../shared/layout/PageLayout';
+import { EntityPageLayoutHolder } from '../../../../challenge/common/EntityPageLayout';
 
 export const UserRoute: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -19,4 +19,5 @@ export const UserRoute: FC = () => {
     </Routes>
   );
 };
+
 export default UserRoute;

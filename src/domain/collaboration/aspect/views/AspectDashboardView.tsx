@@ -190,6 +190,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
     </Grid>
   );
 };
+
 export default AspectDashboardView;
 
 interface AuthorComponentProps {

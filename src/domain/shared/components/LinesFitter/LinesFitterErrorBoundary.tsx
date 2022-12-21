@@ -1,9 +1,7 @@
 import React from 'react';
+import { Box, BoxProps } from '@mui/material';
 
-export default class LinesFitterErrorBoundary extends React.Component<
-  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
-  { hasError: boolean }
-> {
+export default class LinesFitterErrorBoundary extends React.Component<BoxProps, { hasError: boolean }> {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
@@ -17,7 +15,7 @@ export default class LinesFitterErrorBoundary extends React.Component<
     const { children, ...wrapperProps } = this.props;
 
     if (this.state.hasError) {
-      return <div {...wrapperProps} />;
+      return <Box {...wrapperProps} />;
     }
 
     return children;

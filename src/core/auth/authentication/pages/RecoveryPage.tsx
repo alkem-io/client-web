@@ -52,4 +52,5 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
     </KratosForm>
   );
 };
+
 export default RecoveryPage;

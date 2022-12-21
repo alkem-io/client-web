@@ -201,16 +201,29 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
     update: (cache, { data }) => {
-      if (isSubscribedToComments) {
-        return;
-      }
-
       const cacheCommentsId = cache.identify({
         id: commentsId,
         __typename: 'Comments',
       });
 
       if (!cacheCommentsId) {
+        return;
+      }
+
+      cache.modify({
+        id: cacheCommentsId,
+        fields: {
+          commentsCount(oldCount = 0) {
+            if (!data) {
+              return oldCount;
+            }
+
+            return oldCount + 1;
+          },
+        },
+      });
+
+      if (isSubscribedToComments) {
         return;
       }
 
@@ -269,4 +282,5 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     aspectUrl,
   });
 };
+
 export default AspectDashboardContainer;

@@ -1,5 +1,6 @@
 fragment CommentsWithMessages on Comments {
   id
+  commentsCount
   authorization {
     id
     myPrivileges

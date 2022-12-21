@@ -10,7 +10,7 @@ import { MetricType } from '../../../../../../domain/platform/metrics/MetricType
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 
 type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
-  context?: { tagline?: string; visuals?: VisualUriFragment[] };
+  context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
 };
 
 export interface HubCardProps {
@@ -33,7 +33,6 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
         descriptionText: hub?.context?.tagline,
         mediaUrl: bannerNarrow,
         tags: hub.tagset?.tags || [],
-        tagsFor: 'hub',
         url: buildHubUrl(hub.nameID),
       }}
       label={getLabel?.(hub)}
@@ -58,4 +57,5 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
     />
   );
 };
+
 export default HubCard;

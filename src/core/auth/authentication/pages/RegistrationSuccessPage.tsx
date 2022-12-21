@@ -21,4 +21,5 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
     </Container>
   );
 };
+
 export default RegistrationSuccessPage;

@@ -92,6 +92,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
+          {/* TODO "negative" is not a valid Button.color */}
+          {/* @ts-ignore */}
           <LoadingButton
             loading={loading}
             disabled={loading}
@@ -110,4 +112,5 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     </>
   );
 };
+
 export default CalloutEditDialog;

@@ -2,18 +2,17 @@ import React, { ComponentType, FC, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import PageTabs, { TabDefinition } from '../../../../../common/components/core/PageTabs/PageTabs';
 import { useTranslation } from 'react-i18next';
-import { EntityLinkComponentProps } from '../../components/EntityLinkComponent';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { EntityTabsProps } from '../../../../shared/layout/PageLayout';
-import SimplePageLayout from '../../../../shared/layout/PageLayout/SimplePageLayout';
+import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
+import SimplePageLayout from '../../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 import { useMediaQuery, useTheme } from '@mui/material';
 import TopBar, { TopBarSpacer } from '../../../../../common/components/composite/layout/TopBar/TopBar';
 import Main from '../../../../../common/components/composite/layout/App/Main';
-import TopLevelDesktopLayout from '../../../../shared/layout/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
-type EntitySettingsLayoutProps = EntityLinkComponentProps & {
+type EntitySettingsLayoutProps = {
   pageBannerComponent: ComponentType;
   tabsComponent: ComponentType<EntityTabsProps>;
   entityTypeName: EntityTypeName;

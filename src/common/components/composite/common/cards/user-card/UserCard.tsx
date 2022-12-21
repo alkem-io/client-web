@@ -116,6 +116,7 @@ const UserCard: FC<UserCardProps> = ({
     </ConditionalLink>
   );
 };
+
 export default UserCard;
 
 interface InfoRowProps {

@@ -42,4 +42,5 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
     </>
   );
 };
+
 export default GroupMembersDetails;

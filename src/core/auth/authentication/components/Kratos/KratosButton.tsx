@@ -26,4 +26,5 @@ export const KratosButton: FC<KratosButtonProps> = ({ node }) => {
     </Grid>
   );
 };
+
 export default KratosButton;

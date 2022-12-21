@@ -5,7 +5,7 @@ import EntityPageBanner from '../../../shared/components/PageHeader/EntityPageBa
 import HeaderNavigationTabs from '../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
-import TopLevelDesktopLayout from '../../../shared/layout/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;

@@ -47,4 +47,5 @@ const OrganizationAuthorizationPreferencesView: FC<OrganizationAuthorizationPref
     />
   );
 };
+
 export default OrganizationAuthorizationPreferencesView;

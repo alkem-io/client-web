@@ -75,4 +75,5 @@ const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ c
 
   return <>{children({ preferences }, { loading, error }, { onUpdate })}</>;
 };
+
 export default ChallengePreferenceContainer;

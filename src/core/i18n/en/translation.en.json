@@ -15,6 +15,7 @@
     "add-entity": "Add {{entity}}"
   },
   "buttons": {
+    "leave": "Leave",
     "learn-more": "Learn more",
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
@@ -30,7 +31,7 @@
     "next": "Next",
     "edit": "Edit",
     "see-more": "See more",
-    "see-all": "See all",
+    "see-all": "More {{subject}}",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -62,7 +63,8 @@
     "share": "Share",
     "preview": "Preview",
     "import": "Import",
-    "importing": "Importing..."
+    "importing": "Importing...",
+    "go-to-entity": "Go to {{entity}}"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -101,10 +103,12 @@
     "add": "Add",
     "remove": "Remove",
     "callout": "Callout",
+    "callouts": "Callouts",
     "canvas": "Canvas",
     "canvases": "Canvases",
     "comment": "Comment",
     "comments": "Comments",
+    "contributions": "Contributions",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
@@ -145,7 +149,7 @@
     "user": "User",
     "users": "Users",
     "update": "Update",
-    "updates": "Updates",
+    "updates": "News",
     "no-updates": "No updates",
     "no-tags": "No tags available",
     "no-references": "No references available",
@@ -160,6 +164,7 @@
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
+    "disassociate": "Disassociate",
     "dashboard": "Dashboard",
     "contribute": "Contribute",
     "context": "Context",
@@ -201,6 +206,11 @@
       "not-verified": ""
     },
     "enums": {
+      "callout-state": {
+        "ARCHIVED": "Archived",
+        "CLOSED": "Closed",
+        "OPEN": "Open"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -363,9 +373,12 @@
     "member-organizations": "Member Organizations",
     "leads": "Leads",
     "members": "Members",
-    "host": "Host"
+    "host": "Host",
+    "members-count": "Members ({{count}})"
   },
   "callout": {
+    "contributions": "{{count}} Contribution",
+    "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
@@ -514,6 +527,12 @@
     }
   },
   "components": {
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Leaving {{organization}}",
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+      }
+    },
     "error-display": {
       "title": "Ooops!",
       "went-wrong": "Looks like something went wrong.",
@@ -528,7 +547,7 @@
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Recent Contributions"
     },
     "activity-log-view": {
       "actions": {
@@ -693,7 +712,7 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "Please become a member to access {{blockName}}",
+      "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
       "login": "Please log in to see {{blockName}}"
     },
@@ -975,7 +994,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
+          "about": "About this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
@@ -996,14 +1016,18 @@
         },
         "profile": {
           "description": ""
+        },
+        "subentities": {
+          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
+          "list": "List of {{entities}}",
+          "empty": "No {{entities}} found in this {{parentEntity}}.",
+          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
         }
       }
     },
     "contribute": {
+      "initial-text": "**Contribute** your insights to understanding the context. It is about surfacing up the wisdom of the community.",
       "no-cards": "No Card found"
-    },
-    "explore": {
-      "create-callout": "Create new Callout"
     },
     "admin": {
       "generic": {
@@ -1284,7 +1308,6 @@
     },
     "hub": {
       "title": "Hub",
-      "about-this-hub": "About this Hub",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
       "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
@@ -1299,10 +1322,6 @@
         "dashboard": {
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
-          "challenges": {
-            "title": "Challenges",
-            "help-text": "This shows the different challenges you can contribute to in this hub."
-          },
           "community": "Community"
         },
         "challenges": {
@@ -1316,7 +1335,6 @@
     },
     "challenge": {
       "title": "Challenge",
-      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -1326,24 +1344,18 @@
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
           },
-          "opportunities": {
-            "title": "Opportunities",
-            "help-text": "Opportunities related to this challenge"
-          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this challenge"
           }
         },
         "opportunities": {
-          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
-          "body-missing": "No opportunities found for this challenge"
+          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about."
         }
       }
     },
     "opportunity": {
       "title": "Opportunity",
-      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1385,7 +1397,6 @@
         "help-text": "The Organization that is facilitating this Hub."
       },
       "members": {
-        "title": "Members ({{count}})",
         "help-text": "Shows members is this community, including the role they have",
         "no-data": "No members available"
       },
@@ -1599,9 +1610,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "Updates ({{count}})",
-    "dialog-title": "All Updates",
-    "no-data": "No updates available."
+    "title": "News ({{count}})",
+    "dialog-title": "All News",
+    "no-data": "No news available."
   },
   "dashboard-discussions-section": {
     "title": "Discussions ({{count}})",

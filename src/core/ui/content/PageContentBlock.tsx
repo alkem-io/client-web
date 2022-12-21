@@ -1,28 +1,36 @@
-import { BoxProps, Paper, PaperProps, SxProps } from '@mui/material';
+import { Paper, PaperProps, SxProps } from '@mui/material';
 import { GUTTER_MUI } from '../grid/constants';
+import GridProvider from '../grid/GridProvider';
+import SwapColors from '../palette/SwapColors';
+import { forwardRef } from 'react';
 
-interface PageContentBlockProps {
+export interface PageContentBlockProps extends PaperProps {
   accent?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;
+  halfWidth?: boolean;
 }
 
-const PageContentBlock = ({
-  accent = false,
-  disablePadding = false,
-  disableGap = false,
-  ...props
-}: BoxProps & PaperProps & PageContentBlockProps) => {
-  const sx: SxProps = {
-    color: accent ? 'background.default' : undefined,
-    backgroundColor: accent ? 'primary.main' : undefined,
-    padding: disablePadding ? undefined : GUTTER_MUI,
-    display: disableGap ? undefined : 'flex',
-    flexDirection: disableGap ? undefined : 'column',
-    gap: disableGap ? undefined : GUTTER_MUI,
-  };
+const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(
+  ({ accent = false, disablePadding = false, disableGap = false, halfWidth = false, sx, ...props }, ref) => {
+    const mergedSx: Partial<SxProps> = {
+      padding: disablePadding ? undefined : GUTTER_MUI,
+      display: disableGap ? undefined : 'flex',
+      flexDirection: disableGap ? undefined : 'column',
+      gap: disableGap ? undefined : GUTTER_MUI,
+      flexBasis: halfWidth ? 0 : '100%',
+      flexGrow: halfWidth ? 1 : undefined,
+      ...sx,
+    };
 
-  return <Paper sx={sx} {...props} />;
-};
+    return (
+      <SwapColors swap={accent}>
+        <GridProvider columns={columns => (halfWidth ? columns! / 2 : columns!)}>
+          <Paper ref={ref} sx={mergedSx} {...props} />
+        </GridProvider>
+      </SwapColors>
+    );
+  }
+);
 
 export default PageContentBlock;

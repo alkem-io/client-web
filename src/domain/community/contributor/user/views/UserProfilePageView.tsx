@@ -6,6 +6,7 @@ import { FEATURE_SSI } from '../../../../platform/config/features.constants';
 import { CredentialsView, ContributionsView } from '../../../profile/views/ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../../../profile/views/ProfileView/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
 
@@ -42,11 +43,13 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
       <Grid item xs={12} xl={6}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <ContributionsView
-              title={t('pages.user-profile.communities.title')}
-              helpText={t('pages.user-profile.communities.help')}
-              contributions={contributions}
-            />
+            <GridProvider columns={6}>
+              <ContributionsView
+                title={t('pages.user-profile.communities.title')}
+                helpText={t('pages.user-profile.communities.help')}
+                contributions={contributions}
+              />
+            </GridProvider>
           </Grid>
           <Grid item xs={12}>
             <ContributionsView
@@ -60,4 +63,5 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
     </Grid>
   );
 };
+
 export default UserProfilePageView;

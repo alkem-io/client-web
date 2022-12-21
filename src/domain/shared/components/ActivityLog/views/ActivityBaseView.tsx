@@ -17,12 +17,6 @@ export interface ActivityBaseViewProps {
   loading?: boolean;
 }
 
-export interface NameableEntity {
-  id: string;
-  nameID: string;
-  displayName: string;
-}
-
 export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   author,
   createdDate,

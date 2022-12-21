@@ -3,7 +3,7 @@ import DashboardGenericSection, {
 } from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { Typography } from '@mui/material';
 import React from 'react';
-import { CanvasIcon } from '../../../../common/icons/CanvasIcon';
+import { CanvasIcon } from '../icon/CanvasIcon';
 import { useTranslation } from 'react-i18next';
 import SimpleCard from '../../../shared/components/SimpleCard';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
@@ -41,7 +41,7 @@ const CanvasesDashboardPreview = ({
       headerText={headerText}
       {...sectionProps}
       navText={t('buttons.see-all')}
-      navLink={EntityPageSection.Explore}
+      navLink={EntityPageSection.Contribute}
     >
       <SimpleCardsList>
         {canvases.map(canvas => (

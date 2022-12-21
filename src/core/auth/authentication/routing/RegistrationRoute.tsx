@@ -23,4 +23,5 @@ export const RegistrationRoute: FC = () => {
     </Routes>
   );
 };
+
 export default RegistrationRoute;

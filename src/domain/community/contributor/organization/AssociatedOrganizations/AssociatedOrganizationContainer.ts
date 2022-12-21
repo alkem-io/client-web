@@ -1,7 +1,11 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from '../../user';
-import { useAssociatedOrganizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchUserOrganizationsQuery,
+  useAssociatedOrganizationQuery,
+  useRemoveUserFromOrganizationMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
@@ -11,12 +15,17 @@ import { AssociatedOrganization, mapToAssociatedOrganization } from './Associate
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
     organizationNameId: string;
+    enableLeave?: boolean;
   },
-  AssociatedOrganization
+  AssociatedOrganization & {
+    handleRemoveSelfFromOrganization: () => void;
+    removingFromOrganization?: boolean;
+  }
 >;
 
 export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerProps> = ({
   organizationNameId,
+  enableLeave,
   ...rendered
 }) => {
   const { user } = useUserContext();
@@ -28,6 +37,24 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
     errorPolicy: 'all',
   });
 
+  const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] =
+    useRemoveUserFromOrganizationMutation();
+
+  const handleRemoveSelfFromOrganization = useCallback(
+    async () =>
+      await disassociateSelfFromOrganization({
+        variables: {
+          input: {
+            userID: user?.user.id || '',
+            organizationID: organizationNameId,
+          },
+        },
+        refetchQueries: [refetchUserOrganizationsQuery({ input: user?.user.id || '' })],
+        awaitRefetchQueries: true,
+      }),
+    [user?.user.id, organizationNameId, disassociateSelfFromOrganization]
+  );
+
   const { t } = useTranslation();
 
   const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationNameId, user?.user, t, {
@@ -35,7 +62,12 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
     error,
   });
 
-  return renderComponentOrChildrenFn(rendered, associatedOrganization);
+  return renderComponentOrChildrenFn(rendered, {
+    ...associatedOrganization,
+    handleRemoveSelfFromOrganization,
+    removingFromOrganization,
+    enableLeave,
+  });
 };
 
 export default AssociatedOrganizationContainer;
