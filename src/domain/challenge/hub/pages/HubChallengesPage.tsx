@@ -26,7 +26,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
   const navigate = useNavigate();
   const { hubNameId, permissions } = useHub();
 
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
   const { createChallenge } = useJourneyCreation();
 
@@ -80,7 +80,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={
               <JourneyCreationDialog
-                open={createDialogOpen}
+                open={isCreateDialogOpen}
                 icon={<ChallengeIcon />}
                 journeyName={t('common.challenge')}
                 onClose={() => setCreateDialogOpen(false)}
