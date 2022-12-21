@@ -566,12 +566,15 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
+  UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateCanvas = 'UPDATE_CANVAS',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
 
 export type Callout = {
   __typename?: 'Callout';
+  /** The activity for this Callout. */
+  activity: Scalars['Float'];
   /** The Aspects associated with this Callout. */
   aspects?: Maybe<Array<Aspect>>;
   /** The authorization rules for the entity */
@@ -590,6 +593,10 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The user that published this Callout */
+  publishedBy?: Maybe<User>;
+  /** The timestamp for the publishing of this Callout. */
+  publishedDate?: Maybe<Scalars['Float']>;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float'];
   /** State of the Callout. */
@@ -813,6 +820,7 @@ export type CollaborationCalloutsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
+  sortByActivity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type Comments = {
@@ -1069,6 +1077,8 @@ export type Context = {
   impact?: Maybe<Scalars['Markdown']>;
   /** Location of this entity */
   location?: Maybe<Location>;
+  /** The Recommendations for this Context. */
+  recommendations?: Maybe<Array<Reference>>;
   /** The References for this Context. */
   references?: Maybe<Array<Reference>>;
   /** A one line description */
@@ -2077,6 +2087,8 @@ export type Mutation = {
   updateAspectTemplate: AspectTemplate;
   /** Update a Callout. */
   updateCallout: Callout;
+  /** Update the information describing the publishing of the specified Callout. */
+  updateCalloutPublishInfo: Callout;
   /** Update the visibility of the specified Callout. */
   updateCalloutVisibility: Callout;
   /** Updates the specified Canvas. */
@@ -2559,6 +2571,10 @@ export type MutationUpdateAspectTemplateArgs = {
 
 export type MutationUpdateCalloutArgs = {
   calloutData: UpdateCalloutInput;
+};
+
+export type MutationUpdateCalloutPublishInfoArgs = {
+  calloutData: UpdateCalloutPublishInfoInput;
 };
 
 export type MutationUpdateCalloutVisibilityArgs = {
@@ -3160,10 +3176,13 @@ export type Reference = {
   __typename?: 'Reference';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  description: Scalars['String'];
+  /** Description of this reference */
+  description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Name of the reference, e.g. Linkedin, Twitter etc. */
   name: Scalars['String'];
+  /** URI of the reference */
   uri: Scalars['String'];
 };
 
@@ -3717,6 +3736,15 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+};
+
+export type UpdateCalloutPublishInfoInput = {
+  /** The identifier for the Callout whose publisher is to be updated. */
+  calloutID: Scalars['String'];
+  /** The timestamp to set for the publishing of the Callout. */
+  publishDate?: InputMaybe<Scalars['Float']>;
+  /** The identifier of the publisher of the Callout. */
+  publisherID?: InputMaybe<Scalars['UUID_NAMEID_EMAIL']>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -4449,8 +4477,11 @@ export type ChallengePageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
+                  description: string;
                   type: CalloutType;
                   visibility: CalloutVisibility;
+                  activity: number;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -4477,7 +4508,7 @@ export type ChallengePageQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -4635,7 +4666,13 @@ export type ChallengePageQuery = {
                   who?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   references?:
-                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
                     | undefined;
                   visuals?:
                     | Array<{
@@ -4733,8 +4770,11 @@ export type ChallengeProfileFragment = {
               __typename?: 'Callout';
               id: string;
               nameID: string;
+              displayName: string;
+              description: string;
               type: CalloutType;
               visibility: CalloutVisibility;
+              activity: number;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -4759,7 +4799,7 @@ export type ChallengeProfileFragment = {
                                 id: string;
                                 name: string;
                                 uri: string;
-                                description: string;
+                                description?: string | undefined;
                               }>
                             | undefined;
                         }
@@ -4913,7 +4953,13 @@ export type ChallengeProfileFragment = {
               who?: string | undefined;
               location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
               references?:
-                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
                 | undefined;
               visuals?:
                 | Array<{
@@ -4972,7 +5018,13 @@ export type ChallengeDashboardReferencesQuery = {
             __typename?: 'Context';
             id: string;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           }
         | undefined;
@@ -5048,7 +5100,13 @@ export type OpportunitiesOnChallengeFragment = {
               who?: string | undefined;
               location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
               references?:
-                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
                 | undefined;
               visuals?:
                 | Array<{
@@ -5447,7 +5505,13 @@ export type ChallengeProfileInfoQuery = {
               | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
             authorization?:
               | {
@@ -5537,7 +5601,13 @@ export type OpportunityCreatedSubscription = {
             who?: string | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
             visuals?:
               | Array<{
@@ -6280,7 +6350,13 @@ export type AboutPageMembersQuery = {
           __typename?: 'Context';
           id: string;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
         }
       | undefined;
@@ -6368,7 +6444,13 @@ export type AboutPageMembersQuery = {
             __typename?: 'Context';
             id: string;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           }
         | undefined;
@@ -6457,7 +6539,13 @@ export type AboutPageMembersQuery = {
             __typename?: 'Context';
             id: string;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           }
         | undefined;
@@ -6549,7 +6637,13 @@ export type HubProviderQuery = {
             | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           visuals?:
             | Array<{
@@ -6647,7 +6741,7 @@ export type HubInfoFragment = {
           | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
         visuals?:
           | Array<{
@@ -6764,8 +6858,11 @@ export type HubPageQuery = {
                 __typename?: 'Callout';
                 id: string;
                 nameID: string;
+                displayName: string;
+                description: string;
                 type: CalloutType;
                 visibility: CalloutVisibility;
+                activity: number;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -6792,7 +6889,7 @@ export type HubPageQuery = {
                                   id: string;
                                   name: string;
                                   uri: string;
-                                  description: string;
+                                  description?: string | undefined;
                                 }>
                               | undefined;
                           }
@@ -6964,7 +7061,13 @@ export type HubDashboardReferencesQuery = {
           __typename?: 'Context';
           id: string;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
         }
       | undefined;
@@ -7027,8 +7130,11 @@ export type HubPageFragment = {
               __typename?: 'Callout';
               id: string;
               nameID: string;
+              displayName: string;
+              description: string;
               type: CalloutType;
               visibility: CalloutVisibility;
+              activity: number;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -7053,7 +7159,7 @@ export type HubPageFragment = {
                                 id: string;
                                 name: string;
                                 uri: string;
-                                description: string;
+                                description?: string | undefined;
                               }>
                             | undefined;
                         }
@@ -7264,7 +7370,7 @@ export type HubDetailsFragment = {
         who?: string | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
         visuals?:
           | Array<{
@@ -7342,7 +7448,13 @@ export type CreateHubMutation = {
           who?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           visuals?:
             | Array<{
@@ -7405,7 +7517,13 @@ export type UpdateHubMutation = {
           who?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           visuals?:
             | Array<{
@@ -7555,7 +7673,13 @@ export type HubGroupQuery = {
                 }
               | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  description?: string | undefined;
+                }>
               | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
           }
@@ -7812,8 +7936,11 @@ export type OpportunityPageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
+                  displayName: string;
+                  description: string;
                   type: CalloutType;
                   visibility: CalloutVisibility;
+                  activity: number;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -7840,7 +7967,7 @@ export type OpportunityPageQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -7917,7 +8044,13 @@ export type OpportunityPageQuery = {
                 }
               | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; description: string; uri: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  description?: string | undefined;
+                  uri: string;
+                }>
               | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
@@ -8039,8 +8172,11 @@ export type OpportunityPageFragment = {
               __typename?: 'Callout';
               id: string;
               nameID: string;
+              displayName: string;
+              description: string;
               type: CalloutType;
               visibility: CalloutVisibility;
+              activity: number;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -8065,7 +8201,7 @@ export type OpportunityPageFragment = {
                                 id: string;
                                 name: string;
                                 uri: string;
-                                description: string;
+                                description?: string | undefined;
                               }>
                             | undefined;
                         }
@@ -8138,7 +8274,7 @@ export type OpportunityPageFragment = {
             }
           | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; description: string; uri: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
           | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
@@ -8378,7 +8514,7 @@ export type OpportunityCardFragment = {
         who?: string | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
         visuals?:
           | Array<{
@@ -8441,7 +8577,13 @@ export type CreateOpportunityMutation = {
           who?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           visuals?:
             | Array<{
@@ -8768,7 +8910,13 @@ export type OpportunityProfileInfoQuery = {
             who?: string | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
             visuals?:
               | Array<{
@@ -8938,7 +9086,7 @@ export type HubAspectQuery = {
                                   id: string;
                                   name: string;
                                   uri: string;
-                                  description: string;
+                                  description?: string | undefined;
                                 }>
                               | undefined;
                           }
@@ -9062,7 +9210,7 @@ export type ChallengeAspectQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -9187,7 +9335,7 @@ export type OpportunityAspectQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -9289,7 +9437,13 @@ export type AspectDashboardDataFragment = {
                     description: string;
                     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                     references?:
-                      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
                       | undefined;
                   }
                 | undefined;
@@ -9369,7 +9523,7 @@ export type AspectDashboardFragment = {
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       }
     | undefined;
@@ -9429,7 +9583,13 @@ export type UpdateAspectMutation = {
           description: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; description: string; uri: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                description?: string | undefined;
+                uri: string;
+              }>
             | undefined;
         }
       | undefined;
@@ -9512,7 +9672,7 @@ export type HubAspectSettingsQuery = {
                                   id: string;
                                   name: string;
                                   uri: string;
-                                  description: string;
+                                  description?: string | undefined;
                                 }>
                               | undefined;
                           }
@@ -9607,7 +9767,7 @@ export type ChallengeAspectSettingsQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -9703,7 +9863,7 @@ export type OpportunityAspectSettingsQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -9763,7 +9923,7 @@ export type AspectSettingsFragment = {
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       }
     | undefined;
@@ -9818,7 +9978,13 @@ export type AspectSettingsCalloutFragment = {
               description: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
-                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
                 | undefined;
             }
           | undefined;
@@ -10049,7 +10215,7 @@ export type AspectCardFragment = {
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       }
     | undefined;
@@ -10076,7 +10242,7 @@ export type ContributeTabAspectFragment = {
         description: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       }
     | undefined;
@@ -10118,7 +10284,7 @@ export type CreateReferenceOnCardProfileMutation = {
     id: string;
     name: string;
     uri: string;
-    description: string;
+    description?: string | undefined;
   };
 };
 
@@ -10674,7 +10840,7 @@ export type HubCalloutsQuery = {
                                   id: string;
                                   name: string;
                                   uri: string;
-                                  description: string;
+                                  description?: string | undefined;
                                 }>
                               | undefined;
                           }
@@ -10863,7 +11029,7 @@ export type ChallengeCalloutsQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -11062,7 +11228,7 @@ export type OpportunityCalloutsQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -11256,7 +11422,7 @@ export type HubCalloutQuery = {
                                   id: string;
                                   name: string;
                                   uri: string;
-                                  description: string;
+                                  description?: string | undefined;
                                 }>
                               | undefined;
                           }
@@ -11444,7 +11610,7 @@ export type ChallengeCalloutQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -11642,7 +11808,7 @@ export type OpportunityCalloutQuery = {
                                     id: string;
                                     name: string;
                                     uri: string;
-                                    description: string;
+                                    description?: string | undefined;
                                   }>
                                 | undefined;
                             }
@@ -11888,7 +12054,13 @@ export type CalloutFragment = {
               description: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
-                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
                 | undefined;
             }
           | undefined;
@@ -12848,7 +13020,13 @@ export type AspectsOnCalloutFragment = {
               description: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
-                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
                 | undefined;
             }
           | undefined;
@@ -12885,7 +13063,13 @@ export type CalloutAspectCreatedSubscription = {
             description: string;
             tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           }
         | undefined;
@@ -13652,7 +13836,13 @@ export type ChallengeApplicationQuery = {
             who?: string | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
             visuals?:
               | Array<{
@@ -15525,7 +15715,7 @@ export type OrganizationProfileInfoFragment = {
       | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     references?:
-      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
   };
@@ -15594,7 +15784,7 @@ export type UpdateOrganizationMutation = {
         | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
@@ -15646,7 +15836,13 @@ export type OrganizationGroupQuery = {
                     }
                   | undefined;
                 references?:
-                  | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
+                  | Array<{
+                      __typename?: 'Reference';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      description?: string | undefined;
+                    }>
                   | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
               }
@@ -15797,7 +15993,7 @@ export type OrganizationProfileInfoQuery = {
         | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
@@ -16044,7 +16240,7 @@ export type GroupInfoFragment = {
             }
           | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description?: string | undefined }>
           | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
@@ -16114,7 +16310,7 @@ export type UserDetailsFragment = {
             }
           | undefined;
         references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
@@ -16238,7 +16434,13 @@ export type CreateUserMutation = {
               }
             | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -16290,7 +16492,13 @@ export type CreateUserNewRegistrationMutation = {
               }
             | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -16352,7 +16560,9 @@ export type UpdateGroupMutation = {
           id: string;
           description?: string | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          references?: Array<{ __typename?: 'Reference'; uri: string; name: string; description: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; uri: string; name: string; description?: string | undefined }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -16405,7 +16615,13 @@ export type UpdateUserMutation = {
               }
             | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -16525,7 +16741,13 @@ export type UserQuery = {
               }
             | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -16685,7 +16907,13 @@ export type UserProfileQuery = {
               }
             | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -16855,7 +17083,13 @@ export type MeQuery = {
               }
             | undefined;
           references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
             | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -16974,7 +17208,7 @@ export type ContextDetailsFragment = {
   who?: string | undefined;
   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   references?:
-    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
     | undefined;
   visuals?:
     | Array<{
@@ -18197,7 +18431,13 @@ export type CreateReferenceOnContextMutationVariables = Exact<{
 
 export type CreateReferenceOnContextMutation = {
   __typename?: 'Mutation';
-  createReferenceOnContext: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
+  createReferenceOnContext: {
+    __typename?: 'Reference';
+    id: string;
+    name: string;
+    uri: string;
+    description?: string | undefined;
+  };
 };
 
 export type CreateReferenceOnProfileMutationVariables = Exact<{
@@ -18206,7 +18446,13 @@ export type CreateReferenceOnProfileMutationVariables = Exact<{
 
 export type CreateReferenceOnProfileMutation = {
   __typename?: 'Mutation';
-  createReferenceOnProfile: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
+  createReferenceOnProfile: {
+    __typename?: 'Reference';
+    id: string;
+    name: string;
+    uri: string;
+    description?: string | undefined;
+  };
 };
 
 export type DeleteReferenceMutationVariables = Exact<{
@@ -18223,7 +18469,7 @@ export type ReferenceDetailsFragment = {
   id: string;
   name: string;
   uri: string;
-  description: string;
+  description?: string | undefined;
 };
 
 export type CreateRelationMutationVariables = Exact<{

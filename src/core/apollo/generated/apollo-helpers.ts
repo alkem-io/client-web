@@ -444,6 +444,7 @@ export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutKeySpecifier = (
+  | 'activity'
   | 'aspects'
   | 'authorization'
   | 'canvases'
@@ -453,6 +454,8 @@ export type CalloutKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'nameID'
+  | 'publishedBy'
+  | 'publishedDate'
   | 'sortOrder'
   | 'state'
   | 'type'
@@ -460,6 +463,7 @@ export type CalloutKeySpecifier = (
   | CalloutKeySpecifier
 )[];
 export type CalloutFieldPolicy = {
+  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   canvases?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -469,6 +473,8 @@ export type CalloutFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -788,6 +794,7 @@ export type ContextKeySpecifier = (
   | 'id'
   | 'impact'
   | 'location'
+  | 'recommendations'
   | 'references'
   | 'tagline'
   | 'vision'
@@ -802,6 +809,7 @@ export type ContextFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
+  recommendations?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1171,6 +1179,7 @@ export type MutationKeySpecifier = (
   | 'updateAspect'
   | 'updateAspectTemplate'
   | 'updateCallout'
+  | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCanvas'
   | 'updateCanvasTemplate'
@@ -1310,6 +1319,7 @@ export type MutationFieldPolicy = {
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;

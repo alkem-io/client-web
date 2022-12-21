@@ -7,6 +7,7 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
+  Callout,
   ChallengeCardFragment,
   HubPageFragment,
   Reference,
@@ -53,6 +54,7 @@ export interface HubContainerEntities {
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
+  topCallouts: TopCallout[] | undefined;
 }
 
 export interface HubContainerActions {}
@@ -65,6 +67,7 @@ export interface HubContainerState {
 export interface HubPageContainerProps
   extends ContainerChildProps<HubContainerEntities, HubContainerActions, HubContainerState> {}
 
+export type TopCallout = Pick<Callout, 'id' | 'description' | 'displayName' | 'activity' | 'type'>;
 const EMPTY = [];
 const NO_PRIVILEGES = [];
 
@@ -117,6 +120,19 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
 
+  const topCallouts = _hub?.hub.collaboration?.callouts
+    ? _hub?.hub.collaboration?.callouts.slice(0, 3).map(
+        ({ id, activity, displayName, description, type }) =>
+          ({
+            id,
+            activity,
+            displayName,
+            description,
+            type,
+          } as TopCallout)
+      )
+    : undefined;
+
   return (
     <>
       {children(
@@ -138,6 +154,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           activityLoading,
           ...contributors,
           hostOrganizations,
+          topCallouts,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,

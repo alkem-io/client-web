@@ -24,6 +24,8 @@ import JourneyDashboardVision from './JourneyDashboardVision';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
+import { TopCallout } from '../../../hub/containers/HubPageContainer';
+import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -43,6 +45,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
   childEntityTitle?: string;
+  topCallouts: TopCallout[] | undefined;
 }
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
@@ -67,6 +70,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   renderChildEntityCard,
   journeyTypeName,
   childEntityTitle,
+  topCallouts,
 }: JourneyDashboardViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
@@ -122,6 +126,20 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
+        <PageContentBlock halfWidth>
+          <PageContentBlockHeader title={'Recommendations'} />
+        </PageContentBlock>
+        <PageContentBlock halfWidth>
+          <PageContentBlockHeader title="Top Callouts" />
+          {topCallouts?.map(callout => (
+            <TopCalloutDetails
+              title={callout.displayName}
+              description={callout.description}
+              activity={callout.activity}
+              type={callout.type}
+            />
+          ))}
+        </PageContentBlock>
         {showActivity && (
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.activity-log-section.title')} />

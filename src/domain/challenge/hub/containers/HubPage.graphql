@@ -51,9 +51,11 @@ fragment HubPage on Hub {
   }
   collaboration {
     id
-    callouts {
+    callouts(sortByActivity: true) {
       id
       nameID
+      displayName
+      description
       type
       visibility
       aspects(limit: 2, shuffle: true) {
@@ -62,6 +64,7 @@ fragment HubPage on Hub {
       canvases(limit: 2, shuffle: true) {
         ...CanvasDetails
       }
+      activity
     }
   }
   community {
