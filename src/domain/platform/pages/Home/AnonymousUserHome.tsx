@@ -10,7 +10,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { PageContentBlockActions } from '../../../../core/ui/content/PageContentBlockActions';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
         <Box display="flex" flexDirection="column" padding={gutters()} gap={gutters()}>
           <PageContentBlockHeader title={t('pages.home.sections.welcome.existing-user.header')} />
           <Caption>{t('pages.home.sections.welcome.existing-user.subheader')}</Caption>
-          <PageContentBlockActions>
+          <Actions>
             <Button
               color="primary"
               variant="contained"
@@ -40,7 +40,7 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
             <Button href={t('pages.home.sections.welcome.existing-user.more-info-url')} target="_blank">
               {t('pages.home.sections.welcome.existing-user.more-info')}
             </Button>
-          </PageContentBlockActions>
+          </Actions>
         </Box>
       </PageContentBlock>
       <PageContentBlock halfWidth disablePadding sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -48,7 +48,7 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
         <Box display="flex" flexDirection="column" padding={gutters()} gap={gutters()}>
           <PageContentBlockHeader title={t('pages.home.sections.welcome.new-to-alkemio.header')} />
           <Caption>{t('pages.home.sections.welcome.new-to-alkemio.subheader')}</Caption>
-          <PageContentBlockActions>
+          <Actions>
             <Button
               color="primary"
               variant="contained"
@@ -64,7 +64,7 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
             <Button href={t('pages.home.sections.welcome.new-to-alkemio.more-info-url')} target="_blank">
               {t('pages.home.sections.welcome.new-to-alkemio.more-info')}
             </Button>
-          </PageContentBlockActions>
+          </Actions>
         </Box>
       </PageContentBlock>
     </>

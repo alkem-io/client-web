@@ -1,12 +1,15 @@
 import React from 'react';
-import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsComponent';
+import { gutters } from '../grid/utils';
+import TagsComponent, { TagsComponentProps } from '../../../domain/shared/components/TagsComponent/TagsComponent';
 
-export interface CardTagsProps {
-  tags: string[] | undefined;
+interface CardTagsProps extends TagsComponentProps {
+  rows?: number;
 }
 
-export const CardTags = ({ tags = [] }: CardTagsProps) => {
-  return <TagsComponent tags={tags} display="flex" paddingX={1.5} paddingY={1} />;
+const CardTags = ({ rows = 1, ...props }: CardTagsProps) => {
+  const heightGutters = rows + (rows - 1) * 0.5;
+
+  return <TagsComponent variant="filled" height={gutters(heightGutters)} marginTop={0.5} color="primary" {...props} />;
 };
 
 export default CardTags;

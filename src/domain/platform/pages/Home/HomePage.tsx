@@ -1,6 +1,5 @@
-import { Grid, Grow } from '@mui/material';
+import { Grow } from '@mui/material';
 import React from 'react';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { useUserContext } from '../../../community/contributor/user';
 import ContributorsSection from './ContributorsSection';
 import HubsSection from '../../../challenge/hub/DashboardHubs/HubsSection';
@@ -26,13 +25,8 @@ export const HomePage = () => {
             {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
           </Grow>
           <HubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
-          <SectionSpacer />
-          <Grid item xs={12}>
-            <ContributorsSection />
-          </Grid>
-          <Grid item xs={12}>
-            <HomePageFooter />
-          </Grid>
+          <ContributorsSection />
+          <HomePageFooter />
         </PageContentColumn>
       </PageContent>
     </HomePageLayout>

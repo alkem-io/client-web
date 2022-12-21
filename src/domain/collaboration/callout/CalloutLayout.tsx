@@ -65,12 +65,14 @@ const CalloutDetails = styled(Box)(({ theme }) => ({
 }));
 
 const CalloutMisc = styled(Box)(() => ({
-  display: 'flex',
+  display: 'none',
+  // todo: revert when the fields are populated
+  // display: 'flex',
   flexGrow: 1,
   justifyContent: 'space-between',
 }));
 
-const CalloutDate = ({ date }: { date: Date | string }) => <Caption alignSelf="end">{date}</Caption>;
+const CalloutDate = ({ date }: { date: Date | string }) => <Caption>{date}</Caption>;
 
 const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayoutProps>>(
   (
@@ -143,6 +145,9 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
               </CalloutDetails>
               <CalloutDate date={'99/99/9999'} />
             </CalloutMisc>
+            <TitleBar>
+              <BlockTitle>{callout.displayName}</BlockTitle>
+            </TitleBar>
             <CalloutActionsBar>
               {callout.editable && (
                 <IconButton
@@ -158,10 +163,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
               <ShareButton url={callout.url} entityTypeName="callout" />
             </CalloutActionsBar>
           </CalloutDetailsBar>
-          <Box m={2} mt={1}>
-            <TitleBar>
-              <BlockTitle>{callout.displayName}</BlockTitle>
-            </TitleBar>
+          <Box m={2} mt={0}>
             <Box sx={{ pt: gutters(), pb: gutters() }}>
               <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
             </Box>

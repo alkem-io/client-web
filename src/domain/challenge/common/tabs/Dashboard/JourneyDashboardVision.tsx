@@ -9,7 +9,10 @@ import ApplicationButtonContainer from '../../../../community/application/contai
 import ApplicationButton from '../../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import { PageContentBlockActions } from '../../../../../core/ui/content/PageContentBlockActions';
+import { Actions } from '../../../../../core/ui/actions/Actions';
+import { useChallenge } from '../../../challenge/hooks/useChallenge';
+import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface JourneyDashboardVisionProps {
   vision: string;
@@ -19,17 +22,25 @@ interface JourneyDashboardVisionProps {
 const JourneyDashboardVision = ({ vision, journeyTypeName }: JourneyDashboardVisionProps) => {
   const { t } = useTranslation();
 
+  const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
+
   return (
     <PageContentBlock accent>
-      <WrapperMarkdown>{vision}</WrapperMarkdown>
-      <PageContentBlockActions justifyContent="space-between">
+      <OverflowGradient maxHeight={gutters(11)} lastLine>
+        <WrapperMarkdown>{vision}</WrapperMarkdown>
+      </OverflowGradient>
+      <Actions justifyContent="space-between">
         <Button component={Link} to={EntityPageSection.About} startIcon={<ArrowForward />}>
           {t('pages.generic.sections.dashboard.about', { entity: t(`common.${journeyTypeName}` as const) })}
         </Button>
-        <ApplicationButtonContainer>
+        <ApplicationButtonContainer
+          challengeId={challengeId}
+          challengeNameId={challengeNameId}
+          challengeName={challengeName}
+        >
           {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
         </ApplicationButtonContainer>
-      </PageContentBlockActions>
+      </Actions>
     </PageContentBlock>
   );
 };

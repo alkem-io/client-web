@@ -32,6 +32,7 @@ const JourneyCardsDemo = () => {
               <HubCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Hub Card"
                 tags={['hub', 'card']}
                 membersCount={20}
@@ -40,6 +41,7 @@ const JourneyCardsDemo = () => {
               <HubCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Hub Card"
                 tags={['hub', 'card']}
                 membersCount={20}
@@ -48,6 +50,7 @@ const JourneyCardsDemo = () => {
               <HubCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Hub Card"
                 tags={['hub', 'card', 'that', 'has', 'too', 'many', 'tags', 'they', 'dont even fit', 'on 2 lines']}
                 membersCount={20}
@@ -61,22 +64,29 @@ const JourneyCardsDemo = () => {
               <ChallengeCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Challenge Card"
                 tags={['challenge', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                hubDisplayName="Parent Hub"
+                hubUri=""
               />
               <ChallengeCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name"
                 tags={['challenge', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                hubDisplayName="Parent Hub"
+                hubUri=""
               />
               <ChallengeCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={[
                   'challenge',
@@ -92,6 +102,8 @@ const JourneyCardsDemo = () => {
                 ]}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                hubDisplayName="Parent Hub"
+                hubUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>
@@ -101,22 +113,29 @@ const JourneyCardsDemo = () => {
               <OpportunityCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Opportunity Card"
                 tags={['opportunity', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                challengeDisplayName="Parent Challenge"
+                challengeUri=""
               />
               <OpportunityCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Really Long Opportunity Card Display Name"
                 tags={['opportunity', 'card']}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                challengeDisplayName="Parent Challenge"
+                challengeUri=""
               />
               <OpportunityCard
                 bannerUri={'/alkemio-banner/default-banner.png'}
                 tagline={loremIpsum}
+                vision={loremIpsum}
                 displayName="Really Long Opportunity Card Display Name That Doesn't Even Fit On 2 Lines"
                 tags={[
                   'opportunity',
@@ -132,6 +151,8 @@ const JourneyCardsDemo = () => {
                 ]}
                 innovationFlowState="Innovation Flow State"
                 journeyUri=""
+                challengeDisplayName="Parent Challenge"
+                challengeUri=""
               />
             </PageContentBlockGrid>
           </PageContentBlock>

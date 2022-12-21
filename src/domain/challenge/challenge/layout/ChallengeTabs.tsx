@@ -5,7 +5,7 @@ import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../../common/ut
 import { EntityTabsProps } from '../../common/EntityPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
-import { BatchPredictionOutlined } from '@mui/icons-material';
+import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 
 export interface ChallengeTabsProps extends EntityTabsProps {}
 
@@ -27,7 +27,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
       subEntityTab={{
         label: t('common.opportunities'),
         section: EntityPageSection.Opportunities,
-        icon: <BatchPredictionOutlined />,
+        icon: <OpportunityIcon />,
       }}
     />
   );

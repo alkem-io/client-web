@@ -48,7 +48,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
         <Route path={routes.Contribute} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
-        <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
+        <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
 
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
