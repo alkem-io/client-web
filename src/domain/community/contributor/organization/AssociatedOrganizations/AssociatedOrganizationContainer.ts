@@ -15,15 +15,18 @@ import { AssociatedOrganization, mapToAssociatedOrganization } from './Associate
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
     organizationNameId: string;
+    enableLeave?: boolean;
   },
   AssociatedOrganization & {
     handleRemoveSelfFromOrganization: () => void;
     removingFromOrganization?: boolean;
+    enableLeave?: boolean;
   }
 >;
 
 export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerProps> = ({
   organizationNameId,
+  enableLeave,
   ...rendered
 }) => {
   const { user } = useUserContext();
@@ -64,6 +67,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
     ...associatedOrganization,
     handleRemoveSelfFromOrganization,
     removingFromOrganization,
+    enableLeave,
   });
 };
 

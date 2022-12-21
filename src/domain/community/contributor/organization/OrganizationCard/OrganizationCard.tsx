@@ -22,6 +22,7 @@ interface OrganizationCardProps {
   url?: string;
   handleRemoveSelfFromOrganization: () => void;
   removingFromOrganization?: boolean;
+  enableLeave?: boolean;
 }
 
 const OrganizationCard: FC<OrganizationCardProps> = ({
@@ -35,6 +36,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   url,
   handleRemoveSelfFromOrganization,
   removingFromOrganization = false,
+  enableLeave,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -102,48 +104,52 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
           </Box>
         }
       />
-      <Box display="flex" justifyContent="flex-end" paddingY={1} paddingX={1.5}>
-        <LoadingButton
-          variant="outlined"
-          startIcon={<CloseIcon />}
-          onClick={event => {
-            handleOpenModal();
-            event.stopPropagation();
-          }}
-          loading={removingFromOrganization}
-        >
-          {t('common.disassociate')}
-        </LoadingButton>
-      </Box>
-      <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
-        <DialogTitle id="confirm-innovation-flow">
-          {t('components.associated-organization.confirmation-dialog.title', { organization: name })}
-        </DialogTitle>
-        <DialogContent sx={{ paddingX: 2 }}>
-          {t('components.associated-organization.confirmation-dialog.text')}
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'end' }}>
-          {handleClose && (
-            <Button
-              onClick={event => {
-                handleClose();
-                event.stopPropagation();
-              }}
-            >
-              {t('buttons.cancel')}
-            </Button>
-          )}
-          <Button
+      {enableLeave && (
+        <Box display="flex" justifyContent="flex-end" paddingY={1} paddingX={1.5}>
+          <LoadingButton
+            variant="outlined"
+            startIcon={<CloseIcon />}
             onClick={event => {
-              handleSubmit();
+              handleOpenModal();
               event.stopPropagation();
             }}
-            disabled={loading}
+            loading={removingFromOrganization}
           >
-            {t('buttons.leave')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+            {t('common.disassociate')}
+          </LoadingButton>
+        </Box>
+      )}
+      {enableLeave && (
+        <Dialog open={isDialogOpened} maxWidth="xs" aria-labelledby="confirm-leave-organization">
+          <DialogTitle id="confirm-innovation-flow">
+            {t('components.associated-organization.confirmation-dialog.title', { organization: name })}
+          </DialogTitle>
+          <DialogContent sx={{ paddingX: 2 }}>
+            {t('components.associated-organization.confirmation-dialog.text')}
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: 'end' }}>
+            {handleClose && (
+              <Button
+                onClick={event => {
+                  handleClose();
+                  event.stopPropagation();
+                }}
+              >
+                {t('buttons.cancel')}
+              </Button>
+            )}
+            <Button
+              onClick={event => {
+                handleSubmit();
+                event.stopPropagation();
+              }}
+              disabled={loading}
+            >
+              {t('buttons.leave')}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </OrganizationCardContainer>
   );
 };
