@@ -20,7 +20,7 @@ import { LifecycleState } from '../../../../platform/admin/templates/InnovationT
 import { ApplicationButton } from '../../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import ApplicationButtonContainer from '../../../../community/application/containers/ApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown, { MarkdownProps } from '../../../../../common/components/core/WrapperMarkdown';
 import ActivityView from '../../../../platform/metrics/views/MetricsView';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import References from '../../../../../common/components/composite/common/References/References';
@@ -33,6 +33,7 @@ import PageContentBlockHeaderWithDialogAction from '../../../../../core/ui/conte
 import DialogTitle from '../../../../../common/components/core/dialog/DialogTitle';
 import useScrollToElement from '../../../../shared/utils/scroll/useScrollToElement';
 import { useChallenge } from '../../../challenge/hooks/useChallenge';
+import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
 
 export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
@@ -60,6 +61,20 @@ const LeftColumn = (props: Omit<PageContentColumnProps, 'columns'>) => <PageCont
 const FixedHeightContentBlock = (props: PageContentBlockProps) => (
   <PageContentBlock {...props} sx={{ height: gutters(BLOCK_HEIGHT_GUTTERS) }} />
 );
+
+const FixedHeightBlockContent = ({ children }: MarkdownProps) => (
+  <OverflowGradient>
+    <WrapperMarkdown>{children}</WrapperMarkdown>
+  </OverflowGradient>
+);
+
+enum JourneyContextField {
+  Vision = 'vision',
+  Background = 'background',
+  Impact = 'impact',
+  Who = 'who',
+}
+
 /**
  * todos
  * - info block tags
@@ -90,9 +105,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
   lifecycle,
 }) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
-  // todo change string
-  const [sectionName, setSectionName] = useState<string>();
+  const [dialogSectionName, setDialogSectionName] = useState<JourneyContextField>();
 
   const isHub = journeyTypeName === 'hub';
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
@@ -100,16 +113,24 @@ export const AboutSection: FC<AboutSectionProps> = ({
 
   const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
 
-  const { scrollable } = useScrollToElement(sectionName, { method: 'element', defer: true });
+  const { scrollable } = useScrollToElement(dialogSectionName, { method: 'element', defer: true });
 
-  const handleDialogOpen = (_sectionName: 'vision' | 'background' | 'impact' | 'who') => {
-    setOpen(true);
-    setSectionName(_sectionName);
+  const openDialog = (field: JourneyContextField) => {
+    setDialogSectionName(field);
   };
-  const handleDialogClose = () => {
-    setOpen(false);
-    setSectionName(undefined);
+
+  const closeDialog = () => {
+    setDialogSectionName(undefined);
   };
+
+  const isDialogOpen = !!dialogSectionName;
+
+  const context = {
+    vision,
+    background,
+    impact,
+    who,
+  } as const;
 
   return (
     <>
@@ -157,30 +178,30 @@ export const AboutSection: FC<AboutSectionProps> = ({
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.vision.title` as const)}
-              onDialogOpen={() => handleDialogOpen('vision')}
+              onDialogOpen={() => openDialog(JourneyContextField.Vision)}
             />
-            <WrapperMarkdown>{vision}</WrapperMarkdown>
+            <FixedHeightBlockContent>{vision}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.background.title` as const)}
-              onDialogOpen={() => handleDialogOpen('background')}
+              onDialogOpen={() => openDialog(JourneyContextField.Background)}
             />
-            <WrapperMarkdown>{background}</WrapperMarkdown>
+            <FixedHeightBlockContent>{background}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock halfWidth>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.impact.title` as const)}
-              onDialogOpen={() => handleDialogOpen('impact')}
+              onDialogOpen={() => openDialog(JourneyContextField.Impact)}
             />
-            <WrapperMarkdown>{impact}</WrapperMarkdown>
+            <FixedHeightBlockContent>{impact}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
           <FixedHeightContentBlock halfWidth>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.who.title` as const)}
-              onDialogOpen={() => handleDialogOpen('who')}
+              onDialogOpen={() => openDialog(JourneyContextField.Who)}
             />
-            <WrapperMarkdown>{who}</WrapperMarkdown>
+            <FixedHeightBlockContent>{who}</FixedHeightBlockContent>
           </FixedHeightContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
           <PageContentBlock halfWidth>
@@ -195,18 +216,23 @@ export const AboutSection: FC<AboutSectionProps> = ({
           )}
         </RightColumn>
       </PageContent>
-      <Dialog open={open} fullWidth maxWidth={false} onClose={handleDialogClose}>
-        <DialogTitle onClose={handleDialogClose}>{t('common.context')}</DialogTitle>
+      <Dialog open={isDialogOpen} fullWidth maxWidth={false} onClose={closeDialog}>
+        <DialogTitle onClose={closeDialog}>{t('common.context')}</DialogTitle>
         <DialogContent>
-          <Box display="flex" gap={2} flexDirection="column">
-            <BlockTitle>{t(`context.${journeyTypeName}.vision.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{vision}</WrapperMarkdown>
-            <BlockTitle>{t(`context.${journeyTypeName}.background.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{background}</WrapperMarkdown>
-            <BlockTitle>{t(`context.${journeyTypeName}.impact.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{impact}</WrapperMarkdown>
-            <BlockTitle ref={scrollable('who')}>{t(`context.${journeyTypeName}.who.title` as const)}</BlockTitle>
-            <WrapperMarkdown>{who}</WrapperMarkdown>
+          <Box display="flex" gap={gutters()} flexDirection="column">
+            {[
+              JourneyContextField.Vision,
+              JourneyContextField.Background,
+              JourneyContextField.Impact,
+              JourneyContextField.Who,
+            ].map(field => (
+              <>
+                <BlockTitle ref={scrollable(field)}>
+                  {t(`context.${journeyTypeName}.${field}.title` as const)}
+                </BlockTitle>
+                <WrapperMarkdown>{context[field]}</WrapperMarkdown>
+              </>
+            ))}
           </Box>
         </DialogContent>
       </Dialog>
