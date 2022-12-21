@@ -20,6 +20,10 @@ export interface SimplePageLayoutProps<Section extends string | number> {
   tabDescriptionNs?: string;
 }
 
+/**
+ * @deprecated - Tab description text is no longer part of the new design
+ * TODO figure out what to do with this one.
+ */
 const SimplePageLayout = <Section extends string | number>({
   currentSection,
   entityTypeName,

@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import Typography from '@mui/material/Typography/Typography';
+import { Box } from '@mui/material';
 import DashboardHubsSection, {
   DashboardHubSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { useUserContext } from '../../../community/contributor/user';
 import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MetricTooltip from '../../../platform/metrics/MetricTooltip';
@@ -16,6 +14,8 @@ import { keyBy } from 'lodash';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { Loading } from '../../../../common/components/core';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import { Caption } from '../../../../core/ui/typography';
+import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -23,7 +23,7 @@ interface HubsSectionProps {
 }
 
 const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslationWithLineBreaks();
   const { user } = useUserContext();
   const { data: hubsData, loading: areHubsLoading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
 
@@ -81,9 +81,10 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
       hubs={hubs}
       getHubCardLabel={getHubCardLabel}
     >
-      <Typography variant="body1">{t('pages.home.sections.hub.body')}</Typography>
-      <Typography variant="body1">{t('pages.home.sections.hub.body1')}</Typography>
-      <SectionSpacer />
+      <Box>
+        <Caption>{t('pages.home.sections.hub.body')}</Caption>
+        <Caption>{t('pages.home.sections.hub.body1')}</Caption>
+      </Box>
       {isLoading && <Loading />}
     </DashboardHubsSection>
   );

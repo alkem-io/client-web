@@ -10,7 +10,7 @@ import { MetricType } from '../../../../../../domain/platform/metrics/MetricType
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 
 type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
-  context?: { tagline?: string; visuals?: VisualUriFragment[] };
+  context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
 };
 
 export interface HubCardProps {

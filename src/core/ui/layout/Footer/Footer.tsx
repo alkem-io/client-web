@@ -13,7 +13,7 @@ const Footer = () => {
   const breakpoint = useCurrentBreakpoint();
 
   return (
-    <Paper elevation={2} sx={{ marginTop: 4 }}>
+    <Paper elevation={2}>
       <Container maxWidth={breakpoint} sx={{ marginTop: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box justifyContent="center" textAlign="center" display={{ xs: 'block', sm: 'none' }} my={1}>
           <FooterLogo />

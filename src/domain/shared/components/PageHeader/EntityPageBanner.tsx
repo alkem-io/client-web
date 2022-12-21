@@ -3,7 +3,7 @@ import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
-import { EntityTypeName } from '../../layout/PageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../layout/LegacyPageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels

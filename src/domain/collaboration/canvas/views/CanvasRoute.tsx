@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 import CanvasesView from '../EntityCanvasPage/CanvasesView';
 
 export interface CanvasRouteProps {

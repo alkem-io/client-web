@@ -1,5 +1,5 @@
 import React from 'react';
-import { EntityTabsProps } from '../../../shared/layout/PageLayout';
+import { EntityTabsProps } from '../../common/EntityPageLayout';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
 import { useHub } from '../HubContext/useHub';
 import { buildAdminHubUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';

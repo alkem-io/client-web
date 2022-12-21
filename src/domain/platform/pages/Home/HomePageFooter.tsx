@@ -1,13 +1,14 @@
 import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import Section, { SectionSpacer } from '../../../shared/components/Section/Section';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Icon, { IconProps } from '../../../../core/ui/icon/Icon';
 import IconLabel from '../../../shared/components/IconLabel';
 import PublicIcon from '@mui/icons-material/Public';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 interface FooterItemProps {
   link: string;
@@ -36,11 +37,8 @@ const HomePageFooter = () => {
   const { t } = useTranslation();
 
   return (
-    <Section>
-      <Typography variant="h4" fontWeight="bold" fontSize="1.1rem" textAlign="center">
-        {t('pages.home.sections.footer.headline')}
-      </Typography>
-      <SectionSpacer double />
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('pages.home.sections.footer.headline')} />
       <Box display="flex" flexWrap="wrap" justifyContent="center">
         <FooterItem iconComponent={PublicIcon} link="//alkemio.foundation">
           {t('pages.home.sections.footer.links.foundation')}
@@ -52,7 +50,7 @@ const HomePageFooter = () => {
           {t('pages.home.sections.footer.links.github')}
         </FooterItem>
       </Box>
-    </Section>
+    </PageContentBlock>
   );
 };
 
