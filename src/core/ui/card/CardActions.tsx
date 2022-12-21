@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { gutters } from '../grid/utils';
-import { Actions } from '../actions/Actions';
+import { Actions, ActionsProps } from '../actions/Actions';
 
-const CardActions = (props: PropsWithChildren<{}>) => {
+const CardActions = (props: ActionsProps) => {
   const stopPropagation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation();
 
   return (

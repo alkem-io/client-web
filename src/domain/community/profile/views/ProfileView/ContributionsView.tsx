@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton, Button, Dialog } from '@mui/material';
+import { Button, Dialog, Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer from '../../ContributionDetailsContainer/ContributionDetailsContainer';
@@ -15,7 +15,8 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
 import { LoadingButton } from '@mui/lab';
 import CloseIcon from '@mui/icons-material/Close';
-import { DialogTitle, DialogActions, DialogContent } from '../../../../../common/components/core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import CardActions from '../../../../../core/ui/card/CardActions';
 
 export interface ContributionViewProps {
   title: string;
@@ -97,23 +98,25 @@ export const ContributionsView = ({ title, subtitle, contributions, loading, ena
                       tagline={details?.descriptionText!}
                       tags={details?.tags ?? []}
                       journeyUri={details?.url!}
+                      actions={
+                        enableLeave && (
+                          <CardActions justifyContent="end" flexBasis="100%">
+                            <LoadingButton
+                              variant="outlined"
+                              startIcon={<CloseIcon />}
+                              onClick={event => {
+                                setLeavingCommunityId(details?.domain?.communityID);
+                                event.stopPropagation();
+                              }}
+                              loading={isLeavingCommunity}
+                            >
+                              {t('buttons.leave')}
+                            </LoadingButton>
+                          </CardActions>
+                        )
+                      }
                     >
                       <JourneyCardTagline>{details?.descriptionText || ''}</JourneyCardTagline>
-                      {enableLeave && (
-                        <Box display="flex" justifyContent="flex-end">
-                          <LoadingButton
-                            variant="outlined"
-                            startIcon={<CloseIcon />}
-                            onClick={event => {
-                              setLeavingCommunityId(details?.domain?.communityID);
-                              event.stopPropagation();
-                            }}
-                            loading={isLeavingCommunity}
-                          >
-                            {t('buttons.leave')}
-                          </LoadingButton>
-                        </Box>
-                      )}
                     </JourneyCard>
                     {enableLeave && (
                       <Dialog
