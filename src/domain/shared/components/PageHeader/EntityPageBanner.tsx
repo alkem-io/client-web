@@ -1,13 +1,14 @@
-import { Box, Skeleton, styled, Typography, useTheme } from '@mui/material';
+import { Box, Skeleton, styled, useTheme } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
 import { EntityTypeName } from '../../layout/LegacyPageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
+import { PageTitle, Tagline } from '../../../../core/ui/typography';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
-export const TITLE_HEIGHT = 7;
+export const TITLE_HEIGHT = 6;
 
 const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,
@@ -25,28 +26,15 @@ const Title = styled(Box)(({ theme }) => ({
   width: '100%',
   bottom: 0,
   textAlign: 'center',
-  padding: theme.spacing(1, 2, 0.5, 2),
   zIndex: 20,
+  display: 'flex',
+  flexDirection: 'column',
+  height: theme.spacing(TITLE_HEIGHT),
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  justifyContent: 'space-evenly',
   [theme.breakpoints.down('lg')]: {
     bottom: theme.spacing(-TITLE_HEIGHT),
-  },
-  // Title
-  '& h1': {
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-  },
-  // Tagline:
-  '& .MuiTypography-caption': {
-    fontStyle: 'italic',
-  },
-}));
-
-const Ellipser = styled('div')(() => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  '& > *': {
-    display: 'inline',
-    whiteSpace: 'nowrap',
   },
 }));
 
@@ -129,16 +117,12 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
               },
             }}
           >
-            <Ellipser>
-              <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
-                {title}
-              </Typography>
-            </Ellipser>
-            <Ellipser>
-              <Typography variant={'caption'} ref={element => addAutomaticTooltip(element)}>
-                {tagline}
-              </Typography>
-            </Ellipser>
+            <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
+              {title}
+            </PageTitle>
+            <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
+              {tagline}
+            </Tagline>
           </Title>
         </>
       )}
