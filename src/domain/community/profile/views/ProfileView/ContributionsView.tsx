@@ -23,6 +23,7 @@ export interface ContributionViewProps {
   helpText?: string; // TODO it's unused: either find a way to use or remove
   contributions: ContributionItem[];
   loading?: boolean;
+  enableLeave?: boolean;
 }
 
 const getContributionItemKey = ({ hubId, challengeId, opportunityId }: ContributionItem) =>
@@ -60,7 +61,7 @@ const getIcon = ({ challengeId, opportunityId }: ContributionItem) => {
   return HubIcon;
 };
 
-export const ContributionsView = ({ title, subtitle, contributions, loading }: ContributionViewProps) => {
+export const ContributionsView = ({ title, subtitle, contributions, loading, enableLeave }: ContributionViewProps) => {
   const { t } = useTranslation();
   const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
 
@@ -98,56 +99,59 @@ export const ContributionsView = ({ title, subtitle, contributions, loading }: C
                       journeyUri={details?.url!}
                     >
                       <JourneyCardTagline>{details?.descriptionText || ''}</JourneyCardTagline>
-
-                      <Box display="flex" justifyContent="flex-end">
-                        <LoadingButton
-                          variant="outlined"
-                          startIcon={<CloseIcon />}
-                          onClick={event => {
-                            setLeavingCommunityId(details?.domain?.communityID);
-                            event.stopPropagation();
-                          }}
-                          loading={isLeavingCommunity}
-                        >
-                          {t('buttons.leave')}
-                        </LoadingButton>
-                      </Box>
+                      {enableLeave && (
+                        <Box display="flex" justifyContent="flex-end">
+                          <LoadingButton
+                            variant="outlined"
+                            startIcon={<CloseIcon />}
+                            onClick={event => {
+                              setLeavingCommunityId(details?.domain?.communityID);
+                              event.stopPropagation();
+                            }}
+                            loading={isLeavingCommunity}
+                          >
+                            {t('buttons.leave')}
+                          </LoadingButton>
+                        </Box>
+                      )}
                     </JourneyCard>
-                    <Dialog
-                      open={leavingCommunityId === details?.domain?.communityID}
-                      maxWidth="xs"
-                      aria-labelledby="confirm-leave-organization"
-                    >
-                      <DialogTitle id="confirm-innovation-flow">
-                        {t('components.associated-organization.confirmation-dialog.title', {
-                          organization: details?.headerText,
-                        })}
-                      </DialogTitle>
-                      <DialogContent sx={{ paddingX: 2 }}>
-                        {t('components.associated-organization.confirmation-dialog.text')}
-                      </DialogContent>
-                      <DialogActions sx={{ justifyContent: 'end' }}>
-                        <Button
-                          onClick={event => {
-                            setLeavingCommunityId(undefined);
-                            event.stopPropagation();
-                          }}
-                        >
-                          {t('buttons.cancel')}
-                        </Button>
+                    {enableLeave && (
+                      <Dialog
+                        open={leavingCommunityId === details?.domain?.communityID}
+                        maxWidth="xs"
+                        aria-labelledby="confirm-leave-organization"
+                      >
+                        <DialogTitle id="confirm-innovation-flow">
+                          {t('components.associated-organization.confirmation-dialog.title', {
+                            organization: details?.headerText,
+                          })}
+                        </DialogTitle>
+                        <DialogContent sx={{ paddingX: 2 }}>
+                          {t('components.associated-organization.confirmation-dialog.text')}
+                        </DialogContent>
+                        <DialogActions sx={{ justifyContent: 'end' }}>
+                          <Button
+                            onClick={event => {
+                              setLeavingCommunityId(undefined);
+                              event.stopPropagation();
+                            }}
+                          >
+                            {t('buttons.cancel')}
+                          </Button>
 
-                        <Button
-                          onClick={event => {
-                            leaveCommunity();
-                            setLeavingCommunityId(undefined);
-                            event.stopPropagation();
-                          }}
-                          disabled={loading}
-                        >
-                          {t('buttons.leave')}
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+                          <Button
+                            onClick={event => {
+                              leaveCommunity();
+                              setLeavingCommunityId(undefined);
+                              event.stopPropagation();
+                            }}
+                            disabled={loading}
+                          >
+                            {t('buttons.leave')}
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    )}
                   </>
                 );
               }}

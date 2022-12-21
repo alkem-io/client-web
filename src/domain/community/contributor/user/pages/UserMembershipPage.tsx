@@ -31,6 +31,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
           helpText={t('pages.user-profile.communities.help')}
           contributions={userMetadata?.contributions || []}
           loading={loading}
+          enableLeave
         />
       </GridProvider>
       <SectionSpacer />

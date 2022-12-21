@@ -20,7 +20,6 @@ export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   AssociatedOrganization & {
     handleRemoveSelfFromOrganization: () => void;
     removingFromOrganization?: boolean;
-    enableLeave?: boolean;
   }
 >;
 
