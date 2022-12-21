@@ -67,7 +67,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
   const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
 
   // Scroll to Callout handler:
-  const onElementAdded = useScrollToElement(calloutNameId, scrollToCallout);
+  const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });
 
   return (
     <PageContent>
@@ -104,7 +104,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                   return (
                     <AspectCallout
                       key={callout.id}
-                      ref={element => onElementAdded(element, callout.nameID)}
+                      ref={scrollable(callout.nameID)}
                       callout={callout}
                       calloutNames={calloutNames}
                       contributionsCount={getItemsCount(callout)}
@@ -122,7 +122,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                   return (
                     <CanvasCallout
                       key={callout.id}
-                      ref={element => onElementAdded(element, callout.nameID)}
+                      ref={scrollable(callout.nameID)}
                       callout={callout}
                       calloutNames={calloutNames}
                       contributionsCount={getItemsCount(callout)}
@@ -140,7 +140,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                   return (
                     <CommentsCallout
                       key={callout.id}
-                      ref={element => onElementAdded(element, callout.nameID)}
+                      ref={scrollable(callout.nameID)}
                       callout={callout}
                       calloutNames={calloutNames}
                       contributionsCount={getItemsCount(callout)}
