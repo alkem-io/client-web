@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, NameableEntity } from './ActivityBaseView';
+import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../OneLineMarkdown';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityCardCommentCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;

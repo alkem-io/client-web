@@ -1,5 +1,5 @@
-import { UserCardProps } from '../../../../composite/common/cards';
-import { ValueType } from '../../filterFn';
+import { UserCardProps } from '../../../composite/common/cards';
+import { ValueType } from '../filterFn';
 
 export const userCardValueGetter = ({ id, displayName, roleName, country, city, tags }: UserCardProps): ValueType => ({
   id: id ?? '',

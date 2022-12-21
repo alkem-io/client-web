@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import BatchPredictionOutlinedIcon from '@mui/icons-material/BatchPredictionOutlined';
-
 import { PageProps } from '../../../../shared/types/PageProps';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
@@ -24,6 +22,7 @@ import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreat
 import { CreateOpportunityForm } from '../../../../challenge/opportunity/forms/CreateOpportunityForm';
 import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilders';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 
 interface OpportunityListProps extends PageProps {}
 
@@ -121,7 +120,7 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
       </Box>
       <JourneyCreationDialog
         open={open}
-        icon={<BatchPredictionOutlinedIcon />}
+        icon={<OpportunityIcon />}
         journeyName={t('common.challenge')}
         onClose={() => setOpen(false)}
         OnCreate={handleCreate}
