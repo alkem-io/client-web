@@ -1,10 +1,7 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useResolvedPath } from 'react-router-dom';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { ContributionsView } from '../../../profile/views/ProfileView';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
@@ -12,16 +9,12 @@ import { useUserMetadata } from '../hooks/useUserMetadata';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
-export interface UserMembershipPageProps extends PageProps {}
+export interface UserMembershipPageProps {}
 
-const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
+const UserMembershipPage: FC<UserMembershipPageProps> = () => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('.');
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
-
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'membership', real: true }], [url, paths]);
-  useUpdateNavigation({ currentPaths });
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Membership}>

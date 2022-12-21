@@ -21,6 +21,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   expansion?: ReactNode;
   expansionActions?: ReactNode;
   member?: boolean;
+  actions?: ReactNode;
 }
 
 const JourneyCard = ({
@@ -33,6 +34,7 @@ const JourneyCard = ({
   expansion,
   expansionActions,
   member,
+  actions,
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
@@ -73,12 +75,20 @@ const JourneyCard = ({
           flexGrow={1}
           display="flex"
           justifyContent="space-between"
-          alignItems="end"
-          paddingLeft={1.5}
-          paddingRight={1}
+          paddingX={1.5}
+          flexWrap={actions ? 'wrap' : 'nowrap'}
         >
-          <CardTags tags={tags} visibility={isExpanded ? 'hidden' : 'visible'} />
-          {canBeExpanded && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
+          <CardTags
+            tags={tags}
+            visibility={isExpanded ? 'hidden' : 'visible'}
+            flexBasis={actions ? '100%' : undefined}
+          />
+          {actions}
+          {canBeExpanded && (
+            <Box display="flex" marginRight={-0.5} alignItems="end">
+              {isExpanded ? <ExpandLess /> : <ExpandMore />}
+            </Box>
+          )}
         </Box>
         <Collapse in={canBeExpanded && isExpanded}>
           <CardContent>
