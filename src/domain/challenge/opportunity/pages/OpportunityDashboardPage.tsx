@@ -33,6 +33,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                 communityId={entities.opportunity?.community?.id}
                 communityReadAccess={entities.permissions.communityReadAccess}
                 references={entities.references}
+                recommendations={entities.recommendations}
                 memberUsers={entities.memberUsers}
                 memberUsersCount={entities.memberUsersCount}
                 memberOrganizations={entities.memberOrganizations}

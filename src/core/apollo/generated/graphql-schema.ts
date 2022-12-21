@@ -5020,12 +5020,12 @@ export type ChallengeProfileFragment = {
     | undefined;
 };
 
-export type ChallengeDashboardReferencesQueryVariables = Exact<{
+export type ChallengeDashboardReferencesAndRecommendationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeDashboardReferencesQuery = {
+export type ChallengeDashboardReferencesAndRecommendationsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -5038,6 +5038,15 @@ export type ChallengeDashboardReferencesQuery = {
             __typename?: 'Context';
             id: string;
             references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            recommendations?:
               | Array<{
                   __typename?: 'Reference';
                   id: string;
@@ -7106,11 +7115,11 @@ export type HubPageQuery = {
   };
 };
 
-export type HubDashboardReferencesQueryVariables = Exact<{
+export type HubDashboardReferencesAndRecommendationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubDashboardReferencesQuery = {
+export type HubDashboardReferencesAndRecommendationsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -7120,6 +7129,15 @@ export type HubDashboardReferencesQuery = {
           __typename?: 'Context';
           id: string;
           references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+          recommendations?:
             | Array<{
                 __typename?: 'Reference';
                 id: string;
@@ -8132,6 +8150,15 @@ export type OpportunityPageQuery = {
                   uri: string;
                 }>
               | undefined;
+            recommendations?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  description?: string | undefined;
+                  uri: string;
+                }>
+              | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
@@ -8354,6 +8381,9 @@ export type OpportunityPageFragment = {
             }
           | undefined;
         references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+          | undefined;
+        recommendations?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
           | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;

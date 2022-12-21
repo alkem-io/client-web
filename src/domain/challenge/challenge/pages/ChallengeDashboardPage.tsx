@@ -40,6 +40,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 communityReadAccess={entities.permissions.communityReadAccess}
                 childEntityReadAccess
                 references={entities.references}
+                recommendations={entities.recommendations}
                 memberUsers={entities.memberUsers}
                 memberUsersCount={entities.memberUsersCount}
                 memberOrganizations={entities.memberOrganizations}

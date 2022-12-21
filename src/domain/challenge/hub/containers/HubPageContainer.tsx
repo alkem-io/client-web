@@ -2,7 +2,10 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useUserContext } from '../../../community/contributor/user';
-import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useHubDashboardReferencesAndRecommendationsQuery,
+  useHubPageQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
   AssociatedOrganizationDetailsFragment,
@@ -49,6 +52,7 @@ export interface HubContainerEntities {
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
+  recommendations: Reference[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
@@ -83,7 +87,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   const { user, isAuthenticated } = useUserContext();
   // don't load references without READ privilige on Context
-  const { data: referencesData } = useHubDashboardReferencesQuery({
+  const { data: referencesData } = useHubDashboardReferencesAndRecommendationsQuery({
     variables: { hubId },
     skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
@@ -116,6 +120,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
   const references = referencesData?.hub?.context?.references;
+  const recommendations = referencesData?.hub?.context?.recommendations;
 
   const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
 
@@ -138,6 +143,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvases,
           canvasesCount,
           references,
+          recommendations,
           activities,
           activityLoading,
           ...contributors,
