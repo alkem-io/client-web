@@ -14,7 +14,11 @@ const gradient =
     )} 100%)`;
   };
 
-const OverflowGradient = (props: BoxProps) => {
+interface OverflowGradientProps extends BoxProps {
+  lastLine?: boolean;
+}
+
+const OverflowGradient = ({ lastLine = false, ...props }: OverflowGradientProps) => {
   const [hasOverflow, setHasOverflow] = useState(false);
 
   const updateOverflow = (el: HTMLDivElement | null) => {
@@ -39,7 +43,7 @@ const OverflowGradient = (props: BoxProps) => {
               left: 0,
               right: 0,
               height: gutters(),
-              background: gradient(),
+              background: gradient(!lastLine),
             }
           : undefined,
       }}

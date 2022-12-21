@@ -11,6 +11,8 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { useChallenge } from '../../../challenge/hooks/useChallenge';
+import OverflowGradient from '../../../../../core/ui/overflow/OverflowGradient';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface JourneyDashboardVisionProps {
   vision: string;
@@ -24,7 +26,9 @@ const JourneyDashboardVision = ({ vision, journeyTypeName }: JourneyDashboardVis
 
   return (
     <PageContentBlock accent>
-      <WrapperMarkdown>{vision}</WrapperMarkdown>
+      <OverflowGradient maxHeight={gutters(11)} lastLine>
+        <WrapperMarkdown>{vision}</WrapperMarkdown>
+      </OverflowGradient>
       <Actions justifyContent="space-between">
         <Button component={Link} to={EntityPageSection.About} startIcon={<ArrowForward />}>
           {t('pages.generic.sections.dashboard.about', { entity: t(`common.${journeyTypeName}` as const) })}
