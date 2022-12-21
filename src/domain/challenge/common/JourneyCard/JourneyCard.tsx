@@ -38,6 +38,8 @@ const JourneyCard = ({
 }: PropsWithChildren<JourneyCardProps>) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const canBeExpanded = !!expansion;
+
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   return (
@@ -65,7 +67,7 @@ const JourneyCard = ({
           {header}
         </ItemView>
       </Box>
-      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
+      <Box onClick={canBeExpanded ? toggleExpanded : undefined} sx={{ cursor: 'pointer' }} paddingBottom={1}>
         <CardContent flexGrow={1}>{children}</CardContent>
         <Box
           flexGrow={1}
@@ -76,9 +78,9 @@ const JourneyCard = ({
           paddingRight={1}
         >
           <CardTags tags={tags} visibility={isExpanded ? 'hidden' : 'visible'} />
-          {isExpanded ? <ExpandLess /> : <ExpandMore />}
+          {canBeExpanded && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
         </Box>
-        <Collapse in={isExpanded}>
+        <Collapse in={canBeExpanded && isExpanded}>
           <CardContent>
             {expansion}
             <CardTags tags={tags} rows={2} />
