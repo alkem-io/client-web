@@ -38,10 +38,9 @@ const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: T
         >
           <RoundedIcon
             flexShrink={0}
-            marginLeft={0.5}
             size="medium"
             component={calloutIcons[type]}
-            sx={{ backgroundColor: 'primary.main', marginLeft: 0 }}
+            sx={{ backgroundColor: 'primary.main' }}
           />
         </Badge>
       }
