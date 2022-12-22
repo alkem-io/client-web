@@ -1,15 +1,16 @@
 import React, { FC, useCallback, useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
 import { Link, useTheme } from '@mui/material';
 import UpdatesContainer from './Components/UpdatesContainer';
-import TextContainer from './Components/TextContainer';
 import CloseButton from './Components/CloseButton';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../config/useConfig';
+import { Caption } from '../../../../core/ui/typography';
+import { ellipsis } from '../../../../core/ui/typography/constants';
 
 interface ReleaseNotificationData {
   prevClientVersion: string;
 }
+
 const PlatformUpdates: FC = () => {
   const clientVersion = process.env.REACT_APP_VERSION || '';
   const theme = useTheme();
@@ -30,10 +31,10 @@ const PlatformUpdates: FC = () => {
     <>
       {isNotificationVisible && (
         <UpdatesContainer>
-          <TextContainer>
+          <Caption flexGrow={1} textAlign="center">
             {t('notifications.release-updates.text')}{' '}
             <Link
-              href={platform?.releases || ''}
+              href={platform?.releases ?? ''}
               underline="always"
               target="_blank"
               rel="noopener noreferrer"
@@ -41,16 +42,14 @@ const PlatformUpdates: FC = () => {
             >
               {t('notifications.release-updates.link')}
             </Link>
-            ...
-          </TextContainer>
+            {ellipsis}
+          </Caption>
           <CloseButton
             sx={{
               color: theme.palette.background.default,
             }}
             onClick={handleCloseNotification}
-          >
-            <CloseIcon />
-          </CloseButton>
+          />
         </UpdatesContainer>
       )}
     </>

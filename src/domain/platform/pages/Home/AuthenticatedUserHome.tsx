@@ -1,9 +1,10 @@
 import React, { forwardRef } from 'react';
-import MyHubsSection from '../../../challenge/hub/MyHubs/MyHubsSection';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import MyHubsSection from '../../../challenge/hub/MyHubs/MyHubsSection';
 import { UserContextValue } from '../../../community/contributor/user/providers/UserProvider/UserProvider';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { PageTitle } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface AuthenticatedUserHomeProps {
   user: UserContextValue;
@@ -13,12 +14,10 @@ const AuthenticatedUserHome = forwardRef<HTMLDivElement, AuthenticatedUserHomePr
   const { t } = useTranslation();
 
   return (
-    <PageContentBlock ref={ref}>
-      <WrapperTypography variant="h3" weight="bold">
-        {t('pages.home.sections.welcome.welcome-back', { username: user.user?.user.firstName })}
-      </WrapperTypography>
+    <Box ref={ref} display="flex" flexDirection="column" gap={gutters()} flexGrow={1}>
+      <PageTitle>{t('pages.home.sections.welcome.welcome-back', { username: user.user?.user.firstName })}</PageTitle>
       <MyHubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
-    </PageContentBlock>
+    </Box>
   );
 });
 

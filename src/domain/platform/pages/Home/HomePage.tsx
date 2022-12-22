@@ -1,4 +1,4 @@
-import { Grow } from '@mui/material';
+import { Box, Grow } from '@mui/material';
 import React from 'react';
 import { useUserContext } from '../../../community/contributor/user';
 import ContributorsSection from './ContributorsSection';
@@ -11,6 +11,7 @@ import PlatformUpdates from '../../notifications/ReleaseUpdates/ReleaseUpdatesNo
 import HomePageLayout from './HomePageLayout';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export const HomePage = () => {
   const user = useUserContext();
@@ -18,11 +19,13 @@ export const HomePage = () => {
   return (
     <HomePageLayout>
       <WelcomeSection />
+      <PlatformUpdates />
       <PageContent>
         <PageContentColumn columns={12}>
-          <PlatformUpdates />
-          <Grow appear={!user.loading}>
-            {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
+          <Grow in={!user.loading} appear>
+            <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1}>
+              {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
+            </Box>
           </Grow>
           <HubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
           <ContributorsSection />
