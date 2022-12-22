@@ -59,7 +59,7 @@ const BLOCK_HEIGHT_GUTTERS = 13;
 const RightColumn = (props: Omit<PageContentColumnProps, 'columns'>) => <PageContentColumn {...props} columns={8} />;
 const LeftColumn = (props: Omit<PageContentColumnProps, 'columns'>) => <PageContentColumn {...props} columns={4} />;
 const FixedHeightContentBlock = (props: PageContentBlockProps) => (
-  <PageContentBlock {...props} sx={{ height: gutters(BLOCK_HEIGHT_GUTTERS) }} />
+  <PageContentBlock {...props} sx={{ maxHeight: gutters(BLOCK_HEIGHT_GUTTERS) }} />
 );
 
 const FixedHeightBlockContent = ({ children }: MarkdownProps) => (
