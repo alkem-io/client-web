@@ -17,13 +17,15 @@ interface TopCalloutProps {
 
 const TopCalloutDetails = ({ title, description, activity, type }: TopCalloutProps) => {
   return (
-    <Box display="flex" alignItems="center" height={gutters(3)} paddingX={1} gap={1}>
+    <Box display="flex" alignItems="center" height={gutters(2)} paddingX={1} gap={1}>
       <Badge
         badgeContent={activity}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
         }}
+        overlap="circular"
+        color="primary"
       >
         {type === CalloutType.Card && (
           <RoundedIcon flexShrink={0} marginLeft={0.5} size="medium" component={AspectIcon} />
