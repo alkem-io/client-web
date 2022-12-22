@@ -611,7 +611,7 @@ export const HubPageFragmentDoc = gql`
     community {
       ...EntityDashboardCommunity
     }
-    challenges(limit: 2, shuffle: true) {
+    challenges(limit: 3, shuffle: true) {
       ...ChallengeCard
     }
     tagset {

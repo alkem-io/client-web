@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
-import { Paper } from '@mui/material';
+import { Paper, SxProps } from '@mui/material';
+import { Theme } from '@mui/material/styles';
 import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 import GridItem from '../grid/GridItem';
 
@@ -7,11 +8,12 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export interface ContributeCardContainerProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  sx?: SxProps<Theme>;
 }
 
 const CONTRIBUTE_CARD_COLUMNS = 3;
 
-const ContributeCard = ({ onClick, children }: PropsWithChildren<ContributeCardContainerProps>) => {
+const ContributeCard = ({ onClick, sx, children }: PropsWithChildren<ContributeCardContainerProps>) => {
   return (
     <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
       <ElevatedPaper
@@ -21,6 +23,7 @@ const ContributeCard = ({ onClick, children }: PropsWithChildren<ContributeCardC
           flexDirection: 'column',
           alignItems: 'stretch',
           cursor: onClick ? 'pointer' : 'default',
+          ...sx,
         }}
         onClick={onClick}
       >

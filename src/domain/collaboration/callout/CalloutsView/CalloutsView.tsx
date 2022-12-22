@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ForumOutlined } from '@mui/icons-material';
@@ -21,7 +20,6 @@ import { AspectIcon } from '../../aspect/icon/AspectIcon';
 import { CanvasAltIcon } from '../../canvas/icon/CanvasAltIcon';
 import CalloutsListTitle from './CalloutsListTitle';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
-import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CalloutsPageProps {
   scrollToCallout?: boolean;
@@ -96,70 +94,68 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <Box display="flex" flexDirection="column" gap={gutters()}>
-          {callouts?.map(callout => {
-            return (callout => {
-              switch (callout.type) {
-                case CalloutType.Card:
-                  return (
-                    <AspectCallout
-                      key={callout.id}
-                      ref={scrollable(callout.nameID)}
-                      callout={callout}
-                      calloutNames={calloutNames}
-                      contributionsCount={getItemsCount(callout)}
-                      loading={loading}
-                      hubNameId={hubNameId!}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
-                      onCalloutEdit={handleEdit}
-                      onVisibilityChange={handleVisibilityChange}
-                      onCalloutDelete={handleDelete}
-                    />
-                  );
-                case CalloutType.Canvas:
-                  return (
-                    <CanvasCallout
-                      key={callout.id}
-                      ref={scrollable(callout.nameID)}
-                      callout={callout}
-                      calloutNames={calloutNames}
-                      contributionsCount={getItemsCount(callout)}
-                      loading={loading}
-                      hubNameId={hubNameId!}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
-                      onCalloutEdit={handleEdit}
-                      onVisibilityChange={handleVisibilityChange}
-                      onCalloutDelete={handleDelete}
-                    />
-                  );
-                case CalloutType.Comments:
-                  return (
-                    <CommentsCallout
-                      key={callout.id}
-                      ref={scrollable(callout.nameID)}
-                      callout={callout}
-                      calloutNames={calloutNames}
-                      contributionsCount={getItemsCount(callout)}
-                      loading={loading}
-                      hubNameId={hubNameId!}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                      onCalloutEdit={handleEdit}
-                      onVisibilityChange={handleVisibilityChange}
-                      onCalloutDelete={handleDelete}
-                      isSubscribedToComments={callout.isSubscribedToComments}
-                    />
-                  );
-                default:
-                  throw new Error('Unexpected Callout type');
-              }
-            })(callout);
-          })}
-        </Box>
+        {callouts?.map(callout => {
+          return (callout => {
+            switch (callout.type) {
+              case CalloutType.Card:
+                return (
+                  <AspectCallout
+                    key={callout.id}
+                    ref={scrollable(callout.nameID)}
+                    callout={callout}
+                    calloutNames={calloutNames}
+                    contributionsCount={getItemsCount(callout)}
+                    loading={loading}
+                    hubNameId={hubNameId!}
+                    challengeNameId={challengeNameId}
+                    opportunityNameId={opportunityNameId}
+                    canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
+                  />
+                );
+              case CalloutType.Canvas:
+                return (
+                  <CanvasCallout
+                    key={callout.id}
+                    ref={scrollable(callout.nameID)}
+                    callout={callout}
+                    calloutNames={calloutNames}
+                    contributionsCount={getItemsCount(callout)}
+                    loading={loading}
+                    hubNameId={hubNameId!}
+                    challengeNameId={challengeNameId}
+                    opportunityNameId={opportunityNameId}
+                    canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
+                  />
+                );
+              case CalloutType.Comments:
+                return (
+                  <CommentsCallout
+                    key={callout.id}
+                    ref={scrollable(callout.nameID)}
+                    callout={callout}
+                    calloutNames={calloutNames}
+                    contributionsCount={getItemsCount(callout)}
+                    loading={loading}
+                    hubNameId={hubNameId!}
+                    challengeNameId={challengeNameId}
+                    opportunityNameId={opportunityNameId}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
+                    isSubscribedToComments={callout.isSubscribedToComments}
+                  />
+                );
+              default:
+                throw new Error('Unexpected Callout type');
+            }
+          })(callout);
+        })}
         <CalloutCreationDialog
           open={isCalloutCreationDialogOpen}
           onClose={handleCreateCalloutClosed}
