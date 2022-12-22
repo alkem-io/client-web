@@ -25,8 +25,7 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: FC<DeleteButtonProps> = ({ name, disabled }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_field, _meta, helpers] = useField(name);
+  const [, , helpers] = useField(name);
 
   return (
     <Box display={'flex'} alignItems={'baseline'} height="100%">
