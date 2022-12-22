@@ -8,6 +8,7 @@ import { Discussion } from '../../../communication/discussion/models/discussion'
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
+  DashboardTopCalloutFragment,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
   Reference,
@@ -63,6 +64,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -151,6 +153,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const contributors = useCommunityMembersAsCardProps(opportunity?.community);
 
+  const topCallouts = collaboration?.callouts?.slice(0, 3);
+
   return (
     <>
       {children(
@@ -185,6 +189,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           references,
           ...contributors,
           activities,
+          topCallouts,
         },
         {
           loading: loadingOpportunity,

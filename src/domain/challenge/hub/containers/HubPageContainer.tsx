@@ -8,6 +8,7 @@ import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ChallengeCardFragment,
+  DashboardTopCalloutFragment,
   HubPageFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -53,6 +54,7 @@ export interface HubContainerEntities {
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 export interface HubContainerActions {}
@@ -117,6 +119,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
 
+  const topCallouts = _hub?.hub.collaboration?.callouts?.slice(0, 3);
+
   return (
     <>
       {children(
@@ -138,6 +142,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           activityLoading,
           ...contributors,
           hostOrganizations,
+          topCallouts,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,

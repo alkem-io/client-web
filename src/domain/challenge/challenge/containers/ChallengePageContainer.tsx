@@ -13,6 +13,7 @@ import { Discussion } from '../../../communication/discussion/models/discussion'
 import {
   AuthorizationPrivilege,
   ChallengeProfileFragment,
+  DashboardTopCalloutFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
@@ -49,6 +50,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   isMember: boolean;
   discussions: Discussion[];
   activities: ActivityLogResultType[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 export interface ChallengeContainerActions {}
@@ -119,6 +121,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const references = referenceData?.hub?.challenge?.context?.references;
 
+  const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
+
   return (
     <>
       {children(
@@ -139,6 +143,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           discussions: discussionList,
           ...contributors,
           activities,
+          topCallouts,
         },
         { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions, activityLoading },
         {}

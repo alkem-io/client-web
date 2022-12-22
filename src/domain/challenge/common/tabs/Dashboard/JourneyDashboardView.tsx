@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../../../common/components/composite/common/References/References';
-import { Reference } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
+import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
+import { buildCalloutUrl, buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
@@ -24,6 +24,7 @@ import JourneyDashboardVision from './JourneyDashboardVision';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
+import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -43,6 +44,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
   childEntityTitle?: string;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
@@ -67,6 +69,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   renderChildEntityCard,
   journeyTypeName,
   childEntityTitle,
+  topCallouts,
 }: JourneyDashboardViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
@@ -122,6 +125,21 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
+        <PageContentBlock halfWidth>
+          <PageContentBlockHeader title={'Recommendations'} />
+        </PageContentBlock>
+        <PageContentBlock halfWidth>
+          <PageContentBlockHeader title="Top Callouts" />
+          {topCallouts?.map(callout => (
+            <TopCalloutDetails
+              title={callout.displayName}
+              description={callout.description}
+              activity={callout.activity}
+              type={callout.type}
+              calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
+            />
+          ))}
+        </PageContentBlock>
         {showActivity && (
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.activity-log-section.title')} />

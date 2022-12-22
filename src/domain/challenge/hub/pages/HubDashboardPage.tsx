@@ -48,6 +48,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 leadOrganizations={entities.hostOrganizations}
                 activities={entities.activities}
                 activityLoading={entities.activityLoading}
+                topCallouts={entities.topCallouts}
                 renderChildEntityCard={challenge => (
                   <ChallengeCard
                     challengeId={challenge.id}
