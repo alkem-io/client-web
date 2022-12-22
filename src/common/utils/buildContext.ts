@@ -51,7 +51,7 @@ const toUpdateReferenceInput = (ref: Reference): UpdateReferenceInput => ({
   ID: ref.id,
   description: ref.description,
   name: ref.name,
-  uri: ref.uri,
+  uri: ref.uri || '',
 });
 
 const toCreateReferenceInput = (ref: Reference): CreateReferenceInput => ({
