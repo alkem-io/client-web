@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography as MUITypography } from '@mui/material';
+import { Grid, Typography as MUITypography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
@@ -8,6 +8,7 @@ import References from '../../../../../common/components/composite/common/Refere
 import { styled } from '@mui/styles';
 import { UserMetadata } from '../../../contributor/user/hooks/useUserMetadataWrapper';
 import { isSocialNetworkSupported } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 
 export interface UserProfileViewProps {
   entities: {
@@ -31,43 +32,39 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   }, [references]);
 
   return (
-    <Card square elevation={0} variant="outlined">
-      <CardContent>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
-            <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
-          </Grid>
+    <PageContentBlock>
+      <Grid item>
+        <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
+      </Grid>
 
-          <Grid item>
-            <WrapperTypography color="primary" weight="boldLight" aria-label="keywords">
-              {t('components.profile.fields.keywords.title')}
-            </WrapperTypography>
-            <TagsWithOffset tags={keywords} />
-          </Grid>
+      <Grid item>
+        <WrapperTypography color="primary" weight="boldLight" aria-label="keywords">
+          {t('components.profile.fields.keywords.title')}
+        </WrapperTypography>
+        <TagsWithOffset tags={keywords} />
+      </Grid>
 
-          <Grid item>
-            <WrapperTypography color="primary" weight="boldLight" aria-label="skills">
-              {t('components.profile.fields.skills.title')}
-            </WrapperTypography>
-            <TagsWithOffset tags={skills} />
-          </Grid>
+      <Grid item>
+        <WrapperTypography color="primary" weight="boldLight" aria-label="skills">
+          {t('components.profile.fields.skills.title')}
+        </WrapperTypography>
+        <TagsWithOffset tags={skills} />
+      </Grid>
 
-          <Grid item container direction="column">
-            <WrapperTypography color="primary" weight="boldLight" aria-label="links">
-              {t('components.profile.fields.links.title')}
-            </WrapperTypography>
-            <References
-              references={nonSocialReferences}
-              noItemsView={
-                <MUITypography color="neutral.main" variant="subtitle2">
-                  {t('common.no-references')}
-                </MUITypography>
-              }
-            />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+      <Grid item container direction="column">
+        <WrapperTypography color="primary" weight="boldLight" aria-label="links">
+          {t('components.profile.fields.links.title')}
+        </WrapperTypography>
+        <References
+          references={nonSocialReferences}
+          noItemsView={
+            <MUITypography color="neutral.main" variant="subtitle2">
+              {t('common.no-references')}
+            </MUITypography>
+          }
+        />
+      </Grid>
+    </PageContentBlock>
   );
 };
 

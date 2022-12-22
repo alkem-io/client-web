@@ -106,7 +106,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   if (mobile) {
     return (
       <>
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, borderRadius: 0 }} elevation={3}>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3} square>
           <BottomNavigation
             showLabels
             value={currentTab}

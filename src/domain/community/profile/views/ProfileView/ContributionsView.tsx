@@ -9,7 +9,7 @@ import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIco
 import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
 import { BlockTitle, Caption } from '../../../../../core/ui/typography';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
-import PageContentBlockGrid from '../../../../../core/ui/content/PageContentBlockGrid';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
@@ -25,6 +25,7 @@ export interface ContributionViewProps {
   contributions: ContributionItem[];
   loading?: boolean;
   enableLeave?: boolean;
+  cards?: PageContentBlockGridProps['cards'];
 }
 
 const getContributionItemKey = ({ hubId, challengeId, opportunityId }: ContributionItem) =>
@@ -62,7 +63,14 @@ const getIcon = ({ challengeId, opportunityId }: ContributionItem) => {
   return HubIcon;
 };
 
-export const ContributionsView = ({ title, subtitle, contributions, loading, enableLeave }: ContributionViewProps) => {
+export const ContributionsView = ({
+  title,
+  subtitle,
+  contributions,
+  loading,
+  enableLeave,
+  cards,
+}: ContributionViewProps) => {
   const { t } = useTranslation();
   const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
 
@@ -70,7 +78,7 @@ export const ContributionsView = ({ title, subtitle, contributions, loading, ena
     <PageContentBlock>
       <PageContentBlockHeader title={title} />
       {subtitle && <Caption>{subtitle}</Caption>}
-      <PageContentBlockGrid disablePadding>
+      <PageContentBlockGrid disablePadding cards={cards}>
         {loading && (
           <>
             <SkeletonItem />
