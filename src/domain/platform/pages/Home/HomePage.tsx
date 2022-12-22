@@ -19,9 +19,9 @@ export const HomePage = () => {
   return (
     <HomePageLayout>
       <WelcomeSection />
+      <PlatformUpdates />
       <PageContent>
         <PageContentColumn columns={12}>
-          <PlatformUpdates />
           <Grow in={!user.loading} appear>
             <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1}>
               {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
