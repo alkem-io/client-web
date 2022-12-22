@@ -1,18 +1,7 @@
 import { useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { Theme } from '@mui/material/styles';
 import { gutters } from '../grid/utils';
-import hexToRGBA from '../../../common/utils/hexToRGBA';
-
-const gradient =
-  (isVertical = true) =>
-  (theme: Theme) => {
-    const angle = isVertical ? '0' : '-90deg';
-    return `linear-gradient(${angle}, ${hexToRGBA(theme.palette.background.paper, 1)} 0%, ${hexToRGBA(
-      theme.palette.background.paper,
-      0
-    )} 100%)`;
-  };
+import { gradient } from './utils';
 
 interface OverflowGradientProps extends BoxProps {
   lastLine?: boolean;
@@ -43,7 +32,7 @@ const OverflowGradient = ({ lastLine = false, ...props }: OverflowGradientProps)
               left: 0,
               right: 0,
               height: gutters(),
-              background: gradient(!lastLine),
+              background: gradient(lastLine ? '-90deg' : '0'),
             }
           : undefined,
       }}
