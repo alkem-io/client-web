@@ -4,13 +4,16 @@ import ContributorCard, {
   ContributorCardProps,
   ContributorCardSkeleton,
 } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
-import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 
 const MAX_ITEMS_TO_SHOW = 20;
 
-export interface DashboardContributorsSectionSectionProps extends DashboardGenericSectionProps {
+export interface DashboardContributorsSectionSectionProps {
+  headerText: string;
   entities: {
     contributors: WithId<ContributorCardProps>[];
   };
@@ -18,35 +21,33 @@ export interface DashboardContributorsSectionSectionProps extends DashboardGener
 }
 
 const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps> = ({
+  headerText,
   entities,
   loading,
   children,
-  ...props
 }) => {
   const { contributors } = entities;
 
   return (
-    <Section {...props}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Grid container spacing={1} alignItems="center">
-            {loading &&
-              times(MAX_ITEMS_TO_SHOW, i => (
-                <Grid item flexBasis={'10%'} key={`__loading_${i}`}>
-                  <ContributorCardSkeleton />
-                </Grid>
-              ))}
-            {contributors.map(c => {
-              return (
-                <Grid item flexBasis={'10%'} key={c.id}>
-                  <ContributorCard {...c} />
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Grid>
-      </Grid>
-    </Section>
+    <PageContentBlock>
+      <PageContentBlockHeader title={headerText} />
+      <PageContentBlockGrid disablePadding cards>
+        {loading &&
+          times(MAX_ITEMS_TO_SHOW, i => (
+            <Grid item flexBasis={'10%'} key={`__loading_${i}`}>
+              <ContributorCardSkeleton />
+            </Grid>
+          ))}
+        {contributors.map(c => {
+          return (
+            <Grid item flexBasis={'10%'} key={c.id}>
+              <ContributorCard {...c} />
+            </Grid>
+          );
+        })}
+      </PageContentBlockGrid>
+      {children}
+    </PageContentBlock>
   );
 };
 

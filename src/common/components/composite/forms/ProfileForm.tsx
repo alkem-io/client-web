@@ -14,7 +14,8 @@ import InputField from '../../../../domain/platform/admin/components/Common/Inpu
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
-import { JourneyType } from '../../../../domain/challenge/JourneyType';
+import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
+import RecommendationsSegment from '../../../../domain/platform/admin/components/Common/RecommendationsSegment';
 
 export interface ProfileFormValues {
   name: string;
@@ -23,12 +24,13 @@ export interface ProfileFormValues {
   location: Partial<Location>;
   who: string;
   references: Reference[];
+  recommendations: Reference[];
   tagsets: Tagset[];
 }
 
 interface Props {
   context?: Context;
-  journeyType: JourneyType;
+  journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -68,6 +70,7 @@ const ProfileForm: FC<Props> = ({
     location: formatLocation(context?.location) || EmptyLocation,
     who: context?.who || '',
     references: context?.references || [],
+    recommendations: context?.recommendations || [],
     tagsets,
   };
 
@@ -76,6 +79,7 @@ const ProfileForm: FC<Props> = ({
     nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
+    recommendations: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
 
@@ -90,7 +94,7 @@ const ProfileForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, handleSubmit }) => {
+      {({ values: { references, recommendations }, handleSubmit }) => {
         // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
@@ -114,6 +118,7 @@ const ProfileForm: FC<Props> = ({
             </Grid>
             <TagsetSegment tagsets={tagsets} />
             <ContextReferenceSegment references={references || []} contextId={context?.id} />
+            <RecommendationsSegment recommendations={recommendations || []} />
           </>
         );
       }}

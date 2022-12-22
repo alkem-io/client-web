@@ -13,23 +13,23 @@ import MuiTab from './MuiTab';
 import MuiTabPanel from './MuiTabPanel';
 import MuiSelect from './MuiSelect';
 import MuiBottomNavigationAction from './MuiBottomNavigationAction';
-import type {} from '@mui/lab/themeAugmentation';
+// import type {} from '@mui/lab/themeAugmentation';
 
-const componentsOverride = (theme: Theme): Components => ({
-  MuiAvatar: MuiAvatar(theme),
-  MuiButton: MuiButton(theme),
-  MuiButtonBase: MuiButtonBase(theme),
-  MuiChip: MuiChip(theme),
-  MuiDialog: MuiDialog(theme),
-  MuiDialogContent: MuiDialogContent(theme),
-  MuiIcon: MuiIcon(theme),
-  MuiLink: MuiLink(theme),
-  MuiPaper: MuiPaper(theme),
-  MuiTab: MuiTab(theme),
-  MuiSkeleton: MuiSkeleton(theme),
-  MuiTabPanel: MuiTabPanel(theme),
-  MuiSelect: MuiSelect(theme),
-  MuiBottomNavigationAction: MuiBottomNavigationAction(theme),
-});
+const componentsOverride: Components<Theme> = {
+  MuiAvatar,
+  MuiButton,
+  MuiButtonBase,
+  MuiChip,
+  MuiDialog,
+  MuiDialogContent,
+  MuiIcon,
+  MuiLink,
+  MuiPaper,
+  MuiTab,
+  MuiSkeleton,
+  MuiTabPanel,
+  MuiSelect,
+  MuiBottomNavigationAction,
+};
 
 export default componentsOverride;

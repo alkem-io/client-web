@@ -12,4 +12,5 @@ const remToPx = (rootPx: number | number, rem: string | number) => {
 
   return rootPxNum * remNum;
 };
+
 export default remToPx;

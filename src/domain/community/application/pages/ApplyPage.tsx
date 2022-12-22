@@ -21,7 +21,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
-import getApplicationTypeKey from '../../../../common/utils/translation/get-application-type-key';
+import getApplicationTypeKey from '../../../../common/utils/translation/getApplicationTypeKey';
 import { PageProps } from '../../../shared/types/PageProps';
 
 const useStyles = makeStyles(theme => ({

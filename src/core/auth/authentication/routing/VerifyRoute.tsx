@@ -17,4 +17,5 @@ export const VerifyRoute: FC<VerifyRouteProps> = () => {
     </Routes>
   );
 };
+
 export default VerifyRoute;

@@ -86,4 +86,5 @@ export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value,
 
   return <List disablePadding>{items}</List>;
 };
+
 export default CategorySelector;

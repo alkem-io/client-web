@@ -5,12 +5,17 @@ import { useUserContext } from '../../../community/contributor/user';
 import { useHub } from '../../hub/HubContext/useHub';
 import { useChallenge } from '../hooks/useChallenge';
 import {
-  useChallengeDashboardReferencesQuery,
+  useChallengeDashboardReferencesAndRecommendationsQuery,
   useChallengePageQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
-import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  ChallengeProfileFragment,
+  DashboardTopCalloutFragment,
+  Reference,
+} from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
@@ -21,7 +26,6 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import { Reference } from '../../../common/profile/Profile';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
@@ -36,6 +40,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   references: Reference[] | undefined;
+  recommendations: Reference[] | undefined;
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   permissions: {
@@ -46,6 +51,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   isMember: boolean;
   discussions: Discussion[];
   activities: ActivityLogResultType[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 export interface ChallengeContainerActions {}
@@ -53,6 +59,7 @@ export interface ChallengeContainerActions {}
 export interface ChallengeContainerState {
   loading: boolean;
   error?: ApolloError;
+  activityLoading: boolean;
 }
 
 export interface ChallengePageContainerProps
@@ -78,7 +85,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
-  const { activities } = useActivityOnCollaboration(collaborationID);
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
@@ -91,7 +98,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     AuthorizationPrivilege.Read
   );
 
-  const { data: referenceData } = useChallengeDashboardReferencesQuery({
+  const { data: referenceData } = useChallengeDashboardReferencesAndRecommendationsQuery({
     variables: {
       hubId: hubNameId,
       challengeId: challengeNameId,
@@ -114,6 +121,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 
   const references = referenceData?.hub?.challenge?.context?.references;
+  const recommendations = referenceData?.hub?.challenge?.context?.recommendations;
+
+  const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
 
   return (
     <>
@@ -131,15 +141,18 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           permissions,
           isAuthenticated,
           references,
+          recommendations,
           isMember: user?.ofChallenge(challengeId) || false,
           discussions: discussionList,
           ...contributors,
           activities,
+          topCallouts,
         },
-        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
+        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions, activityLoading },
         {}
       )}
     </>
   );
 };
+
 export default ChallengePageContainer;

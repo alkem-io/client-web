@@ -8,7 +8,11 @@ import HubContributorsDialogContent from '../../../community/community/entities/
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import HubPageLayout from '../layout/HubPageLayout';
-import HubDashboardView from '../views/HubDashboardView';
+import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
+import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
+import { useTranslation } from 'react-i18next';
+import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -19,38 +23,50 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
+  const { t } = useTranslation();
+
   return (
     <DiscussionsProvider>
       <HubPageLayout currentSection={EntityPageSection.Dashboard}>
         <HubPageContainer>
-          {(entities, state) => (
+          {entities => (
             <>
-              <HubDashboardView
+              <JourneyDashboardView
                 vision={entities.hub?.context?.vision}
-                hubId={entities.hub?.id}
                 hubNameId={entities.hub?.nameID}
                 communityId={entities.hub?.community?.id}
-                organizationNameId={entities.hub?.host?.nameID}
-                challenges={entities.challenges}
-                challengesCount={entities.challengesCount}
-                discussions={entities.discussionList}
-                aspects={entities.aspects}
-                aspectsCount={entities.aspectsCount}
-                canvases={entities.canvases}
-                canvasesCount={entities.canvasesCount}
-                loading={state.loading}
-                isMember={entities.isMember}
+                childEntities={entities.challenges}
+                childEntitiesCount={entities.challengesCount}
                 communityReadAccess={entities.permissions.communityReadAccess}
-                challengesReadAccess={entities.permissions.challengesReadAccess}
+                childEntityReadAccess={entities.permissions.challengesReadAccess}
                 references={entities.references}
+                recommendations={entities.recommendations}
                 memberUsers={entities.memberUsers}
                 memberUsersCount={entities.memberUsersCount}
                 memberOrganizations={entities.memberOrganizations}
                 memberOrganizationsCount={entities.memberOrganizationsCount}
                 leadUsers={entities.hub?.community?.leadUsers}
-                hostOrganization={entities.hub?.host}
+                leadOrganizations={entities.hostOrganizations}
                 activities={entities.activities}
                 activityLoading={entities.activityLoading}
+                topCallouts={entities.topCallouts}
+                renderChildEntityCard={challenge => (
+                  <ChallengeCard
+                    challengeId={challenge.id}
+                    challengeNameId={challenge.nameID}
+                    bannerUri={getVisualBanner(challenge.context?.visuals)}
+                    displayName={challenge.displayName}
+                    tags={challenge.tagset?.tags!}
+                    tagline={challenge.context?.tagline!}
+                    vision={challenge.context?.vision!}
+                    innovationFlowState={challenge.lifecycle?.state}
+                    journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
+                    hubDisplayName={entities.hub!.displayName}
+                    hubUri={buildHubUrl(entities.hub!.nameID)}
+                  />
+                )}
+                journeyTypeName="hub"
+                childEntityTitle={t('common.challenges')}
               />
               <CommunityUpdatesDialog
                 open={dialog === 'updates'}
@@ -70,4 +86,5 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
     </DiscussionsProvider>
   );
 };
+
 export default HubDashboardPage;

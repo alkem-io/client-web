@@ -2,11 +2,16 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useUserContext } from '../../../community/contributor/user';
-import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useHubDashboardReferencesAndRecommendationsQuery,
+  useHubPageQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ChallengeCardFragment,
+  DashboardTopCalloutFragment,
   HubPageFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -28,7 +33,7 @@ import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
 export interface HubContainerEntities {
-  hub?: HubPageFragment;
+  hub: HubPageFragment | undefined;
   isPrivate: boolean;
   permissions: {
     canEdit: boolean;
@@ -47,10 +52,13 @@ export interface HubContainerEntities {
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
+  recommendations: Reference[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
+  hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 export interface HubContainerActions {}
@@ -79,7 +87,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   const { user, isAuthenticated } = useUserContext();
   // don't load references without READ privilige on Context
-  const { data: referencesData } = useHubDashboardReferencesQuery({
+  const { data: referencesData } = useHubDashboardReferencesAndRecommendationsQuery({
     variables: { hubId },
     skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
@@ -112,6 +120,11 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
   const references = referencesData?.hub?.context?.references;
+  const recommendations = referencesData?.hub?.context?.recommendations;
+
+  const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
+
+  const topCallouts = _hub?.hub.collaboration?.callouts?.slice(0, 3);
 
   return (
     <>
@@ -130,9 +143,12 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvases,
           canvasesCount,
           references,
+          recommendations,
           activities,
           activityLoading,
           ...contributors,
+          hostOrganizations,
+          topCallouts,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,
@@ -142,4 +158,5 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     </>
   );
 };
+
 export default HubPageContainer;

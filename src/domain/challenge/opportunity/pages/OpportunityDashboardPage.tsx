@@ -8,7 +8,7 @@ import OpportunityContributorsDialogContent from '../../../community/community/e
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
-import OpportunityDashboardView from '../views/OpportunityDashboardView';
+import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -23,18 +23,27 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
       <DiscussionsProvider>
         <OpportunityPageContainer>
-          {(entities, state, actions) => (
+          {(entities, state) => (
             <>
-              <OpportunityDashboardView
-                entities={entities}
-                state={{
-                  loading: state.loading,
-                  showInterestModal: entities.showInterestModal,
-                  showActorGroupModal: entities.showActorGroupModal,
-                  error: state.error,
-                }}
-                actions={actions}
-                options={entities.permissions}
+              <JourneyDashboardView
+                vision={entities.opportunity?.context?.vision}
+                hubNameId={entities.hubNameId}
+                challengeNameId={entities.challengeNameId}
+                opportunityNameId={entities.opportunity?.nameID}
+                communityId={entities.opportunity?.community?.id}
+                communityReadAccess={entities.permissions.communityReadAccess}
+                references={entities.references}
+                recommendations={entities.recommendations}
+                memberUsers={entities.memberUsers}
+                memberUsersCount={entities.memberUsersCount}
+                memberOrganizations={entities.memberOrganizations}
+                memberOrganizationsCount={entities.memberOrganizationsCount}
+                leadUsers={entities.opportunity?.community?.leadUsers}
+                leadOrganizations={entities.opportunity?.community?.leadOrganizations}
+                activities={entities.activities}
+                activityLoading={state.activityLoading}
+                journeyTypeName="opportunity"
+                topCallouts={entities.topCallouts}
               />
               <CommunityUpdatesDialog
                 open={dialog === 'updates'}
@@ -54,4 +63,5 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     </OpportunityPageLayout>
   );
 };
+
 export default OpportunityDashboardPage;

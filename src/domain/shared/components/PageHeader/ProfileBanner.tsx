@@ -1,7 +1,7 @@
 import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
-import { DEFAULT_BANNER_URL, BANNER_ASPECT_RATIO } from './EntityPageBanner';
+import { DEFAULT_BANNER_URL } from './EntityPageBanner';
 import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../common/location/LocationView';
@@ -29,7 +29,6 @@ function gradientBuilder(
 
 // Styled Blocks:
 const Root = styled(Box)(({ theme }) => ({
-  aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
   position: 'relative',
   background: gradientBuilder(
@@ -42,6 +41,8 @@ const Root = styled(Box)(({ theme }) => ({
     DEFAULT_BANNER_URL,
     theme.palette.neutralLight.main
   ),
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
 }));
 
 const ProfileInfo = styled(Box)(({ theme }) => ({

@@ -44,4 +44,5 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
     </KratosForm>
   );
 };
+
 export default VerificationPage;

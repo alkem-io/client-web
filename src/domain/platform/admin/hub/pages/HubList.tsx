@@ -67,4 +67,5 @@ export const HubList: FC<HubListProps> = ({ paths }) => {
     />
   );
 };
+
 export default HubList;

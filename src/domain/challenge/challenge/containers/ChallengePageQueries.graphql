@@ -37,19 +37,7 @@ fragment ChallengeProfile on Challenge {
     }
   }
   collaboration {
-    id
-    callouts {
-      id
-      nameID
-      type
-      visibility
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
-      }
-    }
+    ...DashboardTopCallouts
   }
   community {
     ...EntityDashboardCommunity
@@ -64,7 +52,7 @@ fragment ChallengeProfile on Challenge {
   }
 }
 
-query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     challenge(ID: $challengeId) {
@@ -72,6 +60,12 @@ query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAME
       context {
         id
         references {
+          id
+          name
+          uri
+          description
+        }
+        recommendations {
           id
           name
           uri

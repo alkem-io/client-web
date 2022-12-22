@@ -1,0 +1,27 @@
+fragment ChallengeCard on Challenge {
+  id
+  displayName
+  nameID
+  metrics {
+    id
+    name
+    value
+  }
+  context {
+    id
+    tagline
+    vision
+    visuals {
+      ...VisualUri
+    }
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+  lifecycle {
+    id
+    state
+  }
+}

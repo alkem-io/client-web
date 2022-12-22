@@ -66,4 +66,5 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
     </Grid>
   );
 };
+
 export default CreateGroupForm;

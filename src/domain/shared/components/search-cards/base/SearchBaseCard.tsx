@@ -123,4 +123,5 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
     </Link>
   );
 };
+
 export default SearchBaseCard;

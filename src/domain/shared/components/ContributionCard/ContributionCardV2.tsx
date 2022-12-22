@@ -14,7 +14,6 @@ export interface ContributionCardV2Details {
   labelText?: string;
   labelAboveTitle?: boolean; // if true, the label will appear above the title - temp solution
   descriptionText?: string;
-  tagsFor?: string;
   tags?: string[];
   mediaUrl?: string;
   mediaSize?: mediaSize;
@@ -88,7 +87,6 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({
     mediaUrl,
     mediaSize = 'medium',
     url = '',
-    tagsFor,
     keepScroll,
   } = details || {};
   const { noMedia } = options || {};
@@ -124,11 +122,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({
         )}
         {children}
         <Box paddingTop={2}>
-          {loading ? (
-            <Skeleton variant="rectangular" animation="wave" />
-          ) : (
-            <TagsComponent tags={tags} tagsFor={tagsFor} />
-          )}
+          {loading ? <Skeleton variant="rectangular" animation="wave" /> : <TagsComponent tags={tags} />}
         </Box>
       </CardContent>
     </LinkCard>

@@ -57,4 +57,5 @@ const CardFilter = <T extends Identifiable>({
     </>
   );
 };
+
 export default CardFilter;

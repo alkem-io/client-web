@@ -9,7 +9,7 @@ import { useUserContext } from './user';
 import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
-import TopLevelDesktopLayout from '../../shared/layout/PageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
 
 export interface ContributorsPageProps {}
 
@@ -62,4 +62,5 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
     </TopLevelDesktopLayout>
   );
 };
+
 export default ContributorsPage;

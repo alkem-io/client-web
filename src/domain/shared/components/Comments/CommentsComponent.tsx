@@ -2,7 +2,6 @@ import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
-import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
 import { Message } from './models/message';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { mapWithSeparator } from '../../utils/joinNodes';
@@ -81,7 +80,7 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
   };
 
   return (
-    <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
+    <>
       <Box
         sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}
         ref={commentsContainerRef}
@@ -96,23 +95,21 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
           />
         ))}
       </Box>
-      <SectionSpacer double />
-      <Box>
-        {canPostMessages && (
-          <PostMessageToCommentsForm
-            placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-            onPostComment={onPostComment}
-            maxLength={MID_TEXT_LENGTH}
-            disabled={loading}
-          />
-        )}
-        {!canPostMessages && (
-          <Box paddingY={4} display="flex" justifyContent="center">
-            <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
-          </Box>
-        )}
-      </Box>
-    </DashboardGenericSection>
+      <SectionSpacer />
+      {canPostMessages && (
+        <PostMessageToCommentsForm
+          placeholder={t('pages.aspect.dashboard.comment.placeholder')}
+          onPostComment={onPostComment}
+          maxLength={MID_TEXT_LENGTH}
+          disabled={loading}
+        />
+      )}
+      {!canPostMessages && (
+        <Box paddingY={1} display="flex" justifyContent="center">
+          <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+        </Box>
+      )}
+    </>
   );
 };
 

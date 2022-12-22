@@ -121,4 +121,5 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
     </LinkCard>
   );
 };
+
 export default OrganizationCard;

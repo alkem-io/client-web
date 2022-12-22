@@ -32,4 +32,5 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ cont
 
   return <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} readOnly={!contextId || readOnly} {...rest} />;
 };
+
 export default ContextReferenceSegment;

@@ -13,6 +13,7 @@ import {
   AssociatesView,
   ContributionsView,
 } from '../../../profile/views/ProfileView';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -60,11 +61,13 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
             <AssociatesView associates={associates} />
           </Grid>
           <Grid item xs={12}>
-            <ContributionsView
-              title={t('components.contributions.title')}
-              helpText={t('components.contributions.help')}
-              contributions={contributions}
-            />
+            <GridProvider columns={6}>
+              <ContributionsView
+                title={t('components.contributions.title')}
+                helpText={t('components.contributions.help')}
+                contributions={contributions}
+              />
+            </GridProvider>
           </Grid>
         </Grid>
       </Grid>

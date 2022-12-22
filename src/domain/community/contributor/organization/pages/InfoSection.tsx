@@ -61,4 +61,5 @@ const InfoSection: FC<Props> = ({ organization }) => {
     </Grid>
   );
 };
+
 export default InfoSection;

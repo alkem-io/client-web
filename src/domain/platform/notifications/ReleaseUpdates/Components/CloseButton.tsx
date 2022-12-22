@@ -1,23 +1,17 @@
 import React, { FC } from 'react';
-import { Button as MUIButton, SxProps } from '@mui/material';
+import { IconButton, SxProps } from '@mui/material';
+import { Close } from '@mui/icons-material';
 
 interface ButtonProps {
   sx?: SxProps;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const CloseButton: FC<ButtonProps> = ({ sx = {}, onClick, children }) => {
+const CloseButton: FC<ButtonProps> = ({ onClick }) => {
   return (
-    <MUIButton
-      sx={{
-        paddingX: 0.5,
-        paddingY: 0.5,
-        ...sx,
-      }}
-      onClick={onClick}
-    >
-      {children}
-    </MUIButton>
+    <IconButton size="small" onClick={onClick} sx={{ marginRight: -1 }}>
+      <Close color="primary" />
+    </IconButton>
   );
 };
 

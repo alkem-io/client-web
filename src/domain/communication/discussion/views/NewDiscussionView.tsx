@@ -116,4 +116,5 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
     </Formik>
   );
 };
+
 export default NewDiscussionView;

@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../shared/layout/PageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
 import HubPageBanner from './HubPageBanner';
 import HubTabs from './HubTabs';
 import { PropsWithChildren } from 'react';

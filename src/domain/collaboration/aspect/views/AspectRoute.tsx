@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import CalloutsPage from '../../callout/CalloutsPage';
+import ContributePage from '../../contribute/ContributePage';
 import AspectDashboardPage from '../pages/AspectDashboardPage';
 import AspectSettingsPage from '../pages/AspectSettingsPage';
 import AspectSharePage from '../pages/AspectSharePage';
@@ -25,25 +25,25 @@ const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath, entityTypeName }) =
         <Route
           path={AspectDialogSection.Dashboard}
           element={
-            <CalloutsPage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+            <ContributePage entityTypeName={entityTypeName}>
               <AspectDashboardPage onClose={onClose} />
-            </CalloutsPage>
+            </ContributePage>
           }
         />
         <Route
           path={AspectDialogSection.Share}
           element={
-            <CalloutsPage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+            <ContributePage entityTypeName={entityTypeName}>
               <AspectSharePage onClose={onClose} />
-            </CalloutsPage>
+            </ContributePage>
           }
         />
         <Route
           path={AspectDialogSection.Settings}
           element={
-            <CalloutsPage rootUrl={parentPagePath} entityTypeName={entityTypeName}>
+            <ContributePage entityTypeName={entityTypeName}>
               <AspectSettingsPage onClose={onClose} />
-            </CalloutsPage>
+            </ContributePage>
           }
         />
       </Route>

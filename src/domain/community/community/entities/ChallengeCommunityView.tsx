@@ -6,7 +6,7 @@ import CommunityContributorsSection from '../CommunityContributors/CommunityCont
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
-import { userCardValueGetter } from '../../../../common/components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { userCardValueGetter } from '../../../../common/components/core/card-filter/value-getters/userCardValueGetter';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { OrganizationCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useSearchAcrossMultipleLists from '../../../shared/utils/useSearchAcrossMultipleLists';

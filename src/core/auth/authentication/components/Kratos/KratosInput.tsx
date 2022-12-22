@@ -68,4 +68,5 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
     </Grid>
   );
 };
+
 export default KratosInput;

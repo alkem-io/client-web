@@ -92,4 +92,5 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email
     </>
   );
 };
+
 export default ContactDetails;

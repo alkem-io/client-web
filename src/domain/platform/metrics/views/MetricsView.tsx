@@ -44,6 +44,7 @@ const ActivityView: FC<MetricViewProps> = ({ activity, loading }) => {
     </Grid>
   );
 };
+
 export default ActivityView;
 
 const MetricViewColumn = ({ metric }: { metric: MetricItem[] }) => {

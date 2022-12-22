@@ -2,6 +2,7 @@ import React, { ComponentType } from 'react';
 import { Tabs } from '@mui/material';
 import { TabsProps } from '@mui/material/Tabs/Tabs';
 import NavigationTab from '../NavigationTab/NavigationTab';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export interface TabDefinition<Section extends string | number> {
   section: Section;
@@ -29,7 +30,21 @@ const PageTabs = <Section extends string | number>({
   };
 
   return (
-    <Tabs value={currentTab} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile {...tabsPops}>
+    <Tabs
+      value={currentTab}
+      variant="scrollable"
+      scrollButtons="auto"
+      allowScrollButtonsMobile
+      sx={{
+        '.MuiTabs-flexContainer': {
+          gap: gutters(),
+        },
+        '.MuiTabs-hideScrollbar': {
+          paddingX: gutters(),
+        },
+      }}
+      {...tabsPops}
+    >
       {tabs.map(tab => {
         const Icon = tab.icon;
         return (

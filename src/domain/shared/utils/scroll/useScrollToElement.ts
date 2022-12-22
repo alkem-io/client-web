@@ -1,29 +1,77 @@
-import { useCallback, useState } from 'react';
+import { Ref, useEffect, useRef } from 'react';
+import { defer } from 'lodash';
 
 /**
- * Executes window.scrollTo as soon as React adds an element to the DOM with the ID specified.
- * Usage: useScrollToElement(enabled, elementId) will return a function that should be executed every time an element
- * is added to the DOM for example in a map of components retrieved from the database.
- * if elementId matches the elementIdToScrollTo specified in the hook a window.scrollTo will be triggered.
- * @returns A function to be used as the ref={el => addElement(elId, el) } of the elements that we may want to scroll to.
+ * Triggers scroll to an element with matching alias.
+ * @returns {{ scrollable: Function }}
+ * The function scrollable() produces a ref that has to be attached to an element,
+ * in order for the element to become scrollable-to.
+ * Example usage:
+ * ```
+ * const { scrollable } = useScrollToElement('one');
+ * <div ref={scrollable('one')} />
  */
-const useScrollToElement = function (enabled: boolean, elementIdToScrollTo: string | undefined) {
-  const [alreadyScrolled, setAlreadyScrolled] = useState(false);
 
-  const addElement = useCallback(
-    (elementId: string, element: HTMLElement | null) => {
-      if (!enabled || !elementIdToScrollTo || alreadyScrolled) {
-        return;
-      }
-      if (element && elementIdToScrollTo === elementId) {
-        window.scrollTo({ top: element.offsetTop, behavior: 'smooth' });
-        setAlreadyScrolled(true);
-      }
-    },
-    [enabled, elementIdToScrollTo, alreadyScrolled]
-  );
+const SCROLL_OPTIONS = { behavior: 'smooth' } as const;
 
-  return addElement;
+type ScrollMethod = 'window' | 'element';
+
+interface Options {
+  enabled?: boolean;
+  method?: ScrollMethod;
+  defer?: boolean;
+}
+
+const chooseScrollImplementation = (method: ScrollMethod) =>
+  method === 'window'
+    ? (element: HTMLElement) => {
+        window.scrollTo({ ...SCROLL_OPTIONS, top: element.offsetTop });
+      }
+    : (element: HTMLElement) => {
+        element.scrollIntoView(SCROLL_OPTIONS);
+      };
+
+const deferred =
+  <Args extends unknown[], Ret>(fn: (...args: Args) => Ret) =>
+  (...args: Args) =>
+    defer(() => fn(...args));
+
+const useScrollToElement = (
+  elementAliasToScrollTo: string | undefined,
+  { enabled = true, method = 'window', defer: shouldDefer = false }: Options = {}
+) => {
+  const elements = useRef<Record<string, HTMLElement | null>>({}).current;
+
+  const scrollImplementation = chooseScrollImplementation(method);
+
+  const scrollToElement = shouldDefer ? deferred(scrollImplementation) : scrollImplementation;
+
+  useEffect(() => {
+    if (!enabled || !elementAliasToScrollTo) {
+      return;
+    }
+
+    const element = elements[elementAliasToScrollTo];
+
+    if (element) {
+      scrollToElement(element);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enabled, elementAliasToScrollTo]);
+
+  const scrollable =
+    <El extends HTMLElement>(alias: string): Ref<El> =>
+    (element: El | null) => {
+      if (!elements[alias] && element && alias === elementAliasToScrollTo) {
+        // The element has just been added to the DOM and is marked as currently-scrolled-to
+        scrollToElement(element);
+      }
+      elements[alias] = element;
+    };
+
+  return {
+    scrollable,
+  };
 };
 
 export default useScrollToElement;

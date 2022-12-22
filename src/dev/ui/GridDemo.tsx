@@ -53,6 +53,20 @@ const GridDemo = () => {
               <DummyContent />
             </PageContentBlockGrid>
           </PageContentBlock>
+          <PageContentBlock halfWidth disableGap disablePadding>
+            <PageContentBlockGrid>
+              <DummyContent columns={2} />
+              <DummyContent columns={2} />
+              <DummyContent />
+            </PageContentBlockGrid>
+          </PageContentBlock>
+          <PageContentBlock halfWidth disableGap disablePadding>
+            <PageContentBlockGrid>
+              <DummyContent columns={3} />
+              <DummyContent columns={1} />
+              <DummyContent />
+            </PageContentBlockGrid>
+          </PageContentBlock>
           <PageContentBlock disableGap disablePadding>
             <CalloutBlockMarginal variant="header">Callout</CalloutBlockMarginal>
             <PageContentBlockGrid cards>
