@@ -16,7 +16,7 @@ export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
 
   return (
     <>
-      <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
+      <Tooltip title={t('pages.activity.innovation-flow-info') || ''} arrow placement="top" id="lifecycle-graph">
         <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<LifecycleStateIcon />}>
           {`State: ${state}`}
         </Button>

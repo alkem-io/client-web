@@ -1253,7 +1253,7 @@
     "activity": {
       "title": "{{blockName}} Activity",
       "hubs": "Challenge Hubs",
-      "lifecycle-info": "Click to view lifecycle graph"
+      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "sections": {

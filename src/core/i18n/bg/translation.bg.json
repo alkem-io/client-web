@@ -1179,7 +1179,7 @@
     "activity": {
       "title": "{{blockName}} Активност",
       "hubs": "Хъб с предизвикателства",
-      "lifecycle-info": "Цъкни, за да видиш граф с жизнения цикъл"
+      "innovation-flow-info": "Цъкни, за да видиш граф с жизнения цикъл"
     },
     "home": {
       "sections": {

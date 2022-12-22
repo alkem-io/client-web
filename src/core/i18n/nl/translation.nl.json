@@ -1247,7 +1247,7 @@
     "activity": {
       "title": "{{blockName}} Activiteit",
       "hubs": "Challenges Hubs",
-      "lifecycle-info": "Klik om de levenscyclus te bekijken"
+      "innovation-flow-info": "Klik om de levenscyclus te bekijken"
     },
     "home": {
       "sections": {
