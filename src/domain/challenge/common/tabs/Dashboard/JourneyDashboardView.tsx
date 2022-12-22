@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import References from '../../../../shared/components/References/References';
 import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildCalloutUrl, buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -25,7 +26,7 @@ import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
 import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
-import References from '../../../../shared/components/References/References';
+import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -157,7 +158,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <CardsLayout items={childEntities} deps={[hubNameId]} disablePadding>
               {renderChildEntityCard}
             </CardsLayout>
-            <SeeMore subject={childEntityTitle} to="challenges" />
+            <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
           </PageContentBlock>
         )}
       </PageContentColumn>
