@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { gradient } from '../../../../core/ui/overflow/utils';
+import { overflowBorderGradient } from '../../../../core/ui/overflow/utils';
 
 interface CardsLayoutScrollerProps {
   maxHeight: number;
@@ -16,7 +16,7 @@ const buildPseudoElement = (position: 'top' | 'bottom') => ({
   left: 0,
   right: 0,
   height: gutters(),
-  background: gradient(position === 'top' ? '180deg' : '0'),
+  background: overflowBorderGradient(position === 'top' ? '180deg' : '0'),
 });
 
 const CardsLayoutScroller = ({ maxHeight, sx, children }: PropsWithChildren<CardsLayoutScrollerProps>) => {

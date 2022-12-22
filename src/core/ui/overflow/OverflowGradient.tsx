@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
-import { gradient } from './utils';
+import { overflowBorderGradient } from './utils';
 
 interface OverflowGradientProps extends BoxProps {
   lastLine?: boolean;
@@ -32,7 +32,7 @@ const OverflowGradient = ({ lastLine = false, ...props }: OverflowGradientProps)
               left: 0,
               right: 0,
               height: gutters(),
-              background: gradient(lastLine ? '-90deg' : '0'),
+              background: overflowBorderGradient(lastLine ? '-90deg' : '0'),
             }
           : undefined,
       }}
