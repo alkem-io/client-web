@@ -4676,6 +4676,15 @@ export type ChallengePageQuery = {
                         description?: string | undefined;
                       }>
                     | undefined;
+                  recommendations?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
                   visuals?:
                     | Array<{
                         __typename?: 'Visual';
@@ -4963,6 +4972,15 @@ export type ChallengeProfileFragment = {
                     description?: string | undefined;
                   }>
                 | undefined;
+              recommendations?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
               visuals?:
                 | Array<{
                     __typename?: 'Visual';
@@ -5002,12 +5020,12 @@ export type ChallengeProfileFragment = {
     | undefined;
 };
 
-export type ChallengeDashboardReferencesQueryVariables = Exact<{
+export type ChallengeDashboardReferencesAndRecommendationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeDashboardReferencesQuery = {
+export type ChallengeDashboardReferencesAndRecommendationsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -5020,6 +5038,15 @@ export type ChallengeDashboardReferencesQuery = {
             __typename?: 'Context';
             id: string;
             references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            recommendations?:
               | Array<{
                   __typename?: 'Reference';
                   id: string;
@@ -5102,6 +5129,15 @@ export type OpportunitiesOnChallengeFragment = {
               who?: string | undefined;
               location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
               references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+              recommendations?:
                 | Array<{
                     __typename?: 'Reference';
                     id: string;
@@ -5515,6 +5551,15 @@ export type ChallengeProfileInfoQuery = {
                   description?: string | undefined;
                 }>
               | undefined;
+            recommendations?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -5603,6 +5648,15 @@ export type OpportunityCreatedSubscription = {
             who?: string | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            recommendations?:
               | Array<{
                   __typename?: 'Reference';
                   id: string;
@@ -6647,6 +6701,15 @@ export type HubProviderQuery = {
                 description?: string | undefined;
               }>
             | undefined;
+          recommendations?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
           visuals?:
             | Array<{
                 __typename?: 'Visual';
@@ -6743,6 +6806,9 @@ export type HubInfoFragment = {
           | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
         references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+        recommendations?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
         visuals?:
@@ -7049,11 +7115,11 @@ export type HubPageQuery = {
   };
 };
 
-export type HubDashboardReferencesQueryVariables = Exact<{
+export type HubDashboardReferencesAndRecommendationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubDashboardReferencesQuery = {
+export type HubDashboardReferencesAndRecommendationsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -7063,6 +7129,15 @@ export type HubDashboardReferencesQuery = {
           __typename?: 'Context';
           id: string;
           references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+          recommendations?:
             | Array<{
                 __typename?: 'Reference';
                 id: string;
@@ -7374,6 +7449,9 @@ export type HubDetailsFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
+        recommendations?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
         visuals?:
           | Array<{
               __typename?: 'Visual';
@@ -7458,6 +7536,15 @@ export type CreateHubMutation = {
                 description?: string | undefined;
               }>
             | undefined;
+          recommendations?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
           visuals?:
             | Array<{
                 __typename?: 'Visual';
@@ -7519,6 +7606,15 @@ export type UpdateHubMutation = {
           who?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+          recommendations?:
             | Array<{
                 __typename?: 'Reference';
                 id: string;
@@ -8054,6 +8150,15 @@ export type OpportunityPageQuery = {
                   uri: string;
                 }>
               | undefined;
+            recommendations?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  description?: string | undefined;
+                  uri: string;
+                }>
+              | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
@@ -8276,6 +8381,9 @@ export type OpportunityPageFragment = {
             }
           | undefined;
         references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+          | undefined;
+        recommendations?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
           | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
@@ -8518,6 +8626,9 @@ export type OpportunityCardFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
+        recommendations?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
         visuals?:
           | Array<{
               __typename?: 'Visual';
@@ -8579,6 +8690,15 @@ export type CreateOpportunityMutation = {
           who?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+          recommendations?:
             | Array<{
                 __typename?: 'Reference';
                 id: string;
@@ -8912,6 +9032,15 @@ export type OpportunityProfileInfoQuery = {
             who?: string | undefined;
             location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
+            recommendations?:
               | Array<{
                   __typename?: 'Reference';
                   id: string;
@@ -14026,6 +14155,15 @@ export type ChallengeApplicationQuery = {
                   description?: string | undefined;
                 }>
               | undefined;
+            recommendations?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -17393,6 +17531,9 @@ export type ContextDetailsFragment = {
   who?: string | undefined;
   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+    | undefined;
+  recommendations?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
     | undefined;
   visuals?:

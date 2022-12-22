@@ -1,14 +1,15 @@
 import React, { FC } from 'react';
 import { Tooltip } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { Reference } from '../../../../../domain/common/profile/Profile';
-import { Language } from '@mui/icons-material';
-import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
-import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
-import ItemView from '../../../../../core/ui/list/ItemView';
+import { Link as MuiLink } from '@mui/material';
+import { Reference } from '../../../common/profile/Profile';
+import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
+import RoundedIcon, { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
+import ItemView from '../../../../core/ui/list/ItemView';
+import { ReferenceIcon } from './icons/ReferenceIcon';
 
-interface ReferenceProps {
+export interface ReferenceViewProps {
   reference: Reference;
+  icon?: RoundedIconProps['component'];
 }
 
 const REFERENCE_DESCRIPTION_MAX_LENGTH = 80; // characters
@@ -18,7 +19,7 @@ interface ReferenceDescriptionProps {
 }
 
 const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
-  if (typeof children === 'undefined') {
+  if (!children) {
     return null;
   }
 
@@ -39,11 +40,11 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
   return formattedDescription;
 };
 
-const ReferenceView: FC<ReferenceProps> = ({ reference }) => {
+const ReferenceView: FC<ReferenceViewProps> = ({ reference, icon = ReferenceIcon }) => {
   return (
-    <ItemView visual={<RoundedIcon size="medium" component={Language} />}>
+    <ItemView visual={<RoundedIcon size="medium" component={icon} />}>
       <Tooltip title={reference.uri} placement="top-start" disableInteractive>
-        <BlockSectionTitle component={Link} to={reference.uri} target="_blank">
+        <BlockSectionTitle component={MuiLink} href={reference.uri} target="_blank">
           {reference.name}
         </BlockSectionTitle>
       </Tooltip>

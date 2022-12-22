@@ -37,6 +37,7 @@ export interface HubEditFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
+  recommendations: Reference[];
   // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
   // visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
   tagsets: Tagset[];
@@ -75,6 +76,7 @@ const HubEditForm: FC<HubEditFormProps> = ({
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
+    recommendations: context?.recommendations || [],
     tagsets: tagsets,
     host: hostID || '',
     // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
@@ -95,6 +97,7 @@ const HubEditForm: FC<HubEditFormProps> = ({
     vision: contextSegmentSchema.fields?.vision || yup.string(),
     who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
+    recommendations: referenceSegmentSchema,
     visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });

@@ -16,6 +16,7 @@ import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
+import RecommendationsSegment from './Common/RecommendationsSegment';
 
 interface Props {
   context?: Context;
@@ -41,6 +42,7 @@ export interface HubEditFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
+  recommendations: Reference[];
   // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
   // visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
   tagsets: Tagset[];
@@ -82,6 +84,7 @@ const HubEditForm: FC<Props> = ({
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
+    recommendations: context?.recommendations || [],
     tagsets: tagsets,
     host: hostID || '',
     // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
@@ -102,6 +105,7 @@ const HubEditForm: FC<Props> = ({
     vision: contextSegmentSchema.fields?.vision || yup.string(),
     who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
+    recommendations: referenceSegmentSchema,
     visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
@@ -117,7 +121,7 @@ const HubEditForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, handleSubmit }) => {
+      {({ values: { references, recommendations }, handleSubmit }) => {
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
@@ -150,6 +154,7 @@ const HubEditForm: FC<Props> = ({
             </Grid>
             <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
+            {isEdit && <RecommendationsSegment recommendations={recommendations || []} />}
           </Grid>
         );
       }}
