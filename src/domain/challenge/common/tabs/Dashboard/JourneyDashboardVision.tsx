@@ -26,7 +26,7 @@ const JourneyDashboardVision = ({ vision, journeyTypeName }: JourneyDashboardVis
 
   return (
     <PageContentBlock accent>
-      <OverflowGradient maxHeight={gutters(11)} lastLine>
+      <OverflowGradient maxHeight={gutters(11)}>
         <WrapperMarkdown>{vision}</WrapperMarkdown>
       </OverflowGradient>
       <Actions justifyContent="space-between">

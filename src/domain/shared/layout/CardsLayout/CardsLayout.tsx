@@ -1,18 +1,15 @@
-import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
+import React, { cloneElement, FC, ReactElement, ReactNode, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
 import getDepsValueFromObject from '../../utils/getDepsValueFromObject';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../core/ui/content/PageContentBlockGrid';
 
-export interface CreateButtonProps {
-  onClick?: () => void;
-}
 interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
   showCreateButton?: boolean;
-  createButtonComponent?: React.ReactNode;
+  createButton?: ReactNode;
 }
 
 /**
@@ -26,7 +23,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
   children,
   deps = [],
-  createButtonComponent: CreateButton,
+  createButton,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
@@ -43,7 +40,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   return (
     <CardLayoutContainer {...layoutProps}>
-      {CreateButton}
+      {createButton}
       {cards}
     </CardLayoutContainer>
   );
