@@ -1027,12 +1027,12 @@
           "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
         },
         "recommendations": {
-          "title": "Recommended by the Admin"
+          "title": "Recommended by the Host"
         }
       }
     },
     "contribute": {
-      "initial-text": "**Contribute** your insights to understanding the context. It is about surfacing up the wisdom of the community.",
+      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
       "no-cards": "No Card found"
     },
     "admin": {
