@@ -15,6 +15,7 @@
     "add-entity": "Voeg {{entity}} toe"
   },
   "buttons": {
+    "leave": "Verlaat",
     "learn-more": "Meer leren",
     "load-more": "Laad meer",
     "load-count-more": "Laad {{count}} meer",
@@ -30,7 +31,7 @@
     "next": "Volgende",
     "edit": "Pas aan",
     "see-more": "Lees verder",
-    "see-all": "Zie alles",
+    "see-all": "Meer {{subject}}",
     "home": "Startpagina",
     "take-me-home": "Terug naar startpagina",
     "close": "Sluit",
@@ -62,7 +63,8 @@
     "share": "Delen",
     "preview": "Voorbeeld",
     "import": "Importeer",
-    "importing": "Importeren..."
+    "importing": "Importeren...",
+    "go-to-entity": "Ga naar {{entity}}"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -101,10 +103,12 @@
     "add": "Voeg toe",
     "remove": "Verwijder",
     "callout": "Callout",
+    "callouts": "Callouts",
     "canvas": "Canvas",
     "canvases": "Canvassen",
     "comment": "Opmerking",
     "comments": "Opmerkingen",
+    "contributions": "Bijdragen",
     "card": "Kaart",
     "cards": "Kaarten",
     "create": "Maak aan",
@@ -145,7 +149,7 @@
     "user": "Gebruiker",
     "users": "Gebruikers",
     "update": "Update",
-    "updates": "Updates",
+    "updates": "Nieuws",
     "no-updates": "Geen updates",
     "no-tags": "Geen labels beschikbaar",
     "no-references": "Geen referenties beschikbaar",
@@ -160,6 +164,7 @@
     "empty-string": "",
     "discussion": "Discussie",
     "discussions": "Discussies",
+    "disassociate": "Verlaat",
     "dashboard": "Dashboard",
     "contribute": "Draag bij",
     "context": "Context",
@@ -201,6 +206,11 @@
       "not-verified": ""
     },
     "enums": {
+      "callout-state": {
+        "ARCHIVED": "Gearchiveerd",
+        "CLOSED": "Gesloten",
+        "OPEN": "Open"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Globale Beheerder",
@@ -363,9 +373,12 @@
     "member-organizations": "Lid Organisaties",
     "leads": "Leads",
     "members": "Leden",
-    "host": "Host"
+    "host": "Host",
+    "members-count": "Leden ({{count}})"
   },
   "callout": {
+    "contributions": "{{count}} Bijdrage",
+    "contributions_plural": "{{count}} Bijdragen",
     "draftNotice": "Voorlopige versie - Deze Callout is alleen zichtbaar voor Beheerders",
     "delete-confirm-title": "Callout verwijderen?",
     "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd.",
@@ -514,6 +527,12 @@
     }
   },
   "components": {
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "{{organization}} verlaten",
+        "text": "Weet je zeker dat je wilt vertrekken? Het is mogelijk dat je de inhoud niet meer kunt zien of kunt bijdragen als je geen deelnemer meer bent."
+      }
+    },
     "error-display": {
       "title": "Oeps!",
       "went-wrong": "Het lijkt erop dat er iets mis is gegaan.",
@@ -528,7 +547,7 @@
       "matched-terms": "Gematchte Termen"
     },
     "activity-log-section": {
-      "title": "Laatste activiteiten"
+      "title": "Recente bijdragen"
     },
     "activity-log-view": {
       "actions": {
@@ -661,7 +680,7 @@
     },
     "application-button": {
       "apply-parent": "Schrijf in voor de bovenliggende groep",
-      "apply-disabled": "Inschrijven niet toegelaten",
+      "apply-disabled": "Lid worden niet mogelijk",
       "apply-not-signed": "Log in om in te schrijven",
       "apply-pending": "Uw aanmelding is in behandeling",
       "join": "Word lid",
@@ -693,7 +712,7 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
+      "private": "Wil je meer lezen? Meld je aan of neem deel als je nog geen lid bent van deze {{blockName}}!",
       "authentication": "Log in om details te zien over {{blockName}}.",
       "login": "Log in om {{blockName}} te zien"
     },
@@ -975,7 +994,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Hier kan je een samenvatting zien van deze {{entity}}. Navigeer door de andere tabbladen om meer gedetailleerde informatie te zien!"
+          "description": "Hier kan je een samenvatting zien van deze {{entity}}. Navigeer door de andere tabbladen om meer gedetailleerde informatie te zien!",
+          "about": "Over deze {{entity}}"
         },
         "about": {
           "description": "Hier kun je de context en community vinden van deze {{entity}}."
@@ -996,14 +1016,18 @@
         },
         "profile": {
           "description": ""
+        },
+        "subentities": {
+          "description": "Hier kan je de {{entities}} verkennen binnen deze {{parentEntity}}. Filter op tags om uitsluitend de onderwerpen van jouw interesse te zien.",
+          "list": "Lijst met {{entities}}",
+          "empty": "Geen {{entities}} gevonden in deze {{parentEntity}}.",
+          "empty-list": "Er zijn nog geen {{entities}} in deze {{parentEntity}}."
         }
       }
     },
     "contribute": {
+      "initial-text": "**Lever een bijdrage** door middel van het delen van kennis en ervaringen. Hier worden alle inzichten van de community verzameld.",
       "no-cards": "Geen Kaarten gevonden"
-    },
-    "explore": {
-      "create-callout": "Maak een nieuwe Callout aan"
     },
     "admin": {
       "generic": {
@@ -1284,7 +1308,6 @@
     },
     "hub": {
       "title": "Hub",
-      "about-this-hub": "Over deze Hub",
       "archived-hub-notice": "Deze Hub is momenteel gearchiveerd. Wil je de Hub weer in leven brengen? <contact>Klik hier om Alkemio te contacteren</contact>.",
       "demo-hub-notice": "Dit is een Demo Hub. <alkemio>Klik hier om samen te werken in actieve Hubs</alkemio>.",
       "application": {
@@ -1299,10 +1322,6 @@
         "dashboard": {
           "organization": "Faciliterende organisatie",
           "activity": "Hub statistieken",
-          "challenges": {
-            "title": "Challenges",
-            "help-text": "Hier zie je de verschillende Challenges waaraan je kunt bijdragen in de Hub."
-          },
           "community": "Community"
         },
         "challenges": {
@@ -1316,7 +1335,6 @@
     },
     "challenge": {
       "title": "Challenge",
-      "about-this-challenge": "Over deze Challenge",
       "organizationBanner": {
         "load-more": "En meer ..."
       },
@@ -1326,24 +1344,18 @@
             "title": "Statistieken van Challenge",
             "help-text": "Statistieken van Challenge"
           },
-          "opportunities": {
-            "title": "Opportunities",
-            "help-text": "Opportunities gerelateerd aan deze Challenge"
-          },
           "projects": {
             "title": "Projecten",
             "help-text": "Projecten gerelateerd aan deze Challenge"
           }
         },
         "opportunities": {
-          "description": "Hier kan je de Opportunities verkennen die zijn geïdentificeerd om voortgang te maken op de Challenge. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken.",
-          "body-missing": "Geen Opportunities gevonden voor deze Challenge"
+          "description": "Hier kan je de Opportunities verkennen die zijn geïdentificeerd om voortgang te maken op de Challenge. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken."
         }
       }
     },
     "opportunity": {
       "title": "Opportunity",
-      "about-this-opportunity": "Over deze Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1385,7 +1397,6 @@
         "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt"
       },
       "members": {
-        "title": "Leden ({{count}})",
         "help-text": "Laat leden in deze community zien, inclusief hun rol",
         "no-data": "Geen leden beschikbaar"
       },
@@ -1471,13 +1482,13 @@
     },
     "registration": {
       "header": "Maak een account aan om Alkemio te gebruiken",
-      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
       "login": "Heb je een account?",
       "reset-password": "Wachtwoord resetten"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "greeting": "Hallo {{user}}, welkom bij Alkemio!",
       "continue": "Doorgaan naar het platform",
       "tooltip": "Lees en accepteer de Gebruiksvoorwaarden en het Privacybeleid voordat u doorgaat"
@@ -1599,9 +1610,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "Updates ({{count}})",
-    "dialog-title": "Alle Updates",
-    "no-data": "Geen updates beschikbaar."
+    "title": "Nieuws ({{count}})",
+    "dialog-title": "Nieuws",
+    "no-data": "Geen nieuws beschikbaar."
   },
   "dashboard-discussions-section": {
     "title": "Discussies ({{count}})",
