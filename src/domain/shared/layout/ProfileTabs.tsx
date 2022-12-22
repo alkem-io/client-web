@@ -37,7 +37,7 @@ const ProfileTabs = ({
       <>
         {/*TODO z-index fixes content of Organization settings laying over the navigation tabs*/}
         {/*TODO investigate why it happens and fix properly*/}
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3}>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
           <BottomNavigation
             showLabels
             value={currentTab}

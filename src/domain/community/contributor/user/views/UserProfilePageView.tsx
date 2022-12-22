@@ -3,10 +3,11 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../../../platform/config/useConfig';
 import { FEATURE_SSI } from '../../../../platform/config/features.constants';
-import { CredentialsView, ContributionsView } from '../../../profile/views/ProfileView';
+import { ContributionsView, CredentialsView } from '../../../profile/views/ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../../../profile/views/ProfileView/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
-import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import PageContent from '../../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
 
@@ -18,18 +19,14 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
   const { isFeatureEnabled } = useConfig();
 
   return (
-    <Grid container spacing={2}>
-      <Grid item container xs={12} xl={6} direction="column" spacing={2}>
-        <Grid item>
-          <UserProfileView entities={entities} />
-        </Grid>
-        <Grid item>
-          <AssociatedOrganizationsLazilyFetched
-            organizationNameIDs={organizationNameIDs}
-            title={t('pages.user-profile.associated-organizations.title')}
-            helpText={t('pages.user-profile.associated-organizations.help')}
-          />
-        </Grid>
+    <PageContent>
+      <PageContentColumn columns={4}>
+        <UserProfileView entities={entities} />
+        <AssociatedOrganizationsLazilyFetched
+          organizationNameIDs={organizationNameIDs}
+          title={t('pages.user-profile.associated-organizations.title')}
+          helpText={t('pages.user-profile.associated-organizations.help')}
+        />
         {isFeatureEnabled(FEATURE_SSI) && (
           <Grid item>
             <CredentialsView
@@ -39,28 +36,22 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
             />
           </Grid>
         )}
-      </Grid>
-      <Grid item xs={12} xl={6}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <GridProvider columns={6}>
-              <ContributionsView
-                title={t('pages.user-profile.communities.title')}
-                helpText={t('pages.user-profile.communities.help')}
-                contributions={contributions}
-              />
-            </GridProvider>
-          </Grid>
-          <Grid item xs={12}>
-            <ContributionsView
-              title={t('pages.user-profile.pending-applications.title')}
-              helpText={t('pages.user-profile.pending-applications.help')}
-              contributions={pendingApplications}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+      </PageContentColumn>
+      <PageContentColumn columns={8}>
+        <ContributionsView
+          title={t('pages.user-profile.communities.title')}
+          helpText={t('pages.user-profile.communities.help')}
+          contributions={contributions}
+          cards
+        />
+        <ContributionsView
+          title={t('pages.user-profile.pending-applications.title')}
+          helpText={t('pages.user-profile.pending-applications.help')}
+          contributions={pendingApplications}
+          cards
+        />
+      </PageContentColumn>
+    </PageContent>
   );
 };
 

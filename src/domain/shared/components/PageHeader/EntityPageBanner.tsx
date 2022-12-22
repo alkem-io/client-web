@@ -7,7 +7,7 @@ import { EntityTypeName } from '../../layout/LegacyPageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
 
-export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
+export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xxl.png';
 export const TITLE_HEIGHT = 6;
 
 const Root = styled(Box)(({ theme }) => ({

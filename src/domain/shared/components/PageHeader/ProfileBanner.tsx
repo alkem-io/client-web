@@ -11,8 +11,6 @@ import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 
-const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
-
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
 function gradientBuilder(
@@ -31,7 +29,6 @@ function gradientBuilder(
 
 // Styled Blocks:
 const Root = styled(Box)(({ theme }) => ({
-  aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
   position: 'relative',
   background: gradientBuilder(
@@ -44,6 +41,8 @@ const Root = styled(Box)(({ theme }) => ({
     DEFAULT_BANNER_URL,
     theme.palette.neutralLight.main
   ),
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
 }));
 
 const ProfileInfo = styled(Box)(({ theme }) => ({
