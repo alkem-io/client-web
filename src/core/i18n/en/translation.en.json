@@ -723,7 +723,8 @@
       "missing-refreneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
-        "remove-reference": "Remove the reference"
+        "remove-reference": "Remove the reference",
+        "remove-recommendation": "Clear recommendation"
       },
       "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
     },

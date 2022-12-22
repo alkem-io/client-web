@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Tooltip } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link as MuiLink } from '@mui/material';
 import { Reference } from '../../../common/profile/Profile';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import RoundedIcon, { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
@@ -19,7 +19,7 @@ interface ReferenceDescriptionProps {
 }
 
 const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
-  if (typeof children === 'undefined') {
+  if (!children) {
     return null;
   }
 
@@ -44,7 +44,7 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, icon = ReferenceIcon
   return (
     <ItemView visual={<RoundedIcon size="medium" component={icon} />}>
       <Tooltip title={reference.uri} placement="top-start" disableInteractive>
-        <BlockSectionTitle component={Link} to={reference.uri} target="_blank">
+        <BlockSectionTitle component={MuiLink} href={reference.uri} target="_blank">
           {reference.name}
         </BlockSectionTitle>
       </Tooltip>
