@@ -34,6 +34,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               <JourneyDashboardView
                 vision={entities.challenge?.context?.vision}
                 hubNameId={entities.hubNameId}
+                challengeNameId={entities.challenge?.nameID}
                 communityId={entities.challenge?.community?.id}
                 childEntities={entities.challenge?.opportunities}
                 childEntitiesCount={entities.opportunitiesCount}
