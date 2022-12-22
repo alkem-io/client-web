@@ -94,6 +94,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
     : 'community.leading-organizations';
   const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
 
+  const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
+  const hasRecommendations = validRecommendations.length > 0;
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
@@ -129,11 +132,13 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <PageContentBlock halfWidth>
-          <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
-          <References references={recommendations} icon={RecommendationIcon} />
-        </PageContentBlock>
-        <PageContentBlock halfWidth>
+        {hasRecommendations && (
+          <PageContentBlock halfWidth>
+            <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
+            <References references={validRecommendations} icon={RecommendationIcon} />
+          </PageContentBlock>
+        )}
+        <PageContentBlock halfWidth={hasRecommendations}>
           <PageContentBlockHeader title="Top Callouts" />
           {topCallouts?.map(callout => (
             <TopCalloutDetails

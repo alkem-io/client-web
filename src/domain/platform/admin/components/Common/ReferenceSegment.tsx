@@ -1,6 +1,6 @@
 import { DeleteOutline } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { Box, Grid, Link, Typography } from '@mui/material';
+import { Box, Grid, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { FieldArray } from 'formik';
@@ -13,6 +13,7 @@ import { Reference } from '../../../../common/profile/Profile';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
+import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
 
 export interface ReferenceSegmentProps {
   references: Reference[];
@@ -55,10 +56,10 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   return (
     <FieldArray name={'references'}>
       {({ push, remove }) => (
-        <Grid item container rowSpacing={2} columnSpacing={4}>
+        <Grid item container rowSpacing={2} columnSpacing={4} key="field-array">
           <Grid container item xs={12} alignItems="center" wrap="nowrap">
             <Grid item>
-              <Typography variant={'h4'}>{t('components.referenceSegment.title')}</Typography>
+              <BlockSectionTitle>{t('components.referenceSegment.title')}</BlockSectionTitle>
             </Grid>
             <Grid item>
               <Tooltip title={t('components.referenceSegment.tooltips.add-reference') || ''} placement={'bottom'}>
@@ -79,12 +80,12 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
           </Grid>
           {references?.length === 0 ? (
             <Grid item container>
-              <Typography variant={'caption'}>{t('components.referenceSegment.missing-refreneces')}</Typography>
+              <Caption>{t('components.referenceSegment.missing-refereneces')}</Caption>
             </Grid>
           ) : (
             references?.map((ref, index) => (
-              <>
-                <Grid key={index} container item>
+              <React.Fragment key={ref.id}>
+                <Grid container item>
                   <Grid item xs="auto">
                     <FormikInputField
                       name={`references.${index}.name`}
@@ -148,7 +149,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                   </Grid>
                 </Grid>
                 {references.length > index + 1 && <SectionSpacer double />}
-              </>
+              </React.Fragment>
             ))
           )}
         </Grid>
