@@ -12,7 +12,7 @@ const RoundedIconContainer = styled(Box)(({ theme }) => ({
 
 type RoundedIconSize = 'medium' | 'small';
 
-interface RoundedIconProps {
+export interface RoundedIconProps {
   size: RoundedIconSize;
   component: ComponentType<SvgIconProps>;
 }

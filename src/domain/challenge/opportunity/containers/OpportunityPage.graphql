@@ -55,6 +55,12 @@ fragment OpportunityPage on Opportunity {
       description
       uri
     }
+    recommendations {
+      id
+      name
+      description
+      uri
+    }
     visuals {
       ...VisualUri
     }

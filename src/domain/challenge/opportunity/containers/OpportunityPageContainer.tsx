@@ -63,6 +63,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
+  recommendations: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
@@ -130,7 +131,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references } = context ?? {};
+  const { references, recommendations } = context ?? {};
   const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
@@ -187,6 +188,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           canvases,
           canvasesCount,
           references,
+          recommendations,
           ...contributors,
           activities,
           topCallouts,

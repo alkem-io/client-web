@@ -5,7 +5,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import { useHub } from '../../hub/HubContext/useHub';
 import { useChallenge } from '../hooks/useChallenge';
 import {
-  useChallengeDashboardReferencesQuery,
+  useChallengeDashboardReferencesAndRecommendationsQuery,
   useChallengePageQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -40,6 +40,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   references: Reference[] | undefined;
+  recommendations: Reference[] | undefined;
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   permissions: {
@@ -97,7 +98,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     AuthorizationPrivilege.Read
   );
 
-  const { data: referenceData } = useChallengeDashboardReferencesQuery({
+  const { data: referenceData } = useChallengeDashboardReferencesAndRecommendationsQuery({
     variables: {
       hubId: hubNameId,
       challengeId: challengeNameId,
@@ -120,6 +121,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 
   const references = referenceData?.hub?.challenge?.context?.references;
+  const recommendations = referenceData?.hub?.challenge?.context?.recommendations;
 
   const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
 
@@ -139,6 +141,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           permissions,
           isAuthenticated,
           references,
+          recommendations,
           isMember: user?.ofChallenge(challengeId) || false,
           discussions: discussionList,
           ...contributors,

@@ -264,6 +264,12 @@ export const ContextDetailsFragmentDoc = gql`
       uri
       description
     }
+    recommendations {
+      id
+      name
+      uri
+      description
+    }
     visuals {
       ...VisualFull
     }
@@ -732,6 +738,12 @@ export const OpportunityPageFragmentDoc = gql`
         myPrivileges
       }
       references {
+        id
+        name
+        description
+        uri
+      }
+      recommendations {
         id
         name
         description
@@ -3141,8 +3153,8 @@ export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQu
   return { query: ChallengePageDocument, variables: variables };
 }
 
-export const ChallengeDashboardReferencesDocument = gql`
-  query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+export const ChallengeDashboardReferencesAndRecommendationsDocument = gql`
+  query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
@@ -3155,6 +3167,12 @@ export const ChallengeDashboardReferencesDocument = gql`
             uri
             description
           }
+          recommendations {
+            id
+            name
+            uri
+            description
+          }
         }
       }
     }
@@ -3162,60 +3180,62 @@ export const ChallengeDashboardReferencesDocument = gql`
 `;
 
 /**
- * __useChallengeDashboardReferencesQuery__
+ * __useChallengeDashboardReferencesAndRecommendationsQuery__
  *
- * To run a query within a React component, call `useChallengeDashboardReferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useChallengeDashboardReferencesAndRecommendationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeDashboardReferencesAndRecommendationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeDashboardReferencesQuery({
+ * const { data, loading, error } = useChallengeDashboardReferencesAndRecommendationsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
-export function useChallengeDashboardReferencesQuery(
+export function useChallengeDashboardReferencesAndRecommendationsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeDashboardReferencesQuery,
-    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.ChallengeDashboardReferencesQuery,
-    SchemaTypes.ChallengeDashboardReferencesQueryVariables
-  >(ChallengeDashboardReferencesDocument, options);
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
+  >(ChallengeDashboardReferencesAndRecommendationsDocument, options);
 }
 
-export function useChallengeDashboardReferencesLazyQuery(
+export function useChallengeDashboardReferencesAndRecommendationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeDashboardReferencesQuery,
-    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeDashboardReferencesQuery,
-    SchemaTypes.ChallengeDashboardReferencesQueryVariables
-  >(ChallengeDashboardReferencesDocument, options);
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
+  >(ChallengeDashboardReferencesAndRecommendationsDocument, options);
 }
 
-export type ChallengeDashboardReferencesQueryHookResult = ReturnType<typeof useChallengeDashboardReferencesQuery>;
-export type ChallengeDashboardReferencesLazyQueryHookResult = ReturnType<
-  typeof useChallengeDashboardReferencesLazyQuery
+export type ChallengeDashboardReferencesAndRecommendationsQueryHookResult = ReturnType<
+  typeof useChallengeDashboardReferencesAndRecommendationsQuery
 >;
-export type ChallengeDashboardReferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeDashboardReferencesQuery,
-  SchemaTypes.ChallengeDashboardReferencesQueryVariables
+export type ChallengeDashboardReferencesAndRecommendationsLazyQueryHookResult = ReturnType<
+  typeof useChallengeDashboardReferencesAndRecommendationsLazyQuery
 >;
-export function refetchChallengeDashboardReferencesQuery(
-  variables: SchemaTypes.ChallengeDashboardReferencesQueryVariables
+export type ChallengeDashboardReferencesAndRecommendationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
+  SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
+>;
+export function refetchChallengeDashboardReferencesAndRecommendationsQuery(
+  variables: SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
 ) {
-  return { query: ChallengeDashboardReferencesDocument, variables: variables };
+  return { query: ChallengeDashboardReferencesAndRecommendationsDocument, variables: variables };
 }
 
 export const CreateChallengeDocument = gql`
@@ -5000,13 +5020,19 @@ export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables
   return { query: HubPageDocument, variables: variables };
 }
 
-export const HubDashboardReferencesDocument = gql`
-  query HubDashboardReferences($hubId: UUID_NAMEID!) {
+export const HubDashboardReferencesAndRecommendationsDocument = gql`
+  query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
       context {
         id
         references {
+          id
+          name
+          uri
+          description
+        }
+        recommendations {
           id
           name
           uri
@@ -5018,55 +5044,61 @@ export const HubDashboardReferencesDocument = gql`
 `;
 
 /**
- * __useHubDashboardReferencesQuery__
+ * __useHubDashboardReferencesAndRecommendationsQuery__
  *
- * To run a query within a React component, call `useHubDashboardReferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubDashboardReferencesAndRecommendationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardReferencesAndRecommendationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHubDashboardReferencesQuery({
+ * const { data, loading, error } = useHubDashboardReferencesAndRecommendationsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useHubDashboardReferencesQuery(
+export function useHubDashboardReferencesAndRecommendationsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.HubDashboardReferencesQuery,
-    SchemaTypes.HubDashboardReferencesQueryVariables
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
-    HubDashboardReferencesDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
+  >(HubDashboardReferencesAndRecommendationsDocument, options);
 }
 
-export function useHubDashboardReferencesLazyQuery(
+export function useHubDashboardReferencesAndRecommendationsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubDashboardReferencesQuery,
-    SchemaTypes.HubDashboardReferencesQueryVariables
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
-    HubDashboardReferencesDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
+    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
+  >(HubDashboardReferencesAndRecommendationsDocument, options);
 }
 
-export type HubDashboardReferencesQueryHookResult = ReturnType<typeof useHubDashboardReferencesQuery>;
-export type HubDashboardReferencesLazyQueryHookResult = ReturnType<typeof useHubDashboardReferencesLazyQuery>;
-export type HubDashboardReferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubDashboardReferencesQuery,
-  SchemaTypes.HubDashboardReferencesQueryVariables
+export type HubDashboardReferencesAndRecommendationsQueryHookResult = ReturnType<
+  typeof useHubDashboardReferencesAndRecommendationsQuery
 >;
-export function refetchHubDashboardReferencesQuery(variables: SchemaTypes.HubDashboardReferencesQueryVariables) {
-  return { query: HubDashboardReferencesDocument, variables: variables };
+export type HubDashboardReferencesAndRecommendationsLazyQueryHookResult = ReturnType<
+  typeof useHubDashboardReferencesAndRecommendationsLazyQuery
+>;
+export type HubDashboardReferencesAndRecommendationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
+  SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
+>;
+export function refetchHubDashboardReferencesAndRecommendationsQuery(
+  variables: SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
+) {
+  return { query: HubDashboardReferencesAndRecommendationsDocument, variables: variables };
 }
 
 export const CreateHubDocument = gql`
