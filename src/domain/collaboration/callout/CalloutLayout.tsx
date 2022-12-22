@@ -1,7 +1,7 @@
 import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
+import { Box, IconButton, Menu, MenuItem, styled } from '@mui/material';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -21,6 +21,7 @@ import CalloutBlockMarginal from './Contribute/CalloutBlockMarginal';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from './Types';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -131,7 +132,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
 
     return (
       <>
-        <Card ref={ref}>
+        <PageContentBlock ref={ref} disablePadding disableGap>
           {callout.draft && (
             <Box padding={1.5} sx={{ color: 'neutralLight.main', backgroundColor: 'primary.main' }}>
               <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
@@ -172,7 +173,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
           {calloutNotOpenStateName && (
             <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
           )}
-        </Card>
+        </PageContentBlock>
         <Menu
           id="callout-settings-menu"
           aria-labelledby="callout-settings-button"
