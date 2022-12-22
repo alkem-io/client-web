@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../../../common/components/composite/common/References/References';
-import { Reference } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
+import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
+import { buildCalloutUrl, buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
@@ -24,7 +24,6 @@ import JourneyDashboardVision from './JourneyDashboardVision';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import { TopCallout } from '../../../hub/containers/HubPageContainer';
 import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
@@ -45,7 +44,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
   childEntityTitle?: string;
-  topCallouts: TopCallout[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
@@ -137,6 +136,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
               description={callout.description}
               activity={callout.activity}
               type={callout.type}
+              calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
             />
           ))}
         </PageContentBlock>

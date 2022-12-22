@@ -13,6 +13,7 @@ import { Discussion } from '../../../communication/discussion/models/discussion'
 import {
   AuthorizationPrivilege,
   ChallengeProfileFragment,
+  DashboardTopCalloutFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
@@ -29,7 +30,6 @@ import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../c
 import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
-import { TopCallout } from '../../hub/containers/HubPageContainer';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -50,7 +50,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   isMember: boolean;
   discussions: Discussion[];
   activities: ActivityLogResultType[] | undefined;
-  topCallouts: TopCallout[] | undefined;
+  topCallouts: DashboardTopCalloutFragment[] | undefined;
 }
 
 export interface ChallengeContainerActions {}
@@ -121,18 +121,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const references = referenceData?.hub?.challenge?.context?.references;
 
-  const topCallouts = _challenge?.hub.challenge.collaboration?.callouts
-    ? _challenge?.hub.challenge.collaboration?.callouts.slice(0, 3).map(
-        ({ id, activity, displayName, description, type }) =>
-          ({
-            id,
-            activity,
-            displayName,
-            description,
-            type,
-          } as TopCallout)
-      )
-    : undefined;
+  const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
 
   return (
     <>

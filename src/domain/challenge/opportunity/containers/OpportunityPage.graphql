@@ -38,21 +38,7 @@ fragment OpportunityPage on Opportunity {
       actorType
       description
     }
-    callouts(sortByActivity: true) {
-      id
-      nameID
-      displayName
-      description
-      type
-      visibility
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
-      }
-      activity
-    }
+    ...DashboardTopCallouts
   }
   context {
     id

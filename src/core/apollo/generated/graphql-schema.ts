@@ -3808,6 +3808,8 @@ export type UpdateContextInput = {
   background?: InputMaybe<Scalars['Markdown']>;
   impact?: InputMaybe<Scalars['Markdown']>;
   location?: InputMaybe<UpdateLocationInput>;
+  /** Update the set of Recommendations for the Context. */
+  recommendations?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the set of References for the Context. */
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   tagline?: InputMaybe<Scalars['String']>;
@@ -10341,6 +10343,186 @@ export type AspectCommentsMessageReceivedSubscription = {
       };
     };
   };
+};
+
+export type DashboardTopCalloutsFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        nameID: string;
+        displayName: string;
+        description: string;
+        type: CalloutType;
+        visibility: CalloutVisibility;
+        activity: number;
+        aspects?:
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              nameID: string;
+              displayName: string;
+              type: string;
+              createdDate: Date;
+              createdBy: { __typename?: 'User'; displayName: string };
+              comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              profile?:
+                | {
+                    __typename?: 'CardProfile';
+                    id: string;
+                    description: string;
+                    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  }
+                | undefined;
+            }>
+          | undefined;
+        canvases?:
+          | Array<{
+              __typename?: 'Canvas';
+              id: string;
+              nameID: string;
+              displayName: string;
+              createdDate: Date;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'CanvasCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: CanvasCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            }>
+          | undefined;
+      }>
+    | undefined;
+};
+
+export type DashboardTopCalloutFragment = {
+  __typename?: 'Callout';
+  id: string;
+  nameID: string;
+  displayName: string;
+  description: string;
+  type: CalloutType;
+  visibility: CalloutVisibility;
+  activity: number;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        type: string;
+        createdDate: Date;
+        createdBy: { __typename?: 'User'; displayName: string };
+        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        profile?:
+          | {
+              __typename?: 'CardProfile';
+              id: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  canvases?:
+    | Array<{
+        __typename?: 'Canvas';
+        id: string;
+        nameID: string;
+        displayName: string;
+        createdDate: Date;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+        checkout?:
+          | {
+              __typename?: 'CanvasCheckout';
+              id: string;
+              lockedBy: string;
+              status: CanvasCheckoutStateEnum;
+              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
+          | undefined;
+        preview?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
+      }>
+    | undefined;
 };
 
 export type PostCommentInCalloutMutationVariables = Exact<{

@@ -1,0 +1,22 @@
+fragment DashboardTopCallouts on Collaboration {
+  id
+  callouts(sortByActivity: true) {
+    ...DashboardTopCallout
+  }
+}
+
+fragment DashboardTopCallout on Callout {
+  id
+  nameID
+  displayName
+  description
+  type
+  visibility
+  aspects(limit: 2, shuffle: true) {
+    ...AspectCard
+  }
+  canvases(limit: 2, shuffle: true) {
+    ...CanvasDetails
+  }
+  activity
+}

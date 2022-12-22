@@ -108,6 +108,34 @@ export const CanvasDetailsFragmentDoc = gql`
   ${CheckoutDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
+export const DashboardTopCalloutFragmentDoc = gql`
+  fragment DashboardTopCallout on Callout {
+    id
+    nameID
+    displayName
+    description
+    type
+    visibility
+    aspects(limit: 2, shuffle: true) {
+      ...AspectCard
+    }
+    canvases(limit: 2, shuffle: true) {
+      ...CanvasDetails
+    }
+    activity
+  }
+  ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
+`;
+export const DashboardTopCalloutsFragmentDoc = gql`
+  fragment DashboardTopCallouts on Collaboration {
+    id
+    callouts(sortByActivity: true) {
+      ...DashboardTopCallout
+    }
+  }
+  ${DashboardTopCalloutFragmentDoc}
+`;
 export const DashboardLeadUserFragmentDoc = gql`
   fragment DashboardLeadUser on User {
     id
@@ -313,22 +341,7 @@ export const ChallengeProfileFragmentDoc = gql`
       }
     }
     collaboration {
-      id
-      callouts(sortByActivity: true) {
-        id
-        nameID
-        displayName
-        description
-        type
-        visibility
-        aspects(limit: 2, shuffle: true) {
-          ...AspectCard
-        }
-        canvases(limit: 2, shuffle: true) {
-          ...CanvasDetails
-        }
-        activity
-      }
+      ...DashboardTopCallouts
     }
     community {
       ...EntityDashboardCommunity
@@ -343,8 +356,7 @@ export const ChallengeProfileFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
-  ${AspectCardFragmentDoc}
-  ${CanvasDetailsFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${OpportunityCardFragmentDoc}
 `;
@@ -588,22 +600,7 @@ export const HubPageFragmentDoc = gql`
       }
     }
     collaboration {
-      id
-      callouts(sortByActivity: true) {
-        id
-        nameID
-        displayName
-        description
-        type
-        visibility
-        aspects(limit: 2, shuffle: true) {
-          ...AspectCard
-        }
-        canvases(limit: 2, shuffle: true) {
-          ...CanvasDetails
-        }
-        activity
-      }
+      ...DashboardTopCallouts
     }
     community {
       ...EntityDashboardCommunity
@@ -619,8 +616,7 @@ export const HubPageFragmentDoc = gql`
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${AspectCardFragmentDoc}
-  ${CanvasDetailsFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
@@ -724,21 +720,7 @@ export const OpportunityPageFragmentDoc = gql`
         actorType
         description
       }
-      callouts(sortByActivity: true) {
-        id
-        nameID
-        displayName
-        description
-        type
-        visibility
-        aspects(limit: 2, shuffle: true) {
-          ...AspectCard
-        }
-        canvases(limit: 2, shuffle: true) {
-          ...CanvasDetails
-        }
-        activity
-      }
+      ...DashboardTopCallouts
     }
     context {
       id
@@ -763,8 +745,7 @@ export const OpportunityPageFragmentDoc = gql`
       ...EntityDashboardCommunity
     }
   }
-  ${AspectCardFragmentDoc}
-  ${CanvasDetailsFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
 `;

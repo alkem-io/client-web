@@ -50,22 +50,7 @@ fragment HubPage on Hub {
     }
   }
   collaboration {
-    id
-    callouts(sortByActivity: true) {
-      id
-      nameID
-      displayName
-      description
-      type
-      visibility
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
-      }
-      activity
-    }
+    ...DashboardTopCallouts
   }
   community {
     ...EntityDashboardCommunity
