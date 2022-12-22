@@ -1,5 +1,4 @@
-import Container from '../../../../domain/shared/layout/Container';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
@@ -69,9 +68,9 @@ const SignUp = () => {
 
   return (
     <KratosForm ui={signUpFlow?.ui}>
-      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <AuthPageContentContainer>
         <FixedHeightLogo />
-        <SubHeading>{t('pages.registration.header')}</SubHeading>
+        <SubHeading textAlign="center">{t('pages.registration.header')}</SubHeading>
         <PlatformIntroduction label="pages.registration.introduction" />
         <AcceptTermsContext hasAcceptedTerms={hasAcceptedTerms}>
           <KratosUI
@@ -100,7 +99,7 @@ const SignUp = () => {
             <AuthActionButton onClick={signIn}>Sign in</AuthActionButton>
           </KratosUI>
         </AcceptTermsContext>
-      </Container>
+      </AuthPageContentContainer>
     </KratosForm>
   );
 };
