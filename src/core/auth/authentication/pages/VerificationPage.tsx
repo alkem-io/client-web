@@ -5,11 +5,9 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
-import Container from '../../../../domain/shared/layout/Container';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import { PageTitle } from '../../../ui/typography';
+import { PageTitle, BlockTitle } from '../../../ui/typography';
 import { SelfServiceVerificationFlow } from '@ory/kratos-client';
 
 interface RegisterPageProps {
@@ -33,14 +31,12 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <KratosForm ui={verificationFlow?.ui}>
-      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <AuthPageContentContainer>
         <FixedHeightLogo />
         <PageTitle>{t('pages.verification.header')}</PageTitle>
-        {!hideVerificationMessage(verificationFlow) && (
-          <SubHeading textAlign="center">{t('pages.verification.message')}</SubHeading>
-        )}
+        {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}
         <KratosUI ui={verificationFlow?.ui} />
-      </Container>
+      </AuthPageContentContainer>
     </KratosForm>
   );
 };

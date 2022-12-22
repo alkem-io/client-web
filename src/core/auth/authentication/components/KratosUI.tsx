@@ -10,7 +10,6 @@ import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import { useKratosT } from './Kratos/messages';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
@@ -179,7 +178,13 @@ export const KratosUI: FC<KratosUIProps> = ({
           {t('authentication.validation.fill-fields')}
         </Alert>
       )}
-      <Box display="flex" flexDirection="column" alignItems="stretch" gap={2} width={sxCols(4)}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="stretch"
+        gap={2}
+        minWidth={theme => ({ sm: theme.spacing(36) })}
+      >
         <KratosMessages messages={ui.messages} />
         {nodesByGroup.default.map(toUiControl)}
         {nodesByGroup.password.map(toUiControl)}
