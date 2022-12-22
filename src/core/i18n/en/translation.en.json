@@ -1279,9 +1279,8 @@
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
-          "body": "Membership: Each Hub has members that are contributing. Become a member via the Hub page.",
-          "body1": "Visibility: Most Hubs are public and hence fully visible to everyone. For private Hubs, the content is only available after becoming a member."
+          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. It is a space to coordinate and collaborate. Connect.",
+          "body": "Each Hub has members that are contributing. Most Hubs are public and hence fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },
         "my-hubs": {
           "header": "My Hubs",
