@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 
 export interface GridProperties {
-  columns: number;
+  columnsAvailable: number;
+  columnsDeclared: number;
 }
 
 const GridContext = React.createContext<GridProperties | undefined>(undefined);
@@ -15,5 +16,15 @@ export const useColumns = () => {
     throw new Error('Not within a GridContainer.');
   }
 
-  return gridProps.columns;
+  return gridProps.columnsAvailable;
+};
+
+export const useDeclaredColumns = () => {
+  const gridProps = useContext(GridContext);
+
+  if (!gridProps) {
+    throw new Error('Not within a GridContainer.');
+  }
+
+  return gridProps.columnsDeclared;
 };

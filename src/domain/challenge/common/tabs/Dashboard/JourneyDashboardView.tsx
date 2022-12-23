@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import References from '../../../../shared/components/References/References';
 import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildCalloutUrl, buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -25,7 +26,7 @@ import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
 import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
-import References from '../../../../shared/components/References/References';
+import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -93,6 +94,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
     : 'community.leading-organizations';
   const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
 
+  const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
+  const hasRecommendations = validRecommendations.length > 0;
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
@@ -128,14 +132,17 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <PageContentBlock halfWidth>
-          <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
-          <References references={recommendations} icon={RecommendationIcon} />
-        </PageContentBlock>
-        <PageContentBlock halfWidth>
+        {hasRecommendations && (
+          <PageContentBlock halfWidth>
+            <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
+            <References references={validRecommendations} icon={RecommendationIcon} />
+          </PageContentBlock>
+        )}
+        <PageContentBlock halfWidth={hasRecommendations}>
           <PageContentBlockHeader title="Top Callouts" />
           {topCallouts?.map(callout => (
             <TopCalloutDetails
+              key={callout.id}
               title={callout.displayName}
               description={callout.description}
               activity={callout.activity}
@@ -157,7 +164,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <CardsLayout items={childEntities} deps={[hubNameId]} disablePadding>
               {renderChildEntityCard}
             </CardsLayout>
-            <SeeMore subject={childEntityTitle} to="challenges" />
+            <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
           </PageContentBlock>
         )}
       </PageContentColumn>

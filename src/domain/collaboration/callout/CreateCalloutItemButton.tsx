@@ -1,55 +1,26 @@
-import { styled } from '@mui/material';
-import { PropsWithChildren, ReactNode } from 'react';
-import LinkCard from '../../../common/components/core/LinkCard/LinkCard';
-import WrapperTypography from '../../../common/components/core/WrapperTypography';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import React from 'react';
-
-const ButtonElement = styled(LinkCard)(() => ({
-  cursor: 'pointer',
-  position: 'relative',
-}));
-
-// SpaceBuffer component will take the dimensions of the children passed and set the width and height of the whole button
-const SpaceBuffer = styled('div')(({ theme }) => ({
-  visibility: 'hidden',
-  minWidth: theme.spacing(10),
-  minHeight: theme.spacing(10),
-}));
-
-const ButtonContent = styled('div')(({ theme }) => ({
-  // Adjust to the children dimensions:
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-
-  // Center the + Icon:
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: theme.palette.common.white,
-  '& .MuiSvgIcon-root': {
-    width: theme.spacing(4.5),
-    height: theme.spacing(4.5),
-  },
-}));
+import React, { PropsWithChildren } from 'react';
+import ContributeCard from '../../../core/ui/card/ContributeCard';
+import { AddCircleOutline } from '@mui/icons-material';
+import { gutters } from '../../../core/ui/grid/utils';
 
 interface CreateCalloutItemButtonProps {
   onClick: () => void;
-  children: ReactNode;
 }
-const CreateCalloutItemButton = ({ onClick, children }: PropsWithChildren<CreateCalloutItemButtonProps>) => {
+
+const CreateCalloutItemButton = ({ onClick }: PropsWithChildren<CreateCalloutItemButtonProps>) => {
   return (
-    <ButtonElement onClick={onClick}>
-      <SpaceBuffer>{children}</SpaceBuffer>
-      <ButtonContent>
-        <WrapperTypography variant="h1" weight="bold" color="primary">
-          <AddCircleOutlineIcon width={20} />
-        </WrapperTypography>
-      </ButtonContent>
-    </ButtonElement>
+    <ContributeCard
+      onClick={onClick}
+      sx={{
+        alignSelf: 'stretch',
+        fontSize: theme => theme.spacing(5),
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: gutters(12),
+      }}
+    >
+      <AddCircleOutline fontSize="inherit" color="primary" />
+    </ContributeCard>
   );
 };
 

@@ -14,7 +14,6 @@ import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCall
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard from './AspectCard';
 import { BaseCalloutImpl } from '../Types';
@@ -142,14 +141,9 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     };
 
     const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
-    const createButtonComponent = useMemo(
-      () =>
-        callout.state !== CalloutState.Closed ? (
-          <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-            <ContributeCard />
-          </CreateCalloutItemButton>
-        ) : undefined,
-      [callout.state]
+
+    const createButton = canCreate && callout.state !== CalloutState.Closed && (
+      <CreateCalloutItemButton onClick={handleCreateDialogOpened} />
     );
 
     const navigateToAspect = (aspect: AspectCardAspect) => {
@@ -177,7 +171,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
             <CardsLayout
               items={loading ? [undefined, undefined] : callout.aspects}
               deps={[hubNameId, challengeNameId, opportunityNameId]}
-              {...(canCreate ? { createButtonComponent } : {})}
+              createButton={createButton}
             >
               {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
             </CardsLayout>

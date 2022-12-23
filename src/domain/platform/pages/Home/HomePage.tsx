@@ -23,7 +23,7 @@ export const HomePage = () => {
       <PageContent>
         <PageContentColumn columns={12}>
           <Grow in={!user.loading} appear>
-            <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1}>
+            <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">
               {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
             </Box>
           </Grow>
