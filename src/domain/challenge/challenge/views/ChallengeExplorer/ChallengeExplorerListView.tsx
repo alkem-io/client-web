@@ -55,7 +55,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
         enable={enableFilterByHub}
         items={challenges}
         filterableDataGetter={simpleChallengeHubDataGetter}
-        sx={{ top: theme => theme.spacing(-10) }}
+        sx={{ top: theme => theme.spacing(-8) }}
       >
         {filteredByHubChallenges => (
           <CardFilter
