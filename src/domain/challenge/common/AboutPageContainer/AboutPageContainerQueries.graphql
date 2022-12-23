@@ -122,6 +122,7 @@ fragment MetricsItem on NVP {
 #
 query AboutPageNonMembers(
   $hubNameId: UUID_NAMEID!,
+  $includeHub: Boolean = false,
   $includeChallenge: Boolean = false,
   $includeOpportunity: Boolean = false,
   $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
@@ -129,28 +130,30 @@ query AboutPageNonMembers(
 ) {
   hub(ID: $hubNameId) {
     id
-    nameID
-    displayName
-    tagset {
-      id
-      name
-      tags
-    }
-    host {
-      ...AssociatedOrganizationDetails
-    }
-    metrics {
-      ...MetricsItem
-    }
-    community {
-      id
-      authorization {
+    ... on Hub @include(if: $includeHub) {
+      nameID
+      displayName
+      tagset {
         id
-        myPrivileges
+        name
+        tags
       }
-    }
-    context {
-      ...ContextTab
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      metrics {
+        ...MetricsItem
+      }
+      community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      context {
+        ...ContextTab
+      }
     }
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
@@ -213,9 +216,9 @@ query AboutPageNonMembers(
 #
 query AboutPageMembers(
   $hubNameId: UUID_NAMEID!,
+  $includeHub: Boolean = false,
   $includeChallenge: Boolean = false,
   $includeOpportunity: Boolean = false,
-  $skipHubCommunity: Boolean = false,
   $communityReadAccess: Boolean!,
   $referencesReadAccess: Boolean!,
   $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
@@ -223,8 +226,10 @@ query AboutPageMembers(
 ) {
   hub(ID: $hubNameId) {
     id
-    community @include(if: $communityReadAccess) {
-      ...EntityDashboardCommunity @skip(if: $skipHubCommunity)
+    ... on Hub @include(if: $includeHub) {
+      community @include(if: $communityReadAccess) {
+        ...EntityDashboardCommunity
+      }
     }
     context {
       id
