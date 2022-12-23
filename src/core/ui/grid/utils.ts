@@ -16,8 +16,8 @@ export const gutters =
 
 interface UseGridItemProvided {
   (columns?: number): {
-    width: string | 0;
-    flexGrow: number;
+    width: string;
+    flexGrow: 0;
     flexShrink: 0;
   };
 }
@@ -26,8 +26,8 @@ export const useGridItem = (): UseGridItemProvided => {
   const gridColumns = useColumns();
 
   return (columns?: number) => ({
-    width: columns ? getColumnsWidth(columns, gridColumns) : 0,
-    flexGrow: columns ? 0 : 1,
+    width: columns ? getColumnsWidth(columns, gridColumns) : '100%',
+    flexGrow: 0,
     flexShrink: 0,
   });
 };
