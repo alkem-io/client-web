@@ -79,7 +79,7 @@ const StateActivityCardItem: FC<ActivityCardItemProps> = ({ lifecycle = null }) 
       <Grid container item justifyContent={'space-between'} alignItems={'center'}>
         <Grid item className={styles.item}>
           <WrapperTypography>State</WrapperTypography>
-          <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
+          <Tooltip title={t('pages.activity.innovation-flow-info') || ''} arrow placement="top" id="lifecycle-graph">
             <IconButton color="primary" onClick={() => setModalVisible(true)} size="large">
               <InfoIcon />
             </IconButton>
