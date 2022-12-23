@@ -102,8 +102,8 @@
     "administration": "Administratie",
     "add": "Voeg toe",
     "remove": "Verwijder",
-    "callout": "Callout",
-    "callouts": "Callouts",
+    "callout": "Oproep",
+    "callouts": "Oproepen",
     "canvas": "Canvas",
     "canvases": "Canvassen",
     "comment": "Opmerking",
@@ -173,6 +173,8 @@
     "search": "Zoek...",
     "reference": "Referentie",
     "references": "Referenties",
+    "recommendation": "Aanbeveling",
+    "recommendations": "Aanbevelingen",
     "notifications": "Notificaties",
     "credentials": "Credentials",
     "my-profile": "Mijn profiel",
@@ -379,11 +381,11 @@
   "callout": {
     "contributions": "{{count}} Bijdrage",
     "contributions_plural": "{{count}} Bijdragen",
-    "draftNotice": "Voorlopige versie - Deze Callout is alleen zichtbaar voor Beheerders",
-    "delete-confirm-title": "Callout verwijderen?",
-    "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd.",
+    "draftNotice": "Voorlopige versie - Deze oproep is alleen zichtbaar voor beheerders.",
+    "delete-confirm-title": "Oproep verwijderen?",
+    "delete-confirm-text": "Alle kaarten, canvasen en discussies onder deze oproep worden ook verwijderd.",
     "state-permission": "Accepteer nieuwe reacties",
-    "permission-helptext": "Gebruik de schakelaar hieronder om deze callout voor nieuwe items te sluiten."
+    "permission-helptext": "Gebruik de switch hieronder om deze oproep voor nieuwe bijdragen te sluiten."
   },
   "journey-creation": {
     "dialog-title": "Maak nieuwe {{entity}} aan"
@@ -584,8 +586,8 @@
       "give-feedback": "Geef feedback"
     },
     "callout-creation": {
-      "title": "Maak een nieuwe Callout",
-      "callout-type-label": "Callout type",
+      "title": "Plaats een nieuwe oproep",
+      "callout-type-label": "Oproep type",
       "card-type-label": "Kaart type",
       "info-step": {
         "title": "Details",
@@ -610,7 +612,7 @@
       }
     },
     "callout-edit": {
-      "type-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe items, ingediende kaarten zullen niet worden gewijzigd"
+      "type-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe items, eerder ingediende kaarten zullen niet worden gewijzigd"
     },
     "aspect-creation": {
       "title": "Dien je antwoord in op {{calloutDisplayName}}",
@@ -718,10 +720,11 @@
     },
     "referenceSegment": {
       "title": "Referenties",
-      "missing-refreneces": "Nog geen referenties",
+      "missing-refereneces": "Nog geen referenties",
       "tooltips": {
         "add-reference": "Voeg een referentie toe",
-        "remove-reference": "Verwijder de referentie"
+        "remove-reference": "Verwijder de referentie",
+        "remove-recommendation": "Maak veld leeg"
       },
       "url-helper-text": "Houd er rekening mee dat alle geüploade bestanden toegankelijk worden voor iedereen met de link en alleen verwijderd kunnen worden door het Alkemio team.<br/> <terms>Klik hier</terms> voor de algemene voorwaarden."
     },
@@ -1022,11 +1025,14 @@
           "list": "Lijst met {{entities}}",
           "empty": "Geen {{entities}} gevonden in deze {{parentEntity}}.",
           "empty-list": "Er zijn nog geen {{entities}} in deze {{parentEntity}}."
+        },
+        "recommendations": {
+          "title": "Aanbevolen door de Host"
         }
       }
     },
     "contribute": {
-      "initial-text": "**Lever een bijdrage** door middel van het delen van kennis en ervaringen. Hier worden alle inzichten van de community verzameld.",
+      "initial-text": "Hier kun je **samenwerken met de community**. Door het delen van ideeën en inzichten maken we samen impact",
       "no-cards": "Geen Kaarten gevonden"
     },
     "admin": {
@@ -1247,12 +1253,12 @@
     "activity": {
       "title": "{{blockName}} Activiteit",
       "hubs": "Challenges Hubs",
-      "innovation-flow-info": "Klik om de levenscyclus te bekijken"
+      "innovation-flow-info": "Klik om de Innovatie Flow te weergeven"
     },
     "home": {
       "sections": {
         "welcome": {
-          "head": "Een nieuwe manier om te werken aan Challenges. Samen een Community bouwen van mensen, bedrijven, NGO's en overheidsinstanties.",
+          "head": "Het platform om samen te werken aan een betere wereld.",
           "impact": "<impact>Impact</impact>",
           "foundation": "<foundation>Stichting</foundation>",
           "opensource": "<opensource>Open Source</opensource>",
@@ -1273,7 +1279,7 @@
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",
-          "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
+          "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor deze Challenges. Een omgeving om de community te verbinden en samen te werken.",
           "body": "Lidmaatschap: Elke Hub heeft leden die een bijdrage leveren. Word lid via de Hub pagina.",
           "body1": "Zichtbaarheid: De meeste Hubs zijn openbaar en dus volledig zichtbaar voor iedereen. Voor privé Hubs is de inhoud alleen beschikbaar nadat je lid bent geworden."
         },
@@ -1631,9 +1637,9 @@
     },
     "cardLocation": {
       "title": "Kaart locatie",
-      "label": "Bijdragen aan Callout",
-      "reminder": "Wees voorzichtig met het wijzigen van de kaart locatie. Als je de kaart naar een andere Callout verplaatst, zal hij verdwijnen van de huidige Callout. Dit kan het voor mensen, ook voor de persoon die deze kaart heeft gemaakt, moeilijk maken om hem terug te halen. Merk op dat u alleen kaarten kunt verplaatsen binnen dezelfde Hub, Challenge of Opportunity.",
-      "success": "Kaart succesvol verplaatst naar de nieuwe Callout.",
+      "label": "Bijdragen aan oproep",
+      "reminder": "Wees voorzichtig met het verplaatsen van de kaart. Als je de kaart naar een andere Callout verplaatst, zal hij verdwijnen van de huidige Callout. Dit kan het voor mensen, ook voor de persoon die deze kaart heeft gemaakt, moeilijk maken om hem terug te halen. Merk op dat u alleen kaarten kunt verplaatsen binnen dezelfde Hub, Challenge of Opportunity.",
+      "success": "Kaart succesvol verplaatst naar de nieuwe oproep.",
       "error": "Er ging iets mis bij het verplaatsen van de kaart, probeer het opnieuw."
     }
   },
