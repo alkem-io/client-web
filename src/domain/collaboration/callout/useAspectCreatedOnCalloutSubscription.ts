@@ -1,8 +1,8 @@
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import {
-  useChallengeCalloutQuery,
-  useHubCalloutQuery,
-  useOpportunityCalloutQuery,
+  useChallengeCalloutAspectsSubscriptionQuery,
+  useHubCalloutAspectsSubscriptionQuery,
+  useOpportunityCalloutAspectsSubscriptionQuery,
   usePrivilegesOnChallengeCollaborationQuery,
   usePrivilegesOnHubCollaborationQuery,
   usePrivilegesOnOpportunityCollaborationQuery,
@@ -38,7 +38,7 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const hubCollaboration = hubCollaborationData?.hub?.collaboration;
   const hubCollaborationPrivileges = hubCollaboration?.authorization?.myPrivileges;
   const canReadHubCollaboration = hubCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
-  const { data: hubAspectData, subscribeToMore: subscribeToHub } = useHubCalloutQuery({
+  const { data: hubAspectData, subscribeToMore: subscribeToHub } = useHubCalloutAspectsSubscriptionQuery({
     variables: { hubNameId, calloutId },
     skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId),
     onError: handleError,
@@ -53,11 +53,12 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const challengeCollaborationPrivileges = challengeCollaboration?.authorization?.myPrivileges;
   const canReadChallengeCollaboration = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: challengeAspectData, subscribeToMore: subscribeToChallenges } = useChallengeCalloutQuery({
-    variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
-    skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
-    onError: handleError,
-  });
+  const { data: challengeAspectData, subscribeToMore: subscribeToChallenges } =
+    useChallengeCalloutAspectsSubscriptionQuery({
+      variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
+      skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
+      onError: handleError,
+    });
 
   const { data: opportunityCollaborationData } = usePrivilegesOnOpportunityCollaborationQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId! },
@@ -68,13 +69,14 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const opportunityCollaborationPrivileges = opportunityCollaboration?.authorization?.myPrivileges;
   const canReadOpportunityCollaboration = opportunityCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: opportunityAspectData, subscribeToMore: subscribeToOpportunity } = useOpportunityCalloutQuery({
-    variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
-    skip: !canReadOpportunityCollaboration || !opportunityNameId,
-    onError: handleError,
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-first',
-  });
+  const { data: opportunityAspectData, subscribeToMore: subscribeToOpportunity } =
+    useOpportunityCalloutAspectsSubscriptionQuery({
+      variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
+      skip: !canReadOpportunityCollaboration || !opportunityNameId,
+      onError: handleError,
+      fetchPolicy: 'network-only',
+      nextFetchPolicy: 'cache-first',
+    });
 
   const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
