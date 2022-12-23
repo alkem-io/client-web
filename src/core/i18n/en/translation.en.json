@@ -1027,12 +1027,12 @@
           "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
         },
         "recommendations": {
-          "title": "Recommended by the Admin"
+          "title": "Recommended by the Host"
         }
       }
     },
     "contribute": {
-      "initial-text": "**Contribute** your insights to understanding the context. It is about surfacing up the wisdom of the community.",
+      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
       "no-cards": "No Card found"
     },
     "admin": {
@@ -1253,7 +1253,7 @@
     "activity": {
       "title": "{{blockName}} Activity",
       "hubs": "Challenge Hubs",
-      "lifecycle-info": "Click to view lifecycle graph"
+      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "sections": {
@@ -1279,7 +1279,7 @@
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
+          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. It is a space to coordinate and collaborate. Connect.",
           "body": "Membership: Each Hub has members that are contributing. Become a member via the Hub page.",
           "body1": "Visibility: Most Hubs are public and hence fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },

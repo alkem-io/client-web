@@ -1247,7 +1247,7 @@
     "activity": {
       "title": "{{blockName}} Actividad",
       "hubs": "Hubs de Desafíos",
-      "lifecycle-info": "Haz click para ver el Grafo de Ciclo de Vida"
+      "innovation-flow-info": "Haz click para ver el Grafo de Ciclo de Vida"
     },
     "home": {
       "sections": {
