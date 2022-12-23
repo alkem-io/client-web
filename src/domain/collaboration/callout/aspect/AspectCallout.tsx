@@ -142,10 +142,9 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
 
-    const createButton =
-      canCreate && callout.state !== CalloutState.Closed ? (
-        <CreateCalloutItemButton onClick={handleCreateDialogOpened} />
-      ) : undefined;
+    const createButton = canCreate && callout.state !== CalloutState.Closed && (
+      <CreateCalloutItemButton onClick={handleCreateDialogOpened} />
+    );
 
     const navigateToAspect = (aspect: AspectCardAspect) => {
       navigate(
