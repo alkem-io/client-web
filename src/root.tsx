@@ -7,7 +7,7 @@ import { GlobalStateProvider } from './core/state/GlobalStateProvider';
 import { NavigationProvider } from './core/routing/NavigationProvider';
 import SentryErrorBoundaryProvider from './core/analytics/SentryErrorBoundaryProvider';
 import ServerMetadataProvider from './domain/platform/metadata/ServerMetadataProvider';
-import { ThemeProvider } from './core/ui/themes/ThemeProvider';
+import RootThemeProvider from './core/ui/themes/RootThemeProvider';
 import { UserProvider } from './domain/community/contributor/user/providers/UserProvider/UserProvider';
 import './core/i18n/config';
 import { TopLevelRoutes } from './core/routing/TopLevelRoutes';
@@ -62,7 +62,7 @@ const GlobalStyles: FC = ({ children }) => {
 const Root: FC = () => {
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider>
+      <RootThemeProvider>
         <GlobalStyles>
           <ConfigProvider url={publicGraphQLEndpoint}>
             <ServerMetadataProvider url={publicGraphQLEndpoint}>
@@ -87,7 +87,7 @@ const Root: FC = () => {
             </ServerMetadataProvider>
           </ConfigProvider>
         </GlobalStyles>
-      </ThemeProvider>
+      </RootThemeProvider>
     </StyledEngineProvider>
   );
 };
