@@ -18,7 +18,7 @@ import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import useCallouts, { TypedCallout } from '../useCallouts';
 import { AspectIcon } from '../../aspect/icon/AspectIcon';
 import { CanvasAltIcon } from '../../canvas/icon/CanvasAltIcon';
-import CalloutsListTitle from './CalloutsListTitle';
+import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 
 interface CalloutsPageProps {
@@ -43,13 +43,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
   const { t } = useTranslation();
 
   const buildCalloutTitle = (callout: TypedCallout) => {
-    return (
-      <CalloutsListTitle
-        displayName={callout.displayName}
-        contributionsCount={getItemsCount(callout)}
-        calloutUrl={callout.url}
-      />
-    );
+    return <EllipsableWithCount count={getItemsCount(callout)}>{callout.displayName}</EllipsableWithCount>;
   };
 
   const {
@@ -80,6 +74,7 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
               id: callout.id,
               title: buildCalloutTitle(callout),
               icon: calloutIcons[callout.type],
+              uri: callout.url,
             }))}
             emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
               entities: t('common.callouts'),

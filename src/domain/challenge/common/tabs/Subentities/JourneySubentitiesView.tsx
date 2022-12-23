@@ -10,7 +10,6 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
-import RouterLink from '../../../../../core/ui/link/RouterLink';
 import LinksList from '../../../../../core/ui/list/LinksList';
 import { Text } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
@@ -28,7 +27,7 @@ export interface JourneySubentitiesState {
 export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntity> extends Partial<CoreEntityIdTypes> {
   journeyTypeName: JourneyTypeName;
   childEntities: ChildEntity[] | undefined;
-  childEntitiesIcon?: ReactElement;
+  childEntitiesIcon: ReactElement;
   childEntityReadAccess?: boolean;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   childEntityValueGetter: (childEntity: ChildEntity) => ValueType;
@@ -76,8 +75,9 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
             <LinksList
               items={childEntities.map(entity => ({
                 id: entity.id,
-                title: <RouterLink to={getChildEntityUrl(entity)}>{entity.displayName}</RouterLink>,
+                title: entity.displayName,
                 icon: childEntitiesIcon,
+                uri: getChildEntityUrl(entity),
               }))}
               emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                 entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
