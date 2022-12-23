@@ -6140,6 +6140,7 @@ export type MetricsItemFragment = { __typename?: 'NVP'; id: string; name: string
 
 export type AboutPageNonMembersQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
+  includeHub?: InputMaybe<Scalars['Boolean']>;
   includeChallenge?: InputMaybe<Scalars['Boolean']>;
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
@@ -6150,9 +6151,9 @@ export type AboutPageNonMembersQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
-    id: string;
     nameID: string;
     displayName: string;
+    id: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     host?:
       | {
@@ -6311,9 +6312,9 @@ export type AboutPageNonMembersQuery = {
 
 export type AboutPageMembersQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
+  includeHub?: InputMaybe<Scalars['Boolean']>;
   includeChallenge?: InputMaybe<Scalars['Boolean']>;
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
-  skipHubCommunity?: InputMaybe<Scalars['Boolean']>;
   communityReadAccess: Scalars['Boolean'];
   referencesReadAccess: Scalars['Boolean'];
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
