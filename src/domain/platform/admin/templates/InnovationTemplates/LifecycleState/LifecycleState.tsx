@@ -4,31 +4,34 @@ import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
 import { LifecycleModal } from '../../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
 import { ReactComponent as LifecycleStateIcon } from './LifecycleStateIcon.svg';
+import RootThemeProvider from '../../../../../../core/ui/themes/RootThemeProvider';
 
 export interface LifecycleProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
 export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const state = lifecycle?.state || '';
   const { t } = useTranslation();
 
   return (
     <>
       <Tooltip title={t('pages.activity.innovation-flow-info') || ''} arrow placement="top" id="lifecycle-graph">
-        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<LifecycleStateIcon />}>
+        <Button onClick={() => setIsModalVisible(true)} variant={'outlined'} startIcon={<LifecycleStateIcon />}>
           {`State: ${state}`}
         </Button>
       </Tooltip>
       {lifecycle && (
-        <LifecycleModal
-          lifecycle={lifecycle}
-          show={modalVisible}
-          onHide={() => {
-            setModalVisible(false);
-          }}
-        />
+        <RootThemeProvider>
+          <LifecycleModal
+            lifecycle={lifecycle}
+            show={isModalVisible}
+            onHide={() => {
+              setIsModalVisible(false);
+            }}
+          />
+        </RootThemeProvider>
       )}
     </>
   );
