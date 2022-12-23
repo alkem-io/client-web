@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import { Location } from '../../../../../core/apollo/generated/graphql-schema';
+import { BlockTitle } from '../../../../../core/ui/typography';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -50,18 +50,14 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             ?.filter(t => t.tags.length > 0)
             .map((tagset, i) => (
               <Grid item key={i}>
-                <WrapperTypography color="primary" weight="boldLight">
-                  {tagset.name}
-                </WrapperTypography>
+                <BlockTitle>{tagset.name}</BlockTitle>
                 <TagsComponent tags={tagset.tags} count={5} />
               </Grid>
             ))}
 
           {entity.links && entity.links.length ? (
             <Grid item container direction="column">
-              <WrapperTypography color="primary" weight="boldLight">
-                {t('components.profile.fields.links.title')}
-              </WrapperTypography>
+              <BlockTitle>{t('components.profile.fields.links.title')}</BlockTitle>
               {entity.links?.map((l, i) => (
                 <Link key={i} href={l} target="_blank">
                   {l}

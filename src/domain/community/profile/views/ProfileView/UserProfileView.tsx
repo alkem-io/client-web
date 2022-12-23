@@ -1,14 +1,14 @@
-import { Grid, Typography as MUITypography } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
 import { UserMetadata } from '../../../contributor/user/hooks/useUserMetadataWrapper';
 import { isSocialNetworkSupported } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
 
 export interface UserProfileViewProps {
   entities: {
@@ -38,30 +38,20 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
       </Grid>
 
       <Grid item>
-        <WrapperTypography color="primary" weight="boldLight" aria-label="keywords">
-          {t('components.profile.fields.keywords.title')}
-        </WrapperTypography>
+        <BlockSectionTitle>{t('components.profile.fields.keywords.title')}</BlockSectionTitle>
         <TagsWithOffset tags={keywords} />
       </Grid>
 
       <Grid item>
-        <WrapperTypography color="primary" weight="boldLight" aria-label="skills">
-          {t('components.profile.fields.skills.title')}
-        </WrapperTypography>
+        <BlockSectionTitle>{t('components.profile.fields.skills.title')}</BlockSectionTitle>
         <TagsWithOffset tags={skills} />
       </Grid>
 
       <Grid item container direction="column">
-        <WrapperTypography color="primary" weight="boldLight" aria-label="links">
-          {t('components.profile.fields.links.title')}
-        </WrapperTypography>
+        <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
         <References
           references={nonSocialReferences}
-          noItemsView={
-            <MUITypography color="neutral.main" variant="subtitle2">
-              {t('common.no-references')}
-            </MUITypography>
-          }
+          noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}
         />
       </Grid>
     </PageContentBlock>
