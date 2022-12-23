@@ -8,6 +8,7 @@ import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { PersonOutlined } from '@mui/icons-material';
+import DefaultThemed from '../../../../../core/ui/themes/DefaultThemed';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
@@ -213,18 +214,20 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   return (
     <>
       {applicationButton}
-      <PreApplicationDialog
-        open={isApplyDialogOpen}
-        onClose={handleClose}
-        dialogVariant={dialogVariant}
-        hubName={hubName}
-        challengeName={challengeName}
-        parentApplicationState={parentApplicationState}
-        applyUrl={applyUrl}
-        parentApplyUrl={parentApplyUrl}
-      />
-      <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
-      <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
+      <DefaultThemed>
+        <PreApplicationDialog
+          open={isApplyDialogOpen}
+          onClose={handleClose}
+          dialogVariant={dialogVariant}
+          hubName={hubName}
+          challengeName={challengeName}
+          parentApplicationState={parentApplicationState}
+          applyUrl={applyUrl}
+          parentApplyUrl={parentApplyUrl}
+        />
+        <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
+        <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
+      </DefaultThemed>
     </>
   );
 };

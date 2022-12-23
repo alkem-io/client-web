@@ -1,6 +1,6 @@
-import { StyledEngineProvider, Theme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import React, { FC } from 'react';
-import { defaultTheme } from './default/defaultTheme';
+import { StyledEngineProvider, Theme } from '@mui/material/styles';
+import DefaultThemed from './DefaultThemed';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -12,13 +12,12 @@ declare module '@mui/styles/defaultTheme' {
   interface DefaultTheme extends Theme {}
 }
 
-const ThemeProvider: FC<{}> = ({ children }) => {
-  // can merge external configuration for the theme and pass it to the provider
+const RootThemeProvider: FC<{}> = ({ children }) => {
   return (
     <StyledEngineProvider injectFirst>
-      <MuiThemeProvider theme={defaultTheme}>{children}</MuiThemeProvider>
+      <DefaultThemed>{children}</DefaultThemed>
     </StyledEngineProvider>
   );
 };
 
-export { ThemeProvider };
+export default RootThemeProvider;
