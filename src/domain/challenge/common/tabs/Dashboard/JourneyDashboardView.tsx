@@ -142,6 +142,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           <PageContentBlockHeader title="Top Callouts" />
           {topCallouts?.map(callout => (
             <TopCalloutDetails
+              key={callout.id}
               title={callout.displayName}
               description={callout.description}
               activity={callout.activity}

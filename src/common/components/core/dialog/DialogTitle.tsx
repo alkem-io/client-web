@@ -16,7 +16,7 @@ const DialogTitle = ({ children, onClose, classes, ...other }: PropsWithChildren
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       classes={classes}
     >
-      <PageTitle>{children}</PageTitle>
+      <PageTitle sx={{ width: '100%' }}>{children}</PageTitle>
       {onClose && (
         <IconButton aria-label="close" onClick={onClose} size="medium">
           <Close />

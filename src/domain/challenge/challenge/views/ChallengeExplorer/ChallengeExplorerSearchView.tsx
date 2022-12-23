@@ -1,5 +1,4 @@
 import React, { FC, useCallback } from 'react';
-import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../hub/icon/HubIcon';
@@ -12,6 +11,9 @@ import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import { Text } from '../../../../../core/ui/typography/components';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -52,12 +54,15 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
           {groups => {
             return groups.map(({ keyValue, values }) => (
               <Box key={`boxchallenge_${keyValue}`}>
-                <DashboardGenericSection
-                  key={`challenge_${keyValue}`}
-                  headerText={values[0].hubDisplayName}
-                  headerIcon={<HubIcon />}
-                  subHeaderText={values[0].hubTagline}
-                >
+                <PageContentBlock>
+                  <PageContentBlockHeader
+                    title={
+                      <>
+                        <HubIcon sx={{ verticalAlign: 'bottom' }} /> {values[0].hubDisplayName}
+                      </>
+                    }
+                  />
+                  <Text>{values[0].hubTagline}</Text>
                   <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
                     <CardsLayout items={values}>
                       {challenge => (
@@ -73,8 +78,8 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                       )}
                     </CardsLayout>
                   </CardsLayoutScroller>
-                </DashboardGenericSection>
-                <SectionSpacer key={`spacer_${keyValue}`} />
+                  <SectionSpacer />
+                </PageContentBlock>
               </Box>
             ));
           }}
