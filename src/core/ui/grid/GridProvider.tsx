@@ -2,15 +2,17 @@ import React, { PropsWithChildren, useContext, useMemo } from 'react';
 import GridContext, { GridProperties } from './GridContext';
 
 interface GridProviderProps {
-  columns: number | ((parentGridColumns: number | undefined) => number);
+  columns: number;
 }
 
 const GridProvider = ({ columns, children }: PropsWithChildren<GridProviderProps>) => {
   const parentGridContext = useContext(GridContext);
 
   const gridProps: GridProperties = useMemo(() => {
-    const nestedGridColumns = typeof columns === 'number' ? columns : columns(parentGridContext?.columns);
-    return { columns: nestedGridColumns };
+    return {
+      columnsAvailable: parentGridContext ? Math.min(columns, parentGridContext.columnsAvailable) : columns,
+      columnsDeclared: columns,
+    };
   }, [columns, parentGridContext]);
 
   return <GridContext.Provider value={gridProps}>{children}</GridContext.Provider>;

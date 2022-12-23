@@ -1,19 +1,10 @@
-import { Box, BoxProps } from '@mui/material';
-import { LINE_HEIGHT } from './Constants';
+import { TypographyProps } from '@mui/material';
+import { PageTitle } from '../../../../core/ui/typography';
 
-interface SubHeadingProps extends BoxProps<'h2'> {}
+interface SubHeadingProps extends TypographyProps {}
 
 const SubHeading = (props: SubHeadingProps) => {
-  return (
-    <Box
-      component="h2"
-      fontSize={22}
-      lineHeight={theme => theme.spacing(LINE_HEIGHT)}
-      fontWeight="normal"
-      margin={0}
-      {...props}
-    />
-  );
+  return <PageTitle {...props} />;
 };
 
 export default SubHeading;
