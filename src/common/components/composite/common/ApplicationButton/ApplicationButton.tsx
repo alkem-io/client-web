@@ -8,7 +8,7 @@ import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { PersonOutlined } from '@mui/icons-material';
-import DefaultThemed from '../../../../../core/ui/themes/DefaultThemed';
+import RootThemeProvider from '../../../../../core/ui/themes/RootThemeProvider';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
@@ -214,7 +214,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   return (
     <>
       {applicationButton}
-      <DefaultThemed>
+      <RootThemeProvider>
         <PreApplicationDialog
           open={isApplyDialogOpen}
           onClose={handleClose}
@@ -227,7 +227,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
         />
         <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
         <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
-      </DefaultThemed>
+      </RootThemeProvider>
     </>
   );
 };

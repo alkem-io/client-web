@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
-import { StyledEngineProvider, Theme } from '@mui/material/styles';
-import DefaultThemed from './DefaultThemed';
+import React, { PropsWithChildren } from 'react';
+import { ThemeProvider } from '@mui/material';
+import { Theme } from '@mui/material/styles';
+import { defaultTheme } from './default/defaultTheme';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -12,12 +13,8 @@ declare module '@mui/styles/defaultTheme' {
   interface DefaultTheme extends Theme {}
 }
 
-const RootThemeProvider: FC<{}> = ({ children }) => {
-  return (
-    <StyledEngineProvider injectFirst>
-      <DefaultThemed>{children}</DefaultThemed>
-    </StyledEngineProvider>
-  );
+const RootThemeProvider = ({ children }: PropsWithChildren<{}>) => {
+  return <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>;
 };
 
 export default RootThemeProvider;

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
 import { LifecycleModal } from '../../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
 import { ReactComponent as LifecycleStateIcon } from './LifecycleStateIcon.svg';
-import DefaultThemed from '../../../../../../core/ui/themes/DefaultThemed';
+import RootThemeProvider from '../../../../../../core/ui/themes/RootThemeProvider';
 
 export interface LifecycleProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
@@ -23,7 +23,7 @@ export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
         </Button>
       </Tooltip>
       {lifecycle && (
-        <DefaultThemed>
+        <RootThemeProvider>
           <LifecycleModal
             lifecycle={lifecycle}
             show={isModalVisible}
@@ -31,7 +31,7 @@ export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
               setIsModalVisible(false);
             }}
           />
-        </DefaultThemed>
+        </RootThemeProvider>
       )}
     </>
   );
