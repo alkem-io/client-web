@@ -17,7 +17,9 @@ const PageContentBlockGrid = ({ cards = false, children, ...props }: PageContent
 
   return (
     <GridContainer {...props}>
-      <GridProvider columns={columns}>{children}</GridProvider>
+      <GridProvider columns={columns} force={cards}>
+        {children}
+      </GridProvider>
     </GridContainer>
   );
 };
