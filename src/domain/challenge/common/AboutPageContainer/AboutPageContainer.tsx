@@ -58,6 +58,10 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
 }) => {
   const handleError = useApolloErrorHandler();
 
+  const includeHub = !(challengeNameId || opportunityNameId);
+  const includeChallenge = !!challengeNameId;
+  const includeOpportunity = !!opportunityNameId;
+
   const {
     data: nonMembersData,
     loading: nonMembersDataLoading,
@@ -67,19 +71,20 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
       hubNameId,
       challengeNameId,
       opportunityNameId,
-      includeChallenge: !!challengeNameId,
-      includeOpportunity: !!opportunityNameId,
+      includeHub,
+      includeChallenge,
+      includeOpportunity,
     },
     onError: handleError,
   });
   const nonMemberContext =
-    nonMembersData?.hub?.context ??
+    nonMembersData?.hub?.opportunity?.context ??
     nonMembersData?.hub?.challenge?.context ??
-    nonMembersData?.hub?.opportunity?.context;
+    nonMembersData?.hub?.context;
   const nonMemberCommunity =
-    nonMembersData?.hub?.community ??
+    nonMembersData?.hub?.opportunity?.community ??
     nonMembersData?.hub?.challenge?.community ??
-    nonMembersData?.hub?.opportunity?.community;
+    nonMembersData?.hub?.community;
 
   const referencesReadAccess =
     nonMemberContext?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
@@ -95,17 +100,18 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
       hubNameId,
       challengeNameId,
       opportunityNameId,
-      includeChallenge: !!challengeNameId,
-      includeOpportunity: !!opportunityNameId,
-      skipHubCommunity: Boolean(challengeNameId || opportunityNameId),
+      includeHub,
+      includeChallenge,
+      includeOpportunity,
       referencesReadAccess,
       communityReadAccess,
     },
     onError: handleError,
     skip: nonMembersDataLoading,
   });
+
   const memberContext =
-    membersData?.hub?.context ?? membersData?.hub?.challenge?.context ?? membersData?.hub?.opportunity?.context;
+    membersData?.hub?.opportunity?.context ?? membersData?.hub?.challenge?.context ?? membersData?.hub?.context;
 
   const context = nonMemberContext;
 
