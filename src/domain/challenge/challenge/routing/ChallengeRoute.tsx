@@ -47,6 +47,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
         <Route path={routes.Contribute} element={<ContributePage entityTypeName="challenge" />} />
+        <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
 
@@ -55,7 +56,17 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           element={<ContributePage entityTypeName="challenge" scrollToCallout />}
         />
         <Route
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<ContributePage entityTypeName="challenge" scrollToCallout />}
+        />
+        <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          element={
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
+          }
+        />
+        <Route
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
             <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
           }
