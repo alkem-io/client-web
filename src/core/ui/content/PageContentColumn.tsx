@@ -15,7 +15,7 @@ const PageContentColumn = ({ columns, children, ...props }: PageContentColumnPro
   return (
     <GridItem columns={columns}>
       <Box display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
-        <GridProvider columns={parentGridColumns => Math.min(columns, parentGridColumns!)}>{children}</GridProvider>
+        <GridProvider columns={columns}>{children}</GridProvider>
       </Box>
     </GridItem>
   );

@@ -5,11 +5,9 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
-import Container from '../../../../domain/shared/layout/Container';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { PageTitle } from '../../../ui/typography';
-import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
+import { PageTitle, BlockTitle } from '../../../ui/typography';
 import { isInputNode } from '../components/Kratos/helpers';
 import { UiContainer } from '@ory/kratos-client/dist/api';
 
@@ -41,14 +39,12 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <KratosForm ui={recoveryFlow?.ui}>
-      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <AuthPageContentContainer>
         <FixedHeightLogo />
         <PageTitle>{t('pages.recovery.header')}</PageTitle>
-        {flowStage === RecoveryFlowStage.Email && (
-          <SubHeading textAlign="center">{t('pages.recovery.message.initial')}</SubHeading>
-        )}
+        {flowStage === RecoveryFlowStage.Email && <BlockTitle>{t('pages.recovery.message.initial')}</BlockTitle>}
         <KratosUI ui={recoveryFlow?.ui} />
-      </Container>
+      </AuthPageContentContainer>
     </KratosForm>
   );
 };

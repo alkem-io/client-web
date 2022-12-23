@@ -11,7 +11,6 @@ import { Skeleton } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { CanvasCardCanvas } from './types';
 import { BaseCalloutImpl } from '../Types';
 
@@ -43,14 +42,9 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
     const { templates } = useHub();
     const navigate = useNavigate();
-    const createButtonComponent = useMemo(
-      () =>
-        callout.state !== CalloutState.Closed ? (
-          <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-            <ContributeCard />
-          </CreateCalloutItemButton>
-        ) : undefined,
-      [callout.state]
+
+    const createButton = canCreate && callout.state !== CalloutState.Closed && (
+      <CreateCalloutItemButton onClick={handleCreateDialogOpened} />
     );
 
     const navigateToCanvas = (canvas: CanvasCardCanvas) => {
@@ -84,7 +78,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
               <CardsLayout
                 items={loading ? [undefined, undefined] : callout.canvases}
                 deps={[hubNameId, challengeNameId, opportunityNameId]}
-                {...(canCreate ? { createButtonComponent } : {})}
+                createButton={createButton}
               >
                 {canvas =>
                   canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />

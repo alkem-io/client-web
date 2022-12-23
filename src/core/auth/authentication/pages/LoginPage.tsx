@@ -1,7 +1,6 @@
 import { Box } from '@mui/material';
 import produce from 'immer';
-import Container from '../../../../domain/shared/layout/Container';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
 import FixedHeightLogo from '../components/FixedHeightLogo';
@@ -95,16 +94,16 @@ const LoginPage = ({ flow }: LoginPageProps) => {
 
   return (
     <KratosForm ui={loginUi}>
-      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <AuthPageContentContainer>
         <FixedHeightLogo />
-        <SubHeading>{t('pages.login.title')}</SubHeading>
+        <SubHeading textAlign="center">{t('pages.login.title')}</SubHeading>
         <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
         <Paragraph textAlign="center" marginTop={5}>
           {tLink('pages.login.register', {
             signup: { to: AUTH_SIGN_UP_PATH },
           })}
         </Paragraph>
-      </Container>
+      </AuthPageContentContainer>
     </KratosForm>
   );
 };

@@ -6,8 +6,7 @@ import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { AUTH_LOGIN_PATH } from '../constants/authentication.constants';
-import Container from '../../../../domain/shared/layout/Container';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
@@ -80,12 +79,12 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
 
   return (
     <KratosForm ui={registrationFlow?.ui}>
-      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <AuthPageContentContainer>
         <FixedHeightLogo />
         {mustAcceptTerms && <AcceptTerms ui={registrationFlow!.ui} />}
         {!mustAcceptTerms && (
           <>
-            <SubHeading>{t('pages.registration.header')}</SubHeading>
+            <SubHeading textAlign="center">{t('pages.registration.header')}</SubHeading>
             <KratosUI
               ui={registrationFlowWithAcceptedTerms?.ui}
               onBeforeSubmit={storeHasAcceptedTerms}
@@ -96,7 +95,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
         <Paragraph textAlign="center" marginTop={5}>
           {t('pages.registration.login')} <Link to={AUTH_LOGIN_PATH}>{t('authentication.sign-in')}</Link>
         </Paragraph>
-      </Container>
+      </AuthPageContentContainer>
     </KratosForm>
   );
 };

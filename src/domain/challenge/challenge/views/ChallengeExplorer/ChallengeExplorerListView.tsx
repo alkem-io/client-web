@@ -5,7 +5,6 @@ import CardFilter from '../../../../../common/components/core/card-filter/CardFi
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { useUserContext } from '../../../../community/contributor/user';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
-import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
@@ -16,6 +15,10 @@ import {
   simpleChallengeTagsValueGetter,
   simpleChallengeHubDataGetter,
 } from '../../containers/ChallengeExplorerContainer';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import { Text } from '../../../../../core/ui/typography';
+import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 
 export interface ChallengeExplorerListViewProps {
   headerText: string;
@@ -44,12 +47,9 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   );
 
   return (
-    <DashboardGenericSection
-      headerText={headerText}
-      headerCounter={headerCounter}
-      subHeaderText={subHeaderText}
-      options={{ overflowVisible: true }}
-    >
+    <PageContentBlock>
+      <PageContentBlockHeader title={withOptionalCount(headerText, headerCounter)} />
+      <Text>{subHeaderText}</Text>
       <CheckboxesFilter
         caption={t('pages.challenge-explorer.other.filter-by-hub')}
         enable={enableFilterByHub}
@@ -87,7 +87,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
           </CardFilter>
         )}
       </CheckboxesFilter>
-    </DashboardGenericSection>
+    </PageContentBlock>
   );
 };
 
