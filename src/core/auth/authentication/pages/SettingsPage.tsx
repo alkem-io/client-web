@@ -5,8 +5,7 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
-import Container from '../../../../domain/shared/layout/Container';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle } from '../../../ui/typography';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from '../components/Kratos/constants';
@@ -38,11 +37,11 @@ export const SettingsPage: FC<SettingsPageProps> = ({ flow }) => {
 
   return (
     <KratosForm ui={settingsFlow?.ui}>
-      <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+      <AuthPageContentContainer>
         <FixedHeightLogo />
         <PageTitle>{t('pages.settings.header')}</PageTitle>
         <KratosUI ui={settingsFlow?.ui} removedFields={REMOVED_FIELDS} />
-      </Container>
+      </AuthPageContentContainer>
     </KratosForm>
   );
 };

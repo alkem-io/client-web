@@ -1,34 +1,41 @@
 import { forwardRef } from 'react';
 import { Paper, PaperProps, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { gutters } from '../grid/utils';
+import { gutters, useGridItem } from '../grid/utils';
 import GridProvider from '../grid/GridProvider';
 import SwapColors from '../palette/SwapColors';
+import { useDeclaredColumns } from '../grid/GridContext';
 
 export interface PageContentBlockProps extends PaperProps {
   accent?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;
   halfWidth?: boolean;
+  columns?: number;
 }
 
 const borderWidth = '1px';
 
 const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(
-  ({ accent = false, disablePadding = false, disableGap = false, halfWidth = false, sx, ...props }, ref) => {
+  ({ accent = false, disablePadding = false, disableGap = false, halfWidth = false, columns, sx, ...props }, ref) => {
+    const gridColumns = useDeclaredColumns();
+
+    const getGridItemStyle = useGridItem();
+
+    const columnsTaken = halfWidth ? gridColumns / 2 : columns;
+
     const mergedSx: Partial<SxProps<Theme>> = {
       padding: disablePadding ? undefined : theme => `calc(${gutters()(theme)} - ${borderWidth})`,
       display: disableGap ? undefined : 'flex',
       flexDirection: disableGap ? undefined : 'column',
       gap: disableGap ? undefined : gutters(),
-      flexBasis: halfWidth ? 0 : '100%',
-      flexGrow: halfWidth ? 1 : undefined,
+      ...getGridItemStyle(columnsTaken),
       ...sx,
     };
 
     return (
       <SwapColors swap={accent}>
-        <GridProvider columns={columns => (halfWidth ? columns! / 2 : columns!)}>
+        <GridProvider columns={columnsTaken ?? gridColumns}>
           <Paper ref={ref} sx={mergedSx} variant="outlined" {...props} />
         </GridProvider>
       </SwapColors>

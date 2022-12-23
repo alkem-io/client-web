@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmailVerificationNotice from '../../verification/components/EmailVerificationNotice/EmailVerificationNotice';
-import Container from '../../../../domain/shared/layout/Container';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { sxCols } from '../../../../domain/shared/layout/Grid';
 import { useUserContext } from '../../../../domain/community/contributor/user';
 import { PageTitle } from '../../../ui/typography';
 
@@ -14,11 +13,11 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   const { user } = useUserContext();
 
   return (
-    <Container marginTop={9} maxWidth={sxCols(7)} gap={4}>
+    <AuthPageContentContainer>
       <FixedHeightLogo />
       <PageTitle>{t('pages.registration-success.header', { firstName: user?.user?.firstName })}</PageTitle>
       <EmailVerificationNotice />
-    </Container>
+    </AuthPageContentContainer>
   );
 };
 
