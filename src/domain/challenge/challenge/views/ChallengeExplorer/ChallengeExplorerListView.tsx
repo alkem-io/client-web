@@ -18,6 +18,7 @@ import {
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { Text } from '../../../../../core/ui/typography';
+import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 
 export interface ChallengeExplorerListViewProps {
   headerText: string;
@@ -45,11 +46,9 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
     [isAuthenticated]
   );
 
-  const counterText = typeof headerCounter !== 'undefined' ? ` (${headerCounter})` : '';
-
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={`${headerText}${counterText}`} />
+      <PageContentBlockHeader title={withOptionalCount(headerText, headerCounter)} />
       <Text>{subHeaderText}</Text>
       <CheckboxesFilter
         caption={t('pages.challenge-explorer.other.filter-by-hub')}
