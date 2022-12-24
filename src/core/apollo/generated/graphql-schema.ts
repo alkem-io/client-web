@@ -11674,12 +11674,12 @@ export type OpportunityCalloutsQuery = {
   };
 };
 
-export type HubCalloutQueryVariables = Exact<{
+export type HubCalloutAspectsSubscriptionQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubCalloutQuery = {
+export type HubCalloutAspectsSubscriptionQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11688,19 +11688,10 @@ export type HubCalloutQuery = {
       | {
           __typename?: 'Collaboration';
           id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
           callouts?:
             | Array<{
                 __typename?: 'Callout';
                 id: string;
-                nameID: string;
-                type: CalloutType;
-                displayName: string;
-                description: string;
-                state: CalloutState;
-                visibility: CalloutVisibility;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -11741,116 +11732,6 @@ export type HubCalloutQuery = {
                         | undefined;
                     }>
                   | undefined;
-                canvases?:
-                  | Array<{
-                      __typename?: 'Canvas';
-                      id: string;
-                      nameID: string;
-                      displayName: string;
-                      createdDate: Date;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            anonymousReadAccess: boolean;
-                          }
-                        | undefined;
-                      checkout?:
-                        | {
-                            __typename?: 'CanvasCheckout';
-                            id: string;
-                            lockedBy: string;
-                            status: CanvasCheckoutStateEnum;
-                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                            authorization?:
-                              | {
-                                  __typename?: 'Authorization';
-                                  id: string;
-                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                }
-                              | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                          }
-                        | undefined;
-                    }>
-                  | undefined;
-                comments?:
-                  | {
-                      __typename?: 'Comments';
-                      id: string;
-                      commentsCount: number;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            sender: {
-                              __typename?: 'User';
-                              id: string;
-                              nameID: string;
-                              firstName: string;
-                              displayName: string;
-                              lastName: string;
-                              profile?:
-                                | {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  }
-                                | undefined;
-                            };
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-                cardTemplate?:
-                  | {
-                      __typename?: 'AspectTemplate';
-                      id: string;
-                      type: string;
-                      defaultDescription: string;
-                      info: {
-                        __typename?: 'TemplateInfo';
-                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
-                    }
-                  | undefined;
               }>
             | undefined;
         }
@@ -11858,13 +11739,13 @@ export type HubCalloutQuery = {
   };
 };
 
-export type ChallengeCalloutQueryVariables = Exact<{
+export type ChallengeCalloutAspectsSubscriptionQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeCalloutQuery = {
+export type ChallengeCalloutAspectsSubscriptionQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11876,19 +11757,10 @@ export type ChallengeCalloutQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
             callouts?:
               | Array<{
                   __typename?: 'Callout';
                   id: string;
-                  nameID: string;
-                  type: CalloutType;
-                  displayName: string;
-                  description: string;
-                  state: CalloutState;
-                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -11929,125 +11801,6 @@ export type ChallengeCalloutQuery = {
                           | undefined;
                       }>
                     | undefined;
-                  canvases?:
-                    | Array<{
-                        __typename?: 'Canvas';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        createdDate: Date;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'CanvasCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: CanvasCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
-                                id: string;
-                                nextEvents?: Array<string> | undefined;
-                              };
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
-                                    id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                  comments?:
-                    | {
-                        __typename?: 'Comments';
-                        id: string;
-                        commentsCount: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender: {
-                                __typename?: 'User';
-                                id: string;
-                                nameID: string;
-                                firstName: string;
-                                displayName: string;
-                                lastName: string;
-                                profile?:
-                                  | {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    }
-                                  | undefined;
-                              };
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  cardTemplate?:
-                    | {
-                        __typename?: 'AspectTemplate';
-                        id: string;
-                        type: string;
-                        defaultDescription: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
                 }>
               | undefined;
           }
@@ -12056,13 +11809,13 @@ export type ChallengeCalloutQuery = {
   };
 };
 
-export type OpportunityCalloutQueryVariables = Exact<{
+export type OpportunityCalloutAspectsSubscriptionQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
 }>;
 
-export type OpportunityCalloutQuery = {
+export type OpportunityCalloutAspectsSubscriptionQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -12074,19 +11827,10 @@ export type OpportunityCalloutQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
             callouts?:
               | Array<{
                   __typename?: 'Callout';
                   id: string;
-                  nameID: string;
-                  type: CalloutType;
-                  displayName: string;
-                  description: string;
-                  state: CalloutState;
-                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -12126,125 +11870,6 @@ export type OpportunityCalloutQuery = {
                             }
                           | undefined;
                       }>
-                    | undefined;
-                  canvases?:
-                    | Array<{
-                        __typename?: 'Canvas';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        createdDate: Date;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
-                            }
-                          | undefined;
-                        checkout?:
-                          | {
-                              __typename?: 'CanvasCheckout';
-                              id: string;
-                              lockedBy: string;
-                              status: CanvasCheckoutStateEnum;
-                              lifecycle: {
-                                __typename?: 'Lifecycle';
-                                id: string;
-                                nextEvents?: Array<string> | undefined;
-                              };
-                              authorization?:
-                                | {
-                                    __typename?: 'Authorization';
-                                    id: string;
-                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                                  }
-                                | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                  comments?:
-                    | {
-                        __typename?: 'Comments';
-                        id: string;
-                        commentsCount: number;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        messages?:
-                          | Array<{
-                              __typename?: 'Message';
-                              id: string;
-                              message: string;
-                              timestamp: number;
-                              sender: {
-                                __typename?: 'User';
-                                id: string;
-                                nameID: string;
-                                firstName: string;
-                                displayName: string;
-                                lastName: string;
-                                profile?:
-                                  | {
-                                      __typename?: 'Profile';
-                                      id: string;
-                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                      tagsets?:
-                                        | Array<{
-                                            __typename?: 'Tagset';
-                                            id: string;
-                                            name: string;
-                                            tags: Array<string>;
-                                          }>
-                                        | undefined;
-                                      location?:
-                                        | { __typename?: 'Location'; id: string; city: string; country: string }
-                                        | undefined;
-                                    }
-                                  | undefined;
-                              };
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  cardTemplate?:
-                    | {
-                        __typename?: 'AspectTemplate';
-                        id: string;
-                        type: string;
-                        defaultDescription: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
                     | undefined;
                 }>
               | undefined;
