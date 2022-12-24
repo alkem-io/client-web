@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import HubPageContainer from '../containers/HubPageContainer';
-import { DiscussionsProvider } from '../../../communication/discussion/providers/DiscussionsProvider';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import HubContributorsDialogContent from '../../../community/community/entities/HubContributorsDialogContent';
@@ -26,64 +25,62 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
   const { t } = useTranslation();
 
   return (
-    <DiscussionsProvider>
-      <HubPageLayout currentSection={EntityPageSection.Dashboard}>
-        <HubPageContainer>
-          {entities => (
-            <>
-              <JourneyDashboardView
-                vision={entities.hub?.context?.vision}
-                hubNameId={entities.hub?.nameID}
-                communityId={entities.hub?.community?.id}
-                childEntities={entities.challenges}
-                childEntitiesCount={entities.challengesCount}
-                communityReadAccess={entities.permissions.communityReadAccess}
-                childEntityReadAccess={entities.permissions.challengesReadAccess}
-                references={entities.references}
-                recommendations={entities.recommendations}
-                memberUsers={entities.memberUsers}
-                memberUsersCount={entities.memberUsersCount}
-                memberOrganizations={entities.memberOrganizations}
-                memberOrganizationsCount={entities.memberOrganizationsCount}
-                leadUsers={entities.hub?.community?.leadUsers}
-                leadOrganizations={entities.hostOrganizations}
-                activities={entities.activities}
-                activityLoading={entities.activityLoading}
-                topCallouts={entities.topCallouts}
-                renderChildEntityCard={challenge => (
-                  <ChallengeCard
-                    challengeId={challenge.id}
-                    challengeNameId={challenge.nameID}
-                    bannerUri={getVisualBanner(challenge.context?.visuals)}
-                    displayName={challenge.displayName}
-                    tags={challenge.tagset?.tags!}
-                    tagline={challenge.context?.tagline!}
-                    vision={challenge.context?.vision!}
-                    innovationFlowState={challenge.lifecycle?.state}
-                    journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
-                    hubDisplayName={entities.hub!.displayName}
-                    hubUri={buildHubUrl(entities.hub!.nameID)}
-                  />
-                )}
-                journeyTypeName="hub"
-                childEntityTitle={t('common.challenges')}
-              />
-              <CommunityUpdatesDialog
-                open={dialog === 'updates'}
-                onClose={backToDashboard}
-                hubId={entities.hub?.id}
-                communityId={entities.hub?.community?.id}
-              />
-              <ContributorsDialog
-                open={dialog === 'contributors'}
-                onClose={backToDashboard}
-                dialogContent={HubContributorsDialogContent}
-              />
-            </>
-          )}
-        </HubPageContainer>
-      </HubPageLayout>
-    </DiscussionsProvider>
+    <HubPageLayout currentSection={EntityPageSection.Dashboard}>
+      <HubPageContainer>
+        {entities => (
+          <>
+            <JourneyDashboardView
+              vision={entities.hub?.context?.vision}
+              hubNameId={entities.hub?.nameID}
+              communityId={entities.hub?.community?.id}
+              childEntities={entities.challenges}
+              childEntitiesCount={entities.challengesCount}
+              communityReadAccess={entities.permissions.communityReadAccess}
+              childEntityReadAccess={entities.permissions.challengesReadAccess}
+              references={entities.references}
+              recommendations={entities.recommendations}
+              memberUsers={entities.memberUsers}
+              memberUsersCount={entities.memberUsersCount}
+              memberOrganizations={entities.memberOrganizations}
+              memberOrganizationsCount={entities.memberOrganizationsCount}
+              leadUsers={entities.hub?.community?.leadUsers}
+              leadOrganizations={entities.hostOrganizations}
+              activities={entities.activities}
+              activityLoading={entities.activityLoading}
+              topCallouts={entities.topCallouts}
+              renderChildEntityCard={challenge => (
+                <ChallengeCard
+                  challengeId={challenge.id}
+                  challengeNameId={challenge.nameID}
+                  bannerUri={getVisualBanner(challenge.context?.visuals)}
+                  displayName={challenge.displayName}
+                  tags={challenge.tagset?.tags!}
+                  tagline={challenge.context?.tagline!}
+                  vision={challenge.context?.vision!}
+                  innovationFlowState={challenge.lifecycle?.state}
+                  journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
+                  hubDisplayName={entities.hub!.displayName}
+                  hubUri={buildHubUrl(entities.hub!.nameID)}
+                />
+              )}
+              journeyTypeName="hub"
+              childEntityTitle={t('common.challenges')}
+            />
+            <CommunityUpdatesDialog
+              open={dialog === 'updates'}
+              onClose={backToDashboard}
+              hubId={entities.hub?.id}
+              communityId={entities.hub?.community?.id}
+            />
+            <ContributorsDialog
+              open={dialog === 'contributors'}
+              onClose={backToDashboard}
+              dialogContent={HubContributorsDialogContent}
+            />
+          </>
+        )}
+      </HubPageContainer>
+    </HubPageLayout>
   );
 };
 
