@@ -173,6 +173,8 @@
     "search": "Buscar...",
     "reference": "Referencia",
     "references": "Referencias",
+    "recommendation": "Recomendación",
+    "recommendations": "Recomendaciones",
     "notifications": "Notificaciones",
     "credentials": "Credenciales",
     "my-profile": "Mi perfil",
@@ -718,10 +720,11 @@
     },
     "referenceSegment": {
       "title": "Referencias",
-      "missing-refreneces": "No hay referencias todavía",
+      "missing-refereneces": "No hay referencias todavía",
       "tooltips": {
         "add-reference": "Agregar una referencia",
-        "remove-reference": "Borrar la referencia"
+        "remove-reference": "Borrar la referencia",
+        "remove-recommendation": "Eliminar recomendación"
       },
       "url-helper-text": "Tenga en cuenta que todos los archivos subidos son accesibles para todos con el enlace y sólo pueden ser borrados por el equipo de Alkemio.<br/> <terms>Haga clic aquí</terms> para ver los términos y condiciones."
     },
@@ -1022,11 +1025,14 @@
           "list": "Lista de {{entities}}",
           "empty": "No hay {{entities}} en este {{parentEntity}}.",
           "empty-list": "Todavía no hay {{entities}} en este {{parentEntity}}."
+        },
+        "recommendations": {
+          "title": "Recomendado por el Host"
         }
       }
     },
     "contribute": {
-      "initial-text": "Aquí puedes aportar tu visión para entender el contexto. Se trata de hacer aflorar la sabiduría de la comunidad.",
+      "initial-text": "Aquí puedes **relacionarte con tu comunidad**. Compartiendo ideas e informaciones. Creando impacto juntos",
       "no-cards": "No se ha encontrado ninguna Tarjeta"
     },
     "admin": {
@@ -1247,7 +1253,7 @@
     "activity": {
       "title": "{{blockName}} Actividad",
       "hubs": "Hubs de Desafíos",
-      "innovation-flow-info": "Haz click para ver el Grafo de Ciclo de Vida"
+      "innovation-flow-info": "Haga clic para mostrar el flujo de innovación"
     },
     "home": {
       "sections": {
@@ -1273,7 +1279,7 @@
         },
         "hub": {
           "header": "¡Explorar los Hubs!",
-          "subheader": "Cada Hub contiene uno o mas Desafíos, provee contenido compartido y una comunidad para los desafíos hospedados en él.<br> Un espacio para coordinarse y colaborar. Conectar.",
+          "subheader": "Cada Hub contiene uno o más Desafíos, proporcionando contexto compartido y comunidad para Desafíos alojados allí. Es un espacio para coordinar y colaborar. Conectar.",
           "body": "Membresía: Cada Hub tiene miembros que contribuyen. Hazte miembro a través de la página del Hub.",
           "body1": "Visibilidad: La mayoría de los Hubs son públicos y, por tanto, totalmente visibles para todo el mundo. En el caso de los Hubs privados, el contenido sólo estará disponible después de hacerte miembro."
         },

@@ -4540,6 +4540,7 @@ export function refetchOpportunityContextQuery(variables: SchemaTypes.Opportunit
 export const AboutPageNonMembersDocument = gql`
   query AboutPageNonMembers(
     $hubNameId: UUID_NAMEID!
+    $includeHub: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
     $challengeNameId: UUID_NAMEID = "mockid"
@@ -4547,28 +4548,30 @@ export const AboutPageNonMembersDocument = gql`
   ) {
     hub(ID: $hubNameId) {
       id
-      nameID
-      displayName
-      tagset {
-        id
-        name
-        tags
-      }
-      host {
-        ...AssociatedOrganizationDetails
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        id
-        authorization {
+      ... on Hub @include(if: $includeHub) {
+        nameID
+        displayName
+        tagset {
           id
-          myPrivileges
+          name
+          tags
         }
-      }
-      context {
-        ...ContextTab
+        host {
+          ...AssociatedOrganizationDetails
+        }
+        metrics {
+          ...MetricsItem
+        }
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+        context {
+          ...ContextTab
+        }
       }
       challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
         id
@@ -4647,6 +4650,7 @@ export const AboutPageNonMembersDocument = gql`
  * const { data, loading, error } = useAboutPageNonMembersQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
+ *      includeHub: // value for 'includeHub'
  *      includeChallenge: // value for 'includeChallenge'
  *      includeOpportunity: // value for 'includeOpportunity'
  *      challengeNameId: // value for 'challengeNameId'
@@ -4693,9 +4697,9 @@ export function refetchAboutPageNonMembersQuery(variables: SchemaTypes.AboutPage
 export const AboutPageMembersDocument = gql`
   query AboutPageMembers(
     $hubNameId: UUID_NAMEID!
+    $includeHub: Boolean = false
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
-    $skipHubCommunity: Boolean = false
     $communityReadAccess: Boolean!
     $referencesReadAccess: Boolean!
     $challengeNameId: UUID_NAMEID = "mockid"
@@ -4703,8 +4707,10 @@ export const AboutPageMembersDocument = gql`
   ) {
     hub(ID: $hubNameId) {
       id
-      community @include(if: $communityReadAccess) {
-        ...EntityDashboardCommunity @skip(if: $skipHubCommunity)
+      ... on Hub @include(if: $includeHub) {
+        community @include(if: $communityReadAccess) {
+          ...EntityDashboardCommunity
+        }
       }
       context {
         id
@@ -4755,9 +4761,9 @@ export const AboutPageMembersDocument = gql`
  * const { data, loading, error } = useAboutPageMembersQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
+ *      includeHub: // value for 'includeHub'
  *      includeChallenge: // value for 'includeChallenge'
  *      includeOpportunity: // value for 'includeOpportunity'
- *      skipHubCommunity: // value for 'skipHubCommunity'
  *      communityReadAccess: // value for 'communityReadAccess'
  *      referencesReadAccess: // value for 'referencesReadAccess'
  *      challengeNameId: // value for 'challengeNameId'
