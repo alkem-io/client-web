@@ -9,7 +9,7 @@ import {
   EntityDashboardLeads,
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';

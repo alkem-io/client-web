@@ -1,19 +1,20 @@
 import { Box, BoxProps } from '@mui/material';
-import { GUTTER_MUI } from './constants';
+import { gutters } from './utils';
 
 export interface GridContainerProps extends BoxProps {
   disablePadding?: boolean;
+  noWrap?: boolean;
 }
 
-const GridContainer = ({ disablePadding, ...props }: GridContainerProps) => {
+const GridContainer = ({ disablePadding = false, noWrap = false, ...props }: GridContainerProps) => {
   return (
     <Box
       display="flex"
       flexDirection="row"
-      flexWrap="wrap"
+      flexWrap={noWrap ? 'nowrap' : 'wrap'}
       alignItems="start"
-      gap={GUTTER_MUI}
-      padding={disablePadding ? undefined : GUTTER_MUI}
+      gap={gutters()}
+      padding={disablePadding ? undefined : gutters()}
       {...props}
     />
   );

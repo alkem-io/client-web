@@ -21,7 +21,7 @@ import { PageProps } from '../../../../shared/types/PageProps';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../shared/layout/CardsLayout/CardsLayout';
+import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
 
 interface UserCredentialsPageProps extends PageProps {}

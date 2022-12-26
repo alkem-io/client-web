@@ -7,8 +7,8 @@ import { useUserContext } from '../../../../community/contributor/user';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
-import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
+import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
 import {
   SimpleChallenge,
   simpleChallengeValueGetter,

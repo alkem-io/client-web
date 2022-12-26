@@ -22,6 +22,7 @@ import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from './Types';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import Gutters from '../../../core/ui/grid/Gutters';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -35,29 +36,27 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     authorization?: Authorization;
     url: string;
     cardTemplate?: CalloutCardTemplate;
+    authorName?: string;
+    authorAvatarUri?: string;
+    publishedAt?: string;
   };
   calloutNames: string[];
   contributionsCount: number;
 }
 
-const TitleBar = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-}));
-
 const CalloutActionsBar = styled(Box)(({ theme }) => ({
-  marginRight: theme.spacing(-1.5),
-  marginTop: theme.spacing(-1.5),
-  height: theme.spacing(5),
   display: 'flex',
   flexFlow: 'row-reverse',
+  marginBottom: gutters(-0.5)(theme),
+  paddingLeft: gutters(0.25)(theme),
+  paddingRight: gutters(0.5)(theme),
 }));
 
 const CalloutDetailsBar = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
-  margin: theme.spacing(2),
-  marginBottom: 0,
+  height: gutters(2)(theme),
+  alignItems: 'end',
 }));
 
 const CalloutDetails = styled(Box)(({ theme }) => ({
@@ -65,12 +64,11 @@ const CalloutDetails = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
-const CalloutMisc = styled(Box)(() => ({
-  display: 'none',
-  // todo: revert when the fields are populated
-  // display: 'flex',
+const CalloutMisc = styled(Box)(({ theme }) => ({
+  display: 'flex',
   flexGrow: 1,
   justifyContent: 'space-between',
+  paddingLeft: gutters()(theme),
 }));
 
 const CalloutDate = ({ date }: { date: Date | string }) => <Caption>{date}</Caption>;
@@ -126,9 +124,12 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
     }, [callout?.state, t]);
 
     const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+
     if (dontShow) {
       return null;
     }
+
+    const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
     return (
       <>
@@ -139,16 +140,26 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
             </Box>
           )}
           <CalloutDetailsBar>
-            <CalloutMisc>
-              <CalloutDetails>
-                <Box sx={{ background: 'grey', height: 20, width: 20 }} />
-                <Caption>{`${'Author Name'} • ${t('callout.contributions', { count: contributionsCount })}`}</Caption>
-              </CalloutDetails>
-              <CalloutDate date={'99/99/9999'} />
-            </CalloutMisc>
-            <TitleBar>
-              <BlockTitle>{callout.displayName}</BlockTitle>
-            </TitleBar>
+            {hasCalloutDetails && (
+              <CalloutMisc>
+                <CalloutDetails>
+                  <Box
+                    component="img"
+                    src={callout.authorAvatarUri}
+                    sx={{ background: 'grey', height: 20, width: 20 }}
+                  />
+                  <Caption>{`${callout.authorName} • ${t('callout.contributions', {
+                    count: contributionsCount,
+                  })}`}</Caption>
+                </CalloutDetails>
+                <CalloutDate date={callout.publishedAt!} />
+              </CalloutMisc>
+            )}
+            {!hasCalloutDetails && (
+              <BlockTitle paddingX={gutters()} noWrap>
+                {callout.displayName}
+              </BlockTitle>
+            )}
             <CalloutActionsBar>
               {callout.editable && (
                 <IconButton
@@ -164,12 +175,11 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
               <ShareButton url={callout.url} entityTypeName="callout" />
             </CalloutActionsBar>
           </CalloutDetailsBar>
-          <Box m={2} mt={0}>
-            <Box sx={{ pt: gutters(), pb: gutters() }}>
-              <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
-            </Box>
+          <Gutters>
+            {hasCalloutDetails && <BlockTitle>{callout.displayName}</BlockTitle>}
+            <WrapperMarkdown>{callout.description ?? ''}</WrapperMarkdown>
             {children}
-          </Box>
+          </Gutters>
           {calloutNotOpenStateName && (
             <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
           )}

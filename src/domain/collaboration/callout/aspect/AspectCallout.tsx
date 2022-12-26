@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
 import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
-import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
   AspectCardFragmentDoc,
@@ -13,10 +13,10 @@ import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloEr
 import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCalloutSubscription';
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard from './AspectCard';
 import { BaseCalloutImpl } from '../Types';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -167,15 +167,14 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
           onCalloutDelete={onCalloutDelete}
           contributionsCount={contributionsCount}
         >
-          <CardsLayoutScroller maxHeight={425}>
-            <CardsLayout
-              items={loading ? [undefined, undefined] : callout.aspects}
-              deps={[hubNameId, challengeNameId, opportunityNameId]}
-              createButton={createButton}
-            >
-              {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
-            </CardsLayout>
-          </CardsLayoutScroller>
+          <ScrollableCardsLayout
+            items={loading ? [undefined, undefined] : callout.aspects}
+            deps={[hubNameId, challengeNameId, opportunityNameId]}
+            createButton={createButton}
+            maxHeight={gutters(22)}
+          >
+            {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
+          </ScrollableCardsLayout>
         </CalloutLayout>
         <AspectCreationDialog
           open={aspectDialogOpen}
