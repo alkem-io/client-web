@@ -148,9 +148,11 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
                     src={callout.authorAvatarUri}
                     sx={{ background: 'grey', height: 20, width: 20 }}
                   />
-                  <Caption>{`${callout.authorName} • ${t('callout.contributions', {
-                    count: contributionsCount,
-                  })}`}</Caption>
+                  <Caption>
+                    {`${callout.authorName} • ${t('callout.contributions', {
+                      count: contributionsCount,
+                    })}`}
+                  </Caption>
                 </CalloutDetails>
                 <CalloutDate date={callout.publishedAt!} />
               </CalloutMisc>
