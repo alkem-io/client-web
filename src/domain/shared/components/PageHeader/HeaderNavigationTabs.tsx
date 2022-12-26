@@ -2,7 +2,7 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, styled, Tabs, TabsProps } from '@mui/material';
 import { FC } from 'react';
 import HeaderNavigationTab from './HeaderNavigationTab';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER } from '../../../../core/ui/grid/constants';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '../../../../core/ui/grid/constants';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 
@@ -10,7 +10,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
   color: theme.palette.primary.contrastText,
   backgroundColor: theme.palette.primary.main,
   '.MuiTabs-flexContainer': {
-    maxWidth: MAX_CONTENT_WIDTH_WITH_GUTTER,
+    maxWidth: MAX_CONTENT_WIDTH_WITH_GUTTER_PX,
     margin: 'auto',
     paddingLeft: gutters()(theme),
     paddingRight: gutters()(theme),

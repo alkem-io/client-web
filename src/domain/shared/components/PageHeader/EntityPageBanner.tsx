@@ -6,8 +6,11 @@ import BreadcrumbsView from './BreadcrumbsView';
 import { EntityTypeName } from '../../layout/LegacyPageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
+import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
+import { MAX_CONTENT_WIDTH_GUTTERS } from '../../../../core/ui/grid/constants';
+import { gutters } from '../../../../core/ui/grid/utils';
 
-export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xxl.png';
+export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
 
 const Root = styled(Box)(({ theme }) => ({
@@ -36,14 +39,6 @@ const Title = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('lg')]: {
     bottom: theme.spacing(-TITLE_HEIGHT),
   },
-}));
-
-const Image = styled('img')(({ theme }) => ({
-  display: 'block',
-  objectFit: 'cover',
-  objectPosition: '50% 50%',
-  width: '100%',
-  height: theme.spacing(18),
 }));
 
 const PageNotice = styled('div')(({ theme }) => ({
@@ -104,11 +99,14 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
         <>
           {pageNotice ? <PageNotice>{pageNotice}</PageNotice> : undefined}
           {showBreadcrumbs && <BreadcrumbsView />}
-          <Image
+          <ImageBlurredSides
             src={bannerUrl}
             alt={`${title} - Banner image`}
             onLoad={() => setImageLoading(false)}
             onError={imageLoadError}
+            blurRadius={2}
+            height={theme => theme.spacing(18)}
+            width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
           />
           <Title
             sx={{
