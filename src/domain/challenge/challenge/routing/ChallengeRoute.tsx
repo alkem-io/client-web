@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
-import { Navigate, useResolvedPath } from 'react-router-dom';
+import { Navigate, useLocation, useResolvedPath } from 'react-router-dom';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import { useChallenge } from '../hooks/useChallenge';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
@@ -20,6 +20,7 @@ import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -30,6 +31,8 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
     [_paths, displayName, resolved]
   );
+  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
+  const location = useLocation();
 
   if (loading) {
     return <Loading text="Loading challenge" />;
@@ -47,7 +50,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
         <Route path={routes.Contribute} element={<ContributePage entityTypeName="challenge" />} />
-        <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
 
@@ -56,17 +58,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           element={<ContributePage entityTypeName="challenge" scrollToCallout />}
         />
         <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<ContributePage entityTypeName="challenge" scrollToCallout />}
-        />
-        <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
-          }
-        />
-        <Route
-          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
             <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
           }
@@ -94,6 +86,19 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         }
       />
       <Route path="*" element={<Error404 />} />
+      {/* Legacy routes */}
+      <Route
+        path={routes.Explore}
+        element={<Navigate replace to={`/${hubNameId}/${routes.Challenges}/${challengeNameId}/${routes.Contribute}`} />}
+      />
+      <Route
+        path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+        element={<Navigate replace to={`${location.pathname.replace(routes.Explore, routes.Contribute)}`} />}
+      />
+      <Route
+        path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+        element={<Navigate replace to={`${location.pathname.replace(routes.Explore, routes.Contribute)}`} />}
+      />
     </Routes>
   );
 };
