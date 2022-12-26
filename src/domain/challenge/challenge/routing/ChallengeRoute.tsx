@@ -20,6 +20,7 @@ import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
+import Redirect from '../../../../core/routing/Redirect';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -82,6 +83,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           </OpportunityProvider>
         }
       />
+      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
