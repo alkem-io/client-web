@@ -1,12 +1,9 @@
 import { Box } from '@mui/material';
-import { FC, useCallback } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
-import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
-import { useUserContext } from '../../../../community/contributor/user';
-import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
+import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
-import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
 import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import {
@@ -19,7 +16,7 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { Text } from '../../../../../core/ui/typography';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
-
+import ChallengeExploreCard from '../../../common/ChallengeExploreCard/ChallengeExploreCard';
 export interface ChallengeExplorerListViewProps {
   headerText: string;
   headerCounter?: number;
@@ -36,15 +33,6 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   enableFilterByHub = false,
 }) => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useUserContext();
-  const getCardLabel = useCallback(
-    (roles: string[]) => {
-      return isAuthenticated
-        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
-        : undefined;
-    },
-    [isAuthenticated]
-  );
 
   return (
     <PageContentBlock>
@@ -69,14 +57,16 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                 <CardsLayout items={filteredChallenges}>
                   {challenge =>
                     challenge && (
-                      <SearchChallengeCard
-                        name={challenge.displayName}
+                      <ChallengeExploreCard
+                        bannerUri={challenge.imageUrl}
+                        displayName={challenge.displayName}
+                        tags={challenge.matchedTerms ?? []}
                         tagline={challenge.tagline}
-                        image={challenge.imageUrl}
-                        matchedTerms={challenge.matchedTerms ?? []}
-                        label={getCardLabel(challenge.roles)}
-                        url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                        parentName={challenge.hubDisplayName}
+                        vision={''}
+                        journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                        hubUri={buildHubUrl(challenge.hubNameId)}
+                        hubDisplayName={challenge.hubDisplayName}
+                        challengeId={challenge.id}
                       />
                     )
                   }
