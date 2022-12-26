@@ -12,7 +12,7 @@ import { FloatingActionButtons } from '../../../../../common/components/core';
 import {
   GRID_COLUMNS_DESKTOP,
   GRID_COLUMNS_MOBILE,
-  MAX_CONTENT_WIDTH_WITH_GUTTER,
+  MAX_CONTENT_WIDTH_WITH_GUTTER_PX,
 } from '../../../../../core/ui/grid/constants';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
@@ -58,7 +58,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
       <PageBanner />
       {!isMobile && <Tabs currentTab={EntityPageSection.Settings} />}
       <Box>
-        <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER} marginX="auto">
+        <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
           <PageTabs
             tabs={tabs}
             currentTab={currentTab}
@@ -69,7 +69,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
         </Box>
       </Box>
       <Box flexGrow={1} sx={{ backgroundColor: 'background.paper', paddingBottom }}>
-        <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER} marginX="auto">
+        <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
           <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
             <SimplePageLayout
               currentSection={currentTab}
