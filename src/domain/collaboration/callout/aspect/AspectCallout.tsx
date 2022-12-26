@@ -2,7 +2,7 @@ import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
-import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
+
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
@@ -15,7 +15,7 @@ import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apoll
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
-import AspectCard from './AspectCard';
+import AspectCard, { AspectCardAspect } from './AspectCard';
 import { BaseCalloutImpl } from '../Types';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;

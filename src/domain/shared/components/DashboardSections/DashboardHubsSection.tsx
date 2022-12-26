@@ -1,6 +1,5 @@
 import React, { FC, ReactNode } from 'react';
 import CardsLayout from '../../layout/CardsLayout/CardsLayout';
-import { HubCardProps } from '../../../../common/components/composite/common/cards/HubCard/HubCard';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -10,6 +9,19 @@ import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+
+type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
+
+type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+  context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
+};
+
+export interface HubCardProps {
+  hub: HubAttrs;
+  loading?: boolean;
+  getLabel?: (hub: HubAttrs) => EntityContributionCardLabel | undefined;
+}
 
 export interface DashboardHubSectionProps {
   hubs: HubCardProps['hub'][];
