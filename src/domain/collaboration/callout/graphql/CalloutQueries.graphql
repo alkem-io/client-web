@@ -56,54 +56,60 @@ query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAM
     }
   }
 }
-query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+
+query HubCalloutAspectsSubscription($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
       id
-      authorization {
-        id
-        myPrivileges
-      }
       callouts(IDs: [$calloutId]) {
-        ...Callout
+        id
+        aspects {
+          ...ContributeTabAspect
+        }
       }
     }
   }
 }
 
-query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query ChallengeCalloutAspectsSubscription(
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
       collaboration {
         id
-        authorization {
-          id
-          myPrivileges
-        }
         callouts(IDs: [$calloutId]) {
-          ...Callout
+          id
+          aspects {
+            ...ContributeTabAspect
+          }
         }
       }
     }
   }
 }
 
-query OpportunityCallout($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query OpportunityCalloutAspectsSubscription(
+  $hubNameId: UUID_NAMEID!
+  $opportunityNameId: UUID_NAMEID!
+  $calloutId: UUID_NAMEID!
+) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
       collaboration {
         id
-        authorization {
-          id
-          myPrivileges
-        }
         callouts(IDs: [$calloutId]) {
-          ...Callout
+          id
+          aspects {
+            ...ContributeTabAspect
+          }
         }
       }
     }
