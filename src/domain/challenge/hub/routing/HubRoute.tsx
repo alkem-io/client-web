@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Navigate, Route, Routes, useLocation, useResolvedPath } from 'react-router-dom';
+import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { ChallengeProvider } from '../../challenge/context/ChallengeProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { useHub } from '../HubContext/useHub';
@@ -17,7 +17,7 @@ import HubAboutPage from '../pages/HubAboutPage';
 import HubDashboardPage from '../pages/HubDashboardPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import HubPageLayout from '../layout/HubPageLayout';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import Redirect from '../../../../core/routing/Redirect';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();
@@ -26,8 +26,6 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
     [_paths, displayName, resolved]
   );
-  const { hubNameId = '' } = useUrlParams();
-  const location = useLocation();
 
   return (
     <Routes>
@@ -63,17 +61,8 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           </ChallengeProvider>
         }
       />
+      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
       <Route path="*" element={<Error404 />} />
-      {/* Legacy routes */}
-      <Route path={routes.Explore} element={<Navigate replace to={`/${hubNameId}/${routes.Contribute}`} />} />
-      <Route
-        path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-        element={<Navigate replace to={`${location.pathname.replace(routes.Explore, routes.Contribute)}`} />}
-      />
-      <Route
-        path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
-        element={<Navigate replace to={`${location.pathname.replace(routes.Explore, routes.Contribute)}`} />}
-      />
     </Routes>
   );
 };

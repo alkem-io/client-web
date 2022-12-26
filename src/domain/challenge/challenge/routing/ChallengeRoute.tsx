@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
-import { Navigate, useLocation, useResolvedPath } from 'react-router-dom';
+import { Navigate, useResolvedPath } from 'react-router-dom';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import { useChallenge } from '../hooks/useChallenge';
 import { ApplicationTypeEnum } from '../../../community/application/constants/ApplicationType';
@@ -20,7 +20,7 @@ import ChallengeAboutPage from '../pages/ChallengeAboutPage';
 import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import Redirect from '../../../../core/routing/Redirect';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -31,8 +31,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
     [_paths, displayName, resolved]
   );
-  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
-  const location = useLocation();
 
   if (loading) {
     return <Loading text="Loading challenge" />;
@@ -85,20 +83,8 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           </OpportunityProvider>
         }
       />
+      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
       <Route path="*" element={<Error404 />} />
-      {/* Legacy routes */}
-      <Route
-        path={routes.Explore}
-        element={<Navigate replace to={`/${hubNameId}/${routes.Challenges}/${challengeNameId}/${routes.Contribute}`} />}
-      />
-      <Route
-        path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-        element={<Navigate replace to={`${location.pathname.replace(routes.Explore, routes.Contribute)}`} />}
-      />
-      <Route
-        path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
-        element={<Navigate replace to={`${location.pathname.replace(routes.Explore, routes.Contribute)}`} />}
-      />
     </Routes>
   );
 };
