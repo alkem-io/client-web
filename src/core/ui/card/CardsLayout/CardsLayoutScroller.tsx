@@ -19,9 +19,21 @@ const overflowAngle: Record<Edge, string> = {
   right: '-90deg',
 };
 
-const buildPseudoElement = (position: 'start' | 'end', orientation: Orientation) => {
-  const placement: Edge =
-    orientation === 'vertical' ? (position === 'start' ? 'top' : 'bottom') : position === 'start' ? 'left' : 'right';
+type Position = 'start' | 'end';
+
+const placementMap: Record<Orientation, Record<Position, Edge>> = {
+  horizontal: {
+    start: 'left',
+    end: 'right',
+  },
+  vertical: {
+    start: 'top',
+    end: 'bottom',
+  },
+};
+
+const buildPseudoElement = (position: Position, orientation: Orientation) => {
+  const placement = placementMap[orientation][position];
 
   const crossAxisStart = orientation === 'vertical' ? 'left' : 'top';
   const crossAxisEnd = orientation === 'vertical' ? 'right' : 'bottom';
