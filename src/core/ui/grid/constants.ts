@@ -10,10 +10,10 @@ export const MAX_CONTENT_WIDTH_GUTTERS = 70;
 export const GRID_COLUMNS_MOBILE = 4;
 export const GRID_COLUMNS_DESKTOP = 12;
 
-export const cardsGridColumns = (breakpoint: Breakpoint, parentColumns: number) => {
+export const cardsGridColumns = (breakpoint: Breakpoint) => {
   switch (breakpoint) {
     case 'xs':
-      return parentColumns;
+      return 3;
     case 'sm':
       return 6;
     default:

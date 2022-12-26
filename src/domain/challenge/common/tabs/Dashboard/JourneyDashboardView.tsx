@@ -9,7 +9,6 @@ import {
   EntityDashboardLeads,
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
@@ -27,6 +26,7 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
 import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
 import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
+import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -161,9 +161,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
         {childEntityReadAccess && renderChildEntityCard && childEntityTitle && (
           <PageContentBlock>
             <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
-            <CardsLayout items={childEntities} deps={[hubNameId]} disablePadding>
+            <ScrollableCardsLayout items={childEntities} deps={[hubNameId]}>
               {renderChildEntityCard}
-            </CardsLayout>
+            </ScrollableCardsLayout>
             <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
           </PageContentBlock>
         )}

@@ -13,7 +13,7 @@ const PageContentBlockGrid = ({ cards = false, children, ...props }: PageContent
 
   const parentColumns = useColumns();
 
-  const columns = cards ? cardsGridColumns(breakpoint, parentColumns) : parentColumns;
+  const columns = cards ? cardsGridColumns(breakpoint) : parentColumns;
 
   return (
     <GridContainer {...props}>
