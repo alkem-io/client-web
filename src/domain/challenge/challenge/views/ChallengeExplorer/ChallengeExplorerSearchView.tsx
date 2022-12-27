@@ -1,19 +1,17 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../hub/icon/HubIcon';
-import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
 import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
-import { useUserContext } from '../../../../community/contributor/user';
-import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
-import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { Text } from '../../../../../core/ui/typography/components';
+import ChallengeCard from '../../ChallengeCard/ChallengeCard';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -31,15 +29,6 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useUserContext();
-  const getCardLabel = useCallback(
-    (roles: string[]) => {
-      return isAuthenticated
-        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
-        : undefined;
-    },
-    [isAuthenticated]
-  );
 
   const groupKey = getGroupKey(groupBy);
 
@@ -66,14 +55,17 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                   <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
                     <CardsLayout items={values}>
                       {challenge => (
-                        <SearchChallengeCard
-                          name={challenge.displayName}
+                        <ChallengeCard
+                          challengeId={challenge.id}
+                          challengeNameId={challenge.nameID}
+                          bannerUri={challenge.imageUrl}
+                          displayName={challenge.displayName}
+                          tags={challenge.tags}
                           tagline={challenge.tagline}
-                          image={challenge.imageUrl}
-                          matchedTerms={challenge.matchedTerms}
-                          label={getCardLabel(challenge.roles)}
-                          url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                          parentName={challenge.hubDisplayName}
+                          vision={challenge.vision}
+                          journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                          hubDisplayName={challenge.hubDisplayName}
+                          hubUri={buildHubUrl(challenge.hubNameId)}
                         />
                       )}
                     </CardsLayout>
