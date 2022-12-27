@@ -11,7 +11,7 @@ import {
   Skeleton,
   styled,
 } from '@mui/material';
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
+import { convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useField } from 'formik';
@@ -19,7 +19,8 @@ import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';
 import { ToolbarConfiguration, ToolbarTranslationKeys } from './FormikMarkdownField/toolbar.configuration';
-import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
+import { draftjsToMd, mdToDraftjs } from 'draftjs-md-converter';
+import { padBlocks } from './FormikMarkdownField/utils';
 
 const EditorWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -161,14 +162,14 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   // Handle editor state and sync with formik field:
   const [editorState, setEditorState] = useState(() => {
-    if (!field?.value) return EditorState.createEmpty();
+    if (!field.value) return EditorState.createEmpty();
     return EditorState.createWithContent(convertFromRaw(mdToDraftjs(field.value)));
   });
 
   const textLength = editorState.getCurrentContent().getPlainText().length;
 
   useEffect(() => {
-    if (!meta?.initialValue) {
+    if (!meta.initialValue) {
       setEditorState(EditorState.createEmpty());
     } else {
       setEditorState(EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue))));
@@ -182,9 +183,10 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     }
   }, [field.value]);
 
-  const onEditorStateChange = newEditorState => {
-    setEditorState(newEditorState);
-    const currentMd = draftjsToMd(convertToRaw(newEditorState.getCurrentContent()));
+  const onEditorStateChange = (newEditorState: EditorState) => {
+    const editorStateWithPaddedBlocks = padBlocks(newEditorState, editorState);
+    setEditorState(editorStateWithPaddedBlocks);
+    const currentMd = draftjsToMd(convertToRaw(editorStateWithPaddedBlocks.getCurrentContent()));
     helper.setValue(currentMd);
   };
 
@@ -192,13 +194,12 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   // See https://jpuri.github.io/react-draft-wysiwyg/#/docs
   // And https://github.com/jpuri/react-draft-wysiwyg/blob/master/src/i18n/en.js
   const toolbarTranslations = useMemo(() => {
-    const initialValue = {};
     const toolbarTranslated = ToolbarTranslationKeys.reduce((obj, item) => {
       return {
         ...obj,
         [`components.controls.${item}`]: t(`common.wysiwyg-editor.toolbar.${item}` as const),
       };
-    }, initialValue);
+    }, {});
 
     return {
       ...toolbarTranslated,
@@ -214,27 +215,29 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   // https://github.com/jpuri/react-draft-wysiwyg/issues/782
 
   const [isFocused, setFocus] = useState(false);
-  const handleOnFocus = () => {
+
+  const handleFocus = () => {
     setFocus(true);
   };
 
-  const handleOnBlur = () => {
+  const handleBlur = () => {
     setFocus(false);
     field.onBlur(name);
   };
 
   // TODO: Image Upload
-  const handleImageUpload = useCallback(() => {
-    let promise = new Promise(function (resolve, _reject) {
-      setTimeout(() => {
-        resolve({
-          // Url returned by the image storage service:
-          data: { link: 'https://alkem.io/alkemio-banner/alkemio-banner-xl.png' },
-        });
-      }, 1000);
-    });
-    return promise;
-  }, []);
+  const handleImageUpload = useCallback(
+    () =>
+      new Promise(function (resolve, _reject) {
+        setTimeout(() => {
+          resolve({
+            // Url returned by the image storage service:
+            data: { link: 'https://alkem.io/alkemio-banner/alkemio-banner-xl.png' },
+          });
+        }, 1000);
+      }),
+    []
+  );
 
   const toolbar = {
     ...ToolbarConfiguration,
@@ -260,8 +263,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
               editorClassName={clsx('form-control', validClass, invalidClass)}
               placeholder={!title ? placeholder : undefined}
               readOnly={readOnly || disabled}
-              onBlur={handleOnBlur}
-              onFocus={handleOnFocus}
+              onBlur={handleBlur}
+              onFocus={handleFocus}
               toolbar={toolbar}
               localization={{
                 translations: toolbarTranslations,
