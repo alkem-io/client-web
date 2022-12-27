@@ -1,13 +1,18 @@
-import React, { ReactNode } from 'react';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import { CardText } from '../../../../core/ui/typography';
+import React from 'react';
+import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
+import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface JourneyCardVisionProps {
-  children: Exclude<ReactNode, boolean | null | undefined>;
+  children: string;
 }
 
 const JourneyCardVision = ({ children }: JourneyCardVisionProps) => {
-  return <CardText sx={webkitLineClamp(6)}>{children}</CardText>;
+  return (
+    <OverflowGradient maxHeight={gutters(6)}>
+      <WrapperMarkdown card>{children}</WrapperMarkdown>
+    </OverflowGradient>
+  );
 };
 
 export default JourneyCardVision;
