@@ -1,5 +1,5 @@
 import React from 'react';
-import CardsLayoutScroller from './CardsLayoutScroller';
+import ScrollerWithGradient from '../../overflow/ScrollerWithGradient';
 import CardsLayout, { CardsLayoutProps } from './CardsLayout';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
@@ -13,7 +13,7 @@ const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
   const orientation = breakpoint === 'xs' ? 'horizontal' : 'vertical';
 
   return (
-    <CardsLayoutScroller orientation={orientation} maxHeight={maxHeight}>
+    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
       <CardsLayout
         {...props}
         cards={orientation === 'vertical'}
@@ -33,7 +33,7 @@ const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
               }
         }
       />
-    </CardsLayoutScroller>
+    </ScrollerWithGradient>
   );
 };
 

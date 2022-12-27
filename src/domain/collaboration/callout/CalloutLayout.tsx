@@ -1,4 +1,4 @@
-import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { forwardRef, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, IconButton, Menu, MenuItem, styled } from '@mui/material';
@@ -42,6 +42,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
   };
   calloutNames: string[];
   contributionsCount: number;
+  actions?: ReactNode;
 }
 
 const CalloutActionsBar = styled(Box)(({ theme }) => ({
@@ -75,7 +76,16 @@ const CalloutDate = ({ date }: { date: Date | string }) => <Caption>{date}</Capt
 
 const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayoutProps>>(
   (
-    { callout, children, onVisibilityChange, onCalloutEdit, onCalloutDelete, calloutNames, contributionsCount },
+    {
+      callout,
+      actions,
+      children,
+      onVisibilityChange,
+      onCalloutEdit,
+      onCalloutDelete,
+      calloutNames,
+      contributionsCount,
+    },
     ref
   ) => {
     const { t } = useTranslation();
@@ -163,6 +173,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
               </BlockTitle>
             )}
             <CalloutActionsBar>
+              {actions}
               {callout.editable && (
                 <IconButton
                   id="callout-settings-button"

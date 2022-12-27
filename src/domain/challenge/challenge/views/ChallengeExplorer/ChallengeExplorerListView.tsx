@@ -8,7 +8,7 @@ import { RoleType } from '../../../../community/contributor/user/constants/RoleT
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
-import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
+import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
 import {
   SimpleChallenge,
   simpleChallengeValueGetter,
@@ -65,7 +65,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
             keepOpen={false}
           >
             {filteredChallenges => (
-              <CardsLayoutScroller maxHeight={374} sx={{ marginRight: 0 }}>
+              <ScrollerWithGradient maxHeight={374} sx={{ marginRight: 0 }}>
                 <CardsLayout items={filteredChallenges}>
                   {challenge =>
                     challenge && (
@@ -82,7 +82,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                   }
                 </CardsLayout>
                 {filteredChallenges.length === 0 && <Box>{t('pages.challenge-explorer.search.no-results')}</Box>}
-              </CardsLayoutScroller>
+              </ScrollerWithGradient>
             )}
           </CardFilter>
         )}

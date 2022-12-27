@@ -1,5 +1,5 @@
 import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
-import React, { forwardRef, useCallback, useMemo } from 'react';
+import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
@@ -14,6 +14,9 @@ import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/ge
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { BaseCalloutImpl } from '../Types';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { Dialog, IconButton } from '@mui/material';
+import { Close } from '@mui/icons-material';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -135,6 +138,12 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         },
       });
 
+    const breakpoint = useCurrentBreakpoint();
+
+    const lastMessageOnly = breakpoint === 'xs';
+
+    const [isFullViewDialogOpen, setIsFullViewDialogOpen] = useState(false);
+
     return (
       <>
         <CalloutLayout
@@ -155,8 +164,36 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
             canDeleteMessage={canDeleteMessage}
             handleDeleteMessage={handleDeleteMessage}
             loading={loading || postingComment || deletingMessage}
+            last={lastMessageOnly}
+            onClickMore={() => setIsFullViewDialogOpen(true)}
           />
         </CalloutLayout>
+        <Dialog open={isFullViewDialogOpen}>
+          <CalloutLayout
+            callout={callout}
+            calloutNames={calloutNames}
+            contributionsCount={contributionsCount}
+            onVisibilityChange={onVisibilityChange}
+            onCalloutEdit={onCalloutEdit}
+            onCalloutDelete={onCalloutDelete}
+            actions={
+              <IconButton onClick={() => setIsFullViewDialogOpen(false)}>
+                <Close />
+              </IconButton>
+            }
+          >
+            <CommentsComponent
+              messages={messages}
+              commentsId={commentsId}
+              canReadMessages={canReadMessages}
+              canPostMessages={canPostMessages}
+              handlePostMessage={handlePostMessage}
+              canDeleteMessage={canDeleteMessage}
+              handleDeleteMessage={handleDeleteMessage}
+              loading={loading || postingComment || deletingMessage}
+            />
+          </CalloutLayout>
+        </Dialog>
       </>
     );
   }

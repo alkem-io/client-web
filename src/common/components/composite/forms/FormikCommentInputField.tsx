@@ -1,5 +1,4 @@
-import clsx from 'clsx';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import {
   FormControl,
   FormGroup,
@@ -10,30 +9,12 @@ import {
   OutlinedInput,
   OutlinedInputProps,
 } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
+import { Send } from '@mui/icons-material';
 import { useField, useFormikContext } from 'formik';
-import { makeStyles } from '@mui/styles';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
-
-const useStyle = makeStyles(theme => ({
-  padding: {
-    /*
-      select the inner div only if state classes are applied
-      and offset the text to the left if a tick or error icon is displayed
-    */
-    '&.is-invalid .w-md-editor-content .w-md-editor-preview, &.is-valid .w-md-editor-content .w-md-editor-preview': {
-      paddingRight: 30,
-    },
-  },
-  withTooltipIcon: {
-    display: 'flex',
-    gap: theme.spacing(0.5),
-  },
-}));
 
 interface CommentInputField extends InputProps {
   name: string;
-  required?: boolean;
   disabled?: boolean;
   submitting?: boolean;
   maxLength?: number;
@@ -44,21 +25,16 @@ interface CommentInputField extends InputProps {
 
 export const FormikCommentInputField: FC<CommentInputField> = ({
   name,
-  required = false,
   disabled = false,
   submitting = false,
   maxLength,
   withCounter = false,
   submitOnReturnKey = false,
   size = 'medium',
+  sx,
 }) => {
-  const styles = useStyle();
   const [field, meta, helper] = useField(name);
-  const validClass = useMemo(() => (!Boolean(meta.error) && meta.touched ? 'is-valid' : undefined), [meta]);
-  const invalidClass = useMemo(
-    () => (required && Boolean(meta.error) && meta.touched ? 'is-invalid' : undefined),
-    [meta, required]
-  );
+
   const { submitForm } = useFormikContext();
 
   const inactive = disabled || submitting;
@@ -73,12 +49,11 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
     : undefined;
 
   return (
-    <FormGroup sx={{ paddingBottom: theme => theme.spacing(withCounter ? 2 : 1) }}>
+    <FormGroup>
       <FormControl>
         <OutlinedInput
           multiline
           value={field.value}
-          className={clsx('form-control', styles.padding, validClass, invalidClass)}
           name={field.name}
           onChange={e => helper.setValue(e.target.value)}
           onKeyDown={onKeyDown}
@@ -88,7 +63,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           endAdornment={
             <InputAdornment position="end">
               <IconButton aria-label="post comment" size={'small'} type="submit" disabled={inactive}>
-                <SendIcon />
+                <Send />
               </IconButton>
             </InputAdornment>
           }
@@ -96,17 +71,17 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           inputProps={{
             'aria-label': 'post comment',
           }}
+          sx={{
+            '.w-md-editor-content .w-md-editor-preview': {
+              paddingRight: meta.touched ? 30 : undefined, // TODO figure out condition
+            },
+            ...sx,
+          }}
         />
       </FormControl>
-      {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
-      {meta.touched && (
-        <FormHelperText
-          sx={{ marginRight: theme => (withCounter ? theme.spacing(10) : 0) }}
-          error={Boolean(meta.error)}
-        >
-          {meta.error}
-        </FormHelperText>
-      )}
+      <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={!withCounter}>
+        <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>
+      </CharacterCounter>
     </FormGroup>
   );
 };
