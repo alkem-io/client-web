@@ -16,7 +16,7 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { Text } from '../../../../../core/ui/typography';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
-import ChallengeExploreCard from '../../../common/ChallengeExploreCard/ChallengeExploreCard';
+import ChallengeCard from '../../ChallengeCard/ChallengeCard';
 export interface ChallengeExplorerListViewProps {
   headerText: string;
   headerCounter?: number;
@@ -57,16 +57,17 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                 <CardsLayout items={filteredChallenges}>
                   {challenge =>
                     challenge && (
-                      <ChallengeExploreCard
+                      <ChallengeCard
+                        challengeId={challenge.id}
+                        challengeNameId={challenge.nameID}
                         bannerUri={challenge.imageUrl}
                         displayName={challenge.displayName}
-                        tags={challenge.matchedTerms ?? []}
+                        tags={challenge.tags}
                         tagline={challenge.tagline}
-                        vision={''}
+                        vision={challenge.vision}
                         journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                        hubUri={buildHubUrl(challenge.hubNameId)}
                         hubDisplayName={challenge.hubDisplayName}
-                        challengeId={challenge.id}
+                        hubUri={buildHubUrl(challenge.hubNameId)}
                       />
                     )
                   }

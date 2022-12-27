@@ -1976,6 +1976,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         visuals {
           ...VisualUri
         }
+        vision
       }
       tagset {
         id
@@ -3030,6 +3031,7 @@ export const ChallengeExplorerDataDocument = gql`
           visuals {
             ...VisualUri
           }
+          vision
         }
         tagset {
           id

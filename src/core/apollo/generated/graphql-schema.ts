@@ -4361,6 +4361,7 @@ export type ChallengeExplorerSearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -4405,6 +4406,7 @@ export type ChallengeExplorerDataQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -18143,6 +18145,7 @@ export type SearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -18323,6 +18326,7 @@ export type SearchResultChallengeFragment = {
           __typename?: 'Context';
           id: string;
           tagline?: string | undefined;
+          vision?: string | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;

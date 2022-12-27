@@ -91,6 +91,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
       visuals {
         ...VisualUri
       }
+      vision
     }
     tagset {
       id
