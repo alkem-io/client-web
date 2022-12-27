@@ -23,7 +23,7 @@ export interface CardTemplatePreviewProps {
 const CardTemplatePreviewCard: FC<CardTemplatePreviewProps> = ({ cardTemplate }) => {
   const { defaultDescription } = cardTemplate;
   const currentDate = new Date();
-  const commentsCount = 3;
+  const commentsCount = 0;
 
   return (
     <ContributeCard>
