@@ -107,6 +107,7 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
             blurRadius={2}
             height={theme => theme.spacing(18)}
             width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
+            maxWidth="100%"
           />
           <Title
             sx={{

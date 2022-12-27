@@ -1,10 +1,10 @@
 import React, { cloneElement, FC, ReactElement, ReactNode, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { Identifiable } from '../../types/Identifiable';
-import getDepsValueFromObject from '../../utils/getDepsValueFromObject';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../core/ui/content/PageContentBlockGrid';
+import { Identifiable } from '../../../../domain/shared/types/Identifiable';
+import getDepsValueFromObject from '../../../../domain/shared/utils/getDepsValueFromObject';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
 
-interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
+export interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
@@ -27,6 +27,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const depsValueFromObjectDeps = getDepsValueFromObject(deps);
+
   const cards = useMemo(
     () =>
       items.map((item, index) => {

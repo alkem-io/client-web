@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import CardsLayout from '../../layout/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
 import { HubCardProps } from '../../../../common/components/composite/common/cards/HubCard/HubCard';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';

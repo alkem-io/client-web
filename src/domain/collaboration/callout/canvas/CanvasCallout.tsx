@@ -1,11 +1,10 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
-import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
@@ -13,6 +12,7 @@ import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCardCanvas } from './types';
 import { BaseCalloutImpl } from '../Types';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CanvasCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
@@ -74,17 +74,16 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
           onCalloutDelete={onCalloutDelete}
         >
           {showCards && (
-            <CardsLayoutScroller maxHeight={425}>
-              <CardsLayout
-                items={loading ? [undefined, undefined] : callout.canvases}
-                deps={[hubNameId, challengeNameId, opportunityNameId]}
-                createButton={createButton}
-              >
-                {canvas =>
-                  canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
-                }
-              </CardsLayout>
-            </CardsLayoutScroller>
+            <ScrollableCardsLayout
+              items={loading ? [undefined, undefined] : callout.canvases}
+              deps={[hubNameId, challengeNameId, opportunityNameId]}
+              createButton={createButton}
+              maxHeight={gutters(22)}
+            >
+              {canvas =>
+                canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
+              }
+            </ScrollableCardsLayout>
           )}
         </CalloutLayout>
         <CanvasActionsContainer>

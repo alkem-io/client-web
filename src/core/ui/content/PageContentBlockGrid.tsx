@@ -1,4 +1,4 @@
-import { GRID_COLUMNS_BLOCK_WITH_CARDS } from '../grid/constants';
+import { cardsGridColumns } from '../grid/constants';
 import GridContainer, { GridContainerProps } from '../grid/GridContainer';
 import GridProvider from '../grid/GridProvider';
 import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
@@ -13,7 +13,7 @@ const PageContentBlockGrid = ({ cards = false, children, ...props }: PageContent
 
   const parentColumns = useColumns();
 
-  const columns = cards ? (breakpoint === 'xs' ? 1 : GRID_COLUMNS_BLOCK_WITH_CARDS) : parentColumns;
+  const columns = cards ? cardsGridColumns(breakpoint) : parentColumns;
 
   return (
     <GridContainer {...props}>
