@@ -1,6 +1,5 @@
 import React, { FC, ReactNode } from 'react';
 import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
-import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { Caption } from '../../../../core/ui/typography';
@@ -16,6 +15,12 @@ type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id'
 type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
   context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
 };
+
+export enum EntityContributionCardLabel {
+  Member = 'member',
+  Anonymous = 'private',
+  Lead = 'lead',
+}
 
 export interface HubCardProps {
   hub: HubAttrs;

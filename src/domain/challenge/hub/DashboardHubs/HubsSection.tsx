@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import DashboardHubsSection, {
   DashboardHubSectionProps,
+  EntityContributionCardLabel,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
 import { useUserContext } from '../../../community/contributor/user';
 import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -9,7 +10,6 @@ import MetricTooltip from '../../../platform/metrics/MetricTooltip';
 import useServerMetadata from '../../../platform/metadata/useServerMetadata';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { keyBy } from 'lodash';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { Loading } from '../../../../common/components/core';

@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { ContributionCardV2Details } from '../../../../common/components/composite/common/cards';
 import {
   refetchRolesUserQuery,
   useChallengeContributionDetailsQuery,
@@ -13,8 +12,25 @@ import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../..
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 
+type mediaSize = 'small' | 'medium' | 'large';
+
+export interface ContributionDetails {
+  headerText?: string;
+  labelText?: string;
+  labelAboveTitle?: boolean; // if true, the label will appear above the title - temp solution
+  descriptionText?: string;
+  tags?: string[];
+  mediaUrl?: string;
+  mediaSize?: mediaSize;
+  url?: string;
+  keepScroll?: boolean;
+  domain?: {
+    communityID: string;
+  };
+}
+
 export interface EntityDetailsContainerEntities {
-  details?: ContributionCardV2Details;
+  details?: ContributionDetails;
 }
 
 export interface EntityDetailsContainerState {
@@ -68,7 +84,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
   const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
 
-  const details = useMemo<ContributionCardV2Details | undefined>(() => {
+  const details = useMemo<ContributionDetails | undefined>(() => {
     if (hubData) {
       return {
         headerText: hubData.hub.displayName,
