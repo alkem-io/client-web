@@ -2,6 +2,7 @@ import React from 'react';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
+import stopPropagation from '../../../../core/ui/utils/stopPropagation';
 
 interface JourneyCardVisionProps {
   children: string;
@@ -9,7 +10,7 @@ interface JourneyCardVisionProps {
 
 const JourneyCardVision = ({ children }: JourneyCardVisionProps) => {
   return (
-    <OverflowGradient maxHeight={gutters(6)}>
+    <OverflowGradient maxHeight={gutters(6)} onClick={stopPropagation}>
       <WrapperMarkdown card>{children}</WrapperMarkdown>
     </OverflowGradient>
   );
