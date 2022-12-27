@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
 import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
-import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
+import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
 import {
   SimpleChallenge,
   simpleChallengeValueGetter,

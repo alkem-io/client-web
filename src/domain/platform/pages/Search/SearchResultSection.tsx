@@ -2,7 +2,7 @@ import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, useMemo, useState } from 'react';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
 import { SearchResultMetaType } from './SearchPage';
 

@@ -1,10 +1,10 @@
 import React, { FC, useCallback } from 'react';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../hub/icon/HubIcon';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
-import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
 import { useUserContext } from '../../../../community/contributor/user';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';

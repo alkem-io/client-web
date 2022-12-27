@@ -13,7 +13,7 @@ import PageContentColumn from '../../../../../core/ui/content/PageContentColumn'
 import LinksList from '../../../../../core/ui/list/LinksList';
 import { Text } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
+import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
