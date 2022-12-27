@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { ContributionCardV2Details } from '../../../../common/components/composite/common/cards';
 import {
   refetchRolesUserQuery,
   useChallengeContributionDetailsQuery,
@@ -14,7 +13,7 @@ import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 
 export interface EntityDetailsContainerEntities {
-  details?: ContributionCardV2Details;
+  details?: ContributionDetails;
 }
 
 export interface EntityDetailsContainerState {
@@ -38,6 +37,16 @@ export interface EntityDetailsContainerProps
 const buildDomainObject = (communityID: string | undefined) => {
   return typeof communityID === 'undefined' ? undefined : { communityID };
 };
+
+interface ContributionDetails {
+  headerText: string;
+  type: string;
+  mediaUrl: string | undefined;
+  tags: string[];
+  url: string;
+  domain?: { communityID: string };
+  descriptionText?: string;
+}
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
   const { hubId, challengeId, opportunityId } = entities;
@@ -68,13 +77,13 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
   const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
 
-  const details = useMemo<ContributionCardV2Details | undefined>(() => {
+  const details = useMemo<ContributionDetails | undefined>(() => {
     if (hubData) {
       return {
         headerText: hubData.hub.displayName,
         type: 'hub',
         mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
-        tags: hubData.hub.tagset?.tags || [],
+        tags: hubData.hub.tagset?.tags ?? [],
         url: buildHubUrl(hubData.hub.nameID),
         domain: buildDomainObject(hubData.hub.community?.id),
         descriptionText: hubData.hub.context?.tagline,
@@ -86,7 +95,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         headerText: challengeData.hub.challenge.displayName,
         type: 'challenge',
         mediaUrl: getVisualBanner(challengeData.hub.challenge.context?.visuals),
-        tags: challengeData.hub.challenge.tagset?.tags || [],
+        tags: challengeData.hub.challenge.tagset?.tags ?? [],
         url: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
         domain: buildDomainObject(challengeData.hub.challenge.community?.id),
       };
@@ -97,7 +106,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         headerText: opportunityData.hub.opportunity.displayName,
         type: 'opportunity',
         mediaUrl: getVisualBanner(opportunityData.hub.opportunity.context?.visuals),
-        tags: opportunityData.hub.opportunity.tagset?.tags || [],
+        tags: opportunityData.hub.opportunity.tagset?.tags ?? [],
         url: buildOpportunityUrl(
           opportunityData.hub.nameID,
           opportunityData.hub.opportunity.parentNameID || '',
@@ -119,6 +128,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         awaitRefetchQueries: true,
       });
   }, [userId, details?.domain?.communityID, leaveCommunity]);
+
   return (
     <>
       {children(

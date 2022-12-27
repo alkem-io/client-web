@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 import { Loading } from '../../../../../common/components/core';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { useUserContext } from '../hooks/useUserContext';
@@ -10,13 +8,11 @@ import { useUserMetadata } from '../hooks/useUserMetadata';
 import UserPageLayout from '../layout/UserPageLayout';
 import UserProfilePageView from '../views/UserProfilePageView';
 
-interface UserProfileProps extends PageProps {
+interface UserProfileProps {
   edit?: boolean;
 }
 
-export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+export const UserProfilePage: FC<UserProfileProps> = () => {
   const { verified } = useUserContext();
 
   const { userNameId = '' } = useUrlParams();

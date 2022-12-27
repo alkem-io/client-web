@@ -90,22 +90,22 @@ export const ContributionsView = ({
             <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
               {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
                 const Icon = getIcon(contributionItem);
-                if (loading) {
+                if (loading || !details) {
                   return null;
                 }
                 return (
                   <>
                     <JourneyCard
-                      bannerUri={details?.mediaUrl!}
+                      bannerUri={details.mediaUrl}
                       iconComponent={Icon}
                       header={
                         <BlockTitle component="div" sx={webkitLineClamp(2)}>
-                          {details?.headerText}
+                          {details.headerText}
                         </BlockTitle>
                       }
-                      tagline={details?.descriptionText!}
-                      tags={details?.tags ?? []}
-                      journeyUri={details?.url!}
+                      tagline={details.descriptionText!}
+                      tags={details.tags}
+                      journeyUri={details.url}
                       actions={
                         enableLeave && (
                           <CardActions justifyContent="end" flexBasis="100%">
@@ -124,7 +124,7 @@ export const ContributionsView = ({
                         )
                       }
                     >
-                      <JourneyCardTagline>{details?.descriptionText || ''}</JourneyCardTagline>
+                      <JourneyCardTagline>{details?.descriptionText ?? ''}</JourneyCardTagline>
                     </JourneyCard>
                     {enableLeave && (
                       <Dialog
