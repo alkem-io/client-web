@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
