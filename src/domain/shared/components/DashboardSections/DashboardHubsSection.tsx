@@ -16,12 +16,6 @@ type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value
   context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
 };
 
-// export enum EntityContributionCardLabel {
-//   Member = 'member',
-//   Private = 'private',
-//   Lead = 'lead',
-// }
-
 export interface DashboardHubSectionProps {
   hubs: HubAttrs[];
   getHubCardProps?: (hub: HubAttrs) => Partial<HubCardProps>;
