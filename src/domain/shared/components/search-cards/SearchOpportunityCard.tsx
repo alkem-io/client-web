@@ -1,14 +1,10 @@
 import React, { FC } from 'react';
 import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
-import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
-import SearchJourneyWithParentCard, { SearchJourneyWithParentImplProps } from './SearchJourneyWithParentCard';
+import SearchBaseJourneyCard, { SearchBaseJourneyCardProps } from './base/SearchBaseJourneyCard';
 
-export interface SearchOpportunityCardProps extends SearchJourneyWithParentImplProps {}
+export type SearchOpportunityCardImplProps = Omit<SearchBaseJourneyCardProps, 'journeyTypeName' | 'parentIcon'>;
+export interface SearchOpportunityCardProps extends SearchOpportunityCardImplProps {}
 
 export const SearchOpportunityCard: FC<SearchOpportunityCardProps> = ({ children, ...rest }) => {
-  return (
-    <SearchJourneyWithParentCard icon={OpportunityIcon} parentIcon={ChallengeIcon} {...rest}>
-      {children}
-    </SearchJourneyWithParentCard>
-  );
+  return <SearchBaseJourneyCard journeyTypeName="opportunity" parentIcon={ChallengeIcon} {...rest} />;
 };

@@ -1,29 +1,71 @@
-import React, { FC } from 'react';
-import { BoxProps, styled, useTheme } from '@mui/material';
-import Box from '@mui/material/Box';
-import { ClampedTypography, ClampedTypographyProps } from '../../ClampedTypography';
-import SearchBaseCard, { SearchBaseCardImplProps } from './SearchBaseCard';
+import React, { ReactNode } from 'react';
+import { SvgIconProps } from '@mui/material';
+import CardActions from '../../../../../core/ui/card/CardActions';
+import JourneyCardParentSegment from '../../../../challenge/common/HubChildJourneyCard/JourneyCardParentSegment';
+import JourneyCardGoToButton from '../../../../challenge/common/JourneyCard/JourneyCardGoToButton';
+import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
+import journeyIcon from '../../JourneyIcon/JourneyIcon';
+import JourneyCard, { JourneyCardProps } from '../../../../challenge/common/JourneyCard/JourneyCard';
+import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
+import { BlockTitle } from '../../../../../core/ui/typography/components';
+import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
+import JourneyCardVision from '../../../../challenge/common/JourneyCard/JourneyCardVision';
+import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
 
-const TaglineBox = styled(Box)<BoxProps & ClampedTypographyProps>({
-  height: 75,
-});
-
-export interface SearchBaseJourneyCardProps extends SearchBaseCardImplProps {
-  tagline?: string;
+export interface SearchBaseJourneyCardProps
+  extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
+  parentUri?: string;
+  parentDisplayName?: string;
+  parentIcon?: React.ComponentType<SvgIconProps>;
+  private?: boolean;
+  privateParent?: boolean;
+  journeyTypeName: JourneyTypeName;
+  displayName: string;
+  vision: string;
+  parentSegment?: ReactNode;
 }
 
-export const SearchBaseJourneyCard: FC<SearchBaseJourneyCardProps> = ({ tagline, children, ...rest }) => {
-  const theme = useTheme();
+const SearchBaseJourneyCard = ({
+  parentDisplayName,
+  parentUri,
+  parentIcon,
+  journeyTypeName,
+  tagline,
+  displayName,
+  vision,
+  ...props
+}: SearchBaseJourneyCardProps) => {
   return (
-    <SearchBaseCard
-      height={theme.cards.search.journey.height}
-      imgHeight={theme.cards.search.journey.imgHeight}
-      {...rest}
+    <JourneyCard
+      tagline={tagline}
+      iconComponent={journeyIcon[journeyTypeName]}
+      header={
+        <BlockTitle component="div" sx={webkitLineClamp(2)}>
+          {displayName}
+        </BlockTitle>
+      }
+      expansion={
+        <>
+          <JourneyCardVision>{vision}</JourneyCardVision>
+          {parentUri && parentDisplayName && parentIcon ? (
+            <JourneyCardParentSegment iconComponent={parentIcon} parentJourneyUri={parentUri}>
+              {parentDisplayName}
+            </JourneyCardParentSegment>
+          ) : (
+            <JourneyCardSpacing />
+          )}
+        </>
+      }
+      expansionActions={
+        <CardActions>
+          <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName={journeyTypeName} />
+        </CardActions>
+      }
+      {...props}
     >
-      <TaglineBox component={ClampedTypography} clamp={3}>
-        {tagline}
-      </TaglineBox>
-      {children}
-    </SearchBaseCard>
+      <JourneyCardTagline>{tagline}</JourneyCardTagline>
+    </JourneyCard>
   );
 };
+
+export default SearchBaseJourneyCard;

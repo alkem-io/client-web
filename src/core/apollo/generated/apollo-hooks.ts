@@ -1954,6 +1954,7 @@ export const SearchResultHubFragmentDoc = gql`
         visuals {
           ...VisualUri
         }
+        vision
       }
       tagset {
         id
@@ -2006,6 +2007,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
         visuals {
           ...VisualUri
         }
+        vision
       }
       tagset {
         id
