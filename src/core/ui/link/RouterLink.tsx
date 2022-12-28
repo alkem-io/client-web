@@ -7,7 +7,7 @@ interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'> {
   external?: boolean;
 }
 
-const RouterLink = ({ external = false, to, ...props }: RouterLinkProps) => {
+const RouterLink = ({ external, to, ...props }: RouterLinkProps) => {
   const isAbsolute = isAbsoluteUrl(to);
 
   const componentProps = {
