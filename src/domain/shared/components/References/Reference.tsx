@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import { Tooltip } from '@mui/material';
-import { Link as MuiLink } from '@mui/material';
 import { Reference } from '../../../common/profile/Profile';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import RoundedIcon, { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
 import ItemView from '../../../../core/ui/list/ItemView';
 import { ReferenceIcon } from './icons/ReferenceIcon';
+import { isAbsoluteUrl, isExternalUrl } from '../../../../core/utils/isAbsoluteUrl';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 export interface ReferenceViewProps {
   reference: Reference;
@@ -41,10 +42,12 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
 };
 
 const ReferenceView: FC<ReferenceViewProps> = ({ reference, icon = ReferenceIcon }) => {
+  const isExternalReference = isAbsoluteUrl(reference.uri) && isExternalUrl(reference.uri);
+
   return (
     <ItemView visual={<RoundedIcon size="medium" component={icon} />}>
       <Tooltip title={reference.uri} placement="top-start" disableInteractive>
-        <BlockSectionTitle component={MuiLink} href={reference.uri} target="_blank">
+        <BlockSectionTitle component={RouterLink} to={reference.uri} external={isExternalReference}>
           {reference.name}
         </BlockSectionTitle>
       </Tooltip>
