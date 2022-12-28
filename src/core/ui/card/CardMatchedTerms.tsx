@@ -5,12 +5,12 @@ import { Caption } from '../typography';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-interface CardTagsProps extends TagsComponentProps {
+interface CardMatchedTermsProps extends TagsComponentProps {
   rows?: number;
   matchedTerms?: boolean;
 }
 
-const CardMatchedTerms = ({ rows = 1, visibility, ...props }: CardTagsProps) => {
+const CardMatchedTerms = ({ rows = 1, visibility, ...props }: CardMatchedTermsProps) => {
   const heightGutters = rows + (rows - 1) * 0.5;
 
   const { t } = useTranslation();
