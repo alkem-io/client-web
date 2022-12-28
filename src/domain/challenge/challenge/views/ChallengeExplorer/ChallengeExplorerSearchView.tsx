@@ -4,7 +4,7 @@ import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../hub/icon/HubIcon';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
-import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
+import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
 import { useUserContext } from '../../../../community/contributor/user';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
@@ -63,7 +63,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                     }
                   />
                   <Text>{values[0].hubTagline}</Text>
-                  <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
+                  <ScrollerWithGradient maxHeight={376} sx={{ marginRight: 0 }}>
                     <CardsLayout items={values}>
                       {challenge => (
                         <SearchChallengeCard
@@ -77,7 +77,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                         />
                       )}
                     </CardsLayout>
-                  </CardsLayoutScroller>
+                  </ScrollerWithGradient>
                   <SectionSpacer />
                 </PageContentBlock>
               </Box>

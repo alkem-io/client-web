@@ -1,13 +1,14 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Ref } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { gutters } from '../../grid/utils';
-import { overflowBorderGradient } from '../../overflow/utils';
+import { gutters } from '../grid/utils';
+import { overflowBorderGradient } from './utils';
 
 type Orientation = 'vertical' | 'horizontal';
 
-interface CardsLayoutScrollerProps {
+interface ScrollerWithGradientProps<ScrollerEl extends HTMLElement> {
   orientation?: Orientation;
   sx?: BoxProps['sx'];
+  scrollerRef?: Ref<ScrollerEl>;
 }
 
 type Edge = 'top' | 'bottom' | 'left' | 'right';
@@ -50,13 +51,15 @@ const buildPseudoElement = (position: Position, orientation: Orientation) => {
   };
 };
 
-const CardsLayoutScroller = ({
+const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   orientation = 'vertical',
   maxHeight,
   sx,
+  scrollerRef,
+  onScroll,
   children,
   ...props
-}: PropsWithChildren<CardsLayoutScrollerProps> & BoxProps) => {
+}: PropsWithChildren<ScrollerWithGradientProps<ScrollerEl>> & BoxProps) => {
   return (
     <Box
       position="relative"
@@ -68,11 +71,16 @@ const CardsLayoutScroller = ({
       }}
       {...props}
     >
-      <Box maxHeight={maxHeight} sx={{ [orientation === 'vertical' ? 'overflowY' : 'overflowX']: 'auto' }}>
+      <Box
+        ref={scrollerRef}
+        maxHeight={maxHeight}
+        sx={{ [orientation === 'vertical' ? 'overflowY' : 'overflowX']: 'auto' }}
+        onScroll={onScroll}
+      >
         {children}
       </Box>
     </Box>
   );
 };
 
-export default CardsLayoutScroller;
+export default ScrollerWithGradient;
