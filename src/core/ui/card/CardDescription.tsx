@@ -1,17 +1,22 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
-import { Text } from '../typography';
 import { gutters } from '../grid/utils';
-import webkitLineClamp from '../utils/webkitLineClamp';
+import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
+import OverflowGradient from '../overflow/OverflowGradient';
+import stopPropagation from '../utils/stopPropagation';
 
 const DESCRIPTION_TEXT_MAX_LINES = 5;
 
-export const CardDescription = ({ children }: PropsWithChildren<{}>) => {
+interface CardDescriptionProps {
+  children: string;
+}
+
+export const CardDescription = ({ children }: CardDescriptionProps) => {
   return (
-    <Box height={gutters(DESCRIPTION_TEXT_MAX_LINES + 1)} paddingX={1.5} paddingY={1}>
-      <Text maxHeight="100%" sx={webkitLineClamp(DESCRIPTION_TEXT_MAX_LINES)}>
-        {children}
-      </Text>
+    <Box paddingX={1.5} paddingY={1} onClick={stopPropagation}>
+      <OverflowGradient height={gutters(DESCRIPTION_TEXT_MAX_LINES)} backgroundColor="default">
+        <WrapperMarkdown>{children}</WrapperMarkdown>
+      </OverflowGradient>
     </Box>
   );
 };

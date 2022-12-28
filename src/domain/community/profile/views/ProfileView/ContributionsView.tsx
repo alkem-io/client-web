@@ -1,22 +1,13 @@
-import { Button, Dialog, Grid, Skeleton } from '@mui/material';
+import { Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributionDetailsContainer from '../../ContributionDetailsContainer/ContributionDetailsContainer';
+import ContributionDetailsContainer from '../../ContributionDetails/ContributionDetailsContainer';
 import { ContributionItem } from '../../../contributor/contribution';
-import JourneyCard from '../../../../challenge/common/JourneyCard/JourneyCard';
-import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
-import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
-import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
-import { BlockTitle, Caption } from '../../../../../core/ui/typography';
-import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
+import { Caption } from '../../../../../core/ui/typography';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../core/ui/content/PageContentBlockGrid';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
-import { LoadingButton } from '@mui/lab';
-import CloseIcon from '@mui/icons-material/Close';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
-import CardActions from '../../../../../core/ui/card/CardActions';
+import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
 
 export interface ContributionViewProps {
   title: string;
@@ -53,16 +44,6 @@ const SkeletonItem = () => (
   </Grid>
 );
 
-const getIcon = ({ challengeId, opportunityId }: ContributionItem) => {
-  if (opportunityId) {
-    return OpportunityIcon;
-  }
-  if (challengeId) {
-    return ChallengeIcon;
-  }
-  return HubIcon;
-};
-
 export const ContributionsView = ({
   title,
   subtitle,
@@ -89,81 +70,20 @@ export const ContributionsView = ({
           contributions.map(contributionItem => (
             <ContributionDetailsContainer key={getContributionItemKey(contributionItem)} entities={contributionItem}>
               {({ details }, { loading, isLeavingCommunity }, { leaveCommunity }) => {
-                const Icon = getIcon(contributionItem);
-                if (loading) {
+                if (loading || !details) {
                   return null;
                 }
                 return (
-                  <>
-                    <JourneyCard
-                      bannerUri={details?.mediaUrl!}
-                      iconComponent={Icon}
-                      header={
-                        <BlockTitle component="div" sx={webkitLineClamp(2)}>
-                          {details?.headerText}
-                        </BlockTitle>
-                      }
-                      tagline={details?.descriptionText!}
-                      tags={details?.tags ?? []}
-                      journeyUri={details?.url!}
-                      actions={
-                        enableLeave && (
-                          <CardActions justifyContent="end" flexBasis="100%">
-                            <LoadingButton
-                              variant="outlined"
-                              startIcon={<CloseIcon />}
-                              onClick={event => {
-                                setLeavingCommunityId(details?.domain?.communityID);
-                                event.stopPropagation();
-                              }}
-                              loading={isLeavingCommunity}
-                            >
-                              {t('buttons.leave')}
-                            </LoadingButton>
-                          </CardActions>
-                        )
-                      }
-                    >
-                      <JourneyCardTagline>{details?.descriptionText || ''}</JourneyCardTagline>
-                    </JourneyCard>
-                    {enableLeave && (
-                      <Dialog
-                        open={leavingCommunityId === details?.domain?.communityID}
-                        maxWidth="xs"
-                        aria-labelledby="confirm-leave-organization"
-                      >
-                        <DialogTitle id="confirm-innovation-flow">
-                          {t('components.associated-organization.confirmation-dialog.title', {
-                            organization: details?.headerText,
-                          })}
-                        </DialogTitle>
-                        <DialogContent sx={{ paddingX: 2 }}>
-                          {t('components.associated-organization.confirmation-dialog.text')}
-                        </DialogContent>
-                        <DialogActions sx={{ justifyContent: 'end' }}>
-                          <Button
-                            onClick={event => {
-                              setLeavingCommunityId(undefined);
-                              event.stopPropagation();
-                            }}
-                          >
-                            {t('buttons.cancel')}
-                          </Button>
-
-                          <Button
-                            onClick={event => {
-                              leaveCommunity();
-                              setLeavingCommunityId(undefined);
-                              event.stopPropagation();
-                            }}
-                            disabled={loading}
-                          >
-                            {t('buttons.leave')}
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    )}
-                  </>
+                  <ContributionDetailsCard
+                    {...details}
+                    enableLeave={enableLeave}
+                    leavingCommunity={isLeavingCommunity}
+                    handleLeaveCommunity={leaveCommunity}
+                    leavingCommunityDialogOpen={leavingCommunityId === details?.communityId}
+                    onLeaveCommunityDialogOpen={isOpen =>
+                      setLeavingCommunityId(isOpen ? details?.communityId : undefined)
+                    }
+                  />
                 );
               }}
             </ContributionDetailsContainer>
