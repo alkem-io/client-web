@@ -13,23 +13,6 @@ import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
-type mediaSize = 'small' | 'medium' | 'large';
-
-export interface ContributionDetails {
-  headerText?: string;
-  labelText?: string;
-  labelAboveTitle?: boolean; // if true, the label will appear above the title - temp solution
-  descriptionText?: string;
-  tags?: string[];
-  mediaUrl?: string;
-  mediaSize?: mediaSize;
-  url?: string;
-  keepScroll?: boolean;
-  domain?: {
-    communityID: string;
-  };
-}
-
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
 }
@@ -52,7 +35,7 @@ export interface EntityDetailsContainerProps
   entities: ContributionItem;
 }
 
-interface ContributionDetails {
+export interface ContributionDetails {
   displayName: string;
   journeyTypeName: JourneyTypeName;
   bannerUri?: string;
