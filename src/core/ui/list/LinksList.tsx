@@ -1,9 +1,10 @@
 import React, { FC, ReactNode } from 'react';
 import { styled } from '@mui/styles';
-import { List as MuiList, ListItem as MuiListItem, ListItemIcon as MuiListItemIcon } from '@mui/material';
+import { List as MuiList, ListItem as MuiListItem, ListItemIcon as MuiListItemIcon, Skeleton } from '@mui/material';
 import { BlockSectionTitle, CaptionSmall } from '../typography';
 import RouterLink from '../link/RouterLink';
 import { gutters } from '../grid/utils';
+import { times } from 'lodash';
 
 const List = styled(MuiList)(() => ({ padding: 0 }));
 
@@ -29,12 +30,16 @@ interface Item {
 export interface LinksListProps {
   items: Item[] | undefined;
   emptyListCaption?: string;
+  loading?: boolean;
 }
 
-const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption }) => {
+const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading = false }) => {
   return (
     <List>
-      {items.length > 0 &&
+      {loading && times(3, i => <ListItem key={i} component={Skeleton} />)}
+      {!loading && items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
+      {!loading &&
+        items.length > 0 &&
         items.map(item => (
           <ListItem key={item.id} component={RouterLink} to={item.uri}>
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -43,7 +48,6 @@ const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption }) => {
             </BlockSectionTitle>
           </ListItem>
         ))}
-      {items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
     </List>
   );
 };

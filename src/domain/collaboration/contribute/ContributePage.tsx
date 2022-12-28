@@ -19,7 +19,7 @@ const ContributePage = ({
   return (
     <>
       <PageLayout currentSection={EntityPageSection.Contribute}>
-        <CalloutsView scrollToCallout={scrollToCallout} />
+        <CalloutsView scrollToCallout={scrollToCallout} entityTypeName={entityTypeName} />
       </PageLayout>
       {children}
     </>
