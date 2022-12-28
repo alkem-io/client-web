@@ -544,6 +544,74 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
+export const AspectTemplateInfoFragmentDoc = gql`
+  fragment AspectTemplateInfo on TemplateInfo {
+    id
+    title
+    description
+    tagset {
+      id
+      tags
+    }
+    visual {
+      id
+      uri
+    }
+  }
+`;
+export const AspectTemplateFragmentDoc = gql`
+  fragment AspectTemplate on AspectTemplate {
+    id
+    defaultDescription
+    type
+    info {
+      ...AspectTemplateInfo
+    }
+  }
+  ${AspectTemplateInfoFragmentDoc}
+`;
+export const CanvasTemplateFragmentDoc = gql`
+  fragment CanvasTemplate on CanvasTemplate {
+    id
+    info {
+      id
+      title
+      description
+    }
+    value
+  }
+`;
+export const LifecycleTemplateFragmentDoc = gql`
+  fragment LifecycleTemplate on LifecycleTemplate {
+    id
+    definition
+    type
+    info {
+      id
+      title
+      description
+    }
+  }
+`;
+export const HubTemplatesFragmentDoc = gql`
+  fragment HubTemplates on Hub {
+    templates {
+      id
+      aspectTemplates {
+        ...AspectTemplate
+      }
+      canvasTemplates {
+        ...CanvasTemplate
+      }
+      lifecycleTemplates {
+        ...LifecycleTemplate
+      }
+    }
+  }
+  ${AspectTemplateFragmentDoc}
+  ${CanvasTemplateFragmentDoc}
+  ${LifecycleTemplateFragmentDoc}
+`;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -4978,6 +5046,62 @@ export type HubProviderQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
   return { query: HubProviderDocument, variables: variables };
+}
+
+export const HubTemplatesDocument = gql`
+  query HubTemplates($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      ...HubTemplates
+    }
+  }
+  ${HubTemplatesFragmentDoc}
+`;
+
+/**
+ * __useHubTemplatesQuery__
+ *
+ * To run a query within a React component, call `useHubTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubTemplatesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>(
+    HubTemplatesDocument,
+    options
+  );
+}
+
+export function useHubTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>(
+    HubTemplatesDocument,
+    options
+  );
+}
+
+export type HubTemplatesQueryHookResult = ReturnType<typeof useHubTemplatesQuery>;
+export type HubTemplatesLazyQueryHookResult = ReturnType<typeof useHubTemplatesLazyQuery>;
+export type HubTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubTemplatesQuery,
+  SchemaTypes.HubTemplatesQueryVariables
+>;
+export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
+  return { query: HubTemplatesDocument, variables: variables };
 }
 
 export const HubPageDocument = gql`
@@ -18700,6 +18824,156 @@ export function refetchAdminGlobalOrganizationsListQuery(
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
 
+export const AdminHubTemplatesDocument = gql`
+  query AdminHubTemplates($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        aspectTemplates {
+          ...AdminAspectTemplate
+        }
+        canvasTemplates {
+          ...AdminCanvasTemplate
+        }
+        lifecycleTemplates {
+          ...AdminLifecycleTemplate
+        }
+      }
+    }
+  }
+  ${AdminAspectTemplateFragmentDoc}
+  ${AdminCanvasTemplateFragmentDoc}
+  ${AdminLifecycleTemplateFragmentDoc}
+`;
+
+/**
+ * __useAdminHubTemplatesQuery__
+ *
+ * To run a query within a React component, call `useAdminHubTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminHubTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminHubTemplatesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useAdminHubTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AdminHubTemplatesQuery, SchemaTypes.AdminHubTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AdminHubTemplatesQuery, SchemaTypes.AdminHubTemplatesQueryVariables>(
+    AdminHubTemplatesDocument,
+    options
+  );
+}
+
+export function useAdminHubTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AdminHubTemplatesQuery,
+    SchemaTypes.AdminHubTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AdminHubTemplatesQuery, SchemaTypes.AdminHubTemplatesQueryVariables>(
+    AdminHubTemplatesDocument,
+    options
+  );
+}
+
+export type AdminHubTemplatesQueryHookResult = ReturnType<typeof useAdminHubTemplatesQuery>;
+export type AdminHubTemplatesLazyQueryHookResult = ReturnType<typeof useAdminHubTemplatesLazyQuery>;
+export type AdminHubTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminHubTemplatesQuery,
+  SchemaTypes.AdminHubTemplatesQueryVariables
+>;
+export function refetchAdminHubTemplatesQuery(variables: SchemaTypes.AdminHubTemplatesQueryVariables) {
+  return { query: AdminHubTemplatesDocument, variables: variables };
+}
+
+export const HubTemplatesCanvasTemplateWithValueDocument = gql`
+  query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        canvasTemplate(ID: $canvasTemplateId) {
+          ...AdminCanvasTemplateValue
+        }
+      }
+    }
+  }
+  ${AdminCanvasTemplateValueFragmentDoc}
+`;
+
+/**
+ * __useHubTemplatesCanvasTemplateWithValueQuery__
+ *
+ * To run a query within a React component, call `useHubTemplatesCanvasTemplateWithValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubTemplatesCanvasTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubTemplatesCanvasTemplateWithValueQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      canvasTemplateId: // value for 'canvasTemplateId'
+ *   },
+ * });
+ */
+export function useHubTemplatesCanvasTemplateWithValueQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
+  >(HubTemplatesCanvasTemplateWithValueDocument, options);
+}
+
+export function useHubTemplatesCanvasTemplateWithValueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
+    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
+  >(HubTemplatesCanvasTemplateWithValueDocument, options);
+}
+
+export type HubTemplatesCanvasTemplateWithValueQueryHookResult = ReturnType<
+  typeof useHubTemplatesCanvasTemplateWithValueQuery
+>;
+export type HubTemplatesCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
+  typeof useHubTemplatesCanvasTemplateWithValueLazyQuery
+>;
+export type HubTemplatesCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
+  SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
+>;
+export function refetchHubTemplatesCanvasTemplateWithValueQuery(
+  variables: SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
+) {
+  return { query: HubTemplatesCanvasTemplateWithValueDocument, variables: variables };
+}
+
 export const UpdateAspectTemplateDocument = gql`
   mutation updateAspectTemplate(
     $templateId: UUID!
@@ -19017,153 +19291,6 @@ export type DeleteCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCanvasTemplateMutation,
   SchemaTypes.DeleteCanvasTemplateMutationVariables
 >;
-export const HubTemplatesDocument = gql`
-  query HubTemplates($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      id
-      templates {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        aspectTemplates {
-          ...AdminAspectTemplate
-        }
-        canvasTemplates {
-          ...AdminCanvasTemplate
-        }
-        lifecycleTemplates {
-          ...AdminLifecycleTemplate
-        }
-      }
-    }
-  }
-  ${AdminAspectTemplateFragmentDoc}
-  ${AdminCanvasTemplateFragmentDoc}
-  ${AdminLifecycleTemplateFragmentDoc}
-`;
-
-/**
- * __useHubTemplatesQuery__
- *
- * To run a query within a React component, call `useHubTemplatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubTemplatesQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubTemplatesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>(
-    HubTemplatesDocument,
-    options
-  );
-}
-
-export function useHubTemplatesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>(
-    HubTemplatesDocument,
-    options
-  );
-}
-
-export type HubTemplatesQueryHookResult = ReturnType<typeof useHubTemplatesQuery>;
-export type HubTemplatesLazyQueryHookResult = ReturnType<typeof useHubTemplatesLazyQuery>;
-export type HubTemplatesQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubTemplatesQuery,
-  SchemaTypes.HubTemplatesQueryVariables
->;
-export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
-  return { query: HubTemplatesDocument, variables: variables };
-}
-
-export const HubTemplatesCanvasTemplateWithValueDocument = gql`
-  query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
-    hub(ID: $hubId) {
-      id
-      templates {
-        id
-        canvasTemplate(ID: $canvasTemplateId) {
-          ...AdminCanvasTemplateValue
-        }
-      }
-    }
-  }
-  ${AdminCanvasTemplateValueFragmentDoc}
-`;
-
-/**
- * __useHubTemplatesCanvasTemplateWithValueQuery__
- *
- * To run a query within a React component, call `useHubTemplatesCanvasTemplateWithValueQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubTemplatesCanvasTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubTemplatesCanvasTemplateWithValueQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *      canvasTemplateId: // value for 'canvasTemplateId'
- *   },
- * });
- */
-export function useHubTemplatesCanvasTemplateWithValueQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
-  >(HubTemplatesCanvasTemplateWithValueDocument, options);
-}
-
-export function useHubTemplatesCanvasTemplateWithValueLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
-    SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
-  >(HubTemplatesCanvasTemplateWithValueDocument, options);
-}
-
-export type HubTemplatesCanvasTemplateWithValueQueryHookResult = ReturnType<
-  typeof useHubTemplatesCanvasTemplateWithValueQuery
->;
-export type HubTemplatesCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
-  typeof useHubTemplatesCanvasTemplateWithValueLazyQuery
->;
-export type HubTemplatesCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubTemplatesCanvasTemplateWithValueQuery,
-  SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
->;
-export function refetchHubTemplatesCanvasTemplateWithValueQuery(
-  variables: SchemaTypes.HubTemplatesCanvasTemplateWithValueQueryVariables
-) {
-  return { query: HubTemplatesCanvasTemplateWithValueDocument, variables: variables };
-}
-
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
     library {

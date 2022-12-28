@@ -1,0 +1,64 @@
+query HubTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    ...HubTemplates
+  }
+}
+
+fragment HubTemplates on Hub {
+  templates {
+    id
+    aspectTemplates {
+      ...AspectTemplate
+    }
+    canvasTemplates {
+      ...CanvasTemplate
+    }
+    lifecycleTemplates {
+      ...LifecycleTemplate
+    }
+  }
+}
+
+fragment AspectTemplate on AspectTemplate {
+  id
+  defaultDescription
+  type
+  info {
+    ...AspectTemplateInfo
+  }
+}
+
+fragment AspectTemplateInfo on TemplateInfo {
+  id
+  title
+  description
+  tagset {
+    id
+    tags
+  }
+  visual {
+    id
+    uri
+  }
+}
+fragment CanvasTemplate on CanvasTemplate {
+  id
+  info {
+    id
+    title
+    description
+  }
+  value
+}
+
+fragment LifecycleTemplate on LifecycleTemplate {
+  id
+  definition
+  type
+  info {
+    id
+    title
+    description
+  }
+}

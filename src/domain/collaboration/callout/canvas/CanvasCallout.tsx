@@ -5,7 +5,7 @@ import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/Scrollab
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, TemplatesSet } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import CanvasCard from './CanvasCard';
@@ -15,6 +15,7 @@ import { BaseCalloutImpl } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { useHubTemplatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface CanvasCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
@@ -42,8 +43,19 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
     const openCreateDialog = () => setShowCreateCanvasDialog(true);
     const closeCreateDialog = () => setShowCreateCanvasDialog(false);
-    const { templates } = useHub();
+    const { hubId } = useHub();
     const navigate = useNavigate();
+
+    const { data: hubTemplatesData } = useHubTemplatesQuery({
+      variables: { hubId },
+      skip: !hubId,
+    });
+    const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+      id: '',
+      aspectTemplates: [],
+      canvasTemplates: [],
+      lifecycleTemplates: [],
+    };
 
     const createButton = canCreate && callout.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />

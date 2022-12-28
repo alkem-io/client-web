@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, TemplatesSet } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
@@ -10,6 +10,7 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
+import { useHubTemplatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -50,7 +51,17 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   calloutNames,
 }) => {
   const { t } = useTranslation();
-  const { templates } = useHub();
+  const { hubId } = useHub();
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
+    variables: { hubId },
+    skip: !hubId,
+  });
+  const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+    id: '',
+    aspectTemplates: [],
+    canvasTemplates: [],
+    lifecycleTemplates: [],
+  };
 
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
