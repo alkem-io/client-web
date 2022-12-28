@@ -1,5 +1,4 @@
 import { ContentBlock, ContentState, EditorState } from 'draft-js';
-import { OrderedMap } from 'immutable';
 import { last } from 'lodash';
 
 const shouldPad = (block: ContentBlock) => block.getType() === 'unstyled' && block.getText() !== '';
@@ -23,28 +22,23 @@ export const padBlocks = (editorState: EditorState, prevEditorState: EditorState
     return editorState;
   }
 
-  const paddedBlocks: [string, ContentBlock][] = [];
+  const paddedBlocks: ContentBlock[] = [];
   // @ts-ignore
   for (const [key, block] of blocks.entries()) {
-    const shouldPadAfterPrev = paddedBlocks.length >= 1 && shouldPad(last(paddedBlocks)![1]);
+    const shouldPadAfterPrev = paddedBlocks.length >= 1 && shouldPad(last(paddedBlocks)!);
     const shouldPadBeforeCurrent = shouldPad(block);
 
     if (shouldPadAfterPrev && shouldPadBeforeCurrent) {
-      const paddingBlockKey = `padding_${key}`;
-
       paddedBlocks.push(
-        [
-          paddingBlockKey,
-          new ContentBlock({
-            key: paddingBlockKey,
-            text: '',
-            type: 'paragraph',
-          }),
-        ],
-        [key, block]
+        new ContentBlock({
+          key: `padding_${key}`,
+          text: '',
+          type: 'paragraph',
+        }),
+        block
       );
     } else {
-      paddedBlocks.push([key, block]);
+      paddedBlocks.push(block);
     }
   }
 
@@ -52,13 +46,9 @@ export const padBlocks = (editorState: EditorState, prevEditorState: EditorState
     return editorState;
   }
 
-  const nextBlocks = OrderedMap<string, ContentBlock>(paddedBlocks);
-
   return EditorState.push(
     editorState,
-    ContentState
-      // @ts-ignore
-      .createFromBlockArray(Array.from(nextBlocks.values()))
+    ContentState.createFromBlockArray(paddedBlocks)
       .set('selectionBefore', contentState.getSelectionBefore())
       .set('selectionAfter', contentState.getSelectionAfter()) as ContentState,
     'split-block'
