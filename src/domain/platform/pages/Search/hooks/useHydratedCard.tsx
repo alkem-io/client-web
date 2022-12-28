@@ -92,7 +92,6 @@ const _hydrateHubCard = (
   const tagline = context?.tagline || '';
   const image = getVisualBanner(context?.visuals);
   const name = hub.displayName;
-  // const matchedTerms = data.terms;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = hub.context?.vision || '';
@@ -109,9 +108,9 @@ const _hydrateHubCard = (
       member={!!isMember}
       displayName={name}
       tagline={tagline}
-      // matchedTerms={matchedTerms}
       journeyUri={url}
       tags={tags}
+      matchedTerms
       vision={vision}
     />
   );
@@ -152,8 +151,8 @@ const useHydrateChallengeCard = (
       displayName={name}
       tagline={tagline}
       parentJourneyDisplayName={hubDisplayName}
-      // matchedTerms={matchedTerms}
       tags={matchedTerms}
+      matchedTerms
       journeyUri={url}
       vision={vision}
     />
@@ -196,8 +195,8 @@ const useHydrateOpportunityCard = (
       displayName={name}
       tagline={tagline}
       parentJourneyDisplayName={challengeDisplayName}
-      // matchedTerms={matchedTerms}
       tags={matchedTerms}
+      matchedTerms
       journeyUri={url}
       vision={vision}
     />

@@ -10,6 +10,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import JourneyCardBannerPlaceholder from './JourneyCardBannerPlaceholder';
+import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -23,6 +24,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
+  matchedTerms?: boolean;
 }
 
 const JourneyCard = ({
@@ -37,6 +39,7 @@ const JourneyCard = ({
   member,
   locked,
   actions,
+  matchedTerms = false,
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
@@ -45,6 +48,8 @@ const JourneyCard = ({
   const canBeExpanded = !!expansion;
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
+
+  const Tags = matchedTerms ? CardMatchedTerms : CardTags;
 
   return (
     <ContributeCard {...containerProps}>
@@ -81,11 +86,7 @@ const JourneyCard = ({
           paddingX={1.5}
           flexWrap={actions ? 'wrap' : 'nowrap'}
         >
-          <CardTags
-            tags={tags}
-            visibility={isExpanded ? 'hidden' : 'visible'}
-            flexBasis={actions ? '100%' : undefined}
-          />
+          <Tags tags={tags} visibility={isExpanded ? 'hidden' : 'visible'} flexBasis={actions ? '100%' : undefined} />
           {actions}
           {canBeExpanded && (
             <Box display="flex" marginRight={-0.5} alignItems="end">
@@ -96,7 +97,7 @@ const JourneyCard = ({
         <Collapse in={canBeExpanded && isExpanded}>
           <CardContent>
             {expansion}
-            <CardTags tags={tags} rows={2} />
+            <Tags tags={tags} rows={2} />
             {expansionActions}
           </CardContent>
         </Collapse>
