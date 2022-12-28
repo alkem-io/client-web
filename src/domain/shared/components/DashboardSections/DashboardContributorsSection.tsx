@@ -10,7 +10,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 
-const MAX_ITEMS_TO_SHOW = 20;
+const MAX_ITEMS_TO_SHOW = 16;
 
 export interface DashboardContributorsSectionSectionProps {
   headerText: string;
