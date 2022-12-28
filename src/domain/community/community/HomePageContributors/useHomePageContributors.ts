@@ -12,7 +12,7 @@ import { ContributorCardProps } from '../../../../common/components/composite/co
 import { WithId } from '../../../../types/WithId';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
-const MAX_ITEMS_TO_SHOW = 20;
+const MAX_ITEMS_TO_SHOW = 16;
 const HALF_MAX_ITEMS_TO_SHOW = MAX_ITEMS_TO_SHOW / 2; // If logged in, show half users half organizations
 
 const useHomePageContributors = () => {
