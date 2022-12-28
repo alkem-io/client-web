@@ -98,7 +98,7 @@ const _hydrateHubCard = (
   const vision = hub.context?.vision || '';
 
   const hubRoles = userRoles?.hubs.find(x => x.id === data.id);
-  const label =
+  const isMember =
     hubRoles?.roles.find(x => x === RoleType.Lead) ||
     hubRoles?.roles.find(x => x === RoleType.Host) ||
     hubRoles?.roles.find(x => x === RoleType.Member);
@@ -106,7 +106,7 @@ const _hydrateHubCard = (
   return (
     <SearchHubCard
       bannerUri={image}
-      member={!!label}
+      member={!!isMember}
       displayName={name}
       tagline={tagline}
       // matchedTerms={matchedTerms}
@@ -142,16 +142,16 @@ const useHydrateChallengeCard = (
 
   const challengeRoles = userRoles?.hubs.find(x => x.id === hubId)?.challenges.find(x => x.id === data?.id);
 
-  const label =
+  const isMember =
     challengeRoles?.roles.find(x => x === RoleType.Lead) || challengeRoles?.roles.find(x => x === RoleType.Member);
 
   return (
     <SearchChallengeCard
       bannerUri={image}
-      member={!!label}
+      member={!!isMember}
       displayName={name}
       tagline={tagline}
-      parentDisplayName={hubDisplayName}
+      parentJourneyDisplayName={hubDisplayName}
       // matchedTerms={matchedTerms}
       tags={matchedTerms}
       journeyUri={url}
@@ -180,22 +180,22 @@ const useHydrateOpportunityCard = (
   const hubId = containingHub.id;
   const hubNameID = containingHub.nameID;
   const nameID = opportunity.nameID;
-  const vision = opportunity.context?.vision || '';
+  const vision = opportunity.context?.vision ?? '';
 
   const url = buildOpportunityUrl(hubNameID, challengeNameId, nameID);
 
   const opportunityRoles = userRoles?.hubs.find(x => x.id === hubId)?.opportunities.find(x => x.id === data?.id);
 
-  const label =
+  const isMember =
     opportunityRoles?.roles.find(x => x === RoleType.Lead) || opportunityRoles?.roles.find(x => x === RoleType.Member);
 
   return (
     <SearchOpportunityCard
       bannerUri={image}
-      member={!!label}
+      member={!!isMember}
       displayName={name}
       tagline={tagline}
-      parentDisplayName={challengeDisplayName}
+      parentJourneyDisplayName={challengeDisplayName}
       // matchedTerms={matchedTerms}
       tags={matchedTerms}
       journeyUri={url}

@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { SvgIconProps } from '@mui/material';
 import CardActions from '../../../../../core/ui/card/CardActions';
 import JourneyCardParentSegment from '../../../../challenge/common/HubChildJourneyCard/JourneyCardParentSegment';
 import JourneyCardGoToButton from '../../../../challenge/common/JourneyCard/JourneyCardGoToButton';
@@ -11,13 +10,13 @@ import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardVision from '../../../../challenge/common/JourneyCard/JourneyCardVision';
 import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
+import getParentJourneyType from '../../../../challenge/common/utils/getParentJourneyType';
 
 export interface SearchBaseJourneyCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
-  parentUri?: string;
-  parentDisplayName?: string;
-  parentIcon?: React.ComponentType<SvgIconProps>;
-  private?: boolean;
+  parentJourneyUri?: string;
+  parentJourneyDisplayName?: string;
+  locked?: boolean;
   privateParent?: boolean;
   journeyTypeName: JourneyTypeName;
   displayName: string;
@@ -26,15 +25,17 @@ export interface SearchBaseJourneyCardProps
 }
 
 const SearchBaseJourneyCard = ({
-  parentDisplayName,
-  parentUri,
-  parentIcon,
+  parentJourneyDisplayName,
+  parentJourneyUri,
   journeyTypeName,
   tagline,
   displayName,
   vision,
   ...props
 }: SearchBaseJourneyCardProps) => {
+  const parentJourney = getParentJourneyType(journeyTypeName);
+  const parentIcon = parentJourney && journeyIcon[parentJourney];
+
   return (
     <JourneyCard
       tagline={tagline}
@@ -47,9 +48,9 @@ const SearchBaseJourneyCard = ({
       expansion={
         <>
           <JourneyCardVision>{vision}</JourneyCardVision>
-          {parentUri && parentDisplayName && parentIcon ? (
-            <JourneyCardParentSegment iconComponent={parentIcon} parentJourneyUri={parentUri}>
-              {parentDisplayName}
+          {parentJourneyUri && parentJourneyDisplayName && parentIcon ? (
+            <JourneyCardParentSegment iconComponent={parentIcon} parentJourneyUri={parentJourneyUri}>
+              {parentJourneyDisplayName}
             </JourneyCardParentSegment>
           ) : (
             <JourneyCardSpacing />

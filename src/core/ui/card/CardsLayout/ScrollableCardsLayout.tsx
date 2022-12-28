@@ -15,7 +15,6 @@ const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
   return (
     <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
       <CardsLayout
-        {...props}
         cards={orientation === 'vertical'}
         noWrap={orientation === 'horizontal'}
         sx={
@@ -32,6 +31,7 @@ const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
                 },
               }
         }
+        {...props}
       />
     </ScrollerWithGradient>
   );
