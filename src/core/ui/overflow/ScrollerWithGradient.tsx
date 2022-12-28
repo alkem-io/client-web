@@ -33,44 +33,33 @@ const placementMap: Record<Orientation, Record<Position, Edge>> = {
   },
 };
 
-const buildPseudoElement = (position: Position, orientation: Orientation) => {
+const buildStylesForOverlay = (position: Position, orientation: Orientation) => {
   const placement = placementMap[orientation][position];
 
   const crossAxisStart = orientation === 'vertical' ? 'left' : 'top';
   const crossAxisEnd = orientation === 'vertical' ? 'right' : 'bottom';
 
   return {
-    content: '""',
-    display: 'block',
     position: 'absolute',
     [placement]: 0,
     [orientation === 'vertical' ? 'height' : 'width']: gutters(),
     [crossAxisStart]: 0,
     [crossAxisEnd]: gutters(1), // creates an offset at the side of the scrollbar
     background: overflowBorderGradient(overflowAngle[placement]),
+    pointerEvents: 'none',
   };
 };
 
 const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   orientation = 'vertical',
   maxHeight,
-  sx,
   scrollerRef,
   onScroll,
   children,
   ...props
 }: PropsWithChildren<ScrollerWithGradientProps<ScrollerEl>> & BoxProps) => {
   return (
-    <Box
-      position="relative"
-      margin={gutters(-1)}
-      sx={{
-        ...sx,
-        ':before': buildPseudoElement('start', orientation),
-        ':after': buildPseudoElement('end', orientation),
-      }}
-      {...props}
-    >
+    <Box position="relative" margin={gutters(-1)} {...props}>
       <Box
         ref={scrollerRef}
         maxHeight={maxHeight}
@@ -79,6 +68,8 @@ const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
       >
         {children}
       </Box>
+      <Box sx={buildStylesForOverlay('start', orientation)} />
+      <Box sx={buildStylesForOverlay('end', orientation)} />
     </Box>
   );
 };

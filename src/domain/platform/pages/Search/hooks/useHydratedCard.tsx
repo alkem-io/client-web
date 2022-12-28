@@ -92,13 +92,12 @@ const _hydrateHubCard = (
   const tagline = context?.tagline || '';
   const image = getVisualBanner(context?.visuals);
   const name = hub.displayName;
-  // const matchedTerms = data.terms;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = hub.context?.vision || '';
 
   const hubRoles = userRoles?.hubs.find(x => x.id === data.id);
-  const label =
+  const isMember =
     hubRoles?.roles.find(x => x === RoleType.Lead) ||
     hubRoles?.roles.find(x => x === RoleType.Host) ||
     hubRoles?.roles.find(x => x === RoleType.Member);
@@ -106,12 +105,12 @@ const _hydrateHubCard = (
   return (
     <SearchHubCard
       bannerUri={image}
-      member={!!label}
+      member={!!isMember}
       displayName={name}
       tagline={tagline}
-      // matchedTerms={matchedTerms}
       journeyUri={url}
       tags={tags}
+      matchedTerms
       vision={vision}
     />
   );
@@ -142,18 +141,18 @@ const useHydrateChallengeCard = (
 
   const challengeRoles = userRoles?.hubs.find(x => x.id === hubId)?.challenges.find(x => x.id === data?.id);
 
-  const label =
+  const isMember =
     challengeRoles?.roles.find(x => x === RoleType.Lead) || challengeRoles?.roles.find(x => x === RoleType.Member);
 
   return (
     <SearchChallengeCard
       bannerUri={image}
-      member={!!label}
+      member={!!isMember}
       displayName={name}
       tagline={tagline}
-      parentDisplayName={hubDisplayName}
-      // matchedTerms={matchedTerms}
+      parentJourneyDisplayName={hubDisplayName}
       tags={matchedTerms}
+      matchedTerms
       journeyUri={url}
       vision={vision}
     />
@@ -180,24 +179,24 @@ const useHydrateOpportunityCard = (
   const hubId = containingHub.id;
   const hubNameID = containingHub.nameID;
   const nameID = opportunity.nameID;
-  const vision = opportunity.context?.vision || '';
+  const vision = opportunity.context?.vision ?? '';
 
   const url = buildOpportunityUrl(hubNameID, challengeNameId, nameID);
 
   const opportunityRoles = userRoles?.hubs.find(x => x.id === hubId)?.opportunities.find(x => x.id === data?.id);
 
-  const label =
+  const isMember =
     opportunityRoles?.roles.find(x => x === RoleType.Lead) || opportunityRoles?.roles.find(x => x === RoleType.Member);
 
   return (
     <SearchOpportunityCard
       bannerUri={image}
-      member={!!label}
+      member={!!isMember}
       displayName={name}
       tagline={tagline}
-      parentDisplayName={challengeDisplayName}
-      // matchedTerms={matchedTerms}
+      parentJourneyDisplayName={challengeDisplayName}
       tags={matchedTerms}
+      matchedTerms
       journeyUri={url}
       vision={vision}
     />
