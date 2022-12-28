@@ -1,6 +1,6 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, Collapse, SvgIconProps } from '@mui/material';
-import { BeenhereOutlined, ExpandLess, ExpandMore } from '@mui/icons-material';
+import { BeenhereOutlined, ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import CardImage from '../../../../core/ui/card/CardImage';
 import ItemView from '../../../../core/ui/list/ItemView';
@@ -21,6 +21,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   expansion?: ReactNode;
   expansionActions?: ReactNode;
   member?: boolean;
+  locked?: boolean;
   actions?: ReactNode;
 }
 
@@ -34,6 +35,7 @@ const JourneyCard = ({
   expansion,
   expansionActions,
   member,
+  locked,
   actions,
   children,
   ...containerProps
@@ -61,6 +63,7 @@ const JourneyCard = ({
         </Box>
         <ItemView
           visual={<RoundedIcon size="small" component={Icon} />}
+          visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
           height={gutters(3)}
           paddingY={1}
