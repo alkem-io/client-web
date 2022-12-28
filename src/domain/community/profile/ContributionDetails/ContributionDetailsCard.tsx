@@ -10,9 +10,7 @@ import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardTagline from '../../../challenge/common/JourneyCard/JourneyCardTagline';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
-import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
-import { HubIcon } from '../../../challenge/hub/icon/HubIcon';
+import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   journeyTypeName: JourneyTypeName;
@@ -24,17 +22,6 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   handleLeaveCommunity?: () => void;
   loading?: boolean;
 }
-
-const getIconComponent = (journeyTypeName: JourneyTypeName) => {
-  switch (journeyTypeName) {
-    case 'hub':
-      return HubIcon;
-    case 'challenge':
-      return ChallengeIcon;
-    case 'opportunity':
-      return OpportunityIcon;
-  }
-};
 
 const ContributionDetailsCard = ({
   bannerUri,
@@ -57,7 +44,7 @@ const ContributionDetailsCard = ({
         {...props}
         bannerUri={bannerUri}
         tagline={tagline}
-        iconComponent={getIconComponent(journeyTypeName)}
+        iconComponent={journeyIcon[journeyTypeName]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}
