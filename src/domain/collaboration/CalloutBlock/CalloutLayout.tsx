@@ -1,4 +1,4 @@
-import React, { forwardRef, PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { forwardRef, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, IconButton, Menu, MenuItem, styled } from '@mui/material';
@@ -11,16 +11,16 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import Heading from '../../shared/components/Heading';
-import { CalloutSummary } from './CalloutSummary';
-import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
-import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
-import { CalloutEditType } from './edit/CalloutEditType';
+import { CalloutSummary } from '../callout/CalloutSummary';
+import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
+import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
+import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
-import CalloutBlockMarginal from './Contribute/CalloutBlockMarginal';
+import { CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
+import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
-import { CalloutLayoutEvents } from './Types';
+import { CalloutLayoutEvents } from '../callout/Types';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import Gutters from '../../../core/ui/grid/Gutters';
 
@@ -42,6 +42,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
   };
   calloutNames: string[];
   contributionsCount: number;
+  actions?: ReactNode;
 }
 
 const CalloutActionsBar = styled(Box)(({ theme }) => ({
@@ -75,7 +76,16 @@ const CalloutDate = ({ date }: { date: Date | string }) => <Caption>{date}</Capt
 
 const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayoutProps>>(
   (
-    { callout, children, onVisibilityChange, onCalloutEdit, onCalloutDelete, calloutNames, contributionsCount },
+    {
+      callout,
+      actions,
+      children,
+      onVisibilityChange,
+      onCalloutEdit,
+      onCalloutDelete,
+      calloutNames,
+      contributionsCount,
+    },
     ref
   ) => {
     const { t } = useTranslation();
@@ -163,6 +173,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
               </BlockTitle>
             )}
             <CalloutActionsBar>
+              {actions}
               {callout.editable && (
                 <IconButton
                   id="callout-settings-button"
