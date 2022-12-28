@@ -22,7 +22,7 @@ const AspectCard = ({ aspect, onClick }: AspectCardProps) => {
     <ContributeCard onClick={handleClick}>
       <CardHeader title={aspect?.displayName} iconComponent={AspectIcon} createdBy={aspect?.createdBy.displayName} />
       <CardDetails>
-        <CardDescription>{aspect?.profile?.description}</CardDescription>
+        <CardDescription>{aspect?.profile?.description!}</CardDescription>
         <CardTags tags={aspect?.profile?.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardFooter>

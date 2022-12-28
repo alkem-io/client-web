@@ -117,7 +117,7 @@ export const TopLevelRoutes: FC = () => {
           element={
             <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
               <OrganizationProvider>
-                <OrganizationRoute paths={[]} />
+                <OrganizationRoute />
               </OrganizationProvider>
             </WithApmTransaction>
           }

@@ -97,10 +97,9 @@ export const FormikInputField: FC<InputFieldProps> = ({
         }}
         {...rest}
       />
-      {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
-      <FormHelperText sx={{ marginRight: theme => (withCounter ? theme.spacing(10) : 0) }} error={isError}>
-        {helperText}
-      </FormHelperText>
+      <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={!withCounter}>
+        <FormHelperText error={isError}>{helperText}</FormHelperText>
+      </CharacterCounter>
     </>
   );
 };

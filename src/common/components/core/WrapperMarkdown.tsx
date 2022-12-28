@@ -28,11 +28,8 @@ interface LinkProps
   extends Omit<ReactMarkdownProps, 'children'>,
     React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {}
 
-const LinkNewTab = ({ node, children, ...props }: LinkProps) => {
-  return (
-    // eslint-disable-next-line jsx-a11y/anchor-has-content
-    <a target="_blank" {...props} />
-  );
+const LinkNewTab = ({ node, ...props }: LinkProps) => {
+  return <a target="_blank" {...props} />;
 };
 
 interface ParagraphProps

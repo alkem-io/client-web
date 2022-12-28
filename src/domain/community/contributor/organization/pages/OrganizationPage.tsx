@@ -3,14 +3,10 @@ import OrganizationPageContainer from '../OrganizationPageContainer/Organization
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
-import { PageProps } from '../../../../shared/types/PageProps';
 
-interface OrganizationPageProps extends PageProps {}
+interface OrganizationPageProps {}
 
-export const OrganizationPage: FC<OrganizationPageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+export const OrganizationPage: FC<OrganizationPageProps> = () => {
   return (
     <OrganizationPageLayout currentSection={EntityPageSection.Profile}>
       <OrganizationPageContainer>
