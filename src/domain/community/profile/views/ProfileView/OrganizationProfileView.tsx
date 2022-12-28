@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
-import { Box, Card, CardContent, Grid, Link, styled } from '@mui/material';
+import { Box, CardContent, Grid, Link, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 import { Location } from '../../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle } from '../../../../../core/ui/typography';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -35,8 +36,8 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
   const { t } = useTranslation();
 
   return (
-    <Card square variant="outlined">
-      <CardContent sx={{ position: 'relative', padding: theme => theme.spacing(4) }}>
+    <PageContentBlock>
+      <CardContent sx={{ position: 'relative' }}>
         <VerifiedBadge>
           {entity.verified !== undefined && (
             <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
@@ -69,7 +70,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
           )}
         </Grid>
       </CardContent>
-    </Card>
+    </PageContentBlock>
   );
 };
 
