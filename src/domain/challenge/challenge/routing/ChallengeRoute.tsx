@@ -58,7 +58,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
+            <ContributePage entityTypeName="challenge">
+              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
+            </ContributePage>
           }
         />
       </Route>
