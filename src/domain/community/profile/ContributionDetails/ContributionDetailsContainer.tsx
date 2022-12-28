@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { ContributionCardV2Details } from '../../../../common/components/composite/common/cards';
 import {
   refetchRolesUserQuery,
   useChallengeContributionDetailsQuery,
@@ -12,9 +11,10 @@ import { ContributionItem } from '../../contributor/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export interface EntityDetailsContainerEntities {
-  details?: ContributionCardV2Details;
+  details?: ContributionDetails;
 }
 
 export interface EntityDetailsContainerState {
@@ -35,9 +35,15 @@ export interface EntityDetailsContainerProps
   entities: ContributionItem;
 }
 
-const buildDomainObject = (communityID: string | undefined) => {
-  return typeof communityID === 'undefined' ? undefined : { communityID };
-};
+interface ContributionDetails {
+  displayName: string;
+  journeyTypeName: JourneyTypeName;
+  bannerUri?: string;
+  tags: string[];
+  journeyUri: string;
+  communityId?: string;
+  tagline: string;
+}
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
   const { hubId, challengeId, opportunityId } = entities;
@@ -68,57 +74,60 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
   const [leaveCommunity, { loading: isLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
 
-  const details = useMemo<ContributionCardV2Details | undefined>(() => {
+  const details = useMemo<ContributionDetails | undefined>(() => {
     if (hubData) {
       return {
-        headerText: hubData.hub.displayName,
-        type: 'hub',
-        mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
-        tags: hubData.hub.tagset?.tags || [],
-        url: buildHubUrl(hubData.hub.nameID),
-        domain: buildDomainObject(hubData.hub.community?.id),
-        descriptionText: hubData.hub.context?.tagline,
+        displayName: hubData.hub.displayName,
+        journeyTypeName: 'hub',
+        bannerUri: getVisualBanner(hubData.hub.context?.visuals),
+        tags: hubData.hub.tagset?.tags ?? [],
+        journeyUri: buildHubUrl(hubData.hub.nameID),
+        communityId: hubData.hub.community?.id,
+        tagline: hubData.hub.context?.tagline ?? '',
       };
     }
 
     if (challengeData) {
       return {
-        headerText: challengeData.hub.challenge.displayName,
-        type: 'challenge',
-        mediaUrl: getVisualBanner(challengeData.hub.challenge.context?.visuals),
-        tags: challengeData.hub.challenge.tagset?.tags || [],
-        url: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
-        domain: buildDomainObject(challengeData.hub.challenge.community?.id),
+        displayName: challengeData.hub.challenge.displayName,
+        journeyTypeName: 'challenge',
+        bannerUri: getVisualBanner(challengeData.hub.challenge.context?.visuals),
+        tags: challengeData.hub.challenge.tagset?.tags ?? [],
+        journeyUri: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
+        communityId: challengeData.hub.challenge.community?.id,
+        tagline: challengeData.hub.challenge.context?.tagline ?? '',
       };
     }
 
     if (opportunityData) {
       return {
-        headerText: opportunityData.hub.opportunity.displayName,
-        type: 'opportunity',
-        mediaUrl: getVisualBanner(opportunityData.hub.opportunity.context?.visuals),
-        tags: opportunityData.hub.opportunity.tagset?.tags || [],
-        url: buildOpportunityUrl(
+        displayName: opportunityData.hub.opportunity.displayName,
+        journeyTypeName: 'opportunity',
+        bannerUri: getVisualBanner(opportunityData.hub.opportunity.context?.visuals),
+        tags: opportunityData.hub.opportunity.tagset?.tags ?? [],
+        journeyUri: buildOpportunityUrl(
           opportunityData.hub.nameID,
           opportunityData.hub.opportunity.parentNameID || '',
           opportunityData.hub.opportunity.nameID
         ),
-        domain: buildDomainObject(opportunityData.hub.opportunity.community?.id),
+        communityId: opportunityData.hub.opportunity.community?.id,
+        tagline: opportunityData.hub.opportunity.context?.tagline ?? '',
       };
     }
   }, [hubData, challengeData, opportunityData]);
 
   const handleLeaveCommunity = useCallback(async () => {
-    if (details?.domain?.communityID && userId)
+    if (details?.communityId && userId)
       await leaveCommunity({
         variables: {
           memberId: userId,
-          communityId: details?.domain?.communityID,
+          communityId: details?.communityId,
         },
         refetchQueries: [refetchRolesUserQuery({ input: { userID: userId } })],
         awaitRefetchQueries: true,
       });
-  }, [userId, details?.domain?.communityID, leaveCommunity]);
+  }, [userId, details?.communityId, leaveCommunity]);
+
   return (
     <>
       {children(

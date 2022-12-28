@@ -11,7 +11,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributionDetailsContainer from '../../../../../domain/community/profile/ContributionDetailsContainer/ContributionDetailsContainer';
+import ContributionDetailsContainer from '../../../../../domain/community/profile/ContributionDetails/ContributionDetailsContainer';
 import { ContributionItem } from '../../../../../domain/community/contributor/contribution';
 import { AgentBeginVerifiedCredentialOfferOutput } from '../../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../../types/TranslationKey';
@@ -91,7 +91,7 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
                         onClick={() => setSelectedContribution(details)}
                         selected={details === selectedContribution}
                       >
-                        <ListItemText primary={details?.headerText} secondary={details?.descriptionText} />
+                        <ListItemText primary={details?.displayName} secondary={details?.tagline} />
                       </ListItemButton>
                     )}
                   </ContributionDetailsContainer>
