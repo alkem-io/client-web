@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
-import { overflowBorderGradient } from './utils';
+import { BackgroundColor, overflowBorderGradient } from './utils';
 
 interface OverflowGradientProps extends BoxProps {
   lastLine?: boolean;
+  backgroundColor?: BackgroundColor;
 }
 
-const OverflowGradient = ({ lastLine = false, ...props }: OverflowGradientProps) => {
+const OverflowGradient = ({ lastLine = false, backgroundColor, ...props }: OverflowGradientProps) => {
   const [hasOverflow, setHasOverflow] = useState(false);
 
   const updateOverflow = (el: HTMLDivElement | null) => {
@@ -32,7 +33,7 @@ const OverflowGradient = ({ lastLine = false, ...props }: OverflowGradientProps)
               left: 0,
               right: 0,
               height: gutters(),
-              background: overflowBorderGradient(lastLine ? '-90deg' : '0'),
+              background: overflowBorderGradient(lastLine ? '-90deg' : '0', backgroundColor),
             }
           : undefined,
       }}

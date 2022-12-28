@@ -1,7 +1,7 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
@@ -16,6 +16,8 @@ import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard, { AspectCardAspect } from './AspectCard';
 import { BaseCalloutImpl } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
+import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -44,8 +46,8 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
   ) => {
     // Dialog handling
     const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
-    const handleCreateDialogOpened = () => setAspectDialogOpen(true);
-    const handleCreateDialogClosed = () => setAspectDialogOpen(false);
+    const openCreateDialog = () => setAspectDialogOpen(true);
+    const closeCreateDialog = () => setAspectDialogOpen(false);
     const handleError = useApolloErrorHandler();
     const navigate = useNavigate();
 
@@ -142,7 +144,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
 
     const createButton = canCreate && callout.state !== CalloutState.Closed && (
-      <CreateCalloutItemButton onClick={handleCreateDialogOpened} />
+      <CreateCalloutItemButton onClick={openCreateDialog} />
     );
 
     const navigateToAspect = (aspect: AspectCardAspect) => {
@@ -154,6 +156,10 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
         })
       );
     };
+
+    const breakpoint = useCurrentBreakpoint();
+
+    const isMobile = breakpoint === 'xs';
 
     return (
       <>
@@ -169,15 +175,16 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
           <ScrollableCardsLayout
             items={loading ? [undefined, undefined] : callout.aspects}
             deps={[hubNameId, challengeNameId, opportunityNameId]}
-            createButton={createButton}
+            createButton={!isMobile && createButton}
             maxHeight={gutters(22)}
           >
             {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
           </ScrollableCardsLayout>
+          {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
         </CalloutLayout>
         <AspectCreationDialog
           open={aspectDialogOpen}
-          onClose={handleCreateDialogClosed}
+          onClose={closeCreateDialog}
           onCreate={onCreate}
           aspectNames={aspectNames}
           calloutDisplayName={callout.displayName}

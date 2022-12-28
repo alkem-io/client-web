@@ -3,7 +3,7 @@ import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../hub/icon/HubIcon';
 import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
-import CardsLayoutScroller from '../../../../../core/ui/card/CardsLayout/CardsLayoutScroller';
+import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
 import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -52,7 +52,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                     }
                   />
                   <Text>{values[0].hubTagline}</Text>
-                  <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
+                  <ScrollerWithGradient maxHeight={376} sx={{ marginRight: 0 }}>
                     <CardsLayout items={values}>
                       {challenge => (
                         <ChallengeCard
@@ -69,7 +69,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                         />
                       )}
                     </CardsLayout>
-                  </CardsLayoutScroller>
+                  </ScrollerWithGradient>
                   <SectionSpacer />
                 </PageContentBlock>
               </Box>
