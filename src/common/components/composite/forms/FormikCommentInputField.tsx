@@ -31,7 +31,6 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   withCounter = false,
   submitOnReturnKey = false,
   size = 'medium',
-  sx,
 }) => {
   const [field, meta, helper] = useField(name);
 
@@ -70,12 +69,6 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           aria-describedby="filled-weight-helper-text"
           inputProps={{
             'aria-label': 'post comment',
-          }}
-          sx={{
-            '.w-md-editor-content .w-md-editor-preview': {
-              paddingRight: meta.touched ? 30 : undefined, // TODO figure out condition
-            },
-            ...sx,
           }}
         />
       </FormControl>
