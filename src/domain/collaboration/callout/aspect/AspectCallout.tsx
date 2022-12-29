@@ -2,7 +2,6 @@ import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
-import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import {
@@ -14,7 +13,7 @@ import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCall
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
-import AspectCard from './AspectCard';
+import AspectCard, { AspectCardAspect } from './AspectCard';
 import { BaseCalloutImpl } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';

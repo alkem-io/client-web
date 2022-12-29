@@ -71,6 +71,7 @@ fragment SearchResultHub on SearchResultHub {
       visuals {
         ...VisualUri
       }
+      vision
     }
     tagset {
       id
@@ -91,6 +92,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
       visuals {
         ...VisualUri
       }
+      vision
     }
     tagset {
       id
@@ -118,6 +120,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       visuals {
         ...VisualUri
       }
+      vision
     }
     tagset {
       id

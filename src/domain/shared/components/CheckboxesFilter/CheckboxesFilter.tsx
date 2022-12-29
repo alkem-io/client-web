@@ -1,5 +1,5 @@
-import { Box, Button, Switch, Menu, MenuItem, styled, BoxProps } from '@mui/material';
-import React, { useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
+import { Button, Menu, MenuItem, Switch } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
 import { uniqBy } from 'lodash';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
@@ -10,24 +10,12 @@ type FilterableValue = {
 } & Identifiable;
 type FilterableValueStatus = FilterableValue & { selected: boolean };
 
-// Styling
-const Root = styled(Box)(() => ({
-  position: 'relative',
-}));
-
-const MenuButton = styled(Box)(() => ({
-  position: 'absolute',
-  right: 0,
-  top: 0,
-}));
-
 export interface CheckboxesFilterProps<T extends Identifiable> {
   caption: string;
   items: T[];
   enable?: boolean;
   filterableDataGetter: (data: T) => FilterableValue;
-  children: (filteredItems: T[]) => React.ReactNode;
-  sx?: BoxProps['sx'];
+  children: (button: ReactNode, filteredItems: T[]) => ReactElement;
 }
 
 const CheckboxesFilter = <T extends Identifiable>({
@@ -36,7 +24,6 @@ const CheckboxesFilter = <T extends Identifiable>({
   enable = true,
   filterableDataGetter: getValue,
   children,
-  sx,
 }: CheckboxesFilterProps<T>) => {
   // Handle menu open/close
   const [buttonElement, setButtonElement] = React.useState<null | HTMLElement>(null);
@@ -75,26 +62,23 @@ const CheckboxesFilter = <T extends Identifiable>({
     };
   };
 
-  return (
-    <Root>
-      {enable && values.length > 0 && (
-        <MenuButton sx={sx}>
-          <Button onClick={handleClick} variant="outlined" startIcon={<FilterAltOutlinedIcon />}>
-            {caption}
-          </Button>
-          <Menu anchorEl={buttonElement} open={open} onClose={handleClose}>
-            {filterStatus.map(filter => (
-              <MenuItem onClick={handleChangeFilter(filter.id)} key={`filter_${filter.id}`}>
-                <Switch checked={filter.selected} />
-                {filter.displayName}
-              </MenuItem>
-            ))}
-          </Menu>
-        </MenuButton>
-      )}
-      {children(filteredItems)}
-    </Root>
+  const menu = enable && values.length > 0 && (
+    <>
+      <Button onClick={handleClick} variant="outlined" startIcon={<FilterAltOutlinedIcon />}>
+        {caption}
+      </Button>
+      <Menu anchorEl={buttonElement} open={open} onClose={handleClose}>
+        {filterStatus.map(filter => (
+          <MenuItem onClick={handleChangeFilter(filter.id)} key={`filter_${filter.id}`}>
+            <Switch checked={filter.selected} />
+            {filter.displayName}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
+
+  return children(menu, filteredItems);
 };
 
 export default CheckboxesFilter;
