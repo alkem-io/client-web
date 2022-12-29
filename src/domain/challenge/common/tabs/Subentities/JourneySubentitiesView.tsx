@@ -1,5 +1,4 @@
 import { ApolloError } from '@apollo/client';
-import { Skeleton } from '@mui/material';
 import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
@@ -11,13 +10,15 @@ import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../../core/ui/list/LinksList';
-import { Text } from '../../../../../core/ui/typography';
+import { Caption } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import JourneySubentityCreate from './JourneySubentityCreate';
+import { Loading } from '../../../../../common/components/core';
+import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -87,18 +88,20 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
           </PageContentBlock>
         </PageContentColumn>
         <PageContentColumn columns={8}>
-          {childEntityReadAccess && renderChildEntityCard && (
+          {state.loading && <Loading />}
+          {!state.loading && childEntities.length === 0 && (
+            <PageContentBlockSeamless>
+              <Caption textAlign="center">
+                {t('pages.generic.sections.subentities.empty', {
+                  entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+                  parentEntity: t(`common.${journeyTypeName}` as const),
+                })}
+              </Caption>
+            </PageContentBlockSeamless>
+          )}
+          {!state.loading && childEntities.length > 0 && (
             <PageContentBlock>
-              {state.loading && <Skeleton variant="rectangular" />}
-              {!state.loading && childEntities.length === 0 && (
-                <Text>
-                  {t('pages.generic.sections.subentities.empty', {
-                    entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
-                    parentEntity: t(`common.${journeyTypeName}` as const),
-                  })}
-                </Text>
-              )}
-              {!state.loading && childEntities.length > 0 && (
+              {childEntityReadAccess && renderChildEntityCard && (
                 <CardFilter
                   data={childEntities}
                   valueGetter={childEntityValueGetter}
