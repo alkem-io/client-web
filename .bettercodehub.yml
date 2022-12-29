@@ -1,6 +1,0 @@
-component_depth: 4
-languages:
-- typescript
-- javascript
-exclude:
-  - /src/generated/.*
