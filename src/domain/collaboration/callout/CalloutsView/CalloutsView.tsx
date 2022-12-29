@@ -53,7 +53,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
-  const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
+  const calloutNames = useMemo(() => callouts.map(x => x.displayName), [callouts]);
 
   // Scroll to Callout handler:
   const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });
@@ -67,7 +67,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
             title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
           />
           <LinksList
-            items={callouts?.map(callout => {
+            items={callouts.map(callout => {
               const CalloutIcon = calloutIcons[callout.type];
               return {
                 id: callout.id,
@@ -91,7 +91,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
 
       <PageContentColumn columns={8}>
         {loading && <Loading />}
-        {!loading && callouts?.length === 0 && (
+        {!loading && callouts.length === 0 && (
           <PageContentBlockSeamless textAlign="center">
             <Caption>
               {t('pages.generic.sections.subentities.empty', {
@@ -102,7 +102,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
           </PageContentBlockSeamless>
         )}
         {!loading &&
-          callouts?.map(callout => {
+          callouts.map(callout => {
             return (callout => {
               switch (callout.type) {
                 case CalloutType.Card:

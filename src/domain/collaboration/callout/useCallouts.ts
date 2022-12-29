@@ -161,7 +161,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     : getHubCallouts;
 
   return {
-    callouts,
+    callouts: callouts ?? [],
     canCreateCallout,
     getItemsCount,
     loading: hubCalloutsLoading || challengeCalloutsLoading || opportunityCalloutsLoading,
