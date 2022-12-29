@@ -18,12 +18,17 @@ import useCallouts, { TypedCallout } from '../useCallouts';
 import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 import calloutIcons from '../utils/calloutIcons';
+import { Loading } from '../../../../common/components/core';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import { Caption } from '../../../../core/ui/typography';
+import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 
 interface CalloutsPageProps {
+  entityTypeName: EntityTypeName;
   scrollToCallout?: boolean;
 }
 
-const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
+const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
   const { callouts, canCreateCallout, getItemsCount, loading } = useCallouts({
@@ -79,73 +84,86 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
                 ? t('common.challenge')
                 : t('common.hub'),
             })}
+            loading={loading}
           />
         </PageContentBlock>
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        {callouts?.map(callout => {
-          return (callout => {
-            switch (callout.type) {
-              case CalloutType.Card:
-                return (
-                  <AspectCallout
-                    key={callout.id}
-                    ref={scrollable(callout.nameID)}
-                    callout={callout}
-                    calloutNames={calloutNames}
-                    contributionsCount={getItemsCount(callout)}
-                    loading={loading}
-                    hubNameId={hubNameId!}
-                    challengeNameId={challengeNameId}
-                    opportunityNameId={opportunityNameId}
-                    canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
-                    onCalloutEdit={handleEdit}
-                    onVisibilityChange={handleVisibilityChange}
-                    onCalloutDelete={handleDelete}
-                  />
-                );
-              case CalloutType.Canvas:
-                return (
-                  <CanvasCallout
-                    key={callout.id}
-                    ref={scrollable(callout.nameID)}
-                    callout={callout}
-                    calloutNames={calloutNames}
-                    contributionsCount={getItemsCount(callout)}
-                    loading={loading}
-                    hubNameId={hubNameId!}
-                    challengeNameId={challengeNameId}
-                    opportunityNameId={opportunityNameId}
-                    canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
-                    onCalloutEdit={handleEdit}
-                    onVisibilityChange={handleVisibilityChange}
-                    onCalloutDelete={handleDelete}
-                  />
-                );
-              case CalloutType.Comments:
-                return (
-                  <CommentsCallout
-                    key={callout.id}
-                    ref={scrollable(callout.nameID)}
-                    callout={callout}
-                    calloutNames={calloutNames}
-                    contributionsCount={getItemsCount(callout)}
-                    loading={loading}
-                    hubNameId={hubNameId!}
-                    challengeNameId={challengeNameId}
-                    opportunityNameId={opportunityNameId}
-                    onCalloutEdit={handleEdit}
-                    onVisibilityChange={handleVisibilityChange}
-                    onCalloutDelete={handleDelete}
-                    isSubscribedToComments={callout.isSubscribedToComments}
-                  />
-                );
-              default:
-                throw new Error('Unexpected Callout type');
-            }
-          })(callout);
-        })}
+        {loading && <Loading />}
+        {!loading && callouts?.length === 0 && (
+          <PageContentBlockSeamless textAlign="center">
+            <Caption>
+              {t('pages.generic.sections.subentities.empty', {
+                entities: t('common.callouts'),
+                parentEntity: t(`common.${entityTypeName}` as const),
+              })}
+            </Caption>
+          </PageContentBlockSeamless>
+        )}
+        {!loading &&
+          callouts?.map(callout => {
+            return (callout => {
+              switch (callout.type) {
+                case CalloutType.Card:
+                  return (
+                    <AspectCallout
+                      key={callout.id}
+                      ref={scrollable(callout.nameID)}
+                      callout={callout}
+                      calloutNames={calloutNames}
+                      contributionsCount={getItemsCount(callout)}
+                      loading={loading}
+                      hubNameId={hubNameId!}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
+                      onCalloutEdit={handleEdit}
+                      onVisibilityChange={handleVisibilityChange}
+                      onCalloutDelete={handleDelete}
+                    />
+                  );
+                case CalloutType.Canvas:
+                  return (
+                    <CanvasCallout
+                      key={callout.id}
+                      ref={scrollable(callout.nameID)}
+                      callout={callout}
+                      calloutNames={calloutNames}
+                      contributionsCount={getItemsCount(callout)}
+                      loading={loading}
+                      hubNameId={hubNameId!}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
+                      onCalloutEdit={handleEdit}
+                      onVisibilityChange={handleVisibilityChange}
+                      onCalloutDelete={handleDelete}
+                    />
+                  );
+                case CalloutType.Comments:
+                  return (
+                    <CommentsCallout
+                      key={callout.id}
+                      ref={scrollable(callout.nameID)}
+                      callout={callout}
+                      calloutNames={calloutNames}
+                      contributionsCount={getItemsCount(callout)}
+                      loading={loading}
+                      hubNameId={hubNameId!}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      onCalloutEdit={handleEdit}
+                      onVisibilityChange={handleVisibilityChange}
+                      onCalloutDelete={handleDelete}
+                      isSubscribedToComments={callout.isSubscribedToComments}
+                    />
+                  );
+                default:
+                  throw new Error('Unexpected Callout type');
+              }
+            })(callout);
+          })}
         <CalloutCreationDialog
           open={isCalloutCreationDialogOpen}
           onClose={handleCreateCalloutClosed}
