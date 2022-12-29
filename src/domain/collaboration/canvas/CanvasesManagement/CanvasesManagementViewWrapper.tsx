@@ -36,14 +36,13 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   entityTypeName,
   backToCanvases,
   buildLinkToCanvas,
+  loadingCanvases,
   ...canvasesState
 }) => {
   const { isFeatureEnabled } = useConfig();
-
-  if (!calloutId) {
+  if (!calloutId || loadingCanvases) {
     return <Loading />;
   }
-
   const hasReadPrivileges =
     authorization?.anonymousReadAccess || authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
 
