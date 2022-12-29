@@ -10,7 +10,7 @@ interface ViewProps {
 
 const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ sx: Partial<Sx> }> | undefined) => {
   if (!element) {
-    return element;
+    return undefined;
   }
 
   const { sx } = element.props;
