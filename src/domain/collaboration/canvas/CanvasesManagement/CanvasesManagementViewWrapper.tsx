@@ -13,7 +13,7 @@ import CanvasManagementView, {
   CanvasManagementViewEntities,
   CanvasNavigationMethods,
 } from './CanvasManagementView';
-import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
@@ -36,14 +36,13 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   entityTypeName,
   backToCanvases,
   buildLinkToCanvas,
+  loadingCanvases,
   ...canvasesState
 }) => {
   const { isFeatureEnabled } = useConfig();
-
-  if (!calloutId) {
+  if (!calloutId || loadingCanvases) {
     return <Loading />;
   }
-
   const hasReadPrivileges =
     authorization?.anonymousReadAccess || authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
 

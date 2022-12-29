@@ -27,4 +27,5 @@ const GroupBy = <T extends Object>({ data, groupKey, children }: GroupByProps<T>
 
   return <>{children(groups)}</>;
 };
+
 export default GroupBy;

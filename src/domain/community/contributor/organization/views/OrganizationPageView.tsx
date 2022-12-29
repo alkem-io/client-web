@@ -1,4 +1,3 @@
-import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,11 +7,13 @@ import {
 import { OrganizationVerificationEnum } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildAdminOrganizationUrl } from '../../../../../common/utils/urlBuilders';
 import {
-  OrganizationProfileViewEntity,
-  OrganizationProfileView,
   AssociatesView,
   ContributionsView,
+  OrganizationProfileView,
+  OrganizationProfileViewEntity,
 } from '../../../profile/views/ProfileView';
+import PageContent from '../../../../../core/ui/content/PageContent';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -50,25 +51,19 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
   );
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} xl={6}>
+    <PageContent>
+      <PageContentColumn columns={4}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
-      </Grid>
-      <Grid item xs={12} xl={6}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <AssociatesView associates={associates} />
-          </Grid>
-          <Grid item xs={12}>
-            <ContributionsView
-              title={t('components.contributions.title')}
-              helpText={t('components.contributions.help')}
-              contributions={contributions}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+      </PageContentColumn>
+      <PageContentColumn columns={8}>
+        <AssociatesView associates={associates} />
+        <ContributionsView
+          title={t('components.contributions.title')}
+          helpText={t('components.contributions.help')}
+          contributions={contributions}
+        />
+      </PageContentColumn>
+    </PageContent>
   );
 };
 

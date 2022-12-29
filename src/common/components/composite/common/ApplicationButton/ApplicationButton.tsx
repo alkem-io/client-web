@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from '@mui/material';
+import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -7,6 +7,8 @@ import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
+import { PersonOutlined } from '@mui/icons-material';
+import RootThemeProvider from '../../../../../core/ui/themes/RootThemeProvider';
 
 export interface ApplicationButtonProps {
   isAuthenticated?: boolean;
@@ -25,6 +27,7 @@ export interface ApplicationButtonProps {
   canApplyToParentCommunity?: boolean;
   onJoin: () => void;
   loading: boolean;
+  component?: typeof MuiButton;
 }
 
 export const ApplicationButton: FC<ApplicationButtonProps> = ({
@@ -44,6 +47,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   canApplyToParentCommunity,
   onJoin,
   loading = false,
+  component: Button = MuiButton,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -101,7 +105,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
        <li>"Membership not available"</li>
      </ol>
    */
-  const applicationButtonState = useMemo(() => {
+  const applicationButton = useMemo(() => {
     if (loading) {
       return <Button disabled startIcon={<CircularProgress size={24} />} />;
     }
@@ -117,10 +121,13 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     if (isMember) {
       return (
         <Button
+          variant="outlined"
+          startIcon={<PersonOutlined />}
           disabled
           sx={{
             '&.Mui-disabled': {
-              color: 'secondary.main',
+              color: 'primary.main',
+              borderColor: 'primary.main',
             },
           }}
         >
@@ -135,15 +142,15 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
 
     if (canJoinCommunity) {
       return (
-        <Button onClick={handleClickJoin} variant={'contained'}>
+        <Button onClick={handleClickJoin} variant="contained">
           {t('components.application-button.join')}
         </Button>
       );
     }
 
-    if (canApplyToCommunity) {
+    if (canApplyToCommunity && applyUrl) {
       return (
-        <Button component={RouterLink} variant={'contained'} to={applyUrl || ''}>
+        <Button component={RouterLink} variant="contained" to={applyUrl}>
           {t('buttons.apply')}
         </Button>
       );
@@ -184,6 +191,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
       </Button>
     );
   }, [
+    Button,
     loading,
     isAuthenticated,
     isMember,
@@ -205,19 +213,21 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
 
   return (
     <>
-      {applicationButtonState}
-      <PreApplicationDialog
-        open={isApplyDialogOpen}
-        onClose={handleClose}
-        dialogVariant={dialogVariant}
-        hubName={hubName}
-        challengeName={challengeName}
-        parentApplicationState={parentApplicationState}
-        applyUrl={applyUrl}
-        parentApplyUrl={parentApplyUrl}
-      />
-      <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
-      <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
+      {applicationButton}
+      <RootThemeProvider>
+        <PreApplicationDialog
+          open={isApplyDialogOpen}
+          onClose={handleClose}
+          dialogVariant={dialogVariant}
+          hubName={hubName}
+          challengeName={challengeName}
+          parentApplicationState={parentApplicationState}
+          applyUrl={applyUrl}
+          parentApplyUrl={parentApplyUrl}
+        />
+        <PreJoinDialog open={isJoinDialogOpen} onClose={handleClose} onJoin={handleJoin} />
+        <PreJoinParentDialog open={isJoinParentDialogOpen} onClose={handleClose} onJoin={handleJoinParent} />
+      </RootThemeProvider>
     </>
   );
 };

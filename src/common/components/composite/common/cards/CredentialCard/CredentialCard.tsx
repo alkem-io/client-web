@@ -128,4 +128,5 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
     </LinkCard>
   );
 };
+
 export default CredentialCard;

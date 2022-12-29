@@ -1,18 +1,21 @@
 import { Box } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import React, { FC, useLayoutEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import produce from 'immer';
+import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
+import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
+import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import FixedHeightLogo from '../components/FixedHeightLogo';
+import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
-import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import WrapperButton from '../../../../common/components/core/WrapperButton';
-import Delimiter from '../../../../common/components/core/Delimiter';
+import React, { useLayoutEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
-import { AUTH_REGISTER_PATH } from '../constants/authentication.constants';
+import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
-import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
+import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import { AUTH_RESET_PASSWORD_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
+import KratosForm from '../components/Kratos/KratosForm';
 
 interface LoginPageProps {
   flow?: string;
@@ -35,10 +38,19 @@ const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
 //   return node && (node.attributes as UiNodeInputAttributes).value;
 // };
 
-export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
+const LoginPage = ({ flow }: LoginPageProps) => {
   const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
   const navigate = useNavigate();
+  const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
+
+  const loginUi =
+    loginFlow &&
+    produce(loginFlow.ui, ui => {
+      if (kratosErrors) {
+        ui.messages = kratosErrors;
+      }
+    });
 
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {
@@ -63,32 +75,36 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   }
 
   const resetPassword = (
-    <Box display={'flex'} justifyContent={'flex-end'}>
-      <Link to={'/identity/recovery'}>Reset password</Link>
+    <Box
+      display="flex"
+      justifyContent="end"
+      paddingX={2}
+      component={Link}
+      to={AUTH_RESET_PASSWORD_PATH}
+      fontSize={12}
+      fontFamily={theme => theme.typography.caption.fontFamily}
+      fontWeight={600}
+      sx={{ color: theme => theme.palette.primary.main }}
+    >
+      {t('pages.registration.reset-password')}
     </Box>
   );
 
+  const tLink = translateWithElements(<Link to="" />);
+
   return (
-    <AuthenticationLayout>
-      <Grid container spacing={2} justifyContent={'center'}>
-        <Grid item sm={4}>
-          <Box marginY={3} textAlign={'center'}>
-            <WrapperTypography variant={'h3'}>{t('pages.login.title')}</WrapperTypography>
-          </Box>
-          <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
-          <Delimiter>OR</Delimiter>
-          <WrapperTypography variant={'h5'}>{t('pages.login.register')}</WrapperTypography>
-          <WrapperButton
-            variant="primary"
-            type="submit"
-            small
-            block
-            onClick={() => navigate(AUTH_REGISTER_PATH, { replace: true })}
-            text={t('authentication.sign-up')}
-          />
-        </Grid>
-      </Grid>
-    </AuthenticationLayout>
+    <KratosForm ui={loginUi}>
+      <AuthPageContentContainer>
+        <FixedHeightLogo />
+        <SubHeading textAlign="center">{t('pages.login.title')}</SubHeading>
+        <KratosUI ui={loginUi} resetPasswordElement={resetPassword} />
+        <Paragraph textAlign="center" marginTop={5}>
+          {tLink('pages.login.register', {
+            signup: { to: AUTH_SIGN_UP_PATH },
+          })}
+        </Paragraph>
+      </AuthPageContentContainer>
+    </KratosForm>
   );
 };
 

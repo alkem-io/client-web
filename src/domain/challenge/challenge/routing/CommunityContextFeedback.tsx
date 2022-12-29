@@ -22,4 +22,5 @@ const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
     </Routes>
   );
 };
+
 export default CommunityFeedbackRoute;

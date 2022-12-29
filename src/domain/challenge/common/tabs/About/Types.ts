@@ -1,0 +1,43 @@
+import {
+  EntityDashboardContributors,
+  EntityDashboardLeads,
+} from '../../../../community/community/EntityDashboardContributorsSection/Types';
+import { JourneyTypeName } from '../../../JourneyTypeName';
+import { ApolloError } from '@apollo/client';
+import {
+  AssociatedOrganizationDetailsFragment,
+  LifecycleContextTabFragment,
+  MetricsItemFragment,
+  ReferenceDetailsFragment,
+} from '../../../../../core/apollo/generated/graphql-schema';
+import { MetricItem } from '../../../../../common/components/composite/common/MetricsPanel/Metrics';
+
+export interface AboutSectionProps extends EntityDashboardContributors, EntityDashboardLeads {
+  journeyTypeName: JourneyTypeName;
+  name: string;
+  tagline: string | undefined;
+  tags: string[] | undefined;
+  vision: string | undefined;
+  background: string | undefined;
+  impact: string | undefined;
+  who: string | undefined;
+  communityReadAccess: boolean;
+  hubNameId: string | undefined;
+  communityId: string | undefined;
+  references: ReferenceDetailsFragment[] | undefined;
+  metricsItems: MetricItem[];
+  lifecycle?: LifecycleContextTabFragment;
+  loading?: boolean;
+  error?: ApolloError;
+}
+
+export interface JourneyAboutWithHost
+  extends Omit<AboutSectionProps, 'journeyTypeName' | 'metricsItems' | 'leadOrganizations' | 'lifecycle'> {
+  metrics: MetricsItemFragment[] | undefined;
+  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
+}
+
+export interface JourneyAboutWithLead extends Omit<AboutSectionProps, 'journeyTypeName' | 'metricsItems'> {
+  metrics: MetricsItemFragment[] | undefined;
+  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
+}

@@ -51,4 +51,5 @@ const ServerMetadataProvider: FC<ServerMetadataProviderProps> = ({ url, children
     </ServerMetadataContext.Provider>
   );
 };
+
 export default ServerMetadataProvider;

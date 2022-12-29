@@ -1,18 +1,16 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OrganizationCard, {
   OrganizationCardProps,
 } from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
-import SectionHeader from '../../../shared/components/Section/SectionHeader';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../contributor/user';
 import { mapToAssociatedOrganization } from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganization';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 const OrganizationCardTransparent = (props: OrganizationCardProps) => <OrganizationCard {...props} transparent />;
 
@@ -49,21 +47,17 @@ const EntityDashboardLeadsSection = ({
   }, [leadUsers]);
 
   return (
-    <DashboardGenericSection navText={t('buttons.see-more')} navLink={EntityPageSection.About}>
-      <SectionHeader text={organizationsHeader} />
-      <SectionSpacer />
+    <PageContentBlock>
+      <PageContentBlockHeader title={organizationsHeader} />
       <AssociatedOrganizationsView
         organizations={leadOrganizationsMapped}
         organizationCardComponent={OrganizationCardTransparent}
         entityName={t('community.leading-organizations')}
       />
       {!!leadUsersMapped && leadUsersMapped.length > 0 && (
-        <>
-          <SectionSpacer double />
-          <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
-        </>
+        <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
       )}
-    </DashboardGenericSection>
+    </PageContentBlock>
   );
 };
 

@@ -2,7 +2,6 @@ import React, { useCallback, useMemo } from 'react';
 import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
-import Box from '@mui/material/Box';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
 
 export type ValueType = {
@@ -42,30 +41,28 @@ const SearchTagsInput = ({
   );
 
   return (
-    <Box paddingBottom={2}>
-      <Autocomplete
-        aria-label="Filter"
-        id="card-filter"
-        placeholder={placeholder}
-        multiple
-        fullWidth
-        freeSolo
-        disableCloseOnSelect={disableCloseOnSelect}
-        options={options}
-        getOptionLabel={option => option}
-        value={value}
-        isOptionEqualToValue={(option, value) => option === value}
-        groupBy={() => 'Tags'}
-        onChange={handleChange}
-        sx={{ backgroundColor: 'white' }}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
-        renderInput={renderInput}
-      />
-    </Box>
+    <Autocomplete
+      aria-label="Filter"
+      id="card-filter"
+      placeholder={placeholder}
+      multiple
+      fullWidth
+      freeSolo
+      disableCloseOnSelect={disableCloseOnSelect}
+      options={options}
+      getOptionLabel={option => option}
+      value={value}
+      isOptionEqualToValue={(option, value) => option === value}
+      groupBy={() => 'Tags'}
+      onChange={handleChange}
+      sx={{ '.MuiAutocomplete-inputRoot': { backgroundColor: 'background.paper' } }}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
+          <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
+        ))
+      }
+      renderInput={renderInput}
+    />
   );
 };
 

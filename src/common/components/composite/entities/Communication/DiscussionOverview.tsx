@@ -83,4 +83,5 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
     </ListItemButton>
   );
 };
+
 export default DiscussionOverview;

@@ -1,0 +1,115 @@
+import React, { FC } from 'react';
+import { Reference } from '../../../../common/profile/Profile';
+import { Box, Grid, IconButton, Link } from '@mui/material';
+import { FieldArray, useField } from 'formik';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { useConfig } from '../../../config/useConfig';
+import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
+import { DeleteOutline } from '@mui/icons-material';
+import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
+
+export const RECOMMENDATIONS_COUNT = 3;
+
+export interface RecommendationsSegmentProps {
+  recommendations: Reference[];
+  readOnly?: boolean;
+  disabled?: boolean;
+}
+
+interface DeleteButtonProps {
+  name: string;
+  disabled?: boolean;
+}
+
+const DeleteButton: FC<DeleteButtonProps> = ({ name, disabled }) => {
+  const [, , helpers] = useField(name);
+
+  return (
+    <Box display={'flex'} alignItems={'baseline'} height="100%">
+      <IconButton aria-label="Remove" onClick={() => helpers.setValue('')} disabled={disabled} size="large">
+        <DeleteOutline />
+      </IconButton>
+    </Box>
+  );
+};
+
+export const recommendationsSegmentValidationObject = yup.object().shape({
+  name: yup.string(),
+  uri: yup.string(),
+});
+
+export const RecommendationsSegment: FC<RecommendationsSegmentProps> = ({
+  recommendations = [],
+  readOnly = false,
+  disabled = false,
+}) => {
+  const { t } = useTranslation();
+  const tLinks = TranslateWithElements(<Link target="_blank" />);
+  const { platform } = useConfig();
+
+  return (
+    <FieldArray name={'recommendations'}>
+      {() => (
+        <Grid item container rowSpacing={2} columnSpacing={4}>
+          <Grid container item xs={12} alignItems="center" wrap="nowrap">
+            <Grid item>
+              <BlockSectionTitle>{t('common.recommendations')}</BlockSectionTitle>
+            </Grid>
+          </Grid>
+          {recommendations?.length === 0 ? (
+            <Grid item container>
+              <Caption>{t('components.referenceSegment.missing-refereneces')}</Caption>
+            </Grid>
+          ) : (
+            recommendations?.map((rec, index) => (
+              <React.Fragment key={rec.id}>
+                <Grid container item>
+                  <Grid item xs="auto">
+                    <FormikInputField
+                      name={`recommendations.${index}.name`}
+                      title={t('common.title')}
+                      readOnly={readOnly}
+                      disabled={disabled}
+                    />
+                  </Grid>
+                  <Grid item xs sx={{ paddingLeft: theme => theme.spacing(2) }}>
+                    <FormikInputField
+                      name={`recommendations.${index}.uri`}
+                      title={t('common.url')}
+                      readOnly={readOnly}
+                      disabled={disabled}
+                      helperText={
+                        rec.uri === ''
+                          ? tLinks('components.referenceSegment.url-helper-text', {
+                              terms: { href: platform?.terms },
+                            })
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                  <Grid item>
+                    <DeleteButton name={`recommendations.${index}.uri`} disabled={disabled} />
+                  </Grid>
+                  <Grid item xs={12} sx={{ paddingTop: theme => theme.spacing(2) }}>
+                    <FormikInputField
+                      name={`recommendations.${index}.description`}
+                      title={'Description'}
+                      readOnly={readOnly}
+                      disabled={disabled}
+                    />
+                  </Grid>
+                </Grid>
+                {recommendations.length > index + 1 && <SectionSpacer double />}
+              </React.Fragment>
+            ))
+          )}
+        </Grid>
+      )}
+    </FieldArray>
+  );
+};
+
+export default RecommendationsSegment;

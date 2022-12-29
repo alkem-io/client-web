@@ -59,12 +59,12 @@ export type ActivityLogResultType = ActivityLogResult<
 
 export interface ActivityLogComponentProps {
   activities: ActivityLogResultType[] | undefined;
-  journeyLocation: JourneyLocation;
+  journeyLocation: JourneyLocation | undefined;
 }
 
 export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation }) => {
   const display = useMemo(() => {
-    if (!activities) {
+    if (!activities || !journeyLocation) {
       return null;
     }
 
@@ -133,6 +133,7 @@ const ActivityViewChooser = ({
           card={activityCalloutCardCreated.card}
           author={author}
           cardType={activityCalloutCardCreated.card.type}
+          cardDescription={activityCalloutCardCreated.card.profile?.description!}
           {...activity}
           {...rest}
         />

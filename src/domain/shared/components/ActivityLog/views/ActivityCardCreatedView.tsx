@@ -1,13 +1,15 @@
 import React, { FC } from 'react';
-import { ActivityBaseView, ActivityBaseViewProps, NameableEntity } from './ActivityBaseView';
+import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityCardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
   card: NameableEntity;
   cardType: string;
+  cardDescription: string;
 }
 
 export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props => {
@@ -22,6 +24,7 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props =
   const description = t('components.activity-log-view.activity-description.card-created', {
     cardDisplayName: props.card.displayName,
     cardType: props.cardType,
+    cardDescription: props.cardDescription,
     interpolation: {
       escapeValue: false,
     },

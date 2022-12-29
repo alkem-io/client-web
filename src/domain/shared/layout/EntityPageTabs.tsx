@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import { EntityPageSection } from './EntityPageSection';
-import { EntityTypeName } from './PageLayout/SimplePageLayout';
+import { EntityTypeName } from './LegacyPageLayout/SimplePageLayout';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { ShareDialog } from '../components/ShareDialog';
@@ -31,7 +31,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
-// import { ScrollButton } from '../../../common/components/core';
 
 export interface SubEntityTabDefinition {
   label: string;
@@ -107,7 +106,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   if (mobile) {
     return (
       <>
-        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3} square>
           <BottomNavigation
             showLabels
             value={currentTab}
@@ -145,7 +144,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
               icon={<DashboardOutlined />}
             />
             <BottomNavigationAction
-              value={EntityPageSection.Explore}
+              value={EntityPageSection.Contribute}
               label={t('common.contribute')}
               icon={<CampaignOutlined />}
             />
@@ -230,8 +229,8 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         />
         <HeaderNavigationTab
           label={t('common.explore')}
-          value={EntityPageSection.Explore}
-          to={`${rootUrl}/${EntityPageSection.Explore}`}
+          value={EntityPageSection.Contribute}
+          to={`${rootUrl}/${EntityPageSection.Contribute}`}
         />
         {subEntityTab && (
           <HeaderNavigationTab

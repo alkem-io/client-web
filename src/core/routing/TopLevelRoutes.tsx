@@ -24,6 +24,7 @@ import { IdentityRoute } from '../auth/authentication/routing';
 import { INSPIRATION_ROUTE } from './route.constants';
 import InspirationPage from '../help/pages/InspirationPage';
 import { WithApmTransaction } from '../../domain/shared/components';
+import devRoute from '../../dev/routes';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -116,7 +117,7 @@ export const TopLevelRoutes: FC = () => {
           element={
             <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
               <OrganizationProvider>
-                <OrganizationRoute paths={[]} />
+                <OrganizationRoute />
               </OrganizationProvider>
             </WithApmTransaction>
           }
@@ -172,6 +173,7 @@ export const TopLevelRoutes: FC = () => {
             </WithApmTransaction>
           }
         />
+        {devRoute()}
       </Route>
     </Routes>
   );

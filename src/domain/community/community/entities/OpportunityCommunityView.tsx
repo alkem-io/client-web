@@ -4,7 +4,7 @@ import { useOpportunityCommunityContributorsQuery } from '../../../../core/apoll
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import useSearchAcrossMultipleLists from '../../../shared/utils/useSearchAcrossMultipleLists';
-import { userCardValueGetter } from '../../../../common/components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { userCardValueGetter } from '../../../../common/components/core/card-filter/value-getters/userCardValueGetter';
 import { organizationCardValueGetter } from './ChallengeCommunityView';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
@@ -54,4 +54,5 @@ const OpportunityCommunityView: FC = () => {
     </>
   );
 };
+
 export default OpportunityCommunityView;

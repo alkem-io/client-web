@@ -57,6 +57,7 @@ const AspectTemplatePreview: FC<AspectPreviewProps> = ({
     </>
   );
 };
+
 export default AspectTemplatePreview;
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({

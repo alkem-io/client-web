@@ -1,21 +1,19 @@
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import Typography from '@mui/material/Typography/Typography';
+import { Box } from '@mui/material';
 import DashboardHubsSection, {
   DashboardHubSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useUserContext } from '../../../community/contributor/user';
 import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MetricTooltip from '../../../platform/metrics/MetricTooltip';
 import useServerMetadata from '../../../platform/metadata/useServerMetadata';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { keyBy } from 'lodash';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { Loading } from '../../../../common/components/core';
 import { MetricType } from '../../../platform/metrics/MetricType';
+import { Caption } from '../../../../core/ui/typography';
+import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -23,8 +21,7 @@ interface HubsSectionProps {
 }
 
 const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
-  const { t } = useTranslation();
-  const { user } = useUserContext();
+  const { t } = useTranslationWithLineBreaks();
   const { data: hubsData, loading: areHubsLoading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
 
   const hubRolesByHubId = useMemo(() => keyBy(userHubRoles, 'id'), [userHubRoles]);
@@ -41,15 +38,10 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     getMetricCount(metrics, MetricType.Opportunity),
   ];
 
-  const isMember = (hubId: string) => user?.ofHub(hubId) ?? false;
-
-  const getHubCardLabel: DashboardHubSectionProps['getHubCardLabel'] = hub => {
-    if (isMember(hub.id)) {
-      return EntityContributionCardLabel.Member;
-    }
-    if (!hub.authorization?.anonymousReadAccess) {
-      return EntityContributionCardLabel.Anonymous;
-    }
+  const getHubCardProps: DashboardHubSectionProps['getHubCardProps'] = hub => {
+    return {
+      locked: !hub.authorization?.anonymousReadAccess,
+    };
   };
 
   const metricItems: MetricItem[] = useMemo(
@@ -79,11 +71,12 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
       subHeaderText={t('pages.home.sections.hub.subheader')}
       primaryAction={<MetricTooltip metricsItems={metricItems} />}
       hubs={hubs}
-      getHubCardLabel={getHubCardLabel}
+      getHubCardProps={getHubCardProps}
     >
-      <Typography variant="body1">{t('pages.home.sections.hub.body')}</Typography>
-      <Typography variant="body1">{t('pages.home.sections.hub.body1')}</Typography>
-      <SectionSpacer />
+      <Box>
+        <Caption>{t('pages.home.sections.hub.body')}</Caption>
+        <Caption>{t('pages.home.sections.hub.body1')}</Caption>
+      </Box>
       {isLoading && <Loading />}
     </DashboardHubsSection>
   );

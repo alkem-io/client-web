@@ -1,14 +1,17 @@
-import { Box, Skeleton, styled, Typography, useTheme } from '@mui/material';
+import { Box, Skeleton, styled, useTheme } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
-import { EntityTypeName } from '../../layout/PageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../layout/LegacyPageLayout/SimplePageLayout';
 import getEntityColor from '../../utils/getEntityColor';
+import { PageTitle, Tagline } from '../../../../core/ui/typography';
+import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
+import { MAX_CONTENT_WIDTH_GUTTERS } from '../../../../core/ui/grid/constants';
+import { gutters } from '../../../../core/ui/grid/utils';
 
-export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
-export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
-export const TITLE_HEIGHT = 7;
+export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
+export const TITLE_HEIGHT = 6;
 
 const Root = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.neutralLight.main,
@@ -26,39 +29,16 @@ const Title = styled(Box)(({ theme }) => ({
   width: '100%',
   bottom: 0,
   textAlign: 'center',
-  padding: theme.spacing(1, 2, 0.5, 2),
-  height: theme.spacing(TITLE_HEIGHT),
   zIndex: 20,
+  display: 'flex',
+  flexDirection: 'column',
+  height: theme.spacing(TITLE_HEIGHT),
+  paddingLeft: theme.spacing(2),
+  paddingRight: theme.spacing(2),
+  justifyContent: 'space-evenly',
   [theme.breakpoints.down('lg')]: {
     bottom: theme.spacing(-TITLE_HEIGHT),
   },
-  // Title
-  '& h1': {
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-  },
-  // Tagline:
-  '& .MuiTypography-caption': {
-    fontStyle: 'italic',
-  },
-}));
-
-const Ellipser = styled('div')(() => ({
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  '& > *': {
-    display: 'inline',
-    whiteSpace: 'nowrap',
-  },
-}));
-
-const Image = styled('img')(({ theme }) => ({
-  display: 'block',
-  objectFit: 'cover',
-  objectPosition: '50% 50%',
-  width: '100%',
-  minHeight: theme.spacing(10),
-  aspectRatio: BANNER_ASPECT_RATIO,
 }));
 
 const PageNotice = styled('div')(({ theme }) => ({
@@ -119,11 +99,15 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
         <>
           {pageNotice ? <PageNotice>{pageNotice}</PageNotice> : undefined}
           {showBreadcrumbs && <BreadcrumbsView />}
-          <Image
+          <ImageBlurredSides
             src={bannerUrl}
             alt={`${title} - Banner image`}
             onLoad={() => setImageLoading(false)}
             onError={imageLoadError}
+            blurRadius={2}
+            height={theme => theme.spacing(18)}
+            width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)}
+            maxWidth="100%"
           />
           <Title
             sx={{
@@ -132,16 +116,12 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
               },
             }}
           >
-            <Ellipser>
-              <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
-                {title}
-              </Typography>
-            </Ellipser>
-            <Ellipser>
-              <Typography variant={'caption'} ref={element => addAutomaticTooltip(element)}>
-                {tagline}
-              </Typography>
-            </Ellipser>
+            <PageTitle noWrap ref={element => addAutomaticTooltip(element)}>
+              {title}
+            </PageTitle>
+            <Tagline noWrap ref={element => addAutomaticTooltip(element)}>
+              {tagline}
+            </Tagline>
           </Title>
         </>
       )}

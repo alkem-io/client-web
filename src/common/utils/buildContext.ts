@@ -11,6 +11,7 @@ interface ContextObject {
   background?: string;
   impact?: string;
   references?: Reference[];
+  recommendations?: Reference[];
   tagline?: string;
   location?: Pick<Location, 'city' | 'country'>;
   vision?: string;
@@ -32,12 +33,13 @@ export const createContextInput = (obj: ContextObject): CreateContextInput => {
 };
 
 export const updateContextInput = (obj: ContextObject): UpdateContextInput => {
-  const { background, impact, tagline, vision, who, references = [], location } = obj;
+  const { background, impact, tagline, vision, who, references = [], recommendations = [], location } = obj;
 
   return {
     background: background,
     impact: impact,
     references: references.map(toUpdateReferenceInput),
+    recommendations: recommendations.map(toUpdateReferenceInput),
     tagline: tagline,
     location: location,
     vision: vision,
@@ -49,7 +51,7 @@ const toUpdateReferenceInput = (ref: Reference): UpdateReferenceInput => ({
   ID: ref.id,
   description: ref.description,
   name: ref.name,
-  uri: ref.uri,
+  uri: ref.uri || '',
 });
 
 const toCreateReferenceInput = (ref: Reference): CreateReferenceInput => ({

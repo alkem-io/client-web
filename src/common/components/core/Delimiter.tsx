@@ -32,4 +32,5 @@ export const Delimiter: FC<DelimiterProps> = ({ children }) => {
     </Box>
   );
 };
+
 export default Delimiter;

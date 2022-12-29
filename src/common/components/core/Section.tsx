@@ -182,7 +182,7 @@ const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     background: (props: SectionClassProps) =>
-      agnosticFunctor(props.background)(theme, {}) || theme.palette.background.default,
+      agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
     position: 'relative',
   },
   avatar: {

@@ -7,7 +7,6 @@ import {
   AuthorizationPrivilege,
   HubInfoFragment,
   HubVisibility,
-  TemplatesSet,
   Visual,
 } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -27,7 +26,6 @@ interface HubContextProps {
   displayName: string;
   communityId: string;
   visuals: Visual[];
-  templates: TemplatesSet;
   isPrivate: boolean;
   loading: boolean;
   permissions: HubPermissions;
@@ -49,12 +47,6 @@ const HubContext = React.createContext<HubContextProps>({
   displayName: '',
   communityId: '',
   visuals: [],
-  templates: {
-    id: '',
-    aspectTemplates: [],
-    canvasTemplates: [],
-    lifecycleTemplates: [],
-  },
   permissions: {
     viewerCanUpdate: false,
     canCreate: false,
@@ -94,12 +86,6 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const displayName = hub?.displayName || '';
   const communityId = hub?.community?.id ?? '';
   const visuals = hub?.context?.visuals ?? [];
-  const templates = (hub?.templates as TemplatesSet) || {
-    id: '',
-    aspectTemplates: [],
-    canvasTemplates: [],
-    lifecycleTemplates: [],
-  };
   const isPrivate = !Boolean(hub?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;
 
@@ -131,7 +117,6 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         hubNameId,
         communityId,
         visuals,
-        templates,
         permissions,
         displayName,
         isPrivate,

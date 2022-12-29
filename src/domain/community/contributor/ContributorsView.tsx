@@ -12,10 +12,11 @@ import {
   UserContributorFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import useLazyLoading from '../../shared/pagination/useLazyLoading';
-import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import ImageBackdrop from '../../shared/components/Backdrops/ImageBackdrop';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 
 const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 16;
@@ -103,7 +104,8 @@ const ContributorsView: FC<ContributorsViewProps> = ({
   return (
     <>
       <SectionSpacer double />
-      <DashboardGenericSection headerText={t('pages.contributors.organizations.title')}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.contributors.organizations.title')} />
         <ScrollerBox>
           <Grid container spacing={1}>
             <>
@@ -127,9 +129,10 @@ const ContributorsView: FC<ContributorsViewProps> = ({
             </>
           </Grid>
         </ScrollerBox>
-      </DashboardGenericSection>
+      </PageContentBlock>
       <SectionSpacer double />
-      <DashboardGenericSection headerText={t('pages.contributors.users.title')}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.contributors.users.title')} />
         {showUsers && (
           <ScrollerBox>
             <Grid container spacing={1}>
@@ -171,8 +174,9 @@ const ContributorsView: FC<ContributorsViewProps> = ({
             />
           </Grid>
         )}
-      </DashboardGenericSection>
+      </PageContentBlock>
     </>
   );
 };
+
 export default ContributorsView;

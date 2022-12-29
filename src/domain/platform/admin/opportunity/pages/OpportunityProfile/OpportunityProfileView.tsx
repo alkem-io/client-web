@@ -124,4 +124,5 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     </Grid>
   );
 };
+
 export default OpportunityProfileView;

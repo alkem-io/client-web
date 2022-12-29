@@ -1,33 +1,20 @@
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 
-const BannerImageElement = styled(Box)(({ theme }) => ({
-  background: theme.palette.neutralMedium.light,
-}));
-
+// TODO either use image for the current breakpoint or remove all except xxl
 const BannerImage = () => {
-  // https://mui.com/system/display/
-  // https://mui.com/material-ui/customization/breakpoints/#custom-breakpoints
-  const sizes = {
-    xs: { display: { xs: 'block', sm: 'none' }, marginTop: 8, height: '156px' },
-    sm: { display: { xs: 'none', sm: 'block', md: 'none' }, height: '200px' },
-    md: { display: { xs: 'none', md: 'block', lg: 'none' }, marginTop: 2, height: '200px' },
-    lg: { display: { xs: 'none', lg: 'block', xl: 'none' }, height: '200px' },
-    xl: { display: { xs: 'none', xl: 'block' }, height: '200px' },
-  };
-
   return (
-    <>
-      {Object.keys(sizes).map(size => (
-        <Box sx={sizes[size]} key={`banner-image-${size}`}>
-          <BannerImageElement
-            style={{
-              backgroundImage: `url('./alkemio-banner/alkemio-banner-${size}.png')`,
-              height: sizes[size].height,
-            }}
-          />
-        </Box>
-      ))}
-    </>
+    <Box
+      component="img"
+      src="/alkemio-banner/alkemio-banner-xxl.png"
+      sx={{
+        objectFit: 'cover',
+        height: theme => ({
+          xs: theme.spacing(15),
+          sm: theme.spacing(20),
+        }),
+        background: theme => theme.palette.neutralMedium.light,
+      }}
+    />
   );
 };
 

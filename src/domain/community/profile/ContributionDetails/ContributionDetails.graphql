@@ -1,0 +1,77 @@
+query hubContributionDetails($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    community {
+      id
+    }
+  }
+}
+
+query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      community {
+        id
+      }
+    }
+  }
+}
+
+query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    nameID
+    opportunity(ID: $opportunityId) {
+      id
+      nameID
+      displayName
+      parentNameID
+      tagset {
+        id
+        name
+        tags
+      }
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      community {
+        id
+      }
+    }
+  }
+}

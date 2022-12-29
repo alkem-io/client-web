@@ -89,20 +89,30 @@ const _hydrateHubCard = (
   }
   const hub = data.hub;
   const context = hub.context;
-  const tagline = context?.tagline;
+  const tagline = context?.tagline || '';
   const image = getVisualBanner(context?.visuals);
   const name = hub.displayName;
-  const matchedTerms = data.terms;
   const url = buildHubUrl(hub.nameID);
+  const tags = data.terms; // TODO: add terms field to journey card
+  const vision = hub.context?.vision || '';
 
   const hubRoles = userRoles?.hubs.find(x => x.id === data.id);
-  const label =
+  const isMember =
     hubRoles?.roles.find(x => x === RoleType.Lead) ||
     hubRoles?.roles.find(x => x === RoleType.Host) ||
     hubRoles?.roles.find(x => x === RoleType.Member);
 
   return (
-    <SearchHubCard image={image} label={label} name={name} tagline={tagline} matchedTerms={matchedTerms} url={url} />
+    <SearchHubCard
+      bannerUri={image}
+      member={!!isMember}
+      displayName={name}
+      tagline={tagline}
+      journeyUri={url}
+      tags={tags}
+      matchedTerms
+      vision={vision}
+    />
   );
 };
 
@@ -116,13 +126,14 @@ const useHydrateChallengeCard = (
   const challenge = data.challenge;
   const containingHub = data.hub;
   const context = challenge.context;
-  const tagline = context?.tagline;
+  const tagline = context?.tagline || '';
   const image = getVisualBanner(context?.visuals);
   const name = challenge.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
   const hubNameId = containingHub.nameID;
   const hubDisplayName = containingHub.displayName;
+  const vision = challenge.context?.vision || '';
 
   const nameID = challenge.nameID;
 
@@ -130,18 +141,20 @@ const useHydrateChallengeCard = (
 
   const challengeRoles = userRoles?.hubs.find(x => x.id === hubId)?.challenges.find(x => x.id === data?.id);
 
-  const label =
+  const isMember =
     challengeRoles?.roles.find(x => x === RoleType.Lead) || challengeRoles?.roles.find(x => x === RoleType.Member);
 
   return (
     <SearchChallengeCard
-      image={image}
-      label={label}
-      name={name}
+      bannerUri={image}
+      member={!!isMember}
+      displayName={name}
       tagline={tagline}
-      parentName={hubDisplayName}
-      matchedTerms={matchedTerms}
-      url={url}
+      parentJourneyDisplayName={hubDisplayName}
+      tags={matchedTerms}
+      matchedTerms
+      journeyUri={url}
+      vision={vision}
     />
   );
 };
@@ -157,7 +170,7 @@ const useHydrateOpportunityCard = (
   const containingChallenge = data.challenge;
   const containingHub = data.hub;
   const context = opportunity.context;
-  const tagline = context?.tagline;
+  const tagline = context?.tagline || '';
   const image = getVisualBanner(context?.visuals);
   const name = opportunity.displayName;
   const matchedTerms = data?.terms ?? [];
@@ -166,23 +179,26 @@ const useHydrateOpportunityCard = (
   const hubId = containingHub.id;
   const hubNameID = containingHub.nameID;
   const nameID = opportunity.nameID;
+  const vision = opportunity.context?.vision ?? '';
 
   const url = buildOpportunityUrl(hubNameID, challengeNameId, nameID);
 
   const opportunityRoles = userRoles?.hubs.find(x => x.id === hubId)?.opportunities.find(x => x.id === data?.id);
 
-  const label =
+  const isMember =
     opportunityRoles?.roles.find(x => x === RoleType.Lead) || opportunityRoles?.roles.find(x => x === RoleType.Member);
 
   return (
     <SearchOpportunityCard
-      image={image}
-      label={label}
-      name={name}
+      bannerUri={image}
+      member={!!isMember}
+      displayName={name}
       tagline={tagline}
-      parentName={challengeDisplayName}
-      matchedTerms={matchedTerms}
-      url={url}
+      parentJourneyDisplayName={challengeDisplayName}
+      tags={matchedTerms}
+      matchedTerms
+      journeyUri={url}
+      vision={vision}
     />
   );
 };

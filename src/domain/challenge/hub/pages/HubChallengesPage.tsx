@@ -1,32 +1,32 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { useHub } from '../HubContext/useHub';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
-import { PageProps } from '../../../shared/types/PageProps';
-import HubChallengesView from '../views/HubChallengesView';
-import ChallengesCardContainer from '../containers/ChallengesCardContainer';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import HubPageLayout from '../layout/HubPageLayout';
-import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
-import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
-import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
-import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import {
+  journeyCardTagsGetter,
+  journeyCardValueGetter,
+} from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
+import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
+import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
+import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
+import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
+import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubentitiesView';
+import ChallengesCardContainer from '../containers/ChallengesCardContainer';
+import { useHub } from '../HubContext/useHub';
+import HubPageLayout from '../layout/HubPageLayout';
 
-export interface HubChallengesPageProps extends PageProps {}
+export interface HubChallengesPageProps {}
 
-const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
+const HubChallengesPage: FC<HubChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { hubNameId, permissions } = useHub();
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'challenges', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
 
-  const [open, setOpen] = useState(false);
+  const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
   const { createChallenge } = useJourneyCreation();
 
@@ -53,38 +53,46 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>
-      {permissions.canCreateChallenges && (
-        <Box sx={{ display: 'flex', justifyContent: 'end', marginBottom: theme => theme.spacing(1) }}>
-          <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={() => setOpen(true)}>
-            {t('buttons.create')}
-          </Button>
-        </Box>
-      )}
       <ChallengesCardContainer hubNameId={hubNameId}>
         {(entities, state) => (
-          <HubChallengesView
-            entities={{
-              challenges: entities.challenges,
-              hubNameId: hubNameId,
-              permissions: {
-                canReadChallenges: permissions.canReadChallenges,
-              },
-            }}
+          <JourneySubentitiesView
+            hubNameId={hubNameId}
+            childEntities={entities.challenges}
+            childEntitiesIcon={<ChallengeIcon />}
+            childEntityReadAccess={permissions.canReadChallenges}
+            childEntityValueGetter={journeyCardValueGetter}
+            childEntityTagsGetter={journeyCardTagsGetter}
+            getChildEntityUrl={entity => buildChallengeUrl(hubNameId, entity.nameID)}
+            journeyTypeName="hub"
             state={{ loading: state.loading, error: state.error }}
-            actions={{}}
-            options={{}}
+            renderChildEntityCard={challenge => (
+              <ChallengeCard
+                bannerUri={getVisualBannerNarrow(challenge.context?.visuals)!}
+                displayName={challenge.displayName}
+                tags={challenge.tagset?.tags!}
+                tagline={challenge.context?.tagline!}
+                vision={challenge.context?.vision!}
+                innovationFlowState={challenge.lifecycle?.state}
+                journeyUri={buildChallengeUrl(hubNameId, challenge.nameID)}
+              />
+            )}
+            childEntityCreateAccess={permissions.canCreateChallenges}
+            childEntityOnCreate={() => setCreateDialogOpen(true)}
+            createSubentityDialog={
+              <JourneyCreationDialog
+                open={isCreateDialogOpen}
+                icon={<ChallengeIcon />}
+                journeyName={t('common.challenge')}
+                onClose={() => setCreateDialogOpen(false)}
+                OnCreate={handleCreate}
+                formComponent={CreateChallengeForm}
+              />
+            }
           />
         )}
       </ChallengesCardContainer>
-      <JourneyCreationDialog
-        open={open}
-        icon={<ChallengeIcon />}
-        journeyName={t('common.challenge')}
-        onClose={() => setOpen(false)}
-        OnCreate={handleCreate}
-        formComponent={CreateChallengeForm}
-      />
     </HubPageLayout>
   );
 };
+
 export default HubChallengesPage;

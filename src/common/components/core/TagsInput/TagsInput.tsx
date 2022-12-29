@@ -1,9 +1,15 @@
-import { FiberManualRecord } from '@mui/icons-material';
-import { Autocomplete, Chip, FormHelperText, OutlinedTextFieldProps, TextField, TextFieldProps } from '@mui/material';
-import Box from '@mui/material/Box';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
+import {
+  Autocomplete,
+  Box,
+  Chip,
+  CircularProgress,
+  FormHelperText,
+  OutlinedTextFieldProps,
+  TextField,
+  TextFieldProps,
+} from '@mui/material';
 import HelpButton from '../HelpButton';
-import CircularProgress from '@mui/material/CircularProgress';
 
 const DEFAULT_MIN_LENGTH = 2;
 
@@ -73,7 +79,6 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
                 {...getTagProps({ index })}
                 sx={{ borderColor: 'primary.main' }}
                 size="small"
-                icon={<FiberManualRecord />}
               />
             ))
           }

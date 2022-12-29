@@ -121,4 +121,5 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
     </>
   );
 };
+
 export default PendingApplicationContainer;

@@ -38,4 +38,5 @@ const DashboardOpportunityStatistics: FC<DashboardOpportunityStatisticsProps> = 
     </Section>
   );
 };
+
 export default DashboardOpportunityStatistics;

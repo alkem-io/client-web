@@ -20,4 +20,5 @@ const LogoComponent = ({ url = '/', ...rest }: LogoComponentProps) => {
     </Box>
   );
 };
+
 export default LogoComponent;

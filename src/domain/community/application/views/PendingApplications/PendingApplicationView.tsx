@@ -143,4 +143,5 @@ const PendingApplicationView: FC<PendingApplicationViewProps> = ({ entities, act
     </>
   );
 };
+
 export default PendingApplicationView;

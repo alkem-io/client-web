@@ -12,6 +12,7 @@ import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
+import { useHubTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -33,7 +34,17 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   calloutNames,
 }) => {
   const { t } = useTranslation();
-  const { templates } = useHub();
+  const { hubId } = useHub();
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
+    variables: { hubId },
+    skip: !hubId,
+  });
+  const templates = hubTemplatesData?.hub.templates ?? {
+    id: '',
+    aspectTemplates: [],
+    canvasTemplates: [],
+    lifecycleTemplates: [],
+  };
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
@@ -92,6 +103,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
+          {/* TODO "negative" is not a valid Button.color */}
+          {/* @ts-ignore */}
           <LoadingButton
             loading={loading}
             disabled={loading}
@@ -110,4 +123,5 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     </>
   );
 };
+
 export default CalloutEditDialog;

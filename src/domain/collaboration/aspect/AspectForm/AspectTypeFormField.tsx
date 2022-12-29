@@ -8,6 +8,7 @@ import HelpButton from '../../../../common/components/core/HelpButton';
 import { InputAdornment } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
+import { useHubTemplatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface AspectTypeFormFieldProps {
   name: string;
@@ -16,7 +17,18 @@ export interface AspectTypeFormFieldProps {
 
 const AspectTypeFormField: FC<AspectTypeFormFieldProps> = ({ name, value }) => {
   const { t } = useTranslation();
-  const { error, loading, templates } = useHub();
+  const { error, loading, hubId } = useHub();
+
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
+    variables: { hubId },
+    skip: !hubId,
+  });
+  const templates = hubTemplatesData?.hub.templates ?? {
+    id: '',
+    aspectTemplates: [],
+    canvasTemplates: [],
+    lifecycleTemplates: [],
+  };
 
   if (error) {
     return <Typography>{t('components.aspect-creation.type-step.error')}</Typography>;
@@ -56,4 +68,5 @@ const AspectTypeFormField: FC<AspectTypeFormFieldProps> = ({ name, value }) => {
     </>
   );
 };
+
 export default AspectTypeFormField;

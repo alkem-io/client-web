@@ -4,12 +4,18 @@ query hubPage($hubId: UUID_NAMEID!) {
   }
 }
 
-query HubDashboardReferences($hubId: UUID_NAMEID!) {
+query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     context {
       id
       references {
+        id
+        name
+        uri
+        description
+      }
+      recommendations {
         id
         name
         uri
@@ -50,24 +56,12 @@ fragment HubPage on Hub {
     }
   }
   collaboration {
-    id
-    callouts {
-      id
-      nameID
-      type
-      visibility
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
-      }
-    }
+    ...DashboardTopCallouts
   }
   community {
     ...EntityDashboardCommunity
   }
-  challenges(limit: 2, shuffle: true) {
+  challenges(limit: 3, shuffle: true) {
     ...ChallengeCard
   }
   tagset {

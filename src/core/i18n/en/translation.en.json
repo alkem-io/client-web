@@ -15,6 +15,7 @@
     "add-entity": "Add {{entity}}"
   },
   "buttons": {
+    "leave": "Leave",
     "learn-more": "Learn more",
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
@@ -30,7 +31,7 @@
     "next": "Next",
     "edit": "Edit",
     "see-more": "See more",
-    "see-all": "See all",
+    "see-all": "More {{subject}}",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -62,7 +63,8 @@
     "share": "Share",
     "preview": "Preview",
     "import": "Import",
-    "importing": "Importing..."
+    "importing": "Importing...",
+    "go-to-entity": "Go to {{entity}}"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -78,9 +80,17 @@
     "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
+    },
+    "social-login": {
+      "connect": "Connect with {{provider}}",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft"
+      }
     }
   },
   "common": {
+    "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
@@ -93,10 +103,12 @@
     "add": "Add",
     "remove": "Remove",
     "callout": "Callout",
+    "callouts": "Callouts",
     "canvas": "Canvas",
     "canvases": "Canvases",
     "comment": "Comment",
     "comments": "Comments",
+    "contributions": "Contributions",
     "card": "Card",
     "cards": "Cards",
     "create": "Create",
@@ -137,7 +149,7 @@
     "user": "User",
     "users": "Users",
     "update": "Update",
-    "updates": "Updates",
+    "updates": "News",
     "no-updates": "No updates",
     "no-tags": "No tags available",
     "no-references": "No references available",
@@ -152,6 +164,7 @@
     "empty-string": "",
     "discussion": "Discussion",
     "discussions": "Discussions",
+    "disassociate": "Disassociate",
     "dashboard": "Dashboard",
     "contribute": "Contribute",
     "context": "Context",
@@ -160,6 +173,8 @@
     "search": "Search...",
     "reference": "Reference",
     "references": "References",
+    "recommendation": "Recommendation",
+    "recommendations": "Recommendations",
     "notifications": "Notifications",
     "credentials": "Credentials",
     "my-profile": "My profile",
@@ -193,6 +208,11 @@
       "not-verified": ""
     },
     "enums": {
+      "callout-state": {
+        "ARCHIVED": "Archived",
+        "CLOSED": "Closed",
+        "OPEN": "Open"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
@@ -355,9 +375,12 @@
     "member-organizations": "Member Organizations",
     "leads": "Leads",
     "members": "Members",
-    "host": "Host"
+    "host": "Host",
+    "members-count": "Members ({{count}})"
   },
   "callout": {
+    "contributions": "{{count}} Contribution",
+    "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
@@ -506,6 +529,12 @@
     }
   },
   "components": {
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Leaving {{organization}}",
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+      }
+    },
     "error-display": {
       "title": "Ooops!",
       "went-wrong": "Looks like something went wrong.",
@@ -520,27 +549,27 @@
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Recent Contributions"
     },
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new $t(common.callout)",
         "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on $t(common.aspect) '{{cardDisplayName}}'",
-        "card-created": "added a $t(common.aspect) to '{{calloutDisplayName}}'",
+        "card-comment-created": "commented on '{{cardDisplayName}}'",
+        "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member",
+        "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
         "opportunity-created": "created a new $t(common.opportunity)",
         "update-sent": "shared a new $t(common.update)"
       },
       "activity-description": {
-        "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "[name] {{displayName}}",
-        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
-        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "callout-published": "{{displayName}}",
+        "canvas-created": "{{displayName}}",
+        "card-comment-created": "{{comment}}",
+        "card-created": "{{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
-        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
         "update-sent": "{{update}}"
@@ -685,16 +714,17 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "Please become a member to access {{blockName}}",
+      "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
       "login": "Please log in to see {{blockName}}"
     },
     "referenceSegment": {
       "title": "References",
-      "missing-refreneces": "No references yet",
+      "missing-refereneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
-        "remove-reference": "Remove the reference"
+        "remove-reference": "Remove the reference",
+        "remove-recommendation": "Clear recommendation"
       },
       "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
     },
@@ -967,7 +997,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
+          "about": "About this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
@@ -988,14 +1019,21 @@
         },
         "profile": {
           "description": ""
+        },
+        "subentities": {
+          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
+          "list": "List of {{entities}}",
+          "empty": "No {{entities}} found in this {{parentEntity}}.",
+          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
+        },
+        "recommendations": {
+          "title": "Recommended by the Host"
         }
       }
     },
     "contribute": {
+      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
       "no-cards": "No Card found"
-    },
-    "explore": {
-      "create-callout": "Create new Callout"
     },
     "admin": {
       "generic": {
@@ -1215,7 +1253,7 @@
     "activity": {
       "title": "{{blockName}} Activity",
       "hubs": "Challenge Hubs",
-      "lifecycle-info": "Click to view lifecycle graph"
+      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "sections": {
@@ -1241,7 +1279,7 @@
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
+          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. It is a space to coordinate and collaborate. Connect.",
           "body": "Membership: Each Hub has members that are contributing. Become a member via the Hub page.",
           "body1": "Visibility: Most Hubs are public and hence fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },
@@ -1276,7 +1314,6 @@
     },
     "hub": {
       "title": "Hub",
-      "about-this-hub": "About this Hub",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
       "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
@@ -1291,10 +1328,6 @@
         "dashboard": {
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
-          "challenges": {
-            "title": "Challenges",
-            "help-text": "This shows the different challenges you can contribute to in this hub."
-          },
           "community": "Community"
         },
         "challenges": {
@@ -1308,7 +1341,6 @@
     },
     "challenge": {
       "title": "Challenge",
-      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -1318,24 +1350,18 @@
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
           },
-          "opportunities": {
-            "title": "Opportunities",
-            "help-text": "Opportunities related to this challenge"
-          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this challenge"
           }
         },
         "opportunities": {
-          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
-          "body-missing": "No opportunities found for this challenge"
+          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about."
         }
       }
     },
     "opportunity": {
       "title": "Opportunity",
-      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1377,7 +1403,6 @@
         "help-text": "The Organization that is facilitating this Hub."
       },
       "members": {
-        "title": "Members ({{count}})",
         "help-text": "Shows members is this community, including the role they have",
         "no-data": "No members available"
       },
@@ -1435,8 +1460,8 @@
       }
     },
     "login": {
-      "title": "Sign in",
-      "register": "Don't have an account?"
+      "title": "Sign in to Alkemio",
+      "register": "Don’t have an Alkemio account yet? <signup>Click here to sign up.</signup>"
     },
     "about": {
       "title": "Reimagining collaboration",
@@ -1463,21 +1488,30 @@
     },
     "registration": {
       "header": "Create an account to start using Alkemio",
+      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
-      "login": "Have an account?"
+      "login": "Have an account?",
+      "reset-password": "Reset password"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "greeting": "Hi {{user}}, welcome at Alkemio!",
+      "continue": "Continue to the platform",
+      "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registration-success": {
-      "header": "Thank you for signing up.",
-      "subheader": "Nearly there! One last step is to verify your email."
+      "header": "Hi, thank you for signing up!"
     },
     "verification-success": {
       "header": "Thank you for verifying your email address!",
       "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all aspects of your [profile](/profile) - helps with both applying to join communities and with others being able to connect with you. "
+      "message": "Please do consider filling out all aspects of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
-      "header": "Password Reset",
-      "message": "Please enter your email address below to receive a link to reset your password."
+      "header": "Password recovery",
+      "message": {
+        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      }
     },
     "verification": {
       "header": "Email verification",
@@ -1485,8 +1519,7 @@
     },
     "verification-required": {
       "header": "Email verification is pending.",
-      "message": "Please check your inbox for an email with instructions.",
-      "link": "(If you have not received an email, click on this link to send again)"
+      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>."
     },
     "settings": {
       "header": "User Settings"
@@ -1572,7 +1605,8 @@
     "messages": {
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
-      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
+      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
+      "verification-flow-continue": "Return to the platform"
     }
   },
   "apollo": {
@@ -1582,9 +1616,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "Updates ({{count}})",
-    "dialog-title": "All Updates",
-    "no-data": "No updates available."
+    "title": "News ({{count}})",
+    "dialog-title": "All News",
+    "no-data": "No news available."
   },
   "dashboard-discussions-section": {
     "title": "Discussions ({{count}})",

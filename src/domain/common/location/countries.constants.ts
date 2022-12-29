@@ -249,6 +249,7 @@ const toByCode = () => {
   COUNTRIES.forEach(x => (result[x.code] = x.name));
   return result;
 };
+
 export const COUNTRIES_BY_CODE = toByCode();
 
 export type CountryType = {

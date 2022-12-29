@@ -17,7 +17,7 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { useHub } from '../../HubContext/useHub';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { ChallengeIcon } from '../../../../../common/icons/ChallengeIcon';
+import { ChallengeIcon } from '../../../challenge/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildAdminChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';

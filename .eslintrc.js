@@ -56,5 +56,12 @@ module.exports = {
     'jsx-quotes': 'error',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'error',
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: 'block', next: 'export' },
+      { blankLine: 'always', prev: 'block-like', next: 'export' },
+      { blankLine: 'always', prev: 'class', next: 'export' },
+      { blankLine: 'always', prev: 'function', next: 'export' },
+    ],
   },
 };

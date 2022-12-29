@@ -68,4 +68,5 @@ const OrganizationPreferenceContainer: FC<OrganizationPreferenceContainerProps> 
 
   return <>{children({ preferences }, { loading, error }, { onUpdate })}</>;
 };
+
 export default OrganizationPreferenceContainer;

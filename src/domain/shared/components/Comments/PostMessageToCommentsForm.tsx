@@ -1,16 +1,18 @@
 import React, { FC } from 'react';
 import { FetchResult } from '@apollo/client';
-import { Avatar, AvatarProps, Box, Grid, Popper, styled, Tooltip } from '@mui/material';
+import { Avatar, AvatarProps, Box, Popper, styled, Tooltip } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import HelpIcon from '@mui/icons-material/Help';
 import { useUserContext } from '../../../community/contributor/user';
 import FormikCommentInputField from '../../../../common/components/composite/forms/FormikCommentInputField';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { Caption } from '../../../../core/ui/typography';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.avatarSize,
-  width: theme.avatarSize,
+  height: theme.avatarSizeXs,
+  width: theme.avatarSizeXs,
 }));
 
 const PreFormatedPopper = styled(Popper)(() => ({
@@ -58,11 +60,9 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
   };
 
   return (
-    <Grid container spacing={1.5}>
-      <Grid item>
-        <UserAvatar src={userAvatarUri} variant="rounded" sx={{ borderRadius: 1.5 }} />
-      </Grid>
-      <Grid item xs>
+    <Box display="flex" alignItems="start" gap={gutters(0.5)} marginBottom={gutters(-1)}>
+      <UserAvatar src={userAvatarUri} variant="rounded" />
+      <Box flexGrow={1} minWidth={0}>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -71,39 +71,42 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
         >
           {({ isSubmitting }) => (
             <Form noValidate>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <FormikCommentInputField
-                    name="post"
-                    title={title}
-                    placeholder={placeholder}
-                    disabled={disabled}
-                    submitting={isSubmitting}
-                    maxLength={maxLength}
-                    submitOnReturnKey
-                    withCounter
-                    required
-                  />
-                </Grid>
-              </Grid>
+              <FormikCommentInputField
+                name="post"
+                size="small"
+                title={title}
+                placeholder={placeholder}
+                disabled={disabled}
+                submitting={isSubmitting}
+                maxLength={maxLength}
+                submitOnReturnKey
+                withCounter
+                required
+                sx={{
+                  height: gutters(2),
+                }}
+              />
             </Form>
           )}
         </Formik>
-      </Grid>
-      <Grid item>
-        <Box display={'flex'} alignItems={'center'} height="100%">
-          <Tooltip
-            title={t('components.post-comment.tooltip.markdown-help')}
-            arrow
-            placement="right"
-            PopperComponent={PreFormatedPopper}
-            aria-label={'tooltip-markdown'}
-          >
-            <HelpIcon color="primary" />
-          </Tooltip>
-        </Box>
-      </Grid>
-    </Grid>
+      </Box>
+      <Box display="flex" alignItems="center" height={gutters(2)}>
+        <Tooltip
+          title={
+            <Box padding={gutters(0.5)}>
+              <Caption>{t('components.post-comment.tooltip.markdown-help')}</Caption>
+            </Box>
+          }
+          arrow
+          placement="right"
+          PopperComponent={PreFormatedPopper}
+          aria-label={'tooltip-markdown'}
+        >
+          <HelpIcon color="primary" />
+        </Tooltip>
+      </Box>
+    </Box>
   );
 };
+
 export default PostMessageToCommentsForm;
