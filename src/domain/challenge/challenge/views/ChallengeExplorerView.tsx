@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,8 +33,8 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
   if (loading) return null;
 
   return (
-    <Box paddingY={2} marginTop={2}>
-      <Grid container rowSpacing={4}>
+    <>
+      <Grid container rowSpacing={2}>
         {/* PUBLIC: Header if not logged in */}
         {!isAuthenticated && (
           <Grid item xs={12}>
@@ -81,6 +80,6 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
           />
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 };

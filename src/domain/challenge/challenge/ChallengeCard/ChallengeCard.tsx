@@ -15,6 +15,8 @@ interface ChallengeCardProps
   hubUri?: string;
   hubDisplayName?: string;
   innovationFlowState?: string;
+  private?: boolean;
+  privateParent?: boolean;
 }
 
 const ChallengeCard = ({ challengeId, challengeNameId, hubDisplayName, hubUri, ...props }: ChallengeCardProps) => {
