@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '@mui/material';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { BlockTitle, Caption } from '../../../../core/ui/typography/components';
+import { BlockSectionTitle, CardText } from '../../../../core/ui/typography/components';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import calloutIcons from '../utils/calloutIcons';
 import ItemView from '../../../../core/ui/list/ItemView';
@@ -45,8 +45,8 @@ const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: T
         </Badge>
       }
     >
-      <BlockTitle noWrap>{title}</BlockTitle>
-      <Caption sx={webkitLineClamp(2)}>{description}</Caption>
+      <BlockSectionTitle noWrap>{title}</BlockSectionTitle>
+      <CardText sx={webkitLineClamp(2)}>{description}</CardText>
     </ItemView>
   );
 };
