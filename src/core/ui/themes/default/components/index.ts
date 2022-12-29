@@ -13,7 +13,7 @@ import MuiTab from './MuiTab';
 import MuiTabPanel from './MuiTabPanel';
 import MuiSelect from './MuiSelect';
 import MuiBottomNavigationAction from './MuiBottomNavigationAction';
-// import type {} from '@mui/lab/themeAugmentation';
+import MuiFormHelperText from './MuiFormHelperText';
 
 const componentsOverride: Components<Theme> = {
   MuiAvatar,
@@ -30,6 +30,7 @@ const componentsOverride: Components<Theme> = {
   MuiTabPanel,
   MuiSelect,
   MuiBottomNavigationAction,
+  MuiFormHelperText,
 };
 
 export default componentsOverride;

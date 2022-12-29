@@ -17,6 +17,7 @@ import HubAboutPage from '../pages/HubAboutPage';
 import HubDashboardPage from '../pages/HubDashboardPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import HubPageLayout from '../layout/HubPageLayout';
+import Redirect from '../../../../core/routing/Redirect';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();
@@ -29,7 +30,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   return (
     <Routes>
       <Route path="/" element={<EntityPageLayoutHolder />}>
-        <Route index element={<Navigate replace to="dashboard" />} />
+        <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
@@ -43,7 +44,11 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         />
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={<CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="hub" />}
+          element={
+            <ContributePage entityTypeName="hub">
+              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="hub" />
+            </ContributePage>
+          }
         />
       </Route>
       <Route
@@ -60,6 +65,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           </ChallengeProvider>
         }
       />
+      <Route path="explore/*" element={<Redirect to={routes.Contribute} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

@@ -8,8 +8,17 @@ import CardTags from '../../../../core/ui/card/CardTags';
 import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import MessageCounter from '../../../../core/ui/card/MessageCounter';
-import { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
+import { Aspect, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
+export type AspectCardAspect = Pick<Aspect, NeededFields> & {
+  bannerNarrow?: VisualUriFragment;
+  createdBy: { displayName: string };
+  comments?: { commentsCount?: number };
+  createdDate: string | Date; // Apollo says Date while actually it's a string
+} & {
+  calloutNameId: string;
+};
 interface AspectCardProps {
   aspect: AspectCardAspect | undefined;
   onClick: (aspect: AspectCardAspect) => void;
@@ -22,7 +31,7 @@ const AspectCard = ({ aspect, onClick }: AspectCardProps) => {
     <ContributeCard onClick={handleClick}>
       <CardHeader title={aspect?.displayName} iconComponent={AspectIcon} createdBy={aspect?.createdBy.displayName} />
       <CardDetails>
-        <CardDescription>{aspect?.profile?.description}</CardDescription>
+        <CardDescription>{aspect?.profile?.description!}</CardDescription>
         <CardTags tags={aspect?.profile?.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardFooter>

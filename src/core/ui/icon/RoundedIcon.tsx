@@ -2,7 +2,7 @@ import React, { ComponentType } from 'react';
 import { Box, BoxProps, styled, SvgIconProps, useTheme } from '@mui/material';
 
 const RoundedIconContainer = styled(Box)(({ theme }) => ({
-  background: theme.palette.primary.dark,
+  background: theme.palette.primary.main,
   color: theme.palette.common.white,
   borderRadius: '50%',
   display: 'flex',

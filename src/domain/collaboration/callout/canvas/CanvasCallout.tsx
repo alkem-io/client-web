@@ -1,11 +1,10 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
-import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
@@ -13,6 +12,10 @@ import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCardCanvas } from './types';
 import { BaseCalloutImpl } from '../Types';
+import { gutters } from '../../../../core/ui/grid/utils';
+import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { useHubTemplatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface CanvasCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
@@ -38,13 +41,24 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     ref
   ) => {
     const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
-    const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
-    const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
-    const { templates } = useHub();
+    const openCreateDialog = () => setShowCreateCanvasDialog(true);
+    const closeCreateDialog = () => setShowCreateCanvasDialog(false);
+    const { hubId } = useHub();
     const navigate = useNavigate();
 
+    const { data: hubTemplatesData } = useHubTemplatesQuery({
+      variables: { hubId },
+      skip: !hubId,
+    });
+    const templates = hubTemplatesData?.hub.templates ?? {
+      id: '',
+      aspectTemplates: [],
+      canvasTemplates: [],
+      lifecycleTemplates: [],
+    };
+
     const createButton = canCreate && callout.state !== CalloutState.Closed && (
-      <CreateCalloutItemButton onClick={handleCreateDialogOpened} />
+      <CreateCalloutItemButton onClick={openCreateDialog} />
     );
 
     const navigateToCanvas = (canvas: CanvasCardCanvas) => {
@@ -62,6 +76,10 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
       [loading, callout.canvases.length, callout.state]
     );
 
+    const breakpoint = useCurrentBreakpoint();
+
+    const isMobile = breakpoint === 'xs';
+
     return (
       <>
         <CalloutLayout
@@ -74,18 +92,18 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
           onCalloutDelete={onCalloutDelete}
         >
           {showCards && (
-            <CardsLayoutScroller maxHeight={425}>
-              <CardsLayout
-                items={loading ? [undefined, undefined] : callout.canvases}
-                deps={[hubNameId, challengeNameId, opportunityNameId]}
-                createButton={createButton}
-              >
-                {canvas =>
-                  canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
-                }
-              </CardsLayout>
-            </CardsLayoutScroller>
+            <ScrollableCardsLayout
+              items={loading ? [undefined, undefined] : callout.canvases}
+              deps={[hubNameId, challengeNameId, opportunityNameId]}
+              createButton={!isMobile && createButton}
+              maxHeight={gutters(22)}
+            >
+              {canvas =>
+                canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
+              }
+            </ScrollableCardsLayout>
           )}
+          {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
         </CalloutLayout>
         <CanvasActionsContainer>
           {(entities, actionsState, actions) => (
@@ -95,7 +113,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
                 templates: templates.canvasTemplates,
               }}
               actions={{
-                onCancel: handleCreateDialogClosed,
+                onCancel: closeCreateDialog,
                 onConfirm: input => {
                   actions.onCreate(input);
                   setShowCreateCanvasDialog(false);

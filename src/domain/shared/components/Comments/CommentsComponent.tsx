@@ -4,12 +4,13 @@ import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import { Message } from './models/message';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { mapWithSeparator } from '../../utils/joinNodes';
-import SectionSpacer from '../Section/SectionSpacer';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import MessageView from './MessageView';
 import PostMessageToCommentsForm from './PostMessageToCommentsForm';
+import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { CaptionSmall } from '../../../../core/ui/typography';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -23,6 +24,8 @@ export interface CommentsComponentProps {
   handlePostMessage: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
   loading?: boolean;
+  last?: boolean;
+  onClickMore?: () => void;
 }
 
 interface ScrollState {
@@ -40,19 +43,25 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const CommentsComponent: FC<CommentsComponentProps> = props => {
+const CommentsComponent: FC<CommentsComponentProps> = ({
+  last,
+  messages = [],
+  commentsId,
+  handlePostMessage,
+  handleDeleteMessage,
+  canPostMessages,
+  canDeleteMessage,
+  loading,
+  onClickMore,
+}) => {
   const { t } = useTranslation();
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
 
-  const { messages = [], commentsId, handlePostMessage, handleDeleteMessage } = props;
   const onPostComment = (message: string) => (commentsId ? handlePostMessage(commentsId, message) : undefined);
   const onDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
-
-  const { canPostMessages, canDeleteMessage } = props;
-  const { loading } = props;
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,
@@ -79,23 +88,42 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
+  const lastMessage = messages[messages.length - 1];
+
   return (
     <>
-      <Box
-        sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}
-        ref={commentsContainerRef}
-        onScroll={handleScroll}
-      >
-        {mapWithSeparator(messages, SectionSpacer, message => (
+      {!last && (
+        <ScrollerWithGradient
+          maxHeight={COMMENTS_CONTAINER_HEIGHT}
+          scrollerRef={commentsContainerRef}
+          onScroll={handleScroll}
+        >
+          <Gutters>
+            {messages.map(message => (
+              <MessageView
+                key={message.id}
+                message={message}
+                canDelete={canDeleteMessage(message.id)}
+                onDelete={onDeleteComment}
+              />
+            ))}
+          </Gutters>
+        </ScrollerWithGradient>
+      )}
+      {last && (
+        <>
+          <CaptionSmall onClick={onClickMore}>{t('callout.contributions', { count: messages.length })}</CaptionSmall>
           <MessageView
-            key={message.id}
-            message={message}
-            canDelete={canDeleteMessage(message.id)}
+            key={lastMessage.id}
+            message={lastMessage}
+            canDelete={canDeleteMessage(lastMessage.id)}
             onDelete={onDeleteComment}
           />
-        ))}
-      </Box>
-      <SectionSpacer />
+          <CaptionSmall textAlign="center" onClick={onClickMore}>
+            {t('common.show-all')}
+          </CaptionSmall>
+        </>
+      )}
       {canPostMessages && (
         <PostMessageToCommentsForm
           placeholder={t('pages.aspect.dashboard.comment.placeholder')}

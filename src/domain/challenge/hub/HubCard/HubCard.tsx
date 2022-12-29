@@ -11,7 +11,8 @@ import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
 
-interface HubCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
+export interface HubCardProps
+  extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
   hubId?: string;
   displayName: string;
   vision: string;

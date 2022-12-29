@@ -1,24 +1,22 @@
 import { Box } from '@mui/material';
-import { FC, useCallback } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
-import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
-import { useUserContext } from '../../../../community/contributor/user';
-import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
+import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
 import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
-import { SearchChallengeCard } from '../../../../shared/components/search-cards';
-import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
-import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import {
   SimpleChallenge,
-  simpleChallengeValueGetter,
-  simpleChallengeTagsValueGetter,
   simpleChallengeHubDataGetter,
+  simpleChallengeTagsValueGetter,
+  simpleChallengeValueGetter,
 } from '../../containers/ChallengeExplorerContainer';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { Text } from '../../../../../core/ui/typography';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
+import ChallengeCard from '../../ChallengeCard/ChallengeCard';
+import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 export interface ChallengeExplorerListViewProps {
   headerText: string;
@@ -36,55 +34,51 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   enableFilterByHub = false,
 }) => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useUserContext();
-  const getCardLabel = useCallback(
-    (roles: string[]) => {
-      return isAuthenticated
-        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
-        : undefined;
-    },
-    [isAuthenticated]
-  );
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={withOptionalCount(headerText, headerCounter)} />
-      <Text>{subHeaderText}</Text>
       <CheckboxesFilter
         caption={t('pages.challenge-explorer.other.filter-by-hub')}
         enable={enableFilterByHub}
         items={challenges}
         filterableDataGetter={simpleChallengeHubDataGetter}
-        sx={{ top: theme => theme.spacing(-8) }}
       >
-        {filteredByHubChallenges => (
-          <CardFilter
-            data={filteredByHubChallenges}
-            valueGetter={simpleChallengeValueGetter}
-            tagsValueGetter={simpleChallengeTagsValueGetter}
-            keepOpen={false}
-          >
-            {filteredChallenges => (
-              <CardsLayoutScroller maxHeight={374} sx={{ marginRight: 0 }}>
-                <CardsLayout items={filteredChallenges}>
-                  {challenge =>
-                    challenge && (
-                      <SearchChallengeCard
-                        name={challenge.displayName}
-                        tagline={challenge.tagline}
-                        image={challenge.imageUrl}
-                        matchedTerms={challenge.matchedTerms ?? []}
-                        label={getCardLabel(challenge.roles)}
-                        url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                        parentName={challenge.hubDisplayName}
-                      />
-                    )
-                  }
-                </CardsLayout>
-                {filteredChallenges.length === 0 && <Box>{t('pages.challenge-explorer.search.no-results')}</Box>}
-              </CardsLayoutScroller>
-            )}
-          </CardFilter>
+        {(filterMenu, filteredByHubChallenges) => (
+          <>
+            <PageContentBlockHeader title={withOptionalCount(headerText, headerCounter)} actions={filterMenu} />
+            <Text>{subHeaderText}</Text>
+            <CardFilter
+              data={filteredByHubChallenges}
+              valueGetter={simpleChallengeValueGetter}
+              tagsValueGetter={simpleChallengeTagsValueGetter}
+              keepOpen={false}
+            >
+              {filteredChallenges =>
+                filteredChallenges.length === 0 ? (
+                  <Box>{t('pages.challenge-explorer.search.no-results')}</Box>
+                ) : (
+                  <ScrollableCardsLayout items={filteredChallenges} maxHeight={gutters(30)} cards={false}>
+                    {challenge =>
+                      challenge && (
+                        <ChallengeCard
+                          challengeId={challenge.id}
+                          challengeNameId={challenge.nameID}
+                          bannerUri={challenge.imageUrl}
+                          displayName={challenge.displayName}
+                          tags={challenge.tags}
+                          tagline={challenge.tagline}
+                          vision={challenge.vision}
+                          journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                          hubDisplayName={challenge.hubDisplayName}
+                          hubUri={buildHubUrl(challenge.hubNameId)}
+                        />
+                      )
+                    }
+                  </ScrollableCardsLayout>
+                )
+              }
+            </CardFilter>
+          </>
         )}
       </CheckboxesFilter>
     </PageContentBlock>

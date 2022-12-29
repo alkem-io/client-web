@@ -41,6 +41,7 @@ query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
         visuals {
           ...VisualUri
         }
+        vision
       }
       tagset {
         id

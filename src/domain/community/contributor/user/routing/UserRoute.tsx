@@ -12,7 +12,7 @@ export const UserRoute: FC = () => {
   return (
     <Routes>
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
-        <Route index element={<UserProfilePage paths={currentPaths} />} />
+        <Route index element={<UserProfilePage />} />
       </Route>
       <Route path={'settings/*'} element={<UserSettingsRoute paths={currentPaths} />} />
       <Route path="*" element={<Error404 />} />
