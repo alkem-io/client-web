@@ -501,46 +501,6 @@ export const HubInfoFragmentDoc = gql`
       }
     }
     visibility
-    templates {
-      id
-      aspectTemplates {
-        id
-        defaultDescription
-        type
-        info {
-          id
-          title
-          description
-          tagset {
-            id
-            tags
-          }
-          visual {
-            id
-            uri
-          }
-        }
-      }
-      canvasTemplates {
-        id
-        info {
-          id
-          title
-          description
-        }
-        value
-      }
-      lifecycleTemplates {
-        id
-        definition
-        type
-        info {
-          id
-          title
-          description
-        }
-      }
-    }
   }
   ${HubDetailsFragmentDoc}
 `;
