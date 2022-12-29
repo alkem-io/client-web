@@ -1,9 +1,9 @@
-import { AspectTemplate, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { AspectTemplateFragment, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { AspectTemplateFormSubmittedValues } from '../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 
 export const createCardTemplateFromTemplateSet = <C extends { type?: CalloutType; cardTemplateType?: string }>(
   callout: C,
-  cardTemplates: AspectTemplate[]
+  cardTemplates: AspectTemplateFragment[]
 ): AspectTemplateFormSubmittedValues | undefined => {
   let calloutCardTemplate: AspectTemplateFormSubmittedValues | undefined;
   if (callout.type === CalloutType.Card) {

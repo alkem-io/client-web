@@ -5,7 +5,7 @@ import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/Scrollab
 import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState, TemplatesSet } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import CanvasCard from './CanvasCard';
@@ -50,7 +50,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
       variables: { hubId },
       skip: !hubId,
     });
-    const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+    const templates = hubTemplatesData?.hub.templates ?? {
       id: '',
       aspectTemplates: [],
       canvasTemplates: [],

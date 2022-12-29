@@ -9,7 +9,6 @@ import { InputAdornment } from '@mui/material';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
 import { useHubTemplatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { TemplatesSet } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface AspectTypeFormFieldProps {
   name: string;
@@ -24,7 +23,7 @@ const AspectTypeFormField: FC<AspectTypeFormFieldProps> = ({ name, value }) => {
     variables: { hubId },
     skip: !hubId,
   });
-  const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+  const templates = hubTemplatesData?.hub.templates ?? {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],

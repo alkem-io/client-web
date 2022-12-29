@@ -13,7 +13,6 @@ import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
 import { useHubTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { TemplatesSet } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -40,7 +39,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     variables: { hubId },
     skip: !hubId,
   });
-  const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+  const templates = hubTemplatesData?.hub.templates ?? {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],

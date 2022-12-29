@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { CalloutState, CalloutType, TemplatesSet } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
@@ -56,7 +56,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     variables: { hubId },
     skip: !hubId,
   });
-  const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+  const templates = hubTemplatesData?.hub.templates || {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],

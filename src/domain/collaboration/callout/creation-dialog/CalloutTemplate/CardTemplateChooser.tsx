@@ -5,7 +5,6 @@ import CardTemplatesList from './CardTemplatesList';
 import CardTemplatePreview from './CardTemplateCardPreview';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useField } from 'formik';
-import { TemplatesSet } from '../../../../../core/apollo/generated/graphql-schema';
 import { useHubTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 interface CardTemplatesChooserProps {
@@ -21,7 +20,7 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, edit
     variables: { hubId },
     skip: !hubId,
   });
-  const templates = (hubTemplatesData?.hub.templates as TemplatesSet) || {
+  const templates = hubTemplatesData?.hub.templates || {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],

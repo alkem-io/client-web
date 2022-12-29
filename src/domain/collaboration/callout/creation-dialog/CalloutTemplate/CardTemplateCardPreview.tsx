@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import EntityContributionCard from '../../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
-import { Aspect, AspectTemplate, VisualUriFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { Aspect, AspectTemplateFragment, VisualUriFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
 
 const DEFAULT_LINE_HEIGHT = 1.5;
@@ -15,7 +15,7 @@ export type CardTemplatePreview = Pick<Aspect, NeededFields> & { bannerNarrow?: 
 };
 
 export interface CardTemplatePreviewProps {
-  cardTemplate: AspectTemplate;
+  cardTemplate: AspectTemplateFragment;
   keepScroll?: boolean;
 }
 
