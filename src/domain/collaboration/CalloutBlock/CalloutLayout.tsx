@@ -57,6 +57,7 @@ const CalloutDetailsBar = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   height: gutters(2)(theme),
   alignItems: 'end',
+  flexShrink: 0,
 }));
 
 const CalloutDetails = styled(Box)(({ theme }) => ({

@@ -15,7 +15,7 @@ import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCac
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { BaseCalloutImpl } from '../Types';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { Dialog, IconButton } from '@mui/material';
+import { Dialog, IconButton, useMediaQuery } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
@@ -30,6 +30,8 @@ interface CommentsCalloutProps extends BaseCalloutImpl {
   isSubscribedToComments: boolean;
   loading?: boolean;
 }
+
+const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
   (
@@ -145,6 +147,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const [isFullViewDialogOpen, setIsFullViewDialogOpen] = useState(false);
 
+    const canFitRegularDialog = useMediaQuery('@media only screen and (min-height: 600px)');
+
     return (
       <>
         <PageContentBlock ref={ref} disablePadding disableGap>
@@ -166,6 +170,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
               handleDeleteMessage={handleDeleteMessage}
               loading={loading || postingComment || deletingMessage}
               last={lastMessageOnly}
+              maxHeight={COMMENTS_CONTAINER_HEIGHT}
               onClickMore={() => setIsFullViewDialogOpen(true)}
             />
           </CalloutLayout>
@@ -173,6 +178,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         <Dialog
           open={isFullViewDialogOpen}
           PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
+          fullScreen={!canFitRegularDialog}
         >
           <CalloutLayout
             callout={callout}
