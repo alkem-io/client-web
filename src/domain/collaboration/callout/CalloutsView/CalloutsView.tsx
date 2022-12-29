@@ -17,9 +17,9 @@ import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCal
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import useCallouts, { TypedCallout } from '../useCallouts';
 import { AspectIcon } from '../../aspect/icon/AspectIcon';
-import { CanvasAltIcon } from '../../canvas/icon/CanvasAltIcon';
 import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
+import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
 
 interface CalloutsPageProps {
   scrollToCallout?: boolean;
@@ -27,7 +27,7 @@ interface CalloutsPageProps {
 
 const calloutIcons = {
   [CalloutType.Card]: <AspectIcon />,
-  [CalloutType.Canvas]: <CanvasAltIcon />,
+  [CalloutType.Canvas]: <CanvasIcon />,
   [CalloutType.Comments]: <ForumOutlined />,
 } as const;
 

@@ -1,6 +1,5 @@
-import React, { PropsWithChildren } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { SvgIconComponent } from '@mui/icons-material';
+import React, { ComponentType, PropsWithChildren } from 'react';
+import { Box, IconButton, SvgIconProps, Typography } from '@mui/material';
 
 const iconButtonSize = 105;
 
@@ -8,7 +7,7 @@ export interface RadioButtonProps<Value> {
   value: Value;
   selected?: boolean;
   disabled?: boolean;
-  iconComponent: SvgIconComponent;
+  iconComponent: ComponentType<SvgIconProps>;
   onClick?: (value: Value) => void;
 }
 
