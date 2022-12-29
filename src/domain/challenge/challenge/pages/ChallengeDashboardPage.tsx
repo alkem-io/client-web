@@ -6,11 +6,12 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
-import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
+import ChallengeContributorsDialogContent
+  from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 
 export interface ChallengeDashboardPageProps {
@@ -56,7 +57,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   tagline={opportunity.context?.tagline!}
                   vision={opportunity.context?.vision!}
                   tags={opportunity.tagset?.tags!}
-                  bannerUri={getVisualBanner(opportunity.context?.visuals)}
+                  bannerUri={getVisualBannerNarrow(opportunity.context?.visuals)}
                   journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
                   challengeDisplayName={entities.challenge?.displayName!}
                   challengeUri={buildChallengeUrl(entities.hubNameId, entities.challenge!.nameID)}

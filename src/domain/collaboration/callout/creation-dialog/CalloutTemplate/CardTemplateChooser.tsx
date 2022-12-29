@@ -5,6 +5,7 @@ import CardTemplatesList from './CardTemplatesList';
 import CardTemplatePreview from './CardTemplateCardPreview';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useField } from 'formik';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 interface CardTemplatesChooserProps {
   name: string;
@@ -53,13 +54,17 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, edit
           </Box>
         </Grid>
         <Grid item xs={4}>
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight={400} minWidth={250}>
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight={300} minWidth={250}>
             {!selectedTemplate && (
               <Typography variant="overline">
                 {t('components.callout-creation.template-step.no-card-template-selected')}
               </Typography>
             )}
-            {selectedTemplate && <CardTemplatePreview cardTemplate={selectedTemplate} />}
+            {selectedTemplate && (
+              <GridProvider columns={3}>
+                <CardTemplatePreview cardTemplate={selectedTemplate} />
+              </GridProvider>
+            )}
           </Box>
         </Grid>
       </Grid>

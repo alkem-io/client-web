@@ -25,6 +25,7 @@ export type SimpleChallenge = {
   imageUrl: string | undefined;
   tags: string[];
   roles: string[];
+  vision: string;
 };
 
 export type SimpleChallengeWithSearchTerms = SimpleChallenge & { matchedTerms: string[] };
@@ -117,6 +118,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         tagline: ch.context?.tagline || '',
         tags: ch.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
+        vision: ch.context?.vision || '',
       })) || []
   );
 
@@ -154,6 +156,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         tagline: ch.context?.tagline || '',
         tags: ch.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
+        vision: ch.context?.vision || '',
         matchedTerms: entry.terms,
       };
     }) || [];

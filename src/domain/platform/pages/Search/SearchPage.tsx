@@ -11,23 +11,23 @@ import { useUserContext } from '../../../community/contributor/user';
 import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
-  SearchResultUserFragment,
-  SearchResultOrganizationFragment,
-  SearchResultHubFragment,
-  SearchResultChallengeFragment,
-  SearchResultOpportunityFragment,
   SearchResult,
+  SearchResultChallengeFragment,
+  SearchResultHubFragment,
+  SearchResultOpportunityFragment,
+  SearchResultOrganizationFragment,
   SearchResultType,
+  SearchResultUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../core/routing/route.constants';
 import { AUTH_LOGIN_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import { escape } from 'lodash';
 import TopLevelDesktopLayout from '../../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 const tagsetNames = ['skills', 'keywords'];
 // todo translate
@@ -188,63 +188,64 @@ const SearchPage: FC = () => {
 
   return (
     <TopLevelDesktopLayout>
-      <Grid container padding={{ xs: 0, sm: 2, md: 8 }}>
-        <Grid
-          item
-          textAlign={'center'}
-          marginBottom={4}
-          display={'flex'}
-          justifyContent={'center'}
-          alignItems={'middle'}
-          xs={12}
-          md={4}
-        >
-          <HelpOutline color="primary" sx={{ fontSize: { xs: 80, sm: 100, md: 130 } }} />
+      <PageContentColumn columns={12}>
+        <Grid container padding={{ xs: 0, sm: 2, md: 8 }}>
+          <Grid
+            item
+            textAlign={'center'}
+            marginBottom={4}
+            display={'flex'}
+            justifyContent={'center'}
+            alignItems={'middle'}
+            xs={12}
+            md={4}
+          >
+            <HelpOutline color="primary" sx={{ fontSize: { xs: 80, sm: 100, md: 130 } }} />
+          </Grid>
+          <Grid
+            item
+            sx={{ display: 'table-cell', verticalAlign: 'middle', textAlign: { xs: 'center', md: 'left' } }}
+            marginBottom={2}
+            xs={12}
+            md={8}
+          >
+            <Typography variant={'h2'} sx={{ textTransform: 'uppercase' }}>
+              {t('pages.search.header')}
+            </Typography>
+            <SubHeader text={t('pages.search.alternativesubheader')} />
+          </Grid>
+          <Grid item xs={12}>
+            <MultipleSelect
+              onChange={handleTermChange}
+              defaultValue={termsFromQuery}
+              elements={tags}
+              allowUnknownValues
+              minLength={2}
+            />
+          </Grid>
         </Grid>
-        <Grid
-          item
-          sx={{ display: 'table-cell', verticalAlign: 'middle', textAlign: { xs: 'center', md: 'left' } }}
-          marginBottom={2}
-          xs={12}
-          md={8}
-        >
-          <Typography variant={'h2'} sx={{ textTransform: 'uppercase' }}>
-            {t('pages.search.header')}
-          </Typography>
-          <SubHeader text={t('pages.search.alternativesubheader')} />
-        </Grid>
-        <Grid item xs={12}>
-          <MultipleSelect
-            onChange={handleTermChange}
-            defaultValue={termsFromQuery}
-            elements={tags}
-            allowUnknownValues
-            minLength={2}
-          />
-        </Grid>
-      </Grid>
-      {!isAuthenticated && (
-        <Box display="flex" justifyContent="center" paddingBottom={2}>
-          <Link component={RouterLink} to={AUTH_LOGIN_PATH}>
-            {t('pages.search.user-not-logged')}
-          </Link>
-        </Box>
-      )}
-      <SearchResultSection
-        title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
-        filterConfig={journeyFilterConfig}
-        results={journeyResults}
-        onFilterChange={handleEntityFilterChange}
-        loading={isSearching}
-      />
-      <SectionSpacer double />
-      <SearchResultSection
-        filterConfig={contributorFilterConfig}
-        title={t('common.contributors')}
-        results={contributorResults}
-        onFilterChange={handleContributorFilterChange}
-        loading={isSearching}
-      />
+        {!isAuthenticated && (
+          <Box display="flex" justifyContent="center" paddingBottom={2}>
+            <Link component={RouterLink} to={AUTH_LOGIN_PATH}>
+              {t('pages.search.user-not-logged')}
+            </Link>
+          </Box>
+        )}
+        <SearchResultSection
+          title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
+          filterConfig={journeyFilterConfig}
+          results={journeyResults}
+          onFilterChange={handleEntityFilterChange}
+          loading={isSearching}
+        />
+        <SearchResultSection
+          filterConfig={contributorFilterConfig}
+          title={t('common.contributors')}
+          results={contributorResults}
+          onFilterChange={handleContributorFilterChange}
+          loading={isSearching}
+        />
+      </PageContentColumn>
     </TopLevelDesktopLayout>
   );
 };
