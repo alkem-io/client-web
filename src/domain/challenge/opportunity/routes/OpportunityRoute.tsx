@@ -50,7 +50,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName={'opportunity'} />
+            <ContributePage entityTypeName="opportunity">
+              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="opportunity" />
+            </ContributePage>
           }
         />
       </Route>

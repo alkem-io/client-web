@@ -44,7 +44,11 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         />
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={<CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="hub" />}
+          element={
+            <ContributePage entityTypeName="hub">
+              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="hub" />
+            </ContributePage>
+          }
         />
       </Route>
       <Route
