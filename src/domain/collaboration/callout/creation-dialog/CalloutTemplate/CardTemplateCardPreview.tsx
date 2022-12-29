@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Aspect, AspectTemplate, VisualUriFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { useTranslation } from 'react-i18next';
+import { Aspect, AspectTemplateFragment, VisualUriFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../../core/ui/card/CardDetails';
@@ -9,7 +10,6 @@ import CardFooter from '../../../../../core/ui/card/CardFooter';
 import MessageCounter from '../../../../../core/ui/card/MessageCounter';
 import CardFooterDate from '../../../../../core/ui/card/CardFooterDate';
 import { AspectIcon } from '../../../aspect/icon/AspectIcon';
-import { useTranslation } from 'react-i18next';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
 export type CardTemplatePreview = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
@@ -17,7 +17,7 @@ export type CardTemplatePreview = Pick<Aspect, NeededFields> & { bannerNarrow?: 
 };
 
 export interface CardTemplatePreviewProps {
-  cardTemplate: AspectTemplate;
+  cardTemplate: AspectTemplateFragment;
   keepScroll?: boolean;
 }
 

@@ -5,6 +5,7 @@ import CardTemplatesList from './CardTemplatesList';
 import CardTemplatePreview from './CardTemplateCardPreview';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useField } from 'formik';
+import { useHubTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 interface CardTemplatesChooserProps {
@@ -13,8 +14,19 @@ interface CardTemplatesChooserProps {
 }
 
 export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, editMode = false }) => {
-  const { templates } = useHub();
+  const { hubId } = useHub();
   const [field, , helpers] = useField(name);
+
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
+    variables: { hubId },
+    skip: !hubId,
+  });
+  const templates = hubTemplatesData?.hub.templates ?? {
+    id: '',
+    aspectTemplates: [],
+    canvasTemplates: [],
+    lifecycleTemplates: [],
+  };
 
   const cardTemplatesTypeList = useMemo(
     () => templates.aspectTemplates.map(template => ({ type: template.type, title: template.info.title })),

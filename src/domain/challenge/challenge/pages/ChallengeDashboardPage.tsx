@@ -6,8 +6,7 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
-import ChallengeContributorsDialogContent
-  from '../../../community/community/entities/ChallengeContributorsDialogContent';
+import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import { useTranslation } from 'react-i18next';
