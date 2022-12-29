@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
+import { last } from 'lodash';
 import { Message } from './models/message';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { animateScroll as scroller } from 'react-scroll';
@@ -44,7 +45,7 @@ const isScrolledToBottom = ({
 };
 
 const CommentsComponent: FC<CommentsComponentProps> = ({
-  last,
+  last: isShowingLastMessage,
   messages = [],
   commentsId,
   handlePostMessage,
@@ -88,11 +89,11 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
-  const lastMessage = messages[messages.length - 1];
+  const lastMessage = last(messages);
 
   return (
     <>
-      {!last && (
+      {!isShowingLastMessage && (
         <ScrollerWithGradient
           maxHeight={COMMENTS_CONTAINER_HEIGHT}
           scrollerRef={commentsContainerRef}
@@ -110,7 +111,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           </Gutters>
         </ScrollerWithGradient>
       )}
-      {last && (
+      {isShowingLastMessage && lastMessage && (
         <>
           <CaptionSmall onClick={onClickMore}>{t('callout.contributions', { count: messages.length })}</CaptionSmall>
           <MessageView
