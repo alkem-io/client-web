@@ -96,6 +96,8 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
       {!isShowingLastMessage && (
         <ScrollerWithGradient
           maxHeight={COMMENTS_CONTAINER_HEIGHT}
+          minHeight={0}
+          flexGrow={1}
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
         >

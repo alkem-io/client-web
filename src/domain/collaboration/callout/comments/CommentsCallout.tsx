@@ -17,6 +17,7 @@ import { BaseCalloutImpl } from '../Types';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { Dialog, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -146,29 +147,33 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     return (
       <>
-        <CalloutLayout
-          ref={ref}
-          callout={callout}
-          calloutNames={calloutNames}
-          contributionsCount={contributionsCount}
-          onVisibilityChange={onVisibilityChange}
-          onCalloutEdit={onCalloutEdit}
-          onCalloutDelete={onCalloutDelete}
+        <PageContentBlock ref={ref} disablePadding disableGap>
+          <CalloutLayout
+            callout={callout}
+            calloutNames={calloutNames}
+            contributionsCount={contributionsCount}
+            onVisibilityChange={onVisibilityChange}
+            onCalloutEdit={onCalloutEdit}
+            onCalloutDelete={onCalloutDelete}
+          >
+            <CommentsComponent
+              messages={messages}
+              commentsId={commentsId}
+              canReadMessages={canReadMessages}
+              canPostMessages={canPostMessages}
+              handlePostMessage={handlePostMessage}
+              canDeleteMessage={canDeleteMessage}
+              handleDeleteMessage={handleDeleteMessage}
+              loading={loading || postingComment || deletingMessage}
+              last={lastMessageOnly}
+              onClickMore={() => setIsFullViewDialogOpen(true)}
+            />
+          </CalloutLayout>
+        </PageContentBlock>
+        <Dialog
+          open={isFullViewDialogOpen}
+          PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
         >
-          <CommentsComponent
-            messages={messages}
-            commentsId={commentsId}
-            canReadMessages={canReadMessages}
-            canPostMessages={canPostMessages}
-            handlePostMessage={handlePostMessage}
-            canDeleteMessage={canDeleteMessage}
-            handleDeleteMessage={handleDeleteMessage}
-            loading={loading || postingComment || deletingMessage}
-            last={lastMessageOnly}
-            onClickMore={() => setIsFullViewDialogOpen(true)}
-          />
-        </CalloutLayout>
-        <Dialog open={isFullViewDialogOpen}>
           <CalloutLayout
             callout={callout}
             calloutNames={calloutNames}

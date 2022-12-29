@@ -1,4 +1,4 @@
-import React, { forwardRef, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, IconButton, Menu, MenuItem, styled } from '@mui/material';
@@ -21,7 +21,6 @@ import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from '../callout/Types';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import Gutters from '../../../core/ui/grid/Gutters';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
@@ -74,170 +73,159 @@ const CalloutMisc = styled(Box)(({ theme }) => ({
 
 const CalloutDate = ({ date }: { date: Date | string }) => <Caption>{date}</Caption>;
 
-const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayoutProps>>(
-  (
-    {
-      callout,
-      actions,
-      children,
-      onVisibilityChange,
-      onCalloutEdit,
-      onCalloutDelete,
-      calloutNames,
-      contributionsCount,
+const CalloutLayout = ({
+  callout,
+  actions,
+  children,
+  onVisibilityChange,
+  onCalloutEdit,
+  onCalloutDelete,
+  calloutNames,
+  contributionsCount,
+}: PropsWithChildren<CalloutLayoutProps>) => {
+  const { t } = useTranslation();
+
+  const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
+  const settingsOpened = Boolean(settingsAnchorEl);
+  const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
+  const handleSettingsClose = () => setSettingsAnchorEl(null);
+
+  const [visDialogOpen, setVisDialogOpen] = useState(false);
+  const handleVisDialogOpen = () => {
+    setVisDialogOpen(true);
+    setSettingsAnchorEl(null);
+  };
+  const handleVisDialogClose = () => setVisDialogOpen(false);
+  const visDialogTitle = useMemo(
+    () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
+    [callout.draft, t]
+  );
+  const handleVisibilityChange = async (visibility: CalloutVisibility) => {
+    await onVisibilityChange(callout.id, visibility);
+    setVisDialogOpen(false);
+  };
+  const [editDialogOpened, setEditDialogOpened] = useState(false);
+  const handleEditDialogOpen = () => {
+    setSettingsAnchorEl(null);
+    setEditDialogOpened(true);
+  };
+  const handleEditDialogClosed = () => setEditDialogOpened(false);
+  const handleCalloutEdit = useCallback(
+    async (newCallout: CalloutEditType) => {
+      await onCalloutEdit(newCallout);
+      setEditDialogOpened(false);
     },
-    ref
-  ) => {
-    const { t } = useTranslation();
+    [onCalloutEdit, setEditDialogOpened]
+  );
 
-    const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
-    const settingsOpened = Boolean(settingsAnchorEl);
-    const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
-    const handleSettingsClose = () => setSettingsAnchorEl(null);
+  const calloutNotOpenStateName = useMemo(() => {
+    const state = callout?.state;
 
-    const [visDialogOpen, setVisDialogOpen] = useState(false);
-    const handleVisDialogOpen = () => {
-      setVisDialogOpen(true);
-      setSettingsAnchorEl(null);
-    };
-    const handleVisDialogClose = () => setVisDialogOpen(false);
-    const visDialogTitle = useMemo(
-      () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
-      [callout.draft, t]
-    );
-    const handleVisibilityChange = async (visibility: CalloutVisibility) => {
-      await onVisibilityChange(callout.id, visibility);
-      setVisDialogOpen(false);
-    };
-    const [editDialogOpened, setEditDialogOpened] = useState(false);
-    const handleEditDialogOpen = () => {
-      setSettingsAnchorEl(null);
-      setEditDialogOpened(true);
-    };
-    const handleEditDialogClosed = () => setEditDialogOpened(false);
-    const handleCalloutEdit = useCallback(
-      async (newCallout: CalloutEditType) => {
-        await onCalloutEdit(newCallout);
-        setEditDialogOpened(false);
-      },
-      [onCalloutEdit, setEditDialogOpened]
-    );
-
-    const calloutNotOpenStateName = useMemo(() => {
-      const state = callout?.state;
-
-      if (!state || state === CalloutState.Open) {
-        return undefined;
-      }
-
-      return t(`common.enums.callout-state.${state}` as const);
-    }, [callout?.state, t]);
-
-    const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-
-    if (dontShow) {
-      return null;
+    if (!state || state === CalloutState.Open) {
+      return undefined;
     }
 
-    const hasCalloutDetails = callout.authorName && callout.publishedAt;
+    return t(`common.enums.callout-state.${state}` as const);
+  }, [callout?.state, t]);
 
-    return (
-      <>
-        <PageContentBlock ref={ref} disablePadding disableGap>
-          {callout.draft && (
-            <Box padding={1.5} sx={{ color: 'neutralLight.main', backgroundColor: 'primary.main' }}>
-              <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
-            </Box>
-          )}
-          <CalloutDetailsBar>
-            {hasCalloutDetails && (
-              <CalloutMisc>
-                <CalloutDetails>
-                  <Box
-                    component="img"
-                    src={callout.authorAvatarUri}
-                    sx={{ background: 'grey', height: 20, width: 20 }}
-                  />
-                  <Caption>
-                    {`${callout.authorName} • ${t('callout.contributions', {
-                      count: contributionsCount,
-                    })}`}
-                  </Caption>
-                </CalloutDetails>
-                <CalloutDate date={callout.publishedAt!} />
-              </CalloutMisc>
-            )}
-            {!hasCalloutDetails && (
-              <BlockTitle paddingX={gutters()} noWrap>
-                {callout.displayName}
-              </BlockTitle>
-            )}
-            <CalloutActionsBar>
-              {actions}
-              {callout.editable && (
-                <IconButton
-                  id="callout-settings-button"
-                  aria-haspopup="true"
-                  aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-                  aria-expanded={settingsOpened ? 'true' : undefined}
-                  onClick={handleSettingsOpened}
-                >
-                  <SettingsOutlinedIcon />
-                </IconButton>
-              )}
-              <ShareButton url={callout.url} entityTypeName="callout" />
-            </CalloutActionsBar>
-          </CalloutDetailsBar>
-          <Gutters>
-            {hasCalloutDetails && <BlockTitle>{callout.displayName}</BlockTitle>}
-            <WrapperMarkdown>{callout.description ?? ''}</WrapperMarkdown>
-            {children}
-          </Gutters>
-          {calloutNotOpenStateName && (
-            <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
-          )}
-        </PageContentBlock>
-        <Menu
-          id="callout-settings-menu"
-          aria-labelledby="callout-settings-button"
-          anchorEl={settingsAnchorEl}
-          open={settingsOpened}
-          onClose={handleSettingsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'center',
-            horizontal: 'left',
-          }}
-        >
-          <MenuItem onClick={handleEditDialogOpen}>{t('buttons.edit').toLocaleUpperCase()}</MenuItem>
-          <MenuItem onClick={handleVisDialogOpen}>
-            {t(`buttons.${callout.draft ? '' : 'un'}publish` as const).toLocaleUpperCase()}
-          </MenuItem>
-        </Menu>
-        <CalloutVisibilityChangeDialog
-          open={visDialogOpen}
-          onClose={handleVisDialogClose}
-          title={visDialogTitle}
-          draft={callout.draft}
-          onVisibilityChanged={handleVisibilityChange}
-        >
-          <CalloutSummary callout={callout} />
-        </CalloutVisibilityChangeDialog>
-        <CalloutEditDialog
-          open={editDialogOpened}
-          onClose={handleEditDialogClosed}
-          callout={callout}
-          title={`${t('buttons.edit')} ${t('common.callout')}`}
-          onCalloutEdit={handleCalloutEdit}
-          onDelete={onCalloutDelete}
-          calloutNames={calloutNames}
-        />
-      </>
-    );
+  const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+
+  if (dontShow) {
+    return null;
   }
-);
+
+  const hasCalloutDetails = callout.authorName && callout.publishedAt;
+
+  return (
+    <>
+      {callout.draft && (
+        <Box padding={1.5} sx={{ color: 'neutralLight.main', backgroundColor: 'primary.main' }}>
+          <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
+        </Box>
+      )}
+      <CalloutDetailsBar>
+        {hasCalloutDetails && (
+          <CalloutMisc>
+            <CalloutDetails>
+              <Box component="img" src={callout.authorAvatarUri} sx={{ background: 'grey', height: 20, width: 20 }} />
+              <Caption>
+                {`${callout.authorName} • ${t('callout.contributions', {
+                  count: contributionsCount,
+                })}`}
+              </Caption>
+            </CalloutDetails>
+            <CalloutDate date={callout.publishedAt!} />
+          </CalloutMisc>
+        )}
+        {!hasCalloutDetails && (
+          <BlockTitle paddingX={gutters()} noWrap>
+            {callout.displayName}
+          </BlockTitle>
+        )}
+        <CalloutActionsBar>
+          {actions}
+          {callout.editable && (
+            <IconButton
+              id="callout-settings-button"
+              aria-haspopup="true"
+              aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
+              aria-expanded={settingsOpened ? 'true' : undefined}
+              onClick={handleSettingsOpened}
+            >
+              <SettingsOutlinedIcon />
+            </IconButton>
+          )}
+          <ShareButton url={callout.url} entityTypeName="callout" />
+        </CalloutActionsBar>
+      </CalloutDetailsBar>
+      <Gutters minHeight={0}>
+        {hasCalloutDetails && <BlockTitle>{callout.displayName}</BlockTitle>}
+        <WrapperMarkdown>{callout.description ?? ''}</WrapperMarkdown>
+        {children}
+      </Gutters>
+      {calloutNotOpenStateName && (
+        <CalloutBlockMarginal variant="footer">{calloutNotOpenStateName}</CalloutBlockMarginal>
+      )}
+      <Menu
+        id="callout-settings-menu"
+        aria-labelledby="callout-settings-button"
+        anchorEl={settingsAnchorEl}
+        open={settingsOpened}
+        onClose={handleSettingsClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem onClick={handleEditDialogOpen}>{t('buttons.edit').toLocaleUpperCase()}</MenuItem>
+        <MenuItem onClick={handleVisDialogOpen}>
+          {t(`buttons.${callout.draft ? '' : 'un'}publish` as const).toLocaleUpperCase()}
+        </MenuItem>
+      </Menu>
+      <CalloutVisibilityChangeDialog
+        open={visDialogOpen}
+        onClose={handleVisDialogClose}
+        title={visDialogTitle}
+        draft={callout.draft}
+        onVisibilityChanged={handleVisibilityChange}
+      >
+        <CalloutSummary callout={callout} />
+      </CalloutVisibilityChangeDialog>
+      <CalloutEditDialog
+        open={editDialogOpened}
+        onClose={handleEditDialogClosed}
+        callout={callout}
+        title={`${t('buttons.edit')} ${t('common.callout')}`}
+        onCalloutEdit={handleCalloutEdit}
+        onDelete={onCalloutDelete}
+        calloutNames={calloutNames}
+      />
+    </>
+  );
+};
 
 export default CalloutLayout;
