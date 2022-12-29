@@ -62,7 +62,7 @@ const useScrollToElement = (
   const scrollable =
     <El extends HTMLElement>(alias: string): Ref<El> =>
     (element: El | null) => {
-      if (!elements[alias] && element && alias === elementAliasToScrollTo) {
+      if (enabled && !elements[alias] && element && alias === elementAliasToScrollTo) {
         // The element has just been added to the DOM and is marked as currently-scrolled-to
         scrollToElement(element);
       }
