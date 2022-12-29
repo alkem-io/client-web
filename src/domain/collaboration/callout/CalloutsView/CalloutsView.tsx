@@ -19,7 +19,7 @@ import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCo
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 import calloutIcons from '../utils/calloutIcons';
 import { Loading } from '../../../../common/components/core';
-import PageContentSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
 import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 
@@ -92,14 +92,14 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
       <PageContentColumn columns={8}>
         {loading && <Loading />}
         {!loading && callouts?.length === 0 && (
-          <PageContentSeamless textAlign="center">
+          <PageContentBlockSeamless textAlign="center">
             <Caption>
               {t('pages.generic.sections.subentities.empty', {
                 entities: t('common.callouts'),
                 parentEntity: t(`common.${entityTypeName}` as const),
               })}
             </Caption>
-          </PageContentSeamless>
+          </PageContentBlockSeamless>
         )}
         {!loading &&
           callouts?.map(callout => {

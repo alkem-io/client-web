@@ -21,7 +21,7 @@ const PageContentBlockSeamless = forwardRef<HTMLDivElement, PageContentBlockSeam
     const columnsTaken = halfWidth ? gridColumns / 2 : columns;
 
     const mergedSx: Partial<SxProps<Theme>> = {
-      padding: disablePadding ? undefined : theme => `${gutters()(theme)}`,
+      padding: disablePadding ? undefined : gutters(),
       display: disableGap ? undefined : 'flex',
       flexDirection: disableGap ? undefined : 'column',
       gap: disableGap ? undefined : gutters(),

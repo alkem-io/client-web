@@ -18,7 +18,7 @@ import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import JourneySubentityCreate from './JourneySubentityCreate';
 import { Loading } from '../../../../../common/components/core';
-import PageContentSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
+import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -90,14 +90,14 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
         <PageContentColumn columns={8}>
           {state.loading && <Loading />}
           {!state.loading && childEntities.length === 0 && (
-            <PageContentSeamless textAlign="center">
-              <Caption>
+            <PageContentBlockSeamless>
+              <Caption textAlign="center">
                 {t('pages.generic.sections.subentities.empty', {
                   entities: t(getJourneyChildrenTranslationKey(journeyTypeName)),
                   parentEntity: t(`common.${journeyTypeName}` as const),
                 })}
               </Caption>
-            </PageContentSeamless>
+            </PageContentBlockSeamless>
           )}
           {!state.loading && childEntities.length > 0 && (
             <PageContentBlock>
