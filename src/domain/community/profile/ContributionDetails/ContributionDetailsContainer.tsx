@@ -9,7 +9,7 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../contributor/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
@@ -35,7 +35,7 @@ export interface EntityDetailsContainerProps
   entities: ContributionItem;
 }
 
-interface ContributionDetails {
+export interface ContributionDetails {
   displayName: string;
   journeyTypeName: JourneyTypeName;
   bannerUri?: string;
@@ -79,7 +79,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: hubData.hub.displayName,
         journeyTypeName: 'hub',
-        bannerUri: getVisualBanner(hubData.hub.context?.visuals),
+        bannerUri: getVisualBannerNarrow(hubData.hub.context?.visuals),
         tags: hubData.hub.tagset?.tags ?? [],
         journeyUri: buildHubUrl(hubData.hub.nameID),
         communityId: hubData.hub.community?.id,
@@ -91,7 +91,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: challengeData.hub.challenge.displayName,
         journeyTypeName: 'challenge',
-        bannerUri: getVisualBanner(challengeData.hub.challenge.context?.visuals),
+        bannerUri: getVisualBannerNarrow(challengeData.hub.challenge.context?.visuals),
         tags: challengeData.hub.challenge.tagset?.tags ?? [],
         journeyUri: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
         communityId: challengeData.hub.challenge.community?.id,
@@ -103,7 +103,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: opportunityData.hub.opportunity.displayName,
         journeyTypeName: 'opportunity',
-        bannerUri: getVisualBanner(opportunityData.hub.opportunity.context?.visuals),
+        bannerUri: getVisualBannerNarrow(opportunityData.hub.opportunity.context?.visuals),
         tags: opportunityData.hub.opportunity.tagset?.tags ?? [],
         journeyUri: buildOpportunityUrl(
           opportunityData.hub.nameID,

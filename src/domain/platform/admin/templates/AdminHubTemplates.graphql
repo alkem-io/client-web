@@ -1,4 +1,4 @@
-query HubTemplates($hubId: UUID_NAMEID!) {
+query AdminHubTemplates($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     templates {

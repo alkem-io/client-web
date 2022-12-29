@@ -10,6 +10,7 @@ import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
+import { useHubTemplatesQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -50,7 +51,17 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   calloutNames,
 }) => {
   const { t } = useTranslation();
-  const { templates } = useHub();
+  const { hubId } = useHub();
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
+    variables: { hubId },
+    skip: !hubId,
+  });
+  const templates = hubTemplatesData?.hub.templates ?? {
+    id: '',
+    aspectTemplates: [],
+    canvasTemplates: [],
+    lifecycleTemplates: [],
+  };
 
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);

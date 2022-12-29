@@ -4361,6 +4361,7 @@ export type ChallengeExplorerSearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -4405,6 +4406,7 @@ export type ChallengeExplorerDataQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -6863,6 +6865,127 @@ export type HubInfoFragment = {
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+};
+
+export type HubTemplatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubTemplatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            value: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          }>;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            id: string;
+            definition: string;
+            type: LifecycleType;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type HubTemplatesFragment = {
+  __typename?: 'Hub';
+  templates?:
+    | {
+        __typename?: 'TemplatesSet';
+        id: string;
+        aspectTemplates: Array<{
+          __typename?: 'AspectTemplate';
+          id: string;
+          defaultDescription: string;
+          type: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title: string;
+            description: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }>;
+        canvasTemplates: Array<{
+          __typename?: 'CanvasTemplate';
+          id: string;
+          value: string;
+          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+        }>;
+        lifecycleTemplates: Array<{
+          __typename?: 'LifecycleTemplate';
+          id: string;
+          definition: string;
+          type: LifecycleType;
+          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+        }>;
+      }
+    | undefined;
+};
+
+export type AspectTemplateFragment = {
+  __typename?: 'AspectTemplate';
+  id: string;
+  defaultDescription: string;
+  type: string;
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title: string;
+    description: string;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
+export type AspectTemplateInfoFragment = {
+  __typename?: 'TemplateInfo';
+  id: string;
+  title: string;
+  description: string;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type CanvasTemplateFragment = {
+  __typename?: 'CanvasTemplate';
+  id: string;
+  value: string;
+  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+};
+
+export type LifecycleTemplateFragment = {
+  __typename?: 'LifecycleTemplate';
+  id: string;
+  definition: string;
+  type: LifecycleType;
+  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
 };
 
 export type HubPageQueryVariables = Exact<{
@@ -17558,75 +17681,11 @@ export type AdminGlobalOrganizationsListQuery = {
   };
 };
 
-export type UpdateAspectTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  info?: InputMaybe<UpdateTemplateInfoInput>;
-  type?: InputMaybe<Scalars['String']>;
-}>;
-
-export type UpdateAspectTemplateMutation = {
-  __typename?: 'Mutation';
-  updateAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
-};
-
-export type CreateAspectTemplateMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID'];
-  defaultDescription: Scalars['Markdown'];
-  info: CreateTemplateInfoInput;
-  type: Scalars['String'];
-}>;
-
-export type CreateAspectTemplateMutation = {
-  __typename?: 'Mutation';
-  createAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
-};
-
-export type DeleteAspectTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-}>;
-
-export type DeleteAspectTemplateMutation = {
-  __typename?: 'Mutation';
-  deleteAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
-};
-
-export type UpdateCanvasTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-  value?: InputMaybe<Scalars['JSON']>;
-  info?: InputMaybe<UpdateTemplateInfoInput>;
-}>;
-
-export type UpdateCanvasTemplateMutation = {
-  __typename?: 'Mutation';
-  updateCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
-};
-
-export type CreateCanvasTemplateMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID'];
-  value: Scalars['JSON'];
-  info: CreateTemplateInfoInput;
-}>;
-
-export type CreateCanvasTemplateMutation = {
-  __typename?: 'Mutation';
-  createCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
-};
-
-export type DeleteCanvasTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-}>;
-
-export type DeleteCanvasTemplateMutation = {
-  __typename?: 'Mutation';
-  deleteCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
-};
-
-export type HubTemplatesQueryVariables = Exact<{
+export type AdminHubTemplatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubTemplatesQuery = {
+export type AdminHubTemplatesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -17846,6 +17905,70 @@ export type HubTemplatesCanvasTemplateWithValueQuery = {
         }
       | undefined;
   };
+};
+
+export type UpdateAspectTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  type?: InputMaybe<Scalars['String']>;
+}>;
+
+export type UpdateAspectTemplateMutation = {
+  __typename?: 'Mutation';
+  updateAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type CreateAspectTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  defaultDescription: Scalars['Markdown'];
+  info: CreateTemplateInfoInput;
+  type: Scalars['String'];
+}>;
+
+export type CreateAspectTemplateMutation = {
+  __typename?: 'Mutation';
+  createAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type DeleteAspectTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteAspectTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type UpdateCanvasTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+}>;
+
+export type UpdateCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  updateCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
+};
+
+export type CreateCanvasTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  value: Scalars['JSON'];
+  info: CreateTemplateInfoInput;
+}>;
+
+export type CreateCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  createCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
+};
+
+export type DeleteCanvasTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
 };
 
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
@@ -18143,6 +18266,7 @@ export type SearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -18172,6 +18296,7 @@ export type SearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -18194,6 +18319,7 @@ export type SearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
+                vision?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -18303,6 +18429,7 @@ export type SearchResultHubFragment = {
           __typename?: 'Context';
           id: string;
           tagline?: string | undefined;
+          vision?: string | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
@@ -18323,6 +18450,7 @@ export type SearchResultChallengeFragment = {
           __typename?: 'Context';
           id: string;
           tagline?: string | undefined;
+          vision?: string | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
@@ -18349,6 +18477,7 @@ export type SearchResultOpportunityFragment = {
           __typename?: 'Context';
           id: string;
           tagline?: string | undefined;
+          vision?: string | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;

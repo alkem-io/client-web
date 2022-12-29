@@ -10,7 +10,7 @@ import HubPageLayout from '../layout/HubPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 
 export interface HubDashboardPageProps {
@@ -52,7 +52,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 <ChallengeCard
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
-                  bannerUri={getVisualBanner(challenge.context?.visuals)}
+                  bannerUri={getVisualBannerNarrow(challenge.context?.visuals)}
                   displayName={challenge.displayName}
                   tags={challenge.tagset?.tags!}
                   tagline={challenge.context?.tagline!}

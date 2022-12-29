@@ -44,7 +44,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ config, onChange }) => {
   );
 
   return (
-    <FormControl variant="outlined" sx={{ minWidth: 180 }}>
+    <FormControl variant="outlined" size="small" sx={{ minWidth: 180 }}>
       <InputLabel id="filter-select-label">{t('common.filter')}</InputLabel>
       <Select
         labelId="filter-select-label"

@@ -1,10 +1,11 @@
 import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, useMemo, useState } from 'react';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { EntityFilter } from './EntityFilter';
 import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
 import { SearchResultMetaType } from './SearchPage';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 interface ResultSectionProps {
   title: string;
@@ -31,14 +32,15 @@ const SearchResultSection: FC<ResultSectionProps> = ({
   const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
 
   return (
-    <DashboardGenericSection
-      headerText={titleWithCount}
-      primaryAction={<EntityFilter config={filterConfig} onChange={handleFilterChange} />}
-    >
-      <CardsLayout items={loading ? [undefined, undefined] : results} deps={[filter]}>
+    <PageContentBlock>
+      <PageContentBlockHeader
+        title={titleWithCount}
+        actions={<EntityFilter config={filterConfig} onChange={handleFilterChange} />}
+      />
+      <CardsLayout items={loading ? [undefined, undefined] : results} deps={[filter]} cards={false} disablePadding>
         {result => <SearchResultCardChooser result={result} />}
       </CardsLayout>
-    </DashboardGenericSection>
+    </PageContentBlock>
   );
 };
 

@@ -4,9 +4,9 @@ import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import {
-  refetchHubTemplatesQuery,
+  refetchAdminHubTemplatesQuery,
   useHubCanvasesLazyQuery,
-  useHubTemplatesQuery,
+  useAdminHubTemplatesQuery,
   useInnovationPacksLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
@@ -42,7 +42,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
-  const { data: hubTemplatesData } = useHubTemplatesQuery({
+  const { data: hubTemplatesData } = useAdminHubTemplatesQuery({
     variables: { hubId },
     skip: !hubId, // hub id can be an empty string due to some `|| ''` happening above in the tree
   });
@@ -111,7 +111,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         templatesSetId={templatesSetID}
         templates={aspectTemplates}
         onCloseTemplateDialog={backFromTemplateDialog}
-        refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
+        refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
         edit={edit}
         loadInnovationPacks={loadInnovationPacks}
@@ -124,7 +124,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         templatesSetId={templatesSetID}
         templates={canvasTemplates}
         onCloseTemplateDialog={backFromTemplateDialog}
-        refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
+        refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${canvasTemplatesRoutePath}/${id}`)}
         edit={edit}
         loadCanvases={loadCanvases}
@@ -140,7 +140,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         templatesSetId={templatesSetID}
         templates={lifecycleTemplates}
         onCloseTemplateDialog={backFromTemplateDialog}
-        refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
+        refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
         edit={edit}
         loadInnovationPacks={loadInnovationPacks}
