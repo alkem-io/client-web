@@ -18,7 +18,7 @@ import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import JourneySubentityCreate from './JourneySubentityCreate';
 import { Loading } from '../../../../../common/components/core';
-import PageContentSeamless from '../../../../../core/ui/content/PageContentSeamless';
+import PageContentSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
 export interface JourneySubentitiesState {
   loading: boolean;

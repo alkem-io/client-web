@@ -19,7 +19,7 @@ import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCo
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 import calloutIcons from '../utils/calloutIcons';
 import { Loading } from '../../../../common/components/core';
-import PageContentSeamless from '../../../../core/ui/content/PageContentSeamless';
+import PageContentSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
 import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
 
