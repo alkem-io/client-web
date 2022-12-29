@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ForumOutlined } from '@mui/icons-material';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -16,20 +15,13 @@ import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
 import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import useCallouts, { TypedCallout } from '../useCallouts';
-import { AspectIcon } from '../../aspect/icon/AspectIcon';
 import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
-import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
+import calloutIcons from '../utils/calloutIcons';
 
 interface CalloutsPageProps {
   scrollToCallout?: boolean;
 }
-
-const calloutIcons = {
-  [CalloutType.Card]: <AspectIcon />,
-  [CalloutType.Canvas]: <CanvasIcon />,
-  [CalloutType.Comments]: <ForumOutlined />,
-} as const;
 
 const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
@@ -70,12 +62,15 @@ const CalloutsView = ({ scrollToCallout = false }: CalloutsPageProps) => {
             title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
           />
           <LinksList
-            items={callouts?.map(callout => ({
-              id: callout.id,
-              title: buildCalloutTitle(callout),
-              icon: calloutIcons[callout.type],
-              uri: callout.url,
-            }))}
+            items={callouts?.map(callout => {
+              const CalloutIcon = calloutIcons[callout.type];
+              return {
+                id: callout.id,
+                title: buildCalloutTitle(callout),
+                icon: <CalloutIcon />,
+                uri: callout.url,
+              };
+            })}
             emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
               entities: t('common.callouts'),
               parentEntity: opportunityNameId
