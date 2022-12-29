@@ -56,7 +56,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     variables: { hubId },
     skip: !hubId,
   });
-  const templates = hubTemplatesData?.hub.templates || {
+  const templates = hubTemplatesData?.hub.templates ?? {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],

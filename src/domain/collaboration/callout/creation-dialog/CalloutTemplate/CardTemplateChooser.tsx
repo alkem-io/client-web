@@ -20,7 +20,7 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, edit
     variables: { hubId },
     skip: !hubId,
   });
-  const templates = hubTemplatesData?.hub.templates || {
+  const templates = hubTemplatesData?.hub.templates ?? {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],
