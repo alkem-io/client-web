@@ -6729,39 +6729,6 @@ export type HubProviderQuery = {
             | undefined;
         }
       | undefined;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
-            id: string;
-            defaultDescription: string;
-            type: string;
-            info: {
-              __typename?: 'TemplateInfo';
-              id: string;
-              title: string;
-              description: string;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
-            id: string;
-            value: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
-          }>;
-          lifecycleTemplates: Array<{
-            __typename?: 'LifecycleTemplate';
-            id: string;
-            definition: string;
-            type: LifecycleType;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
-          }>;
-        }
-      | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
   };
@@ -6828,39 +6795,6 @@ export type HubInfoFragment = {
               minWidth: number;
             }>
           | undefined;
-      }
-    | undefined;
-  templates?:
-    | {
-        __typename?: 'TemplatesSet';
-        id: string;
-        aspectTemplates: Array<{
-          __typename?: 'AspectTemplate';
-          id: string;
-          defaultDescription: string;
-          type: string;
-          info: {
-            __typename?: 'TemplateInfo';
-            id: string;
-            title: string;
-            description: string;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }>;
-        canvasTemplates: Array<{
-          __typename?: 'CanvasTemplate';
-          id: string;
-          value: string;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
-        }>;
-        lifecycleTemplates: Array<{
-          __typename?: 'LifecycleTemplate';
-          id: string;
-          definition: string;
-          type: LifecycleType;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
-        }>;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
