@@ -17,7 +17,7 @@ interface ChallengeCardProps
   innovationFlowState?: string;
   private?: boolean;
   privateParent?: boolean;
-  hiddenJoin?: boolean;
+  hideJoin?: boolean;
 }
 
 const ChallengeCard = ({
@@ -25,7 +25,7 @@ const ChallengeCard = ({
   challengeNameId,
   hubDisplayName,
   hubUri,
-  hiddenJoin = false,
+  hideJoin: hiddenJoin = false,
   ...props
 }: ChallengeCardProps) => {
   const { user } = useUserContext();
