@@ -132,7 +132,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
       </CanvasValueContainer>
       <CanvasCreateDialog
         entities={{
-          calloutId: calloutId,
+          calloutId,
           templates: entities.templates,
         }}
         actions={{
