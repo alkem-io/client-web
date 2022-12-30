@@ -39,7 +39,9 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   ...canvasesState
 }) => {
   const { isFeatureEnabled } = useConfig();
-
+  if (!calloutId) {
+    return null;
+  }
   const hasReadPrivileges =
     authorization?.anonymousReadAccess || authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
 

@@ -21,7 +21,7 @@ export interface ActiveCanvasIdHolder {
 }
 
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
-  calloutId: string | undefined;
+  calloutId: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasFragmentWithCallout[];
   templates: CreateCanvasCanvasTemplateFragment[];
@@ -55,7 +55,7 @@ export interface CanvasNavigationMethods {
 interface CanvasBeingDeleted {
   displayName: string;
   canvasId: string;
-  calloutId: string | undefined;
+  calloutId: string;
 }
 
 export interface CanvasManagementViewProps
@@ -130,28 +130,26 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
           />
         )}
       </CanvasValueContainer>
-      {calloutId && (
-        <CanvasCreateDialog
-          entities={{
-            calloutId: calloutId,
-            templates: entities.templates,
-          }}
-          actions={{
-            onCancel: () => setShowCreateCanvasDialog(false),
-            onConfirm: input => {
-              actions.onCreate(input);
-              setShowCreateCanvasDialog(false);
-            },
-          }}
-          options={{
-            show: showCreateCanvasDialog,
-          }}
-          state={{
-            canvasLoading: state.loadingCanvasValue,
-            templatesLoading: state.loadingCanvases,
-          }}
-        />
-      )}
+      <CanvasCreateDialog
+        entities={{
+          calloutId: calloutId,
+          templates: entities.templates,
+        }}
+        actions={{
+          onCancel: () => setShowCreateCanvasDialog(false),
+          onConfirm: input => {
+            actions.onCreate(input);
+            setShowCreateCanvasDialog(false);
+          },
+        }}
+        options={{
+          show: showCreateCanvasDialog,
+        }}
+        state={{
+          canvasLoading: state.loadingCanvasValue,
+          templatesLoading: state.loadingCanvases,
+        }}
+      />
       <ConfirmationDialog
         actions={{
           onCancel: () => setCanvasBeingDeleted(undefined),
