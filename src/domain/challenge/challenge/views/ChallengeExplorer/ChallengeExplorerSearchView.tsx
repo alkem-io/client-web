@@ -63,7 +63,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                       journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
                       hubDisplayName={challenge.hubDisplayName}
                       hubUri={buildHubUrl(challenge.hubNameId)}
-                      disabledJoin
+                      hiddenJoin
                     />
                   )}
                 </ScrollableCardsLayout>

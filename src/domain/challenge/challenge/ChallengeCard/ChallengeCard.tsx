@@ -17,7 +17,7 @@ interface ChallengeCardProps
   innovationFlowState?: string;
   private?: boolean;
   privateParent?: boolean;
-  disabledJoin?: boolean;
+  hiddenJoin?: boolean;
 }
 
 const ChallengeCard = ({
@@ -25,7 +25,7 @@ const ChallengeCard = ({
   challengeNameId,
   hubDisplayName,
   hubUri,
-  disabledJoin = false,
+  hiddenJoin = false,
   ...props
 }: ChallengeCardProps) => {
   const { user } = useUserContext();
@@ -47,7 +47,7 @@ const ChallengeCard = ({
       expansionActions={
         <CardActions>
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="challenge" />
-          {!disabledJoin && challengeId && challengeNameId && (
+          {!hiddenJoin && challengeId && challengeNameId && (
             <JourneyCardJoinButton
               challengeId={challengeId}
               challengeNameId={challengeNameId}
