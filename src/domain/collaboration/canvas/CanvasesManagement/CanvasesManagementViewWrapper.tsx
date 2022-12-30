@@ -14,7 +14,6 @@ import CanvasManagementView, {
   CanvasNavigationMethods,
 } from './CanvasManagementView';
 import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
-import Loading from '../../../../common/components/core/Loading/Loading';
 import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
@@ -40,13 +39,12 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   ...canvasesState
 }) => {
   const { isFeatureEnabled } = useConfig();
-  if (!calloutId || loadingCanvases) {
-    return <Loading />;
-  }
+
   const hasReadPrivileges =
     authorization?.anonymousReadAccess || authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
 
-  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPrivileges) return <Error404 />;
+  if (!loadingCanvases && (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPrivileges))
+    return <Error404 />;
 
   const hasCreatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
   const hasDeletePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
