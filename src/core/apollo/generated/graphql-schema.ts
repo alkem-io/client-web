@@ -752,7 +752,7 @@ export type Challenge = {
   hubID: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The lifeycle for the Challenge. */
+  /** The lifecycle for the Challenge. */
   lifecycle?: Maybe<Lifecycle>;
   /** Metrics about activity within this Challenge. */
   metrics?: Maybe<Array<Nvp>>;
@@ -4432,6 +4432,9 @@ export type ChallengePageQuery = {
       nameID: string;
       displayName: string;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       lifecycle?:
         | {
             __typename?: 'Lifecycle';
@@ -4734,6 +4737,9 @@ export type ChallengeProfileFragment = {
   nameID: string;
   displayName: string;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   lifecycle?:
     | {
         __typename?: 'Lifecycle';

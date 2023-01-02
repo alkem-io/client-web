@@ -326,6 +326,10 @@ export const ChallengeProfileFragmentDoc = gql`
       name
       value
     }
+    authorization {
+      id
+      myPrivileges
+    }
     lifecycle {
       id
       machineDef

@@ -46,6 +46,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
+    opportunitiesReadAccess: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
@@ -64,6 +65,8 @@ export interface ChallengeContainerState {
 
 export interface ChallengePageContainerProps
   extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
+
+const NO_PRIVILEGES = [];
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { user, isAuthenticated } = useUserContext();
@@ -87,11 +90,14 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
 
+  const challengePrivileges = _challenge?.hub?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
     communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
+    opportunitiesReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
   };
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(

@@ -57,7 +57,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
         {(entities, state) => (
           <JourneySubentitiesView
             hubNameId={hubNameId}
-            childEntities={entities.challenge?.opportunities}
+            childEntities={entities.challenge?.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
             getChildEntityUrl={entity => buildOpportunityUrl(hubNameId, challengeNameId, entity.nameID)}
