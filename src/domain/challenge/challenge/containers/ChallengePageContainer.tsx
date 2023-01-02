@@ -27,6 +27,7 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
+import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
@@ -72,13 +73,18 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { loading: loadingHubContext, ...hub } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
 
-  const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
+  const {
+    data: _challenge,
+    loading: loadingProfile,
+    subscribeToMore,
+  } = useChallengePageQuery({
     variables: {
       hubId: hubNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
   });
+  useOpportunityCreatedSubscription(_challenge, data => data?.hub?.challenge, subscribeToMore);
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
