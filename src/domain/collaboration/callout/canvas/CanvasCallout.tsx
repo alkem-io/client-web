@@ -111,7 +111,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
           {(entities, actionsState, actions) => (
             <CanvasCreateDialog
               entities={{
-                calloutID: callout.id,
+                calloutId: callout.id,
                 templates: templates.canvasTemplates,
               }}
               actions={{
