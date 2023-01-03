@@ -96,6 +96,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
 
   const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
   const hasRecommendations = validRecommendations.length > 0;
+  const hasTopCallouts = (topCallouts ?? []).length > 0;
 
   return (
     <PageContent>
@@ -138,19 +139,21 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <References references={validRecommendations} icon={RecommendationIcon} />
           </PageContentBlock>
         )}
-        <PageContentBlock halfWidth={hasRecommendations}>
-          <PageContentBlockHeader title="Top Callouts" />
-          {topCallouts?.map(callout => (
-            <TopCalloutDetails
-              key={callout.id}
-              title={callout.displayName}
-              description={callout.description}
-              activity={callout.activity}
-              type={callout.type}
-              calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
-            />
-          ))}
-        </PageContentBlock>
+        {hasTopCallouts && (
+          <PageContentBlock halfWidth={hasRecommendations}>
+            <PageContentBlockHeader title={t('components.top-callouts.title')} />
+            {topCallouts?.map(callout => (
+              <TopCalloutDetails
+                key={callout.id}
+                title={callout.displayName}
+                description={callout.description}
+                activity={callout.activity}
+                type={callout.type}
+                calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
+              />
+            ))}
+          </PageContentBlock>
+        )}
         {showActivity && (
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.activity-log-section.title')} />
