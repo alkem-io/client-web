@@ -18,6 +18,7 @@ import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint
 import { Dialog, IconButton, useMediaQuery } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { ExpandContentIcon } from '../../../../core/ui/content/ExpandContent';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -159,6 +160,11 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
             onVisibilityChange={onVisibilityChange}
             onCalloutEdit={onCalloutEdit}
             onCalloutDelete={onCalloutDelete}
+            actions={
+              <IconButton onClick={() => setIsFullViewDialogOpen(true)}>
+                <ExpandContentIcon />
+              </IconButton>
+            }
           >
             <CommentsComponent
               messages={messages}
