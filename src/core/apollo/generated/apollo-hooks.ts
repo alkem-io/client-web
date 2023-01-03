@@ -326,6 +326,10 @@ export const ChallengeProfileFragmentDoc = gql`
       name
       value
     }
+    authorization {
+      id
+      myPrivileges
+    }
     lifecycle {
       id
       machineDef
@@ -577,6 +581,10 @@ export const ChallengeCardFragmentDoc = gql`
     id
     displayName
     nameID
+    authorization {
+      id
+      anonymousReadAccess
+    }
     metrics {
       id
       name
@@ -6945,6 +6953,71 @@ export type OpportunityAspectsOldQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityAspectsOldQuery(variables: SchemaTypes.OpportunityAspectsOldQueryVariables) {
   return { query: OpportunityAspectsOldDocument, variables: variables };
+}
+
+export const OpportunityCardsDocument = gql`
+  query opportunityCards($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        opportunities {
+          ...OpportunityCard
+        }
+      }
+    }
+  }
+  ${OpportunityCardFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCardsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCardsQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useOpportunityCardsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityCardsQuery, SchemaTypes.OpportunityCardsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityCardsQuery, SchemaTypes.OpportunityCardsQueryVariables>(
+    OpportunityCardsDocument,
+    options
+  );
+}
+
+export function useOpportunityCardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityCardsQuery,
+    SchemaTypes.OpportunityCardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityCardsQuery, SchemaTypes.OpportunityCardsQueryVariables>(
+    OpportunityCardsDocument,
+    options
+  );
+}
+
+export type OpportunityCardsQueryHookResult = ReturnType<typeof useOpportunityCardsQuery>;
+export type OpportunityCardsLazyQueryHookResult = ReturnType<typeof useOpportunityCardsLazyQuery>;
+export type OpportunityCardsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityCardsQuery,
+  SchemaTypes.OpportunityCardsQueryVariables
+>;
+export function refetchOpportunityCardsQuery(variables: SchemaTypes.OpportunityCardsQueryVariables) {
+  return { query: OpportunityCardsDocument, variables: variables };
 }
 
 export const OpportunityEcosystemDetailsDocument = gql`
