@@ -581,6 +581,10 @@ export const ChallengeCardFragmentDoc = gql`
     id
     displayName
     nameID
+    authorization {
+      id
+      anonymousReadAccess
+    }
     metrics {
       id
       name

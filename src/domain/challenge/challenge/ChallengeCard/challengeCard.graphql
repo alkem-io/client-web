@@ -2,6 +2,10 @@ fragment ChallengeCard on Challenge {
   id
   displayName
   nameID
+  authorization {
+    id
+    anonymousReadAccess
+  }
   metrics {
     id
     name

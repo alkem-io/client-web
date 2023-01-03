@@ -4307,6 +4307,7 @@ export type ChallengeCardFragment = {
   id: string;
   displayName: string;
   nameID: string;
+  authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context?:
     | {
@@ -5204,6 +5205,7 @@ export type CreateChallengeMutation = {
     id: string;
     displayName: string;
     nameID: string;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     context?:
       | {
@@ -5308,6 +5310,7 @@ export type ChallengeCardQuery = {
       id: string;
       displayName: string;
       nameID: string;
+      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       context?:
         | {
@@ -5339,6 +5342,7 @@ export type ChallengeCardsQuery = {
           id: string;
           displayName: string;
           nameID: string;
+          authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context?:
             | {
@@ -7161,6 +7165,7 @@ export type HubPageQuery = {
           id: string;
           displayName: string;
           nameID: string;
+          authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context?:
             | {
@@ -7440,6 +7445,7 @@ export type HubPageFragment = {
         id: string;
         displayName: string;
         nameID: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         context?:
           | {
@@ -7476,6 +7482,7 @@ export type ChallengesOnHubFragment = {
         id: string;
         displayName: string;
         nameID: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         context?:
           | {
@@ -8017,6 +8024,7 @@ export type ChallengeCreatedSubscription = {
       id: string;
       displayName: string;
       nameID: string;
+      authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       context?:
         | {
