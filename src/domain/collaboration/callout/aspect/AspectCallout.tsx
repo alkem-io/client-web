@@ -18,6 +18,7 @@ import { BaseCalloutImpl } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -163,25 +164,26 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     return (
       <>
-        <CalloutLayout
-          ref={ref}
-          callout={callout}
-          calloutNames={calloutNames}
-          onVisibilityChange={onVisibilityChange}
-          onCalloutEdit={onCalloutEdit}
-          onCalloutDelete={onCalloutDelete}
-          contributionsCount={contributionsCount}
-        >
-          <ScrollableCardsLayout
-            items={loading ? [undefined, undefined] : callout.aspects}
-            deps={[hubNameId, challengeNameId, opportunityNameId]}
-            createButton={!isMobile && createButton}
-            maxHeight={gutters(22)}
+        <PageContentBlock ref={ref} disablePadding disableGap>
+          <CalloutLayout
+            callout={callout}
+            calloutNames={calloutNames}
+            onVisibilityChange={onVisibilityChange}
+            onCalloutEdit={onCalloutEdit}
+            onCalloutDelete={onCalloutDelete}
+            contributionsCount={contributionsCount}
           >
-            {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
-          </ScrollableCardsLayout>
-          {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
-        </CalloutLayout>
+            <ScrollableCardsLayout
+              items={loading ? [undefined, undefined] : callout.aspects}
+              deps={[hubNameId, challengeNameId, opportunityNameId]}
+              createButton={!isMobile && createButton}
+              maxHeight={gutters(22)}
+            >
+              {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
+            </ScrollableCardsLayout>
+            {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
+          </CalloutLayout>
+        </PageContentBlock>
         <AspectCreationDialog
           open={aspectDialogOpen}
           onClose={closeCreateDialog}
