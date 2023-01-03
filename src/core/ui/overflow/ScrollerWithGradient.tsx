@@ -50,6 +50,16 @@ const buildStylesForOverlay = (position: Position, orientation: Orientation) => 
   };
 };
 
+const VERTICAL_SCROLL_CONTAINER_SX = {
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const VERTICAL_SCROLL_CONTENT_SX = {
+  flexGrow: 1,
+  minHeight: 0,
+} as const;
+
 const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   orientation = 'vertical',
   maxHeight,
@@ -59,11 +69,14 @@ const ScrollerWithGradient = <ScrollerEl extends HTMLElement>({
   ...props
 }: PropsWithChildren<ScrollerWithGradientProps<ScrollerEl>> & BoxProps) => {
   return (
-    <Box position="relative" margin={gutters(-1)} {...props}>
+    <Box position="relative" margin={gutters(-1)} {...VERTICAL_SCROLL_CONTAINER_SX} {...props}>
       <Box
         ref={scrollerRef}
         maxHeight={maxHeight}
-        sx={{ [orientation === 'vertical' ? 'overflowY' : 'overflowX']: 'auto' }}
+        sx={{
+          [orientation === 'vertical' ? 'overflowY' : 'overflowX']: 'auto',
+          ...(orientation === 'vertical' ? VERTICAL_SCROLL_CONTENT_SX : {}),
+        }}
         onScroll={onScroll}
       >
         {children}

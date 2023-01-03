@@ -16,6 +16,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { useCanvasTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface CanvasCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
@@ -84,34 +85,35 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
 
     return (
       <>
-        <CalloutLayout
-          ref={ref}
-          callout={callout}
-          calloutNames={calloutNames}
-          contributionsCount={contributionsCount}
-          onVisibilityChange={onVisibilityChange}
-          onCalloutEdit={onCalloutEdit}
-          onCalloutDelete={onCalloutDelete}
-        >
-          {showCards && (
-            <ScrollableCardsLayout
-              items={loading ? [undefined, undefined] : callout.canvases}
-              deps={[hubNameId, challengeNameId, opportunityNameId]}
-              createButton={!isMobile && createButton}
-              maxHeight={gutters(22)}
-            >
-              {canvas =>
-                canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
-              }
-            </ScrollableCardsLayout>
-          )}
-          {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
-        </CalloutLayout>
+        <PageContentBlock ref={ref} disablePadding disableGap>
+          <CalloutLayout
+            callout={callout}
+            calloutNames={calloutNames}
+            contributionsCount={contributionsCount}
+            onVisibilityChange={onVisibilityChange}
+            onCalloutEdit={onCalloutEdit}
+            onCalloutDelete={onCalloutDelete}
+          >
+            {showCards && (
+              <ScrollableCardsLayout
+                items={loading ? [undefined, undefined] : callout.canvases}
+                deps={[hubNameId, challengeNameId, opportunityNameId]}
+                createButton={!isMobile && createButton}
+                maxHeight={gutters(22)}
+              >
+                {canvas =>
+                  canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
+                }
+              </ScrollableCardsLayout>
+            )}
+            {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
+          </CalloutLayout>
+        </PageContentBlock>
         <CanvasActionsContainer>
           {(entities, actionsState, actions) => (
             <CanvasCreateDialog
               entities={{
-                calloutID: callout.id,
+                calloutId: callout.id,
                 templates: canvasTemplates,
               }}
               actions={{

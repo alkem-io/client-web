@@ -529,6 +529,9 @@
     }
   },
   "components": {
+    "top-callouts": {
+      "title": "Top Callouts"
+    },
     "associated-organization": {
       "confirmation-dialog": {
         "title": "Leaving {{organization}}",

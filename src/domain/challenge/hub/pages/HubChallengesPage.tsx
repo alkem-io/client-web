@@ -74,6 +74,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 vision={challenge.context?.vision!}
                 innovationFlowState={challenge.lifecycle?.state}
                 journeyUri={buildChallengeUrl(hubNameId, challenge.nameID)}
+                locked={!challenge.authorization?.anonymousReadAccess}
               />
             )}
             childEntityCreateAccess={permissions.canCreateChallenges}

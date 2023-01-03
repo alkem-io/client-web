@@ -27,7 +27,6 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
-import useOpportunityCreatedSubscription from '../hooks/useOpportunityCreatedSubscription';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
@@ -46,6 +45,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
+    opportunitiesReadAccess: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
@@ -65,33 +65,33 @@ export interface ChallengeContainerState {
 export interface ChallengePageContainerProps
   extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
 
+const NO_PRIVILEGES = [];
+
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { user, isAuthenticated } = useUserContext();
   const { loading: loadingHubContext, ...hub } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
 
-  const {
-    data: _challenge,
-    loading: loadingProfile,
-    subscribeToMore,
-  } = useChallengePageQuery({
+  const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
       hubId: hubNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
   });
-  useOpportunityCreatedSubscription(_challenge, data => data?.hub?.challenge, subscribeToMore);
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
+
+  const challengePrivileges = _challenge?.hub?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
     communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
+    opportunitiesReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
   };
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(

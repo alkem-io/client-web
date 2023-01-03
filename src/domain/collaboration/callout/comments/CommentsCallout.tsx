@@ -15,8 +15,10 @@ import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCac
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { BaseCalloutImpl } from '../Types';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { Dialog, IconButton } from '@mui/material';
+import { Dialog, IconButton, useMediaQuery } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { ExpandContentIcon } from '../../../../core/ui/content/ExpandContent';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
@@ -29,6 +31,8 @@ interface CommentsCalloutProps extends BaseCalloutImpl {
   isSubscribedToComments: boolean;
   loading?: boolean;
 }
+
+const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
   (
@@ -144,31 +148,44 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const [isFullViewDialogOpen, setIsFullViewDialogOpen] = useState(false);
 
+    const canFitRegularDialog = useMediaQuery('@media only screen and (min-height: 600px)');
+
     return (
       <>
-        <CalloutLayout
-          ref={ref}
-          callout={callout}
-          calloutNames={calloutNames}
-          contributionsCount={contributionsCount}
-          onVisibilityChange={onVisibilityChange}
-          onCalloutEdit={onCalloutEdit}
-          onCalloutDelete={onCalloutDelete}
+        <PageContentBlock ref={ref} disablePadding disableGap>
+          <CalloutLayout
+            callout={callout}
+            calloutNames={calloutNames}
+            contributionsCount={contributionsCount}
+            onVisibilityChange={onVisibilityChange}
+            onCalloutEdit={onCalloutEdit}
+            onCalloutDelete={onCalloutDelete}
+            actions={
+              <IconButton onClick={() => setIsFullViewDialogOpen(true)}>
+                <ExpandContentIcon />
+              </IconButton>
+            }
+          >
+            <CommentsComponent
+              messages={messages}
+              commentsId={commentsId}
+              canReadMessages={canReadMessages}
+              canPostMessages={canPostMessages}
+              handlePostMessage={handlePostMessage}
+              canDeleteMessage={canDeleteMessage}
+              handleDeleteMessage={handleDeleteMessage}
+              loading={loading || postingComment || deletingMessage}
+              last={lastMessageOnly}
+              maxHeight={COMMENTS_CONTAINER_HEIGHT}
+              onClickMore={() => setIsFullViewDialogOpen(true)}
+            />
+          </CalloutLayout>
+        </PageContentBlock>
+        <Dialog
+          open={isFullViewDialogOpen}
+          PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
+          fullScreen={!canFitRegularDialog}
         >
-          <CommentsComponent
-            messages={messages}
-            commentsId={commentsId}
-            canReadMessages={canReadMessages}
-            canPostMessages={canPostMessages}
-            handlePostMessage={handlePostMessage}
-            canDeleteMessage={canDeleteMessage}
-            handleDeleteMessage={handleDeleteMessage}
-            loading={loading || postingComment || deletingMessage}
-            last={lastMessageOnly}
-            onClickMore={() => setIsFullViewDialogOpen(true)}
-          />
-        </CalloutLayout>
-        <Dialog open={isFullViewDialogOpen}>
           <CalloutLayout
             callout={callout}
             calloutNames={calloutNames}
