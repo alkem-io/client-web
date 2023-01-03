@@ -52,10 +52,10 @@ export interface CanvasNavigationMethods {
   buildLinkToCanvas: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
-export interface CanvasBeingDeleted {
+interface CanvasBeingDeleted {
   displayName: string;
-  canvasID: string;
-  calloutID: string;
+  canvasId: string;
+  calloutId: string;
 }
 
 export interface CanvasManagementViewProps
@@ -75,7 +75,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   backToCanvases,
   buildLinkToCanvas,
 }) => {
-  const { canvasNameId, calloutId: calloutID } = entities;
+  const { canvasNameId, calloutId } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
@@ -109,7 +109,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
         buildCanvasUrl={buildCanvasUrl}
         {...options}
       />
-      <CanvasValueContainer canvasId={actualActiveCanvas?.id} calloutId={calloutID}>
+      <CanvasValueContainer canvasId={actualActiveCanvas?.id} calloutId={calloutId}>
         {entities => (
           <CanvasDialog
             entities={{ canvas: entities.canvas }}
@@ -118,7 +118,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
               onUpdate: actions.onUpdate,
-              onDelete: c => setCanvasBeingDeleted({ canvasID: c.id, displayName: c.displayName, calloutID }),
+              onDelete: c => setCanvasBeingDeleted({ canvasId: c.id, displayName: c.displayName, calloutId }),
             }}
             options={{
               show: Boolean(canvasNameId),
@@ -132,7 +132,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
       </CanvasValueContainer>
       <CanvasCreateDialog
         entities={{
-          calloutID: calloutID,
+          calloutId,
           templates: entities.templates,
         }}
         actions={{
@@ -156,7 +156,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
           onConfirm: async () => {
             if (canvasBeingDeleted) {
               await actions.onDelete({
-                ID: canvasBeingDeleted.canvasID,
+                ID: canvasBeingDeleted.canvasId,
               });
               setCanvasBeingDeleted(undefined);
               backToCanvases();
