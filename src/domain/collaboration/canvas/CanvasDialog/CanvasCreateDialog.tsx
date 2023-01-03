@@ -14,9 +14,10 @@ import {
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  CanvasTemplateFragment,
   CreateCanvasCanvasTemplateFragment,
   CreateCanvasOnCalloutInput,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -29,6 +30,8 @@ import canvasSchema from '../validation/canvasSchema';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -90,7 +93,7 @@ interface ITemplateStepProps {
   };
   entities: {
     selectedTemplate: CreateCanvasCanvasTemplateFragment | undefined;
-    templates: CreateCanvasCanvasTemplateFragment[];
+    templates: CanvasTemplateFragment[];
   };
   state: {
     templatesLoading?: boolean;
@@ -200,7 +203,7 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
 
 interface CreateCanvasStepsProps {
   entities: {
-    templates: CreateCanvasCanvasTemplateFragment[];
+    templates: CanvasTemplateFragment[];
     template?: CreateCanvasCanvasTemplateFragment;
     displayName: string;
   };
@@ -331,7 +334,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
 interface CanvasCreateDialogProps {
   entities: {
     calloutID: string;
-    templates: CreateCanvasCanvasTemplateFragment[];
+    templates: CanvasTemplateFragment[];
   };
   actions: {
     onCancel: () => void;
@@ -346,6 +349,7 @@ interface CanvasCreateDialogProps {
 const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, options }) => {
   const { t } = useTranslation();
   const styles = useStyles();
+  const { hubNameId } = useHub();
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
 
@@ -361,7 +365,21 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
     });
   };
 
+  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const getTemplateValue = useCallback(
+    (templateId: string) => {
+      fetchCanvasValue({ variables: { hubId: hubNameId, canvasTemplateId: templateId } });
+    },
+    [hubNameId, fetchCanvasValue]
+  );
+
   const selectedTemplate = entities.templates.find(({ id }) => id === selectedTemplateId);
+  const selectedTemplateWithValue = selectedTemplate
+    ? { ...selectedTemplate, value: canvasValue?.hub.templates?.canvasTemplate?.value || '' }
+    : undefined;
 
   return (
     <Dialog
@@ -389,18 +407,21 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
             entities={{
               ...entities,
               displayName,
-              template: selectedTemplate,
+              template: selectedTemplateWithValue,
             }}
             actions={{
               ...actions,
               onSubmit: () => {
                 if (selectedTemplate) {
-                  setFieldValue('value', selectedTemplate.value);
+                  setFieldValue('value', selectedTemplateWithValue?.value);
                 }
                 handleSubmit();
               },
               onTemplateSelected: canvas => {
-                setSelectedTemplateId(canvas?.id);
+                if (canvas?.id) {
+                  setSelectedTemplateId(canvas.id);
+                  getTemplateValue(canvas.id);
+                }
               },
             }}
             state={{}}

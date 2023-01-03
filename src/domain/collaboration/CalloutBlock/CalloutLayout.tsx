@@ -23,6 +23,8 @@ import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from '../callout/Types';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import Gutters from '../../../core/ui/grid/Gutters';
+import { useAspectTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useHub } from '../../challenge/hub/HubContext/useHub';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -95,6 +97,14 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
     const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
     const handleSettingsClose = () => setSettingsAnchorEl(null);
 
+    const { hubNameId } = useHub();
+    const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
+    const getCardTemplates = useCallback(() => {
+      fetchCardTemplates({ variables: { hubId: hubNameId } });
+    }, [hubNameId, fetchCardTemplates]);
+
+    const templates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
+
     const [visDialogOpen, setVisDialogOpen] = useState(false);
     const handleVisDialogOpen = () => {
       setVisDialogOpen(true);
@@ -111,6 +121,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
     };
     const [editDialogOpened, setEditDialogOpened] = useState(false);
     const handleEditDialogOpen = () => {
+      getCardTemplates();
       setSettingsAnchorEl(null);
       setEditDialogOpened(true);
     };
@@ -234,6 +245,7 @@ const CalloutLayout = forwardRef<HTMLDivElement, PropsWithChildren<CalloutLayout
           onCalloutEdit={handleCalloutEdit}
           onDelete={onCalloutDelete}
           calloutNames={calloutNames}
+          cardTemplates={templates}
         />
       </>
     );

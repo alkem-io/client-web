@@ -54,6 +54,7 @@ query canvasTemplates($hubId: UUID_NAMEID!) {
 fragment CreateCanvasCanvasTemplate on CanvasTemplate {
   id
   info {
+    id
     title
     description
   }

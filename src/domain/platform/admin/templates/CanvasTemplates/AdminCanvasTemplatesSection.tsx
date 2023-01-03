@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   useCreateCanvasTemplateMutation,
   useDeleteCanvasTemplateMutation,
-  useHubTemplatesCanvasTemplateWithValueLazyQuery,
+  useHubTemplatesAdminCanvasTemplateWithValueLazyQuery,
   useInnovationPackCanvasTemplateWithValueLazyQuery,
   useUpdateCanvasTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -72,7 +72,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
     [loadCanvases]
   );
 
-  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesAdminCanvasTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
