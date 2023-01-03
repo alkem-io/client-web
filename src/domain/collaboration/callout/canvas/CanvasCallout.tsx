@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useMemo, useState } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
@@ -7,7 +7,6 @@ import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContain
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCardCanvas } from './types';
@@ -29,6 +28,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     {
       callout,
       calloutNames,
+      hubNameId,
       loading,
       challengeNameId,
       opportunityNameId,
@@ -41,16 +41,13 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     ref
   ) => {
     const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
-    const { hubNameId } = useHub();
     const navigate = useNavigate();
 
     const [fetchCanvasTemplates, { data: canvasTemplatesData }] = useCanvasTemplatesFromHubLazyQuery({
       fetchPolicy: 'cache-and-network',
     });
 
-    const getCanvasTemplates = useCallback(() => {
-      fetchCanvasTemplates({ variables: { hubId: hubNameId } });
-    }, [hubNameId, fetchCanvasTemplates]);
+    const getCanvasTemplates = () => fetchCanvasTemplates({ variables: { hubId: hubNameId! } });
 
     const canvasTemplates = canvasTemplatesData?.hub.templates?.canvasTemplates ?? [];
 
@@ -67,7 +64,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     const navigateToCanvas = (canvas: CanvasCardCanvas) => {
       navigate(
         buildCanvasUrl(canvas.calloutNameId, canvas.nameID, {
-          hubNameId: hubNameId,
+          hubNameId: hubNameId!,
           challengeNameId,
           opportunityNameId,
         })

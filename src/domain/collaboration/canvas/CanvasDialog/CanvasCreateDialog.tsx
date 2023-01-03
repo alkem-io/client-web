@@ -30,8 +30,8 @@ import canvasSchema from '../validation/canvasSchema';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -349,7 +349,7 @@ interface CanvasCreateDialogProps {
 const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, options }) => {
   const { t } = useTranslation();
   const styles = useStyles();
-  const { hubNameId } = useHub();
+  const { hubNameId } = useUrlParams();
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
 
@@ -371,7 +371,7 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
 
   const getTemplateValue = useCallback(
     (templateId: string) => {
-      fetchCanvasValue({ variables: { hubId: hubNameId, canvasTemplateId: templateId } });
+      fetchCanvasValue({ variables: { hubId: hubNameId!, canvasTemplateId: templateId } });
     },
     [hubNameId, fetchCanvasValue]
   );

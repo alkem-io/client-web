@@ -23,7 +23,7 @@ import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from '../callout/Types';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { useAspectTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { useHub } from '../../challenge/hub/HubContext/useHub';
+import { useUrlParams } from '../../../core/routing/useUrlParams';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -88,11 +88,9 @@ const CalloutLayout = ({
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
-  const { hubNameId } = useHub();
+  const { hubNameId } = useUrlParams();
   const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
-  const getCardTemplates = useCallback(() => {
-    fetchCardTemplates({ variables: { hubId: hubNameId } });
-  }, [hubNameId, fetchCardTemplates]);
+  const getCardTemplates = () => fetchCardTemplates({ variables: { hubId: hubNameId! } });
 
   const templates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
 

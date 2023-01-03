@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -55,9 +55,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
 
   const { hubId } = useHub();
   const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
-  const getCardTemplates = useCallback(() => {
-    fetchCardTemplates({ variables: { hubId: hubId } });
-  }, [hubId, fetchCardTemplates]);
+  const getCardTemplates = () => fetchCardTemplates({ variables: { hubId: hubId } });
 
   const cardTemplates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
 
