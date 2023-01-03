@@ -34,10 +34,10 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               hubNameId={entities.hubNameId}
               challengeNameId={entities.challenge?.nameID}
               communityId={entities.challenge?.community?.id}
-              childEntities={entities.challenge?.opportunities}
+              childEntities={entities.challenge?.opportunities ?? undefined}
               childEntitiesCount={entities.opportunitiesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
-              childEntityReadAccess
+              childEntityReadAccess={entities.permissions.opportunitiesReadAccess}
               references={entities.references}
               recommendations={entities.recommendations}
               memberUsers={entities.memberUsers}
