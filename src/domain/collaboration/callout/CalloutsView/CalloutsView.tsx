@@ -93,11 +93,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
               })}
               emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                 entities: t('common.callouts'),
-                parentEntity: opportunityNameId
-                  ? t('common.opportunity')
-                  : challengeNameId
-                  ? t('common.challenge')
-                  : t('common.hub'),
+                parentEntity: t(`common.${entityTypeName}` as const),
               })}
               loading={loading}
             />
@@ -111,11 +107,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
               <Caption>
                 {t('pages.generic.sections.subentities.empty', {
                   entities: t('common.callouts'),
-                  parentEntity: opportunityNameId
-                    ? t('common.opportunity')
-                    : challengeNameId
-                    ? t('common.challenge')
-                    : t('common.hub'),
+                  parentEntity: t(`common.${entityTypeName}` as const),
                 })}
               </Caption>
             </PageContentBlockSeamless>
