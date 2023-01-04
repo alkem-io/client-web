@@ -22,6 +22,8 @@ import { Loading } from '../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
 import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useAspectTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 
 interface CalloutsPageProps {
@@ -52,6 +54,12 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
     isCreating,
   } = useCalloutCreation();
 
+  const { hubId } = useHub();
+  const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
+  const getCardTemplates = () => fetchCardTemplates({ variables: { hubId: hubId } });
+
+  const cardTemplates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
+
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
@@ -59,11 +67,16 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   // Scroll to Callout handler:
   const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });
 
+  const handleCreate = () => {
+    getCardTemplates();
+    handleCreateCalloutOpened();
+  };
+
   return (
     <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${entityTypeName}` as const)}>
       <PageContent>
         <PageContentColumn columns={4}>
-          <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreateCalloutOpened} />
+          <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
           <PageContentBlock>
             <PageContentBlockHeader
               title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
@@ -98,7 +111,11 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
               <Caption>
                 {t('pages.generic.sections.subentities.empty', {
                   entities: t('common.callouts'),
-                  parentEntity: t(`common.${entityTypeName}` as const),
+                  parentEntity: opportunityNameId
+                    ? t('common.opportunity')
+                    : challengeNameId
+                    ? t('common.challenge')
+                    : t('common.hub'),
                 })}
               </Caption>
             </PageContentBlockSeamless>
@@ -172,6 +189,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
             onSaveAsDraft={handleCalloutDrafted}
             isCreating={isCreating}
             calloutNames={calloutNames}
+            cardTemplates={cardTemplates}
           />
         </PageContentColumn>
       </PageContent>

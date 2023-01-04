@@ -6841,7 +6841,6 @@ export type HubTemplatesQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            value: string;
             info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
           lifecycleTemplates: Array<{
@@ -6851,6 +6850,113 @@ export type HubTemplatesQuery = {
             type: LifecycleType;
             info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
+        }
+      | undefined;
+  };
+};
+
+export type AspectTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AspectTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type LifecycleTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type LifecycleTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            id: string;
+            definition: string;
+            type: LifecycleType;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type HubTemplatesCanvasTemplateWithValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type HubTemplatesCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplate?:
+            | {
+                __typename?: 'CanvasTemplate';
+                value: string;
+                id: string;
+                info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -6879,7 +6985,6 @@ export type HubTemplatesFragment = {
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';
           id: string;
-          value: string;
           info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
         }>;
         lifecycleTemplates: Array<{
@@ -6920,7 +7025,13 @@ export type AspectTemplateInfoFragment = {
 export type CanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
+  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+};
+
+export type CanvasTemplateWithValueFragment = {
+  __typename?: 'CanvasTemplate';
   value: string;
+  id: string;
   info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
 };
 
@@ -12394,7 +12505,7 @@ export type CanvasTemplatesQuery = {
             __typename?: 'CanvasTemplate';
             id: string;
             value: string;
-            info: { __typename?: 'TemplateInfo'; title: string; description: string };
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
         }
       | undefined;
@@ -12405,7 +12516,7 @@ export type CreateCanvasCanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
   value: string;
-  info: { __typename?: 'TemplateInfo'; title: string; description: string };
+  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
 };
 
 export type CollaborationWithCanvasDetailsFragment = {
@@ -17903,12 +18014,12 @@ export type TemplateInfoFragment = {
     | undefined;
 };
 
-export type HubTemplatesCanvasTemplateWithValueQueryVariables = Exact<{
+export type HubTemplatesAdminCanvasTemplateWithValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   canvasTemplateId: Scalars['UUID'];
 }>;
 
-export type HubTemplatesCanvasTemplateWithValueQuery = {
+export type HubTemplatesAdminCanvasTemplateWithValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
