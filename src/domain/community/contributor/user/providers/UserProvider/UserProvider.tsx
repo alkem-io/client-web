@@ -43,9 +43,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const { data: rolesData, loading: loadingRolesData } = useRolesUserQuery({
     skip: !meData?.me.id,
     variables: {
-      input: {
-        userID: meData?.me.id!,
-      },
+      input: meData?.me.id!,
     },
   });
 

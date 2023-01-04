@@ -3,7 +3,7 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     ...UserDetails
     ...UserAgent
   }
-  rolesUser(rolesData: { userID: $input }) {
+  rolesUser(rolesData: { userID: $input, filter: {visibilities: [ACTIVE, DEMO]} }) {
     id
     ...UserRolesDetails
   }

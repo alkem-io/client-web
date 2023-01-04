@@ -2917,8 +2917,8 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
 >;
 export const ChallengeExplorerPageDocument = gql`
-  query ChallengeExplorerPage($rolesData: RolesUserInput!) {
-    rolesUser(rolesData: $rolesData) {
+  query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
       hubs {
         id
         roles
@@ -2943,7 +2943,7 @@ export const ChallengeExplorerPageDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeExplorerPageQuery({
  *   variables: {
- *      rolesData: // value for 'rolesData'
+ *      userID: // value for 'userID'
  *   },
  * });
  */
@@ -15189,7 +15189,7 @@ export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.Associ
 
 export const UserOrganizationsDocument = gql`
   query userOrganizations($input: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $input }) {
+    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       ...UserOrganizationsDetails
     }
@@ -15515,8 +15515,8 @@ export function refetchOrganizationAssociatesQuery(variables: SchemaTypes.Organi
 }
 
 export const RolesOrganizationDocument = gql`
-  query rolesOrganization($input: RolesOrganizationInput!) {
-    rolesOrganization(rolesData: $input) {
+  query rolesOrganization($input: UUID_NAMEID!) {
+    rolesOrganization(rolesData: { organizationID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       hubs {
         nameID
@@ -17118,8 +17118,8 @@ export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnUserMutationVariables
 >;
 export const RolesUserDocument = gql`
-  query rolesUser($input: RolesUserInput!) {
-    rolesUser(rolesData: $input) {
+  query rolesUser($input: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       ...UserRolesDetails
     }
@@ -17215,76 +17215,9 @@ export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
 
-export const UserApplicationDetailsDocument = gql`
-  query userApplicationDetails($input: RolesUserInput!) {
-    rolesUser(rolesData: $input) {
-      applications {
-        id
-        state
-        displayName
-        hubID
-        challengeID
-        opportunityID
-      }
-    }
-  }
-`;
-
-/**
- * __useUserApplicationDetailsQuery__
- *
- * To run a query within a React component, call `useUserApplicationDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserApplicationDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserApplicationDetailsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUserApplicationDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserApplicationDetailsQuery,
-    SchemaTypes.UserApplicationDetailsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserApplicationDetailsQuery, SchemaTypes.UserApplicationDetailsQueryVariables>(
-    UserApplicationDetailsDocument,
-    options
-  );
-}
-
-export function useUserApplicationDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserApplicationDetailsQuery,
-    SchemaTypes.UserApplicationDetailsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserApplicationDetailsQuery, SchemaTypes.UserApplicationDetailsQueryVariables>(
-    UserApplicationDetailsDocument,
-    options
-  );
-}
-
-export type UserApplicationDetailsQueryHookResult = ReturnType<typeof useUserApplicationDetailsQuery>;
-export type UserApplicationDetailsLazyQueryHookResult = ReturnType<typeof useUserApplicationDetailsLazyQuery>;
-export type UserApplicationDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserApplicationDetailsQuery,
-  SchemaTypes.UserApplicationDetailsQueryVariables
->;
-export function refetchUserApplicationDetailsQuery(variables: SchemaTypes.UserApplicationDetailsQueryVariables) {
-  return { query: UserApplicationDetailsDocument, variables: variables };
-}
-
 export const UserApplicationsDocument = gql`
-  query userApplications($input: RolesUserInput!) {
-    rolesUser(rolesData: $input) {
+  query userApplications($input: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       applications {
         id
         state
@@ -17476,7 +17409,7 @@ export const UserProfileDocument = gql`
       ...UserDetails
       ...UserAgent
     }
-    rolesUser(rolesData: { userID: $input }) {
+    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       ...UserRolesDetails
     }
@@ -17537,8 +17470,8 @@ export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryV
 }
 
 export const UserProfileApplicationsDocument = gql`
-  query userProfileApplications($input: RolesUserInput!) {
-    rolesUser(rolesData: $input) {
+  query userProfileApplications($input: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       applications {
         id
         state
@@ -19837,7 +19770,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 
 export const UserRolesSearchCardsDocument = gql`
   query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $userId }) {
+    rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
       hubs {
         id
         roles

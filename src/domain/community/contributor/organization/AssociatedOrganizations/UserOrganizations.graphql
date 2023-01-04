@@ -1,5 +1,5 @@
 query userOrganizations($input: UUID_NAMEID_EMAIL!) {
-  rolesUser(rolesData: { userID: $input }) {
+  rolesUser(rolesData: { userID: $input, filter: {visibilities: [ACTIVE, DEMO]} }) {
     id
     ...UserOrganizationsDetails
   }

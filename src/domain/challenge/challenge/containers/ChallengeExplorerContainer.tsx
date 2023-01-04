@@ -80,9 +80,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   } = useChallengeExplorerPageQuery({
     onError: handleError,
     variables: {
-      rolesData: {
-        userID: userMetadata?.user?.id || '',
-      },
+      userID: userMetadata?.user?.id || '',
     },
     skip: !isAuthenticated || !userMetadata?.user?.id,
   });

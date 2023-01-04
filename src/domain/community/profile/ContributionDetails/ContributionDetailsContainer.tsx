@@ -123,7 +123,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
           memberId: userId,
           communityId: details?.communityId,
         },
-        refetchQueries: [refetchRolesUserQuery({ input: { userID: userId } })],
+        refetchQueries: [refetchRolesUserQuery({ input: userId })],
         awaitRefetchQueries: true,
       });
   }, [userId, details?.communityId, leaveCommunity]);
