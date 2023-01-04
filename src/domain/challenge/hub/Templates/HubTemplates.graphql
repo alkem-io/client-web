@@ -5,6 +5,54 @@ query HubTemplates($hubId: UUID_NAMEID!) {
   }
 }
 
+query AspectTemplatesFromHub($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      aspectTemplates {
+        ...AspectTemplate
+      }
+    }
+  }
+}
+
+query CanvasTemplatesFromHub($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplates {
+        ...CanvasTemplate
+      }
+    }
+  }
+}
+
+query LifecycleTemplatesFromHub($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      lifecycleTemplates {
+        ...LifecycleTemplate
+      }
+    }
+  }
+}
+
+query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplate(ID: $canvasTemplateId) {
+        ...CanvasTemplateWithValue
+      }
+    }
+  }
+}
+
 fragment HubTemplates on Hub {
   templates {
     id
@@ -49,6 +97,9 @@ fragment CanvasTemplate on CanvasTemplate {
     title
     description
   }
+}
+fragment CanvasTemplateWithValue on CanvasTemplate {
+  ...CanvasTemplate
   value
 }
 
