@@ -15,7 +15,7 @@ import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubenti
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
-import ChallengePageContainer from '../containers/ChallengePageContainer';
+import OpportunityCardsContainer from '../containers/OpportunityCardsContainer';
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 
@@ -53,11 +53,11 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
-      <ChallengePageContainer>
+      <OpportunityCardsContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
         {(entities, state) => (
           <JourneySubentitiesView
             hubNameId={hubNameId}
-            childEntities={entities.challenge?.opportunities}
+            childEntities={entities.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
             childEntityReadAccess
             getChildEntityUrl={entity => buildOpportunityUrl(hubNameId, challengeNameId, entity.nameID)}
@@ -72,7 +72,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
                 vision={opportunity.context?.vision!}
                 tags={opportunity.tagset?.tags!}
                 bannerUri={getVisualBannerNarrow(opportunity.context?.visuals)!}
-                journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
+                journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}
               />
             )}
             childEntityCreateAccess={permissions.canCreateOpportunity}
@@ -89,7 +89,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
             }
           />
         )}
-      </ChallengePageContainer>
+      </OpportunityCardsContainer>
     </ChallengePageLayout>
   );
 };

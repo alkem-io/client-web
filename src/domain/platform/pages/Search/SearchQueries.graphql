@@ -140,7 +140,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
 }
 
 query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
-  rolesUser(rolesData: { userID: $userId }) {
+  rolesUser(rolesData: { userID: $userId, filter: {visibilities: [ACTIVE, DEMO]} }) {
     hubs {
       id
       roles

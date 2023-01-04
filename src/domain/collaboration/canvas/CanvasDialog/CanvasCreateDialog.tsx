@@ -330,7 +330,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
 
 interface CanvasCreateDialogProps {
   entities: {
-    calloutID: string;
+    calloutId: string;
     templates: CreateCanvasCanvasTemplateFragment[];
   };
   actions: {
@@ -356,7 +356,7 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
 
   const handleSubmit = (canvasInput: Omit<CreateCanvasOnCalloutInput, 'calloutID'>) => {
     actions.onConfirm({
-      calloutID: entities.calloutID,
+      calloutID: entities.calloutId,
       ...canvasInput,
     });
   };

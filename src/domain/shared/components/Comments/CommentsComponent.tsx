@@ -13,7 +13,6 @@ import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradi
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CaptionSmall } from '../../../../core/ui/typography';
 
-const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface CommentsComponentProps {
@@ -24,6 +23,7 @@ export interface CommentsComponentProps {
   canDeleteMessage: (messageId: string) => boolean;
   handlePostMessage: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteMessage: (commentsId: string, messageId: string) => void;
+  maxHeight?: number;
   loading?: boolean;
   last?: boolean;
   onClickMore?: () => void;
@@ -52,6 +52,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   handleDeleteMessage,
   canPostMessages,
   canDeleteMessage,
+  maxHeight,
   loading,
   onClickMore,
 }) => {
@@ -95,7 +96,9 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
     <>
       {!isShowingLastMessage && (
         <ScrollerWithGradient
-          maxHeight={COMMENTS_CONTAINER_HEIGHT}
+          maxHeight={maxHeight}
+          minHeight={0}
+          flexGrow={1}
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
         >
