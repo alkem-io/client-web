@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Avatar, Box, Skeleton } from '@mui/material';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import ItemView from '../../../../core/ui/list/ItemView';
 import { Caption } from '../../../../core/ui/typography';
 

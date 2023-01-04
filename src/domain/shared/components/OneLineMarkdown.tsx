@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import React from 'react';
 
 interface OneLineMarkdownProps {

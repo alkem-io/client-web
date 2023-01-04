@@ -1,5 +1,5 @@
 import React from 'react';
-import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import stopPropagation from '../../../../core/ui/utils/stopPropagation';

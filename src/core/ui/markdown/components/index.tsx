@@ -1,11 +1,9 @@
 import React, { FC } from 'react';
-import ReactMarkdown, { Options as ReactMarkdownOptions } from 'react-markdown';
-import gfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import emoji from 'remark-emoji';
 import { Box, BoxProps } from '@mui/material';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
-import { CardText, Text } from '../../../core/ui/typography';
+import { CardText, Text } from '../../typography';
+import MarkdownHeading from './MarkdownHeading';
+import { gutters } from '../../grid/utils';
 
 const createComponentThatInheritsParentWidth = (tagName: BoxProps['component']) => {
   const ReactMDNodeImplementation: FC<{ node: ReactMarkdownProps['node'] }> = ({ node, ...props }) => {
@@ -37,41 +35,34 @@ interface ParagraphProps
     React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> {}
 
 const Paragraph = ({ node, ref, ...props }: ParagraphProps) => {
-  return <Text {...props} />;
+  return <Text {...props} marginY={gutters(0.5)} />;
 };
 
 const CardParagraph = ({ node, ref, ...props }: ParagraphProps) => {
   return <CardText {...props} />;
 };
 
-const componentImplementations = {
+const headings = {
+  h1: MarkdownHeading,
+  h2: MarkdownHeading,
+  h3: MarkdownHeading,
+  h4: MarkdownHeading,
+  h5: MarkdownHeading,
+  h6: MarkdownHeading,
+} as const;
+
+const common = {
   ...componentsInheritingWidth,
+  ...headings,
   a: LinkNewTab,
+} as const;
+
+export const components = {
+  ...common,
   p: Paragraph,
-};
+} as const;
 
-const componentImplementationsCard = {
-  ...componentsInheritingWidth,
-  a: LinkNewTab,
+export const componentsCard = {
+  ...common,
   p: CardParagraph,
-};
-
-const allowedNodeTypes = ['iframe'] as const;
-
-export interface MarkdownProps extends ReactMarkdownOptions {
-  card?: boolean;
-}
-
-export const WrapperMarkdown: FC<MarkdownProps> = ({ card = false, ...props }) => {
-  // wrap this here, so that we don't have to include the gfm all the time
-  return (
-    <ReactMarkdown
-      components={card ? componentImplementationsCard : componentImplementations}
-      remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }]]}
-      rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}
-      {...props}
-    />
-  );
-};
-
-export default WrapperMarkdown;
+} as const;

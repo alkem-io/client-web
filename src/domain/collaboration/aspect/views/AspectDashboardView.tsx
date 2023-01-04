@@ -11,7 +11,7 @@ import TagsComponent from '../../../shared/components/TagsComponent/TagsComponen
 import MessageView from '../../../shared/components/Comments/MessageView';
 import { Message } from '../../../shared/components/Comments/models/message';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
-import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../../shared/components/References/References';
 import TagLabel from '../../../../common/components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../../../common/components/composite/sections/DashboardSection/DashboardColumn';

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminAspectTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
