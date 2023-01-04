@@ -82,7 +82,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
     opportunityNameId,
   });
 
-  const calloutsOfTypeCard = callouts.filter(({ type }) => type === CalloutType.Card);
+  const calloutsOfTypeCard = callouts?.filter(({ type }) => type === CalloutType.Card);
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
@@ -169,7 +169,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
                   <Autocomplete
                     disablePortal
                     options={calloutsOfTypeCard ?? []}
-                    value={callouts.find(({ id }) => id === targetCalloutId) ?? null!}
+                    value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
                     getOptionLabel={callout => callout.displayName}
                     onChange={(event, callout) => {
                       setTargetCalloutId(callout?.id);
