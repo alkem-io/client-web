@@ -37,7 +37,6 @@ export interface ContextViewState {
   deletingCanvas?: boolean;
   changingCanvasLockState?: boolean;
   updatingCanvas?: boolean;
-  loadingCanvasValue?: boolean;
   error?: ApolloError;
 }
 
@@ -146,7 +145,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
           show: showCreateCanvasDialog,
         }}
         state={{
-          canvasLoading: state.loadingCanvasValue,
           templatesLoading: state.loadingCanvases,
         }}
       />

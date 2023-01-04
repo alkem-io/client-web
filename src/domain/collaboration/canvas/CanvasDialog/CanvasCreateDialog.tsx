@@ -14,7 +14,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CanvasTemplateFragment,
@@ -343,7 +343,9 @@ interface CanvasCreateDialogProps {
   options: {
     show: boolean;
   };
-  state?: CreateCanvasStepsProps['state'];
+  state?: {
+    templatesLoading?: boolean;
+  };
 }
 
 const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, options }) => {
@@ -365,18 +367,23 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
     });
   };
 
-  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const getTemplateValue = (templateId: string) => {
-    fetchCanvasValue({ variables: { hubId: hubNameId!, canvasTemplateId: templateId } });
-  };
+  const [fetchCanvasValue, { data: canvasValueData, loading: isCanvasValueLoading }] =
+    useHubTemplatesCanvasTemplateWithValueLazyQuery({
+      fetchPolicy: 'cache-and-network',
+      variables: { hubId: hubNameId!, canvasTemplateId: selectedTemplateId! },
+    });
 
   const selectedTemplate = entities.templates.find(({ id }) => id === selectedTemplateId);
-  const selectedTemplateWithValue = selectedTemplate
-    ? { ...selectedTemplate, value: canvasValue?.hub.templates?.canvasTemplate?.value || '' }
-    : undefined;
+  const canvasValue = canvasValueData?.hub.templates?.canvasTemplate?.value;
+  const selectedTemplateWithValue =
+    selectedTemplate && canvasValue ? { ...selectedTemplate, value: canvasValue } : undefined;
+
+  useEffect(() => {
+    if (selectedTemplateId) {
+      fetchCanvasValue();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hubNameId, selectedTemplateId]);
 
   return (
     <Dialog
@@ -415,13 +422,12 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
                 handleSubmit();
               },
               onTemplateSelected: canvas => {
-                if (canvas?.id) {
-                  setSelectedTemplateId(canvas.id);
-                  getTemplateValue(canvas.id);
-                }
+                setSelectedTemplateId(canvas?.id);
               },
             }}
-            state={{}}
+            state={{
+              canvasLoading: isCanvasValueLoading && !canvasValueData,
+            }}
           />
         )}
       </Formik>

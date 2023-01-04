@@ -124,7 +124,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
                 show: showCreateCanvasDialog,
               }}
               state={{
-                canvasLoading: loading,
+                templatesLoading: loading,
               }}
             />
           )}
