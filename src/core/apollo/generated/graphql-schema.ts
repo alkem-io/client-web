@@ -552,6 +552,7 @@ export enum AuthorizationPrivilege {
   CreateCanvas = 'CREATE_CANVAS',
   CreateChallenge = 'CREATE_CHALLENGE',
   CreateComment = 'CREATE_COMMENT',
+  CreateDiscussion = 'CREATE_DISCUSSION',
   CreateHub = 'CREATE_HUB',
   CreateOpportunity = 'CREATE_OPPORTUNITY',
   CreateOrganization = 'CREATE_ORGANIZATION',
@@ -1054,7 +1055,7 @@ export type Config = {
   /** Integration with a 3rd party Geo information service */
   geo: Geo;
   /** Platform related resources. */
-  platform: Platform;
+  platform: PlatformLocations;
   /** Sentry (client monitoring) related configuration. */
   sentry: Sentry;
   /** Configuration for storage providers, e.g. file */
@@ -1903,10 +1904,10 @@ export type Mutation = {
   assignUserToOrganization: Organization;
   /** Reset the Authorization Policy on the specified Hub. */
   authorizationPolicyResetOnHub: Hub;
-  /** Reset the Authorization Policy on the specified Library. */
-  authorizationPolicyResetOnLibrary: Library;
   /** Reset the Authorization Policy on the specified Organization. */
   authorizationPolicyResetOnOrganization: Organization;
+  /** Reset the Authorization Policy on the specified Platform. */
+  authorizationPolicyResetOnPlatform: Platform;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
   /** Generate Alkemio user credential offer */
@@ -2858,6 +2859,28 @@ export type PaginatedUsers = {
 
 export type Platform = {
   __typename?: 'Platform';
+  /** The authorization policy for the platform */
+  authorization: Authorization;
+  /** The Communications for the platform */
+  communication: Communication;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Innovation Library for the platform */
+  library: Library;
+};
+
+export type PlatformHubTemplate = {
+  __typename?: 'PlatformHubTemplate';
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Hub aspect templates. */
+  aspects?: Maybe<Array<HubAspectTemplate>>;
+  /** Hub template name. */
+  name: Scalars['String'];
+};
+
+export type PlatformLocations = {
+  __typename?: 'PlatformLocations';
   /** URL to a page about the platform */
   about: Scalars['String'];
   /** URL where users can get tips and tricks */
@@ -2892,16 +2915,6 @@ export type Platform = {
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
   tips: Scalars['String'];
-};
-
-export type PlatformHubTemplate = {
-  __typename?: 'PlatformHubTemplate';
-  /** Application templates. */
-  applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Hub aspect templates. */
-  aspects?: Maybe<Array<HubAspectTemplate>>;
-  /** Hub template name. */
-  name: Scalars['String'];
 };
 
 export type Preference = {
@@ -3043,8 +3056,6 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
-  /** Alkemio Library */
-  library: Library;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3057,6 +3068,8 @@ export type Query = {
   organizations: Array<Organization>;
   /** The Organizations on this platform in paginated format */
   organizationsPaginated: PaginatedOrganization;
+  /** Alkemio Platform */
+  platform: Platform;
   /** The roles that the specified Organization has. */
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
@@ -18437,113 +18450,116 @@ export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InnovationPacksQuery = {
   __typename?: 'Query';
-  library: {
-    __typename?: 'Library';
-    id: string;
-    innovationPacks: Array<{
-      __typename?: 'InnovatonPack';
+  platform: {
+    __typename?: 'Platform';
+    library: {
+      __typename?: 'Library';
       id: string;
-      nameID: string;
-      displayName: string;
-      provider?:
-        | {
-            __typename?: 'Organization';
-            id: string;
-            nameID: string;
-            displayName: string;
-            profile: {
-              __typename?: 'Profile';
+      innovationPacks: Array<{
+        __typename?: 'InnovatonPack';
+        id: string;
+        nameID: string;
+        displayName: string;
+        provider?:
+          | {
+              __typename?: 'Organization';
               id: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }
-        | undefined;
-      templates?:
-        | {
-            __typename?: 'TemplatesSet';
-            id: string;
-            aspectTemplates: Array<{
-              __typename?: 'AspectTemplate';
-              id: string;
-              defaultDescription: string;
-              type: string;
-              info: {
-                __typename?: 'TemplateInfo';
+              nameID: string;
+              displayName: string;
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                title: string;
-                description: string;
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                    }
-                  | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
-            }>;
-            canvasTemplates: Array<{
-              __typename?: 'CanvasTemplate';
+            }
+          | undefined;
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
               id: string;
-              info: {
-                __typename?: 'TemplateInfo';
+              aspectTemplates: Array<{
+                __typename?: 'AspectTemplate';
                 id: string;
-                title: string;
-                description: string;
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                    }
-                  | undefined;
-              };
-            }>;
-            lifecycleTemplates: Array<{
-              __typename?: 'LifecycleTemplate';
-              id: string;
-              definition: string;
-              type: LifecycleType;
-              info: {
-                __typename?: 'TemplateInfo';
+                defaultDescription: string;
+                type: string;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                };
+              }>;
+              canvasTemplates: Array<{
+                __typename?: 'CanvasTemplate';
                 id: string;
-                title: string;
-                description: string;
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      id: string;
-                      uri: string;
-                      name: string;
-                      allowedTypes: Array<string>;
-                      aspectRatio: number;
-                      maxHeight: number;
-                      maxWidth: number;
-                      minHeight: number;
-                      minWidth: number;
-                    }
-                  | undefined;
-              };
-            }>;
-          }
-        | undefined;
-    }>;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                };
+              }>;
+              lifecycleTemplates: Array<{
+                __typename?: 'LifecycleTemplate';
+                id: string;
+                definition: string;
+                type: LifecycleType;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                };
+              }>;
+            }
+          | undefined;
+      }>;
+    };
   };
 };
 
@@ -18554,21 +18570,24 @@ export type InnovationPackCanvasTemplateWithValueQueryVariables = Exact<{
 
 export type InnovationPackCanvasTemplateWithValueQuery = {
   __typename?: 'Query';
-  library: {
-    __typename?: 'Library';
-    id: string;
-    innovationPack?:
-      | {
-          __typename?: 'InnovatonPack';
-          id: string;
-          templates?:
-            | {
-                __typename?: 'TemplatesSet';
-                canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
+  platform: {
+    __typename?: 'Platform';
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 
@@ -18622,7 +18641,7 @@ export type ConfigurationQuery = {
       }>;
     };
     platform: {
-      __typename?: 'Platform';
+      __typename?: 'PlatformLocations';
       environment: string;
       about: string;
       feedback: string;
@@ -18665,7 +18684,7 @@ export type ConfigurationFragment = {
     }>;
   };
   platform: {
-    __typename?: 'Platform';
+    __typename?: 'PlatformLocations';
     environment: string;
     about: string;
     feedback: string;
