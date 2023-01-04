@@ -76,7 +76,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   const aspectInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.library.innovationPacks
+    return innovationPacks?.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.aspectTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -86,7 +86,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   const canvasInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.library.innovationPacks
+    return innovationPacks?.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.canvasTemplates.length > 0)
       .map(pack => ({
         ...pack,
@@ -96,7 +96,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   const lifecycleInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
-    return innovationPacks?.library.innovationPacks
+    return innovationPacks?.platform.library.innovationPacks
       .filter(pack => pack.templates && pack.templates?.lifecycleTemplates.length > 0)
       .map(pack => ({
         ...pack,

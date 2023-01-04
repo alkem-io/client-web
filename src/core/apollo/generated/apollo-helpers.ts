@@ -1087,8 +1087,8 @@ export type MutationKeySpecifier = (
   | 'assignUserToGroup'
   | 'assignUserToOrganization'
   | 'authorizationPolicyResetOnHub'
-  | 'authorizationPolicyResetOnLibrary'
   | 'authorizationPolicyResetOnOrganization'
+  | 'authorizationPolicyResetOnPlatform'
   | 'authorizationPolicyResetOnUser'
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
@@ -1227,8 +1227,8 @@ export type MutationFieldPolicy = {
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorizationPolicyResetOnLibrary?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetOnPlatform?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1482,7 +1482,20 @@ export type PaginatedUsersFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformKeySpecifier = (
+export type PlatformKeySpecifier = ('authorization' | 'communication' | 'id' | 'library' | PlatformKeySpecifier)[];
+export type PlatformFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  communication?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  library?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
+export type PlatformHubTemplateFieldPolicy = {
+  applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformLocationsKeySpecifier = (
   | 'about'
   | 'aup'
   | 'community'
@@ -1500,9 +1513,9 @@ export type PlatformKeySpecifier = (
   | 'support'
   | 'terms'
   | 'tips'
-  | PlatformKeySpecifier
+  | PlatformLocationsKeySpecifier
 )[];
-export type PlatformFieldPolicy = {
+export type PlatformLocationsFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   aup?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1520,12 +1533,6 @@ export type PlatformFieldPolicy = {
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   tips?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
-export type PlatformHubTemplateFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PreferenceKeySpecifier = ('authorization' | 'definition' | 'id' | 'value' | PreferenceKeySpecifier)[];
 export type PreferenceFieldPolicy = {
@@ -1603,13 +1610,13 @@ export type QueryKeySpecifier = (
   | 'getSupportedVerifiedCredentialMetadata'
   | 'hub'
   | 'hubs'
-  | 'library'
   | 'me'
   | 'meHasProfile'
   | 'metadata'
   | 'organization'
   | 'organizations'
   | 'organizationsPaginated'
+  | 'platform'
   | 'rolesOrganization'
   | 'rolesUser'
   | 'search'
@@ -1630,13 +1637,13 @@ export type QueryFieldPolicy = {
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
-  library?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
+  platform?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2535,6 +2542,10 @@ export type StrictTypedTypePolicies = {
   PlatformHubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformHubTemplateKeySpecifier | (() => undefined | PlatformHubTemplateKeySpecifier);
     fields?: PlatformHubTemplateFieldPolicy;
+  };
+  PlatformLocations?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformLocationsKeySpecifier | (() => undefined | PlatformLocationsKeySpecifier);
+    fields?: PlatformLocationsFieldPolicy;
   };
   Preference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PreferenceKeySpecifier | (() => undefined | PreferenceKeySpecifier);

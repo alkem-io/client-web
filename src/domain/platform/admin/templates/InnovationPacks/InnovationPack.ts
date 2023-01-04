@@ -1,7 +1,7 @@
 import { InnovationPacksQuery } from '../../../../../core/apollo/generated/graphql-schema';
 import { Template } from '../AdminTemplatesSection';
 
-type InnovationPackArray = InnovationPacksQuery['library']['innovationPacks'][number];
+type InnovationPackArray = InnovationPacksQuery['platform']['library']['innovationPacks'][number];
 type InnovationPackInfo = Pick<InnovationPackArray, 'id' | 'nameID' | 'displayName' | 'provider'>;
 
 export type InnovationPack<T extends Template> = InnovationPackInfo & { templates: T[] };
