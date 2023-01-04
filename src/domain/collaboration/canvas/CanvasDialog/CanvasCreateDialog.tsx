@@ -14,7 +14,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CanvasTemplateFragment,
@@ -30,7 +30,7 @@ import canvasSchema from '../validation/canvasSchema';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useHubTemplatesCanvasTemplateWithValueQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const useStyles = makeStyles(theme => ({
@@ -367,23 +367,16 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
     });
   };
 
-  const [fetchCanvasValue, { data: canvasValueData, loading: isCanvasValueLoading }] =
-    useHubTemplatesCanvasTemplateWithValueLazyQuery({
-      fetchPolicy: 'cache-and-network',
-      variables: { hubId: hubNameId!, canvasTemplateId: selectedTemplateId! },
-    });
+  const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesCanvasTemplateWithValueQuery({
+    fetchPolicy: 'cache-and-network',
+    variables: { hubId: hubNameId!, canvasTemplateId: selectedTemplateId! },
+    skip: !hubNameId || !selectedTemplateId,
+  });
 
   const selectedTemplate = entities.templates.find(({ id }) => id === selectedTemplateId);
   const canvasValue = canvasValueData?.hub.templates?.canvasTemplate?.value;
   const selectedTemplateWithValue =
     selectedTemplate && canvasValue ? { ...selectedTemplate, value: canvasValue } : undefined;
-
-  useEffect(() => {
-    if (selectedTemplateId) {
-      fetchCanvasValue();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hubNameId, selectedTemplateId]);
 
   return (
     <Dialog
