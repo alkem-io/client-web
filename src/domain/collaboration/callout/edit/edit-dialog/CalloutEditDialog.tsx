@@ -10,9 +10,8 @@ import ConfirmationDialog, {
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
-import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
-import { useHubTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { AspectTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -22,6 +21,7 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutEditType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   calloutNames: string[];
+  cardTemplates: AspectTemplateFragment[];
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
@@ -32,19 +32,9 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onDelete,
   onCalloutEdit,
   calloutNames,
+  cardTemplates,
 }) => {
   const { t } = useTranslation();
-  const { hubId } = useHub();
-  const { data: hubTemplatesData } = useHubTemplatesQuery({
-    variables: { hubId },
-    skip: !hubId,
-  });
-  const templates = hubTemplatesData?.hub.templates ?? {
-    id: '',
-    aspectTemplates: [],
-    canvasTemplates: [],
-    lifecycleTemplates: [],
-  };
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
@@ -53,7 +43,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {
     setLoading(true);
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.aspectTemplates);
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, cardTemplates);
     await onCalloutEdit({ ...callout, ...newCallout, cardTemplate: calloutCardTemplate });
     setLoading(false);
   };
@@ -100,6 +90,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
+            templates={cardTemplates}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>

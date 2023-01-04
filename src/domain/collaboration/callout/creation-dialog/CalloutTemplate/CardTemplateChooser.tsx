@@ -3,39 +3,27 @@ import { Grid, Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CardTemplatesList from './CardTemplatesList';
 import CardTemplatePreview from './CardTemplateCardPreview';
-import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useField } from 'formik';
-import { useHubTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import { AspectTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface CardTemplatesChooserProps {
   name: string;
+  templates: AspectTemplateFragment[];
   editMode?: boolean;
 }
 
-export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, editMode = false }) => {
-  const { hubId } = useHub();
+export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, templates, editMode = false }) => {
   const [field, , helpers] = useField(name);
 
-  const { data: hubTemplatesData } = useHubTemplatesQuery({
-    variables: { hubId },
-    skip: !hubId,
-  });
-  const templates = hubTemplatesData?.hub.templates ?? {
-    id: '',
-    aspectTemplates: [],
-    canvasTemplates: [],
-    lifecycleTemplates: [],
-  };
-
   const cardTemplatesTypeList = useMemo(
-    () => templates.aspectTemplates.map(template => ({ type: template.type, title: template.info.title })),
-    [templates.aspectTemplates]
+    () => templates.map(template => ({ type: template.type, title: template.info.title })),
+    [templates]
   );
 
   const selectedTemplate = useMemo(
-    () => templates.aspectTemplates.find(template => template.type === field.value),
-    [templates.aspectTemplates, field.value]
+    () => templates.find(template => template.type === field.value),
+    [templates, field.value]
   );
 
   const { t } = useTranslation();

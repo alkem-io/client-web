@@ -63,7 +63,7 @@ fragment TemplateInfo on TemplateInfo {
   }
 }
 
-query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+query HubTemplatesAdminCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
   hub(ID: $hubId) {
     id
     templates {
