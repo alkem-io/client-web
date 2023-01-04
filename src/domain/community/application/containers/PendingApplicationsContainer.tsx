@@ -41,9 +41,7 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
 
   const { data: memberShip, loading: loadingMembership } = useUserProfileApplicationsQuery({
     variables: {
-      input: {
-        userID: entities.userId,
-      },
+      input: entities.userId,
     },
   });
   const applications = (memberShip?.rolesUser?.applications || []) as ApplicationForRoleResult[];
@@ -64,7 +62,7 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
             ID: application.id,
           },
         },
-        refetchQueries: [refetchUserApplicationsQuery({ input: { userID: entities.userId } })],
+        refetchQueries: [refetchUserApplicationsQuery({ input: entities.userId })],
         awaitRefetchQueries: true,
       });
     },

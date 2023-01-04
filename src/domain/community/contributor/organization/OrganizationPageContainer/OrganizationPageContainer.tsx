@@ -56,11 +56,9 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const usersWithRoles = useUserCardRoleName((organization?.associates || []) as User[], organizationId);
 
-  const { data: membershipData, loading: orgMembershipLoading } = useRolesOrganizationQuery({
+  const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
-      input: {
-        organizationID: organizationNameId,
-      },
+      input: organizationNameId,
     },
     skip: !organizationNameId,
   });
@@ -127,7 +125,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+    const hubsHosting = orgRolesData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
 
     const hubContributions = hubsHosting.map<ContributionItem>(x => ({
       hubId: x.id,
@@ -135,7 +133,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
     // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
     const challengeContributions =
-      membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
+      orgRolesData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
         h.challenges
           .filter(c => c.roles?.includes(RoleType.Lead))
           .map<ContributionItem>(c => ({
@@ -145,14 +143,14 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       ) || [];
 
     return [...hubContributions, ...challengeContributions];
-  }, [membershipData]);
+  }, [orgRolesData]);
 
   return (
     <>
       {children(
         { organization, permissions, socialLinks, links, keywords, capabilities, associates, contributions },
         {
-          loading: loading || orgMembershipLoading,
+          loading: loading || orgRolesLoading,
         },
         {}
       )}

@@ -48,7 +48,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
 
   const { communityId } = useCommunityContext();
   const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({
-    variables: { input: { userID: userId } },
+    variables: { input: userId },
     skip: !userId,
   });
 
