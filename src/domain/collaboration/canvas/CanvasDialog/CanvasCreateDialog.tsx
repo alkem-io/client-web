@@ -14,7 +14,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CanvasTemplateFragment,
@@ -103,14 +103,6 @@ interface ITemplateStepProps {
 
 const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
   const { templates, selectedTemplate } = entities;
-  console.log(selectedTemplate?.info);
-  console.log('TemplateStep value: ', selectedTemplate?.value === '');
-
-  useEffect(() => {
-    return () => {
-      console.log('Unmount TemplateStep');
-    };
-  });
 
   const { t } = useTranslation();
 
@@ -386,7 +378,6 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
     ? { ...selectedTemplate, value: canvasValue?.hub.templates?.canvasTemplate?.value || '' }
     : undefined;
 
-  console.log('value: ', selectedTemplateWithValue?.value === '');
   return (
     <Dialog
       open={options.show}
