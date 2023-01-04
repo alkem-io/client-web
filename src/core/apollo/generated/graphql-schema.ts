@@ -4323,7 +4323,7 @@ export type ChallengeCardFragment = {
 };
 
 export type ChallengeExplorerPageQueryVariables = Exact<{
-  rolesData: RolesUserInput;
+  userID: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type ChallengeExplorerPageQuery = {
@@ -15691,7 +15691,7 @@ export type OrganizationAssociatesQuery = {
 };
 
 export type RolesOrganizationQueryVariables = Exact<{
-  input: RolesOrganizationInput;
+  input: Scalars['UUID_NAMEID'];
 }>;
 
 export type RolesOrganizationQuery = {
@@ -16746,7 +16746,7 @@ export type UpdatePreferenceOnUserMutation = {
 };
 
 export type RolesUserQueryVariables = Exact<{
-  input: RolesUserInput;
+  input: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type RolesUserQuery = {
@@ -16862,30 +16862,8 @@ export type UserQuery = {
   };
 };
 
-export type UserApplicationDetailsQueryVariables = Exact<{
-  input: RolesUserInput;
-}>;
-
-export type UserApplicationDetailsQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          state: string;
-          displayName: string;
-          hubID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
-  };
-};
-
 export type UserApplicationsQueryVariables = Exact<{
-  input: RolesUserInput;
+  input: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type UserApplicationsQuery = {
@@ -17077,7 +17055,7 @@ export type UserProfileQuery = {
 };
 
 export type UserProfileApplicationsQueryVariables = Exact<{
-  input: RolesUserInput;
+  input: Scalars['UUID_NAMEID_EMAIL'];
 }>;
 
 export type UserProfileApplicationsQuery = {

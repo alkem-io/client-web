@@ -70,7 +70,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
     onCompleted: () => setHasApplied(true),
     // refetch user applications
-    refetchQueries: [refetchUserApplicationsQuery({ input: { userID: userId } })],
+    refetchQueries: [refetchUserApplicationsQuery({ input: userId })],
     onError: handleError,
   });
 
