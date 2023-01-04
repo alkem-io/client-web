@@ -374,9 +374,8 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
   });
 
   const selectedTemplate = entities.templates.find(({ id }) => id === selectedTemplateId);
-  const canvasValue = canvasValueData?.hub.templates?.canvasTemplate?.value;
-  const selectedTemplateWithValue =
-    selectedTemplate && canvasValue ? { ...selectedTemplate, value: canvasValue } : undefined;
+  const canvasValue = canvasValueData?.hub.templates?.canvasTemplate?.value ?? '';
+  const selectedTemplateWithValue = selectedTemplate ? { ...selectedTemplate, value: canvasValue } : undefined;
 
   return (
     <Dialog
