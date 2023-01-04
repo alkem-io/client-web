@@ -19545,34 +19545,36 @@ export type DeleteCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
-    library {
-      id
-      innovationPacks {
+    platform {
+      library {
         id
-        nameID
-        provider {
+        innovationPacks {
           id
           nameID
-          displayName
-          profile {
+          provider {
             id
-            avatar {
+            nameID
+            displayName
+            profile {
               id
-              uri
+              avatar {
+                id
+                uri
+              }
             }
           }
-        }
-        displayName
-        templates {
-          id
-          aspectTemplates {
-            ...AdminAspectTemplate
-          }
-          canvasTemplates {
-            ...AdminCanvasTemplate
-          }
-          lifecycleTemplates {
-            ...AdminLifecycleTemplate
+          displayName
+          templates {
+            id
+            aspectTemplates {
+              ...AdminAspectTemplate
+            }
+            canvasTemplates {
+              ...AdminCanvasTemplate
+            }
+            lifecycleTemplates {
+              ...AdminLifecycleTemplate
+            }
           }
         }
       }
@@ -19630,13 +19632,15 @@ export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPa
 
 export const InnovationPackCanvasTemplateWithValueDocument = gql`
   query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
+    platform {
+      library {
         id
-        templates {
-          canvasTemplate(ID: $canvasTemplateId) {
-            ...AdminCanvasTemplateValue
+        innovationPack(ID: $innovationPackId) {
+          id
+          templates {
+            canvasTemplate(ID: $canvasTemplateId) {
+              ...AdminCanvasTemplateValue
+            }
           }
         }
       }
