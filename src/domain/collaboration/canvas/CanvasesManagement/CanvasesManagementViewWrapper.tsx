@@ -4,6 +4,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_COLLABORATION_CANVASES } from '../../../platform/config/features.constants';
 import {
   AuthorizationPrivilege,
+  CanvasDetailsFragment,
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -14,11 +15,10 @@ import CanvasManagementView, {
   CanvasNavigationMethods,
 } from './CanvasManagementView';
 import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
-import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
   entityTypeName: EntityTypeName;
-  canvases: CanvasFragmentWithCallout[];
+  canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
@@ -29,7 +29,7 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
 const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   canvasNameId,
   calloutId,
-  canvases,
+  canvas,
   templates,
   authorization,
   entityTypeName,
@@ -59,7 +59,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
       {(_, actionsState, actions) => (
         <CanvasManagementView
           entities={{
-            canvases,
+            canvas,
             templates,
             calloutId,
             canvasNameId,

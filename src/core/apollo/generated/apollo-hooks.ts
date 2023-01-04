@@ -1140,6 +1140,25 @@ export const CreateCanvasCanvasTemplateFragmentDoc = gql`
     value
   }
 `;
+export const CalloutWithCanvasFragmentDoc = gql`
+  fragment CalloutWithCanvas on Collaboration {
+    id
+    callouts(IDs: [$calloutId]) {
+      id
+      nameID
+      type
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
+      }
+      canvases(IDs: [$canvasId]) {
+        ...CanvasDetails
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+`;
 export const CollaborationWithCanvasDetailsFragmentDoc = gql`
   fragment CollaborationWithCanvasDetails on Collaboration {
     id
@@ -10583,6 +10602,72 @@ export function refetchCanvasTemplatesQuery(variables: SchemaTypes.CanvasTemplat
   return { query: CanvasTemplatesDocument, variables: variables };
 }
 
+export const HubCanvasFromCalloutDocument = gql`
+  query hubCanvasFromCallout($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      collaboration {
+        ...CalloutWithCanvas
+      }
+    }
+  }
+  ${CalloutWithCanvasFragmentDoc}
+`;
+
+/**
+ * __useHubCanvasFromCalloutQuery__
+ *
+ * To run a query within a React component, call `useHubCanvasFromCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCanvasFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubCanvasFromCalloutQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      calloutId: // value for 'calloutId'
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useHubCanvasFromCalloutQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubCanvasFromCalloutQuery,
+    SchemaTypes.HubCanvasFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubCanvasFromCalloutQuery, SchemaTypes.HubCanvasFromCalloutQueryVariables>(
+    HubCanvasFromCalloutDocument,
+    options
+  );
+}
+
+export function useHubCanvasFromCalloutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubCanvasFromCalloutQuery,
+    SchemaTypes.HubCanvasFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubCanvasFromCalloutQuery, SchemaTypes.HubCanvasFromCalloutQueryVariables>(
+    HubCanvasFromCalloutDocument,
+    options
+  );
+}
+
+export type HubCanvasFromCalloutQueryHookResult = ReturnType<typeof useHubCanvasFromCalloutQuery>;
+export type HubCanvasFromCalloutLazyQueryHookResult = ReturnType<typeof useHubCanvasFromCalloutLazyQuery>;
+export type HubCanvasFromCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCanvasFromCalloutQuery,
+  SchemaTypes.HubCanvasFromCalloutQueryVariables
+>;
+export function refetchHubCanvasFromCalloutQuery(variables: SchemaTypes.HubCanvasFromCalloutQueryVariables) {
+  return { query: HubCanvasFromCalloutDocument, variables: variables };
+}
+
 export const HubCanvasesDocument = gql`
   query hubCanvases($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -10642,7 +10727,7 @@ export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryV
 }
 
 export const HubCanvasValuesDocument = gql`
-  query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID!) {
+  query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID_NAMEID!, $canvasId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
       collaboration {
@@ -10712,6 +10797,83 @@ export type HubCanvasValuesQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubCanvasValuesQuery(variables: SchemaTypes.HubCanvasValuesQueryVariables) {
   return { query: HubCanvasValuesDocument, variables: variables };
+}
+
+export const ChallengeCanvasFromCalloutDocument = gql`
+  query challengeCanvasFromCallout(
+    $hubId: UUID_NAMEID!
+    $challengeId: UUID_NAMEID!
+    $calloutId: UUID_NAMEID!
+    $canvasId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        collaboration {
+          ...CalloutWithCanvas
+        }
+      }
+    }
+  }
+  ${CalloutWithCanvasFragmentDoc}
+`;
+
+/**
+ * __useChallengeCanvasFromCalloutQuery__
+ *
+ * To run a query within a React component, call `useChallengeCanvasFromCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCanvasFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCanvasFromCalloutQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *      calloutId: // value for 'calloutId'
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useChallengeCanvasFromCalloutQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeCanvasFromCalloutQuery,
+    SchemaTypes.ChallengeCanvasFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeCanvasFromCalloutQuery,
+    SchemaTypes.ChallengeCanvasFromCalloutQueryVariables
+  >(ChallengeCanvasFromCalloutDocument, options);
+}
+
+export function useChallengeCanvasFromCalloutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeCanvasFromCalloutQuery,
+    SchemaTypes.ChallengeCanvasFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeCanvasFromCalloutQuery,
+    SchemaTypes.ChallengeCanvasFromCalloutQueryVariables
+  >(ChallengeCanvasFromCalloutDocument, options);
+}
+
+export type ChallengeCanvasFromCalloutQueryHookResult = ReturnType<typeof useChallengeCanvasFromCalloutQuery>;
+export type ChallengeCanvasFromCalloutLazyQueryHookResult = ReturnType<typeof useChallengeCanvasFromCalloutLazyQuery>;
+export type ChallengeCanvasFromCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeCanvasFromCalloutQuery,
+  SchemaTypes.ChallengeCanvasFromCalloutQueryVariables
+>;
+export function refetchChallengeCanvasFromCalloutQuery(
+  variables: SchemaTypes.ChallengeCanvasFromCalloutQueryVariables
+) {
+  return { query: ChallengeCanvasFromCalloutDocument, variables: variables };
 }
 
 export const ChallengeCanvasesDocument = gql`
@@ -10784,7 +10946,7 @@ export const ChallengeCanvasValuesDocument = gql`
     $hubId: UUID_NAMEID!
     $challengeId: UUID_NAMEID!
     $calloutId: UUID_NAMEID!
-    $canvasId: UUID!
+    $canvasId: UUID_NAMEID!
   ) {
     hub(ID: $hubId) {
       id
@@ -10867,6 +11029,85 @@ export function refetchChallengeCanvasValuesQuery(variables: SchemaTypes.Challen
   return { query: ChallengeCanvasValuesDocument, variables: variables };
 }
 
+export const OpportunityCanvasFromCalloutDocument = gql`
+  query opportunityCanvasFromCallout(
+    $hubId: UUID_NAMEID!
+    $opportunityId: UUID_NAMEID!
+    $calloutId: UUID_NAMEID!
+    $canvasId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubId) {
+      id
+      opportunity(ID: $opportunityId) {
+        id
+        collaboration {
+          ...CalloutWithCanvas
+        }
+      }
+    }
+  }
+  ${CalloutWithCanvasFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCanvasFromCalloutQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCanvasFromCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCanvasFromCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCanvasFromCalloutQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      opportunityId: // value for 'opportunityId'
+ *      calloutId: // value for 'calloutId'
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useOpportunityCanvasFromCalloutQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityCanvasFromCalloutQuery,
+    SchemaTypes.OpportunityCanvasFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityCanvasFromCalloutQuery,
+    SchemaTypes.OpportunityCanvasFromCalloutQueryVariables
+  >(OpportunityCanvasFromCalloutDocument, options);
+}
+
+export function useOpportunityCanvasFromCalloutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityCanvasFromCalloutQuery,
+    SchemaTypes.OpportunityCanvasFromCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityCanvasFromCalloutQuery,
+    SchemaTypes.OpportunityCanvasFromCalloutQueryVariables
+  >(OpportunityCanvasFromCalloutDocument, options);
+}
+
+export type OpportunityCanvasFromCalloutQueryHookResult = ReturnType<typeof useOpportunityCanvasFromCalloutQuery>;
+export type OpportunityCanvasFromCalloutLazyQueryHookResult = ReturnType<
+  typeof useOpportunityCanvasFromCalloutLazyQuery
+>;
+export type OpportunityCanvasFromCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityCanvasFromCalloutQuery,
+  SchemaTypes.OpportunityCanvasFromCalloutQueryVariables
+>;
+export function refetchOpportunityCanvasFromCalloutQuery(
+  variables: SchemaTypes.OpportunityCanvasFromCalloutQueryVariables
+) {
+  return { query: OpportunityCanvasFromCalloutDocument, variables: variables };
+}
+
 export const OpportunityCanvasesDocument = gql`
   query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -10940,7 +11181,7 @@ export const OpportunityCanvasValuesDocument = gql`
     $hubId: UUID_NAMEID!
     $opportunityId: UUID_NAMEID!
     $calloutId: UUID_NAMEID!
-    $canvasId: UUID!
+    $canvasId: UUID_NAMEID!
   ) {
     hub(ID: $hubId) {
       id
