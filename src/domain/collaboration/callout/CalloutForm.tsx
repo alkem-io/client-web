@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutState, CalloutType } from '../../../core/apollo/generated/graphql-schema';
+import { AspectTemplateFragment, CalloutState, CalloutType } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { Grid, Typography } from '@mui/material';
 import FormRow from '../../shared/layout/FormLayout';
@@ -49,11 +49,13 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
   calloutNames: string[];
+  templates: AspectTemplateFragment[];
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
   callout,
   calloutNames,
+  templates,
   editMode = false,
   onChange,
   onStatusChanged,
@@ -140,7 +142,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <>
                 <SectionSpacer />
                 <FormRow>
-                  <CardTemplatesChooser name="cardTemplateType" editMode={editMode} />
+                  <CardTemplatesChooser name="cardTemplateType" templates={templates} editMode={editMode} />
                 </FormRow>
               </>
             )}

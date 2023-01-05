@@ -22,6 +22,9 @@ import { Loading } from '../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
 import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useAspectTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -51,6 +54,12 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
     isCreating,
   } = useCalloutCreation();
 
+  const { hubId } = useHub();
+  const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
+  const getCardTemplates = () => fetchCardTemplates({ variables: { hubId: hubId } });
+
+  const cardTemplates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
+
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
@@ -58,121 +67,125 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   // Scroll to Callout handler:
   const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });
 
-  return (
-    <PageContent>
-      <PageContentColumn columns={4}>
-        <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreateCalloutOpened} />
-        <PageContentBlock>
-          <PageContentBlockHeader
-            title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
-          />
-          <LinksList
-            items={callouts?.map(callout => {
-              const CalloutIcon = calloutIcons[callout.type];
-              return {
-                id: callout.id,
-                title: buildCalloutTitle(callout),
-                icon: <CalloutIcon />,
-                uri: callout.url,
-              };
-            })}
-            emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-              entities: t('common.callouts'),
-              parentEntity: opportunityNameId
-                ? t('common.opportunity')
-                : challengeNameId
-                ? t('common.challenge')
-                : t('common.hub'),
-            })}
-            loading={loading}
-          />
-        </PageContentBlock>
-      </PageContentColumn>
+  const handleCreate = () => {
+    getCardTemplates();
+    handleCreateCalloutOpened();
+  };
 
-      <PageContentColumn columns={8}>
-        {loading && <Loading />}
-        {!loading && callouts?.length === 0 && (
-          <PageContentBlockSeamless textAlign="center">
-            <Caption>
-              {t('pages.generic.sections.subentities.empty', {
+  return (
+    <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${entityTypeName}` as const)}>
+      <PageContent>
+        <PageContentColumn columns={4}>
+          <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
+          <PageContentBlock>
+            <PageContentBlockHeader
+              title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
+            />
+            <LinksList
+              items={callouts?.map(callout => {
+                const CalloutIcon = calloutIcons[callout.type];
+                return {
+                  id: callout.id,
+                  title: buildCalloutTitle(callout),
+                  icon: <CalloutIcon />,
+                  uri: callout.url,
+                };
+              })}
+              emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                 entities: t('common.callouts'),
                 parentEntity: t(`common.${entityTypeName}` as const),
               })}
-            </Caption>
-          </PageContentBlockSeamless>
-        )}
-        {!loading &&
-          callouts?.map(callout => {
-            return (callout => {
-              switch (callout.type) {
-                case CalloutType.Card:
-                  return (
-                    <AspectCallout
-                      key={callout.id}
-                      ref={scrollable(callout.nameID)}
-                      callout={callout}
-                      calloutNames={calloutNames}
-                      contributionsCount={getItemsCount(callout)}
-                      loading={loading}
-                      hubNameId={hubNameId!}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
-                      onCalloutEdit={handleEdit}
-                      onVisibilityChange={handleVisibilityChange}
-                      onCalloutDelete={handleDelete}
-                    />
-                  );
-                case CalloutType.Canvas:
-                  return (
-                    <CanvasCallout
-                      key={callout.id}
-                      ref={scrollable(callout.nameID)}
-                      callout={callout}
-                      calloutNames={calloutNames}
-                      contributionsCount={getItemsCount(callout)}
-                      loading={loading}
-                      hubNameId={hubNameId!}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                      canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
-                      onCalloutEdit={handleEdit}
-                      onVisibilityChange={handleVisibilityChange}
-                      onCalloutDelete={handleDelete}
-                    />
-                  );
-                case CalloutType.Comments:
-                  return (
-                    <CommentsCallout
-                      key={callout.id}
-                      ref={scrollable(callout.nameID)}
-                      callout={callout}
-                      calloutNames={calloutNames}
-                      contributionsCount={getItemsCount(callout)}
-                      loading={loading}
-                      hubNameId={hubNameId!}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                      onCalloutEdit={handleEdit}
-                      onVisibilityChange={handleVisibilityChange}
-                      onCalloutDelete={handleDelete}
-                      isSubscribedToComments={callout.isSubscribedToComments}
-                    />
-                  );
-                default:
-                  throw new Error('Unexpected Callout type');
-              }
-            })(callout);
-          })}
-        <CalloutCreationDialog
-          open={isCalloutCreationDialogOpen}
-          onClose={handleCreateCalloutClosed}
-          onSaveAsDraft={handleCalloutDrafted}
-          isCreating={isCreating}
-          calloutNames={calloutNames}
-        />
-      </PageContentColumn>
-    </PageContent>
+              loading={loading}
+            />
+          </PageContentBlock>
+        </PageContentColumn>
+
+        <PageContentColumn columns={8}>
+          {loading && <Loading />}
+          {!loading && callouts?.length === 0 && (
+            <PageContentBlockSeamless textAlign="center">
+              <Caption>
+                {t('pages.generic.sections.subentities.empty', {
+                  entities: t('common.callouts'),
+                  parentEntity: t(`common.${entityTypeName}` as const),
+                })}
+              </Caption>
+            </PageContentBlockSeamless>
+          )}
+          {!loading &&
+            callouts?.map(callout => {
+              return (callout => {
+                switch (callout.type) {
+                  case CalloutType.Card:
+                    return (
+                      <AspectCallout
+                        key={callout.id}
+                        ref={scrollable(callout.nameID)}
+                        callout={callout}
+                        calloutNames={calloutNames}
+                        contributionsCount={getItemsCount(callout)}
+                        loading={loading}
+                        hubNameId={hubNameId!}
+                        challengeNameId={challengeNameId}
+                        opportunityNameId={opportunityNameId}
+                        canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
+                        onCalloutEdit={handleEdit}
+                        onVisibilityChange={handleVisibilityChange}
+                        onCalloutDelete={handleDelete}
+                      />
+                    );
+                  case CalloutType.Canvas:
+                    return (
+                      <CanvasCallout
+                        key={callout.id}
+                        ref={scrollable(callout.nameID)}
+                        callout={callout}
+                        calloutNames={calloutNames}
+                        contributionsCount={getItemsCount(callout)}
+                        loading={loading}
+                        hubNameId={hubNameId!}
+                        challengeNameId={challengeNameId}
+                        opportunityNameId={opportunityNameId}
+                        canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
+                        onCalloutEdit={handleEdit}
+                        onVisibilityChange={handleVisibilityChange}
+                        onCalloutDelete={handleDelete}
+                      />
+                    );
+                  case CalloutType.Comments:
+                    return (
+                      <CommentsCallout
+                        key={callout.id}
+                        ref={scrollable(callout.nameID)}
+                        callout={callout}
+                        calloutNames={calloutNames}
+                        contributionsCount={getItemsCount(callout)}
+                        loading={loading}
+                        hubNameId={hubNameId!}
+                        challengeNameId={challengeNameId}
+                        opportunityNameId={opportunityNameId}
+                        onCalloutEdit={handleEdit}
+                        onVisibilityChange={handleVisibilityChange}
+                        onCalloutDelete={handleDelete}
+                        isSubscribedToComments={callout.isSubscribedToComments}
+                      />
+                    );
+                  default:
+                    throw new Error('Unexpected Callout type');
+                }
+              })(callout);
+            })}
+          <CalloutCreationDialog
+            open={isCalloutCreationDialogOpen}
+            onClose={handleCreateCalloutClosed}
+            onSaveAsDraft={handleCalloutDrafted}
+            isCreating={isCreating}
+            calloutNames={calloutNames}
+            cardTemplates={cardTemplates}
+          />
+        </PageContentColumn>
+      </PageContent>
+    </MembershipBackdrop>
   );
 };
 

@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
-import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useCanvasTemplatesQuery,
-  useChallengeCanvasesQuery,
-  useHubCanvasesQuery,
-  useOpportunityCanvasesQuery,
+  useChallengeCanvasFromCalloutQuery,
+  useHubCanvasFromCalloutQuery,
+  useOpportunityCanvasFromCalloutQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
+  CanvasDetailsFragment,
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -22,7 +22,7 @@ export type TemplateQuery = {
 } & { hubId: string };
 
 export interface IProvidedEntities {
-  canvases: CanvasFragmentWithCallout[];
+  canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
@@ -39,28 +39,29 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
     calloutNameId: calloutId = '',
+    canvasNameId = '',
   } = useUrlParams();
 
   const { data: canvasTemplates, loading: loadingTemplates } = useCanvasTemplatesQuery({
     variables: { hubId },
   });
 
-  const { data: hubData, loading: loadingHub } = useHubCanvasesQuery({
-    variables: { hubId },
+  const { data: hubData, loading: loadingHub } = useHubCanvasFromCalloutQuery({
+    variables: { hubId, calloutId, canvasId: canvasNameId },
     skip: !!(challengeId || opportunityId),
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
-    variables: { hubId: hubId, challengeId },
+  const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasFromCalloutQuery({
+    variables: { hubId, challengeId, calloutId, canvasId: canvasNameId },
     skip: !challengeId || !!opportunityId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
 
-  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasesQuery({
-    variables: { hubId, opportunityId: opportunityId },
+  const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasFromCalloutQuery({
+    variables: { hubId, opportunityId, calloutId, canvasId: canvasNameId },
     skip: !opportunityId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
@@ -71,7 +72,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts, calloutId) ??
     getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts, calloutId);
 
-  const canvases = callout?.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })) ?? [];
+  const canvas = callout?.canvases?.find(canvas => canvas.nameID === canvasNameId) ?? undefined;
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
   const authorization = callout?.authorization;
@@ -79,7 +80,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
   return (
     <>
       {children(
-        { canvases, templates, calloutId, authorization },
+        { canvas, templates, calloutId, authorization },
         { loadingCanvases: loadingHub || loadingChallenge || loadingOpportunity, loadingTemplates }
       )}
     </>

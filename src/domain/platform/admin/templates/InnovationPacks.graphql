@@ -1,5 +1,6 @@
 query InnovationPacks {
-  library {
+  platform {
+    library {
     id
     innovationPacks {
       id
@@ -30,10 +31,12 @@ query InnovationPacks {
         }
       }
     }
+    }
   }
 }
 query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
-  library {
+  platform {
+    library {
     id
     innovationPack(ID: $innovationPackId) {
       id
@@ -43,5 +46,6 @@ query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTem
         }
       }
     }
+  }
   }
 }
