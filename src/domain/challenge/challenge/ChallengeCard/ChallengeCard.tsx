@@ -25,7 +25,7 @@ const ChallengeCard = ({
   challengeNameId,
   hubDisplayName,
   hubUri,
-  hideJoin: hiddenJoin = false,
+  hideJoin = false,
   ...props
 }: ChallengeCardProps) => {
   const { user } = useUserContext();
@@ -47,7 +47,7 @@ const ChallengeCard = ({
       expansionActions={
         <CardActions>
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="challenge" />
-          {!hiddenJoin && challengeId && challengeNameId && (
+          {!hideJoin && challengeId && challengeNameId && (
             <JourneyCardJoinButton
               challengeId={challengeId}
               challengeNameId={challengeNameId}

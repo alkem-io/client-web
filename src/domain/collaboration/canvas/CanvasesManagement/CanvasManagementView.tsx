@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useCallback, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import React, { FC, useState } from 'react';
+import { Trans } from 'react-i18next';
 import CanvasCreateDialog from '../CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
@@ -9,12 +9,11 @@ import CanvasValueContainer from '../containers/CanvasValueContainer';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasCheckoutStateEnum,
+  CanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
-import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
-import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface ActiveCanvasIdHolder {
   canvasNameId?: string;
@@ -23,7 +22,7 @@ export interface ActiveCanvasIdHolder {
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   calloutId: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
-  canvases: CanvasFragmentWithCallout[];
+  canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasCanvasTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
@@ -66,49 +65,20 @@ export interface CanvasManagementViewProps
     >,
     CanvasNavigationMethods {}
 
-const CanvasManagementView: FC<CanvasManagementViewProps> = ({
-  entities,
-  actions,
-  state,
-  options,
-  backToCanvases,
-  buildLinkToCanvas,
-}) => {
-  const { canvasNameId, calloutId } = entities;
+const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options, backToCanvases }) => {
+  const { canvasNameId, calloutId, canvas } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
-  const { t } = useTranslation();
-
-  const actualActiveCanvas = useMemo(
-    () => (canvasNameId ? entities.canvases.find(c => c.nameID === canvasNameId) : undefined),
-    [canvasNameId, entities.canvases]
-  );
 
   const isCanvasCheckedoutByMe =
-    actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut &&
-    actualActiveCanvas.checkout.lockedBy === user?.user.id;
-  const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
-
-  const buildCanvasUrl = useCallback(
-    (canvasNameId: string, calloutNameId: string) => buildLinkToCanvas(canvasNameId, calloutNameId),
-    [buildLinkToCanvas]
-  );
+    canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && canvas.checkout.lockedBy === user?.user.id;
+  const isCanvasAvailable = canvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
   return (
     <>
-      <CanvasesDashboardSection
-        canvases={entities.canvases}
-        headerText={t('pages.canvas.header', { blockName: entities.contextSource })}
-        subHeaderText={t('pages.canvas.subheader')}
-        noItemsMessage={t('pages.canvas.no-canvases')}
-        loading={state.loadingCanvases}
-        onCreate={() => setShowCreateCanvasDialog(true)}
-        buildCanvasUrl={buildCanvasUrl}
-        {...options}
-      />
-      <CanvasValueContainer canvasId={actualActiveCanvas?.id} calloutId={calloutId}>
+      <CanvasValueContainer canvasId={canvas?.id} calloutId={calloutId}>
         {entities => (
           <CanvasDialog
             entities={{ canvas: entities.canvas }}
