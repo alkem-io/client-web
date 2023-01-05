@@ -6,7 +6,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useGlobalState } from '../../../../../core/state/useGlobalState';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import HideOnScroll from '../HideOnScroll';
-import LanguageSelect from './LanguageSelect';
 import LogoComponent from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
@@ -82,12 +81,11 @@ const DesktopTopBar = () => {
     <Box
       height={theme => theme.spacing(TopBarHeight)}
       display="flex"
-      gap={2}
+      gap={20}
       alignItems="center"
       justifyContent="space-between"
     >
       <LogoComponent flexGrow={1} height={theme => theme.spacing(5)} />
-
       <SearchBarGroup
         sx={{
           display: { xs: 'none', md: 'flex' },
@@ -107,7 +105,6 @@ const DesktopTopBar = () => {
             },
           })}
         />
-        <LanguageSelect />
       </SearchBarGroup>
 
       <TopNavIcons />

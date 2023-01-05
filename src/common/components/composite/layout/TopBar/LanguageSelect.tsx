@@ -1,32 +1,53 @@
-import React, { FC, useCallback } from 'react';
-import { Box, MenuItem, TextField, TextFieldProps } from '@mui/material';
+import React, { FC } from 'react';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { supportedLngs } from '../../../../../core/i18n/config';
+import { LanguageLabels, supportedLngs } from '../../../../../core/i18n/config';
+import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
 
-interface LanguageSelectProps {
-  sx?: TextFieldProps['sx'];
-}
-
-const LanguageSelect: FC<LanguageSelectProps> = ({ sx }) => {
+const LanguageSelect: FC = () => {
   const { i18n } = useTranslation();
 
-  const handleLanguageSelection = useCallback(
-    ({ target: { value } }: { target: { value: string } }) => {
-      i18n.changeLanguage(value);
-    },
-    [i18n]
-  );
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLanguageSelection = (value: string) => {
+    i18n.changeLanguage(value);
+    setAnchorEl(null);
+  };
+
+  const openLanguageSelection = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   return (
-    <Box sx={{ alignItems: 'center' }}>
-      <TextField select size="small" value={i18n.language} onChange={handleLanguageSelection} sx={sx}>
+    <>
+      <Button startIcon={<LanguageOutlinedIcon />} onClick={openLanguageSelection}>
+        {'Language'}
+      </Button>
+      <Menu
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
         {supportedLngs.map(lng => (
-          <MenuItem key={lng} value={lng}>
-            {lng}
+          <MenuItem key={lng} onClick={() => handleLanguageSelection(lng)}>
+            {LanguageLabels[lng]}
           </MenuItem>
         ))}
-      </TextField>
-    </Box>
+      </Menu>
+    </>
   );
 };
 

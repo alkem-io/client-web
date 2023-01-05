@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Container, Link, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import WrapperToolbar from '../../../../common/components/core/WrapperToolbar';
@@ -6,11 +6,19 @@ import { Caption } from '../../typography';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
 import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
 import FooterLogo from './FooterLogo';
+import LanguageSelect from '../../../../common/components/composite/layout/TopBar/LanguageSelect';
+import HelpDialog from '../../../help/dialog/HelpDialog';
 
 const Footer = () => {
   const { t } = useTranslation();
   const { platform } = useConfig();
   const breakpoint = useCurrentBreakpoint();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const openHelpDialog = () => {
+    setDialogOpen(true);
+  };
 
   return (
     <Paper elevation={2}>
@@ -36,20 +44,17 @@ const Footer = () => {
             {t('footer.security')}
           </Link>
           <FooterLogo display={{ xs: 'none', sm: 'block' }} />
-          <Link href={platform?.feedback || ''} target="_blank" rel="noopener noreferrer">
-            {t('footer.feedback')}
-          </Link>
-          <Link href={platform?.support || ''} target="_blank" rel="noopener noreferrer">
-            {t('footer.support')}
-          </Link>
+          <Link onClick={openHelpDialog}>{t('footer.support')}</Link>
           <Link href={platform?.about || ''} target="_blank" rel="noopener noreferrer">
             {t('footer.about')}
           </Link>
+          <LanguageSelect />
         </Box>
         <WrapperToolbar dense sx={{ marginTop: { md: 2 } }}>
           <Caption>{t('footer.copyright')}</Caption>
         </WrapperToolbar>
       </Container>
+      <HelpDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </Paper>
   );
 };

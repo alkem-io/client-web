@@ -25,6 +25,14 @@ export const resources = {
   },
 } as const;
 
+export const LanguageLabels = {
+  en: 'English',
+  nl: 'Dutch',
+  es: 'Spanish',
+  bg: 'Bulgarian',
+  ua: 'Ukranian',
+} as const;
+
 type Language = keyof typeof resources;
 
 export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua'];
