@@ -1,6 +1,5 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
@@ -10,7 +9,6 @@ import CardDetails from '../../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../../core/ui/card/CardDescription';
 import CardTags from '../../../../../core/ui/card/CardTags';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
-import CardImage from '../../../../../core/ui/card/CardImage';
 import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
 import { Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
@@ -25,11 +23,6 @@ const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTem
           {template.provider?.displayName}
         </CardHeaderCaption>
       </CardHeader>
-      <CardImage
-        src={getVisualBannerNarrow(template.info.visual)}
-        alt={template.info.title}
-        defaultImage={<AutoGraphIcon />}
-      />
       <CardDetails>
         <CardDescription>{template.info.description}</CardDescription>
         <CardTags tags={template.info.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
