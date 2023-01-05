@@ -9,6 +9,7 @@ import CardFooter from '../../../../core/ui/card/CardFooter';
 import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import MessageCounter from '../../../../core/ui/card/MessageCounter';
 import { Aspect, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
 export type AspectCardAspect = Pick<Aspect, NeededFields> & {
@@ -29,7 +30,9 @@ const AspectCard = ({ aspect, onClick }: AspectCardProps) => {
 
   return (
     <ContributeCard onClick={handleClick}>
-      <CardHeader title={aspect?.displayName} iconComponent={AspectIcon} createdBy={aspect?.createdBy.displayName} />
+      <CardHeader title={aspect?.displayName} iconComponent={AspectIcon}>
+        <CardHeaderCaption noWrap>{aspect?.createdBy.displayName}</CardHeaderCaption>
+      </CardHeader>
       <CardDetails>
         <CardDescription>{aspect?.profile?.description!}</CardDescription>
         <CardTags tags={aspect?.profile?.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
