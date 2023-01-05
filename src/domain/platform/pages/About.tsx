@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
-import WrapperButton from '../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import useServerMetadata from '../metadata/useServerMetadata';
 import TopLevelDesktopLayout from '../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
+import HelpDialog from '../../../core/help/dialog/HelpDialog';
 
 const useAboutStyles = makeStyles(theme => ({
   content: {
@@ -53,6 +53,11 @@ export const AboutPage = () => {
   const styles = useAboutStyles();
   const { services } = useServerMetadata();
   const { t } = useTranslation();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const openHelpDialog = () => {
+    setDialogOpen(true);
+  };
 
   return (
     <TopLevelDesktopLayout>
@@ -83,13 +88,14 @@ export const AboutPage = () => {
             <Box marginBottom={4}>
               <WrapperTypography>{t('pages.about.description')}</WrapperTypography>
             </Box>
-            <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
-              <WrapperButton text={t('buttons.learn-more')} />
-            </a>
+            <Button variant="outlined" onClick={openHelpDialog}>
+              {t('buttons.learn-more')}
+            </Button>
           </div>
         </Grid>
         <Grid item lg={3} className={styles.mdHidden} />
       </Grid>
+      <HelpDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </TopLevelDesktopLayout>
   );
 };
