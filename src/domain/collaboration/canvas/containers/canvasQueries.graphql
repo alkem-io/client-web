@@ -150,17 +150,6 @@ query challengeCanvasFromCallout(
     }
   }
 }
-query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    challenge(ID: $challengeId) {
-      id
-      collaboration {
-        ...CollaborationWithCanvasDetails
-      }
-    }
-  }
-}
 
 query challengeCanvasValues(
   $hubId: UUID_NAMEID!
@@ -203,17 +192,6 @@ query opportunityCanvasFromCallout(
       id
       collaboration {
         ...CalloutWithCanvas
-      }
-    }
-  }
-}
-query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    opportunity(ID: $opportunityId) {
-      id
-      collaboration {
-        ...CollaborationWithCanvasDetails
       }
     }
   }
