@@ -25,7 +25,7 @@ const LanguageSelect: FC = () => {
 
   return (
     <>
-      <Button startIcon={<LanguageOutlinedIcon />} onClick={openLanguageSelection}>
+      <Button startIcon={<LanguageOutlinedIcon />} onClick={openLanguageSelection} size="small">
         {t('common.language')}
       </Button>
       <Menu
