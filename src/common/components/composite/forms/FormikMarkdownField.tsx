@@ -19,7 +19,7 @@ import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';
 import { ToolbarConfiguration, ToolbarTranslationKeys } from './FormikMarkdownField/toolbar.configuration';
-import { mdToDraftjs, draftjsToMd } from 'draftjs-md-converter';
+import { mdToDraftjs, draftjsToMd } from '@alkemio/draftjs-md-converter';
 
 const EditorWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
