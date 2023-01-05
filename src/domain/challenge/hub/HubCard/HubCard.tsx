@@ -9,7 +9,6 @@ import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
 import { useUserContext } from '../../../community/contributor/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
-import JourneyCardJoinButton from '../../common/JourneyCard/JourneyCardJoinButton';
 
 export interface HubCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
@@ -50,7 +49,6 @@ const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }
       expansionActions={
         <CardActions>
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="hub" />
-          <JourneyCardJoinButton />
         </CardActions>
       }
       {...props}
