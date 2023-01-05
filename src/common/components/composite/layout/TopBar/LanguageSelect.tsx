@@ -5,7 +5,7 @@ import { LanguageLabels, supportedLngs } from '../../../../../core/i18n/config';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
 
 const LanguageSelect: FC = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -26,7 +26,7 @@ const LanguageSelect: FC = () => {
   return (
     <>
       <Button startIcon={<LanguageOutlinedIcon />} onClick={openLanguageSelection}>
-        {'Language'}
+        {t('common.language')}
       </Button>
       <Menu
         open={open}
