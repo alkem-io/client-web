@@ -5,7 +5,7 @@ import Icon, { IconProps } from '../../../core/ui/icon/Icon';
 import Image from './Image';
 import { ClampedTypography } from './ClampedTypography';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
-
+/*
 const ElevatedPaper = withElevationOnHover(Paper);
 
 interface TitleBarProps {
@@ -66,7 +66,8 @@ const OrganizationName = styled(Typography)(() => ({
   display: 'inline',
   textOverflow: 'ellipsis',
 }));
-
+*/
+/*
 const ImageWrapper = styled(Box)(({ theme }) => ({
   aspectRatio: '7/4',
   display: 'flex',
@@ -97,7 +98,7 @@ const ExtraInfoBar = styled(Box)(({ theme }) => ({
   color: theme.palette.highlight.contrastText,
   backgroundColor: theme.palette.highlight.main,
 }));
-
+*/
 export const ExtraInfoWithIcon = ({
   iconComponent,
   children,
@@ -111,7 +112,7 @@ export const ExtraInfoWithIcon = ({
     </Box>
   );
 };
-
+/*
 const ActionButtons = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'end',
@@ -125,13 +126,14 @@ export interface CardWithProviderProps extends TitleBarProps {
   actionButtons?: React.ReactNode[];
   extraInformation?: React.ReactNode;
 }
+*/
 
 /**
  * Card specially made for Cards/Canvases/Lifecycles with buttons at the bottom
  * @param props
  * @returns
  */
-const CardWithProvider = (props: CardWithProviderProps) => {
+/*const CardWithProvider = (props: CardWithProviderProps) => {
   const { extraInformation, onClick, imageUrl, defaultImage } = props;
   return (
     <ElevatedPaper
@@ -153,3 +155,9 @@ const CardWithProvider = (props: CardWithProviderProps) => {
 };
 
 export default CardWithProvider;
+*/
+/*
+AspectImportTemplateCard
+CanvasImportTemplateCard
+InnovationImportTemplateCard
+*/
