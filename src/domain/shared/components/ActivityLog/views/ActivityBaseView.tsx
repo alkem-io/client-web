@@ -1,13 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import { formatTimeElapsed } from '../../../utils/formatTimeElapsed';
 import AuthorAvatar from '../../AuthorAvatar/AuthorAvatar';
 import { Author } from '../../AuthorAvatar/models/author';
-import { ClampedTypography } from '../../ClampedTypography';
-import { Link } from 'react-router-dom';
+import { Caption } from '../../../../../core/ui/typography';
+import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
 
 export interface ActivityBaseViewProps {
   author: Author | undefined;
@@ -44,20 +43,19 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   );
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {loading ? (
-        <Skeleton>
-          <AuthorAvatar author={undefined} />
-        </Skeleton>
-      ) : (
-        <AuthorAvatar author={author} />
-      )}
-      <Box sx={theme => ({ marginLeft: theme.spacing(2), flexGrow: 1 })}>
-        <Typography variant="caption">{loading ? <Skeleton width="60%" /> : title}</Typography>
-        <ClampedTypography clamp={2} component="span">
-          {loading ? <Skeleton /> : url ? <Link to={url}>{children}</Link> : children}
-        </ClampedTypography>
-      </Box>
-    </Box>
+    <BadgeCardView
+      visual={
+        loading ? (
+          <Skeleton>
+            <AuthorAvatar author={undefined} />
+          </Skeleton>
+        ) : (
+          <AuthorAvatar author={author} />
+        )
+      }
+    >
+      <Caption>{loading ? <Skeleton width="60%" /> : title}</Caption>
+      {loading ? <Skeleton /> : url ? <Link to={url}>{children}</Link> : children}
+    </BadgeCardView>
   );
 };

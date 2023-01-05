@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Avatar, Box, Skeleton } from '@mui/material';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import ItemView from '../../../../core/ui/list/ItemView';
+import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Caption } from '../../../../core/ui/typography';
 
 export interface SingleUpdateViewProps {
@@ -23,10 +23,10 @@ const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, cont
 
   return (
     <>
-      <ItemView visual={visual}>
+      <BadgeCardView visual={visual}>
         {loading ? <Skeleton /> : <Caption>{author?.displayName}</Caption>}
         {loading ? <Skeleton /> : <Caption>{createdDate?.toLocaleString()}</Caption>}
-      </ItemView>
+      </BadgeCardView>
       {loading ? (
         <Box paddingY={1}>
           <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />

@@ -3,7 +3,7 @@ import { Box, BoxProps } from '@mui/material';
 import { BoxTypeMap } from '@mui/material/Box/Box';
 import { gutters } from '../grid/utils';
 
-interface ViewProps {
+interface BadgeCardViewProps {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
 }
@@ -23,12 +23,12 @@ const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ 
   });
 };
 
-const ItemView = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
+const BadgeCardView = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
   visual,
   visualRight,
   children,
   ...containerProps
-}: PropsWithChildren<ViewProps> & BoxProps<D, P>) => {
+}: PropsWithChildren<BadgeCardViewProps> & BoxProps<D, P>) => {
   return (
     <Box display="flex" alignItems="center" gap={gutters()} {...containerProps}>
       {cloneVisual(visual)}
@@ -40,4 +40,4 @@ const ItemView = <D extends React.ElementType = BoxTypeMap['defaultComponent'], 
   );
 };
 
-export default ItemView;
+export default BadgeCardView;

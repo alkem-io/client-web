@@ -1,5 +1,4 @@
-import { Box } from '@mui/material';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from './WrapperMarkdown';
 import React from 'react';
 
 interface OneLineMarkdownProps {
@@ -14,9 +13,9 @@ interface OneLineMarkdownProps {
  */
 const OneLineMarkdown = ({ children }: OneLineMarkdownProps) => {
   return (
-    <Box sx={{ '& p': { my: 0 } }}>
-      <WrapperMarkdown>{children}</WrapperMarkdown>
-    </Box>
+    <WrapperMarkdown flat card>
+      {children}
+    </WrapperMarkdown>
   );
 };
 

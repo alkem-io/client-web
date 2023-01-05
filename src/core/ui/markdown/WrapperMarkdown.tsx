@@ -1,24 +1,26 @@
-import React, { FC } from 'react';
+import React from 'react';
 import ReactMarkdown, { Options as ReactMarkdownOptions } from 'react-markdown';
 import gfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import emoji from 'remark-emoji';
-import { components, componentsCard } from './components';
+import components from './components';
+import PlainText from './PlainText';
+import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
 
 const allowedNodeTypes = ['iframe'] as const;
 
-export interface MarkdownProps extends ReactMarkdownOptions {
-  card?: boolean;
-}
+export interface MarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
 
-export const WrapperMarkdown: FC<MarkdownProps> = ({ card = false, ...props }) => {
+export const WrapperMarkdown = ({ card = false, flat = false, ...props }: MarkdownProps) => {
   return (
-    <ReactMarkdown
-      components={card ? componentsCard : components}
-      remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }]]}
-      rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}
-      {...props}
-    />
+    <MarkdownOptionsProvider card={card} flat={flat}>
+      <ReactMarkdown
+        components={components}
+        remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }], [PlainText, { enabled: flat }]]}
+        rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}
+        {...props}
+      />
+    </MarkdownOptionsProvider>
   );
 };
 

@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
-import { CardText, Text } from '../../typography';
 import MarkdownHeading from './MarkdownHeading';
-import { gutters } from '../../grid/utils';
+import MarkdownParagraph from './MarkdownParagraph';
 
 const createComponentThatInheritsParentWidth = (tagName: BoxProps['component']) => {
   const ReactMDNodeImplementation: FC<{ node: ReactMarkdownProps['node'] }> = ({ node, ...props }) => {
@@ -30,18 +29,6 @@ const LinkNewTab = ({ node, ...props }: LinkProps) => {
   return <a target="_blank" {...props} />;
 };
 
-interface ParagraphProps
-  extends Omit<ReactMarkdownProps, 'children'>,
-    React.DetailedHTMLProps<React.HTMLAttributes<HTMLParagraphElement>, HTMLParagraphElement> {}
-
-const Paragraph = ({ node, ref, ...props }: ParagraphProps) => {
-  return <Text {...props} marginY={gutters(0.5)} />;
-};
-
-const CardParagraph = ({ node, ref, ...props }: ParagraphProps) => {
-  return <CardText {...props} />;
-};
-
 const headings = {
   h1: MarkdownHeading,
   h2: MarkdownHeading,
@@ -51,18 +38,11 @@ const headings = {
   h6: MarkdownHeading,
 } as const;
 
-const common = {
+const components = {
   ...componentsInheritingWidth,
   ...headings,
   a: LinkNewTab,
+  p: MarkdownParagraph,
 } as const;
 
-export const components = {
-  ...common,
-  p: Paragraph,
-} as const;
-
-export const componentsCard = {
-  ...common,
-  p: CardParagraph,
-} as const;
+export default components;

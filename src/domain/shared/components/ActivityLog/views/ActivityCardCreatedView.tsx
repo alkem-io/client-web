@@ -4,6 +4,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
 import { NameableEntity } from '../../../types/NameableEntity';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 
 export interface ActivityCardCreatedViewProps extends ActivityViewProps {
   callout: NameableEntity;
@@ -32,5 +33,9 @@ export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props =
 
   const resultProps: ActivityBaseViewProps = { ...props, action, url };
 
-  return <ActivityBaseView {...resultProps}>{description}</ActivityBaseView>;
+  return (
+    <ActivityBaseView {...resultProps}>
+      <OneLineMarkdown>{description}</OneLineMarkdown>
+    </ActivityBaseView>
+  );
 };
