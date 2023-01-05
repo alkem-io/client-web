@@ -5,7 +5,6 @@ import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import RoundedIcon, { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { ReferenceIcon } from './icons/ReferenceIcon';
-import { isAbsoluteUrl, isExternalUrl } from '../../../../core/utils/isAbsoluteUrl';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 
 export interface ReferenceViewProps {
@@ -42,12 +41,10 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
 };
 
 const ReferenceView: FC<ReferenceViewProps> = ({ reference, icon = ReferenceIcon }) => {
-  const isExternalReference = isAbsoluteUrl(reference.uri) && isExternalUrl(reference.uri);
-
   return (
     <BadgeCardView visual={<RoundedIcon size="medium" component={icon} />}>
       <Tooltip title={reference.uri} placement="top-start" disableInteractive>
-        <BlockSectionTitle component={RouterLink} to={reference.uri} external={isExternalReference}>
+        <BlockSectionTitle component={RouterLink} to={reference.uri} loose>
           {reference.name}
         </BlockSectionTitle>
       </Tooltip>
