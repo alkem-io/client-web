@@ -19654,6 +19654,7 @@ export type DeleteCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
 export const InnovationPacksDocument = gql`
   query InnovationPacks {
     platform {
+      id
       library {
         id
         innovationPacks {
@@ -19741,6 +19742,7 @@ export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPa
 export const InnovationPackCanvasTemplateWithValueDocument = gql`
   query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
     platform {
+      id
       library {
         id
         innovationPack(ID: $innovationPackId) {
