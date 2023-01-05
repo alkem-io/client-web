@@ -615,7 +615,7 @@ export type CalloutAspectsArgs = {
 };
 
 export type CalloutCanvasesArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
@@ -2859,8 +2859,8 @@ export type PaginatedUsers = {
 
 export type Platform = {
   __typename?: 'Platform';
-  /** The authorization policy for the platform */
-  authorization: Authorization;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The Communications for the platform */
   communication: Communication;
   /** The ID of the entity */
@@ -12532,6 +12532,74 @@ export type CreateCanvasCanvasTemplateFragment = {
   info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
 };
 
+export type CalloutWithCanvasFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        nameID: string;
+        type: CalloutType;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              anonymousReadAccess: boolean;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            }
+          | undefined;
+        canvases?:
+          | Array<{
+              __typename?: 'Canvas';
+              id: string;
+              nameID: string;
+              displayName: string;
+              createdDate: Date;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'CanvasCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: CanvasCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            }>
+          | undefined;
+      }>
+    | undefined;
+};
+
 export type CollaborationWithCanvasDetailsFragment = {
   __typename?: 'Collaboration';
   id: string;
@@ -12598,6 +12666,89 @@ export type CollaborationWithCanvasDetailsFragment = {
           | undefined;
       }>
     | undefined;
+};
+
+export type HubCanvasFromCalloutQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCanvasFromCalloutQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                type: CalloutType;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      anonymousReadAccess: boolean;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                canvases?:
+                  | Array<{
+                      __typename?: 'Canvas';
+                      id: string;
+                      nameID: string;
+                      displayName: string;
+                      createdDate: Date;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
+                          }
+                        | undefined;
+                      checkout?:
+                        | {
+                            __typename?: 'CanvasCheckout';
+                            id: string;
+                            lockedBy: string;
+                            status: CanvasCheckoutStateEnum;
+                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                          }
+                        | undefined;
+                    }>
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type HubCanvasesQueryVariables = Exact<{
@@ -12684,7 +12835,7 @@ export type HubCanvasesQuery = {
 export type HubCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
-  canvasId: Scalars['UUID'];
+  canvasId: Scalars['UUID_NAMEID'];
 }>;
 
 export type HubCanvasValuesQuery = {
@@ -12763,12 +12914,14 @@ export type HubCanvasValuesQuery = {
   };
 };
 
-export type ChallengeCanvasesQueryVariables = Exact<{
+export type ChallengeCanvasFromCalloutQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeCanvasesQuery = {
+export type ChallengeCanvasFromCalloutQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -12857,7 +13010,7 @@ export type ChallengeCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
-  canvasId: Scalars['UUID'];
+  canvasId: Scalars['UUID_NAMEID'];
 }>;
 
 export type ChallengeCanvasValuesQuery = {
@@ -12944,12 +13097,14 @@ export type ChallengeCanvasValuesQuery = {
   };
 };
 
-export type OpportunityCanvasesQueryVariables = Exact<{
+export type OpportunityCanvasFromCalloutQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID_NAMEID'];
 }>;
 
-export type OpportunityCanvasesQuery = {
+export type OpportunityCanvasFromCalloutQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -13038,7 +13193,7 @@ export type OpportunityCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
   calloutId: Scalars['UUID_NAMEID'];
-  canvasId: Scalars['UUID'];
+  canvasId: Scalars['UUID_NAMEID'];
 }>;
 
 export type OpportunityCanvasValuesQuery = {
