@@ -1,32 +1,62 @@
-import React, { FC, useCallback } from 'react';
-import { Box, MenuItem, TextField, TextFieldProps } from '@mui/material';
+import React, { FC } from 'react';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { supportedLngs } from '../../../../../core/i18n/config';
+import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import { Caption } from '../../../../../core/ui/typography';
 
-interface LanguageSelectProps {
-  sx?: TextFieldProps['sx'];
-}
+const LanguageSelect: FC = () => {
+  const { i18n, t } = useTranslation();
 
-const LanguageSelect: FC<LanguageSelectProps> = ({ sx }) => {
-  const { i18n } = useTranslation();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-  const handleLanguageSelection = useCallback(
-    ({ target: { value } }: { target: { value: string } }) => {
-      i18n.changeLanguage(value);
-    },
-    [i18n]
-  );
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLanguageSelection = (value: string) => {
+    i18n.changeLanguage(value);
+    setAnchorEl(null);
+  };
+
+  const openLanguageSelection = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   return (
-    <Box sx={{ alignItems: 'center' }}>
-      <TextField select size="small" value={i18n.language} onChange={handleLanguageSelection} sx={sx}>
+    <>
+      <Caption
+        component={Button}
+        startIcon={<LanguageOutlinedIcon />}
+        onClick={openLanguageSelection}
+        size="small"
+        color="inherit"
+        sx={{ textTransform: 'none', display: 'flex' }}
+      >
+        {t('common.language')}
+      </Caption>
+      <Menu
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        sx={{ '.MuiMenu-list': { padding: 0 } }}
+      >
         {supportedLngs.map(lng => (
-          <MenuItem key={lng} value={lng}>
-            {lng}
+          <MenuItem key={lng} selected={lng === i18n.language} onClick={() => handleLanguageSelection(lng)}>
+            <Caption>{t(`languages.${lng}` as const)}</Caption>
           </MenuItem>
         ))}
-      </TextField>
-    </Box>
+      </Menu>
+    </>
   );
 };
 
