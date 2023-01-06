@@ -3,6 +3,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { LanguageLabels, supportedLngs } from '../../../../../core/i18n/config';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
+import { Caption } from '../../../../../core/ui/typography';
 
 const LanguageSelect: FC = () => {
   const { i18n, t } = useTranslation();
@@ -25,9 +26,16 @@ const LanguageSelect: FC = () => {
 
   return (
     <>
-      <Button startIcon={<LanguageOutlinedIcon />} onClick={openLanguageSelection} size="small">
+      <Caption
+        component={Button}
+        startIcon={<LanguageOutlinedIcon />}
+        onClick={openLanguageSelection}
+        size="small"
+        color="inherit"
+        sx={{ textTransform: 'none', display: 'flex' }}
+      >
         {t('common.language')}
-      </Button>
+      </Caption>
       <Menu
         open={open}
         anchorEl={anchorEl}
@@ -40,10 +48,11 @@ const LanguageSelect: FC = () => {
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        sx={{ '.MuiMenu-list': { padding: 0 } }}
       >
         {supportedLngs.map(lng => (
-          <MenuItem key={lng} onClick={() => handleLanguageSelection(lng)}>
-            {LanguageLabels[lng]}
+          <MenuItem key={lng} selected={lng === i18n.language} onClick={() => handleLanguageSelection(lng)}>
+            <Caption>{LanguageLabels[lng]}</Caption>
           </MenuItem>
         ))}
       </Menu>
