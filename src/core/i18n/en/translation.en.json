@@ -14,6 +14,13 @@
   "actions": {
     "add-entity": "Add {{entity}}"
   },
+  "languages": {
+    "en": "English",
+    "nl": "Dutch",
+    "es": "Spanish",
+    "bg": "Bulgarian",
+    "ua": "Ukranian"
+  },
   "buttons": {
     "leave": "Leave",
     "learn-more": "Learn more",
