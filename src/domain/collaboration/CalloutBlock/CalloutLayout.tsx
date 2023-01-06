@@ -9,8 +9,7 @@ import {
   CalloutType,
   CalloutVisibility,
 } from '../../../core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
-import Heading from '../../shared/components/Heading';
+import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { CalloutSummary } from '../callout/CalloutSummary';
 import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
@@ -150,7 +149,7 @@ const CalloutLayout = ({
     <>
       {callout.draft && (
         <Box padding={1.5} sx={{ color: 'neutralLight.main', backgroundColor: 'primary.main' }}>
-          <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
+          <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
         </Box>
       )}
       <CalloutDetailsBar>

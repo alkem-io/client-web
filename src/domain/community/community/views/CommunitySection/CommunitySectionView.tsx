@@ -7,7 +7,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../../../../common/components/core/Section';
 import { useCommunityContext } from '../../CommunityContext';
 import { useConfig } from '../../../../platform/config/useConfig';

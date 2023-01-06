@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AdminLifecycleTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({

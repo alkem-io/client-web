@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
 import { Message } from './models/message';
-import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
 import { Caption } from '../../../../core/ui/typography';

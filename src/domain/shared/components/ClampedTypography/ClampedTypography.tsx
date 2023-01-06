@@ -10,10 +10,14 @@ export interface ClampedTypographyProps extends TypographyProps {
 
 // line-clamp css tricks
 //https://css-tricks.com/almanac/properties/l/line-clamp/
+/**
+ * @deprecated use webkitLineClamp()
+ */
 const ClampedTypography = styled(({ clamp, ...rest }: ClampedTypographyProps) => <Typography {...rest} />)`
   display: -webkit-box;
   -webkit-line-clamp: ${props => props.clamp};
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
+
 export default ClampedTypography;

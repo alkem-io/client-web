@@ -12,7 +12,7 @@ import {
 } from '../../core/ui/typography';
 import { GUTTER_MUI } from '../../core/ui/grid/constants';
 import Main from '../../common/components/composite/layout/App/Main';
-import WrapperMarkdown from '../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../core/ui/markdown/WrapperMarkdown';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';

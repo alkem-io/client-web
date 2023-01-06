@@ -4,7 +4,7 @@ import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildUpdatesUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
-import OneLineMarkdown from '../../OneLineMarkdown';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 import { Updates } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {

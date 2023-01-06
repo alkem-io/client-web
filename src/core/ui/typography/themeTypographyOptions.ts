@@ -37,6 +37,18 @@ export const themeTypographyOptions: TypographyOptions = {
     fontWeight: fontWeightRegular,
     lineHeight: lineHeightSingle,
   },
+  h5: {
+    fontFamily: fontFamilySourceSans,
+    fontSize: rem(14),
+    fontWeight: fontWeightBold,
+    lineHeight: lineHeightDouble,
+  },
+  h6: {
+    fontFamily: fontFamilySourceSans,
+    fontSize: rem(14),
+    fontWeight: fontWeightRegular,
+    lineHeight: lineHeightDouble,
+  },
   subtitle1: {
     fontFamily: fontFamilyMontserrat,
     fontSize: rem(16),
@@ -69,4 +81,11 @@ export const themeTypographyOptions: TypographyOptions = {
     fontWeight: fontWeightRegular,
     lineHeight: lineHeightSingle,
   },
+};
+
+export const subHeading = {
+  fontFamily: fontFamilyMontserrat,
+  fontSize: rem(14),
+  lineHeight: lineHeightSingle,
+  fontStyle: 'italic',
 };
