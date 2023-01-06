@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { LanguageLabels, supportedLngs } from '../../../../../core/i18n/config';
+import { supportedLngs } from '../../../../../core/i18n/config';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
 import { Caption } from '../../../../../core/ui/typography';
 
@@ -52,7 +52,7 @@ const LanguageSelect: FC = () => {
       >
         {supportedLngs.map(lng => (
           <MenuItem key={lng} selected={lng === i18n.language} onClick={() => handleLanguageSelection(lng)}>
-            <Caption>{LanguageLabels[lng]}</Caption>
+            <Caption>{t(`languages.${lng}` as const)}</Caption>
           </MenuItem>
         ))}
       </Menu>
