@@ -12,6 +12,7 @@ const SvgWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
+  width: '100%',
   height: '100%',
   color: theme.palette.primary.main,
   '& > svg': {
@@ -22,9 +23,9 @@ const SvgWrapper = styled(Box)(({ theme }) => ({
 const CardImage = ({ aspectRatio = CARD_IMAGE_ASPECT_RATIO_DEFAULT, defaultImageSvg, ...props }: CardImageProps) => {
   if (defaultImageSvg && !props.src) {
     return (
-      <Box display="block" width="100%" sx={{ aspectRatio }} {...props}>
-        <SvgWrapper>{defaultImageSvg}</SvgWrapper>
-      </Box>
+      <SvgWrapper sx={{ aspectRatio }} {...props}>
+        {defaultImageSvg}
+      </SvgWrapper>
     );
   } else {
     return <Box component="img" display="block" width="100%" sx={{ aspectRatio, objectFit: 'cover' }} {...props} />;

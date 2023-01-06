@@ -1,5 +1,6 @@
 import { Box, TypographyProps } from '@mui/material';
 import React, { PropsWithChildren } from 'react';
+import { gutters } from '../grid/utils';
 import { Caption } from '../typography';
 
 interface CardHeaderCaptionProps extends TypographyProps {
@@ -13,12 +14,10 @@ const CardHeaderCaption = ({ logoUrl, children, ...props }: PropsWithChildren<Ca
         <Box
           component="img"
           src={logoUrl}
-          sx={theme => ({
-            verticalAlign: 'middle',
-            maxHeight: theme.spacing(2),
-            maxWidth: theme.spacing(2),
-            marginRight: theme.spacing(0.6),
-          })}
+          maxHeight={gutters()}
+          maxWidth={gutters()}
+          marginRight={gutters(0.5)}
+          sx={{ verticalAlign: 'middle' }}
         />
       )}
       {children}
