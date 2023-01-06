@@ -6,6 +6,7 @@ import { gutters } from '../grid/utils';
 interface BadgeCardViewProps {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
+  contentProps?: BoxProps;
 }
 
 const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ sx: Partial<Sx> }> | undefined) => {
@@ -27,12 +28,13 @@ const BadgeCardView = <D extends React.ElementType = BoxTypeMap['defaultComponen
   visual,
   visualRight,
   children,
+  contentProps,
   ...containerProps
 }: PropsWithChildren<BadgeCardViewProps> & BoxProps<D, P>) => {
   return (
     <Box display="flex" alignItems="center" gap={gutters()} {...containerProps}>
       {cloneVisual(visual)}
-      <Box overflow="hidden" flexGrow={1} minWidth={0}>
+      <Box overflow="hidden" flexGrow={1} minWidth={0} {...contentProps}>
         {children}
       </Box>
       {cloneVisual(visualRight)}

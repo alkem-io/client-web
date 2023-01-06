@@ -1,31 +1,36 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
 import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
 import { CanvasIcon } from '../../../../collaboration/canvas/icon/CanvasIcon';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
+import ContributeCard from '../../../../../core/ui/card/ContributeCard';
+import CardHeader from '../../../../../core/ui/card/CardHeader';
+import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
+import CardImage from '../../../../../core/ui/card/CardImage';
+import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
+import { Caption } from '../../../../../core/ui/typography';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
-const CanvasImportTemplateCard = ({ template, onClick, actionButtons }: CanvasImportTemplateCardProps) => {
+const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCardProps) => {
   return (
-    <CardWithProvider
-      key={template.id}
-      iconComponent={CanvasIcon}
-      title={template.info.title}
-      provider={template.provider?.displayName}
-      providerLogoUrl={template.provider?.profile.avatar?.uri}
-      extraInformation={
-        <ExtraInfoWithIcon iconComponent={Inventory2OutlinedIcon}>
-          {template.innovationPackDisplayName}
-        </ExtraInfoWithIcon>
-      }
-      imageUrl={getVisualBannerNarrow(template.info.visual)}
-      defaultImage={<CanvasIcon />}
-      onClick={onClick}
-      actionButtons={actionButtons}
-    />
+    <ContributeCard onClick={onClick}>
+      <CardHeader title={template.info.title} iconComponent={CanvasIcon}>
+        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.avatar?.uri}>
+          {template.provider?.displayName}
+        </CardHeaderCaption>
+      </CardHeader>
+      <CardImage
+        src={getVisualBannerNarrow(template.info.visual)}
+        alt={template.info.title}
+        defaultImageSvg={<CanvasIcon />}
+      />
+      <CardSegmentCaption icon={<Inventory2OutlinedIcon sx={{ marginLeft: gutters(0.5) }} />} align="left">
+        <Caption noWrap>{template.innovationPackDisplayName}</Caption>
+      </CardSegmentCaption>
+    </ContributeCard>
   );
 };
 

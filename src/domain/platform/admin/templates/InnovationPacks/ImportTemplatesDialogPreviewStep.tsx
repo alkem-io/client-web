@@ -7,6 +7,7 @@ import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGallery
 import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { TemplateInnovationPackMetaInfo } from './InnovationPack';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 export interface ImportTemplatesDialogPreviewStepProps<
   T extends Template,
@@ -53,7 +54,9 @@ const ImportTemplatesDialogPreviewStep = <
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <TemplateCard template={template} />
+        <GridProvider columns={3}>
+          <TemplateCard template={template} />
+        </GridProvider>
         <Box sx={{ display: 'flex', marginY: theme => theme.spacing(2), justifyContent: 'end' }}>
           <Button startIcon={<ArrowBackIcon />} variant="text" onClick={() => onClose()}>
             {t('buttons.back')}

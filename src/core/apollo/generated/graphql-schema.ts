@@ -18272,6 +18272,7 @@ export type InnovationPacksQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
+    id: string;
     library: {
       __typename?: 'Library';
       id: string;
@@ -18392,6 +18393,7 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
+    id: string;
     library: {
       __typename?: 'Library';
       id: string;
