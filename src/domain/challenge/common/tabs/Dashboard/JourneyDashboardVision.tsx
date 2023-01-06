@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import ApplicationButtonContainer from '../../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../../common/components/composite/common/ApplicationButton/ApplicationButton';

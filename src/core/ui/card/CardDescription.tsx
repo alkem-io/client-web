@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { gutters } from '../grid/utils';
-import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../markdown/WrapperMarkdown';
 import OverflowGradient from '../overflow/OverflowGradient';
 import stopPropagation from '../utils/stopPropagation';
 

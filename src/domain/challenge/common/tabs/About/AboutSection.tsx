@@ -20,7 +20,7 @@ import { LifecycleState } from '../../../../platform/admin/templates/InnovationT
 import { ApplicationButton } from '../../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import ApplicationButtonContainer from '../../../../community/application/containers/ApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import WrapperMarkdown, { MarkdownProps } from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown, { MarkdownProps } from '../../../../../core/ui/markdown/WrapperMarkdown';
 import ActivityView from '../../../../platform/metrics/views/MetricsView';
 import DashboardUpdatesSection from '../../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import References from '../../../../shared/components/References/References';
@@ -219,21 +219,19 @@ export const AboutSection: FC<AboutSectionProps> = ({
       <Dialog open={isDialogOpen} fullWidth maxWidth={false} onClose={closeDialog}>
         <DialogTitle onClose={closeDialog}>{t('common.context')}</DialogTitle>
         <DialogContent>
-          <Box display="flex" gap={gutters()} flexDirection="column">
-            {[
-              JourneyContextField.Vision,
-              JourneyContextField.Background,
-              JourneyContextField.Impact,
-              JourneyContextField.Who,
-            ].map(field => (
-              <>
-                <BlockTitle ref={scrollable(field)}>
-                  {t(`context.${journeyTypeName}.${field}.title` as const)}
-                </BlockTitle>
-                <WrapperMarkdown>{context[field]}</WrapperMarkdown>
-              </>
-            ))}
-          </Box>
+          {[
+            JourneyContextField.Vision,
+            JourneyContextField.Background,
+            JourneyContextField.Impact,
+            JourneyContextField.Who,
+          ].map(field => (
+            <Box marginTop={gutters()}>
+              <BlockTitle ref={scrollable(field)} marginBottom={gutters()}>
+                {t(`context.${journeyTypeName}.${field}.title` as const)}
+              </BlockTitle>
+              <WrapperMarkdown>{context[field]}</WrapperMarkdown>
+            </Box>
+          ))}
         </DialogContent>
       </Dialog>
     </>

@@ -3,7 +3,7 @@ import { Box, Collapse, SvgIconProps } from '@mui/material';
 import { BeenhereOutlined, ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import CardImage from '../../../../core/ui/card/CardImage';
-import ItemView from '../../../../core/ui/list/ItemView';
+import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -66,7 +66,7 @@ const JourneyCard = ({
             />
           )}
         </Box>
-        <ItemView
+        <BadgeCardView
           visual={<RoundedIcon size="small" component={Icon} />}
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
           gap={1}
@@ -75,7 +75,7 @@ const JourneyCard = ({
           paddingX={1.5}
         >
           {header}
-        </ItemView>
+        </BadgeCardView>
       </Box>
       <Box onClick={canBeExpanded ? toggleExpanded : undefined} sx={{ cursor: 'pointer' }} paddingBottom={1}>
         <CardContent flexGrow={1}>{children}</CardContent>

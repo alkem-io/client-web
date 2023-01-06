@@ -1,23 +1,29 @@
-import { Link as MuiLink } from '@mui/material';
+import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
 import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
-import { isAbsoluteUrl } from '../../utils/isAbsoluteUrl';
+import { isAbsoluteUrl, normalizeLink } from '../../utils/links';
 
-interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'> {
+interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'target'>, Pick<MuiLinkProps, 'underline'> {
   to: string;
-  external?: boolean;
+  loose?: boolean;
 }
 
-const RouterLink = ({ external, to, ...props }: RouterLinkProps) => {
-  const isAbsolute = isAbsoluteUrl(to);
+/**
+ * Constructs a link choosing between MUI Link and ReactRouter Link
+ * @param to
+ * @param loose - allows domain to be specified without protocol, good for user-submitted content
+ * @constructor
+ */
+const RouterLink = ({ to, loose = false, ...props }: RouterLinkProps) => {
+  const urlLike = loose ? normalizeLink(to) : to;
+
+  const isAbsolute = isAbsoluteUrl(urlLike);
 
   const componentProps = {
     component: isAbsolute ? undefined : ReactRouterLink,
-    [isAbsolute ? 'href' : 'to']: to,
+    [isAbsolute ? 'href' : 'to']: urlLike,
   };
 
-  const shouldOpenNewTab = external ?? isAbsolute;
-
-  return <MuiLink target={shouldOpenNewTab ? '_blank' : undefined} {...componentProps} {...props} />;
+  return <MuiLink target={isAbsolute ? '_blank' : undefined} {...componentProps} {...props} />;
 };
 
 export default RouterLink;

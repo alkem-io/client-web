@@ -6,8 +6,7 @@ type HeadingProps = BoxProps<ComponentType, TypographyProps> & {
 };
 
 /**
- * Most commonly used style for headings.
- * TODO Consider extracting this style to WrapperTypography, so that no overrides are needed.
+ @deprecated - use components exported from core/ui/typography/components
  */
 const Heading = ({ sub = false, ...props }: HeadingProps) => {
   return <Box component={Typography} variant={sub ? 'h5' : 'h4'} fontWeight="bold" {...props} />;
