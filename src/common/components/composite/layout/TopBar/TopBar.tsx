@@ -10,6 +10,7 @@ import LogoComponent from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
 import MobileTopBar, { MobileTopBarHeight } from './MobileTopBar';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 const PREFIX = 'TopBar';
 
@@ -81,7 +82,7 @@ const DesktopTopBar = () => {
     <Box
       height={theme => theme.spacing(TopBarHeight)}
       display="flex"
-      gap={20}
+      gap={gutters()}
       alignItems="center"
       justifyContent="space-between"
     >
