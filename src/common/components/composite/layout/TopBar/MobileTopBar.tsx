@@ -198,7 +198,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
           <ListItemIcon>
             <LanguageIcon />
           </ListItemIcon>
-          {t('common.language')}
+          {'Language'}
           <Box sx={{ ml: 1, mt: 0.5, display: 'flex', alignItems: 'center' }}>
             {languageOpen ? <ExpandLess /> : <ExpandMore />}
           </Box>
