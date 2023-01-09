@@ -1,0 +1,18 @@
+query opportunityRelations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    opportunity(ID: $opportunityId) {
+      collaboration {
+        id
+        relations {
+          id
+          actorRole
+          actorName
+          actorType
+          description
+          type
+        }
+      }
+    }
+  }
+}
