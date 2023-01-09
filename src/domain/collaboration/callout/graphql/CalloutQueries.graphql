@@ -1,57 +1,29 @@
-query HubCallouts($hubNameId: UUID_NAMEID!) {
+query Callouts(
+  $hubNameId: UUID_NAMEID!
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid"
+  $opportunityNameId: UUID_NAMEID = "mockid"
+) {
   hub(ID: $hubNameId) {
     id
-    nameID
-    collaboration {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      callouts {
-        ...Callout
-      }
-    }
-  }
-}
-
-query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    challenge(ID: $challengeNameId) {
-      id
+    ... on Hub @include(if: $includeHub) {
       nameID
       collaboration {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        callouts {
-          ...Callout
-        }
+        ...CollaborationWithCallouts
       }
     }
-  }
-}
-
-query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    opportunity(ID: $opportunityNameId) {
-      id
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       nameID
       collaboration {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        callouts {
-          ...Callout
-        }
+        ...CollaborationWithCallouts
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      nameID
+      collaboration {
+        ...CollaborationWithCallouts
       }
     }
   }
@@ -153,6 +125,17 @@ query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunit
         ...PrivilegesOnCollaboration
       }
     }
+  }
+}
+
+fragment CollaborationWithCallouts on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  callouts {
+    ...Callout
   }
 }
 

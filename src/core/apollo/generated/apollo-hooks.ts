@@ -1130,6 +1130,19 @@ export const CalloutFragmentDoc = gql`
   ${CommentsWithMessagesFragmentDoc}
   ${CardTemplateFragmentDoc}
 `;
+export const CollaborationWithCalloutsFragmentDoc = gql`
+  fragment CollaborationWithCallouts on Collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    callouts {
+      ...Callout
+    }
+  }
+  ${CalloutFragmentDoc}
+`;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
     id
@@ -9504,221 +9517,80 @@ export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
-export const HubCalloutsDocument = gql`
-  query HubCallouts($hubNameId: UUID_NAMEID!) {
+export const CalloutsDocument = gql`
+  query Callouts(
+    $hubNameId: UUID_NAMEID!
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+  ) {
     hub(ID: $hubNameId) {
       id
-      nameID
-      collaboration {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        callouts {
-          ...Callout
-        }
-      }
-    }
-  }
-  ${CalloutFragmentDoc}
-`;
-
-/**
- * __useHubCalloutsQuery__
- *
- * To run a query within a React component, call `useHubCalloutsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubCalloutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubCalloutsQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *   },
- * });
- */
-export function useHubCalloutsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCalloutsQuery, SchemaTypes.HubCalloutsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubCalloutsQuery, SchemaTypes.HubCalloutsQueryVariables>(
-    HubCalloutsDocument,
-    options
-  );
-}
-
-export function useHubCalloutsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubCalloutsQuery, SchemaTypes.HubCalloutsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubCalloutsQuery, SchemaTypes.HubCalloutsQueryVariables>(
-    HubCalloutsDocument,
-    options
-  );
-}
-
-export type HubCalloutsQueryHookResult = ReturnType<typeof useHubCalloutsQuery>;
-export type HubCalloutsLazyQueryHookResult = ReturnType<typeof useHubCalloutsLazyQuery>;
-export type HubCalloutsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubCalloutsQuery,
-  SchemaTypes.HubCalloutsQueryVariables
->;
-export function refetchHubCalloutsQuery(variables: SchemaTypes.HubCalloutsQueryVariables) {
-  return { query: HubCalloutsDocument, variables: variables };
-}
-
-export const ChallengeCalloutsDocument = gql`
-  query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      challenge(ID: $challengeNameId) {
-        id
+      ... on Hub @include(if: $includeHub) {
         nameID
         collaboration {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          callouts {
-            ...Callout
-          }
+          ...CollaborationWithCallouts
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        nameID
+        collaboration {
+          ...CollaborationWithCallouts
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        nameID
+        collaboration {
+          ...CollaborationWithCallouts
         }
       }
     }
   }
-  ${CalloutFragmentDoc}
+  ${CollaborationWithCalloutsFragmentDoc}
 `;
 
 /**
- * __useChallengeCalloutsQuery__
+ * __useCalloutsQuery__
  *
- * To run a query within a React component, call `useChallengeCalloutsQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeCalloutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCalloutsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeCalloutsQuery({
+ * const { data, loading, error } = useCalloutsQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
  *      challengeNameId: // value for 'challengeNameId'
- *   },
- * });
- */
-export function useChallengeCalloutsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeCalloutsQuery, SchemaTypes.ChallengeCalloutsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeCalloutsQuery, SchemaTypes.ChallengeCalloutsQueryVariables>(
-    ChallengeCalloutsDocument,
-    options
-  );
-}
-
-export function useChallengeCalloutsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeCalloutsQuery,
-    SchemaTypes.ChallengeCalloutsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeCalloutsQuery, SchemaTypes.ChallengeCalloutsQueryVariables>(
-    ChallengeCalloutsDocument,
-    options
-  );
-}
-
-export type ChallengeCalloutsQueryHookResult = ReturnType<typeof useChallengeCalloutsQuery>;
-export type ChallengeCalloutsLazyQueryHookResult = ReturnType<typeof useChallengeCalloutsLazyQuery>;
-export type ChallengeCalloutsQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeCalloutsQuery,
-  SchemaTypes.ChallengeCalloutsQueryVariables
->;
-export function refetchChallengeCalloutsQuery(variables: SchemaTypes.ChallengeCalloutsQueryVariables) {
-  return { query: ChallengeCalloutsDocument, variables: variables };
-}
-
-export const OpportunityCalloutsDocument = gql`
-  query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      opportunity(ID: $opportunityNameId) {
-        id
-        nameID
-        collaboration {
-          id
-          authorization {
-            id
-            myPrivileges
-          }
-          callouts {
-            ...Callout
-          }
-        }
-      }
-    }
-  }
-  ${CalloutFragmentDoc}
-`;
-
-/**
- * __useOpportunityCalloutsQuery__
- *
- * To run a query within a React component, call `useOpportunityCalloutsQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityCalloutsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityCalloutsQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *   },
  * });
  */
-export function useOpportunityCalloutsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityCalloutsQuery,
-    SchemaTypes.OpportunityCalloutsQueryVariables
-  >
+export function useCalloutsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityCalloutsQuery, SchemaTypes.OpportunityCalloutsQueryVariables>(
-    OpportunityCalloutsDocument,
-    options
-  );
+  return Apollo.useQuery<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>(CalloutsDocument, options);
 }
 
-export function useOpportunityCalloutsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityCalloutsQuery,
-    SchemaTypes.OpportunityCalloutsQueryVariables
-  >
+export function useCalloutsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityCalloutsQuery, SchemaTypes.OpportunityCalloutsQueryVariables>(
-    OpportunityCalloutsDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>(CalloutsDocument, options);
 }
 
-export type OpportunityCalloutsQueryHookResult = ReturnType<typeof useOpportunityCalloutsQuery>;
-export type OpportunityCalloutsLazyQueryHookResult = ReturnType<typeof useOpportunityCalloutsLazyQuery>;
-export type OpportunityCalloutsQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityCalloutsQuery,
-  SchemaTypes.OpportunityCalloutsQueryVariables
->;
-export function refetchOpportunityCalloutsQuery(variables: SchemaTypes.OpportunityCalloutsQueryVariables) {
-  return { query: OpportunityCalloutsDocument, variables: variables };
+export type CalloutsQueryHookResult = ReturnType<typeof useCalloutsQuery>;
+export type CalloutsLazyQueryHookResult = ReturnType<typeof useCalloutsLazyQuery>;
+export type CalloutsQueryResult = Apollo.QueryResult<SchemaTypes.CalloutsQuery, SchemaTypes.CalloutsQueryVariables>;
+export function refetchCalloutsQuery(variables: SchemaTypes.CalloutsQueryVariables) {
+  return { query: CalloutsDocument, variables: variables };
 }
 
 export const HubCalloutAspectsSubscriptionDocument = gql`

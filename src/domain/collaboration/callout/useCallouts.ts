@@ -1,12 +1,5 @@
-import { isChallengeId, isHubId, isOpportunityId, OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
-import {
-  useChallengeCalloutsLazyQuery,
-  useChallengeCalloutsQuery,
-  useHubCalloutsLazyQuery,
-  useHubCalloutsQuery,
-  useOpportunityCalloutsLazyQuery,
-  useOpportunityCalloutsQuery,
-} from '../../../core/apollo/generated/apollo-hooks';
+import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
+import { useCalloutsLazyQuery, useCalloutsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   Callout,
@@ -73,44 +66,37 @@ export type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'desc
   );
 
 const useCallouts = (params: OptionalCoreEntityIds) => {
-  // queries
-  const { data: hubCalloutsData, loading: hubCalloutsLoading } = useHubCalloutsQuery({
-    variables: isHubId(params) ? params : (params as never),
+  const includeHub = !(params.challengeNameId || params.opportunityNameId);
+  const includeChallenge = !!params.challengeNameId;
+  const includeOpportunity = !!params.opportunityNameId;
+
+  const { data: calloutsData, loading: calloutsLoading } = useCalloutsQuery({
+    variables: {
+      hubNameId: params.hubNameId!,
+      challengeNameId: params.challengeNameId,
+      opportunityNameId: params.opportunityNameId,
+      includeHub,
+      includeChallenge,
+      includeOpportunity,
+    },
     fetchPolicy: 'cache-and-network',
-    skip: !isHubId(params),
+    skip: !params.hubNameId,
   });
 
-  const { data: challengeCalloutsData, loading: challengeCalloutsLoading } = useChallengeCalloutsQuery({
-    variables: isChallengeId(params) ? params : (params as never),
-    fetchPolicy: 'cache-and-network',
-    skip: !isChallengeId(params),
-  });
-
-  const { data: opportunityCalloutsData, loading: opportunityCalloutsLoading } = useOpportunityCalloutsQuery({
-    variables: isOpportunityId(params) ? params : (params as never),
-    fetchPolicy: 'cache-and-network',
-    skip: !isOpportunityId(params),
-  });
-
-  const [getHubCallouts] = useHubCalloutsLazyQuery({
-    variables: isHubId(params) ? params : (params as never),
-    fetchPolicy: 'cache-and-network',
-  });
-  const [getChallengeCallouts] = useChallengeCalloutsLazyQuery({
-    variables: isChallengeId(params) ? params : (params as never),
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [getOpportunityCallouts] = useOpportunityCalloutsLazyQuery({
-    variables: isOpportunityId(params) ? params : (params as never),
+  const [getCallouts] = useCalloutsLazyQuery({
+    variables: {
+      hubNameId: params.hubNameId!,
+      challengeNameId: params.challengeNameId,
+      opportunityNameId: params.opportunityNameId,
+      includeHub,
+      includeChallenge,
+      includeOpportunity,
+    },
     fetchPolicy: 'cache-and-network',
   });
 
-  const collaboration = (
-    hubCalloutsData?.hub ??
-    challengeCalloutsData?.hub.challenge ??
-    opportunityCalloutsData?.hub.opportunity
-  )?.collaboration;
+  const collaboration = (calloutsData?.hub ?? calloutsData?.hub.challenge ?? calloutsData?.hub.opportunity)
+    ?.collaboration;
 
   const commentCalloutIds = collaboration?.callouts?.filter(x => x.type === CalloutType.Comments).map(x => x.id) ?? [];
 
@@ -154,17 +140,13 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     } as TypedCallout;
   });
 
-  const reloadCallouts = isOpportunityId(params)
-    ? getOpportunityCallouts
-    : isChallengeId(params)
-    ? getChallengeCallouts
-    : getHubCallouts;
+  const reloadCallouts = getCallouts;
 
   return {
     callouts,
     canCreateCallout,
     getItemsCount,
-    loading: hubCalloutsLoading || challengeCalloutsLoading || opportunityCalloutsLoading,
+    loading: calloutsLoading,
     reloadCallouts,
   };
 };
