@@ -1606,7 +1606,10 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
+  | 'collaboration'
+  | 'community'
   | 'configuration'
+  | 'context'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'hub'
   | 'hubs'
@@ -1633,7 +1636,10 @@ export type QueryFieldPolicy = {
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  community?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
