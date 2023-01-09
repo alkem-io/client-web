@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
-import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
@@ -24,9 +23,7 @@ import useCommunityUserAssignment from '../community/useCommunityUserAssignment'
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 
-const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'community' });
-
+const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { hubId, communityId } = useHub();
 
   const { applications, loading: isLoadingApplications } = useHubApplications();

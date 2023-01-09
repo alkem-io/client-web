@@ -1,8 +1,8 @@
 import React, { ComponentType } from 'react';
 import { Tabs } from '@mui/material';
 import { TabsProps } from '@mui/material/Tabs/Tabs';
-import NavigationTab from '../NavigationTab/NavigationTab';
-import { gutters } from '../../../../core/ui/grid/utils';
+import NavigationTab from '../../../../../common/components/core/NavigationTab/NavigationTab';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 export interface TabDefinition<Section extends string | number> {
   section: Section;
@@ -10,20 +10,20 @@ export interface TabDefinition<Section extends string | number> {
   icon: ComponentType;
 }
 
-export interface PageTabsProps<Section extends string | number> extends TabsProps {
+export interface EntitySettingsTabsProps<Section extends string | number> extends TabsProps {
   currentTab: Section;
   tabs: TabDefinition<Section>[];
   getTabLabel: (section: Section) => string;
   routePrefix?: string;
 }
 
-const PageTabs = <Section extends string | number>({
+const EntitySettingsTabs = <Section extends string | number>({
   currentTab,
   tabs,
   getTabLabel,
   routePrefix = '',
   ...tabsPops
-}: PageTabsProps<Section>) => {
+}: EntitySettingsTabsProps<Section>) => {
   const getTabRoute = (tab: TabDefinition<Section>) => {
     const { route } = tab;
     return `${routePrefix}${route}`;
@@ -61,4 +61,4 @@ const PageTabs = <Section extends string | number>({
   );
 };
 
-export default PageTabs;
+export default EntitySettingsTabs;
