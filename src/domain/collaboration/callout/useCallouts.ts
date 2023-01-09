@@ -95,8 +95,12 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const collaboration = (calloutsData?.hub ?? calloutsData?.hub.challenge ?? calloutsData?.hub.opportunity)
-    ?.collaboration;
+  const collaboration =
+    calloutsData?.hub?.collaboration ??
+    calloutsData?.hub.challenge?.collaboration ??
+    calloutsData?.hub.opportunity?.collaboration;
+
+  const reloadCallouts = getCallouts;
 
   const commentCalloutIds = collaboration?.callouts?.filter(x => x.type === CalloutType.Comments).map(x => x.id) ?? [];
 
@@ -139,8 +143,6 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
         }),
     } as TypedCallout;
   });
-
-  const reloadCallouts = getCallouts;
 
   return {
     callouts,
