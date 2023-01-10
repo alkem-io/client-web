@@ -16,6 +16,7 @@ export interface HubCardProps
   displayName: string;
   vision: string;
   membersCount: number;
+  isDemoHub?: boolean;
 }
 
 const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }: HubCardProps) => {

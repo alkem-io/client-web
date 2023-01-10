@@ -23,6 +23,7 @@ import { CalloutLayoutEvents } from '../callout/Types';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { useAspectTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
+import { Ribbon } from '../../../core/ui/card/Ribbon';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -148,9 +149,9 @@ const CalloutLayout = ({
   return (
     <>
       {callout.draft && (
-        <Box padding={1.5} sx={{ color: 'neutralLight.main', backgroundColor: 'primary.main' }}>
+        <Ribbon>
           <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
-        </Box>
+        </Ribbon>
       )}
       <CalloutDetailsBar>
         {hasCalloutDetails && (
