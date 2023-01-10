@@ -200,6 +200,7 @@
     "preview": "Preview",
     "help": "Help",
     "loading": "Loading...",
+    "language": "Language",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
     "more": "More",
@@ -1271,6 +1272,7 @@
           "impact": "<impact>Purpose Driven</impact>",
           "foundation": "<foundation>Innovation</foundation>",
           "opensource": "<opensource>Open Source</opensource>",
+          "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
             "header": "Existing user? Jump back in!",
@@ -1292,7 +1294,7 @@
           "body1": "Visibility: Public Hubs are fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },
         "my-hubs": {
-          "header": "My Hubs ({{myHubsCount}}). Welcome back {{username}}!"
+          "header": "My Hubs ({{myHubsCount}})"
         },
         "organizations": {
           "header": "Organizations",
