@@ -10,11 +10,10 @@ import { UserRolesInEntity } from '../../../community/contributor/user/providers
 
 interface MyHubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
-  username?: string;
   loading?: boolean;
 }
 
-const MyHubsSection = ({ userHubRoles, loading, username }: MyHubsSectionProps) => {
+const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
   const { t } = useTranslation();
 
   const { data: hubsData, loading: areHubsLoading } = useHubsQuery();
@@ -37,10 +36,7 @@ const MyHubsSection = ({ userHubRoles, loading, username }: MyHubsSectionProps) 
 
   return (
     <DashboardHubsSection
-      headerText={t('pages.home.sections.my-hubs.header', {
-        myHubsCount,
-        username,
-      })}
+      headerText={t('pages.home.sections.my-hubs.header', { myHubsCount })}
       hubs={hubs}
       getHubCardProps={getHubCardProps}
     >

@@ -15,7 +15,7 @@ const AuthenticatedUserHome = forwardRef<HTMLDivElement, AuthenticatedUserHomePr
   return (
     <Box ref={ref} display="flex" flexDirection="column" gap={gutters()} flexGrow={1}>
       <PageTitle>{t('pages.home.sections.welcome.welcome-back', { username: user.user?.user.firstName })}</PageTitle>
-      <MyHubsSection userHubRoles={user.userHubRoles} loading={user.loading} username={user.user?.user.firstName} />
+      <MyHubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
     </Box>
   );
 });
