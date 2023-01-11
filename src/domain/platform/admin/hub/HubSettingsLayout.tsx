@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
-import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
+import { CommonTabs, SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
-import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
+import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import HubPageBanner from '../../../challenge/hub/layout/HubPageBanner';
 import HubTabs from '../../../challenge/hub/layout/HubTabs';
 

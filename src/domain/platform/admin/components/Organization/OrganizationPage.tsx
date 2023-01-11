@@ -1,9 +1,8 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
@@ -14,21 +13,20 @@ import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit
 import { EditMode } from '../../../../../core/ui/forms/editMode';
 import {
   CreateOrganizationInput,
-  UpdateOrganizationInput,
   Organization,
+  UpdateOrganizationInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { logger } from '../../../../../services/logging/winston/logger';
 import { Loading } from '../../../../../common/components/core';
 import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '../../../../shared/utils/apollo-cache/clearCacheForQuery';
 
-interface Props extends PageProps {
+interface Props {
   title?: string;
   mode: EditMode;
 }
 
-const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
+const OrganizationPage: FC<Props> = ({ title, mode }) => {
   const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const { organizationNameId } = useOrganization();
@@ -41,10 +39,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
 
   const organization = data?.organization;
 
-  const currentPaths = useMemo(
-    () => [...paths, { name: t(`common.enums.edit-mode.${mode}` as const), real: false }],
-    [paths, mode, t]
-  );
   const notify = useNotification();
   const navigateToEdit = useNavigateToEdit();
   const [createTagset] = useCreateTagsetOnProfileMutation({
@@ -52,7 +46,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     // there is an issue handling multiple snackbars.
     onError: error => logger.error(error.message),
   });
-  useUpdateNavigation({ currentPaths });
 
   const [createOrganization] = useCreateOrganizationMutation({
     onCompleted: data => {

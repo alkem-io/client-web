@@ -26,6 +26,9 @@ export const useAppendPath = (paths: Path[], pathDef: PathDef) => {
   );
 };
 
+/**
+ * @deprecated
+ */
 export const useAppendBreadcrumb = (paths: Path[], pathDef: PathDef) => {
   const currentPaths = useAppendPath(paths, pathDef);
   useUpdateNavigation({ currentPaths });
