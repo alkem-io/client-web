@@ -34,7 +34,7 @@ const LanguageSelect: FC = () => {
         color="inherit"
         sx={{ textTransform: 'none', display: 'flex' }}
       >
-        {t('common.language')}
+        Language
       </Caption>
       <Menu
         open={open}

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Aspect, AspectTemplateFragment, VisualUriFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
+import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
 import CardDetails from '../../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../../core/ui/card/CardDescription';
 import CardTags from '../../../../../core/ui/card/CardTags';
@@ -29,11 +30,9 @@ const CardTemplatePreviewCard: FC<CardTemplatePreviewProps> = ({ cardTemplate })
 
   return (
     <ContributeCard>
-      <CardHeader
-        title={`${t('common.card')} ${t('common.title').toLowerCase()}`}
-        iconComponent={AspectIcon}
-        createdBy={'John Alkemist'}
-      />
+      <CardHeader title={`${t('common.card')} ${t('common.title').toLowerCase()}`} iconComponent={AspectIcon}>
+        <CardHeaderCaption noWrap>John Alkemist</CardHeaderCaption>
+      </CardHeader>
       <CardDetails>
         <CardDescription>{defaultDescription}</CardDescription>
         <CardTags tags={[]} paddingX={1.5} marginY={1} />

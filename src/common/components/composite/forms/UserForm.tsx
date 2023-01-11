@@ -21,6 +21,8 @@ import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../domain/common/location/countries.constants';
 import FormRow from '../../../../domain/shared/layout/FormLayout';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
+import FormikMarkdownField from './FormikMarkdownField';
+import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -277,14 +279,16 @@ export const UserForm: FC<UserProps> = ({
                     </Grid>
                     <Grid container spacing={4} marginTop={2}>
                       <FormRow>
-                        <FormikInputField
-                          name={'bio'}
-                          title={'Bio'}
+                        <FormikMarkdownField
+                          name="bio"
+                          title={t('components.profile.fields.bio.title')}
                           readOnly={isReadOnlyMode}
-                          placeholder={'Bio'}
+                          placeholder={t('components.profile.fields.bio.title')}
                           multiline
                           rows={5}
                           disabled={isSubmitting}
+                          withCounter
+                          maxLength={LONG_TEXT_LENGTH}
                         />
                       </FormRow>
 

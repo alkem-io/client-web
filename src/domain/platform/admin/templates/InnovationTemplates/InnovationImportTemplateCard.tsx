@@ -1,32 +1,36 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import CardWithProvider, { ExtraInfoWithIcon } from '../../../../shared/components/CardWithProvider';
-import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
+import ContributeCard from '../../../../../core/ui/card/ContributeCard';
+import CardHeader from '../../../../../core/ui/card/CardHeader';
+import CardDetails from '../../../../../core/ui/card/CardDetails';
+import CardDescription from '../../../../../core/ui/card/CardDescription';
+import CardTags from '../../../../../core/ui/card/CardTags';
+import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
+import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
+import { Caption } from '../../../../../core/ui/typography';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
-const InnovationImportTemplateCard = ({ template, onClick, actionButtons }: InnovationImportTemplateCardProps) => {
+const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTemplateCardProps) => {
   return (
-    <CardWithProvider
-      key={template.id}
-      iconComponent={AutoGraphIcon}
-      title={template.info.title}
-      provider={template.provider?.displayName}
-      providerLogoUrl={template.provider?.profile.avatar?.uri}
-      extraInformation={
-        <ExtraInfoWithIcon iconComponent={Inventory2OutlinedIcon}>
-          {template.innovationPackDisplayName}
-        </ExtraInfoWithIcon>
-      }
-      imageUrl={getVisualBannerNarrow(template.info.visual)}
-      defaultImage={<AutoGraphOutlinedIcon />}
-      onClick={onClick}
-      actionButtons={actionButtons}
-    />
+    <ContributeCard onClick={onClick}>
+      <CardHeader title={template.info.title} iconComponent={AutoGraphIcon}>
+        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.avatar?.uri}>
+          {template.provider?.displayName}
+        </CardHeaderCaption>
+      </CardHeader>
+      <CardDetails>
+        <CardDescription>{template.info.description}</CardDescription>
+        <CardTags tags={template.info.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+      </CardDetails>
+      <CardSegmentCaption icon={<Inventory2OutlinedIcon sx={{ marginLeft: gutters(0.5) }} />} align="left">
+        <Caption noWrap>{template.innovationPackDisplayName}</Caption>
+      </CardSegmentCaption>
+    </ContributeCard>
   );
 };
 
