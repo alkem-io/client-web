@@ -1,7 +1,6 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, Collapse, SvgIconProps } from '@mui/material';
 import { BeenhereOutlined, ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import CardImage from '../../../../core/ui/card/CardImage';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -12,7 +11,6 @@ import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import JourneyCardBannerPlaceholder from './JourneyCardBannerPlaceholder';
 import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
-import CardRibbon from '../../../../core/ui/card/CardRibbon';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -23,11 +21,11 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   journeyUri: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
+  ribbon?: ReactNode;
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
   matchedTerms?: boolean;
-  isDemoHub?: boolean;
 }
 
 const JourneyCard = ({
@@ -39,15 +37,14 @@ const JourneyCard = ({
   journeyUri,
   expansion,
   expansionActions,
+  ribbon,
   member,
   locked,
   actions,
   matchedTerms = false,
-  isDemoHub,
   children,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
-  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const canBeExpanded = !!expansion;
@@ -56,13 +53,11 @@ const JourneyCard = ({
 
   const Tags = matchedTerms ? CardMatchedTerms : CardTags;
 
-  const demoHubString = `${t('common.enums.hub-visibility.DEMO')} ${t('common.hub')}`.toLocaleUpperCase();
-
   return (
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
         <Box position="relative">
-          {isDemoHub && <CardRibbon text={demoHubString} />}
+          {ribbon}
           {bannerUri ? <CardImage src={bannerUri} alt={tagline} /> : <JourneyCardBannerPlaceholder />}
           {member && (
             <RoundedIcon
@@ -70,7 +65,7 @@ const JourneyCard = ({
               component={BeenhereOutlined}
               position="absolute"
               right={gutters(0.5)}
-              top={gutters(isDemoHub ? 2.0 : 0.5)}
+              top={gutters(ribbon ? 2.0 : 0.5)}
             />
           )}
         </Box>

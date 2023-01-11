@@ -9,6 +9,7 @@ import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
 import { useUserContext } from '../../../community/contributor/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
+import CardRibbon from '../../../../core/ui/card/CardRibbon';
 
 export interface HubCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
@@ -19,12 +20,15 @@ export interface HubCardProps
   isDemoHub?: boolean;
 }
 
-const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }: HubCardProps) => {
+const HubCard = ({ hubId, displayName, vision, membersCount, tagline, isDemoHub, ...props }: HubCardProps) => {
   const { t } = useTranslation();
 
   const { user } = useUserContext();
 
   const isMember = hubId ? user?.ofHub(hubId) : undefined;
+  const ribbon = isDemoHub ? (
+    <CardRibbon text={`${t('common.enums.hub-visibility.DEMO')} ${t('common.hub')}`} />
+  ) : undefined;
 
   return (
     <JourneyCard
@@ -52,6 +56,7 @@ const HubCard = ({ hubId, displayName, vision, membersCount, tagline, ...props }
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName="hub" />
         </CardActions>
       }
+      ribbon={ribbon}
       {...props}
     >
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
