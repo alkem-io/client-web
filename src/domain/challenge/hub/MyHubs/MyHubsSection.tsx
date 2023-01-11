@@ -5,7 +5,6 @@ import DashboardHubsSection, {
   DashboardHubSectionProps,
 } from '../../../shared/components/DashboardSections/DashboardHubsSection';
 import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { Loading } from '../../../../common/components/core';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
@@ -39,8 +38,7 @@ const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
 
   return (
     <DashboardHubsSection
-      headerText={withOptionalCount(t('pages.home.sections.my-hubs.header'), myHubsCount)}
-      subHeaderText={t('pages.home.sections.my-hubs.subheader')}
+      headerText={t('pages.home.sections.my-hubs.header', { myHubsCount })}
       hubs={hubs}
       getHubCardProps={getHubCardProps}
     >
