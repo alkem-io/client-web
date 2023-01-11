@@ -37,7 +37,7 @@ export const OpportunityRoute: FC = () => {
         }
       />
       <Route path="authorization/*" element={<OpportunityAuthorizationRoute />} />
-      <Route path={'innovation-flow/*'} element={<OpportunityInnovationFlowPage />} />
+      <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
