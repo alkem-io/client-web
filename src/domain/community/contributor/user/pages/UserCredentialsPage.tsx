@@ -18,7 +18,7 @@ import {
   useProfileVerifiedCredentialSubscription,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { PageProps } from '../../../../shared/types/PageProps';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';

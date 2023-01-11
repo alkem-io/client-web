@@ -1,17 +1,19 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import TopBar, { TopBarSpacer } from '../../../../common/components/composite/layout/TopBar/TopBar';
-import Footer from '../../../../core/ui/layout/Footer/Footer';
+import Footer from '../Footer/Footer';
 import { FloatingActionButtons } from '../../../../common/components/core';
-import PageContent from '../../../../core/ui/content/PageContent';
+import PageContent from '../../content/PageContent';
 
-/**
- * @deprecated - left for compatibility with Pages that haven't been updated to the new design yet
- */
-const TopLevelDesktopLayout = ({ children }: PropsWithChildren<{}>) => {
+interface TopLevelDesktopLayoutProps {
+  heading?: ReactNode;
+}
+
+const TopLevelDesktopLayout = ({ heading, children }: PropsWithChildren<TopLevelDesktopLayoutProps>) => {
   return (
     <>
       <TopBar />
       <TopBarSpacer />
+      {heading}
       <PageContent>{children}</PageContent>
       <Footer />
       <FloatingActionButtons />

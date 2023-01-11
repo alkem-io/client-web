@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import OpportunityList from '../../../../platform/admin/opportunity/pages/OpportunityList';
 
-const ChallengeOpportunitiesPage: FC<SettingsPageProps> = ({ paths, routePrefix }) => {
+const ChallengeOpportunitiesPage: FC<SettingsPageProps> = ({ routePrefix }) => {
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Opportunities} tabRoutePrefix={routePrefix}>
-      <OpportunityList paths={paths} />
+      <OpportunityList />
     </ChallengeSettingsLayout>
   );
 };

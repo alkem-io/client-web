@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
-import { EntityTypeName } from '../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import CalloutsView from '../callout/CalloutsView/CalloutsView';
 

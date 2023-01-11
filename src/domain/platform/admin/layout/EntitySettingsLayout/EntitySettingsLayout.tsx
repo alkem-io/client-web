@@ -1,14 +1,11 @@
 import React, { ComponentType, FC, useCallback } from 'react';
 import { SettingsSection } from './constants';
-import PageTabs, { TabDefinition } from '../../../../../common/components/core/PageTabs/PageTabs';
+import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
-import SimplePageLayout from '../../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import SettingsPageContent from './SettingsPageContent';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
-import TopBar, { TopBarSpacer } from '../../../../../common/components/composite/layout/TopBar/TopBar';
-import Footer from '../../../../../core/ui/layout/Footer/Footer';
-import { FloatingActionButtons } from '../../../../../common/components/core';
 import {
   GRID_COLUMNS_DESKTOP,
   GRID_COLUMNS_MOBILE,
@@ -16,6 +13,7 @@ import {
 } from '../../../../../core/ui/grid/constants';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
+import EntityPageLayout from '../../../../challenge/common/EntityPageLayout/EntityPageLayout';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
@@ -38,8 +36,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   currentTab,
   tabRoutePrefix = '../',
   children,
-  pageBannerComponent: PageBanner,
-  tabsComponent: Tabs,
+  ...props
 }) => {
   const { t } = useTranslation();
 
@@ -52,14 +49,10 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   const paddingBottom = isMobile ? 6 : 0;
 
   return (
-    <>
-      <TopBar />
-      <TopBarSpacer />
-      <PageBanner />
-      {!isMobile && <Tabs currentTab={EntityPageSection.Settings} />}
+    <EntityPageLayout currentSection={EntityPageSection.Settings} entityTypeName={entityTypeName} {...props}>
       <Box>
         <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
-          <PageTabs
+          <EntitySettingsTabs
             tabs={tabs}
             currentTab={currentTab}
             aria-label={`${entityTypeName} Settings tabs`}
@@ -71,24 +64,17 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
       <Box flexGrow={1} sx={{ backgroundColor: 'background.paper', paddingBottom }}>
         <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
           <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
-            <SimplePageLayout
+            <SettingsPageContent
               currentSection={currentTab}
               entityTypeName={entityTypeName}
               tabDescriptionNs="pages.admin"
             >
               {children}
-            </SimplePageLayout>
+            </SettingsPageContent>
           </GridProvider>
         </Box>
       </Box>
-      {isMobile && <Tabs currentTab={EntityPageSection.Settings} mobile />}
-      {!isMobile && (
-        <>
-          <Footer />
-          <FloatingActionButtons />
-        </>
-      )}
-    </>
+    </EntityPageLayout>
   );
 };
 

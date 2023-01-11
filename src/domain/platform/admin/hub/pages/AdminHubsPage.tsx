@@ -1,15 +1,12 @@
 import React, { FC } from 'react';
 import HubList from './HubList';
-import AdminLayout from '../../toplevel/AdminLayout';
-import { PageProps } from '../../../../shared/types/PageProps';
-import { AdminSection } from '../../toplevel/constants';
+import AdminLayout from '../../layout/toplevel/AdminLayout';
+import { AdminSection } from '../../layout/toplevel/constants';
 
-interface AdminDashboardPageProps extends PageProps {}
-
-const AdminHubsPage: FC<AdminDashboardPageProps> = ({ paths }) => {
+const AdminHubsPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Hub}>
-      <HubList paths={paths} />
+      <HubList />
     </AdminLayout>
   );
 };

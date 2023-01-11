@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
+import { CommonTabs, SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
-import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
+import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import OrganizationPageBanner from '../../../community/contributor/organization/layout/OrganizationPageBanner';
 import OrganizationTabs from '../../../community/contributor/organization/layout/OrganizationTabs';
 

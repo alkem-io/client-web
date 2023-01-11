@@ -14,7 +14,7 @@ import CanvasManagementView, {
   CanvasManagementViewEntities,
   CanvasNavigationMethods,
 } from './CanvasManagementView';
-import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
   entityTypeName: EntityTypeName;

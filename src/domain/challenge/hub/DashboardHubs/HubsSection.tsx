@@ -14,6 +14,7 @@ import { Loading } from '../../../../common/components/core';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -41,6 +42,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const getHubCardProps: DashboardHubSectionProps['getHubCardProps'] = hub => {
     return {
       locked: !hub.authorization?.anonymousReadAccess,
+      isDemoHub: hub.visibility === HubVisibility.Demo,
     };
   };
 

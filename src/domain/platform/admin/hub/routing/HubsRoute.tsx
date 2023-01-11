@@ -28,13 +28,13 @@ export const HubsRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route index element={<AdminHubsPage paths={currentPaths} />} />
+      <Route index element={<AdminHubsPage />} />
       <Route path={'new'} element={<NewHub paths={currentPaths} />} />
       <Route
         path={`:${nameOfUrl.hubNameId}/*`}
         element={
           <HubContextProvider>
-            <HubRoute paths={currentPaths} />
+            <HubRoute />
           </HubContextProvider>
         }
       />

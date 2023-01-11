@@ -4,8 +4,8 @@ import { FEATURE_SSI } from '../../../config/features.constants';
 import { useUserContext } from '../../../../community/contributor/user';
 import UserPageBanner from '../../../../community/contributor/user/layout/UserPageBanner';
 import UserTabs from '../../../../community/contributor/user/layout/UserTabs';
-import { UserProfileTabs, SettingsSection } from '../../layout/EntitySettings/constants';
-import EntitySettingsLayout from '../../layout/EntitySettings/EntitySettingsLayout';
+import { UserProfileTabs, SettingsSection } from '../../layout/EntitySettingsLayout/constants';
+import EntitySettingsLayout from '../../layout/EntitySettingsLayout/EntitySettingsLayout';
 
 const tabs = [
   SettingsSection.MyProfile,
