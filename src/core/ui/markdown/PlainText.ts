@@ -11,9 +11,23 @@ interface ImageNode {
 
 const pad = (...nodes: Node[]) => [text(' '), ...nodes, text(' ')];
 
+const getTextFromHTML = (html: string) => {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent;
+};
+
 const collect = (node: HandledNode): Node[] => {
+  if (node.type === 'html') {
+    const { value } = node as Literal<string>;
+    const textContent = getTextFromHTML(value);
+    if (!textContent) {
+      return [];
+    }
+    return pad(text(textContent));
+  }
   if (node.type === 'code') {
-    pad(text((node as Literal<string>).value));
+    const { value } = node as Literal<string>;
+    return pad(text(value));
   }
   if (node.type === 'link') {
     return [node];

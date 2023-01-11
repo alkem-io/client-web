@@ -17,7 +17,9 @@ export const WrapperMarkdown = ({ card = false, flat = false, ...props }: Markdo
       <ReactMarkdown
         components={components}
         remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }], [PlainText, { enabled: flat }]]}
-        rehypePlugins={[rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins']}
+        rehypePlugins={
+          flat ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
+        }
         {...props}
       />
     </MarkdownOptionsProvider>
