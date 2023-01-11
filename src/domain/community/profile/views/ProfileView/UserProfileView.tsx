@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import ProfileDetail from '../../ProfileDetail';
+import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
