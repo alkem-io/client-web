@@ -121,7 +121,7 @@ export const OpportunityList: FC<OpportunityListProps> = () => {
       <JourneyCreationDialog
         open={open}
         icon={<OpportunityIcon />}
-        journeyName={t('common.challenge')}
+        journeyName={t('common.opportunity')}
         onClose={() => setOpen(false)}
         OnCreate={handleCreate}
         formComponent={CreateOpportunityForm}
