@@ -34,9 +34,9 @@ export const ChallengeRoute: FC = () => {
           element={<CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={hubCommunityId} />}
         />
         <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-        <Route path={'opportunities/*'} element={<OpportunitiesRoute />} />
+        <Route path="opportunities/*" element={<OpportunitiesRoute />} />
         <Route path="authorization/*" element={<ChallengeAuthorizationRoute resourceId={challengeId} />} />
-        <Route path={'innovation-flow/*'} element={<ChallengeInnovationFlowPage />} />
+        <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

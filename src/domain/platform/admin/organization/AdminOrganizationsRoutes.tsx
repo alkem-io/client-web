@@ -16,10 +16,10 @@ const AdminOrganizationsRoutes: FC = () => {
 
   return (
     <Routes>
-      <Route path={'/'}>
+      <Route path="/">
         <Route index element={<AdminOrganizationsPage />} />
         <Route
-          path={'new'}
+          path="new"
           element={
             <AdminLayout currentTab={AdminSection.Organization}>
               <OrganizationPage title={t('pages.admin.organization.create-organization')} mode={EditMode.new} />
