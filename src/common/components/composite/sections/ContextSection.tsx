@@ -5,7 +5,7 @@ import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Location } from '../../../../core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '../../core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
 import TagsComponent from '../../../../domain/shared/components/TagsComponent/TagsComponent';

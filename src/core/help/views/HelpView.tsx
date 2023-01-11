@@ -4,7 +4,7 @@ import rehypeRaw from 'rehype-raw';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Loading } from '../../../common/components/core';
-import WrapperMarkdown, { MarkdownProps } from '../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown, { MarkdownProps } from '../../ui/markdown/WrapperMarkdown';
 
 interface HelpViewProps {
   helpTextMd: string | undefined;

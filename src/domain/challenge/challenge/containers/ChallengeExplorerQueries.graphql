@@ -1,5 +1,5 @@
-query ChallengeExplorerPage($rolesData: RolesUserInput!) {
-  rolesUser(rolesData: $rolesData) {
+query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userID, filter: {visibilities: [ACTIVE, DEMO]} }) {
     hubs {
       id
       roles

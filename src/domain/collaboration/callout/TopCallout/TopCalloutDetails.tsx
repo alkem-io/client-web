@@ -4,7 +4,7 @@ import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography/components';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import calloutIcons from '../utils/calloutIcons';
-import ItemView from '../../../../core/ui/list/ItemView';
+import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 
@@ -18,7 +18,7 @@ interface TopCalloutProps {
 
 const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: TopCalloutProps) => {
   return (
-    <ItemView
+    <BadgeCardView
       component={RouterLink}
       to={calloutUri}
       visual={
@@ -47,7 +47,7 @@ const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: T
     >
       <BlockSectionTitle noWrap>{title}</BlockSectionTitle>
       <CardText sx={webkitLineClamp(2)}>{description}</CardText>
-    </ItemView>
+    </BadgeCardView>
   );
 };
 

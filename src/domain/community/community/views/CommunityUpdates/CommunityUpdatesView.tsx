@@ -38,7 +38,7 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import hexToRGBA from '../../../../../common/utils/hexToRGBA';
 
 export interface CommunityUpdatesViewProps {

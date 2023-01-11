@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   useCreateCanvasTemplateMutation,
   useDeleteCanvasTemplateMutation,
-  useHubTemplatesCanvasTemplateWithValueLazyQuery,
+  useHubTemplatesAdminCanvasTemplateWithValueLazyQuery,
   useInnovationPackCanvasTemplateWithValueLazyQuery,
   useUpdateCanvasTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -72,7 +72,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
     [loadCanvases]
   );
 
-  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValue, { data: canvasValue }] = useHubTemplatesAdminCanvasTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -109,7 +109,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
       getTemplateValue={getTemplateValue}
       getImportedTemplateValue={getImportedTemplateValue}
       templateValue={canvasValue?.hub.templates?.canvasTemplate}
-      importedTemplateValue={importedCanvasValue?.library?.innovationPack?.templates?.canvasTemplate}
+      importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.canvasTemplate}
       createTemplateDialogComponent={CreateCanvasTemplateDialogWithCanvases}
       editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases}
       useCreateTemplateMutation={useCreateCanvasTemplateMutation}

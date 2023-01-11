@@ -1,13 +1,13 @@
 import React, { ComponentType, useMemo } from 'react';
-import { Grid, Typography } from '@mui/material';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from './InnovationPack';
 import { Template } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
+import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
+import { Text } from '../../../../../core/ui/typography';
 
 export interface TemplateImportCardComponentProps<Q extends TemplateInnovationPackMetaInfo> {
   template: Q;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  actionButtons?: React.ReactNode[];
 }
 
 export interface ImportTemplatesDialogGalleryStepProps<
@@ -62,22 +62,12 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
       <Grid item xs={12} md={9}>
 */
   return (
-    <Grid container sx={{ padding: theme => theme.spacing(2) }}>
-      <Grid item xs={12}>
-        <Grid container columns={{ xs: 2, sm: 6, lg: 8 }} spacing={3}>
-          {templates.map(template => (
-            <Grid item xs={2} key={`grid-item-${template.id}`}>
-              <TemplateCard template={template} onClick={() => onPreviewTemplate(template)} />
-            </Grid>
-          ))}
-          {templates.length === 0 && (
-            <Grid item xs={8}>
-              <Typography>{t('pages.admin.generic.sections.templates.import.no-templates')}</Typography>
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
-    </Grid>
+    <>
+      <CardsLayout items={templates} deps={[templates]} disablePadding cards={false}>
+        {template => <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />}
+      </CardsLayout>
+      {templates.length === 0 && <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>}
+    </>
   );
 };
 

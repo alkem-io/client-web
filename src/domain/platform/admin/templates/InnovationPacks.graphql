@@ -1,45 +1,51 @@
 query InnovationPacks {
-  library {
+  platform {
     id
-    innovationPacks {
+    library {
       id
-      nameID
-      provider {
+      innovationPacks {
         id
         nameID
-        displayName
-        profile {
+        provider {
           id
-          avatar {
+          nameID
+          displayName
+          profile {
             id
-            uri
+            avatar {
+              id
+              uri
+            }
           }
         }
-      }
-      displayName
-      templates {
-        id
-        aspectTemplates {
-          ...AdminAspectTemplate
-        }
-        canvasTemplates {
-          ...AdminCanvasTemplate
-        }
-        lifecycleTemplates {
-          ...AdminLifecycleTemplate
+        displayName
+        templates {
+          id
+          aspectTemplates {
+            ...AdminAspectTemplate
+          }
+          canvasTemplates {
+            ...AdminCanvasTemplate
+          }
+          lifecycleTemplates {
+            ...AdminLifecycleTemplate
+          }
         }
       }
     }
   }
 }
 query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
-  library {
+  platform {
     id
-    innovationPack(ID: $innovationPackId) {
+    library {
       id
-      templates {
-        canvasTemplate(ID: $canvasTemplateId) {
-          ...AdminCanvasTemplateValue
+      innovationPack(ID: $innovationPackId) {
+        id
+        templates {
+          canvasTemplate(ID: $canvasTemplateId) {
+            ...AdminCanvasTemplateValue
+          }
         }
       }
     }

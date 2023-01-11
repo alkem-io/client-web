@@ -3,9 +3,10 @@ import { Box, BoxProps } from '@mui/material';
 import { BoxTypeMap } from '@mui/material/Box/Box';
 import { gutters } from '../grid/utils';
 
-interface ViewProps {
+interface BadgeCardViewProps {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
+  contentProps?: BoxProps;
 }
 
 const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ sx: Partial<Sx> }> | undefined) => {
@@ -23,16 +24,17 @@ const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ 
   });
 };
 
-const ItemView = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
+const BadgeCardView = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
   visual,
   visualRight,
   children,
+  contentProps,
   ...containerProps
-}: PropsWithChildren<ViewProps> & BoxProps<D, P>) => {
+}: PropsWithChildren<BadgeCardViewProps> & BoxProps<D, P>) => {
   return (
     <Box display="flex" alignItems="center" gap={gutters()} {...containerProps}>
       {cloneVisual(visual)}
-      <Box overflow="hidden" flexGrow={1} minWidth={0}>
+      <Box overflow="hidden" flexGrow={1} minWidth={0} {...contentProps}>
         {children}
       </Box>
       {cloneVisual(visualRight)}
@@ -40,4 +42,4 @@ const ItemView = <D extends React.ElementType = BoxTypeMap['defaultComponent'], 
   );
 };
 
-export default ItemView;
+export default BadgeCardView;

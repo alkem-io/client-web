@@ -7,7 +7,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
