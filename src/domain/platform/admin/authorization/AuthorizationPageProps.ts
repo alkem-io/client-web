@@ -1,6 +1,4 @@
-import { PageProps } from '../../../shared/types/PageProps';
-
-interface AuthorizationPageProps extends PageProps {
+interface AuthorizationPageProps {
   resourceId?: string;
 }
 

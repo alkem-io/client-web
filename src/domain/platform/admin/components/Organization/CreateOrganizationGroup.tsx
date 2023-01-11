@@ -1,18 +1,16 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SettingsSection } from '../../layout/EntitySettings/constants';
+import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnOrganizationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { PageProps } from '../../../../shared/types/PageProps';
 import CreateGroupForm from '../Common/CreateGroupForm';
 
-export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
+export const CreateOrganizationGroupPage: FC = () => {
   const navigate = useNavigate();
   const { organizationId, organization } = useOrganization();
   const handleError = useApolloErrorHandler();
@@ -56,9 +54,6 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
     },
     [organizationId, createGroup]
   );
-
-  const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Community} tabRoutePrefix="../../">

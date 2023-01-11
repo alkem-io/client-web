@@ -10,6 +10,7 @@ import CircleTag from '../../../../../common/components/core/CircleTag';
 import { VerifiedStatus } from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 import OrganizationCardContainer from './OrganizationCardContainer';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 
 interface OrganizationCardProps {
   name?: string;
@@ -28,7 +29,7 @@ interface OrganizationCardProps {
 const OrganizationCard: FC<OrganizationCardProps> = ({
   name,
   avatar,
-  description,
+  description = '',
   role,
   associatesCount,
   verified,
@@ -65,7 +66,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
         title={<PageTitle>{loading ? <Skeleton width="80%" /> : name}</PageTitle>}
         subheader={
           <>
-            <Caption>{loading ? <Skeleton width="80%" /> : description}</Caption>
+            <Caption>{loading ? <Skeleton width="80%" /> : <OneLineMarkdown>{description}</OneLineMarkdown>}</Caption>
             <Caption variant="body2" color="primary">
               {loading ? <Skeleton width="30%" /> : role}
             </Caption>

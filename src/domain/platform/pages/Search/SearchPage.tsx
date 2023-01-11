@@ -26,7 +26,7 @@ import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import { escape } from 'lodash';
-import TopLevelDesktopLayout from '../../../shared/layout/LegacyPageLayout/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 const tagsetNames = ['skills', 'keywords'];

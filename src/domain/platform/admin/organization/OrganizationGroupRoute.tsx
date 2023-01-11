@@ -1,12 +1,9 @@
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useOrganizationGroupQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { PageProps } from '../../../shared/types/PageProps';
 import { GroupRoute } from '../routing/GroupRoute';
 
-interface GroupRouteProps extends PageProps {}
-
-export const OrganizationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
+export const OrganizationGroupRoute: FC = () => {
   const { groupId = '', organizationNameId = '' } = useUrlParams();
 
   // TODO: find a place for this one.
@@ -16,5 +13,5 @@ export const OrganizationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
     nextFetchPolicy: 'cache-first',
   });
 
-  return <GroupRoute loading={loading} group={data?.organization.group} paths={paths} />;
+  return <GroupRoute loading={loading} group={data?.organization.group} />;
 };

@@ -1,18 +1,16 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnCommunityMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
-import { PageProps } from '../../../../shared/types/PageProps';
 import CreateGroupForm from '../Common/CreateGroupForm';
 import { WithCommunity } from './CommunityTypes';
 
-interface CreateCommunityGroupProps extends WithCommunity, PageProps {}
+interface CreateCommunityGroupProps extends WithCommunity {}
 
-export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, communityId }) => {
+export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ communityId }) => {
   const navigate = useNavigate();
 
   const handleError = useApolloErrorHandler();
@@ -60,9 +58,6 @@ export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, com
     },
     [communityId, createGroup]
   );
-
-  const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
 
   return <CreateGroupForm onCreate={handleCreate} />;
 };

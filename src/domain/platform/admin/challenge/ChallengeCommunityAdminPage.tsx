@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
 import ChallengeSettingsLayout from './ChallengeSettingsLayout';
-import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
@@ -26,9 +25,7 @@ import useCommunityUserAssignment from '../community/useCommunityUserAssignment'
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 
-const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
-  useAppendBreadcrumb(paths, { name: 'community' });
-
+const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { hubId } = useHub();
   const { challenge, challengeId } = useChallenge();
   const communityId = challenge?.community?.id;

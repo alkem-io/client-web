@@ -2,12 +2,11 @@ import React, { FC } from 'react';
 import { WithCommunity } from '../../components/Community/CommunityTypes';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useHubGroupQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { GroupRoute } from '../../routing/GroupRoute';
 
-interface GroupRouteProps extends PageProps, WithCommunity {}
+interface GroupRouteProps extends WithCommunity {}
 
-export const HubGroupRoute: FC<GroupRouteProps> = ({ paths, parentCommunityId }) => {
+export const HubGroupRoute: FC<GroupRouteProps> = ({ parentCommunityId }) => {
   const { groupId = '', hubNameId = '' } = useUrlParams();
 
   const { data, loading } = useHubGroupQuery({
@@ -16,5 +15,5 @@ export const HubGroupRoute: FC<GroupRouteProps> = ({ paths, parentCommunityId })
     nextFetchPolicy: 'cache-first',
   });
 
-  return <GroupRoute loading={loading} group={data?.hub.group} parentCommunityId={parentCommunityId} paths={paths} />;
+  return <GroupRoute loading={loading} group={data?.hub.group} parentCommunityId={parentCommunityId} />;
 };
