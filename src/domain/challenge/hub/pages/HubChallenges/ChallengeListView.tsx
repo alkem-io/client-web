@@ -15,16 +15,13 @@ import {
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useHub } from '../../HubContext/useHub';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { ChallengeIcon } from '../../../challenge/icon/ChallengeIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildAdminChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
 
-interface ChallengeListProps extends PageProps {}
-
-export const ChallengeListView: FC<ChallengeListProps> = () => {
+export const ChallengeListView: FC = () => {
   const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();

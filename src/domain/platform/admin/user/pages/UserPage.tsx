@@ -1,6 +1,5 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageProps } from '../../../../shared/types/PageProps';
 import UserRemoveModal from '../../components/User/UserRemoveModal';
 import UserForm from '../../../../../common/components/composite/forms/UserForm';
 import { Loading } from '../../../../../common/components/core/Loading/Loading';
@@ -20,15 +19,14 @@ import { createUserNameID } from '../../../../../common/utils/createUserNameId';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 
-interface UserPageProps extends PageProps {
+interface UserPageProps {
   mode: EditMode;
   title?: string;
 }
 
-export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User', paths }) => {
+export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -36,12 +34,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
   const { data, loading } = useUserQuery({ variables: { id: userNameId }, fetchPolicy: 'cache-and-network' });
 
   const user = data?.user as UserModel;
-  const currentPaths = useMemo(
-    () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
-    [paths, user]
-  );
-
-  useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
 

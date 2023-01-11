@@ -21,4 +21,5 @@ fragment HubDetailsProvider on Hub {
   context {
     ...ContextDetailsProvider
   }
+  visibility
 }

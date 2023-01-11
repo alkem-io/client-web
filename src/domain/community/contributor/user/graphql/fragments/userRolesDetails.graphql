@@ -5,6 +5,7 @@ fragment UserRolesDetails on ContributorRoles {
     hubID
     displayName
     roles
+    visibility
     challenges {
       id
       nameID

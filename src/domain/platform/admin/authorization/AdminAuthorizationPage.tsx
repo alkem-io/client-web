@@ -1,15 +1,11 @@
 import React, { FC } from 'react';
-import AdminLayout from '../toplevel/AdminLayout';
-import { PageProps } from '../../../shared/types/PageProps';
+import AdminLayout from '../layout/toplevel/AdminLayout';
 import { Container, Grid } from '@mui/material';
 import Card from '../../../../common/components/core/Card';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import { Link as RouterLink } from 'react-router-dom';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
-import { AdminSection } from '../toplevel/constants';
+import { AdminSection } from '../layout/toplevel/constants';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
-
-interface AdminAuthorizationPageProps extends PageProps {}
 
 const buttons = [
   {
@@ -26,9 +22,7 @@ const buttons = [
   },
 ];
 
-const AdminAuthorizationPage: FC<AdminAuthorizationPageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+const AdminAuthorizationPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Authorization}>
       <Container maxWidth="xl">

@@ -1,5 +1,5 @@
 query hubs {
-  hubs {
+  hubs(filter:{visibilities:[ACTIVE, DEMO]}) {
     ...HubDetailsProvider
   }
 }

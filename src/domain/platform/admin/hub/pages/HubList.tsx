@@ -7,17 +7,15 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { PageProps } from '../../../../shared/types/PageProps';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
 import { AuthorizationPrivilege, HubVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { buildAdminHubUrl } from '../../../../../common/utils/urlBuilders';
 
-interface HubListProps extends PageProps {}
-
-export const HubList: FC<HubListProps> = ({ paths }) => {
+export const HubList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
@@ -34,7 +32,11 @@ export const HubList: FC<HubListProps> = ({ paths }) => {
           }
           return x;
         })
-        .map(searchableListItemMapper()) || []
+        .map(hub => ({
+          ...hub,
+          url: buildAdminHubUrl(hub.nameID),
+        }))
+        .map(searchableListItemMapper()) ?? []
     );
   }, [hubsData]);
 
@@ -58,14 +60,7 @@ export const HubList: FC<HubListProps> = ({ paths }) => {
 
   if (loadingHubs) return <Loading text={'Loading hubs'} />;
 
-  return (
-    <ListPage
-      data={hubList}
-      paths={paths}
-      newLink={`${url}/new`}
-      onDelete={hubList.length > 1 ? handleDelete : undefined}
-    />
-  );
+  return <ListPage data={hubList} newLink={`${url}/new`} onDelete={hubList.length > 1 ? handleDelete : undefined} />;
 };
 
 export default HubList;
