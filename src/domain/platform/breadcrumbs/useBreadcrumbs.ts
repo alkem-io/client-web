@@ -8,7 +8,7 @@ import {
 } from '../../../core/apollo/generated/apollo-hooks';
 import { HubIcon } from '../../challenge/hub/icon/HubIcon';
 import { ChallengeIcon } from '../../challenge/challenge/icon/ChallengeIcon';
-import { EntityTypeName } from '../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../constants/EntityTypeName';
 
 export interface BreadcrumbsItem {
   title: string;

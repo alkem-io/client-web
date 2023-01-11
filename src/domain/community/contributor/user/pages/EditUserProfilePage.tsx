@@ -21,7 +21,7 @@ import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 
 interface EditUserProfilePageProps extends PageProps {}
 

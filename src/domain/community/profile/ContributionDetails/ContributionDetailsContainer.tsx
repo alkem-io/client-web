@@ -12,6 +12,7 @@ import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../..
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -43,6 +44,7 @@ export interface ContributionDetails {
   journeyUri: string;
   communityId?: string;
   tagline: string;
+  isDemoHub?: boolean;
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
@@ -84,6 +86,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         journeyUri: buildHubUrl(hubData.hub.nameID),
         communityId: hubData.hub.community?.id,
         tagline: hubData.hub.context?.tagline ?? '',
+        isDemoHub: hubData.hub.visibility === HubVisibility.Demo,
       };
     }
 

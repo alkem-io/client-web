@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import HubSettingsLayout from '../../../../platform/admin/hub/HubSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import ChallengeListView from './ChallengeListView';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 
-const ChallengeListPage: FC<SettingsPageProps> = ({ paths, routePrefix }) => {
+const ChallengeListPage: FC<SettingsPageProps> = ({ routePrefix }) => {
   return (
     <HubSettingsLayout currentTab={SettingsSection.Challenges} tabRoutePrefix={routePrefix}>
-      <ChallengeListView paths={paths} />
+      <ChallengeListView />
     </HubSettingsLayout>
   );
 };

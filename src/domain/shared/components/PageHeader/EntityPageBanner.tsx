@@ -3,7 +3,7 @@ import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
-import { EntityTypeName } from '../../layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import getEntityColor from '../../utils/getEntityColor';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
 import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';

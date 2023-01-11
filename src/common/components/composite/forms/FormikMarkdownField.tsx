@@ -171,7 +171,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     if (!meta?.initialValue) {
       setEditorState(EditorState.createEmpty());
     } else {
-      setEditorState(EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue))));
+      const editorState = EditorState.createWithContent(convertFromRaw(mdToDraftjs(meta.initialValue)));
+      setEditorState(EditorState.moveSelectionToEnd(editorState));
     }
   }, [meta.initialValue]);
 
@@ -214,6 +215,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   // https://github.com/jpuri/react-draft-wysiwyg/issues/782
 
   const [isFocused, setFocus] = useState(false);
+
   const handleOnFocus = () => {
     setFocus(true);
   };
@@ -221,6 +223,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const handleOnBlur = () => {
     setFocus(false);
     field.onBlur(name);
+    setEditorState(state => EditorState.moveSelectionToEnd(state));
   };
 
   // TODO: Image Upload

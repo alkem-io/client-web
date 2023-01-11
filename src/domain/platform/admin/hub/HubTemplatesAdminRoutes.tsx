@@ -1,6 +1,6 @@
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import HubTemplatesAdminPage from './HubTemplatesAdminPage';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 
 interface HubTemplatesAdminRoutesProps extends SettingsPageProps {
   hubId: string;

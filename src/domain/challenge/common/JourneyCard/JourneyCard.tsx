@@ -21,6 +21,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   journeyUri: string;
   expansion?: ReactNode;
   expansionActions?: ReactNode;
+  ribbon?: ReactNode;
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
@@ -36,6 +37,7 @@ const JourneyCard = ({
   journeyUri,
   expansion,
   expansionActions,
+  ribbon,
   member,
   locked,
   actions,
@@ -55,6 +57,7 @@ const JourneyCard = ({
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
         <Box position="relative">
+          {ribbon}
           {bannerUri ? <CardImage src={bannerUri} alt={tagline} /> : <JourneyCardBannerPlaceholder />}
           {member && (
             <RoundedIcon
@@ -62,7 +65,7 @@ const JourneyCard = ({
               component={BeenhereOutlined}
               position="absolute"
               right={gutters(0.5)}
-              top={gutters(0.5)}
+              top={gutters(ribbon ? 2.0 : 0.5)}
             />
           )}
         </Box>

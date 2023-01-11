@@ -3,6 +3,7 @@ query hubContributionDetails($hubId: UUID_NAMEID!) {
     id
     nameID
     displayName
+    visibility
     tagset {
       id
       name

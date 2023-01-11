@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import HubPageLayout from '../../challenge/hub/layout/HubPageLayout';
 import ChallengePageLayout from '../../challenge/challenge/layout/ChallengePageLayout';
 import OpportunityPageLayout from '../../challenge/opportunity/layout/OpportunityPageLayout';
-import { EntityTypeName } from '../layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 
 const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
   useMemo(() => {
