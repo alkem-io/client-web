@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import MarkdownProfileDetail from '../../../../shared/components/ProfileDetail/MarkdownProfileDetail';
+import ProfileDetail from '../../ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import References from '../../../../shared/components/References/References';
 import { styled } from '@mui/styles';
@@ -34,7 +34,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   return (
     <PageContentBlock>
       <Grid item>
-        <MarkdownProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
+        <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
       </Grid>
 
       <Grid item>

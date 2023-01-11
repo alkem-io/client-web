@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Box, CardContent, Grid, Link, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import MarkdownProfileDetail from '../../../../shared/components/ProfileDetail/MarkdownProfileDetail';
+import ProfileDetail from '../../ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 import { Location } from '../../../../../core/apollo/generated/graphql-schema';
@@ -45,7 +45,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
         </VerifiedBadge>
         <Grid container spacing={2} direction="column">
           <Grid item>
-            <MarkdownProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
+            <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
           {entity.tagsets
             ?.filter(t => t.tags.length > 0)
