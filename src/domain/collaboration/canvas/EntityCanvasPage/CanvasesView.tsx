@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import CanvasesManagementViewWrapper from '../CanvasesManagement/CanvasesManagementViewWrapper';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { CanvasProvider } from '../containers/CanvasProvider';
 
 export interface CanvasesPageProps {

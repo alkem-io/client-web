@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
+import { CommonTabs, SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
-import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
+import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import OpportunityPageBanner from '../../../challenge/opportunity/layout/OpportunityPageBanner';
 import OpportunityTabs from '../../../challenge/opportunity/layout/OpportunityTabs';
-import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
+import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 
 interface OpportunitySettingsLayoutProps {

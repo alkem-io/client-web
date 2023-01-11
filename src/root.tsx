@@ -23,6 +23,9 @@ const useGlobalStyles = makeStyles(theme => ({
     '*': {
       scrollbarColor: `${theme.palette.primary.main} transparent`,
     },
+    '*, *::before, *::after': {
+      boxSizing: 'border-box',
+    },
     '*::-webkit-scrollbar': {
       width: 'max(.75vw, 0.5em)',
     },

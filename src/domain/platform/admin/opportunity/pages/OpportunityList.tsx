@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { PageProps } from '../../../../shared/types/PageProps';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import {
@@ -24,9 +23,7 @@ import { buildAdminOpportunityUrl } from '../../../../../common/utils/urlBuilder
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 
-interface OpportunityListProps extends PageProps {}
-
-export const OpportunityList: FC<OpportunityListProps> = () => {
+export const OpportunityList: FC = () => {
   const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();

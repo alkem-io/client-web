@@ -11,7 +11,7 @@ import { Box, Container, Grid } from '@mui/material';
 import HubContextForm from '../../../../platform/admin/components/HubContextForm';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
-export const HubContext: FC = () => {
+export const HubContextView: FC = () => {
   const { t } = useTranslation();
 
   const { hubNameId, ...hub } = useHub();
@@ -79,4 +79,4 @@ export const HubContext: FC = () => {
   );
 };
 
-export default HubContext;
+export default HubContextView;

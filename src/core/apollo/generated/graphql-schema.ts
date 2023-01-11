@@ -840,7 +840,7 @@ export type CommentsRemoveMessageInput = {
   /** The Comments the message is being removed from. */
   commentsID: Scalars['UUID'];
   /** The message id that should be removed */
-  messageID: Scalars['String'];
+  messageID: Scalars['MessageID'];
 };
 
 export type CommentsSendMessageInput = {
@@ -3404,6 +3404,8 @@ export type RolesResultHub = {
   roles: Array<Scalars['String']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
+  /** Visibility of the Hub. */
+  visibility: HubVisibility;
 };
 
 export type RolesResultOrganization = {
@@ -7198,6 +7200,7 @@ export type HubDetailsProviderFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  visibility: HubVisibility;
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
   community?: { __typename?: 'Community'; id: string } | undefined;
@@ -7433,6 +7436,7 @@ export type HubCardQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     community?: { __typename?: 'Community'; id: string } | undefined;
@@ -7636,6 +7640,7 @@ export type HubsQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     community?: { __typename?: 'Community'; id: string } | undefined;
@@ -15481,6 +15486,7 @@ export type RolesOrganizationQuery = {
       id: string;
       roles: Array<string>;
       displayName: string;
+      visibility: HubVisibility;
       challenges: Array<{
         __typename?: 'RolesResultCommunity';
         nameID: string;
@@ -16211,6 +16217,7 @@ export type UserRolesDetailsFragment = {
     hubID: string;
     displayName: string;
     roles: Array<string>;
+    visibility: HubVisibility;
     challenges: Array<{
       __typename?: 'RolesResultCommunity';
       id: string;
@@ -16537,6 +16544,7 @@ export type RolesUserQuery = {
       hubID: string;
       displayName: string;
       roles: Array<string>;
+      visibility: HubVisibility;
       challenges: Array<{
         __typename?: 'RolesResultCommunity';
         id: string;
@@ -16790,6 +16798,7 @@ export type UserProfileQuery = {
       hubID: string;
       displayName: string;
       roles: Array<string>;
+      visibility: HubVisibility;
       challenges: Array<{
         __typename?: 'RolesResultCommunity';
         id: string;
@@ -16988,6 +16997,7 @@ export type HubContributionDetailsQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     context?:
       | {

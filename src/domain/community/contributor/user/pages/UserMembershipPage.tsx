@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { ContributionsView } from '../../../profile/views/ProfileView';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';

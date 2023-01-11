@@ -8,6 +8,7 @@ import { useHubsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { Loading } from '../../../../common/components/core';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface MyHubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -28,10 +29,11 @@ const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
   // TODO other labels such as Lead etc.
   // const isLead = (hubId: string) => hubRolesByHubId[hubId]?.roles.includes(USER_ROLE_HUB_LEAD);
   //
-  const getHubCardProps: DashboardHubSectionProps['getHubCardProps'] = (/* hub */) => {
+  const getHubCardProps: DashboardHubSectionProps['getHubCardProps'] = hub => {
     return {
       // lead: isLead(hub.id),
       member: false,
+      isDemoHub: hub?.visibility === HubVisibility.Demo,
     };
   };
 

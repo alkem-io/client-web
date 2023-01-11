@@ -1,8 +1,7 @@
-import React, { FC, useMemo } from 'react';
-import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import ChallengeCommunicationsPage from '../../../../challenge/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
 import ChallengeProfilePage from '../../../../challenge/challenge/pages/ChallengeProfile/ChallengeProfilePage';
@@ -14,51 +13,30 @@ import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRou
 import ChallengeContextPage from '../../../../challenge/challenge/pages/ChallengeContext/ChallengeContextPage';
 import ChallengeInnovationFlowPage from '../../../../challenge/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
 
-export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
+export const ChallengeRoute: FC = () => {
   const { communityId: hubCommunityId } = useHub();
-  const { challenge, displayName, challengeId } = useChallenge();
+  const { challenge, challengeId } = useChallenge();
   const communityId = challenge?.community?.id;
-
-  const currentPaths = useMemo(
-    () => [...paths, { value: url, name: displayName || '', real: true }],
-    [paths, displayName, url]
-  );
 
   return (
     <Routes>
       <Route path={'/'}>
         <Route index element={<Navigate to="profile" replace />} />
-        <Route path="profile" element={<ChallengeProfilePage paths={currentPaths} />} />
-        <Route path="context" element={<ChallengeContextPage paths={currentPaths} />} />
+        <Route path="profile" element={<ChallengeProfilePage />} />
+        <Route path="context" element={<ChallengeContextPage />} />
         <Route
           path="communications"
-          element={
-            <ChallengeCommunicationsPage
-              paths={currentPaths}
-              communityId={communityId}
-              parentCommunityId={hubCommunityId}
-            />
-          }
+          element={<ChallengeCommunicationsPage communityId={communityId} parentCommunityId={hubCommunityId} />}
         />
-        <Route path="community" element={<ChallengeCommunityAdminPage paths={paths} />} />
+        <Route path="community" element={<ChallengeCommunityAdminPage />} />
         <Route
           path="community/groups/*"
-          element={
-            <CommunityGroupsRoute
-              paths={currentPaths}
-              communityId={challenge?.community?.id}
-              parentCommunityId={hubCommunityId}
-            />
-          }
+          element={<CommunityGroupsRoute communityId={challenge?.community?.id} parentCommunityId={hubCommunityId} />}
         />
         <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-        <Route path={'opportunities/*'} element={<OpportunitiesRoute paths={currentPaths} />} />
-        <Route
-          path="authorization/*"
-          element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}
-        />
-        <Route path={'innovation-flow/*'} element={<ChallengeInnovationFlowPage paths={currentPaths} />} />
+        <Route path="opportunities/*" element={<OpportunitiesRoute />} />
+        <Route path="authorization/*" element={<ChallengeAuthorizationRoute resourceId={challengeId} />} />
+        <Route path="innovation-flow/*" element={<ChallengeInnovationFlowPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

@@ -726,6 +726,7 @@ export const HubDetailsProviderFragmentDoc = gql`
     context {
       ...ContextDetailsProvider
     }
+    visibility
   }
   ${ContextDetailsProviderFragmentDoc}
 `;
@@ -1785,6 +1786,7 @@ export const UserRolesDetailsFragmentDoc = gql`
       hubID
       displayName
       roles
+      visibility
       challenges {
         id
         nameID
@@ -5835,7 +5837,7 @@ export function refetchHubVisualQuery(variables: SchemaTypes.HubVisualQueryVaria
 
 export const HubsDocument = gql`
   query hubs {
-    hubs {
+    hubs(filter: { visibilities: [ACTIVE, DEMO] }) {
       ...HubDetailsProvider
     }
   }
@@ -14918,6 +14920,7 @@ export const RolesOrganizationDocument = gql`
         id
         roles
         displayName
+        visibility
         challenges {
           nameID
           id
@@ -17290,6 +17293,7 @@ export const HubContributionDetailsDocument = gql`
       id
       nameID
       displayName
+      visibility
       tagset {
         id
         name

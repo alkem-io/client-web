@@ -21,6 +21,12 @@ export const CardText = provideStaticProps(Typography, {
   color: theme => lighten(theme.palette.text.primary, 0.4),
 }) as typeof Typography;
 
+export const RibbonText = provideStaticProps(Typography, {
+  variant: 'body2',
+  textAlign: 'center',
+  textTransform: 'uppercase',
+}) as typeof Typography;
+
 export const Caption = provideStaticProps(Typography, { variant: 'caption', display: 'block' }) as typeof Typography;
 
 export const CaptionSmall = provideStaticProps(Caption, {

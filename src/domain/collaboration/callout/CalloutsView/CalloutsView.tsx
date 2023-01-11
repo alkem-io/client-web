@@ -21,7 +21,7 @@ import calloutIcons from '../utils/calloutIcons';
 import { Loading } from '../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
-import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useAspectTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
