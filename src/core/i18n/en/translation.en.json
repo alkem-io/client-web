@@ -214,6 +214,11 @@
       "not-verified": ""
     },
     "enums": {
+      "hub-visibility": {
+        "ACTIVE": "Active",
+        "ARCHIVED": "Archived",
+        "DEMO": "Demo"
+      },
       "callout-state": {
         "ARCHIVED": "Archived",
         "CLOSED": "Closed",

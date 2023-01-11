@@ -10,7 +10,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 
-type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
+type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id' | 'visibility';
 
 type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
   context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
