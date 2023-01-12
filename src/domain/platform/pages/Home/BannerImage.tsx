@@ -1,11 +1,10 @@
 import { Box } from '@mui/material';
 
-// TODO either use image for the current breakpoint or remove all except xxl
 const BannerImage = () => {
   return (
     <Box
       component="img"
-      src="/alkemio-banner/alkemio-banner-xxl.png"
+      src="/alkemio-banner/alkemio-banner.svg"
       sx={{
         objectFit: 'cover',
         height: theme => ({
