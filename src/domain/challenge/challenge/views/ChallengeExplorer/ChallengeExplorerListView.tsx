@@ -12,7 +12,6 @@ import {
 } from '../../containers/ChallengeExplorerContainer';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import { Text } from '../../../../../core/ui/typography';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';
 import ChallengeCard from '../../ChallengeCard/ChallengeCard';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
@@ -21,7 +20,6 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 export interface ChallengeExplorerListViewProps {
   headerText: string;
   headerCounter?: number;
-  subHeaderText: string;
   challenges: SimpleChallenge[];
   enableFilterByHub?: boolean;
 }
@@ -29,7 +27,6 @@ export interface ChallengeExplorerListViewProps {
 const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   headerText,
   headerCounter,
-  subHeaderText,
   challenges,
   enableFilterByHub = false,
 }) => {
@@ -46,7 +43,6 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
         {(filterMenu, filteredByHubChallenges) => (
           <>
             <PageContentBlockHeader title={withOptionalCount(headerText, headerCounter)} actions={filterMenu} />
-            <Text>{subHeaderText}</Text>
             <CardFilter
               data={filteredByHubChallenges}
               valueGetter={simpleChallengeValueGetter}

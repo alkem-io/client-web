@@ -13,7 +13,6 @@ query opportunityRelations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
           type
         }
       }
-
     }
   }
 }
