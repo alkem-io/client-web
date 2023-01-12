@@ -14,7 +14,15 @@
   "actions": {
     "add-entity": "Додати {{entity}}"
   },
+  "languages": {
+    "en": "English",
+    "nl": "Dutch",
+    "es": "Spanish",
+    "bg": "Bulgarian",
+    "ua": "Ukranian"
+  },
   "buttons": {
+    "leave": "Leave",
     "learn-more": "Дізнатись більше",
     "load-more": "Завантажити ще",
     "load-count-more": "Завантажити ще {{count}}",
@@ -30,7 +38,7 @@
     "next": "Далі",
     "edit": "Редагувати",
     "see-more": "Побачити більше",
-    "see-all": "Побачити все",
+    "see-all": "More {{subject}}",
     "home": "Головна",
     "take-me-home": "На головну",
     "close": "Закрити",
@@ -58,8 +66,12 @@
     "confirm": "Confirm",
     "change-template": "Change template",
     "change": "Change",
+    "library": "Library",
+    "share": "Share",
+    "preview": "Preview",
     "import": "Import...",
-    "share": "Share"
+    "importing": "Importing...",
+    "go-to-entity": "Go to {{entity}}"
   },
   "tooltips": {
     "click-more-info": "Нажміть, щоб дізнатись більше",
@@ -75,9 +87,17 @@
     "register": "Зареєструватись",
     "validation": {
       "fill-fields": "Будь ласка, заповніть необхідні поля!"
+    },
+    "social-login": {
+      "connect": "Connect with {{provider}}",
+      "providers": {
+        "linkedin": "LinkedIn",
+        "microsoft": "Microsoft"
+      }
     }
   },
   "common": {
+    "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
@@ -90,10 +110,12 @@
     "add": "Додати",
     "remove": "Видалити",
     "callout": "Callout",
+    "callouts": "Callouts",
     "canvas": "Полотно",
     "canvases": "Полотна",
     "comment": "Коментувати",
     "comments": "Коментарі",
+    "contributions": "Contributions",
     "card": "Карта",
     "cards": "Карти",
     "create": "Створи",
@@ -134,7 +156,7 @@
     "user": "Користувач",
     "users": "Користувачі",
     "update": "Оновлення",
-    "updates": "Оновлення",
+    "updates": "News",
     "no-updates": "Немає оновлень",
     "no-tags": "Теги відсутні",
     "no-references": "Посилання відсутні",
@@ -149,6 +171,7 @@
     "empty-string": "",
     "discussion": "Дискусія",
     "discussions": "Дискусії",
+    "disassociate": "Disassociate",
     "dashboard": "Панель управління",
     "contribute": "Прийняти участь",
     "context": "Контекст",
@@ -157,6 +180,8 @@
     "search": "Пошук...",
     "reference": "Посилання",
     "references": "Посилання",
+    "recommendation": "Recommendation",
+    "recommendations": "Recommendations",
     "notifications": "Сповіщення",
     "credentials": "Облікові дані",
     "my-profile": "Мій профіль",
@@ -175,9 +200,10 @@
     "preview": "Перегляд",
     "help": "Допомога",
     "loading": "Loading...",
-    "language": "Мова",
     "innovation-flow": "Innovation flow",
+    "innovation-flows": "Innovation Flows",
     "more": "More",
+    "url": "URL",
     "genders": {
       "notSpecified": "Невизначена",
       "male": "Чоловіча",
@@ -188,6 +214,16 @@
       "not-verified": ""
     },
     "enums": {
+      "hub-visibility": {
+        "ACTIVE": "Active",
+        "ARCHIVED": "Archived",
+        "DEMO": "Demo"
+      },
+      "callout-state": {
+        "ARCHIVED": "Archived",
+        "CLOSED": "Closed",
+        "OPEN": "Open"
+      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Глобальний адміністратор",
@@ -350,9 +386,12 @@
     "member-organizations": "Організації-учасники",
     "leads": "Leads",
     "members": "Members",
-    "host": "Host"
+    "host": "Host",
+    "members-count": "Members ({{count}})"
   },
   "callout": {
+    "contributions": "{{count}} Contribution",
+    "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
@@ -501,32 +540,53 @@
     }
   },
   "components": {
+    "top-callouts": {
+      "title": "Top Callouts"
+    },
+    "associated-organization": {
+      "confirmation-dialog": {
+        "title": "Leaving {{organization}}",
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+      }
+    },
+    "error-display": {
+      "title": "Ooops!",
+      "went-wrong": "Looks like something went wrong.",
+      "contact-support-sentence": "If this problem persists, please contact support.",
+      "buttons": {
+        "reload": "Reload",
+        "take-me-home": "Take me home",
+        "contact-support": "Contact support"
+      }
+    },
     "search-cards": {
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Recent Contributions"
     },
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new $t(common.callout)",
         "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
-        "card-comment-created": "commented on $t(common.aspect) '{{cardDisplayName}}'",
-        "card-created": "added a $t(common.aspect) to '{{calloutDisplayName}}'",
+        "card-comment-created": "commented on '{{cardDisplayName}}'",
+        "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
-        "member-joined": "new member",
+        "member-joined": "new member joined the {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "created a new $t(common.challenge)",
-        "opportunity-created": "created a new $t(common.opportunity)"
+        "opportunity-created": "created a new $t(common.opportunity)",
+        "update-sent": "shared a new $t(common.update)"
       },
       "activity-description": {
-        "callout-published": "[{{type}}] - {{displayName}}",
-        "canvas-created": "[name] {{displayName}}",
-        "card-comment-created": "[{{cardDisplayName}}] - {{comment}}",
-        "card-created": "[{{cardType}}] - {{cardDisplayName}}",
+        "callout-published": "{{displayName}}",
+        "canvas-created": "{{displayName}}",
+        "card-comment-created": "{{comment}}",
+        "card-created": "{{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
-        "member-joined": "[{{communityType}}] - '{{userDisplayName}}'",
+        "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
-        "opportunity-created": "{{displayName}}"
+        "opportunity-created": "{{displayName}}",
+        "update-sent": "{{update}}"
       }
     },
     "lifecycle-visualizer": {
@@ -551,7 +611,8 @@
         "type-cards": "Карти",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Полотна",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",
@@ -667,17 +728,28 @@
       "title": "Фільтр"
     },
     "backdrop": {
-      "private": "Будь ласка, станьте учасником, щоб отримати доступ до {{blockName}}",
+      "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Будь ласка, увійдіть, щоб побачити деталі {{blockName}}.",
       "login": "Please log in to see {{blockName}}"
     },
     "referenceSegment": {
       "title": "Посилання",
-      "missing-refreneces": "Посилань поки немає",
+      "missing-refereneces": "No references yet",
       "tooltips": {
         "add-reference": "Додати посилання",
-        "remove-reference": "Видалити посилання"
-      }
+        "remove-reference": "Видалити посилання",
+        "remove-recommendation": "Clear recommendation"
+      },
+      "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
+    },
+    "file-upload": {
+      "confirm-dialog": {
+        "title": "Uploading a document",
+        "confirm-text": "Please make sure that this document complies with Alkemio’s content standards. <aup>Click here</aup> to see the Acceptable Usage Policy (section 7).",
+        "checkbox-label": "This document meets Alkemio’s Terms & Conditions "
+      },
+      "file-size-error": "File size exceeds the {{limit}}MB limit",
+      "file-upload-success": "File uploaded successfully"
     },
     "editHubForm": {
       "host": {
@@ -939,7 +1011,8 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
+          "about": "About this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
@@ -960,14 +1033,21 @@
         },
         "profile": {
           "description": ""
+        },
+        "subentities": {
+          "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
+          "list": "List of {{entities}}",
+          "empty": "No {{entities}} found in this {{parentEntity}}.",
+          "empty-list": "There are no {{entities}} in this {{parentEntity}} yet."
+        },
+        "recommendations": {
+          "title": "Recommended by the Host"
         }
       }
     },
     "contribute": {
+      "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
       "no-cards": "Карта Не Знайдена"
-    },
-    "explore": {
-      "create-callout": "Create new Callout"
     },
     "admin": {
       "generic": {
@@ -993,8 +1073,11 @@
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
-            "import-innovation-packs": {
-              "title": "Import from an Innovation Pack"
+            "import": {
+              "title": "Template Library: {{templateType}}",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "no-templates": "Couldn't find any Template of this type",
+              "imported-successfully-notification": "Template imported successfully"
             }
           },
           "my-profile": {
@@ -1028,6 +1111,11 @@
         }
       },
       "challenge": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.challenge) authorization preferences"
+          }
+        },
         "community": {
           "preferences": {
             "title": "Membership",
@@ -1119,7 +1207,7 @@
     "contributors": {
       "search": {
         "title": "Дізнайтесь про внесок користувачів і Організацій",
-        "subtitle": "Вкажить хоча б один термін для пошуку. Клікніть на знайдені картки, щоб переглянути профіль.",
+        "subtitle": "Explore the organizations and users that are contributing to Challenges.",
         "placeholder": "Знайти котистувачів, або Організації"
       },
       "organizations": {
@@ -1157,15 +1245,15 @@
         "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my-search": {
-        "title": "Explore other Challenges accessible to you",
-        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
+        "title": "Explore other Challenges visible to you",
+        "subtitle": "Challenges in public Hubs are visible to everyone. Challenges in private Hubs are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
       },
       "my": {
-        "title": "Мої Випробування",
+        "title": "My Challenges",
         "subtitle": "В цій секції вказані Випробування, до яких ви належите."
       },
       "other": {
-        "title": "Challenges within My Hubs",
+        "title": "Other Challenges within My Hubs",
         "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
         "filter-by-hub": "Filter by My Hub"
       }
@@ -1179,7 +1267,7 @@
     "activity": {
       "title": "{{blockName}} Активність",
       "hubs": "Центр Випробувань",
-      "innovation-flow-info": "Клікніть для переглягу графіку життєвого циклу"
+      "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
       "sections": {
@@ -1205,13 +1293,12 @@
         },
         "hub": {
           "header": "Дізнайтесть про Центри Випробувань!",
-          "subheader": "Кожен Центр містить в собі одне, або більше Випробувань, і надає поширений контекст і Спільноти для Випробувань, що розташовані там. <br> Місце для колаборацій і координації. Приєднуйтесь.",
-          "body": "Членство: Кожен хаб має членів, які роблять свій внесок. Стати учасником можна на сторінці хабу.",
-          "body1": "Видимість: Більшість хабів є загальнодоступними, а отже, повністю видимими для всіх. Для приватних хабів контент доступний лише після того, як ви станете їхнім членом."
+          "subheader": "",
+          "body": "Each Hub is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
+          "body1": "Visibility: Public Hubs are fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },
         "my-hubs": {
-          "header": "Мої центри",
-          "subheader": "У цьому розділі показано центри, членом яких ви є."
+          "header": "My Hubs ({{myHubsCount}})"
         },
         "organizations": {
           "header": "Організації",
@@ -1240,7 +1327,6 @@
     },
     "hub": {
       "title": "Центр",
-      "about-this-hub": "About this Hub",
       "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
       "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
@@ -1255,10 +1341,6 @@
         "dashboard": {
           "organization": "Допоміжні Організації",
           "activity": "Статистика Центру",
-          "challenges": {
-            "title": "Випробування",
-            "help-text": "Тут показані різні Випробування в яких ви можете приймати участь в цьому Центрі."
-          },
           "community": "Спільнота"
         },
         "challenges": {
@@ -1272,7 +1354,6 @@
     },
     "challenge": {
       "title": "Випробування",
-      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "І більше ..."
       },
@@ -1282,24 +1363,18 @@
             "title": "Статистика Випробування",
             "help-text": "Статистика Випробування"
           },
-          "opportunities": {
-            "title": "Можливість",
-            "help-text": "Можливості, що мають відношення до Випробувань"
-          },
           "projects": {
             "title": "Проекти",
             "help-text": "Проекти, що мають відношення до Випробувань"
           }
         },
         "opportunities": {
-          "description": "Тут ви можете ознайомитись з Можливостями, які були відмічені за прогрес у Випробуванні. Фільтруйте по ключовим словам, щоб бачити тільки ті теми, в яких ви зацікавлені. ",
-          "body-missing": "Не знайдено Можливостей для цих Випробувань"
+          "description": "Тут ви можете ознайомитись з Можливостями, які були відмічені за прогрес у Випробуванні. Фільтруйте по ключовим словам, щоб бачити тільки ті теми, в яких ви зацікавлені. "
         }
       }
     },
     "opportunity": {
       "title": "Можливість",
-      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1341,7 +1416,6 @@
         "help-text": "Ця Організація сприяє даному Центру."
       },
       "members": {
-        "title": "Учасники ({{count}})",
         "help-text": "Показує учасників у цій Спільноті, включаючи вашу роль",
         "no-data": "Немає доступних учасників"
       },
@@ -1399,8 +1473,8 @@
       }
     },
     "login": {
-      "title": "Увійти",
-      "register": "Не має акаутну?"
+      "title": "Sign in to Alkemio",
+      "register": "Don’t have an Alkemio account yet? <signup>Click here to sign up.</signup>"
     },
     "about": {
       "title": "Переосмислення співпраці",
@@ -1427,21 +1501,30 @@
     },
     "registration": {
       "header": "Створіть акаунт, щоб почати використовувати Alkemio",
+      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
       "terms": "Я приймаю <terms>Умови використання</terms> та <privacy>Політику Конфіденційності</privacy>.",
-      "login": "Вже є акаунт?"
+      "login": "Вже є акаунт?",
+      "reset-password": "Reset password"
+    },
+    "accept-terms": {
+      "introduction": "<p>Alkemio makes it easy to manage Challenges and have contributors, from anywhere, working together on solutions. Challenges take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "greeting": "Hi {{user}}, welcome at Alkemio!",
+      "continue": "Continue to the platform",
+      "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
     "registration-success": {
-      "header": "Дякуємо за реєстрацію!",
-      "subheader": "Задля безпека ми повинні верефікувати надану електронну пошту. Будь ласка, перевірте вхідні повідомлення та слідкуйте вказаним там інструкціям."
+      "header": "Hi, thank you for signing up!"
     },
     "verification-success": {
       "header": "Дякую за верефікацію вашої електронної пошти!",
       "subheader": "Відтепер, Ваш профіль повністю активований на нашій платформі. Насолоджуйтесь!",
-      "message": "Рекомендуємо заповнити всі частини вашого [profile](/profile) - це допомагає не тільки при подачі заяви у Спільноту, але й для того, щоб інші знайли звʼязок з вами. "
+      "message": "Please do consider filling out all aspects of your profile. It helps with both applying to join communities and with others being able to connect with you."
     },
     "recovery": {
-      "header": "Відновити пароль",
-      "message": "Будь ласка, введіть свою електронну пошту нижче, щоб отримати посилання на відновлення вашого паролю."
+      "header": "Password recovery",
+      "message": {
+        "initial": "Please enter your email address below to receive a recovery code that will allow to reset your password."
+      }
     },
     "verification": {
       "header": "Верифікація електронної пошти",
@@ -1449,8 +1532,7 @@
     },
     "verification-required": {
       "header": "Email verification is pending.",
-      "message": "Please check your inbox for an email with instructions.",
-      "link": "(If you have not received an email, click on this link to send again)"
+      "message": "You are nearly there... One last step is to verify your email. <br />Please check your inbox for an email with instructions.<br /><br /><again>If you have not received an email, click on this link to send again</again>."
     },
     "settings": {
       "header": "Налаштування користувача"
@@ -1536,7 +1618,8 @@
     "messages": {
       "successfully-recovered-password": "Будь ласка, введіть новий пароль протягом наступних 15 хвилин для завершення відновлення паролю.",
       "verification-flow-expired": "Посилання на верифікацію застаріло. Будь ласка, вкажіть вашу електронну пошту, для того, щоб отримати оновлене посилання.",
-      "recovery-flow-expired": "Посилання на відновлення паролю застаріло. Будь ласка, вкажіть вашу електронну пошту, для того, щоб отримати оновлене посилання."
+      "recovery-flow-expired": "Посилання на відновлення паролю застаріло. Будь ласка, вкажіть вашу електронну пошту, для того, щоб отримати оновлене посилання.",
+      "verification-flow-continue": "Return to the platform"
     }
   },
   "apollo": {
@@ -1546,9 +1629,9 @@
     }
   },
   "dashboard-updates-section": {
-    "title": "({{count}}) Оновлень",
-    "dialog-title": "Всі Оновлення",
-    "no-data": "Немає оновлень."
+    "title": "News ({{count}})",
+    "dialog-title": "All News",
+    "no-data": "No news available."
   },
   "dashboard-discussions-section": {
     "title": "({{count}}) Обговорень",

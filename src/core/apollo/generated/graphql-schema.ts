@@ -10938,6 +10938,7 @@ export type CalloutsQuery = {
       | undefined;
     challenge?: {
       __typename?: 'Challenge';
+      id: string;
       nameID: string;
       collaboration?:
         | {
@@ -11122,6 +11123,7 @@ export type CalloutsQuery = {
     };
     opportunity?: {
       __typename?: 'Opportunity';
+      id: string;
       nameID: string;
       collaboration?:
         | {

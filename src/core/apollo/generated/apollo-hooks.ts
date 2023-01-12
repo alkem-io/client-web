@@ -9267,12 +9267,16 @@ export const CalloutsDocument = gql`
         }
       }
       challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
         nameID
-        collaboration {
-          ...CollaborationWithCallouts
+        ... on Challenge @skip(if: $includeOpportunity) {
+          collaboration {
+            ...CollaborationWithCallouts
+          }
         }
       }
       opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
         nameID
         collaboration {
           ...CollaborationWithCallouts

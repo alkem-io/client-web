@@ -21,7 +21,6 @@ const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
 
   const isLoading = loading || areHubsLoading;
 
-  const myHubsCount = userHubRoles?.length;
   const hubRolesByHubId = useMemo(() => keyBy(userHubRoles, 'id'), [userHubRoles]);
   const hubs = useMemo(() => hubsData?.hubs.filter(({ id }) => hubRolesByHubId[id]) ?? [], [hubsData, hubRolesByHubId]);
 
@@ -36,14 +35,20 @@ const MyHubsSection = ({ userHubRoles, loading }: MyHubsSectionProps) => {
     };
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (hubs.length === 0) {
+    return null;
+  }
+
   return (
     <DashboardHubsSection
-      headerText={t('pages.home.sections.my-hubs.header', { myHubsCount })}
+      headerText={t('pages.home.sections.my-hubs.header', { myHubsCount: hubs.length })}
       hubs={hubs}
       getHubCardProps={getHubCardProps}
-    >
-      {isLoading && <Loading />}
-    </DashboardHubsSection>
+    />
   );
 };
 
