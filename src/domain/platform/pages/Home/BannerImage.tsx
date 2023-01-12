@@ -17,12 +17,13 @@ const BannerImage = () => {
       component="img"
       src={bannerImageUrl}
       sx={{
-        objectFit: 'cover',
+        objectFit: 'contain',
+        objectPosition: 'center bottom',
         height: theme => ({
           xs: theme.spacing(15),
           sm: theme.spacing(20),
         }),
-        background: theme => theme.palette.neutralMedium.light,
+        background: '#deeff6',
       }}
     />
   );
