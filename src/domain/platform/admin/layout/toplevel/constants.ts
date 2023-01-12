@@ -1,8 +1,8 @@
-import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
+import { TabDefinition } from '../EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import { HubIcon } from '../../../challenge/hub/icon/HubIcon';
+import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
 
 export enum AdminSection {
   Hub = 'hubs',

@@ -21,6 +21,7 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   onLeaveCommunityDialogOpen?: (isOpen: boolean) => void;
   handleLeaveCommunity?: () => void;
   loading?: boolean;
+  isDemoHub?: boolean;
 }
 
 const ContributionDetailsCard = ({

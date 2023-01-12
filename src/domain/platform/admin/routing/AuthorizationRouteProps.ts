@@ -1,6 +1,5 @@
-import { PageProps } from '../../../shared/types/PageProps';
-
-interface AuthorizationRouteProps extends PageProps {
+interface AuthorizationRouteProps {
   resourceId?: string;
 }
+
 export default AuthorizationRouteProps;

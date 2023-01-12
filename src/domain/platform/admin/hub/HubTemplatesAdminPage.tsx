@@ -1,12 +1,11 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
-import { SettingsSection } from '../layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../core/routing/usePathUtils';
-import { SettingsPageProps } from '../layout/EntitySettings/types';
+import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import {
   refetchAdminHubTemplatesQuery,
-  useHubCanvasesLazyQuery,
   useAdminHubTemplatesQuery,
+  useHubCanvasesLazyQuery,
   useInnovationPacksLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
@@ -29,7 +28,6 @@ interface HubTemplatesAdminPageProps extends SettingsPageProps {
 
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
-  paths,
   routePrefix,
   aspectTemplatesRoutePath,
   canvasTemplatesRoutePath,
@@ -37,8 +35,6 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   edit = false,
 }) => {
   const { aspectTemplateId, canvasTemplateId, innovationTemplateId } = useParams();
-
-  useAppendBreadcrumb(paths, { name: 'templates' });
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 

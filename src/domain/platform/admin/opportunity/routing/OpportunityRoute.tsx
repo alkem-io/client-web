@@ -1,8 +1,7 @@
-import React, { FC, useMemo } from 'react';
-import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
 import { useOpportunity } from '../../../../challenge/opportunity/hooks/useOpportunity';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OpportunityCommunityAdminPage from '../OpportunityCommunityAdminPage';
 import OpportunityCommunicationsPage from '../pages/OpportunityCommunications/OpportunityCommunicationsPage';
@@ -12,46 +11,33 @@ import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
 
-interface Props extends PageProps {}
-
-export const OpportunityRoute: FC<Props> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
+export const OpportunityRoute: FC = () => {
   const { challenge } = useChallenge();
-  const { opportunity, displayName } = useOpportunity();
-
-  const currentPaths = useMemo(
-    () => [...paths, { value: url, name: displayName || '', real: true }],
-    [paths, displayName, url]
-  );
+  const { opportunity } = useOpportunity();
 
   return (
     <Routes>
       <Route index element={<Navigate to="profile" replace />} />
-      <Route path="profile" element={<OpportunityProfilePage paths={currentPaths} />} />
-      <Route path="context" element={<OpportunityContextPage paths={currentPaths} />} />
+      <Route path="profile" element={<OpportunityProfilePage />} />
+      <Route path="context" element={<OpportunityContextPage />} />
       <Route
         path="communications"
         element={
           <OpportunityCommunicationsPage
             communityId={opportunity?.community?.id}
             parentCommunityId={challenge?.community?.id}
-            paths={currentPaths}
           />
         }
       />
-      <Route path="community" element={<OpportunityCommunityAdminPage paths={currentPaths} />} />
+      <Route path="community" element={<OpportunityCommunityAdminPage />} />
       <Route
         path="community/groups/*"
         element={
-          <CommunityGroupsRoute
-            paths={currentPaths}
-            communityId={opportunity?.community?.id}
-            parentCommunityId={challenge?.community?.id}
-          />
+          <CommunityGroupsRoute communityId={opportunity?.community?.id} parentCommunityId={challenge?.community?.id} />
         }
       />
-      <Route path="authorization/*" element={<OpportunityAuthorizationRoute paths={currentPaths} />} />
-      <Route path={'innovation-flow/*'} element={<OpportunityInnovationFlowPage paths={currentPaths} />} />
+      <Route path="authorization/*" element={<OpportunityAuthorizationRoute />} />
+      <Route path="innovation-flow/*" element={<OpportunityInnovationFlowPage />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

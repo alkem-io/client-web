@@ -1,11 +1,21 @@
-import { Box } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 
-// TODO either use image for the current breakpoint or remove all except xxl
+const biggestImageWidth = 2048;
+
 const BannerImage = () => {
+  const size = useCurrentBreakpoint();
+
+  const hasImageForWidth = useMediaQuery(`@media only screen and (max-width: ${biggestImageWidth}px)`);
+
+  const bannerImageUrl = hasImageForWidth
+    ? `/alkemio-banner/alkemio-banner-${size}.png`
+    : '/alkemio-banner/alkemio-banner.svg';
+
   return (
     <Box
       component="img"
-      src="/alkemio-banner/alkemio-banner-xxl.png"
+      src={bannerImageUrl}
       sx={{
         objectFit: 'cover',
         height: theme => ({

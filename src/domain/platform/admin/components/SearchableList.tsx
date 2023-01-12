@@ -17,10 +17,10 @@ interface SearchableListProps {
 
 export const searchableListItemMapper =
   (editSuffix?: string) =>
-  (item: { id: string; displayName: string; nameID?: string }): SearchableListItem => ({
+  (item: { id: string; displayName: string; nameID?: string; url?: string }): SearchableListItem => ({
     id: item.id,
     value: item.displayName,
-    url: `${item.nameID ?? item.id}${editSuffix ?? ''}`,
+    url: item.url ?? `${item.nameID ?? item.id}${editSuffix ?? ''}`,
   });
 
 export interface SearchableListItem {

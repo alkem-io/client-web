@@ -1,8 +1,7 @@
-import React, { FC, useMemo } from 'react';
-import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '../../../../../core/analytics/useSentry';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
-import { PageProps } from '../../../../shared/types/PageProps';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import HubCommunicationsPage from '../../../../challenge/hub/pages/HubCommunication/HubCommunicationsPage';
 import HubProfilePage from '../../../../challenge/hub/pages/HubProfile/HubProfilePage';
@@ -14,33 +13,22 @@ import HubAuthorizationRoute from './HubAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import HubContextPage from '../../../../challenge/hub/pages/HubContext/HubContextPage';
 
-interface HubAdminRouteProps extends PageProps {}
-
-export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
+export const HubRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { hubId, displayName, communityId } = useHub();
-  const { pathname: url } = useResolvedPath('.');
-
-  const currentPaths = useMemo(
-    () => [...paths, { value: url, name: displayName, real: true }],
-    [paths, displayName, url]
-  );
+  const { hubId, communityId } = useHub();
 
   return (
     <Routes>
       <Route index element={<Navigate to="profile" replace />} />
-      <Route path="profile" element={<HubProfilePage paths={currentPaths} />} />
-      <Route path="context" element={<HubContextPage paths={currentPaths} />} />
-      <Route path="communications" element={<HubCommunicationsPage communityId={communityId} paths={currentPaths} />} />
-      <Route path="community" element={<HubCommunityAdminPage paths={currentPaths} />} />
-      <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} paths={currentPaths} />} />
-      <Route
-        path="community/groups/*"
-        element={<CommunityGroupsRoute paths={currentPaths} communityId={communityId} />}
-      />
+      <Route path="profile" element={<HubProfilePage />} />
+      <Route path="context" element={<HubContextPage />} />
+      <Route path="communications" element={<HubCommunicationsPage communityId={communityId} />} />
+      <Route path="community" element={<HubCommunityAdminPage />} />
+      <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} />} />
+      <Route path="community/groups/*" element={<CommunityGroupsRoute communityId={communityId} />} />
       <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
-      <Route path="challenges/*" element={<ChallengesRoute paths={currentPaths} />} />
-      <Route path="authorization/*" element={<HubAuthorizationRoute paths={currentPaths} resourceId={hubId} />} />
+      <Route path="challenges/*" element={<ChallengesRoute />} />
+      <Route path="authorization/*" element={<HubAuthorizationRoute resourceId={hubId} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

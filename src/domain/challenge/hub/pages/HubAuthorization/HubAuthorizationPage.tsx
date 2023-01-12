@@ -1,9 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubSettingsLayout from '../../../../platform/admin/hub/HubSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
-import { useAppendBreadcrumb } from '../../../../../core/routing/usePathUtils';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import HubAuthorizationView from './HubAuthorizationView';
 import {
   AuthorizationCredential,
@@ -31,13 +30,9 @@ const selectedGroups = ['Authorization', 'Privileges'];
 
 const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
 
-const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ paths, resourceId, routePrefix = '../' }) => {
+const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ resourceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { hubNameId } = useHub();
-
-  useAppendBreadcrumb(paths, {
-    name: t(`common.enums.authorization-credentials.${authorizationCredential}.name` as const),
-  });
 
   // todo: how can these two be extracted in a util
   const queryVariables: HubPreferencesQueryVariables = { hubNameId };

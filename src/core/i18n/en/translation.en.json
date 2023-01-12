@@ -214,6 +214,11 @@
       "not-verified": ""
     },
     "enums": {
+      "hub-visibility": {
+        "ACTIVE": "Active",
+        "ARCHIVED": "Archived",
+        "DEMO": "Demo"
+      },
       "callout-state": {
         "ARCHIVED": "Archived",
         "CLOSED": "Closed",
@@ -1202,7 +1207,7 @@
     "contributors": {
       "search": {
         "title": "See who's contributing",
-        "subtitle": "Have a look at the organizations and users that are contributing to the Challenges, Opportunities and Hubs on the platform.",
+        "subtitle": "Explore the organizations and users that are contributing to Challenges.",
         "placeholder": "Search..."
       },
       "organizations": {
@@ -1240,15 +1245,15 @@
         "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my-search": {
-        "title": "Explore other Challenges accessible to you",
-        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
+        "title": "Explore other Challenges visible to you",
+        "subtitle": "Challenges in public Hubs are visible to everyone. Challenges in private Hubs are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
       },
       "my": {
-        "title": "My challenges",
+        "title": "My Challenges",
         "subtitle": "Here you'll find the challenges that you are contributing to."
       },
       "other": {
-        "title": "Challenges within My Hubs",
+        "title": "Other Challenges within My Hubs",
         "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
         "filter-by-hub": "Filter by My Hub"
       }
@@ -1288,13 +1293,12 @@
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. It is a space to coordinate and collaborate. Connect.",
-          "body": "Membership: Each Hub has members that are contributing. Become a member via the Hub page.",
-          "body1": "Visibility: Most Hubs are public and hence fully visible to everyone. For private Hubs, the content is only available after becoming a member."
+          "subheader": "",
+          "body": "Each Hub is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
+          "body1": "Visibility: Public Hubs are fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },
         "my-hubs": {
-          "header": "My Hubs",
-          "subheader": "This section show you the Hubs that you are a member of."
+          "header": "My Hubs ({{myHubsCount}})"
         },
         "organizations": {
           "header": "Organizations",

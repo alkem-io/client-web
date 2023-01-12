@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { EntityTypeName } from '../../../shared/layout/LegacyPageLayout/SimplePageLayout';
+import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import AspectDashboardPage from '../pages/AspectDashboardPage';
 import AspectSettingsPage from '../pages/AspectSettingsPage';

@@ -47,7 +47,6 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
             <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.my.title')}
               headerCounter={myChallenges.length}
-              subHeaderText={t('pages.challenge-explorer.my.subtitle')}
               challenges={myChallenges}
             />
           </Grid>
@@ -58,7 +57,6 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
             <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.other.title')}
               headerCounter={otherChallenges.length}
-              subHeaderText={t('pages.challenge-explorer.other.subtitle')}
               challenges={otherChallenges}
               enableFilterByHub
             />

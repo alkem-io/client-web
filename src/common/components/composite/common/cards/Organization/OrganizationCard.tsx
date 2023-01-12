@@ -2,11 +2,10 @@ import { Avatar, Box, CardHeader, Skeleton, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
+import OneLineMarkdown from '../../../../../../core/ui/markdown/OneLineMarkdown';
 import CircleTag from '../../../../core/CircleTag';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import VerifiedStatus from '../../VerifiedStatus/VerifiedStatus';
-
-const LINES_TO_SHOW = 4;
 
 export interface OrganizationCardProps {
   name?: string;
@@ -33,20 +32,13 @@ const useStyles = makeStyles(theme =>
       margin: 0,
       paddingRight: theme.spacing(3),
     },
-    multiLineEllipsis: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: '-webkit-box',
-      '-webkit-line-clamp': LINES_TO_SHOW,
-      '-webkit-box-orient': 'vertical',
-    },
   })
 );
 
 const OrganizationCard: FC<OrganizationCardProps> = ({
   name,
   avatar,
-  description,
+  description = '',
   role,
   associatesCount,
   verified,
@@ -77,9 +69,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
         }
         subheader={
           <>
-            <Typography variant="body2" className={styles.multiLineEllipsis}>
-              {loading ? <Skeleton width="80%" /> : description}
-            </Typography>
+            {loading ? <Skeleton width="80%" /> : <OneLineMarkdown>{description}</OneLineMarkdown>}
             <Typography variant="body2" color="primary">
               {loading ? <Skeleton width="30%" /> : role}
             </Typography>
