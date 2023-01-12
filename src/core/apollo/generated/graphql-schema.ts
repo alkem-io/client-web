@@ -787,6 +787,7 @@ export type ChallengeEventInput = {
 };
 
 export enum ChallengePreferenceType {
+  AllowContributorsToCreateCallouts = 'ALLOW_CONTRIBUTORS_TO_CREATE_CALLOUTS',
   AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
   AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
   AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
@@ -1069,7 +1070,7 @@ export type Context = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A detailed description of the current situation */
-  background?: Maybe<Scalars['String']>;
+  background?: Maybe<Scalars['Markdown']>;
   /** The EcosystemModel for this Context. */
   ecosystemModel?: Maybe<EcosystemModel>;
   /** The ID of the entity */
@@ -1089,7 +1090,7 @@ export type Context = {
   /** The Visual assets for this Context. */
   visuals?: Maybe<Array<Visual>>;
   /** Who should get involved in this challenge */
-  who?: Maybe<Scalars['String']>;
+  who?: Maybe<Scalars['Markdown']>;
 };
 
 export type ContributorFilterInput = {
@@ -1170,8 +1171,6 @@ export type CreateCalloutOnCollaborationInput = {
   description: Scalars['Markdown'];
   /** The display name for the entity. */
   displayName: Scalars['String'];
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
@@ -1316,7 +1315,7 @@ export type CreateOrganizationInput = {
 export type CreateProfileInput = {
   /** The URL of the avatar of the user */
   avatarURL?: InputMaybe<Scalars['String']>;
-  description?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   location?: InputMaybe<CreateLocationInput>;
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
   tagsetsData?: InputMaybe<Array<CreateTagsetInput>>;
@@ -1748,6 +1747,7 @@ export type HubFilterInput = {
 };
 
 export enum HubPreferenceType {
+  AllowMembersToCreateCallouts = 'ALLOW_MEMBERS_TO_CREATE_CALLOUTS',
   AllowMembersToCreateChallenges = 'ALLOW_MEMBERS_TO_CREATE_CHALLENGES',
   AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
   MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
@@ -2946,8 +2946,10 @@ export type PreferenceDefinition = {
 };
 
 export enum PreferenceType {
+  AllowContributorsToCreateCallouts = 'ALLOW_CONTRIBUTORS_TO_CREATE_CALLOUTS',
   AllowContributorsToCreateOpportunities = 'ALLOW_CONTRIBUTORS_TO_CREATE_OPPORTUNITIES',
   AllowHubMembersToContribute = 'ALLOW_HUB_MEMBERS_TO_CONTRIBUTE',
+  AllowMembersToCreateCallouts = 'ALLOW_MEMBERS_TO_CREATE_CALLOUTS',
   AllowMembersToCreateChallenges = 'ALLOW_MEMBERS_TO_CREATE_CHALLENGES',
   AllowNonMembersReadAccess = 'ALLOW_NON_MEMBERS_READ_ACCESS',
   AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
@@ -2995,7 +2997,7 @@ export type Profile = {
   /** The Visual avatar for this Profile. */
   avatar?: Maybe<Visual>;
   /** A short description of the entity associated with this profile. */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['Markdown']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The location for this Profile. */
@@ -3961,7 +3963,7 @@ export type UpdateOrganizationPreferenceInput = {
 
 export type UpdateProfileInput = {
   ID: Scalars['UUID'];
-  description?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   location?: InputMaybe<UpdateLocationInput>;
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
@@ -10936,6 +10938,7 @@ export type CalloutsQuery = {
       | undefined;
     challenge?: {
       __typename?: 'Challenge';
+      id: string;
       nameID: string;
       collaboration?:
         | {
@@ -11120,6 +11123,7 @@ export type CalloutsQuery = {
     };
     opportunity?: {
       __typename?: 'Opportunity';
+      id: string;
       nameID: string;
       collaboration?:
         | {
