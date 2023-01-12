@@ -1,92 +1,3 @@
-# normal query and "extra" one with JUST the aspects and references
-# hub queries
-query HubContext($hubNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    displayName
-    host {
-      ...AssociatedOrganizationDetails
-    }
-    tagset {
-      id
-      name
-      tags
-    }
-    context {
-      ...ContextTab
-    }
-    metrics {
-      ...MetricsItem
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-  }
-}
-# chall queries
-query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    displayName
-    challenge(ID: $challengeNameId) {
-      id
-      nameID
-      displayName
-      authorization {
-        id
-        myPrivileges
-      }
-      tagset {
-        id
-        name
-        tags
-      }
-      lifecycle {
-        ...LifecycleContextTab
-      }
-      context {
-        ...ContextTab
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        ...EntityDashboardCommunity
-      }
-    }
-  }
-}
-# opp queries
-query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    opportunity(ID: $opportunityNameId) {
-      id
-      nameID
-      displayName
-      tagset {
-        id
-        name
-        tags
-      }
-      lifecycle {
-        ...LifecycleContextTab
-      }
-      context {
-        ...ContextTab
-      }
-      metrics {
-        ...MetricsItem
-      }
-      community {
-        ...EntityDashboardCommunity
-      }
-    }
-  }
-}
 # context tab fragments
 fragment ContextTab on Context {
   id
@@ -121,11 +32,11 @@ fragment MetricsItem on NVP {
 }
 #
 query AboutPageNonMembers(
-  $hubNameId: UUID_NAMEID!,
-  $includeHub: Boolean = false,
-  $includeChallenge: Boolean = false,
-  $includeOpportunity: Boolean = false,
-  $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
+  $hubNameId: UUID_NAMEID!
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
 ) {
   hub(ID: $hubNameId) {
@@ -215,13 +126,13 @@ query AboutPageNonMembers(
 }
 #
 query AboutPageMembers(
-  $hubNameId: UUID_NAMEID!,
-  $includeHub: Boolean = false,
-  $includeChallenge: Boolean = false,
-  $includeOpportunity: Boolean = false,
-  $communityReadAccess: Boolean!,
-  $referencesReadAccess: Boolean!,
-  $challengeNameId: UUID_NAMEID = "mockid", # workaround for mendatory param working in conjection with @include or @skip
+  $hubNameId: UUID_NAMEID!
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $communityReadAccess: Boolean!
+  $referencesReadAccess: Boolean!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
   $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mendatory param working in conjection with @include or @skip
 ) {
   hub(ID: $hubNameId) {
@@ -230,11 +141,11 @@ query AboutPageMembers(
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity
       }
-    }
-    context {
-      id
-      references @include(if: $referencesReadAccess) {
-        ...ReferenceDetails
+      context {
+        id
+        references @include(if: $referencesReadAccess) {
+          ...ReferenceDetails
+        }
       }
     }
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
