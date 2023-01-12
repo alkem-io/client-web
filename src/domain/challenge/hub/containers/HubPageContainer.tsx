@@ -31,6 +31,7 @@ import {
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 
 export interface HubContainerEntities {
   hub: HubPageFragment | undefined;
@@ -75,10 +76,12 @@ const EMPTY = [];
 const NO_PRIVILEGES = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
+  const errorHandler = useApolloErrorHandler();
   const { hubId, hubNameId, loading: loadingHub } = useHub();
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
+    onError: errorHandler,
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 

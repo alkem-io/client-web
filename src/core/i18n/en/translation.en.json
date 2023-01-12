@@ -1624,6 +1624,9 @@
   },
   "apollo": {
     "errors": {
+      "generic": "An error occurred",
+      "generic-with-code": "An error occurred with code {{code}}",
+      "ENTITY_NOT_FOUND": "Entity not found",
       "bad-user-input": "Invalid value in the submitted form.",
       "bad-user-input-withfield": "The value of '{{field}}' is not valid."
     }
