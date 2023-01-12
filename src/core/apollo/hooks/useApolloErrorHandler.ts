@@ -1,10 +1,10 @@
 import { ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
-import { Severity } from '../../state/global/notifications/notificationMachine';
+import { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { Severity } from '../../state/global/notifications/notificationMachine';
 import { error as logError } from '../../../services/logging/sentry/log';
 import { useNotification } from '../../ui/notifications/useNotification';
-import { i18n, TFunction } from 'i18next';
 
 // those match the AlkemioErrorStatus on the server, but not all of them are used in the graphql errors
 enum GraphQLErrorsExtensionCodes {
