@@ -11,6 +11,7 @@ import JourneyCardTagline from '../../../challenge/common/JourneyCard/JourneyCar
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import CardRibbon from '../../../../core/ui/card/CardRibbon';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   journeyTypeName: JourneyTypeName;
@@ -35,9 +36,14 @@ const ContributionDetailsCard = ({
   onLeaveCommunityDialogOpen,
   handleLeaveCommunity,
   loading,
+  isDemoHub,
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
+
+  const ribbon = isDemoHub ? (
+    <CardRibbon text={`${t('common.enums.hub-visibility.DEMO')} ${t('common.hub')}`} />
+  ) : undefined;
 
   return (
     <>
@@ -68,6 +74,7 @@ const ContributionDetailsCard = ({
             </CardActions>
           )
         }
+        ribbon={ribbon}
       >
         <JourneyCardTagline>{tagline}</JourneyCardTagline>
       </JourneyCard>
