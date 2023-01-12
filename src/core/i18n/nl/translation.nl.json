@@ -14,6 +14,13 @@
   "actions": {
     "add-entity": "Voeg {{entity}} toe"
   },
+  "languages": {
+    "en": "Engels",
+    "nl": "Nederlands",
+    "es": "Spaans",
+    "bg": "Bulgaars",
+    "ua": "Oekraïens"
+  },
   "buttons": {
     "leave": "Verlaat",
     "learn-more": "Meer leren",
@@ -193,7 +200,6 @@
     "preview": "Voorbeeld",
     "help": "Help",
     "loading": "Laden...",
-    "language": "Taal",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation flows",
     "more": "Meer",
@@ -208,6 +214,11 @@
       "not-verified": ""
     },
     "enums": {
+      "hub-visibility": {
+        "ACTIVE": "Actief",
+        "ARCHIVED": "Gearchiveerd",
+        "DEMO": "Demo"
+      },
       "callout-state": {
         "ARCHIVED": "Gearchiveerd",
         "CLOSED": "Gesloten",
@@ -529,6 +540,9 @@
     }
   },
   "components": {
+    "top-callouts": {
+      "title": "Top Oproepen"
+    },
     "associated-organization": {
       "confirmation-dialog": {
         "title": "{{organization}} verlaten",
@@ -1193,7 +1207,7 @@
     "contributors": {
       "search": {
         "title": "Kijk wie bijdraagt",
-        "subtitle": "Bekijk de organisaties en gebruikers die bijdragen aan de Challenges, Opportunities en Hubs op het platform.",
+        "subtitle": "Verken de organisaties en gebruikers die bijdragen aan alle Challenges.",
         "placeholder": "Zoek naar gebruikers en organisaties"
       },
       "organizations": {
@@ -1232,14 +1246,14 @@
       },
       "my-search": {
         "title": "Verken andere Challenges die voor jou toegankelijk zijn",
-        "subtitle": "Op Alkemio zijn er zowel openbare als private Hubs. Hier vind je alle Challenges van publieke Hubs en private Hubs waar je lid van bent. Voer uw zoektermen hieronder in (bijv. ‘innovatie’) om overeenkomende Challenges te vinden. "
+        "subtitle": "Challenges in openbare Hubs zijn zichtbaar voor iedereen. Challenges in privé Hubs zijn alleen zichtbaar voor leden. Voer je zoektermen hieronder in (bv. 'innovatie') om de bijbehorende Challenges te vinden. "
       },
       "my": {
         "title": "Mijn Challenges",
         "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. "
       },
       "other": {
-        "title": "Challenges binnen mijn Hubs",
+        "title": "Andere Challenges binnen mijn Hubs",
         "subtitle": "Hier vind je de andere Challenges die vallen onder de Hubs waarvan je lid bent.",
         "filter-by-hub": "Filter op mijn Hub"
       }
@@ -1279,13 +1293,12 @@
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",
-          "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor deze Challenges. Een omgeving om de community te verbinden en samen te werken.",
-          "body": "Lidmaatschap: Elke Hub heeft leden die een bijdrage leveren. Word lid via de Hub pagina.",
-          "body1": "Zichtbaarheid: De meeste Hubs zijn openbaar en dus volledig zichtbaar voor iedereen. Voor privé Hubs is de inhoud alleen beschikbaar nadat je lid bent geworden."
+          "subheader": "",
+          "body": "Elke Hub is een community met een eigen plek om te verbinden, samen te werken en te vernieuwen rondom Challenges. Ontdek de lidmaatschapsopties.",
+          "body1": "Zichtbaarheid: De meeste Hubs zijn openbaar en dus volledig zichtbaar voor iedereen. Voor privé Hubs is de inhoud alleen zichtbaar nadat je lid bent geworden."
         },
         "my-hubs": {
-          "header": "Mijn Hubs",
-          "subheader": "Deze sectie toont u de Hubs waar u lid van bent."
+          "header": "Mijn Hubs ({{myHubsCount}})"
         },
         "organizations": {
           "header": "Organisaties",
