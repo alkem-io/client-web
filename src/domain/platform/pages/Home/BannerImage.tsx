@@ -17,7 +17,7 @@ const BannerImage = () => {
       component="img"
       src={bannerImageUrl}
       sx={{
-        objectFit: 'contain',
+        objectFit: hasImageForWidth ? 'cover' : 'contain',
         objectPosition: 'center bottom',
         height: theme => ({
           xs: theme.spacing(15),
