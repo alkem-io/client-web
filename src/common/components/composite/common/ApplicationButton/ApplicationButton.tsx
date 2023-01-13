@@ -159,7 +159,16 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     // is parent member but has no privileges for joining the current community
     if (isParentMember) {
       return (
-        <Button disabled variant={'contained'}>
+        <Button
+          disabled
+          variant={'outlined'}
+          sx={{
+            '&.Mui-disabled': {
+              color: 'primary.main',
+              borderColor: 'primary.main',
+            },
+          }}
+        >
           {t('components.application-button.apply-disabled')}
         </Button>
       );
