@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import {
   ChallengeCardFragmentDoc,
   OpportunityCardFragmentDoc,
+  refetchMeQuery,
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -68,6 +69,7 @@ export const useJourneyCreation = () => {
         },
       });
     },
+    refetchQueries: [refetchMeQuery()],
   });
   const [createOpportunityLazy] = useCreateOpportunityMutation({
     onError: handleError,
@@ -101,6 +103,7 @@ export const useJourneyCreation = () => {
         },
       });
     },
+    refetchQueries: [refetchMeQuery()],
   });
 
   // add useCallback
