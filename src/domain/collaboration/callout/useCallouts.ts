@@ -95,10 +95,8 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const collaboration =
-    calloutsData?.hub?.collaboration ??
-    calloutsData?.hub.challenge?.collaboration ??
-    calloutsData?.hub.opportunity?.collaboration;
+  const collaboration = (calloutsData?.hub.opportunity ?? calloutsData?.hub.challenge ?? calloutsData?.hub)
+    ?.collaboration;
 
   const reloadCallouts = getCallouts;
 

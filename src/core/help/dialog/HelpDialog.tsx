@@ -55,7 +55,7 @@ const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const { platform } = useConfig();
   const handleClose = () => (onClose ? onClose() : undefined);
-  const faq = `${platform?.foundation}/faq`;
+  const faq = `${platform?.help}`;
   const contactUs = `${platform?.support}`;
   const gettingStarted = `${platform?.help}/getting-started`;
 
