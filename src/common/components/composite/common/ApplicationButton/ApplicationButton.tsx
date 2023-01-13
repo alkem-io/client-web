@@ -161,7 +161,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
       return (
         <Button
           disabled
-          variant={'outlined'}
+          variant="outlined"
           sx={{
             '&.Mui-disabled': {
               color: 'primary.main',
