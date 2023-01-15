@@ -5,6 +5,21 @@ query HubTemplates($hubId: UUID_NAMEID!) {
   }
 }
 
+query CalloutFormTemplatesFromHub($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      aspectTemplates {
+        ...AspectTemplate
+      }
+      canvasTemplates {
+        ...CanvasTemplate
+      }
+    }
+  }
+}
+
 query AspectTemplatesFromHub($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id

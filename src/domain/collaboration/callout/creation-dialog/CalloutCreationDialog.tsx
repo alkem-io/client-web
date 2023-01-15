@@ -1,7 +1,12 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { AspectTemplateFragment, CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AspectTemplateFragment,
+  CalloutState,
+  CalloutType,
+  CanvasTemplateFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
@@ -25,7 +30,7 @@ export interface CalloutCreationDialogProps {
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
   isCreating: boolean;
   calloutNames: string[];
-  cardTemplates: AspectTemplateFragment[];
+  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
 }
 
 export interface CalloutCardTemplateInfo {
@@ -48,7 +53,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   onSaveAsDraft,
   isCreating,
   calloutNames,
-  cardTemplates,
+  templates,
 }) => {
   const { t } = useTranslation();
 
@@ -64,7 +69,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, cardTemplates);
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,
@@ -79,7 +84,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, cardTemplates]);
+  }, [callout, onSaveAsDraft, templates]);
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -101,7 +106,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             calloutNames={calloutNames}
             onChange={handleValueChange}
             onStatusChanged={handleStatusChange}
-            templates={cardTemplates}
+            templates={templates}
           />
         </Box>
       </DialogContent>

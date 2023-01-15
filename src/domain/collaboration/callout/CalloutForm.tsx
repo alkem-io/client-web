@@ -1,6 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { AspectTemplateFragment, CalloutState, CalloutType } from '../../../core/apollo/generated/graphql-schema';
+import {
+  AspectTemplateFragment,
+  CalloutState,
+  CalloutType,
+  CanvasTemplateFragment,
+} from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { Grid, Typography } from '@mui/material';
 import FormRow from '../../shared/layout/FormLayout';
@@ -14,6 +19,7 @@ import { FormikSwitch } from '../../../common/components/composite/forms/FormikS
 import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
 import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
+import CanvasTemplatesChooser from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
 
 type FormValueType = {
   displayName: string;
@@ -49,7 +55,7 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
   calloutNames: string[];
-  templates: AspectTemplateFragment[];
+  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
@@ -142,7 +148,23 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <>
                 <SectionSpacer />
                 <FormRow>
-                  <CardTemplatesChooser name="cardTemplateType" templates={templates} editMode={editMode} />
+                  <CardTemplatesChooser
+                    name="cardTemplateType"
+                    templates={templates.cardTemplates}
+                    editMode={editMode}
+                  />
+                </FormRow>
+              </>
+            )}
+            {formikState.values.type === CalloutType.Canvas && (
+              <>
+                <SectionSpacer />
+                <FormRow>
+                  <CanvasTemplatesChooser
+                    name="cardTemplateType"
+                    templates={templates.canvasTemplates}
+                    editMode={editMode}
+                  />
                 </FormRow>
               </>
             )}

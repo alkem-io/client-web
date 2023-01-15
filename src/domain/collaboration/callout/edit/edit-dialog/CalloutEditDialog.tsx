@@ -11,7 +11,7 @@ import ConfirmationDialog, {
 import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
-import { AspectTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AspectTemplateFragment, CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -21,7 +21,7 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutEditType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   calloutNames: string[];
-  cardTemplates: AspectTemplateFragment[];
+  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
@@ -32,7 +32,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onDelete,
   onCalloutEdit,
   calloutNames,
-  cardTemplates,
+  templates,
 }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -43,7 +43,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {
     setLoading(true);
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, cardTemplates);
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
     await onCalloutEdit({ ...callout, ...newCallout, cardTemplate: calloutCardTemplate });
     setLoading(false);
   };
@@ -90,7 +90,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
-            templates={cardTemplates}
+            templates={templates}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>

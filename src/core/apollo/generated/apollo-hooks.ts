@@ -4594,6 +4594,79 @@ export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQuer
   return { query: HubTemplatesDocument, variables: variables };
 }
 
+export const CalloutFormTemplatesFromHubDocument = gql`
+  query CalloutFormTemplatesFromHub($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        aspectTemplates {
+          ...AspectTemplate
+        }
+        canvasTemplates {
+          ...CanvasTemplate
+        }
+      }
+    }
+  }
+  ${AspectTemplateFragmentDoc}
+  ${CanvasTemplateFragmentDoc}
+`;
+
+/**
+ * __useCalloutFormTemplatesFromHubQuery__
+ *
+ * To run a query within a React component, call `useCalloutFormTemplatesFromHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutFormTemplatesFromHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutFormTemplatesFromHubQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useCalloutFormTemplatesFromHubQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >(CalloutFormTemplatesFromHubDocument, options);
+}
+
+export function useCalloutFormTemplatesFromHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >(CalloutFormTemplatesFromHubDocument, options);
+}
+
+export type CalloutFormTemplatesFromHubQueryHookResult = ReturnType<typeof useCalloutFormTemplatesFromHubQuery>;
+export type CalloutFormTemplatesFromHubLazyQueryHookResult = ReturnType<typeof useCalloutFormTemplatesFromHubLazyQuery>;
+export type CalloutFormTemplatesFromHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutFormTemplatesFromHubQuery,
+  SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+>;
+export function refetchCalloutFormTemplatesFromHubQuery(
+  variables: SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+) {
+  return { query: CalloutFormTemplatesFromHubDocument, variables: variables };
+}
+
 export const AspectTemplatesFromHubDocument = gql`
   query AspectTemplatesFromHub($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -8416,6 +8489,84 @@ export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostCommentInCalloutMutation,
   SchemaTypes.PostCommentInCalloutMutationVariables
 >;
+export const TemplatesForCalloutCreationDocument = gql`
+  query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        aspectTemplates {
+          id
+          info {
+            ...TemplateTitle
+          }
+        }
+        canvasTemplates {
+          id
+          info {
+            ...TemplateTitle
+          }
+        }
+      }
+    }
+  }
+  ${TemplateTitleFragmentDoc}
+`;
+
+/**
+ * __useTemplatesForCalloutCreationQuery__
+ *
+ * To run a query within a React component, call `useTemplatesForCalloutCreationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplatesForCalloutCreationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplatesForCalloutCreationQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useTemplatesForCalloutCreationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >(TemplatesForCalloutCreationDocument, options);
+}
+
+export function useTemplatesForCalloutCreationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >(TemplatesForCalloutCreationDocument, options);
+}
+
+export type TemplatesForCalloutCreationQueryHookResult = ReturnType<typeof useTemplatesForCalloutCreationQuery>;
+export type TemplatesForCalloutCreationLazyQueryHookResult = ReturnType<typeof useTemplatesForCalloutCreationLazyQuery>;
+export type TemplatesForCalloutCreationQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplatesForCalloutCreationQuery,
+  SchemaTypes.TemplatesForCalloutCreationQueryVariables
+>;
+export function refetchTemplatesForCalloutCreationQuery(
+  variables: SchemaTypes.TemplatesForCalloutCreationQueryVariables
+) {
+  return { query: TemplatesForCalloutCreationDocument, variables: variables };
+}
+
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
