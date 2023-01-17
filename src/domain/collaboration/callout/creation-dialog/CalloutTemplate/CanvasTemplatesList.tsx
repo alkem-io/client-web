@@ -1,10 +1,10 @@
 import { Box, Grid, List, Typography } from '@mui/material';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { Loading } from '../../../../../common/components/core';
 import { CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import CanvasListItem, { CanvasListItemCanvas } from '../../../canvas/CanvasList/CanvasListItem';
+import CanvasListItem from '../../../canvas/CanvasList/CanvasListItem';
 
 interface CanvasTemplatesListProps {
   actions: {
@@ -24,23 +24,18 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
 
   const { t } = useTranslation();
 
-  const canvasListItems = useMemo<CanvasListItemCanvas[]>(() => {
-    return templates.map(({ id, info }) => ({
-      id,
-      displayName: info.title!,
-    }));
-  }, [templates]);
+  const formatCanvasTemplate = (canvas: CanvasTemplateFragment) => ({ id: canvas.id, displayName: canvas.info.title });
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={5.5}>
         <Box display="flex" flexDirection="column">
           <List>
-            {canvasListItems.map(canvas => (
+            {templates.map(canvas => (
               <CanvasListItem
                 key={canvas.id}
-                onClick={() => actions.onSelect(canvas.displayName)}
-                canvas={canvas}
+                onClick={() => actions.onSelect(canvas.info.title)}
+                canvas={formatCanvasTemplate(canvas)}
                 isSelected={canvas.id === selectedTemplate?.id}
               />
             ))}
