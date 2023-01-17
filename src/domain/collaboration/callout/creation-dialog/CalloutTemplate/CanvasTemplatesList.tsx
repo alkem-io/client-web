@@ -1,23 +1,20 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, List, Typography } from '@mui/material';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { Loading } from '../../../../../common/components/core';
 import { CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../shared/types/Identifiable';
-import CanvasList from '../../../canvas/CanvasList/CanvasList';
-import { CanvasListItemCanvas } from '../../../canvas/CanvasList/CanvasListItem';
+import CanvasListItem, { CanvasListItemCanvas } from '../../../canvas/CanvasList/CanvasListItem';
 
 interface CanvasTemplatesListProps {
   actions: {
-    onTemplateSelected: (template: Identifiable) => void;
+    onSelect: (canvasTemplateTitle: string) => void;
   };
   entities: {
     selectedTemplate: (CanvasTemplateFragment & { value: string }) | undefined;
     templates: CanvasTemplateFragment[];
   };
   state: {
-    templatesLoading?: boolean;
     canvasLoading?: boolean;
   };
 }
@@ -36,30 +33,26 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={5}>
+      <Grid item xs={5.5}>
         <Box display="flex" flexDirection="column">
-          <Box p={1} />
-          <Typography variant="body1">{t('pages.canvas.create-dialog.steps.templating')}</Typography>
-          <Box p={1} />
-          <CanvasList
-            entities={{
-              canvases: canvasListItems,
-              selectedCanvasId: selectedTemplate?.id,
-            }}
-            actions={{
-              onSelect: template => actions.onTemplateSelected(template),
-            }}
-            options={{}}
-            state={{
-              loading: state.templatesLoading,
-            }}
-          />
+          <List>
+            {canvasListItems.map(canvas => (
+              <CanvasListItem
+                key={canvas.id}
+                onClick={() => actions.onSelect(canvas.displayName)}
+                canvas={canvas}
+                isSelected={canvas.id === selectedTemplate?.id}
+              />
+            ))}
+          </List>
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <Box display="flex" justifyContent="center" alignItems="center" height={'100%'} minHeight={600} minWidth={450}>
+        <Box display="flex" justifyContent="center" alignItems="center" height={'100%'} minHeight={400} minWidth={450}>
           {!selectedTemplate && !state.canvasLoading && (
-            <Typography variant="overline">{t('pages.canvas.create-dialog.no-template-selected')}</Typography>
+            <Typography variant="overline">
+              {t('components.callout-creation.template-step.no-canvas-template-selected')}
+            </Typography>
           )}
           {state.canvasLoading && <Loading text="Loading canvas..." />}
           {selectedTemplate && !state.canvasLoading && (

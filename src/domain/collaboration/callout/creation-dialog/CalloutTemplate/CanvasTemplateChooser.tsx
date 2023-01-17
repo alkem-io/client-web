@@ -1,7 +1,7 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-// import { useField } from 'formik';
+import { useField } from 'formik';
 import { CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useHubTemplatesCanvasTemplateWithValueQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
@@ -13,21 +13,22 @@ interface CardTemplatesChooserProps {
   editMode?: boolean;
 }
 
-export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ templates, editMode = false }) => {
-  //   const [field, , helpers] = useField(name);
+export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, templates, editMode = false }) => {
+  const [field, , helpers] = useField(name);
   const { hubNameId } = useUrlParams();
-
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
+  const selectedTemplate = templates.find(template => template.info.title === field.value ?? '');
 
   const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesCanvasTemplateWithValueQuery({
     fetchPolicy: 'cache-and-network',
-    variables: { hubId: hubNameId!, canvasTemplateId: selectedTemplateId! },
-    skip: !hubNameId || !selectedTemplateId,
+    variables: { hubId: hubNameId!, canvasTemplateId: selectedTemplate?.id! },
+    skip: !hubNameId || !selectedTemplate?.id,
   });
 
-  const selectedTemplate = templates.find(({ id }) => id === selectedTemplateId);
   const canvasValue = canvasValueData?.hub.templates?.canvasTemplate?.value ?? '';
-  const selectedTemplateWithValue = selectedTemplate ? { ...selectedTemplate, value: canvasValue } : undefined;
+  const selectedTemplateWithValue = useMemo(
+    () => (selectedTemplate ? { ...selectedTemplate, value: canvasValue } : undefined),
+    [selectedTemplate, canvasValue]
+  );
 
   const { t } = useTranslation();
 
@@ -35,7 +36,7 @@ export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ template
     <>
       {/* TODO: Add this color to pallete to match Formik labels */}
       <Typography sx={{ color: '#00000099' }}>
-        {t('components.callout-creation.template-step.card-template-label')}
+        {t('components.callout-creation.template-step.canvas-template-label')}
       </Typography>
       {editMode && (
         <Typography sx={{ color: '#00000099' }} variant="body2">
@@ -45,9 +46,7 @@ export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ template
       <CanvasTemplatesList
         entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
         actions={{
-          onTemplateSelected: canvas => {
-            setSelectedTemplateId(canvas?.id);
-          },
+          onSelect: helpers.setValue,
         }}
         state={{
           canvasLoading: isCanvasValueLoading,

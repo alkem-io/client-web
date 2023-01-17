@@ -580,9 +580,11 @@ export type Callout = {
   aspects?: Maybe<Array<Aspect>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Canvas template associated with this Callout. */
+  canvasTemplate?: Maybe<CanvasTemplate>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
-  /** The Aspect template associated with this Card Callout. */
+  /** The Aspect template associated with this Callout. */
   cardTemplate?: Maybe<AspectTemplate>;
   /** The Comments object for this Callout. */
   comments?: Maybe<Comments>;
@@ -1191,7 +1193,7 @@ export type CreateCanvasOnCalloutInput = {
 };
 
 export type CreateCanvasTemplateOnTemplatesSetInput = {
-  /** Use the specified Canvas as the initial value for this CanvasTempplate */
+  /** Use the specified Canvas as the initial value for this CanvasTemplate */
   canvasID?: InputMaybe<Scalars['UUID']>;
   /** The meta information for this Template. */
   info: CreateTemplateInfoInput;
@@ -6380,7 +6382,14 @@ export type HubTemplatesQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
           lifecycleTemplates: Array<{
             __typename?: 'LifecycleTemplate';
@@ -6424,7 +6433,14 @@ export type CalloutFormTemplatesFromHubQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -6479,7 +6495,14 @@ export type CanvasTemplatesFromHubQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -6530,7 +6553,14 @@ export type HubTemplatesCanvasTemplateWithValueQuery = {
                 __typename?: 'CanvasTemplate';
                 value: string;
                 id: string;
-                info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
               }
             | undefined;
         }
@@ -6561,7 +6591,14 @@ export type HubTemplatesFragment = {
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';
           id: string;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title: string;
+            description: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }>;
         lifecycleTemplates: Array<{
           __typename?: 'LifecycleTemplate';
@@ -6589,7 +6626,7 @@ export type AspectTemplateFragment = {
   };
 };
 
-export type AspectTemplateInfoFragment = {
+export type TemplateInfoFragment = {
   __typename?: 'TemplateInfo';
   id: string;
   title: string;
@@ -6601,14 +6638,28 @@ export type AspectTemplateInfoFragment = {
 export type CanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
-  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title: string;
+    description: string;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type CanvasTemplateWithValueFragment = {
   __typename?: 'CanvasTemplate';
   value: string;
   id: string;
-  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title: string;
+    description: string;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type LifecycleTemplateFragment = {
@@ -17738,7 +17789,7 @@ export type AdminCanvasTemplateFragment = {
 
 export type AdminCanvasTemplateValueFragment = { __typename?: 'CanvasTemplate'; id: string; value: string };
 
-export type TemplateInfoFragment = {
+export type TemplateInfoWithFullVisualFragment = {
   __typename?: 'TemplateInfo';
   id: string;
   title: string;

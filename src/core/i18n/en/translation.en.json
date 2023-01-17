@@ -618,7 +618,9 @@
         "title": "Templates",
         "no-templates": "No templates available",
         "card-template-label": "Card Template",
-        "no-card-template-selected": "Please select a card template"
+        "no-card-template-selected": "Please select a card template",
+        "canvas-template-label": "Canvas Template",
+        "no-canvas-template-selected": "Please select a canvas template"
       },
       "create-step": {
         "title": "Create",

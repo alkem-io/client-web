@@ -15,7 +15,7 @@ import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dia
 import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutCanvasTemplate, CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
@@ -37,6 +37,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     authorization?: Authorization;
     url: string;
     cardTemplate?: CalloutCardTemplate;
+    canvasTemplate?: CalloutCanvasTemplate;
     authorName?: string;
     authorAvatarUri?: string;
     publishedAt?: string;

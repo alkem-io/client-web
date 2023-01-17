@@ -9,7 +9,7 @@ import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
-import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
+import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
 import { AspectTemplateFragment, CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
@@ -37,8 +37,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
-  const [newCallout, setNewCallout] = useState<CalloutFormOutput>(initialValues);
+  const initialValues: CalloutFormInput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
+  const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const handleStatusChanged = (valid: boolean) => setValid(valid);
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {

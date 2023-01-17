@@ -88,11 +88,11 @@ fragment AspectTemplate on AspectTemplate {
   defaultDescription
   type
   info {
-    ...AspectTemplateInfo
+    ...TemplateInfo
   }
 }
 
-fragment AspectTemplateInfo on TemplateInfo {
+fragment TemplateInfo on TemplateInfo {
   id
   title
   description
@@ -108,9 +108,7 @@ fragment AspectTemplateInfo on TemplateInfo {
 fragment CanvasTemplate on CanvasTemplate {
   id
   info {
-    id
-    title
-    description
+    ...TemplateInfo
   }
 }
 fragment CanvasTemplateWithValue on CanvasTemplate {

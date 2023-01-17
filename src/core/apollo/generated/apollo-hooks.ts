@@ -508,8 +508,8 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-export const AspectTemplateInfoFragmentDoc = gql`
-  fragment AspectTemplateInfo on TemplateInfo {
+export const TemplateInfoFragmentDoc = gql`
+  fragment TemplateInfo on TemplateInfo {
     id
     title
     description
@@ -529,20 +529,19 @@ export const AspectTemplateFragmentDoc = gql`
     defaultDescription
     type
     info {
-      ...AspectTemplateInfo
+      ...TemplateInfo
     }
   }
-  ${AspectTemplateInfoFragmentDoc}
+  ${TemplateInfoFragmentDoc}
 `;
 export const CanvasTemplateFragmentDoc = gql`
   fragment CanvasTemplate on CanvasTemplate {
     id
     info {
-      id
-      title
-      description
+      ...TemplateInfo
     }
   }
+  ${TemplateInfoFragmentDoc}
 `;
 export const LifecycleTemplateFragmentDoc = gql`
   fragment LifecycleTemplate on LifecycleTemplate {
@@ -1864,8 +1863,8 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const TemplateInfoFragmentDoc = gql`
-  fragment TemplateInfo on TemplateInfo {
+export const TemplateInfoWithFullVisualFragmentDoc = gql`
+  fragment TemplateInfoWithFullVisual on TemplateInfo {
     id
     title
     description
@@ -1885,10 +1884,10 @@ export const AdminLifecycleTemplateFragmentDoc = gql`
     definition
     type
     info {
-      ...TemplateInfo
+      ...TemplateInfoWithFullVisual
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${TemplateInfoWithFullVisualFragmentDoc}
 `;
 export const AdminAspectTemplateFragmentDoc = gql`
   fragment AdminAspectTemplate on AspectTemplate {
@@ -1896,19 +1895,19 @@ export const AdminAspectTemplateFragmentDoc = gql`
     defaultDescription
     type
     info {
-      ...TemplateInfo
+      ...TemplateInfoWithFullVisual
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${TemplateInfoWithFullVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateFragmentDoc = gql`
   fragment AdminCanvasTemplate on CanvasTemplate {
     id
     info {
-      ...TemplateInfo
+      ...TemplateInfoWithFullVisual
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${TemplateInfoWithFullVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateValueFragmentDoc = gql`
   fragment AdminCanvasTemplateValue on CanvasTemplate {

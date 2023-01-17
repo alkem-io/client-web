@@ -22,6 +22,7 @@ export type CalloutCreationDialogFields = {
   type?: CalloutType;
   state?: CalloutState;
   cardTemplateType?: string;
+  canvasTemplateTitle?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -33,7 +34,7 @@ export interface CalloutCreationDialogProps {
   templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
 }
 
-export interface CalloutCardTemplateInfo {
+export interface TemplateInfo {
   description: string;
   title: string;
   tags?: string[];
@@ -44,7 +45,13 @@ export interface CalloutCardTemplateInfo {
 export interface CalloutCardTemplate {
   defaultDescription: string;
   type: string;
-  info: CalloutCardTemplateInfo;
+  info: TemplateInfo;
+}
+
+export interface CalloutCanvasTemplate {
+  defaultDescription: string;
+  value: string;
+  info: TemplateInfo;
 }
 
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
@@ -112,7 +119,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
         {onClose && <Button onClick={onClose}>{t('buttons.cancel')}</Button>}
-
         <LoadingButton
           loading={isCreating}
           loadingIndicator={`${t('buttons.save-draft')}...`}
