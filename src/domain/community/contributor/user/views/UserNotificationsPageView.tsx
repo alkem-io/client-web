@@ -5,6 +5,8 @@ import { Preference, UserPreferenceType } from '../../../../../core/apollo/gener
 import { ViewProps } from '../../../../../core/container/view';
 import { useUserContext } from '../hooks/useUserContext';
 import PreferenceSection from '../../../../../common/components/composite/common/PreferenceSection/PreferenceSection';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import { GUTTER_MUI } from '../../../../../core/ui/grid/constants';
 
 export interface UserNotificationsPageViewEntities {
   preferences: Preference[];
@@ -47,9 +49,9 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
     : [];
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={GUTTER_MUI}>
       <Grid item xs={6}>
-        <Box display="flex" gap={2} flexDirection="column">
+        <Box display="flex" gap={gutters()} flexDirection="column">
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.general.title')}
             subHeaderText={t('pages.user-notifications-settings.general.subtitle')}
@@ -68,7 +70,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
       </Grid>
       {!!(adminGroup.length || communityGroup.length) && (
         <Grid item xs={6}>
-          <Box display="flex" gap={2} flexDirection="column">
+          <Box display="flex" gap={gutters()} flexDirection="column">
             {adminGroup.length > 0 && (
               <PreferenceSection
                 headerText={t('pages.user-notifications-settings.user-administration.title')}
