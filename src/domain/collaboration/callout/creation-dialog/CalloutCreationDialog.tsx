@@ -14,6 +14,9 @@ import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
+import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { createCanvasTemplateForCalloutCreation } from '../utils/createCanvasTemplateForCalloutCreation';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -63,9 +66,13 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   templates,
 }) => {
   const { t } = useTranslation();
-
+  const { hubNameId } = useUrlParams();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
+
+  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
   const handleValueChange = useCallback(
     (calloutValues: CalloutFormOutput) => {
@@ -77,13 +84,26 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   const handleSaveAsDraft = useCallback(async () => {
     const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
+    const referenceCanvasTemplate = templates.canvasTemplates.find(
+      template => template.info.title === callout.canvasTemplateTitle
+    );
+
+    const canvasTemplateQueryResult =
+      referenceCanvasTemplate &&
+      (await fetchCanvasValue({
+        variables: { hubId: hubNameId!, canvasTemplateId: referenceCanvasTemplate.id },
+      }));
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
+      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate
+    );
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,
-      templateId: callout.templateId!,
       type: callout.type!,
       state: callout.state!,
       cardTemplate: calloutCardTemplate,
+      canvasTemplate: calloutCanvasTemplate,
     };
 
     const result = await onSaveAsDraft(newCallout);
@@ -91,7 +111,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, templates]);
+  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValue]);
 
   const handleClose = useCallback(() => {
     onClose?.();

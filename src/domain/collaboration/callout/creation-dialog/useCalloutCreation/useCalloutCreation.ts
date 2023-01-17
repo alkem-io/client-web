@@ -10,14 +10,15 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
+import { CanvasTemplateFormSubmittedValues } from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplateForm';
 
 export type CalloutCreationType = {
   description: string;
   displayName: string;
-  templateId: string;
   type: CalloutType;
   state: CalloutState;
   cardTemplate?: AspectTemplateFormSubmittedValues;
+  canvasTemplate?: CanvasTemplateFormSubmittedValues;
 };
 
 interface CalloutCreationUtils {
@@ -109,11 +110,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
         variables: {
           calloutData: {
             collaborationID,
-            description: callout.description,
-            displayName: callout.displayName,
-            type: callout.type,
-            state: callout.state,
-            cardTemplate: callout.cardTemplate,
+            ...callout,
           },
         },
       });
