@@ -40,7 +40,7 @@ export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, te
       </Typography>
       {editMode && (
         <Typography sx={{ color: '#00000099' }} variant="body2">
-          {t('components.callout-edit.type-edit-help-text')}
+          {t('components.callout-edit.canvas-template-edit-help-text')}
         </Typography>
       )}
       <CanvasTemplatesList

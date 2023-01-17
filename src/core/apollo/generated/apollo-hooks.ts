@@ -1082,13 +1082,32 @@ export const CommentsWithMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export const CardTemplateFragmentDoc = gql`
-  fragment CardTemplate on Callout {
+export const CalloutCardTemplateFragmentDoc = gql`
+  fragment CalloutCardTemplate on Callout {
     cardTemplate {
       id
       type
       defaultDescription
       info {
+        tagset {
+          id
+          tags
+        }
+        visual {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+export const CalloutCanvasTemplateFragmentDoc = gql`
+  fragment CalloutCanvasTemplate on Callout {
+    canvasTemplate {
+      id
+      info {
+        title
+        description
         tagset {
           id
           tags
@@ -1123,12 +1142,14 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     visibility
-    ...CardTemplate
+    ...CalloutCardTemplate
+    ...CalloutCanvasTemplate
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-  ${CardTemplateFragmentDoc}
+  ${CalloutCardTemplateFragmentDoc}
+  ${CalloutCanvasTemplateFragmentDoc}
 `;
 export const CollaborationWithCalloutsFragmentDoc = gql`
   fragment CollaborationWithCallouts on Collaboration {
@@ -9139,10 +9160,12 @@ export const UpdateCalloutDocument = gql`
       state
       type
       visibility
-      ...CardTemplate
+      ...CalloutCardTemplate
+      ...CalloutCanvasTemplate
     }
   }
-  ${CardTemplateFragmentDoc}
+  ${CalloutCardTemplateFragmentDoc}
+  ${CalloutCanvasTemplateFragmentDoc}
 `;
 export type UpdateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutMutation,

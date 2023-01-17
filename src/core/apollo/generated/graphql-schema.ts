@@ -1168,6 +1168,8 @@ export type CreateAspectTemplateOnTemplatesSetInput = {
 };
 
 export type CreateCalloutOnCollaborationInput = {
+  /** CanvasTemplate data for Canvas Callouts. */
+  canvasTemplate?: InputMaybe<CreateCanvasTemplateInput>;
   /** CardTemplate data for Card Callouts. */
   cardTemplate?: InputMaybe<CreateAspectTemplateInput>;
   collaborationID: Scalars['UUID'];
@@ -1190,6 +1192,14 @@ export type CreateCanvasOnCalloutInput = {
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateCanvasTemplateInput = {
+  /** Use the specified Canvas as the initial value for this CanvasTemplate */
+  canvasID?: InputMaybe<Scalars['UUID']>;
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateCanvasTemplateOnTemplatesSetInput = {
@@ -3752,6 +3762,12 @@ export type UpdateAspectTemplateInput = {
   type?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateCalloutCanvasTemplateInput = {
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  value?: InputMaybe<Scalars['JSON']>;
+};
+
 export type UpdateCalloutCardTemplateInput = {
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription?: InputMaybe<Scalars['Markdown']>;
@@ -3763,7 +3779,9 @@ export type UpdateCalloutCardTemplateInput = {
 
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
-  /** CardTemplate data for this Card Callout. */
+  /** CanvasTemplate data for this Callout. */
+  canvasTemplate?: InputMaybe<UpdateCalloutCanvasTemplateInput>;
+  /** CardTemplate data for this Callout. */
   cardTemplate?: InputMaybe<UpdateCalloutCardTemplateInput>;
   /** Callout description. */
   description?: InputMaybe<Scalars['Markdown']>;
@@ -10819,6 +10837,19 @@ export type UpdateCalloutMutation = {
           };
         }
       | undefined;
+    canvasTemplate?:
+      | {
+          __typename?: 'CanvasTemplate';
+          id: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            title: string;
+            description: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -11050,6 +11081,19 @@ export type CalloutsQuery = {
                       };
                     }
                   | undefined;
+                canvasTemplate?:
+                  | {
+                      __typename?: 'CanvasTemplate';
+                      id: string;
+                      info: {
+                        __typename?: 'TemplateInfo';
+                        title: string;
+                        description: string;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
               }>
             | undefined;
         }
@@ -11229,6 +11273,19 @@ export type CalloutsQuery = {
                         defaultDescription: string;
                         info: {
                           __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          title: string;
+                          description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11414,6 +11471,19 @@ export type CalloutsQuery = {
                         defaultDescription: string;
                         info: {
                           __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          title: string;
+                          description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11865,6 +11935,19 @@ export type CollaborationWithCalloutsFragment = {
               };
             }
           | undefined;
+        canvasTemplate?:
+          | {
+              __typename?: 'CanvasTemplate';
+              id: string;
+              info: {
+                __typename?: 'TemplateInfo';
+                title: string;
+                description: string;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
       }>
     | undefined;
 };
@@ -12008,9 +12091,22 @@ export type CalloutFragment = {
         };
       }
     | undefined;
+  canvasTemplate?:
+    | {
+        __typename?: 'CanvasTemplate';
+        id: string;
+        info: {
+          __typename?: 'TemplateInfo';
+          title: string;
+          description: string;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | undefined;
 };
 
-export type CardTemplateFragment = {
+export type CalloutCardTemplateFragment = {
   __typename?: 'Callout';
   cardTemplate?:
     | {
@@ -12020,6 +12116,23 @@ export type CardTemplateFragment = {
         defaultDescription: string;
         info: {
           __typename?: 'TemplateInfo';
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type CalloutCanvasTemplateFragment = {
+  __typename?: 'Callout';
+  canvasTemplate?:
+    | {
+        __typename?: 'CanvasTemplate';
+        id: string;
+        info: {
+          __typename?: 'TemplateInfo';
+          title: string;
+          description: string;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };

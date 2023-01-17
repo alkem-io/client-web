@@ -52,7 +52,6 @@ export interface CalloutCardTemplate {
 }
 
 export interface CalloutCanvasTemplate {
-  defaultDescription: string;
   value: string;
   info: TemplateInfo;
 }

@@ -12,6 +12,9 @@ import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
 import { AspectTemplateFragment, CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { createCanvasTemplateForCalloutCreation } from '../../utils/createCanvasTemplateForCalloutCreation';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -35,16 +38,44 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   templates,
 }) => {
   const { t } = useTranslation();
+  const { hubNameId } = useUrlParams();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const initialValues: CalloutFormInput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
+  const initialValues: CalloutFormInput = {
+    ...callout,
+    cardTemplateType: callout.cardTemplate?.type,
+    canvasTemplateTitle: callout.canvasTemplate?.info.title,
+  };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
+  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
   const handleStatusChanged = (valid: boolean) => setValid(valid);
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {
     setLoading(true);
     const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
-    await onCalloutEdit({ ...callout, ...newCallout, cardTemplate: calloutCardTemplate });
+    const referenceCanvasTemplate = templates.canvasTemplates.find(
+      template => template.info.title === newCallout.canvasTemplateTitle
+    );
+    const canvasTemplateQueryResult =
+      referenceCanvasTemplate &&
+      (await fetchCanvasValue({
+        variables: { hubId: hubNameId!, canvasTemplateId: referenceCanvasTemplate.id },
+      }));
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
+      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate
+    );
+
+    await onCalloutEdit({
+      id: callout.id,
+      displayName: newCallout.displayName,
+      description: newCallout.description,
+      cardTemplate: calloutCardTemplate,
+      canvasTemplate: calloutCanvasTemplate,
+    });
     setLoading(false);
   };
   const handleDelete = useCallback(async () => {
