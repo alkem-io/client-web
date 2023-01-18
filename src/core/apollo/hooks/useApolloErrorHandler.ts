@@ -41,9 +41,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
 
     graphqlErrors.forEach((error: GraphQLError) => {
       const translation = getTranslationForCode(error, t, i18n);
-      if (translation) {
-        notify(translation, severity);
-      }
+      notify(translation, severity);
 
       logError(error);
     });
