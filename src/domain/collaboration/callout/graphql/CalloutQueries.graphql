@@ -165,6 +165,20 @@ fragment Callout on Callout {
   }
   visibility
   ...CardTemplate
+  canvasTemplate {
+    id
+    value
+    info {
+      tagset {
+        id
+        tags
+      }
+      visual {
+        id
+        uri
+      }
+    }
+  }
 }
 
 fragment CardTemplate on Callout {

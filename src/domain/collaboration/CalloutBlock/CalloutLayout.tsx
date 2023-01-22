@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, IconButton, Menu, MenuItem, styled } from '@mui/material';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -17,13 +17,14 @@ import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 import { CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
-import { gutters } from '../../../core/ui/grid/utils';
-import { BlockTitle, Caption } from '../../../core/ui/typography';
+import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from '../callout/Types';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { useAspectTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Ribbon } from '../../../core/ui/card/Ribbon';
+import Authorship from '../../../core/ui/authorship/Authorship';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
@@ -45,36 +46,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
   contributionsCount: number;
   actions?: ReactNode;
 }
-
-const CalloutActionsBar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexFlow: 'row-reverse',
-  marginBottom: gutters(-0.5)(theme),
-  paddingLeft: gutters(0.25)(theme),
-  paddingRight: gutters(0.5)(theme),
-}));
-
-const CalloutDetailsBar = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  height: gutters(2)(theme),
-  alignItems: 'end',
-  flexShrink: 0,
-}));
-
-const CalloutDetails = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  gap: theme.spacing(1),
-}));
-
-const CalloutMisc = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexGrow: 1,
-  justifyContent: 'space-between',
-  paddingLeft: gutters()(theme),
-}));
-
-const CalloutDate = ({ date }: { date: Date | string }) => <Caption>{date}</Caption>;
 
 const CalloutLayout = ({
   callout,
@@ -153,42 +124,39 @@ const CalloutLayout = ({
           <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
         </Ribbon>
       )}
-      <CalloutDetailsBar>
+      <DialogHeader
+        actions={(
+          <>
+            {actions}
+            {callout.editable && (
+              <IconButton
+                id="callout-settings-button"
+                aria-haspopup="true"
+                aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
+                aria-expanded={settingsOpened ? 'true' : undefined}
+                onClick={handleSettingsOpened}
+              >
+                <SettingsOutlinedIcon />
+              </IconButton>
+            )}
+            <ShareButton url={callout.url} entityTypeName="callout" />
+          </>
+        )}
+      >
         {hasCalloutDetails && (
-          <CalloutMisc>
-            <CalloutDetails>
-              <Box component="img" src={callout.authorAvatarUri} sx={{ background: 'grey', height: 20, width: 20 }} />
-              <Caption>
-                {`${callout.authorName} • ${t('callout.contributions', {
-                  count: contributionsCount,
-                })}`}
-              </Caption>
-            </CalloutDetails>
-            <CalloutDate date={callout.publishedAt!} />
-          </CalloutMisc>
+          <Authorship authorAvatarUri={callout.authorAvatarUri} date={callout.publishedAt}>
+            {`${callout.authorName} • ${t('callout.contributions', {
+              count: contributionsCount,
+            })}`}
+          </Authorship>
         )}
         {!hasCalloutDetails && (
-          <BlockTitle paddingX={gutters()} noWrap>
+          <BlockTitle noWrap>
             {callout.displayName}
           </BlockTitle>
         )}
-        <CalloutActionsBar>
-          {actions}
-          {callout.editable && (
-            <IconButton
-              id="callout-settings-button"
-              aria-haspopup="true"
-              aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-              aria-expanded={settingsOpened ? 'true' : undefined}
-              onClick={handleSettingsOpened}
-            >
-              <SettingsOutlinedIcon />
-            </IconButton>
-          )}
-          <ShareButton url={callout.url} entityTypeName="callout" />
-        </CalloutActionsBar>
-      </CalloutDetailsBar>
-      <Gutters minHeight={0}>
+      </DialogHeader>
+      <Gutters minHeight={0} paddingTop={0}>
         {hasCalloutDetails && <BlockTitle>{callout.displayName}</BlockTitle>}
         <WrapperMarkdown>{callout.description ?? ''}</WrapperMarkdown>
         {children}

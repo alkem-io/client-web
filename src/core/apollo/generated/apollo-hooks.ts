@@ -103,6 +103,17 @@ export const CanvasDetailsFragmentDoc = gql`
     preview {
       ...VisualFull
     }
+    createdBy {
+      id
+      displayName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+      }
+    }
   }
   ${CanvasSummaryFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
@@ -1125,6 +1136,20 @@ export const CalloutFragmentDoc = gql`
     }
     visibility
     ...CardTemplate
+    canvasTemplate {
+      id
+      value
+      info {
+        tagset {
+          id
+          tags
+        }
+        visual {
+          id
+          uri
+        }
+      }
+    }
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}

@@ -8,7 +8,6 @@ import { debounce, merge } from 'lodash';
 import React, { forwardRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../../domain/shared/utils/useCombinedRefs';
-import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
 import useAsyncInterruptibleCallback from '../../../../../domain/shared/utils/useAsyncInterruptibleCallback';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
@@ -38,7 +37,7 @@ const initialExcalidrawState: ImportedDataState = {
 };
 
 export interface CanvasWhiteboardEntities {
-  canvas: (Identifiable & { value: string }) | undefined;
+  canvas: { id?: string; value: string } | undefined;
 }
 
 export interface CanvasWhiteboardActions {

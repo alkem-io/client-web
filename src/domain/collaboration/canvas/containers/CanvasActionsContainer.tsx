@@ -10,9 +10,9 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  Canvas,
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
+  CanvasValueFragment,
   CreateCanvasOnCalloutInput,
   DeleteCanvasInput,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -23,7 +23,7 @@ export interface ICanvasActions {
   onDelete: (canvas: DeleteCanvasInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
   onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
-  onUpdate: (canvas: Canvas, previewImage?: Blob) => Promise<void>;
+  onUpdate: (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -154,7 +154,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   });
 
   const handleUpdateCanvas = useCallback(
-    async (canvas: Canvas, previewImage?: Blob) => {
+    async (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => {
       await Promise.all([
         updateCanvas({
           variables: {

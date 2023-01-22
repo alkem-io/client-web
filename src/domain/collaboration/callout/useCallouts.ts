@@ -6,6 +6,7 @@ import {
   CalloutType,
   CalloutVisibility,
   CanvasDetailsFragment,
+  CanvasTemplate,
   CommentsWithMessagesFragment,
   ContributeTabAspectFragment,
 } from '../../../core/apollo/generated/graphql-schema';
@@ -31,14 +32,10 @@ interface CalloutChildPropValue {
   comments: CommentsWithMessagesFragmentWithCallout;
 }
 
-interface CalloutCardTemplatePropValue {
-  [CalloutType.Card]: CalloutCardTemplate;
-  [CalloutType.Canvas]: undefined;
-  [CalloutType.Comments]: undefined;
-}
-
 type CalloutCardTemplateType = {
-  [Type in keyof CalloutCardTemplatePropValue]: { cardTemplate: CalloutCardTemplatePropValue[Type] };
+  [CalloutType.Card]: { cardTemplate: CalloutCardTemplate };
+  [CalloutType.Canvas]: { canvasTemplate: CanvasTemplate };
+  [CalloutType.Comments]: {};
 };
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -46,7 +43,8 @@ type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
 };
 
 type CalloutTypesWithChildTypes = {
-  [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]>;
+  [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]> &
+    CalloutCardTemplateType[Type];
 };
 
 export type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'authorization'> &
@@ -59,11 +57,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'desc
     editable: boolean;
     isSubscribedToComments: boolean;
     url: string;
-  } & (
-    | CalloutCardTemplateType[CalloutType.Card]
-    | CalloutCardTemplateType[CalloutType.Canvas]
-    | CalloutCardTemplateType[CalloutType.Comments]
-  );
+  };
 
 const useCallouts = (params: OptionalCoreEntityIds) => {
   const includeHub = !(params.challengeNameId || params.opportunityNameId);
