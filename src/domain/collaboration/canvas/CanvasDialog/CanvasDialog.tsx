@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -82,8 +82,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface Option extends ButtonProps {
+interface Option extends Omit<ButtonProps, 'disabled'> {
   label: TranslationKey;
+  disabled: (formik: Pick<FormikProps<unknown>, 'isValid'>) => ButtonProps['disabled'];
 }
 
 type CanvasAction = 'save-and-checkin' | 'checkout';
@@ -167,7 +168,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     );
   };
 
-  const actionMap: { [key in keyof typeof canvasActions]: ((canvas) => void) | undefined } = {
+  const actionMap: { [key in keyof typeof canvasActions]: ((canvas: Canvas) => void) | undefined } = {
     'save-and-checkin': async canvas => {
       const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
 
@@ -208,15 +209,19 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
+  useEffect(() => {
+    formikRef.current?.setFieldValue('displayName', canvas?.displayName);
+  }, [canvas?.displayName]);
+
   const canvasActions: Record<CanvasAction, Option> = {
     'save-and-checkin': {
       label: 'pages.canvas.state-actions.save',
-      disabled: !formikRef.current?.isValid,
+      disabled: ({ isValid }) => !isValid,
       startIcon: <Save />,
     },
     checkout: {
       label: 'pages.canvas.state-actions.check-out',
-      disabled: isUnavailable,
+      disabled: () => isUnavailable,
       startIcon: <LockClockIcon />,
     },
   };
@@ -232,86 +237,90 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       }}
       onClose={onClose}
     >
-      <DialogHeader
-        actions={
-          <ShareButton
-            url={canvasUrl}
-            entityTypeName="canvas"
-            disabled={canvas?.checkout?.status !== CanvasCheckoutStateEnum.Available}
-            tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
-          />
-        }
-        onClose={onClose}
+      <Formik
+        innerRef={formikRef}
+        initialValues={{ displayName: canvas?.displayName ?? '' }}
+        onSubmit={() => {}}
+        validationSchema={canvasSchema}
       >
-        {isBeingEdited ? (
-          <Formik
-            innerRef={formikRef}
-            initialValues={{ displayName: canvas?.displayName ?? '' }}
-            onSubmit={() => {}}
-            validationSchema={canvasSchema}
-          >
-            <Box
-              component={FormikInputField}
-              title={t('fields.displayName')}
-              name="displayName"
-              size="small"
-              maxWidth={gutters(50)}
-            />
-          </Formik>
-        ) : (
+        {({ isValid }) => (
           <>
-            <Authorship authorAvatarUri={canvas?.createdBy?.profile?.avatar?.uri} date={canvas?.createdDate}>
-              {canvas?.createdBy?.displayName}
-            </Authorship>
-            <PageTitle>{canvas?.displayName}</PageTitle>
+            <DialogHeader
+              actions={
+                <ShareButton
+                  url={canvasUrl}
+                  entityTypeName="canvas"
+                  disabled={canvas?.checkout?.status !== CanvasCheckoutStateEnum.Available}
+                  tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
+                />
+              }
+              onClose={onClose}
+            >
+              {isBeingEdited ? (
+                <Box
+                  component={FormikInputField}
+                  title={t('fields.displayName')}
+                  name="displayName"
+                  size="small"
+                  maxWidth={gutters(50)}
+                />
+              ) : (
+                <>
+                  <Authorship authorAvatarUri={canvas?.createdBy?.profile?.avatar?.uri} date={canvas?.createdDate}>
+                    {canvas?.createdBy?.displayName}
+                  </Authorship>
+                  <PageTitle>{canvas?.displayName}</PageTitle>
+                </>
+              )}
+            </DialogHeader>
+            <DialogContent classes={{ root: styles.dialogContent }}>
+              {!state?.loadingCanvasValue && canvas && (
+                <CanvasWhiteboard
+                  entities={{ canvas }}
+                  ref={excalidrawApiRef}
+                  options={{
+                    viewModeEnabled: !options.canEdit,
+                    UIOptions: {
+                      canvasActions: {
+                        export: options.canEdit
+                          ? {
+                              saveFileToDisk: true,
+                            }
+                          : false,
+                      },
+                    },
+                  }}
+                  actions={{
+                    onUpdate: state => {
+                      handleUpdate(canvas, state);
+                    },
+                  }}
+                />
+              )}
+              {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
+            </DialogContent>
+            <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+              {isBeingEdited && actions.onDelete && (
+                <Button startIcon={<Delete />} onClick={() => actions.onDelete!(canvas!)} color="error">
+                  {t('pages.canvas.state-actions.delete')}
+                </Button>
+              )}
+              <FlexSpacer />
+              {isUnavailable && <Caption>Edited by someone else.</Caption>}
+              <LoadingButton
+                startIcon={canvasActions[currentAction].startIcon}
+                onClick={() => actionMap[currentAction]?.(canvas!)}
+                loadingPosition="start"
+                variant="contained"
+                loading={state?.changingCanvasLockState || state?.updatingCanvas}
+                disabled={canvasActions[currentAction].disabled({ isValid })}
+              >
+                {t(canvasActions[currentAction].label)}
+              </LoadingButton>
+            </Actions>
           </>
         )}
-      </DialogHeader>
-      <DialogContent classes={{ root: styles.dialogContent }}>
-        {!state?.loadingCanvasValue && canvas && (
-          <CanvasWhiteboard
-            entities={{ canvas }}
-            ref={excalidrawApiRef}
-            options={{
-              viewModeEnabled: !options.canEdit,
-              UIOptions: {
-                canvasActions: {
-                  export: options.canEdit
-                    ? {
-                        saveFileToDisk: true,
-                      }
-                    : false,
-                },
-              },
-            }}
-            actions={{
-              onUpdate: state => {
-                handleUpdate(canvas, state);
-              },
-            }}
-          />
-        )}
-        {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
-      </DialogContent>
-      <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-        {isBeingEdited && actions.onDelete && (
-          <Button startIcon={<Delete />} onClick={() => actions.onDelete!(canvas!)} color="error">
-            {t('pages.canvas.state-actions.delete')}
-          </Button>
-        )}
-        <FlexSpacer />
-        {isUnavailable && <Caption>Edited by someone else.</Caption>}
-        <LoadingButton
-          startIcon={canvasActions[currentAction].startIcon}
-          onClick={() => actionMap[currentAction]?.(canvas)}
-          loadingPosition="start"
-          variant="contained"
-          loading={state?.changingCanvasLockState || state?.updatingCanvas}
-          disabled={canvasActions[currentAction].disabled}
-        >
-          {t(canvasActions[currentAction].label)}
-        </LoadingButton>
-      </Actions>
+      </Formik>
     </Dialog>
   );
 };
