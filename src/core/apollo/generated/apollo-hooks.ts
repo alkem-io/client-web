@@ -226,7 +226,7 @@ export const EntityDashboardCommunityFragmentDoc = gql`
     leadUsers {
       ...DashboardLeadUser
     }
-    memberUsers {
+    memberUsers(limit: 8) {
       ...DashboardContributingUser
     }
     leadOrganizations {

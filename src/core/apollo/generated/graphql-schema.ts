@@ -1016,6 +1016,10 @@ export type CommunityAvailableMemberUsersArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type CommunityMemberUsersArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
 export type CommunityApplyInput = {
   communityID: Scalars['UUID'];
   questions: Array<CreateNvpInput>;
@@ -2984,6 +2988,8 @@ export enum PreferenceType {
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
+  NotificationCommunicationMessage = 'NOTIFICATION_COMMUNICATION_MESSAGE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
@@ -2993,6 +2999,8 @@ export enum PreferenceType {
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
+  NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
   NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
@@ -4154,6 +4162,8 @@ export enum UserPreferenceType {
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
+  NotificationCommunicationMessage = 'NOTIFICATION_COMMUNICATION_MESSAGE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
@@ -4163,6 +4173,8 @@ export enum UserPreferenceType {
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
+  NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
   NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
