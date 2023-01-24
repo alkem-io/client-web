@@ -7,6 +7,7 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import CanvasTemplatesList from './CanvasTemplatesList';
 import { CardText, Text } from '../../../../../core/ui/typography/components';
 
+const FORM_TEXT_COLOR = '#00000099';
 interface CardTemplatesChooserProps {
   name: string;
   templates: CanvasTemplateFragment[];
@@ -35,9 +36,11 @@ export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, te
   return (
     <>
       {/* TODO: Add this color to pallete to match Formik labels */}
-      <Text sx={{ color: '#00000099' }}>{t('components.callout-creation.template-step.canvas-template-label')}</Text>
+      <Text sx={{ color: FORM_TEXT_COLOR }}>
+        {t('components.callout-creation.template-step.canvas-template-label')}
+      </Text>
       {editMode && (
-        <CardText sx={{ color: '#00000099' }} variant="body2">
+        <CardText sx={{ color: FORM_TEXT_COLOR }}>
           {t('components.callout-edit.canvas-template-edit-help-text')}
         </CardText>
       )}
