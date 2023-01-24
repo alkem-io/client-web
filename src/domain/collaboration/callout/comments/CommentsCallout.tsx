@@ -187,12 +187,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
           fullScreen={!canFitRegularDialog}
         >
           <CalloutLayout
-            callout={{
-              ...callout,
-              authorName: 'Me myself Andi',
-              authorAvatarUri: '/asd.jpg',
-              publishedAt: new Date().toLocaleDateString(),
-            }}
+            callout={callout}
             calloutNames={calloutNames}
             contributionsCount={contributionsCount}
             onVisibilityChange={onVisibilityChange}
