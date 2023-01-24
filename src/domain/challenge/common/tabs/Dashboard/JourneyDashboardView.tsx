@@ -27,6 +27,7 @@ import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopC
 import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
 import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -122,6 +123,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
         </PageContentBlock>
         {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
+        {communityReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
             memberUsers={memberUsers}

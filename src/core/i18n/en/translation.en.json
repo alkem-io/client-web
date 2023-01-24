@@ -113,6 +113,7 @@
     "callouts": "Callouts",
     "canvas": "Canvas",
     "canvases": "Canvases",
+    "calendar": "Calendar",
     "comment": "Comment",
     "comments": "Comments",
     "contributions": "Contributions",
@@ -1034,6 +1035,9 @@
         "profile": {
           "description": ""
         },
+        "calendar": {
+          "description": ""
+        },
         "subentities": {
           "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
           "list": "List of {{entities}}",
@@ -1648,6 +1652,10 @@
   },
   "dashboard-community-section": {
     "title": "Community"
+  },
+  "dashboard-events-section": {
+    "title": "Following Events",
+    "no-data": "No events found"
   },
   "aspect-edit": {
     "new": "New Card",

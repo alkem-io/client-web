@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { CommonTabs, SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
@@ -15,6 +16,12 @@ interface HubSettingsLayoutProps {
 
 const tabs: TabDefinition<SettingsSection>[] = [
   ...CommonTabs,
+  {
+    // TODO: Move Calendar tabs to CommonTabs if the calendar is per journey, or remove this comment if it's per hub
+    section: SettingsSection.Calendar,
+    route: 'calendar',
+    icon: CalendarMonthOutlinedIcon,
+  },
   {
     section: SettingsSection.Challenges,
     route: 'challenges',
