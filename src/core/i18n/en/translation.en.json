@@ -1653,7 +1653,7 @@
   "dashboard-community-section": {
     "title": "Community"
   },
-  "dashboard-events-section": {
+  "dashboard-calendar-section": {
     "title": "Following Events",
     "no-data": "No events found"
   },

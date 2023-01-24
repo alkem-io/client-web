@@ -6987,6 +6987,19 @@ export type HubPageQuery = {
         }>
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    timeline?:
+      | {
+          __typename?: 'Timeline';
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                anonymousReadAccess: boolean;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -7267,6 +7280,19 @@ export type HubPageFragment = {
       }>
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  timeline?:
+    | {
+        __typename?: 'Timeline';
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              anonymousReadAccess: boolean;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type AdminHubFragment = {

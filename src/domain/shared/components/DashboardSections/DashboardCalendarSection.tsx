@@ -23,15 +23,19 @@ const DashboardCalendarsSection: FC<DashboardCalendarsSectionProps> = ({ journey
   // TODO
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={t('dashboard-events-section.title')} />
+      <PageContentBlockHeader title={t('dashboard-calendar-section.title')} />
       {loading && <Skeleton />}
-      {!loading && events.length === 0 && <Text>{t('dashboard-events-section.no-data')}</Text>}
-      {!loading && events.map(event => {
-        return (
-          <>
-            <p>{event.displayName} {event.startDate}</p>
-          </>)
-      })}
+      {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
+      {!loading &&
+        events.map(event => {
+          return (
+            <>
+              <p>
+                {event.displayName} {event.startDate}
+              </p>
+            </>
+          );
+        })}
     </PageContentBlock>
   );
 };

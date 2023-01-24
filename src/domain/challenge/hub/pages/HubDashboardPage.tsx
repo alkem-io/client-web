@@ -36,6 +36,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               childEntities={entities.challenges}
               childEntitiesCount={entities.challengesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
+              timelineReadAccess={entities.permissions.timelineReadAccess}
               childEntityReadAccess={entities.permissions.challengesReadAccess}
               references={entities.references}
               recommendations={entities.recommendations}

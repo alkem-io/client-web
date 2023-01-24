@@ -40,6 +40,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   recommendations: Reference[] | undefined;
   community?: unknown;
   communityReadAccess?: boolean;
+  timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   childEntities?: ChildEntity[];
@@ -61,6 +62,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   references,
   recommendations,
   communityReadAccess = false,
+  timelineReadAccess = false,
   childEntityReadAccess = false,
   memberUsers,
   memberUsersCount,
@@ -123,7 +125,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
         </PageContentBlock>
         {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
-        {communityReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
+        {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
             memberUsers={memberUsers}

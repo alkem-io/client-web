@@ -661,6 +661,13 @@ export const HubPageFragmentDoc = gql`
       name
       tags
     }
+    timeline {
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
+      }
+    }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
