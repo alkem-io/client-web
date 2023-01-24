@@ -10,10 +10,10 @@ export const createCanvasTemplateForCalloutCreation = (
     info: {
       description: canvasTemplate.info.description,
       title: canvasTemplate.info.title,
+      tags: canvasTemplate.info.tagset?.tags,
+      visualUri: canvasTemplate.info.visual?.uri,
     },
   };
-  if (canvasTemplate.info.tagset) calloutCanvasTemplate.info.tags = canvasTemplate.info.tagset.tags;
-  if (canvasTemplate.info.visual?.uri) calloutCanvasTemplate.info.visualUri = canvasTemplate.info.visual.uri;
 
   return calloutCanvasTemplate;
 };

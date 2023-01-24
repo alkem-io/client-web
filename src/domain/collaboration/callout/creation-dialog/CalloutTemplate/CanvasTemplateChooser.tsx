@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
 import { CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useHubTemplatesCanvasTemplateWithValueQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import CanvasTemplatesList from './CanvasTemplatesList';
+import { CardText, Text } from '../../../../../core/ui/typography/components';
 
 interface CardTemplatesChooserProps {
   name: string;
@@ -35,13 +35,11 @@ export const CanvasTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, te
   return (
     <>
       {/* TODO: Add this color to pallete to match Formik labels */}
-      <Typography sx={{ color: '#00000099' }}>
-        {t('components.callout-creation.template-step.canvas-template-label')}
-      </Typography>
+      <Text sx={{ color: '#00000099' }}>{t('components.callout-creation.template-step.canvas-template-label')}</Text>
       {editMode && (
-        <Typography sx={{ color: '#00000099' }} variant="body2">
+        <CardText sx={{ color: '#00000099' }} variant="body2">
           {t('components.callout-edit.canvas-template-edit-help-text')}
-        </Typography>
+        </CardText>
       )}
       <CanvasTemplatesList
         entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
