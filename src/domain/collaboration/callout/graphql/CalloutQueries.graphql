@@ -164,15 +164,34 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
-  ...CardTemplate
+  ...CalloutCardTemplate
+  ...CalloutCanvasTemplate
 }
 
-fragment CardTemplate on Callout {
+fragment CalloutCardTemplate on Callout {
   cardTemplate {
     id
     type
     defaultDescription
     info {
+      tagset {
+        id
+        tags
+      }
+      visual {
+        id
+        uri
+      }
+    }
+  }
+}
+
+fragment CalloutCanvasTemplate on Callout {
+  canvasTemplate {
+    id
+    info {
+      title
+      description
       tagset {
         id
         tags

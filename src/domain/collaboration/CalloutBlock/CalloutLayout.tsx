@@ -15,13 +15,13 @@ import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dia
 import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutCanvasTemplate, CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle, Caption } from '../../../core/ui/typography';
 import { CalloutLayoutEvents } from '../callout/Types';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { useAspectTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Ribbon } from '../../../core/ui/card/Ribbon';
 
@@ -37,6 +37,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     authorization?: Authorization;
     url: string;
     cardTemplate?: CalloutCardTemplate;
+    canvasTemplate?: CalloutCanvasTemplate;
     authorName?: string;
     authorAvatarUri?: string;
     publishedAt?: string;
@@ -89,10 +90,12 @@ const CalloutLayout = ({
   const { t } = useTranslation();
 
   const { hubNameId } = useUrlParams();
-  const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
-  const getCardTemplates = () => fetchCardTemplates({ variables: { hubId: hubNameId! } });
+  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
+  const getTemplates = () => fetchTemplates({ variables: { hubId: hubNameId! } });
 
-  const templates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
+  const cardTemplates = templatesData?.hub.templates?.aspectTemplates ?? [];
+  const canvasTemplates = templatesData?.hub.templates?.canvasTemplates ?? [];
+  const templates = { cardTemplates, canvasTemplates };
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
@@ -115,7 +118,7 @@ const CalloutLayout = ({
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
-    getCardTemplates();
+    getTemplates();
     setSettingsAnchorEl(null);
     setEditDialogOpened(true);
   };
@@ -233,7 +236,7 @@ const CalloutLayout = ({
         onCalloutEdit={handleCalloutEdit}
         onDelete={onCalloutDelete}
         calloutNames={calloutNames}
-        cardTemplates={templates}
+        templates={templates}
       />
     </>
   );

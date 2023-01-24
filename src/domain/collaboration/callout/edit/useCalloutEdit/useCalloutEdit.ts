@@ -45,6 +45,9 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
                   info: callout.cardTemplate.info,
                 }
               : undefined,
+            canvasTemplate: callout.canvasTemplate
+              ? { value: callout.canvasTemplate.value, info: callout.canvasTemplate.info }
+              : undefined,
           },
         },
       });
