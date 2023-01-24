@@ -16,7 +16,6 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { AuthorizationPrivilege, CanvasDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../shared/types/Identifiable';
-import CircleIcon from '@mui/icons-material/Circle';
 
 const useStyles = makeStyles(theme => ({
   active: {
@@ -55,9 +54,6 @@ export const CanvasListItem: FC<CanvasListItemProps> = ({ canvas, canDelete, isS
 
   return (
     <ListItemButton {...rest} className={clsx(isSelected && styles.active)}>
-      <ListItemAvatar sx={{ display: 'flex' }}>
-        <CircleIcon color="disabled" />
-      </ListItemAvatar>
       <ListItemText primary={canvas.displayName} />
       <ListItemSecondaryAction>
         {canDelete && hasDeletePermissions && onDelete && (

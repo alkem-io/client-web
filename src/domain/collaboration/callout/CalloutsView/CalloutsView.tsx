@@ -23,7 +23,7 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import { Caption } from '../../../../core/ui/typography';
 import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
-import { useAspectTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 
 interface CalloutsPageProps {
@@ -55,10 +55,13 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   } = useCalloutCreation();
 
   const { hubId } = useHub();
-  const [fetchCardTemplates, { data: cardTemplatesData }] = useAspectTemplatesFromHubLazyQuery();
-  const getCardTemplates = () => fetchCardTemplates({ variables: { hubId: hubId } });
 
-  const cardTemplates = cardTemplatesData?.hub.templates?.aspectTemplates ?? [];
+  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
+  const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });
+
+  const cardTemplates = templatesData?.hub.templates?.aspectTemplates ?? [];
+  const canvasTemplates = templatesData?.hub.templates?.canvasTemplates ?? [];
+  const templates = { cardTemplates, canvasTemplates };
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
@@ -68,7 +71,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });
 
   const handleCreate = () => {
-    getCardTemplates();
+    getTemplates();
     handleCreateCalloutOpened();
   };
 
@@ -181,7 +184,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
             onSaveAsDraft={handleCalloutDrafted}
             isCreating={isCreating}
             calloutNames={calloutNames}
-            cardTemplates={cardTemplates}
+            templates={templates}
           />
         </PageContentColumn>
       </PageContent>

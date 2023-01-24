@@ -3,7 +3,7 @@ import { Box, Button, DialogProps } from '@mui/material';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TemplateInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateInfoWithFullVisualFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -20,7 +20,7 @@ import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloEr
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 export interface Template extends Identifiable {
-  info: TemplateInfoFragment;
+  info: TemplateInfoWithFullVisualFragment;
 }
 
 export interface TemplateValue {}

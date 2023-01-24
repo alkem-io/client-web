@@ -164,10 +164,15 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
-  ...CardTemplate
-  canvasTemplate {
+  ...CalloutCardTemplate
+  ...CalloutCanvasTemplate
+}
+
+fragment CalloutCardTemplate on Callout {
+  cardTemplate {
     id
-    value
+    type
+    defaultDescription
     info {
       tagset {
         id
@@ -181,12 +186,13 @@ fragment Callout on Callout {
   }
 }
 
-fragment CardTemplate on Callout {
-  cardTemplate {
+fragment CalloutCanvasTemplate on Callout {
+  canvasTemplate {
     id
-    type
-    defaultDescription
+    value
     info {
+      title
+      description
       tagset {
         id
         tags

@@ -6442,7 +6442,14 @@ export type HubTemplatesQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
           lifecycleTemplates: Array<{
             __typename?: 'LifecycleTemplate';
@@ -6450,6 +6457,50 @@ export type HubTemplatesQuery = {
             definition: string;
             type: LifecycleType;
             info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutFormTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutFormTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -6504,7 +6555,14 @@ export type CanvasTemplatesFromHubQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
           }>;
         }
       | undefined;
@@ -6555,7 +6613,14 @@ export type HubTemplatesCanvasTemplateWithValueQuery = {
                 __typename?: 'CanvasTemplate';
                 value: string;
                 id: string;
-                info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
               }
             | undefined;
         }
@@ -6586,7 +6651,14 @@ export type HubTemplatesFragment = {
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';
           id: string;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title: string;
+            description: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }>;
         lifecycleTemplates: Array<{
           __typename?: 'LifecycleTemplate';
@@ -6614,7 +6686,7 @@ export type AspectTemplateFragment = {
   };
 };
 
-export type AspectTemplateInfoFragment = {
+export type TemplateInfoFragment = {
   __typename?: 'TemplateInfo';
   id: string;
   title: string;
@@ -6626,14 +6698,28 @@ export type AspectTemplateInfoFragment = {
 export type CanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
-  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title: string;
+    description: string;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type CanvasTemplateWithValueFragment = {
   __typename?: 'CanvasTemplate';
   value: string;
   id: string;
-  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title: string;
+    description: string;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type LifecycleTemplateFragment = {
@@ -10604,6 +10690,34 @@ export type PostCommentInCalloutMutation = {
   };
 };
 
+export type TemplatesForCalloutCreationQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type TemplatesForCalloutCreationQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -10832,6 +10946,20 @@ export type UpdateCalloutMutation = {
           defaultDescription: string;
           info: {
             __typename?: 'TemplateInfo';
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
+    canvasTemplate?:
+      | {
+          __typename?: 'CanvasTemplate';
+          id: string;
+          value: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            title: string;
+            description: string;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
@@ -11067,18 +11195,6 @@ export type CalloutsQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
-                canvasTemplate?:
-                  | {
-                      __typename?: 'CanvasTemplate';
-                      id: string;
-                      value: string;
-                      info: {
-                        __typename?: 'TemplateInfo';
-                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      };
-                    }
-                  | undefined;
                 cardTemplate?:
                   | {
                       __typename?: 'AspectTemplate';
@@ -11087,6 +11203,20 @@ export type CalloutsQuery = {
                       defaultDescription: string;
                       info: {
                         __typename?: 'TemplateInfo';
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
+                canvasTemplate?:
+                  | {
+                      __typename?: 'CanvasTemplate';
+                      id: string;
+                      value: string;
+                      info: {
+                        __typename?: 'TemplateInfo';
+                        title: string;
+                        description: string;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
@@ -11275,18 +11405,6 @@ export type CalloutsQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  canvasTemplate?:
-                    | {
-                        __typename?: 'CanvasTemplate';
-                        id: string;
-                        value: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
                   cardTemplate?:
                     | {
                         __typename?: 'AspectTemplate';
@@ -11295,6 +11413,20 @@ export type CalloutsQuery = {
                         defaultDescription: string;
                         info: {
                           __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        id: string;
+                        value: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          title: string;
+                          description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11484,18 +11616,6 @@ export type CalloutsQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  canvasTemplate?:
-                    | {
-                        __typename?: 'CanvasTemplate';
-                        id: string;
-                        value: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
                   cardTemplate?:
                     | {
                         __typename?: 'AspectTemplate';
@@ -11504,6 +11624,20 @@ export type CalloutsQuery = {
                         defaultDescription: string;
                         info: {
                           __typename?: 'TemplateInfo';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        id: string;
+                        value: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          title: string;
+                          description: string;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11954,18 +12088,6 @@ export type CollaborationWithCalloutsFragment = {
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        canvasTemplate?:
-          | {
-              __typename?: 'CanvasTemplate';
-              id: string;
-              value: string;
-              info: {
-                __typename?: 'TemplateInfo';
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              };
-            }
-          | undefined;
         cardTemplate?:
           | {
               __typename?: 'AspectTemplate';
@@ -11974,6 +12096,20 @@ export type CollaborationWithCalloutsFragment = {
               defaultDescription: string;
               info: {
                 __typename?: 'TemplateInfo';
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
+        canvasTemplate?:
+          | {
+              __typename?: 'CanvasTemplate';
+              id: string;
+              value: string;
+              info: {
+                __typename?: 'TemplateInfo';
+                title: string;
+                description: string;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
@@ -12121,11 +12257,12 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  canvasTemplate?:
+  cardTemplate?:
     | {
-        __typename?: 'CanvasTemplate';
+        __typename?: 'AspectTemplate';
         id: string;
-        value: string;
+        type: string;
+        defaultDescription: string;
         info: {
           __typename?: 'TemplateInfo';
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12133,6 +12270,24 @@ export type CalloutFragment = {
         };
       }
     | undefined;
+  canvasTemplate?:
+    | {
+        __typename?: 'CanvasTemplate';
+        id: string;
+        value: string;
+        info: {
+          __typename?: 'TemplateInfo';
+          title: string;
+          description: string;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type CalloutCardTemplateFragment = {
+  __typename?: 'Callout';
   cardTemplate?:
     | {
         __typename?: 'AspectTemplate';
@@ -12148,16 +12303,17 @@ export type CalloutFragment = {
     | undefined;
 };
 
-export type CardTemplateFragment = {
+export type CalloutCanvasTemplateFragment = {
   __typename?: 'Callout';
-  cardTemplate?:
+  canvasTemplate?:
     | {
-        __typename?: 'AspectTemplate';
+        __typename?: 'CanvasTemplate';
         id: string;
-        type: string;
-        defaultDescription: string;
+        value: string;
         info: {
           __typename?: 'TemplateInfo';
+          title: string;
+          description: string;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
@@ -18055,7 +18211,7 @@ export type AdminCanvasTemplateFragment = {
 
 export type AdminCanvasTemplateValueFragment = { __typename?: 'CanvasTemplate'; id: string; value: string };
 
-export type TemplateInfoFragment = {
+export type TemplateInfoWithFullVisualFragment = {
   __typename?: 'TemplateInfo';
   id: string;
   title: string;

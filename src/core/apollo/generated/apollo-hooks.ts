@@ -519,8 +519,8 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-export const AspectTemplateInfoFragmentDoc = gql`
-  fragment AspectTemplateInfo on TemplateInfo {
+export const TemplateInfoFragmentDoc = gql`
+  fragment TemplateInfo on TemplateInfo {
     id
     title
     description
@@ -540,20 +540,19 @@ export const AspectTemplateFragmentDoc = gql`
     defaultDescription
     type
     info {
-      ...AspectTemplateInfo
+      ...TemplateInfo
     }
   }
-  ${AspectTemplateInfoFragmentDoc}
+  ${TemplateInfoFragmentDoc}
 `;
 export const CanvasTemplateFragmentDoc = gql`
   fragment CanvasTemplate on CanvasTemplate {
     id
     info {
-      id
-      title
-      description
+      ...TemplateInfo
     }
   }
+  ${TemplateInfoFragmentDoc}
 `;
 export const LifecycleTemplateFragmentDoc = gql`
   fragment LifecycleTemplate on LifecycleTemplate {
@@ -1094,13 +1093,33 @@ export const CommentsWithMessagesFragmentDoc = gql`
   }
   ${MessageDetailsFragmentDoc}
 `;
-export const CardTemplateFragmentDoc = gql`
-  fragment CardTemplate on Callout {
+export const CalloutCardTemplateFragmentDoc = gql`
+  fragment CalloutCardTemplate on Callout {
     cardTemplate {
       id
       type
       defaultDescription
       info {
+        tagset {
+          id
+          tags
+        }
+        visual {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+export const CalloutCanvasTemplateFragmentDoc = gql`
+  fragment CalloutCanvasTemplate on Callout {
+    canvasTemplate {
+      id
+      value
+      info {
+        title
+        description
         tagset {
           id
           tags
@@ -1135,26 +1154,14 @@ export const CalloutFragmentDoc = gql`
       myPrivileges
     }
     visibility
-    ...CardTemplate
-    canvasTemplate {
-      id
-      value
-      info {
-        tagset {
-          id
-          tags
-        }
-        visual {
-          id
-          uri
-        }
-      }
-    }
+    ...CalloutCardTemplate
+    ...CalloutCanvasTemplate
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
-  ${CardTemplateFragmentDoc}
+  ${CalloutCardTemplateFragmentDoc}
+  ${CalloutCanvasTemplateFragmentDoc}
 `;
 export const CollaborationWithCalloutsFragmentDoc = gql`
   fragment CollaborationWithCallouts on Collaboration {
@@ -1889,8 +1896,8 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const TemplateInfoFragmentDoc = gql`
-  fragment TemplateInfo on TemplateInfo {
+export const TemplateInfoWithFullVisualFragmentDoc = gql`
+  fragment TemplateInfoWithFullVisual on TemplateInfo {
     id
     title
     description
@@ -1910,10 +1917,10 @@ export const AdminLifecycleTemplateFragmentDoc = gql`
     definition
     type
     info {
-      ...TemplateInfo
+      ...TemplateInfoWithFullVisual
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${TemplateInfoWithFullVisualFragmentDoc}
 `;
 export const AdminAspectTemplateFragmentDoc = gql`
   fragment AdminAspectTemplate on AspectTemplate {
@@ -1921,19 +1928,19 @@ export const AdminAspectTemplateFragmentDoc = gql`
     defaultDescription
     type
     info {
-      ...TemplateInfo
+      ...TemplateInfoWithFullVisual
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${TemplateInfoWithFullVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateFragmentDoc = gql`
   fragment AdminCanvasTemplate on CanvasTemplate {
     id
     info {
-      ...TemplateInfo
+      ...TemplateInfoWithFullVisual
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${TemplateInfoWithFullVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateValueFragmentDoc = gql`
   fragment AdminCanvasTemplateValue on CanvasTemplate {
@@ -4617,6 +4624,79 @@ export type HubTemplatesQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
   return { query: HubTemplatesDocument, variables: variables };
+}
+
+export const CalloutFormTemplatesFromHubDocument = gql`
+  query CalloutFormTemplatesFromHub($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        aspectTemplates {
+          ...AspectTemplate
+        }
+        canvasTemplates {
+          ...CanvasTemplate
+        }
+      }
+    }
+  }
+  ${AspectTemplateFragmentDoc}
+  ${CanvasTemplateFragmentDoc}
+`;
+
+/**
+ * __useCalloutFormTemplatesFromHubQuery__
+ *
+ * To run a query within a React component, call `useCalloutFormTemplatesFromHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutFormTemplatesFromHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutFormTemplatesFromHubQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useCalloutFormTemplatesFromHubQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >(CalloutFormTemplatesFromHubDocument, options);
+}
+
+export function useCalloutFormTemplatesFromHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CalloutFormTemplatesFromHubQuery,
+    SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+  >(CalloutFormTemplatesFromHubDocument, options);
+}
+
+export type CalloutFormTemplatesFromHubQueryHookResult = ReturnType<typeof useCalloutFormTemplatesFromHubQuery>;
+export type CalloutFormTemplatesFromHubLazyQueryHookResult = ReturnType<typeof useCalloutFormTemplatesFromHubLazyQuery>;
+export type CalloutFormTemplatesFromHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutFormTemplatesFromHubQuery,
+  SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+>;
+export function refetchCalloutFormTemplatesFromHubQuery(
+  variables: SchemaTypes.CalloutFormTemplatesFromHubQueryVariables
+) {
+  return { query: CalloutFormTemplatesFromHubDocument, variables: variables };
 }
 
 export const AspectTemplatesFromHubDocument = gql`
@@ -8441,6 +8521,84 @@ export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostCommentInCalloutMutation,
   SchemaTypes.PostCommentInCalloutMutationVariables
 >;
+export const TemplatesForCalloutCreationDocument = gql`
+  query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        aspectTemplates {
+          id
+          info {
+            ...TemplateTitle
+          }
+        }
+        canvasTemplates {
+          id
+          info {
+            ...TemplateTitle
+          }
+        }
+      }
+    }
+  }
+  ${TemplateTitleFragmentDoc}
+`;
+
+/**
+ * __useTemplatesForCalloutCreationQuery__
+ *
+ * To run a query within a React component, call `useTemplatesForCalloutCreationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplatesForCalloutCreationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplatesForCalloutCreationQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useTemplatesForCalloutCreationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >(TemplatesForCalloutCreationDocument, options);
+}
+
+export function useTemplatesForCalloutCreationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.TemplatesForCalloutCreationQuery,
+    SchemaTypes.TemplatesForCalloutCreationQueryVariables
+  >(TemplatesForCalloutCreationDocument, options);
+}
+
+export type TemplatesForCalloutCreationQueryHookResult = ReturnType<typeof useTemplatesForCalloutCreationQuery>;
+export type TemplatesForCalloutCreationLazyQueryHookResult = ReturnType<typeof useTemplatesForCalloutCreationLazyQuery>;
+export type TemplatesForCalloutCreationQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplatesForCalloutCreationQuery,
+  SchemaTypes.TemplatesForCalloutCreationQueryVariables
+>;
+export function refetchTemplatesForCalloutCreationQuery(
+  variables: SchemaTypes.TemplatesForCalloutCreationQueryVariables
+) {
+  return { query: TemplatesForCalloutCreationDocument, variables: variables };
+}
+
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -9014,10 +9172,12 @@ export const UpdateCalloutDocument = gql`
       state
       type
       visibility
-      ...CardTemplate
+      ...CalloutCardTemplate
+      ...CalloutCanvasTemplate
     }
   }
-  ${CardTemplateFragmentDoc}
+  ${CalloutCardTemplateFragmentDoc}
+  ${CalloutCanvasTemplateFragmentDoc}
 `;
 export type UpdateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCalloutMutation,
