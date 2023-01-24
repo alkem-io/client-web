@@ -1587,6 +1587,14 @@
       "community-administration": {
         "title": "Community administration",
         "subtitle": "This section allows you to select your preferences regarding the community administration"
+      },
+      "user-communication": {
+        "title": "Mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging"
+      },
+      "organization-communication": {
+        "title": "Organization mentions and messaging",
+        "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage"
       }
     },
     "help-dialog": {

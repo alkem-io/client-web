@@ -34,6 +34,7 @@ export interface UserMetadata {
   isOpportunityAdmin: (hubId: string, challengeId: string, opportunityId: string) => boolean;
   /** has an entity admin role, i.e. is admin of a community */
   isCommunityAdmin: boolean;
+  isOrganizationAdmin: boolean;
   roles: Role[];
   groups: string[];
   organizations: string[];
@@ -154,6 +155,7 @@ export const useUserMetadataWrapper = () => {
         isChallengeAdmin,
         isOpportunityAdmin,
         isCommunityAdmin: false,
+        isOrganizationAdmin: false,
         roles,
         groups,
         challenges,
@@ -168,6 +170,9 @@ export const useUserMetadataWrapper = () => {
       };
 
       metadata.isCommunityAdmin = hasCommunityAdminRole(metadata.roles);
+      metadata.isOrganizationAdmin = metadata.roles.some(
+        ({ type }) => type === AuthorizationCredential.OrganizationAdmin
+      );
 
       return metadata;
     },
