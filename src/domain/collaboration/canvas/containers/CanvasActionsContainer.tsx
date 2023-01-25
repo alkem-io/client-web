@@ -10,9 +10,8 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  Canvas,
-  CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
+  CanvasValueFragment,
   CreateCanvasOnCalloutInput,
   DeleteCanvasInput,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -23,7 +22,7 @@ export interface ICanvasActions {
   onDelete: (canvas: DeleteCanvasInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
   onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
-  onUpdate: (canvas: Canvas, previewImage?: Blob) => Promise<void>;
+  onUpdate: (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -107,43 +106,42 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleCheckoutCanvas = useCallback(
-    async (canvas: CanvasDetailsFragment) => {
-      if (!canvas.checkout?.id) {
-        throw new Error('[canvas:onCheckInOut]: Missing canvas.checkout.id');
-      }
+  const LifecycleEventHandler = (eventName: 'CHECKIN' | 'CHECKOUT') => async (canvas: CanvasDetailsFragment) => {
+    if (!canvas.checkout?.id) {
+      throw new Error('[canvas:onCheckInOut]: Missing canvas.checkout.id');
+    }
 
-      await checkoutCanvas({
-        update: (cache, { data }) => {
-          cache.modify({
-            id: cache.identify({
-              id: canvas.id,
-              __typename: 'Canvas',
-            }),
-            fields: {
-              checkout(existingCheckout) {
-                const output = data?.eventOnCanvasCheckout;
-                if (output) {
-                  return output;
-                }
-                return existingCheckout;
-              },
+    await checkoutCanvas({
+      update: (cache, { data }) => {
+        cache.modify({
+          id: cache.identify({
+            id: canvas.id,
+            __typename: 'Canvas',
+          }),
+          fields: {
+            checkout(existingCheckout) {
+              const output = data?.eventOnCanvasCheckout;
+              if (output) {
+                return output;
+              }
+              return existingCheckout;
             },
-          });
-        },
-        variables: {
-          input: {
-            canvasCheckoutID: canvas.checkout?.id,
-            eventName:
-              (canvas.checkout.status === CanvasCheckoutStateEnum.CheckedOut &&
-                canvas.checkout?.lifecycle?.nextEvents?.find(e => e === 'CHECKIN')) ||
-              'CHECKOUT',
           },
+        });
+      },
+      variables: {
+        input: {
+          canvasCheckoutID: canvas.checkout?.id,
+          eventName,
         },
-      });
-    },
-    [checkoutCanvas]
-  );
+      },
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleCheckin = useCallback(LifecycleEventHandler('CHECKIN'), [checkoutCanvas]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleCheckout = useCallback(LifecycleEventHandler('CHECKOUT'), [checkoutCanvas]);
 
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({
     onError: handleError,
@@ -154,7 +152,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   });
 
   const handleUpdateCanvas = useCallback(
-    async (canvas: Canvas, previewImage?: Blob) => {
+    async (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => {
       await Promise.all([
         updateCanvas({
           variables: {
@@ -184,11 +182,11 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     () => ({
       onCreate: handleCreateCanvas,
       onDelete: handleDeleteCanvas,
-      onCheckin: handleCheckoutCanvas,
-      onCheckout: handleCheckoutCanvas,
+      onCheckin: handleCheckin,
+      onCheckout: handleCheckout,
       onUpdate: handleUpdateCanvas,
     }),
-    [handleCreateCanvas, handleDeleteCanvas, handleCheckoutCanvas, handleUpdateCanvas]
+    [handleCreateCanvas, handleDeleteCanvas, handleCheckin, handleCheckout, handleUpdateCanvas]
   );
 
   return (
