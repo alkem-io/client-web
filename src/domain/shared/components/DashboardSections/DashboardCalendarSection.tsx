@@ -8,37 +8,33 @@ import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
+import { EntityPageSection } from '../../layout/EntityPageSection';
+import { useNavigate } from 'react-router-dom';
 
+const MAX_NUMBER_OF_EVENTS = 3;
 export interface DashboardCalendarsSectionProps {
   journeyLocation: JourneyLocation | undefined;
 }
 
 const DashboardCalendarsSection: FC<DashboardCalendarsSectionProps> = ({ journeyLocation }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { data, loading } = useHubDashboardCalendarEventsQuery({
-    variables: { hubId: journeyLocation!.hubNameId! },
+    variables: { hubId: journeyLocation!.hubNameId!, limit: MAX_NUMBER_OF_EVENTS },
     skip: !journeyLocation || !journeyLocation.hubNameId,
   });
   const events = data?.hub.timeline?.calendar.events ?? [];
 
-  const openDialog = () => {};
+  const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
-  // TODO
   return (
     <PageContentBlock>
-      <PageContentBlockHeaderWithDialogAction
-        title={t('dashboard-calendar-section.title')}
-        onDialogOpen={() => openDialog()}
-      />
+      <PageContentBlockHeaderWithDialogAction title={t('dashboard-calendar-section.title')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
         {loading && <Skeleton />}
         {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
-        {!loading &&
-          events.map(event =>
-            <CalendarEventView {...event} />
-          )
-        }
+        {!loading && events.map(event => <CalendarEventView {...event} />)}
       </Box>
     </PageContentBlock>
   );

@@ -12,9 +12,10 @@ import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
+import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 
 export interface HubDashboardPageProps {
-  dialog?: 'updates' | 'contributors';
+  dialog?: 'updates' | 'contributors' | 'calendar';
 }
 
 const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
@@ -78,6 +79,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               onClose={backToDashboard}
               dialogContent={HubContributorsDialogContent}
             />
+            <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} hubId={entities.hub?.id} />
           </>
         )}
       </HubPageContainer>

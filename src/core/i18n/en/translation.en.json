@@ -1655,6 +1655,7 @@
   },
   "dashboard-calendar-section": {
     "title": "Upcoming Events",
+    "dialog-title": "Upcoming Events",
     "no-data": "No events found"
   },
   "aspect-edit": {
