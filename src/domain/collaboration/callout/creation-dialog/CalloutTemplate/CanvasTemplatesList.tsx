@@ -56,7 +56,6 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
 
   const handleImportTemplate = async (template: LibraryCanvasTemplate) => {
     actions.updateLibraryTemplates(template);
-    console.log('Added template');
   };
 
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
