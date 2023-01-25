@@ -7,7 +7,6 @@ import {
   useOpportunityCollaborationIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
 import { CanvasTemplateFormSubmittedValues } from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplateForm';
@@ -31,7 +30,6 @@ interface CalloutCreationUtils {
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
-  const handleError = useApolloErrorHandler();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -61,7 +59,6 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
   )?.collaboration?.id;
 
   const [createCallout] = useCreateCalloutMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       if (!data || !collaborationID) {
         return;

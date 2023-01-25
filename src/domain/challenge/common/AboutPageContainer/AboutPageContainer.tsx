@@ -15,7 +15,6 @@ import { WithId } from '../../../../types/WithId';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 
 interface AboutPagePermissions {
@@ -56,8 +55,6 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   challengeNameId,
   opportunityNameId,
 }) => {
-  const handleError = useApolloErrorHandler();
-
   const includeHub = !(challengeNameId || opportunityNameId);
   const includeChallenge = !!challengeNameId;
   const includeOpportunity = !!opportunityNameId;
@@ -75,7 +72,6 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
       includeChallenge,
       includeOpportunity,
     },
-    onError: handleError,
   });
   const nonMemberContext =
     nonMembersData?.hub?.opportunity?.context ??
@@ -106,7 +102,6 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
       referencesReadAccess,
       communityReadAccess,
     },
-    onError: handleError,
     skip: nonMembersDataLoading,
   });
 

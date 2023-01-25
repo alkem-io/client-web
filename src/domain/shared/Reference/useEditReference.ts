@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { useRef } from 'react';
 import {
   useCreateReferenceOnCardProfileMutation,
@@ -6,7 +5,6 @@ import {
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 
 export type PushFunc = (success: boolean) => void;
 // TODO this hook needs refactoring - something weird is going on with types here
@@ -24,15 +22,12 @@ export type AddReferenceFunc = (reference: {
 export const useEditReference = () => {
   const remove = useRef<PushFunc | undefined>();
   const push = useRef<RemoveFunc | undefined>();
-  const handleApolloError = useApolloErrorHandler();
 
-  const handleError = (err: ApolloError) => {
+  const handleError = () => {
     push.current && push.current();
-    handleApolloError(err);
   };
 
   const [addReferenceOnContext] = useCreateReferenceOnContextMutation({
-    onError: handleError,
     onCompleted: data => {
       if (push.current) {
         push.current({
@@ -45,7 +40,6 @@ export const useEditReference = () => {
   });
 
   const [addReferenceOnProfile] = useCreateReferenceOnProfileMutation({
-    onError: handleError,
     onCompleted: data => {
       if (push.current) {
         push.current({
@@ -58,7 +52,6 @@ export const useEditReference = () => {
   });
 
   const [addReferenceOnCardProfile] = useCreateReferenceOnCardProfileMutation({
-    onError: handleError,
     onCompleted: data => {
       if (push.current) {
         push.current({

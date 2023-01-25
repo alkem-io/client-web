@@ -3,7 +3,6 @@ import {
   useEventOnOpportunityMutation,
   useOpportunityLifecycleQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { Lifecycle } from '../../../../core/apollo/generated/graphql-schema';
 import {
   ComponentOrChildrenFn,
@@ -26,8 +25,6 @@ const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
   opportunityNameId,
   ...rendered
 }) => {
-  const handleError = useApolloErrorHandler();
-
   const { data, loading } = useOpportunityLifecycleQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
@@ -36,9 +33,7 @@ const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
 
   const lifecycle = data?.hub.opportunity?.lifecycle;
 
-  const [updateOpportunityLifecycle] = useEventOnOpportunityMutation({
-    onError: handleError,
-  });
+  const [updateOpportunityLifecycle] = useEventOnOpportunityMutation({});
 
   const setNextState = (opportunityId: string, nextState: string) =>
     updateOpportunityLifecycle({

@@ -13,7 +13,6 @@ import {
   usePostCommentInAspectMutation,
   useRemoveCommentFromAspectMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../../../community/contributor/user';
 import { Message } from '../../../../shared/components/Comments/models/message';
 import { evictFromCache } from '../../../../shared/utils/apollo-cache/removeFromCache';
@@ -62,7 +61,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   calloutNameId = '',
   ...rendered
 }) => {
-  const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
@@ -76,7 +74,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   } = useHubAspectQuery({
     variables: { hubNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
-    onError: handleError,
     fetchPolicy: 'cache-and-network',
   });
   const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
@@ -91,7 +88,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   } = useChallengeAspectQuery({
     variables: { hubNameId, challengeNameId: challengeNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
-    onError: handleError,
     fetchPolicy: 'cache-and-network',
   });
   const challengeAspect = getCardCallout(
@@ -107,7 +103,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   } = useOpportunityAspectQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId!, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
-    onError: handleError,
     fetchPolicy: 'cache-and-network',
   });
   const opportunityAspect = getCardCallout(
@@ -184,7 +179,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
-    onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
 
@@ -199,7 +193,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     });
 
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({
         id: commentsId,

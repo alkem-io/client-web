@@ -3,7 +3,6 @@ import {
   useChallengeLifecycleQuery,
   useEventOnChallengeMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { Lifecycle } from '../../../../core/apollo/generated/graphql-schema';
 import {
   ComponentOrChildrenFn,
@@ -26,8 +25,6 @@ const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
   challengeNameId,
   ...rendered
 }) => {
-  const handleError = useApolloErrorHandler();
-
   const { data, loading } = useChallengeLifecycleQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
     fetchPolicy: 'cache-and-network',
@@ -36,9 +33,7 @@ const ChallengeLifecycleContainer: FC<ChallengeLifecycleContainerProps> = ({
 
   const lifecycle = data?.hub.challenge?.lifecycle;
 
-  const [updateChallengeLifecycle] = useEventOnChallengeMutation({
-    onError: handleError,
-  });
+  const [updateChallengeLifecycle] = useEventOnChallengeMutation({});
 
   const setNextState = (id: string, nextState: string) =>
     updateChallengeLifecycle({

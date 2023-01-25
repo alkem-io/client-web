@@ -2,7 +2,6 @@ import 'react-image-crop/dist/ReactCrop.css';
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Avatar, Box, Skeleton } from '@mui/material';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUploadVisualMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import UploadButton from '../../../core/UploadButton';
@@ -26,11 +25,9 @@ interface VisualUploadProps {
  */
 const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) => {
   const { t } = useTranslation();
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
 
   const [uploadVisual, { loading }] = useUploadVisualMutation({
-    onError: handleError,
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
   const [dialogOpened, setDialogOpened] = useState(false);

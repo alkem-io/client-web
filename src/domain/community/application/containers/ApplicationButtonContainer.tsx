@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../contributor/user';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import {
@@ -38,7 +37,6 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
   children,
 }) => {
   const { isAuthenticated } = useAuthenticationContext();
-  const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
   const userId = user?.user?.id ?? '';
 
@@ -59,7 +57,6 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
   const hasCommunityParent = _communityPrivileges?.hub?.hubCommunity?.id !== communityId;
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
-    onError: handleError,
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 

@@ -9,7 +9,6 @@ import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHub } from '../../../../../domain/challenge/hub/HubContext/useHub';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,
@@ -40,10 +39,8 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId, collaborationId }) 
   const { hubNameId } = useHub();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
-  const handleError = useApolloErrorHandler();
 
   const [createRelation, { data, loading }] = useCreateRelationMutation({
-    onError: handleError,
     refetchQueries: [refetchOpportunityRelationsQuery({ hubId: hubNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
