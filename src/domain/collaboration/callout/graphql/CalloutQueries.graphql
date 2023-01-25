@@ -189,6 +189,7 @@ fragment CalloutCardTemplate on Callout {
 fragment CalloutCanvasTemplate on Callout {
   canvasTemplate {
     id
+    value
     info {
       title
       description

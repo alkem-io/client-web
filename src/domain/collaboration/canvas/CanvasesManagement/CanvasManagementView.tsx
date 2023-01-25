@@ -76,6 +76,11 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
     canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && canvas.checkout.lockedBy === user?.user.id;
   const isCanvasAvailable = canvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
+  const handleCancel = (canvas: CanvasDetailsFragment) => {
+    backToCanvases();
+    actions.onCheckin(canvas);
+  };
+
   return (
     <>
       <CanvasValueContainer canvasId={canvas?.id} calloutId={calloutId}>
@@ -83,7 +88,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           <CanvasDialog
             entities={{ canvas: entities.canvas }}
             actions={{
-              onCancel: backToCanvases,
+              onCancel: handleCancel,
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
               onUpdate: actions.onUpdate,
