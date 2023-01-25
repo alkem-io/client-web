@@ -64,9 +64,9 @@ export const useEditReference = () => {
   });
 
   const [deleteReferenceInt] = useDeleteReferenceMutation({
-    onError: err => {
+    onError: () => {
       remove.current && remove.current(false);
-      handleError(err);
+      handleError();
     },
     onCompleted: () => remove.current && remove.current(true),
     //update: removeFromCache,
