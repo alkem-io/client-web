@@ -118,6 +118,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             leadOrganizations={leadOrganizations}
           />
         )}
+        {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         <PageContentBlock>
           <PageContentBlockHeader title={t('components.referenceSegment.title')} />
           <References references={references} />
@@ -125,7 +126,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
         </PageContentBlock>
         {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
-        {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         {communityReadAccess && (
           <EntityDashboardContributorsSection
             memberUsers={memberUsers}

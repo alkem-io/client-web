@@ -1,40 +1,17 @@
 import React, { ComponentType } from 'react';
-import { Box, BoxProps, styled, SvgIconProps, useTheme } from '@mui/material';
+import { BoxProps, SvgIconProps } from '@mui/material';
+import RoundedBadge, { RoundedBadgeProps } from './RoundedBadge';
 
-const RoundedIconContainer = styled(Box)(({ theme }) => ({
-  background: theme.palette.primary.main,
-  color: theme.palette.common.white,
-  borderRadius: '50%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-}));
 
-type RoundedIconSize = 'medium' | 'small';
-
-export interface RoundedIconProps {
-  size: RoundedIconSize;
+export interface RoundedIconProps extends Pick<RoundedBadgeProps, 'size'> {
   component: ComponentType<SvgIconProps>;
 }
 
-const getSizeInSpacing = (size: RoundedIconSize) => {
-  switch (size) {
-    case 'medium':
-      return 4;
-    case 'small':
-      return 2.5;
-  }
-};
-
 const RoundedIcon = ({ size, component: Icon, ...containerProps }: RoundedIconProps & BoxProps) => {
-  const theme = useTheme();
-
-  const sizePx = theme.spacing(getSizeInSpacing(size));
-
   return (
-    <RoundedIconContainer width={sizePx} height={sizePx} {...containerProps}>
+    <RoundedBadge size={size} {...containerProps}>
       <Icon fontSize={size} />
-    </RoundedIconContainer>
+    </RoundedBadge>
   );
 };
 

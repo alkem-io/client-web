@@ -2327,6 +2327,10 @@ export const CalendarEventInfoFragmentDoc = gql`
     durationMinutes
     wholeDay
     multipleDays
+    profile {
+      id
+      description
+    }
   }
 `;
 export const EventProfileFragmentDoc = gql`
@@ -19683,15 +19687,15 @@ export function refetchActivityLogOnCollaborationQuery(
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 
-export const HubCalendarEventsDocument = gql`
-  query hubCalendarEvents($hubId: UUID_NAMEID!) {
+export const HubDashboardCalendarEventsDocument = gql`
+  query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
     hub(ID: $hubId) {
       id
       timeline {
         id
         calendar {
           id
-          events {
+          events(limit: $limit) {
             ...CalendarEventInfo
           }
         }
@@ -19702,52 +19706,58 @@ export const HubCalendarEventsDocument = gql`
 `;
 
 /**
- * __useHubCalendarEventsQuery__
+ * __useHubDashboardCalendarEventsQuery__
  *
- * To run a query within a React component, call `useHubCalendarEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubDashboardCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHubCalendarEventsQuery({
+ * const { data, loading, error } = useHubDashboardCalendarEventsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      limit: // value for 'limit'
  *   },
  * });
  */
-export function useHubCalendarEventsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>(
-    HubCalendarEventsDocument,
-    options
-  );
-}
-
-export function useHubCalendarEventsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubCalendarEventsQuery,
-    SchemaTypes.HubCalendarEventsQueryVariables
+export function useHubDashboardCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>(
-    HubCalendarEventsDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >(HubDashboardCalendarEventsDocument, options);
 }
 
-export type HubCalendarEventsQueryHookResult = ReturnType<typeof useHubCalendarEventsQuery>;
-export type HubCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubCalendarEventsLazyQuery>;
-export type HubCalendarEventsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubCalendarEventsQuery,
-  SchemaTypes.HubCalendarEventsQueryVariables
+export function useHubDashboardCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >(HubDashboardCalendarEventsDocument, options);
+}
+
+export type HubDashboardCalendarEventsQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsQuery>;
+export type HubDashboardCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsLazyQuery>;
+export type HubDashboardCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardCalendarEventsQuery,
+  SchemaTypes.HubDashboardCalendarEventsQueryVariables
 >;
-export function refetchHubCalendarEventsQuery(variables: SchemaTypes.HubCalendarEventsQueryVariables) {
-  return { query: HubCalendarEventsDocument, variables: variables };
+export function refetchHubDashboardCalendarEventsQuery(
+  variables: SchemaTypes.HubDashboardCalendarEventsQueryVariables
+) {
+  return { query: HubDashboardCalendarEventsDocument, variables: variables };
 }
 
 export const CalendarEventDocument = gql`
@@ -19865,8 +19875,8 @@ export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalendarEventMutationVariables
 >;
 export const UpdateCalendarEventDocument = gql`
-  mutation updateCalendarEvent($calendarEventData: UpdateCalendarEventInput!) {
-    updateCalendarEvent(calendarEventData: $calendarEventData) {
+  mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
+    updateCalendarEvent(eventData: $eventData) {
       ...CalendarEventDetails
     }
   }
@@ -19890,7 +19900,7 @@ export type UpdateCalendarEventMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateCalendarEventMutation, { data, loading, error }] = useUpdateCalendarEventMutation({
  *   variables: {
- *      calendarEventData: // value for 'calendarEventData'
+ *      eventData: // value for 'eventData'
  *   },
  * });
  */

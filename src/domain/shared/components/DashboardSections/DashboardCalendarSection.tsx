@@ -1,11 +1,13 @@
-import { Skeleton } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { useHubCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useHubDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
+import { gutters } from '../../../../core/ui/grid/utils';
 import { Text } from '../../../../core/ui/typography';
+import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
 
 export interface DashboardCalendarsSectionProps {
   journeyLocation: JourneyLocation | undefined;
@@ -14,28 +16,30 @@ export interface DashboardCalendarsSectionProps {
 const DashboardCalendarsSection: FC<DashboardCalendarsSectionProps> = ({ journeyLocation }) => {
   const { t } = useTranslation();
 
-  const { data, loading } = useHubCalendarEventsQuery({
+  const { data, loading } = useHubDashboardCalendarEventsQuery({
     variables: { hubId: journeyLocation!.hubNameId! },
     skip: !journeyLocation || !journeyLocation.hubNameId,
   });
-  const events = data?.hub.timeline?.calendar?.events || [];
+  const events = data?.hub.timeline?.calendar.events ?? [];
+
+  const openDialog = () => {};
 
   // TODO
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={t('dashboard-calendar-section.title')} />
-      {loading && <Skeleton />}
-      {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
-      {!loading &&
-        events.map(event => {
-          return (
-            <>
-              <p>
-                {event.displayName} {event.startDate}
-              </p>
-            </>
-          );
-        })}
+      <PageContentBlockHeaderWithDialogAction
+        title={t('dashboard-calendar-section.title')}
+        onDialogOpen={() => openDialog()}
+      />
+      <Box display="flex" flexDirection="column" gap={gutters()}>
+        {loading && <Skeleton />}
+        {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
+        {!loading &&
+          events.map(event =>
+            <CalendarEventView {...event} />
+          )
+        }
+      </Box>
     </PageContentBlock>
   );
 };

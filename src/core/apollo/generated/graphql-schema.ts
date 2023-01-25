@@ -578,14 +578,19 @@ export type Calendar = {
   authorization?: Maybe<Authorization>;
   /** A single CalendarEvent */
   event?: Maybe<CalendarEvent>;
-  /** Events in this Calendar. */
-  events: Array<CalendarEvent>;
+  /** The list of CalendarEvents for this Calendar. */
+  events?: Maybe<Array<CalendarEvent>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
 };
 
 export type CalendarEventArgs = {
   ID: Scalars['UUID'];
+};
+
+export type CalendarEventsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type CalendarEvent = {
@@ -612,9 +617,9 @@ export type CalendarEvent = {
   /** The CardProfile for this Card. */
   profile?: Maybe<CardProfile>;
   /** The start time for this CalendarEvent. */
-  startDate?: Maybe<Scalars['Float']>;
+  startDate?: Maybe<Scalars['DateTime']>;
   /** The event type, e.g. webinar, meetup etc. */
-  type: Scalars['String'];
+  type: CalendarEventType;
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -626,6 +631,13 @@ export type CalendarEventCommentsMessageReceived = {
   /** The message that has been sent. */
   message: Message;
 };
+
+export enum CalendarEventType {
+  Event = 'EVENT',
+  Milestone = 'MILESTONE',
+  Other = 'OTHER',
+  Training = 'TRAINING',
+}
 
 export type Callout = {
   __typename?: 'Callout';
@@ -1240,14 +1252,16 @@ export type CreateCalendarEventOnCalendarInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData?: InputMaybe<CreateCardProfileInput>;
-  /** The state date for the event. */
+  /** The start date for the event. */
   startDate: Scalars['DateTime'];
-  type: Scalars['String'];
+  type: CalendarEventType;
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
 
 export type CreateCalloutOnCollaborationInput = {
+  /** CanvasTemplate data for Canvas Callouts. */
+  canvasTemplate?: InputMaybe<CreateCanvasTemplateInput>;
   /** CardTemplate data for Card Callouts. */
   cardTemplate?: InputMaybe<CreateAspectTemplateInput>;
   collaborationID: Scalars['UUID'];
@@ -1270,6 +1284,14 @@ export type CreateCanvasOnCalloutInput = {
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateCanvasTemplateInput = {
+  /** Use the specified Canvas as the initial value for this CanvasTemplate */
+  canvasID?: InputMaybe<Scalars['UUID']>;
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateCanvasTemplateOnTemplatesSetInput = {
@@ -2680,7 +2702,7 @@ export type MutationUpdateAspectTemplateArgs = {
 };
 
 export type MutationUpdateCalendarEventArgs = {
-  calendarEventData: UpdateCalendarEventInput;
+  eventData: UpdateCalendarEventInput;
 };
 
 export type MutationUpdateCalloutArgs = {
@@ -3897,9 +3919,15 @@ export type UpdateCalendarEventInput = {
   profileData?: InputMaybe<UpdateCardProfileInput>;
   /** The state date for the event. */
   startDate: Scalars['DateTime'];
-  type?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<CalendarEventType>;
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
+};
+
+export type UpdateCalloutCanvasTemplateInput = {
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateCalloutCardTemplateInput = {
@@ -3913,7 +3941,9 @@ export type UpdateCalloutCardTemplateInput = {
 
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
-  /** CardTemplate data for this Card Callout. */
+  /** CanvasTemplate data for this Callout. */
+  canvasTemplate?: InputMaybe<UpdateCalloutCanvasTemplateInput>;
+  /** CardTemplate data for this Callout. */
   cardTemplate?: InputMaybe<UpdateCalloutCardTemplateInput>;
   /** Callout description. */
   description?: InputMaybe<Scalars['Markdown']>;
@@ -19550,11 +19580,12 @@ export type PageInfoFragment = {
   hasNextPage: boolean;
 };
 
-export type HubCalendarEventsQueryVariables = Exact<{
+export type HubDashboardCalendarEventsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
 }>;
 
-export type HubCalendarEventsQuery = {
+export type HubDashboardCalendarEventsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -19566,17 +19597,20 @@ export type HubCalendarEventsQuery = {
           calendar: {
             __typename?: 'Calendar';
             id: string;
-            events: Array<{
-              __typename?: 'CalendarEvent';
-              id: string;
-              nameID: string;
-              displayName: string;
-              startDate?: number | undefined;
-              durationDays?: number | undefined;
-              durationMinutes: number;
-              wholeDay: boolean;
-              multipleDays: boolean;
-            }>;
+            events?:
+              | Array<{
+                  __typename?: 'CalendarEvent';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  startDate?: Date | undefined;
+                  durationDays?: number | undefined;
+                  durationMinutes: number;
+                  wholeDay: boolean;
+                  multipleDays: boolean;
+                  profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
+                }>
+              | undefined;
           };
         }
       | undefined;
@@ -19588,11 +19622,12 @@ export type CalendarEventInfoFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  startDate?: number | undefined;
+  startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
   wholeDay: boolean;
   multipleDays: boolean;
+  profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
 };
 
 export type CalendarEventQueryVariables = Exact<{
@@ -19615,12 +19650,12 @@ export type CalendarEventQuery = {
             event?:
               | {
                   __typename?: 'CalendarEvent';
-                  type: string;
+                  type: CalendarEventType;
                   createdDate: Date;
                   id: string;
                   nameID: string;
                   displayName: string;
-                  startDate?: number | undefined;
+                  startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
                   wholeDay: boolean;
@@ -19713,12 +19748,12 @@ export type CalendarEventQuery = {
 
 export type CalendarEventDetailsFragment = {
   __typename?: 'CalendarEvent';
-  type: string;
+  type: CalendarEventType;
   createdDate: Date;
   id: string;
   nameID: string;
   displayName: string;
-  startDate?: number | undefined;
+  startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
   wholeDay: boolean;
@@ -19804,12 +19839,12 @@ export type CreateCalendarEventMutation = {
   __typename?: 'Mutation';
   createEventOnCalendar: {
     __typename?: 'CalendarEvent';
-    type: string;
+    type: CalendarEventType;
     createdDate: Date;
     id: string;
     nameID: string;
     displayName: string;
-    startDate?: number | undefined;
+    startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
     wholeDay: boolean;
@@ -19885,19 +19920,19 @@ export type CreateCalendarEventMutation = {
 };
 
 export type UpdateCalendarEventMutationVariables = Exact<{
-  calendarEventData: UpdateCalendarEventInput;
+  eventData: UpdateCalendarEventInput;
 }>;
 
 export type UpdateCalendarEventMutation = {
   __typename?: 'Mutation';
   updateCalendarEvent: {
     __typename?: 'CalendarEvent';
-    type: string;
+    type: CalendarEventType;
     createdDate: Date;
     id: string;
     nameID: string;
     displayName: string;
-    startDate?: number | undefined;
+    startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
     wholeDay: boolean;

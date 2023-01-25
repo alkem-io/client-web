@@ -34,3 +34,5 @@ export const CaptionSmall = provideStaticProps(Caption, {
   display: 'block',
   fontStyle: 'italic',
 }) as typeof Typography;
+
+export const CaptionBold = provideStaticProps(Typography, { variant: 'caption', fontWeight: 500, display: 'block' }) as typeof Typography;

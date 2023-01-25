@@ -1,11 +1,11 @@
-query hubCalendarEvents ($hubId: UUID_NAMEID!) {
+query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
   hub(ID: $hubId) {
     id
     timeline {
       id
       calendar {
         id
-        events {
+        events(limit: $limit) {
           ...CalendarEventInfo
         }
       }
@@ -22,6 +22,10 @@ fragment CalendarEventInfo on CalendarEvent {
   durationMinutes
   wholeDay
   multipleDays
+  profile{
+    id
+    description
+  }
 }
 
 query calendarEvent  ($hubId: UUID_NAMEID!, $eventId: UUID!) {
@@ -88,8 +92,8 @@ mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!) {
   }
 }
 
-mutation updateCalendarEvent($calendarEventData: UpdateCalendarEventInput!) {
-  updateCalendarEvent(calendarEventData: $calendarEventData) {
+mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
+  updateCalendarEvent(eventData: $eventData) {
     ...CalendarEventDetails
   }
 }
