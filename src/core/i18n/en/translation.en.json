@@ -71,7 +71,8 @@
     "preview": "Preview",
     "import": "Import",
     "importing": "Importing...",
-    "go-to-entity": "Go to {{entity}}"
+    "go-to-entity": "Go to {{entity}}",
+    "more-templates": "More templates"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import {
   AspectTemplateFragment,
@@ -19,7 +19,10 @@ import { FormikSwitch } from '../../../common/components/composite/forms/FormikS
 import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
 import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
-import CanvasTemplatesChooser from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
+import CanvasTemplatesChooser, {
+  CanvasTemplateListItem,
+  LibraryCanvasTemplate,
+} from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
 
 type FormValueType = {
   displayName: string;
@@ -71,6 +74,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   children,
 }) => {
   const { t } = useTranslation();
+  const [libraryCanvasTemplates, setLibraryCanvasTemplates] = useState<CanvasTemplateListItem[]>([]);
 
   const initialValues: FormValueType = useMemo(
     () => ({
@@ -122,6 +126,19 @@ const CalloutForm: FC<CalloutFormProps> = ({
     onChange?.(callout);
   };
 
+  const updateLibraryTemplates = useCallback(
+    (template: LibraryCanvasTemplate) => {
+      const newTemplate: CanvasTemplateListItem = { ...template, origin: 'Library' };
+      setLibraryCanvasTemplates([...libraryCanvasTemplates, newTemplate]);
+    },
+    [libraryCanvasTemplates]
+  );
+
+  const hubTemplates = templates.canvasTemplates.map<CanvasTemplateListItem>(templ => ({
+    ...templ,
+    origin: 'Hub',
+  }));
+
   return (
     <Formik
       initialValues={initialValues}
@@ -167,8 +184,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 <FormRow>
                   <CanvasTemplatesChooser
                     name="canvasTemplateTitle"
-                    templates={templates.canvasTemplates}
+                    templates={[...hubTemplates, ...libraryCanvasTemplates]}
                     editMode={editMode}
+                    updateLibraryTemplates={updateLibraryTemplates}
                   />
                 </FormRow>
               </>

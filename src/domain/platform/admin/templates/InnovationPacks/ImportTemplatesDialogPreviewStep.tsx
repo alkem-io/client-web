@@ -14,7 +14,7 @@ export interface ImportTemplatesDialogPreviewStepProps<
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue
 > {
-  onImportTemplate: (template: T, templateValue: V | undefined) => Promise<void>;
+  onImportTemplate: (template: Q, templateValue: V | undefined) => Promise<void>;
   onClose: () => void;
   template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;

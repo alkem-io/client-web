@@ -1,74 +1,156 @@
-import { Box, Grid, List, Typography } from '@mui/material';
-import { FC } from 'react';
+import { Box, Button, Grid, List, Typography } from '@mui/material';
+import { FC, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { Loading } from '../../../../../common/components/core';
-import { CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
+import {
+  useInnovationPackCanvasTemplateWithValueLazyQuery,
+  useInnovationPacksLazyQuery,
+} from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  AdminCanvasTemplateFragment,
+  CanvasTemplateWithValueFragment,
+} from '../../../../../core/apollo/generated/graphql-schema';
+import CanvasImportTemplateCard from '../../../../platform/admin/templates/CanvasTemplates/CanvasImportTemplateCard';
+import CanvasTemplatePreview from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplatePreview';
+import ImportTemplatesDialog from '../../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialog';
+import { TemplateInnovationPackMetaInfo } from '../../../../platform/admin/templates/InnovationPacks/InnovationPack';
 import CanvasListItem from '../../../canvas/CanvasList/CanvasListItem';
+import { CanvasTemplateListItem, LibraryCanvasTemplate } from './CanvasTemplateChooser';
 
+type TemplateValue = Omit<CanvasTemplateWithValueFragment, 'info'>;
 interface CanvasTemplatesListProps {
   actions: {
     onSelect: (canvasTemplateTitle: string) => void;
+    updateLibraryTemplates: (template: LibraryCanvasTemplate) => void;
   };
   entities: {
-    selectedTemplate: (CanvasTemplateFragment & { value: string }) | undefined;
-    templates: CanvasTemplateFragment[];
+    selectedTemplate: (CanvasTemplateListItem & { value: string }) | undefined;
+    templates: CanvasTemplateListItem[];
   };
   state: {
     canvasLoading?: boolean;
   };
 }
 
+const formatCanvasTemplate = (canvas: CanvasTemplateListItem) => ({ id: canvas.id, displayName: canvas.info.title });
+
 const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, state }) => {
   const { templates, selectedTemplate } = entities;
-
   const { t } = useTranslation();
 
-  const formatCanvasTemplate = (canvas: CanvasTemplateFragment) => ({ id: canvas.id, displayName: canvas.info.title });
+  const [isImportTemplatesDialogOpen, setImportTemplatesDialogOpen] = useState(false);
+  const [loadInnovationPacks, { data: innovationPacks }] = useInnovationPacksLazyQuery();
+
+  const openImportTemplateDialog = useCallback(() => {
+    loadInnovationPacks();
+    setImportTemplatesDialogOpen(true);
+  }, [loadInnovationPacks]);
+  const closeImportTemplatesDialog = useCallback(() => setImportTemplatesDialogOpen(false), []);
+
+  const canvasInnovationPacks = useMemo(() => {
+    if (!innovationPacks) return [];
+    return innovationPacks?.platform.library.innovationPacks
+      .filter(pack => pack.templates && pack.templates?.canvasTemplates.length > 0)
+      .map(pack => ({
+        ...pack,
+        templates: pack.templates?.canvasTemplates || [],
+      }));
+  }, [innovationPacks]);
+
+  const handleImportTemplate = async (
+    template: LibraryCanvasTemplate,
+    templateWithValue: TemplateValue | undefined
+  ) => {
+    actions.updateLibraryTemplates(template);
+    console.log('Added template');
+  };
+
+  const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
+    useInnovationPackCanvasTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
+
+  const getImportedTemplateValue = useCallback(
+    (template: AdminCanvasTemplateFragment & TemplateInnovationPackMetaInfo) => {
+      fetchInnovationPackCanvasValue({
+        variables: { innovationPackId: template.innovationPackId, canvasTemplateId: template.id },
+      });
+    },
+    [fetchInnovationPackCanvasValue]
+  );
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={5.5}>
-        <Box display="flex" flexDirection="column">
-          <List>
-            {templates.map(canvas => (
-              <CanvasListItem
-                key={canvas.id}
-                onClick={() => actions.onSelect(canvas.info.title)}
-                canvas={formatCanvasTemplate(canvas)}
-                isSelected={canvas.id === selectedTemplate?.id}
-              />
-            ))}
-          </List>
-        </Box>
-      </Grid>
-      <Grid item xs={6}>
-        <Box display="flex" justifyContent="center" alignItems="center" height={'100%'} minHeight={400} minWidth={450}>
-          {!selectedTemplate && !state.canvasLoading && (
-            <Typography variant="overline">
-              {t('components.callout-creation.template-step.no-canvas-template-selected')}
-            </Typography>
-          )}
-          {state.canvasLoading && <Loading text="Loading canvas..." />}
-          {selectedTemplate && !state.canvasLoading && (
-            <CanvasWhiteboard
-              entities={{
-                canvas: selectedTemplate,
-              }}
-              actions={{}}
-              options={{
-                viewModeEnabled: true,
-                UIOptions: {
-                  canvasActions: {
-                    export: false,
+    <>
+      <Grid container spacing={2}>
+        <Grid item xs={5.5} display="flex" flexDirection="column" justifyContent="space-between">
+          <Box>
+            <List>
+              {templates.map(canvas => (
+                <CanvasListItem
+                  key={canvas.id}
+                  onClick={() => actions.onSelect(canvas.info.title)}
+                  canvas={formatCanvasTemplate(canvas)}
+                  isSelected={canvas.id === selectedTemplate?.id}
+                />
+              ))}
+            </List>
+          </Box>
+          <Button
+            onClick={openImportTemplateDialog}
+            sx={{ marginRight: theme => theme.spacing(1) }}
+            startIcon={<LibraryIcon />}
+          >
+            {t('buttons.more-templates')}
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height={'100%'}
+            minHeight={400}
+            minWidth={450}
+          >
+            {!selectedTemplate && !state.canvasLoading && (
+              <Typography variant="overline">
+                {t('components.callout-creation.template-step.no-canvas-template-selected')}
+              </Typography>
+            )}
+            {state.canvasLoading && <Loading text="Loading canvas..." />}
+            {selectedTemplate && !state.canvasLoading && (
+              <CanvasWhiteboard
+                entities={{
+                  canvas: selectedTemplate,
+                }}
+                actions={{}}
+                options={{
+                  viewModeEnabled: true,
+                  UIOptions: {
+                    canvasActions: {
+                      export: false,
+                    },
                   },
-                },
-              }}
-            />
-          )}
-        </Box>
+                }}
+              />
+            )}
+          </Box>
+        </Grid>
       </Grid>
-    </Grid>
+      <ImportTemplatesDialog
+        headerText={t('pages.admin.generic.sections.templates.import.title', {
+          templateType: t('common.canvases'),
+        })}
+        templateImportCardComponent={CanvasImportTemplateCard}
+        templatePreviewComponent={CanvasTemplatePreview}
+        open={isImportTemplatesDialogOpen}
+        onClose={closeImportTemplatesDialog}
+        onImportTemplate={handleImportTemplate}
+        innovationPacks={canvasInnovationPacks}
+        getImportedTemplateValue={getImportedTemplateValue}
+        importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.canvasTemplate}
+      />
+    </>
   );
 };
 
