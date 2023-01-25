@@ -1,4 +1,4 @@
-query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
+query hubCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
   hub(ID: $hubId) {
     id
     timeline {
@@ -28,7 +28,7 @@ fragment CalendarEventInfo on CalendarEvent {
   }
 }
 
-query calendarEvent  ($hubId: UUID_NAMEID!, $eventId: UUID!) {
+query calendarEventDetails  ($hubId: UUID_NAMEID!, $eventId: UUID!) {
   hub(ID: $hubId) {
     id
     timeline {

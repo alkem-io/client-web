@@ -19580,12 +19580,12 @@ export type PageInfoFragment = {
   hasNextPage: boolean;
 };
 
-export type HubDashboardCalendarEventsQueryVariables = Exact<{
+export type HubCalendarEventsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   limit?: InputMaybe<Scalars['Float']>;
 }>;
 
-export type HubDashboardCalendarEventsQuery = {
+export type HubCalendarEventsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -19630,12 +19630,12 @@ export type CalendarEventInfoFragment = {
   profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
 };
 
-export type CalendarEventQueryVariables = Exact<{
+export type CalendarEventDetailsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   eventId: Scalars['UUID'];
 }>;
 
-export type CalendarEventQuery = {
+export type CalendarEventDetailsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';

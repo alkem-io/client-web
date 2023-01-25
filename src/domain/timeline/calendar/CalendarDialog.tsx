@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { Box, Button, DialogActions } from '@mui/material';
+import { Box, Button, DialogActions, Skeleton } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../common/components/core/dialog';
+import { CalendarEventsContainer } from './CalendarEventsContainer';
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -10,7 +11,7 @@ export interface CalendarDialogProps {
   onClose: () => void;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
   const { t } = useTranslation();
 
   const handleClose = () => {
@@ -26,7 +27,20 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, onClose }) => {
       </DialogTitle>
       <DialogContent dividers>
         <Box marginBottom={2}>
-          <p>events</p>
+          {!hubId && <Skeleton />}
+          {hubId &&
+          <CalendarEventsContainer hubId={hubId}>
+            {({ events }, { createEvent, updateEvent, deleteEvent }, { loading } ) => {
+              return (
+              <>
+                {events.map(event =>
+                  <p>{event.displayName} </p>
+                  )}
+              </>
+              );
+            }}
+          </CalendarEventsContainer>
+          }
         </Box>
       </DialogContent>
       <DialogActions>

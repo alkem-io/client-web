@@ -19687,8 +19687,8 @@ export function refetchActivityLogOnCollaborationQuery(
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 
-export const HubDashboardCalendarEventsDocument = gql`
-  query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
+export const HubCalendarEventsDocument = gql`
+  query hubCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
     hub(ID: $hubId) {
       id
       timeline {
@@ -19706,62 +19706,57 @@ export const HubDashboardCalendarEventsDocument = gql`
 `;
 
 /**
- * __useHubDashboardCalendarEventsQuery__
+ * __useHubCalendarEventsQuery__
  *
- * To run a query within a React component, call `useHubDashboardCalendarEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubDashboardCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHubDashboardCalendarEventsQuery({
+ * const { data, loading, error } = useHubCalendarEventsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      limit: // value for 'limit'
  *   },
  * });
  */
-export function useHubDashboardCalendarEventsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.HubDashboardCalendarEventsQuery,
-    SchemaTypes.HubDashboardCalendarEventsQueryVariables
-  >
+export function useHubCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.HubDashboardCalendarEventsQuery,
-    SchemaTypes.HubDashboardCalendarEventsQueryVariables
-  >(HubDashboardCalendarEventsDocument, options);
+  return Apollo.useQuery<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>(
+    HubCalendarEventsDocument,
+    options
+  );
 }
 
-export function useHubDashboardCalendarEventsLazyQuery(
+export function useHubCalendarEventsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubDashboardCalendarEventsQuery,
-    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+    SchemaTypes.HubCalendarEventsQuery,
+    SchemaTypes.HubCalendarEventsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.HubDashboardCalendarEventsQuery,
-    SchemaTypes.HubDashboardCalendarEventsQueryVariables
-  >(HubDashboardCalendarEventsDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>(
+    HubCalendarEventsDocument,
+    options
+  );
 }
 
-export type HubDashboardCalendarEventsQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsQuery>;
-export type HubDashboardCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsLazyQuery>;
-export type HubDashboardCalendarEventsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubDashboardCalendarEventsQuery,
-  SchemaTypes.HubDashboardCalendarEventsQueryVariables
+export type HubCalendarEventsQueryHookResult = ReturnType<typeof useHubCalendarEventsQuery>;
+export type HubCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubCalendarEventsLazyQuery>;
+export type HubCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCalendarEventsQuery,
+  SchemaTypes.HubCalendarEventsQueryVariables
 >;
-export function refetchHubDashboardCalendarEventsQuery(
-  variables: SchemaTypes.HubDashboardCalendarEventsQueryVariables
-) {
-  return { query: HubDashboardCalendarEventsDocument, variables: variables };
+export function refetchHubCalendarEventsQuery(variables: SchemaTypes.HubCalendarEventsQueryVariables) {
+  return { query: HubCalendarEventsDocument, variables: variables };
 }
 
-export const CalendarEventDocument = gql`
-  query calendarEvent($hubId: UUID_NAMEID!, $eventId: UUID!) {
+export const CalendarEventDetailsDocument = gql`
+  query calendarEventDetails($hubId: UUID_NAMEID!, $eventId: UUID!) {
     hub(ID: $hubId) {
       id
       timeline {
@@ -19779,50 +19774,56 @@ export const CalendarEventDocument = gql`
 `;
 
 /**
- * __useCalendarEventQuery__
+ * __useCalendarEventDetailsQuery__
  *
- * To run a query within a React component, call `useCalendarEventQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalendarEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCalendarEventDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarEventDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCalendarEventQuery({
+ * const { data, loading, error } = useCalendarEventDetailsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      eventId: // value for 'eventId'
  *   },
  * });
  */
-export function useCalendarEventQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalendarEventQuery, SchemaTypes.CalendarEventQueryVariables>
+export function useCalendarEventDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalendarEventDetailsQuery,
+    SchemaTypes.CalendarEventDetailsQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalendarEventQuery, SchemaTypes.CalendarEventQueryVariables>(
-    CalendarEventDocument,
+  return Apollo.useQuery<SchemaTypes.CalendarEventDetailsQuery, SchemaTypes.CalendarEventDetailsQueryVariables>(
+    CalendarEventDetailsDocument,
     options
   );
 }
 
-export function useCalendarEventLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalendarEventQuery, SchemaTypes.CalendarEventQueryVariables>
+export function useCalendarEventDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalendarEventDetailsQuery,
+    SchemaTypes.CalendarEventDetailsQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalendarEventQuery, SchemaTypes.CalendarEventQueryVariables>(
-    CalendarEventDocument,
+  return Apollo.useLazyQuery<SchemaTypes.CalendarEventDetailsQuery, SchemaTypes.CalendarEventDetailsQueryVariables>(
+    CalendarEventDetailsDocument,
     options
   );
 }
 
-export type CalendarEventQueryHookResult = ReturnType<typeof useCalendarEventQuery>;
-export type CalendarEventLazyQueryHookResult = ReturnType<typeof useCalendarEventLazyQuery>;
-export type CalendarEventQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalendarEventQuery,
-  SchemaTypes.CalendarEventQueryVariables
+export type CalendarEventDetailsQueryHookResult = ReturnType<typeof useCalendarEventDetailsQuery>;
+export type CalendarEventDetailsLazyQueryHookResult = ReturnType<typeof useCalendarEventDetailsLazyQuery>;
+export type CalendarEventDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalendarEventDetailsQuery,
+  SchemaTypes.CalendarEventDetailsQueryVariables
 >;
-export function refetchCalendarEventQuery(variables: SchemaTypes.CalendarEventQueryVariables) {
-  return { query: CalendarEventDocument, variables: variables };
+export function refetchCalendarEventDetailsQuery(variables: SchemaTypes.CalendarEventDetailsQueryVariables) {
+  return { query: CalendarEventDetailsDocument, variables: variables };
 }
 
 export const CreateCalendarEventDocument = gql`
