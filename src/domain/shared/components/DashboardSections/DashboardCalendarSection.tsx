@@ -2,7 +2,7 @@ import { Box, Skeleton } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
-import { useHubCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useHubDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -20,7 +20,7 @@ const DashboardCalendarsSection: FC<DashboardCalendarsSectionProps> = ({ journey
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { data, loading } = useHubCalendarEventsQuery({
+  const { data, loading } = useHubDashboardCalendarEventsQuery({
     variables: { hubId: journeyLocation!.hubNameId!, limit: MAX_NUMBER_OF_EVENTS },
     skip: !journeyLocation || !journeyLocation.hubNameId,
   });

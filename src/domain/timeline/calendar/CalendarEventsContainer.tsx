@@ -2,6 +2,7 @@ import React, { FC, useCallback } from 'react';
 import { useCreateCalendarEventMutation, useDeleteCalendarEventMutation, useHubCalendarEventsQuery, useUpdateCalendarEventMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { CalendarEvent, CardProfile } from '../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { CalendarEventCardData } from './views/CalendarEventCard';
 
 export interface CalendarEventForm
   extends Pick<CalendarEvent, 'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -10,11 +11,12 @@ export interface CalendarEventForm
     tags: string[];
 }
 
-/*export interface CalendarEventView
-  extends Pick<CalendarEvent, 'id' | 'nameID' | 'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
-    description: CardProfile['description'];
+/* export interface CalendarEventView
+  extends Pick<CalendarEvent, 'id' | 'nameID' | 'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay' | 'createdDate'> {
+    createdBy: Partial<CalendarEvent['createdBy']>;
+    description: CardProfile['description'] | undefined;
     references: CardProfile['references'];
-    tags: string[];
+    tags: string[] | undefined;
 }*/
 
 export interface CalendarEventsContainerProps {
@@ -41,7 +43,7 @@ export interface CalendarEventsState {
 }
 
 export interface CalendarEventsEntities {
-  events: Partial<CalendarEvent>[];
+  events: CalendarEventCardData[];
 }
 
 
@@ -52,15 +54,25 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
     variables: { hubId: hubId!},
     skip: !hubId,
   });
-  /*const events: CalendarEventView[] = (data?.hub.timeline?.calendar.events ?? []).map(
+/*  const events: CalendarEventView[] = (data?.hub.timeline?.calendar.events ?? []).map(
     event => ({
       id: event.id,
+      nameID: event.nameID,
       displayName: event.displayName,
+      durationDays: event.durationDays,
+      durationMinutes: event.durationMinutes,
+      multipleDays: event.multipleDays,
       startDate: event.startDate,
+      type: event.type,
+      wholeDay: event.wholeDay,
+      createdBy: event.createdBy,
+      createdDate: event.createdDate,
       description: event.profile?.description,
-    }));
-    */
+      references: event.profile?.references,
+      tags: event.profile?.tagset?.tags
+    }));*/
   const events = data?.hub.timeline?.calendar.events ?? [];
+
   const calendarId = data?.hub.timeline?.calendar.id;
 
   const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation({

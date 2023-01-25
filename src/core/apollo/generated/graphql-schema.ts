@@ -19580,12 +19580,12 @@ export type PageInfoFragment = {
   hasNextPage: boolean;
 };
 
-export type HubCalendarEventsQueryVariables = Exact<{
+export type HubDashboardCalendarEventsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   limit?: InputMaybe<Scalars['Float']>;
 }>;
 
-export type HubCalendarEventsQuery = {
+export type HubDashboardCalendarEventsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -19628,6 +19628,121 @@ export type CalendarEventInfoFragment = {
   wholeDay: boolean;
   multipleDays: boolean;
   profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
+};
+
+export type HubCalendarEventsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCalendarEventsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    timeline?:
+      | {
+          __typename?: 'Timeline';
+          id: string;
+          calendar: {
+            __typename?: 'Calendar';
+            id: string;
+            events?:
+              | Array<{
+                  __typename?: 'CalendarEvent';
+                  type: CalendarEventType;
+                  createdDate: Date;
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  startDate?: Date | undefined;
+                  durationDays?: number | undefined;
+                  durationMinutes: number;
+                  wholeDay: boolean;
+                  multipleDays: boolean;
+                  createdBy: {
+                    __typename?: 'User';
+                    id: string;
+                    displayName: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                        }
+                      | undefined;
+                  };
+                  profile?:
+                    | {
+                        __typename?: 'CardProfile';
+                        id: string;
+                        description: string;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        commentsCount: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              timestamp: number;
+                              sender: {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                displayName: string;
+                                lastName: string;
+                                profile?:
+                                  | {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                          }>
+                                        | undefined;
+                                      location?:
+                                        | { __typename?: 'Location'; id: string; city: string; country: string }
+                                        | undefined;
+                                    }
+                                  | undefined;
+                              };
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
 };
 
 export type CalendarEventDetailsQueryVariables = Exact<{

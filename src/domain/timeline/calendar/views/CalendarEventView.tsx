@@ -6,33 +6,11 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { formatBadgeDate, formatLongDate } from '../../utils';
 
 interface CalendarEventViewProps extends Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName' | 'profile'> {}
 
 const EVENT_DESCRIPTION_MAX_LENGTH = 80; // characters
-
-// TODO: format dates in a better way.
-// support en-us format mm/dd??
-const formatDate = (date: Date | undefined, defaultValue: string = '') => {
-  if (!date) {
-    return defaultValue;
-  }
-  return new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-};
-
-const formatLongDate = (date: Date | undefined, defaultValue: string = '') => {
-  if (!date) {
-    return defaultValue;
-  }
-  return new Date(date).toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
 
 interface EventDescriptionProps {
   children: string | undefined;
@@ -67,7 +45,7 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
       visual={
         <RoundedBadge size="medium">
           <Tooltip title={formatLongDate(event.startDate)}>
-            <CaptionBold>{formatDate(event.startDate)}</CaptionBold>
+            <CaptionBold>{formatBadgeDate(event.startDate)}</CaptionBold>
           </Tooltip>
         </RoundedBadge>
       }

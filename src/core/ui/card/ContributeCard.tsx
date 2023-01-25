@@ -11,7 +11,7 @@ export interface ContributeCardContainerProps {
   sx?: SxProps<Theme>;
 }
 
-const CONTRIBUTE_CARD_COLUMNS = 3;
+export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = ({ onClick, sx, children }: PropsWithChildren<ContributeCardContainerProps>) => {
   return (

@@ -19687,8 +19687,8 @@ export function refetchActivityLogOnCollaborationQuery(
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 
-export const HubCalendarEventsDocument = gql`
-  query hubCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
+export const HubDashboardCalendarEventsDocument = gql`
+  query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
     hub(ID: $hubId) {
       id
       timeline {
@@ -19706,6 +19706,79 @@ export const HubCalendarEventsDocument = gql`
 `;
 
 /**
+ * __useHubDashboardCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useHubDashboardCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubDashboardCalendarEventsQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useHubDashboardCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >(HubDashboardCalendarEventsDocument, options);
+}
+
+export function useHubDashboardCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >(HubDashboardCalendarEventsDocument, options);
+}
+
+export type HubDashboardCalendarEventsQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsQuery>;
+export type HubDashboardCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsLazyQuery>;
+export type HubDashboardCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardCalendarEventsQuery,
+  SchemaTypes.HubDashboardCalendarEventsQueryVariables
+>;
+export function refetchHubDashboardCalendarEventsQuery(
+  variables: SchemaTypes.HubDashboardCalendarEventsQueryVariables
+) {
+  return { query: HubDashboardCalendarEventsDocument, variables: variables };
+}
+
+export const HubCalendarEventsDocument = gql`
+  query hubCalendarEvents($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      timeline {
+        id
+        calendar {
+          id
+          events {
+            ...CalendarEventDetails
+          }
+        }
+      }
+    }
+  }
+  ${CalendarEventDetailsFragmentDoc}
+`;
+
+/**
  * __useHubCalendarEventsQuery__
  *
  * To run a query within a React component, call `useHubCalendarEventsQuery` and pass it any options that fit your needs.
@@ -19718,7 +19791,6 @@ export const HubCalendarEventsDocument = gql`
  * const { data, loading, error } = useHubCalendarEventsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
- *      limit: // value for 'limit'
  *   },
  * });
  */

@@ -4,6 +4,11 @@ import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions, Skeleton } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../common/components/core/dialog';
 import { CalendarEventsContainer } from './CalendarEventsContainer';
+import CalendarEventCard from './views/CalendarEventCard';
+import ScrollableCardsLayout from '../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import CardsLayout from '../../../core/ui/card/CardsLayout/CardsLayout';
+import GridProvider from '../../../core/ui/grid/GridProvider';
+import { CONTRIBUTE_CARD_COLUMNS } from '../../../core/ui/card/ContributeCard';
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -18,6 +23,10 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
     onClose();
   };
 
+  const handleClickOnEvent = () => {
+
+  };
+
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogTitle id="calendar-dialog-title" onClose={handleClose}>
@@ -30,15 +39,17 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
           {!hubId && <Skeleton />}
           {hubId &&
           <CalendarEventsContainer hubId={hubId}>
-            {({ events }, { createEvent, updateEvent, deleteEvent }, { loading } ) => {
-              return (
-              <>
-                {events.map(event =>
-                  <p>{event.displayName} </p>
+            {({ events }, { createEvent, updateEvent, deleteEvent }, { loading } ) => (
+              <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
+                <CardsLayout
+                  items={events} disablePadding cards={false}
+                >
+                  {event => (
+                    <CalendarEventCard key={event.id} event={event} onClick={handleClickOnEvent} />
                   )}
-              </>
-              );
-            }}
+                </CardsLayout>
+              </GridProvider>
+            )}
           </CalendarEventsContainer>
           }
         </Box>
