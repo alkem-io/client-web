@@ -23,7 +23,7 @@ export interface ImportTemplatesDialogProps<
   innovationPacks: InnovationPack<T>[];
   open: boolean;
   onClose: DialogProps['onClose'];
-  onImportTemplate: (template: Q, templateValue: V | undefined) => Promise<void>;
+  onImportTemplate: (template: Q, templateValue?: V) => Promise<void>;
   loading?: boolean;
 }
 

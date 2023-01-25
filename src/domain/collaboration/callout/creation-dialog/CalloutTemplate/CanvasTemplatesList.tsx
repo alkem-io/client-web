@@ -8,18 +8,13 @@ import {
   useInnovationPackCanvasTemplateWithValueLazyQuery,
   useInnovationPacksLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import {
-  AdminCanvasTemplateFragment,
-  CanvasTemplateWithValueFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminCanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import CanvasImportTemplateCard from '../../../../platform/admin/templates/CanvasTemplates/CanvasImportTemplateCard';
 import CanvasTemplatePreview from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplatePreview';
 import ImportTemplatesDialog from '../../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialog';
 import { TemplateInnovationPackMetaInfo } from '../../../../platform/admin/templates/InnovationPacks/InnovationPack';
 import CanvasListItem from '../../../canvas/CanvasList/CanvasListItem';
 import { CanvasTemplateListItem, LibraryCanvasTemplate } from './CanvasTemplateChooser';
-
-type TemplateValue = Omit<CanvasTemplateWithValueFragment, 'info'>;
 interface CanvasTemplatesListProps {
   actions: {
     onSelect: (canvasTemplateTitle: string) => void;
@@ -59,10 +54,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
       }));
   }, [innovationPacks]);
 
-  const handleImportTemplate = async (
-    template: LibraryCanvasTemplate,
-    templateWithValue: TemplateValue | undefined
-  ) => {
+  const handleImportTemplate = async (template: LibraryCanvasTemplate) => {
     actions.updateLibraryTemplates(template);
     console.log('Added template');
   };
