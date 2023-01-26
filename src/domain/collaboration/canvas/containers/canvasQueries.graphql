@@ -11,6 +11,17 @@ fragment CanvasDetails on Canvas {
   preview {
     ...VisualFull
   }
+  createdBy {
+    id
+    displayName
+    profile {
+      id
+      avatar {
+        id
+        uri
+      }
+    }
+  }
 }
 
 fragment CanvasSummary on Canvas {

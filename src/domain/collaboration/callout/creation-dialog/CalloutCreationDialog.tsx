@@ -1,7 +1,12 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { AspectTemplateFragment, CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AspectTemplateFragment,
+  CalloutState,
+  CalloutType,
+  CanvasTemplateFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
@@ -9,6 +14,9 @@ import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
+import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { createCanvasTemplateForCalloutCreation } from '../utils/createCanvasTemplateForCalloutCreation';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -17,6 +25,7 @@ export type CalloutCreationDialogFields = {
   type?: CalloutType;
   state?: CalloutState;
   cardTemplateType?: string;
+  canvasTemplateTitle?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -25,10 +34,10 @@ export interface CalloutCreationDialogProps {
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
   isCreating: boolean;
   calloutNames: string[];
-  cardTemplates: AspectTemplateFragment[];
+  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
 }
 
-export interface CalloutCardTemplateInfo {
+export interface TemplateInfo {
   description: string;
   title: string;
   tags?: string[];
@@ -36,10 +45,16 @@ export interface CalloutCardTemplateInfo {
     uri: string;
   };
 }
+
 export interface CalloutCardTemplate {
   defaultDescription: string;
   type: string;
-  info: CalloutCardTemplateInfo;
+  info: TemplateInfo;
+}
+
+export interface CalloutCanvasTemplate {
+  value: string;
+  info: TemplateInfo;
 }
 
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
@@ -48,12 +63,16 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   onSaveAsDraft,
   isCreating,
   calloutNames,
-  cardTemplates,
+  templates,
 }) => {
   const { t } = useTranslation();
-
+  const { hubNameId } = useUrlParams();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
+
+  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
 
   const handleValueChange = useCallback(
     (calloutValues: CalloutFormOutput) => {
@@ -64,14 +83,27 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, cardTemplates);
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
+    const referenceCanvasTemplate = templates.canvasTemplates.find(
+      template => template.info.title === callout.canvasTemplateTitle
+    );
+
+    const canvasTemplateQueryResult =
+      referenceCanvasTemplate &&
+      (await fetchCanvasValue({
+        variables: { hubId: hubNameId!, canvasTemplateId: referenceCanvasTemplate.id },
+      }));
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
+      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate
+    );
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,
-      templateId: callout.templateId!,
       type: callout.type!,
       state: callout.state!,
       cardTemplate: calloutCardTemplate,
+      canvasTemplate: calloutCanvasTemplate,
     };
 
     const result = await onSaveAsDraft(newCallout);
@@ -79,7 +111,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, cardTemplates]);
+  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValue]);
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -101,13 +133,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             calloutNames={calloutNames}
             onChange={handleValueChange}
             onStatusChanged={handleStatusChange}
-            templates={cardTemplates}
+            templates={templates}
           />
         </Box>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
         {onClose && <Button onClick={onClose}>{t('buttons.cancel')}</Button>}
-
         <LoadingButton
           loading={isCreating}
           loadingIndicator={`${t('buttons.save-draft')}...`}
