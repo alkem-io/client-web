@@ -9,6 +9,9 @@ export interface DialogTitleProps {
   classes?: Partial<DialogTitleClasses>; // TODO deprecate, remove
 }
 
+/**
+ * @deprecated
+ */
 const DialogTitle = ({ children, onClose, classes, ...other }: PropsWithChildren<DialogTitleProps>) => {
   return (
     <MuiDialogTitle

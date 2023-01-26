@@ -22,7 +22,14 @@
     "ua": "Ukranian"
   },
   "fields": {
-    "displayName": "Title"
+    "displayName": "Title",
+    "startTime": "Start Time",
+    "endTime": "End Time"
+  },
+  "calendar": {
+    "event": {
+      "type": "Type of Event"
+    }
   },
   "buttons": {
     "leave": "Leave",
@@ -126,6 +133,7 @@
     "create": "Create",
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
+    "date": "Date",
     "description": "Description",
     "about": "About",
     "explore": "Contribute",
