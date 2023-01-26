@@ -25,7 +25,7 @@ fragment AdminLifecycleTemplate on LifecycleTemplate {
   definition
   type
   info {
-    ...TemplateInfo
+    ...TemplateInfoWithFullVisual
   }
 }
 
@@ -34,14 +34,14 @@ fragment AdminAspectTemplate on AspectTemplate {
   defaultDescription
   type
   info {
-    ...TemplateInfo
+    ...TemplateInfoWithFullVisual
   }
 }
 
 fragment AdminCanvasTemplate on CanvasTemplate {
   id
   info {
-    ...TemplateInfo
+    ...TemplateInfoWithFullVisual
   }
 }
 
@@ -50,7 +50,7 @@ fragment AdminCanvasTemplateValue on CanvasTemplate {
   value
 }
 
-fragment TemplateInfo on TemplateInfo {
+fragment TemplateInfoWithFullVisual on TemplateInfo {
   id
   title
   description

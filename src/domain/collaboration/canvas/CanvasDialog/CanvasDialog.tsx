@@ -1,55 +1,54 @@
+import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Formik } from 'formik';
+import { FormikProps } from 'formik/dist/types';
+import { isEqual } from 'lodash';
 import { exportToBlob, serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
-import { ArrowDropDown, Save } from '@mui/icons-material';
+import { Delete, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
-import DeleteIcon from '@mui/icons-material/Delete';
-import LoadingButton from '@mui/lab/LoadingButton';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  ClickAwayListener,
-  Grow,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Paper,
-  Popper,
-} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
-import { isEqual } from 'lodash';
-import React, { FC, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Canvas, CanvasCheckoutStateEnum } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CanvasCheckoutStateEnum,
+  CanvasDetailsFragment,
+  CanvasValueFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../../common/components/core';
-import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import { DialogContent } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
-import CanvasListItemState from '../CanvasList/CanvasListItemState';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import UrlParams from '../../../../core/routing/urlParams';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import Authorship from '../../../../core/ui/authorship/Authorship';
+import { Caption, PageTitle } from '../../../../core/ui/typography';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { Box, Button, ButtonProps } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '../../../../core/ui/grid/utils';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import canvasSchema from '../validation/canvasSchema';
 
-type CanvasWithoutValue = Omit<Canvas, 'value'>;
+interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
-interface CanvasDialogProps {
+type CanvasWithoutValue<Canvas extends CanvasWithValue> = Omit<Canvas, 'value'>;
+
+interface CanvasDialogProps<Canvas extends CanvasWithValue> {
   entities: {
     canvas?: Canvas;
   };
   actions: {
-    onCancel: () => void;
-    onCheckin: (canvas: CanvasWithoutValue) => void;
-    onCheckout: (canvas: CanvasWithoutValue) => void;
+    onCancel: (canvas: CanvasWithoutValue<Canvas>) => void;
+    onCheckin?: (canvas: CanvasWithoutValue<Canvas>) => void;
+    onCheckout?: (canvas: CanvasWithoutValue<Canvas>) => void;
     onUpdate: (canvas: Canvas, previewImage?: Blob) => void;
-    onDelete: (canvas: CanvasWithoutValue) => void;
+    onDelete?: (canvas: CanvasWithoutValue<Canvas>) => void;
   };
   options: {
     show: boolean;
@@ -83,82 +82,38 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-type Option = {
-  titleId: TranslationKey;
-  enabledWhen: (canvas: CanvasWithoutValue, hasChanged?: boolean) => boolean;
-  icon: JSX.Element;
-};
+interface Option extends Omit<ButtonProps, 'disabled'> {
+  label: TranslationKey;
+  disabled: (formik: Pick<FormikProps<unknown>, 'isValid'>) => ButtonProps['disabled'];
+}
 
-type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'checkout' | 'delete';
+type CanvasAction = 'save-and-checkin' | 'checkout';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const canvasOptions: Record<CanvasOptionTypes, Option> = {
-  save: {
-    titleId: 'pages.canvas.state-actions.save',
-    enabledWhen: (canvas, hasChanged) =>
-      canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
-    icon: <Save />,
-  },
-  'save-and-checkin': {
-    titleId: 'pages.canvas.state-actions.save-and-check-in',
-    enabledWhen: (canvas, hasChanged) =>
-      canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
-    icon: <Save />,
-  },
-  checkout: {
-    titleId: 'pages.canvas.state-actions.check-out',
-    enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
-    icon: <LockClockIcon />,
-  },
-  delete: {
-    titleId: 'pages.canvas.state-actions.delete',
-    enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
-    icon: <DeleteIcon />,
-  },
-};
-
-const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolean) => {
-  if (!canvas) {
-    return 'checkout';
-  }
-
-  if (canvasOptions.checkout.enabledWhen(canvas)) {
-    return 'checkout';
-  }
-
-  if (canvasOptions.save.enabledWhen(canvas, hasChanged)) {
-    return 'save';
-  }
-
-  return 'save-and-checkin';
-};
-
 const getCanvasShareUrl = (urlParams: UrlParams) => {
   if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
-  return buildCanvasUrl(urlParams.calloutNameId!, urlParams.canvasNameId!, {
-    hubNameId: urlParams.hubNameId!,
+
+  return buildCanvasUrl(urlParams.calloutNameId, urlParams.canvasNameId, {
+    hubNameId: urlParams.hubNameId,
     challengeNameId: urlParams.challengeNameId,
     opportunityNameId: urlParams.opportunityNameId,
   });
 };
 
-const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state }) => {
+const CanvasDialog = <Canvas extends CanvasWithValue>({
+  entities,
+  actions,
+  options,
+  state,
+}: CanvasDialogProps<Canvas>) => {
   const { t } = useTranslation();
   const { canvas } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
   const urlParams = useUrlParams();
   const canvasUrl = getCanvasShareUrl(urlParams);
 
-  // ui
   const styles = useStyles();
-  const [selectedOption, setSelectedOption] = useState<CanvasOptionTypes>(findMostSuitableOption(canvas, true));
-  const anchorRef = React.useRef<HTMLDivElement>(null);
-  const [optionPopperOpen, setOptionPopperOpen] = useState(false);
-
-  useEffect(() => {
-    setSelectedOption(findMostSuitableOption(canvas, true));
-  }, [canvas]);
 
   const getExcalidrawStateFromApi = async (
     excalidrawApi: ExcalidrawAPIRefValue | null
@@ -180,7 +135,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     return { appState, elements, files };
   };
 
-  const handleUpdate = async (canvas: Canvas, state: RelevantExcalidrawState | undefined) => {
+  const handleUpdate = async (canvas: CanvasWithValue, state: RelevantExcalidrawState | undefined) => {
     if (!state) {
       return;
     }
@@ -197,42 +152,44 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
 
     const value = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
+    if (!formikRef.current?.isValid) {
+      return;
+    }
+
+    const displayName = formikRef.current?.values.displayName ?? canvas.displayName;
+
     return actions.onUpdate(
       {
         ...canvas,
+        displayName,
         value,
-      },
+      } as Canvas,
       previewImage ?? undefined
     );
   };
 
-  const actionMap: { [key in keyof typeof canvasOptions]: (canvas) => void } = {
+  const actionMap: { [key in keyof typeof canvasActions]: ((canvas: Canvas) => void) | undefined } = {
     'save-and-checkin': async canvas => {
       const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
 
-      await handleUpdate(canvas, state);
-
-      await actions.onCheckin(canvas);
-    },
-    checkout: c => actions.onCheckout(c),
-    save: async canvas => {
-      const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
+      formikRef.current?.setTouched({ displayName: true }, true);
 
       await handleUpdate(canvas, state);
+
+      await actions.onCheckin?.(canvas);
     },
-    delete: c => actions.onDelete(c),
+    checkout: actions.onCheckout,
   };
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setOptionPopperOpen(false);
-
     const canvasApi = await excalidrawApiRef.current?.readyPromise;
+
     if (canvasApi && options.canEdit) {
       const elements = canvasApi.getSceneElements();
       const appState = canvasApi.getAppState();
       const files = canvasApi.getFiles();
       const value = serializeAsJSON(elements, appState, files, 'local');
-      if (!isEqual(canvas?.value, value)) {
+      if (!isEqual(canvas?.value, value) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {
@@ -242,15 +199,31 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         }
       }
     }
-    actions.onCancel();
+
+    actions.onCancel(canvas!);
   };
 
-  const handlePopperClose = event => {
-    if (anchorRef.current && anchorRef.current?.contains(event.target)) {
-      return;
-    }
+  const isBeingEdited = canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut || (canvas && !canvas.id);
+  const isUnavailable = isBeingEdited && !options.canEdit && Boolean(canvas?.id);
+  const currentAction: CanvasAction = isBeingEdited ? 'save-and-checkin' : 'checkout';
 
-    setOptionPopperOpen(false);
+  const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
+
+  useEffect(() => {
+    formikRef.current?.setFieldValue('displayName', canvas?.displayName);
+  }, [canvas?.displayName]);
+
+  const canvasActions: Record<CanvasAction, Option> = {
+    'save-and-checkin': {
+      label: 'pages.canvas.state-actions.save',
+      disabled: ({ isValid }) => !isValid,
+      startIcon: <Save />,
+    },
+    checkout: {
+      label: 'pages.canvas.state-actions.check-out',
+      disabled: () => isUnavailable,
+      startIcon: <LockClockIcon />,
+    },
   };
 
   return (
@@ -264,122 +237,90 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
       }}
       onClose={onClose}
     >
-      <DialogTitle
-        id="canvas-dialog-title"
-        onClose={onClose}
-        classes={{
-          root: styles.dialogTitle,
-        }}
+      <Formik
+        innerRef={formikRef}
+        initialValues={{ displayName: canvas?.displayName ?? '' }}
+        onSubmit={() => {}}
+        validationSchema={canvasSchema}
       >
-        <List disablePadding>
-          <ListItem>
-            <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <CanvasListItemState checkoutStatus={canvas?.checkout?.status} />
-            </ListItemIcon>
-            <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
-            <ListItemSecondaryAction sx={{ display: 'flex' }}>
-              <Box p={0.5} display="inline-flex" />
-              {(options.canCheckout || options.canEdit) && (
+        {({ isValid }) => (
+          <>
+            <DialogHeader
+              actions={
+                <ShareButton
+                  url={canvasUrl}
+                  entityTypeName="canvas"
+                  disabled={canvas?.checkout?.status !== CanvasCheckoutStateEnum.Available}
+                  tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
+                />
+              }
+              onClose={onClose}
+            >
+              {isBeingEdited ? (
+                <Box
+                  component={FormikInputField}
+                  title={t('fields.displayName')}
+                  name="displayName"
+                  size="small"
+                  maxWidth={gutters(50)}
+                />
+              ) : (
                 <>
-                  <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-                    <LoadingButton
-                      startIcon={canvasOptions[selectedOption].icon}
-                      onClick={() => actionMap[selectedOption](canvas)}
-                      loadingPosition="start"
-                      variant="contained"
-                      loading={state?.changingCanvasLockState || state?.updatingCanvas}
-                    >
-                      {t(canvasOptions[selectedOption].titleId)}
-                    </LoadingButton>
-                    <Button
-                      size="small"
-                      aria-controls={optionPopperOpen ? 'split-button-menu' : undefined}
-                      aria-expanded={optionPopperOpen ? 'true' : undefined}
-                      aria-label="select merge strategy"
-                      aria-haspopup="menu"
-                      onClick={() => {
-                        setOptionPopperOpen(x => !x);
-                      }}
-                    >
-                      <ArrowDropDown />
-                    </Button>
-                  </ButtonGroup>
-                  <Popper
-                    open={optionPopperOpen}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    transition
-                    disablePortal
-                  >
-                    {({ TransitionProps, placement }) => (
-                      <Grow
-                        {...TransitionProps}
-                        style={{
-                          transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
-                        }}
-                      >
-                        <Paper>
-                          <ClickAwayListener onClickAway={handlePopperClose}>
-                            <MenuList id="split-button-menu">
-                              {Object.keys(canvasOptions).map((optionKey: string) => (
-                                <MenuItem
-                                  key={canvasOptions[optionKey].titleId}
-                                  disabled={!canvasOptions[optionKey].enabledWhen(canvas, true)}
-                                  selected={optionKey === selectedOption}
-                                  onClick={_ => {
-                                    setSelectedOption(optionKey as CanvasOptionTypes);
-                                    setOptionPopperOpen(false);
-                                  }}
-                                >
-                                  <ListItemIcon>{canvasOptions[optionKey].icon}</ListItemIcon>
-                                  <ListItemText>{t(canvasOptions[optionKey].titleId)}</ListItemText>
-                                </MenuItem>
-                              ))}
-                            </MenuList>
-                          </ClickAwayListener>
-                        </Paper>
-                      </Grow>
-                    )}
-                  </Popper>
-                  <ShareButton
-                    url={canvasUrl}
-                    entityTypeName="canvas"
-                    disabled={canvas?.checkout?.status !== CanvasCheckoutStateEnum.Available}
-                    tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
-                    sx={{ marginLeft: theme => theme.spacing(2) }}
-                  />
+                  <Authorship authorAvatarUri={canvas?.createdBy?.profile?.avatar?.uri} date={canvas?.createdDate}>
+                    {canvas?.createdBy?.displayName}
+                  </Authorship>
+                  <PageTitle>{canvas?.displayName}</PageTitle>
                 </>
               )}
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </DialogTitle>
-      <DialogContent classes={{ root: styles.dialogContent }}>
-        {!state?.loadingCanvasValue && canvas && (
-          <CanvasWhiteboard
-            entities={{ canvas }}
-            ref={excalidrawApiRef}
-            options={{
-              viewModeEnabled: !options.canEdit,
-              UIOptions: {
-                canvasActions: {
-                  export: options.canEdit
-                    ? {
-                        saveFileToDisk: true,
-                      }
-                    : false,
-                },
-              },
-            }}
-            actions={{
-              onUpdate: state => {
-                handleUpdate(canvas, state);
-              },
-            }}
-          />
+            </DialogHeader>
+            <DialogContent classes={{ root: styles.dialogContent }}>
+              {!state?.loadingCanvasValue && canvas && (
+                <CanvasWhiteboard
+                  entities={{ canvas }}
+                  ref={excalidrawApiRef}
+                  options={{
+                    viewModeEnabled: !options.canEdit,
+                    UIOptions: {
+                      canvasActions: {
+                        export: options.canEdit
+                          ? {
+                              saveFileToDisk: true,
+                            }
+                          : false,
+                      },
+                    },
+                  }}
+                  actions={{
+                    onUpdate: state => {
+                      handleUpdate(canvas, state);
+                    },
+                  }}
+                />
+              )}
+              {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
+            </DialogContent>
+            <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
+              {isBeingEdited && actions.onDelete && (
+                <Button startIcon={<Delete />} onClick={() => actions.onDelete!(canvas!)} color="error">
+                  {t('pages.canvas.state-actions.delete')}
+                </Button>
+              )}
+              <FlexSpacer />
+              {isUnavailable && <Caption>Edited by someone else.</Caption>}
+              <LoadingButton
+                startIcon={canvasActions[currentAction].startIcon}
+                onClick={() => actionMap[currentAction]?.(canvas!)}
+                loadingPosition="start"
+                variant="contained"
+                loading={state?.changingCanvasLockState || state?.updatingCanvas}
+                disabled={canvasActions[currentAction].disabled({ isValid })}
+              >
+                {t(canvasActions[currentAction].label)}
+              </LoadingButton>
+            </Actions>
+          </>
         )}
-        {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
-      </DialogContent>
+      </Formik>
     </Dialog>
   );
 };
