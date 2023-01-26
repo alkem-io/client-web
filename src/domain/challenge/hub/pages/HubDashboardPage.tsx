@@ -79,7 +79,9 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               onClose={backToDashboard}
               dialogContent={HubContributorsDialogContent}
             />
-            <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} hubNameId={entities.hub?.nameID} />
+            {entities.permissions.timelineReadAccess && (
+              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} hubNameId={entities.hub?.nameID} />
+            )}
           </>
         )}
       </HubPageContainer>

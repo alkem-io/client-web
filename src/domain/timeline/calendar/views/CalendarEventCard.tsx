@@ -3,10 +3,11 @@ import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../core/ui/card/CardDescription';
 import CardFooter from '../../../../core/ui/card/CardFooter';
-import { CalendarEvent, Comments, Message, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalendarEvent, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import EventCardHeader from './EventCardHeader';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { CaptionSmall } from '../../../../core/ui/typography';
+import { useTranslation } from 'react-i18next';
 
 type NeededFields =
   | 'id'
@@ -30,6 +31,7 @@ interface CalendarEventCardProps {
 
 const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
   const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
+  const { t } = useTranslation();
 
   return (
     <ContributeCard onClick={handleClick}>
@@ -40,7 +42,7 @@ const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
         </CardDescription>
       </CardDetails>
       <CardFooter flexDirection="row-reverse">
-        <CaptionSmall>Read More</CaptionSmall>
+        <CaptionSmall>{t('buttons.read-more')}</CaptionSmall>
       </CardFooter>
     </ContributeCard>
   );
