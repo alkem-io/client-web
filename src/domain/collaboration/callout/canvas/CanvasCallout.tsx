@@ -2,10 +2,13 @@ import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
-import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutState,
+  CanvasTemplate,
+  CreateCanvasOnCalloutInput,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
@@ -14,12 +17,13 @@ import { BaseCalloutImpl } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { useCanvasTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import CanvasDialog from '../../canvas/CanvasDialog/CanvasDialog';
 
 interface CanvasCalloutProps extends BaseCalloutImpl {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCardCanvas[];
+    canvasTemplate: CanvasTemplate;
   };
 }
 
@@ -43,16 +47,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
     const navigate = useNavigate();
 
-    const [fetchCanvasTemplates, { data: canvasTemplatesData }] = useCanvasTemplatesFromHubLazyQuery({
-      fetchPolicy: 'cache-and-network',
-    });
-
-    const getCanvasTemplates = () => fetchCanvasTemplates({ variables: { hubId: hubNameId! } });
-
-    const canvasTemplates = canvasTemplatesData?.hub.templates?.canvasTemplates ?? [];
-
     const openCreateDialog = () => {
-      getCanvasTemplates();
       setShowCreateCanvasDialog(true);
     };
     const closeCreateDialog = () => setShowCreateCanvasDialog(false);
@@ -108,24 +103,28 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
         </PageContentBlock>
         <CanvasActionsContainer>
           {(entities, actionsState, actions) => (
-            <CanvasCreateDialog
+            <CanvasDialog
               entities={{
-                calloutId: callout.id,
-                templates: canvasTemplates,
+                canvas: {
+                  displayName: '',
+                  value: callout.canvasTemplate.value,
+                },
               }}
               actions={{
                 onCancel: closeCreateDialog,
-                onConfirm: input => {
-                  actions.onCreate(input);
+                onUpdate: input => {
+                  actions.onCreate({
+                    ...input,
+                    calloutID: callout.id,
+                  } as CreateCanvasOnCalloutInput);
                   setShowCreateCanvasDialog(false);
                 },
               }}
               options={{
                 show: showCreateCanvasDialog,
+                canEdit: true,
               }}
-              state={{
-                templatesLoading: loading,
-              }}
+              state={{}}
             />
           )}
         </CanvasActionsContainer>

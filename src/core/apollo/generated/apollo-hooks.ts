@@ -103,6 +103,17 @@ export const CanvasDetailsFragmentDoc = gql`
     preview {
       ...VisualFull
     }
+    createdBy {
+      id
+      displayName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+      }
+    }
   }
   ${CanvasSummaryFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
@@ -1105,6 +1116,7 @@ export const CalloutCanvasTemplateFragmentDoc = gql`
   fragment CalloutCanvasTemplate on Callout {
     canvasTemplate {
       id
+      value
       info {
         title
         description

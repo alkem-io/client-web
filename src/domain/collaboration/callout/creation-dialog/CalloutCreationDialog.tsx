@@ -48,6 +48,7 @@ export interface TemplateInfo {
     uri: string;
   };
 }
+
 export interface CalloutCardTemplate {
   defaultDescription: string;
   type: string;

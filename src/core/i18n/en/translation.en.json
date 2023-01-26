@@ -21,6 +21,9 @@
     "bg": "Bulgarian",
     "ua": "Ukranian"
   },
+  "fields": {
+    "displayName": "Title"
+  },
   "buttons": {
     "leave": "Leave",
     "learn-more": "Learn more",
@@ -1434,9 +1437,7 @@
       "add-canvas": "Create canvas",
       "no-canvases": "No canvases have been created yet. Be the first to add one.",
       "state": {
-        "available": "You are free to work on this canvas",
-        "checkedout": "Someone else is already working on this canvas",
-        "unknown": "There is a checkout conflict with this canvas"
+        "checkedout": "Someone else is currently editing this Canvas"
       },
       "state-actions": {
         "check-out": "Edit",
