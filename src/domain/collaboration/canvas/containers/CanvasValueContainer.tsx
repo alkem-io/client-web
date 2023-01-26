@@ -21,7 +21,7 @@ import findById from '../../../shared/utils/findById';
 import { getCanvasCalloutContainingCanvas } from './getCanvasCallout';
 
 export interface ICanvasValueEntities {
-  canvas?: Canvas;
+  canvas?: CanvasValueFragment & CanvasDetailsFragment;
 }
 
 export interface CanvasValueContainerState {

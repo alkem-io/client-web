@@ -21,6 +21,9 @@
     "bg": "Bulgarian",
     "ua": "Ukranian"
   },
+  "fields": {
+    "displayName": "Title"
+  },
   "buttons": {
     "leave": "Leave",
     "learn-more": "Learn more",
@@ -620,7 +623,9 @@
         "title": "Templates",
         "no-templates": "No templates available",
         "card-template-label": "Card Template",
-        "no-card-template-selected": "Please select a card template"
+        "no-card-template-selected": "Please select a card template",
+        "canvas-template-label": "Canvas Template",
+        "no-canvas-template-selected": "Please select a canvas template"
       },
       "create-step": {
         "title": "Create",
@@ -628,7 +633,8 @@
       }
     },
     "callout-edit": {
-      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed"
+      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed",
+      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted canvases will not be changed"
     },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
@@ -1435,9 +1441,7 @@
       "add-canvas": "Create canvas",
       "no-canvases": "No canvases have been created yet. Be the first to add one.",
       "state": {
-        "available": "You are free to work on this canvas",
-        "checkedout": "Someone else is already working on this canvas",
-        "unknown": "There is a checkout conflict with this canvas"
+        "checkedout": "Someone else is currently editing this Canvas"
       },
       "state-actions": {
         "check-out": "Edit",

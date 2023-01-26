@@ -9,9 +9,12 @@ import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
-import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
+import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
-import { AspectTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AspectTemplateFragment, CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { createCanvasTemplateForCalloutCreation } from '../../utils/createCanvasTemplateForCalloutCreation';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -21,7 +24,7 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutEditType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   calloutNames: string[];
-  cardTemplates: AspectTemplateFragment[];
+  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
@@ -32,19 +35,47 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onDelete,
   onCalloutEdit,
   calloutNames,
-  cardTemplates,
+  templates,
 }) => {
   const { t } = useTranslation();
+  const { hubNameId } = useUrlParams();
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const initialValues: CalloutFormOutput = { ...callout, cardTemplateType: callout.cardTemplate?.type };
-  const [newCallout, setNewCallout] = useState<CalloutFormOutput>(initialValues);
+  const initialValues: CalloutFormInput = {
+    ...callout,
+    cardTemplateType: callout.cardTemplate?.type,
+    canvasTemplateTitle: callout.canvasTemplate?.info.title,
+  };
+  const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
+  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
   const handleStatusChanged = (valid: boolean) => setValid(valid);
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
   const handleSave = async () => {
     setLoading(true);
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, cardTemplates);
-    await onCalloutEdit({ ...callout, ...newCallout, cardTemplate: calloutCardTemplate });
+    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
+    const referenceCanvasTemplate = templates.canvasTemplates.find(
+      template => template.info.title === newCallout.canvasTemplateTitle
+    );
+    const canvasTemplateQueryResult =
+      referenceCanvasTemplate &&
+      (await fetchCanvasValue({
+        variables: { hubId: hubNameId!, canvasTemplateId: referenceCanvasTemplate.id },
+      }));
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
+      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate
+    );
+
+    await onCalloutEdit({
+      id: callout.id,
+      displayName: newCallout.displayName,
+      description: newCallout.description,
+      cardTemplate: calloutCardTemplate,
+      canvasTemplate: calloutCanvasTemplate,
+    });
     setLoading(false);
   };
   const handleDelete = useCallback(async () => {
@@ -90,7 +121,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
-            templates={cardTemplates}
+            templates={templates}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
