@@ -10809,7 +10809,12 @@ export type CreateCalloutMutation = {
           id: string;
           commentsCount: number;
           authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
             | undefined;
           messages?:
             | Array<{
@@ -11093,6 +11098,7 @@ export type CalloutsQuery = {
                             __typename?: 'Authorization';
                             id: string;
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
                           }
                         | undefined;
                       messages?:
@@ -11272,6 +11278,7 @@ export type CalloutsQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         messages?:
@@ -11457,6 +11464,7 @@ export type CalloutsQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         messages?:
@@ -11912,7 +11920,12 @@ export type CollaborationWithCalloutsFragment = {
               id: string;
               commentsCount: number;
               authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
                 | undefined;
               messages?:
                 | Array<{
@@ -12057,7 +12070,12 @@ export type CalloutFragment = {
         id: string;
         commentsCount: number;
         authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
           | undefined;
         messages?:
           | Array<{
@@ -19544,7 +19562,12 @@ export type CommentsWithMessagesFragment = {
   id: string;
   commentsCount: number;
   authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        anonymousReadAccess: boolean;
+      }
     | undefined;
   messages?:
     | Array<{
@@ -19699,6 +19722,7 @@ export type HubCalendarEventsQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         messages?:
@@ -19815,6 +19839,7 @@ export type CalendarEventDetailsQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         messages?:
@@ -19903,7 +19928,12 @@ export type CalendarEventDetailsFragment = {
         id: string;
         commentsCount: number;
         authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
           | undefined;
         messages?:
           | Array<{
@@ -20000,7 +20030,12 @@ export type CreateCalendarEventMutation = {
           id: string;
           commentsCount: number;
           authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
             | undefined;
           messages?:
             | Array<{
@@ -20088,7 +20123,12 @@ export type UpdateCalendarEventMutation = {
           id: string;
           commentsCount: number;
           authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
             | undefined;
           messages?:
             | Array<{

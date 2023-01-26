@@ -12,11 +12,11 @@ import { EntityPageSection } from '../../layout/EntityPageSection';
 import { useNavigate } from 'react-router-dom';
 
 const MAX_NUMBER_OF_EVENTS = 3;
-export interface DashboardCalendarsSectionProps {
+export interface DashboardCalendarSectionProps {
   journeyLocation: JourneyLocation | undefined;
 }
 
-const DashboardCalendarsSection: FC<DashboardCalendarsSectionProps> = ({ journeyLocation }) => {
+const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLocation }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -34,10 +34,10 @@ const DashboardCalendarsSection: FC<DashboardCalendarsSectionProps> = ({ journey
       <Box display="flex" flexDirection="column" gap={gutters()}>
         {loading && <Skeleton />}
         {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
-        {!loading && events.map(event => <CalendarEventView {...event} />)}
+        {!loading && events.map(event => <CalendarEventView key={event.id} {...event} />)}
       </Box>
     </PageContentBlock>
   );
 };
 
-export default DashboardCalendarsSection;
+export default DashboardCalendarSection;

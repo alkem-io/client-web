@@ -4,6 +4,7 @@ fragment CommentsWithMessages on Comments {
   authorization {
     id
     myPrivileges
+    anonymousReadAccess
   }
   messages {
     ...MessageDetails

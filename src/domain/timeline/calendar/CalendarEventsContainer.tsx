@@ -1,23 +1,23 @@
 import React, { FC, useCallback } from 'react';
-import { useCreateCalendarEventMutation, useDeleteCalendarEventMutation, useHubCalendarEventsQuery, useUpdateCalendarEventMutation } from '../../../core/apollo/generated/apollo-hooks';
+import {
+  useCreateCalendarEventMutation,
+  useDeleteCalendarEventMutation,
+  useHubCalendarEventsQuery,
+  useUpdateCalendarEventMutation,
+} from '../../../core/apollo/generated/apollo-hooks';
 import { CalendarEvent, CardProfile } from '../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
 
 export interface CalendarEventForm
-  extends Pick<CalendarEvent, 'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
-    description: CardProfile['description'];
-    references: CardProfile['references'];
-    tags: string[];
+  extends Pick<
+    CalendarEvent,
+    'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'
+  > {
+  description: CardProfile['description'];
+  references: CardProfile['references'];
+  tags: string[];
 }
-
-/* export interface CalendarEventView
-  extends Pick<CalendarEvent, 'id' | 'nameID' | 'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay' | 'createdDate'> {
-    createdBy: Partial<CalendarEvent['createdBy']>;
-    description: CardProfile['description'] | undefined;
-    references: CardProfile['references'];
-    tags: string[] | undefined;
-}*/
 
 export interface CalendarEventsContainerProps {
   hubId: string;
@@ -46,31 +46,14 @@ export interface CalendarEventsEntities {
   events: CalendarEventCardData[];
 }
 
-
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children }) => {
   const handleError = useApolloErrorHandler();
 
   const { data, loading } = useHubCalendarEventsQuery({
-    variables: { hubId: hubId!},
+    variables: { hubId: hubId! },
     skip: !hubId,
   });
-/*  const events: CalendarEventView[] = (data?.hub.timeline?.calendar.events ?? []).map(
-    event => ({
-      id: event.id,
-      nameID: event.nameID,
-      displayName: event.displayName,
-      durationDays: event.durationDays,
-      durationMinutes: event.durationMinutes,
-      multipleDays: event.multipleDays,
-      startDate: event.startDate,
-      type: event.type,
-      wholeDay: event.wholeDay,
-      createdBy: event.createdBy,
-      createdDate: event.createdDate,
-      description: event.profile?.description,
-      references: event.profile?.references,
-      tags: event.profile?.tagset?.tags
-    }));*/
+
   const events = data?.hub.timeline?.calendar.events ?? [];
 
   const calendarId = data?.hub.timeline?.calendar.id;
@@ -90,7 +73,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   const createEvent = useCallback(
     (event: CalendarEventForm) => {
       const { startDate, description, tags, references, ...rest } = event;
-      const parsedStartDate = startDate ? new Date(startDate) : new Date();//!!
+      const parsedStartDate = startDate ? new Date(startDate) : new Date(); //!!
 
       return createCalendarEvent({
         variables: {
@@ -101,11 +84,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             profileData: {
               description: description,
               // referencesData: ... references
-              tags: tags
-            }
+              tags: tags,
+            },
           },
-        }
-      }).then(result => result.data?.createEventOnCalendar?.nameID)
+        },
+      }).then(result => result.data?.createEventOnCalendar?.nameID);
     },
     [createCalendarEvent, calendarId]
   );
@@ -124,11 +107,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             profileData: {
               description: description,
               // references: ...references  //!!
-              tags: tags
-            }
+              tags: tags,
+            },
           },
-        }
-      }).then(result => result.data?.updateCalendarEvent?.nameID)
+        },
+      }).then(result => result.data?.updateCalendarEvent?.nameID);
     },
     [updateCalendarEvent]
   );
@@ -140,8 +123,8 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
           deleteData: {
             ID: eventId,
           },
-        }
-      }).then(result => result.data?.deleteCalendarEvent?.nameID)
+        },
+      }).then(result => result.data?.deleteCalendarEvent?.nameID);
     },
     [deleteCalendarEvent]
   );

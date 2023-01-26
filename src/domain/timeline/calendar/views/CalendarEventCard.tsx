@@ -1,35 +1,43 @@
 import React, { useCallback } from 'react';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../core/ui/card/CardDescription';
-import CardTags from '../../../../core/ui/card/CardTags';
 import CardFooter from '../../../../core/ui/card/CardFooter';
-import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
-import MessageCounter from '../../../../core/ui/card/MessageCounter';
-import { CalendarEvent, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
-import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
-import { CaptionBold } from '../../../../core/ui/typography';
+import { CalendarEvent, Comments, Message, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import EventCardHeader from './EventCardHeader';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { CaptionSmall } from '../../../../core/ui/typography';
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type' | 'startDate';
+type NeededFields =
+  | 'id'
+  | 'nameID'
+  | 'displayName'
+  | 'profile'
+  | 'type'
+  | 'startDate'
+  | 'durationMinutes'
+  | 'wholeDay'
+  | 'multipleDays';
 export type CalendarEventCardData = Pick<CalendarEvent, NeededFields> & {
   bannerNarrow?: VisualUriFragment;
   createdBy: { displayName: string };
-  comments?: { commentsCount?: number };
+  comments?: {
+    id: Comments['id'];
+    messages?: {
+      id: string;
+      message: string;
+      sender: Partial<Message['sender']>;
+      timestamp: number;
+    }[];
+    commentsCount: Comments['commentsCount'];
+    authorization?: Comments['authorization'];
+  };
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 interface CalendarEventCardProps {
   event: CalendarEventCardData;
   onClick: (event: CalendarEventCardData) => void;
 }
-
-const formatDate = (date: Date | undefined, defaultValue: string = '') => {
-  if (!date) {
-    return defaultValue;
-  }
-  return new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-};
 
 const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
   const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
@@ -38,12 +46,12 @@ const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
     <ContributeCard onClick={handleClick}>
       <EventCardHeader event={event} />
       <CardDetails transparent>
-        <CardDescription>{event.profile?.description!}</CardDescription>
-        <CardTags tags={event.profile?.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescription marginLeft={gutters(2.5)} paddingY={0} maxHeight={gutters(3)} overflow="hidden">
+          {event.profile?.description!}
+        </CardDescription>
       </CardDetails>
-      <CardFooter>
-        {event.createdDate && <CardFooterDate date={event.createdDate} />}
-        <MessageCounter commentsCount={event.comments?.commentsCount} />
+      <CardFooter flexDirection="row-reverse">
+        <CaptionSmall>Read More</CaptionSmall>
       </CardFooter>
     </ContributeCard>
   );

@@ -6,7 +6,7 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { formatBadgeDate, formatLongDate } from '../../utils';
+import { formatBadgeDate, formatTooltipDate } from '../../utils';
 
 interface CalendarEventViewProps extends Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName' | 'profile'> {}
 
@@ -44,7 +44,7 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
     <BadgeCardView
       visual={
         <RoundedBadge size="medium">
-          <Tooltip title={formatLongDate(event.startDate)}>
+          <Tooltip title={formatTooltipDate(event.startDate)}>
             <CaptionBold>{formatBadgeDate(event.startDate)}</CaptionBold>
           </Tooltip>
         </RoundedBadge>

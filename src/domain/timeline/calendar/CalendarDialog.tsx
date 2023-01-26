@@ -4,11 +4,11 @@ import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions, Skeleton } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../common/components/core/dialog';
 import { CalendarEventsContainer } from './CalendarEventsContainer';
-import CalendarEventCard from './views/CalendarEventCard';
-import ScrollableCardsLayout from '../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
-import CardsLayout from '../../../core/ui/card/CardsLayout/CardsLayout';
-import GridProvider from '../../../core/ui/grid/GridProvider';
-import { CONTRIBUTE_CARD_COLUMNS } from '../../../core/ui/card/ContributeCard';
+import { useUrlParams } from '../../../core/routing/useUrlParams';
+import CalendarEventDetail from './views/CalendarEventDetail';
+import CalendarEventsList from './views/CalendarEventsList';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import { useNavigate } from 'react-router-dom';
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -18,13 +18,15 @@ export interface CalendarDialogProps {
 
 const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
   const { t } = useTranslation();
+  const { calendarEventNameId } = useUrlParams();
+  const navigate = useNavigate();
 
   const handleClose = () => {
     onClose();
   };
 
-  const handleClickOnEvent = () => {
-
+  const handleBackButtonClick = () => {
+    navigate(`${EntityPageSection.Dashboard}/calendar`);
   };
 
   return (
@@ -36,25 +38,31 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
       </DialogTitle>
       <DialogContent dividers>
         <Box marginBottom={2}>
-          {!hubId && <Skeleton />}
-          {hubId &&
-          <CalendarEventsContainer hubId={hubId}>
-            {({ events }, { createEvent, updateEvent, deleteEvent }, { loading } ) => (
-              <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
-                <CardsLayout
-                  items={events} disablePadding cards={false}
-                >
-                  {event => (
-                    <CalendarEventCard key={event.id} event={event} onClick={handleClickOnEvent} />
-                  )}
-                </CardsLayout>
-              </GridProvider>
-            )}
-          </CalendarEventsContainer>
-          }
+          {!hubId && <Skeleton variant="rectangular" />}
+          {hubId && (
+            <CalendarEventsContainer hubId={hubId}>
+              {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                (
+                  { events },
+                  { createEvent, updateEvent, deleteEvent /*.... createReference, post a comment,... */ },
+                  { loading }
+                ) => {
+                  if (!calendarEventNameId) {
+                    return <CalendarEventsList events={events} />;
+                  } else if (calendarEventNameId === '_add') {
+                  } else {
+                    const event = events.find(event => event.nameID === calendarEventNameId);
+                    return <CalendarEventDetail event={event} />;
+                  }
+                }
+              }
+            </CalendarEventsContainer>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>
+        {calendarEventNameId && <Button onClick={handleBackButtonClick}>{t('buttons.back')}</Button>}
         <Button onClick={onClose}>{t('buttons.close')}</Button>
       </DialogActions>
     </Dialog>

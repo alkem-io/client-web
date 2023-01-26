@@ -21,6 +21,10 @@ export const CardText = provideStaticProps(Typography, {
   color: theme => lighten(theme.palette.text.primary, 0.4),
 }) as typeof Typography;
 
+export const DetailText = provideStaticProps(Typography, {
+  variant: 'body2',
+}) as typeof Typography;
+
 export const RibbonText = provideStaticProps(Typography, {
   variant: 'body2',
   textAlign: 'center',
@@ -35,4 +39,8 @@ export const CaptionSmall = provideStaticProps(Caption, {
   fontStyle: 'italic',
 }) as typeof Typography;
 
-export const CaptionBold = provideStaticProps(Typography, { variant: 'caption', fontWeight: 500, display: 'block' }) as typeof Typography;
+export const CaptionBold = provideStaticProps(Typography, {
+  variant: 'caption',
+  fontWeight: 500,
+  display: 'block',
+}) as typeof Typography;

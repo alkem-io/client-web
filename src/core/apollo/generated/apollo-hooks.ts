@@ -1083,6 +1083,7 @@ export const CommentsWithMessagesFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+      anonymousReadAccess
     }
     messages {
       ...MessageDetails
