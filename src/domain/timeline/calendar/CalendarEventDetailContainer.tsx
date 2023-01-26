@@ -3,10 +3,9 @@ import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
 import {
   MessageDetailsFragmentDoc,
-  useCalendarEventCommentsMessageReceivedSubscription,
   useCalendarEventDetailsQuery,
-  usePostCommentInAspectMutation,
-  useRemoveCommentFromAspectMutation,
+  usePostCommentMutation,
+  useRemoveCommentMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import {
   ContainerPropsWithProvided,
@@ -17,7 +16,7 @@ import { useUserContext } from '../../community/contributor/user';
 import { Message } from '../../shared/components/Comments/models/message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../common/utils/buildAuthorFromUser';
-
+import useCalendarEventCommentsMessageReceivedSubscription from './calendar/useCalendarEventCommentsMessageReceivedSubscription';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
@@ -47,21 +46,17 @@ export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<Event
 
 // TODO: VERY BASED ON domain/collaboration/aspect/containers/AspectDashboardContainer/AspectDashboardContainer.tsx
 // Maybe put common logic together
-const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({
-  hubNameId,
-  eventId,
-  ...rendered
-}) => {
+const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ hubNameId, eventId, ...rendered }) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
   const {
-      data,
-      loading: loadingEvent,
-      error,
-      subscribeToMore: subscribeToMessages,
-    } = useCalendarEventDetailsQuery({
+    data,
+    loading: loadingEvent,
+    error,
+    subscribeToMore: subscribeToMessages,
+  } = useCalendarEventDetailsQuery({
     variables: { hubId: hubNameId, eventId: eventId! },
     skip: !hubNameId || !eventId,
     onError: handleError,
@@ -70,16 +65,13 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({
   const loading = !eventId || loadingEvent;
   const event = data?.hub.timeline?.calendar.event;
 
-  /*const eventsCommentsSubscription = useCalendarEventCommentsMessageReceivedSubscription(
+  const eventCommentsSubscription = useCalendarEventCommentsMessageReceivedSubscription(
     data,
-    hubData =>
-      getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
-        x => x.nameID === aspectNameId
-      ),
+    eventData => eventData?.hub?.timeline?.calendar.event,
     subscribeToMessages
   );
-*/
-  const isSubscribedToComments = false;// eventsCommentsSubscription.enabled;
+
+  const isSubscribedToComments = eventCommentsSubscription.enabled;
 
   const creator = event?.createdBy;
   const creatorAvatar = creator?.profile?.avatar?.uri;
@@ -114,7 +106,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
@@ -129,7 +121,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
+  const [postComment, { loading: postingComment }] = usePostCommentMutation({
     onError: handleError,
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({

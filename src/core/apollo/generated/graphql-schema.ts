@@ -10462,27 +10462,6 @@ export type CalloutAspectInfoFragment = {
     | undefined;
 };
 
-export type PostCommentInAspectMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
-}>;
-
-export type PostCommentInAspectMutation = {
-  __typename?: 'Mutation';
-  sendComment: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender: { __typename?: 'User'; id: string };
-  };
-};
-
-export type RemoveCommentFromAspectMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type AspectCardFragment = {
   __typename?: 'Aspect';
   id: string;
@@ -20095,6 +20074,27 @@ export type CommentsWithMessagesFragment = {
       }>
     | undefined;
 };
+
+export type PostCommentMutationVariables = Exact<{
+  messageData: CommentsSendMessageInput;
+}>;
+
+export type PostCommentMutation = {
+  __typename?: 'Mutation';
+  sendComment: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: { __typename?: 'User'; id: string };
+  };
+};
+
+export type RemoveCommentMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
