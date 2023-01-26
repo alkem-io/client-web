@@ -64,6 +64,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
   }, [innovationPacks]);
 
   const handleImportTemplate = async (template: LibraryCanvasTemplate) => {
+    if (templates.find(templ => templ.id === template.id)) return;
     actions.updateLibraryTemplates(template);
     const selectedLibraryTemplate = {
       id: template.id,
