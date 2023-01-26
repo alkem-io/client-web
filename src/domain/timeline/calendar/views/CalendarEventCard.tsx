@@ -21,17 +21,6 @@ type NeededFields =
 export type CalendarEventCardData = Pick<CalendarEvent, NeededFields> & {
   bannerNarrow?: VisualUriFragment;
   createdBy: { displayName: string };
-  comments?: {
-    id: Comments['id'];
-    messages?: {
-      id: string;
-      message: string;
-      sender: Partial<Message['sender']>;
-      timestamp: number;
-    }[];
-    commentsCount: Comments['commentsCount'];
-    authorization?: Comments['authorization'];
-  };
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 interface CalendarEventCardProps {

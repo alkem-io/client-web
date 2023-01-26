@@ -20046,3 +20046,48 @@ export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalendarEventMutation,
   SchemaTypes.DeleteCalendarEventMutationVariables
 >;
+export const CalendarEventCommentsMessageReceivedDocument = gql`
+  subscription CalendarEventCommentsMessageReceived($calendarEventID: UUID!) {
+    calendarEventCommentsMessageReceived(calendarEventID: $calendarEventID) {
+      message {
+        ...MessageDetails
+      }
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalendarEventCommentsMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useCalendarEventCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarEventCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarEventCommentsMessageReceivedSubscription({
+ *   variables: {
+ *      calendarEventID: // value for 'calendarEventID'
+ *   },
+ * });
+ */
+export function useCalendarEventCommentsMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscription,
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscription,
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscriptionVariables
+  >(CalendarEventCommentsMessageReceivedDocument, options);
+}
+
+export type CalendarEventCommentsMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useCalendarEventCommentsMessageReceivedSubscription
+>;
+export type CalendarEventCommentsMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalendarEventCommentsMessageReceivedSubscription>;

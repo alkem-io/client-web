@@ -20170,3 +20170,37 @@ export type DeleteCalendarEventMutation = {
   __typename?: 'Mutation';
   deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
 };
+
+export type CalendarEventCommentsMessageReceivedSubscriptionVariables = Exact<{
+  calendarEventID: Scalars['UUID'];
+}>;
+
+export type CalendarEventCommentsMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  calendarEventCommentsMessageReceived: {
+    __typename?: 'CalendarEventCommentsMessageReceived';
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender: {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        firstName: string;
+        displayName: string;
+        lastName: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            }
+          | undefined;
+      };
+    };
+  };
+};

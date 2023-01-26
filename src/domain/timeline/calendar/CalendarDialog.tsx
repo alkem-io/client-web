@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { Box, Button, DialogActions, Skeleton } from '@mui/material';
-import { DialogContent, DialogTitle } from '../../../common/components/core/dialog';
+import { Box, Button, Skeleton } from '@mui/material';
+import { DialogActions, DialogContent, DialogTitle } from '../../../common/components/core/dialog';
 import { CalendarEventsContainer } from './CalendarEventsContainer';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import CalendarEventDetail from './views/CalendarEventDetail';
@@ -12,11 +12,11 @@ import { useNavigate } from 'react-router-dom';
 
 export interface CalendarDialogProps {
   open: boolean;
-  hubId: string | undefined;
+  hubNameId: string | undefined;
   onClose: () => void;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
   const handleBackButtonClick = () => {
     navigate(`${EntityPageSection.Dashboard}/calendar`);
   };
-
+  const handleCreateButtonClick = () => {};
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogTitle id="calendar-dialog-title" onClose={handleClose}>
@@ -38,9 +38,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
       </DialogTitle>
       <DialogContent dividers>
         <Box marginBottom={2}>
-          {!hubId && <Skeleton variant="rectangular" />}
-          {hubId && (
-            <CalendarEventsContainer hubId={hubId}>
+          {!hubNameId && <Skeleton variant="rectangular" />}
+          {hubNameId && (
+            <CalendarEventsContainer hubId={hubNameId}>
               {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 (
@@ -52,8 +52,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
                     return <CalendarEventsList events={events} />;
                   } else if (calendarEventNameId === '_add') {
                   } else {
+                    // TODO: Find Events by nameId in the server
                     const event = events.find(event => event.nameID === calendarEventNameId);
-                    return <CalendarEventDetail event={event} />;
+                    return <CalendarEventDetail hubNameId={hubNameId} eventId={event?.id} />;
                   }
                 }
               }
@@ -62,6 +63,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubId, onClose }) => {
         </Box>
       </DialogContent>
       <DialogActions>
+        {!calendarEventNameId && <Button onClick={handleCreateButtonClick}>{t('buttons.create')}</Button>}
         {calendarEventNameId && <Button onClick={handleBackButtonClick}>{t('buttons.back')}</Button>}
         <Button onClick={onClose}>{t('buttons.close')}</Button>
       </DialogActions>

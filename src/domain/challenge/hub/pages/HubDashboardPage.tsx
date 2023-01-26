@@ -79,7 +79,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               onClose={backToDashboard}
               dialogContent={HubContributorsDialogContent}
             />
-            <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} hubId={entities.hub?.id} />
+            <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} hubNameId={entities.hub?.nameID} />
           </>
         )}
       </HubPageContainer>

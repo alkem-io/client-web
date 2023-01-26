@@ -119,3 +119,11 @@ mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
     nameID
   }
 }
+
+subscription CalendarEventCommentsMessageReceived($calendarEventID: UUID!) {
+  calendarEventCommentsMessageReceived(calendarEventID: $calendarEventID) {
+    message {
+      ...MessageDetails
+    }
+  }
+}
