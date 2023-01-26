@@ -49,7 +49,7 @@ export const CanvasTemplatesChooser: FC<CanvasTemplatesChooserProps> = ({
   const [field, , helpers] = useField(name);
   const { hubNameId } = useUrlParams();
 
-  const selectedTemplate = templates.find(template => template.info.title === field.value);
+  const selectedTemplate = templates.find(template => template.info.title === field.value.title);
 
   const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesCanvasTemplateWithValueQuery({
     fetchPolicy: 'cache-and-network',

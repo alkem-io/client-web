@@ -861,6 +861,7 @@ export type Communication = {
   authorization?: Maybe<Authorization>;
   /** A particular Discussions active in this Communication. */
   discussion?: Maybe<Discussion>;
+  discussionCategories: Array<DiscussionCategory>;
   /** The Discussions active in this Communication. */
   discussions?: Maybe<Array<Discussion>>;
   /** The ID of the entity */
@@ -1579,8 +1580,13 @@ export type Discussion = {
 };
 
 export enum DiscussionCategory {
+  ChallengeCentric = 'CHALLENGE_CENTRIC',
+  CommunityBuilding = 'COMMUNITY_BUILDING',
   General = 'GENERAL',
+  Help = 'HELP',
   Ideas = 'IDEAS',
+  Other = 'OTHER',
+  PlatformFunctionalities = 'PLATFORM_FUNCTIONALITIES',
   Questions = 'QUESTIONS',
   Sharing = 'SHARING',
 }
@@ -18159,6 +18165,49 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
               | {
                   __typename?: 'TemplatesSet';
                   canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type InnovationPackFullCanvasTemplateWithValueQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type InnovationPackFullCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        value: string;
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          id: string;
+                          title: string;
+                          description: string;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
                 }
               | undefined;
           }

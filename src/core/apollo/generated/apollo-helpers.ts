@@ -634,6 +634,7 @@ export type CommentsFieldPolicy = {
 export type CommunicationKeySpecifier = (
   | 'authorization'
   | 'discussion'
+  | 'discussionCategories'
   | 'discussions'
   | 'id'
   | 'updates'
@@ -642,6 +643,7 @@ export type CommunicationKeySpecifier = (
 export type CommunicationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   discussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
   discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;

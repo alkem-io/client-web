@@ -22,7 +22,15 @@ import { displayNameValidator } from '../../../common/utils/validator/displayNam
 import CanvasTemplatesChooser, {
   CanvasTemplateListItem,
   LibraryCanvasTemplate,
+  TemplateOrigin,
 } from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
+
+export type CanvasTemplateData = {
+  id?: string;
+  title?: string;
+  origin?: TemplateOrigin;
+  innovationPackId?: string;
+};
 
 type FormValueType = {
   displayName: string;
@@ -30,7 +38,7 @@ type FormValueType = {
   type: CalloutType;
   opened: boolean;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -42,7 +50,7 @@ export type CalloutFormInput = {
   type?: CalloutType;
   state?: CalloutState;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 export type CalloutFormOutput = {
@@ -51,7 +59,7 @@ export type CalloutFormOutput = {
   type: CalloutType;
   state: CalloutState;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 export interface CalloutFormProps {
@@ -83,7 +91,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: callout?.type ?? CalloutType.Comments,
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       cardTemplateType: callout?.cardTemplateType ?? '',
-      canvasTemplateTitle: callout?.canvasTemplateTitle ?? '',
+      canvasTemplateData: callout?.canvasTemplateData ?? {
+        title: '',
+      },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [callout?.id]
@@ -121,7 +131,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: values.type,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       cardTemplateType: values.cardTemplateType,
-      canvasTemplateTitle: values.canvasTemplateTitle,
+      canvasTemplateData: values.canvasTemplateData,
     };
     onChange?.(callout);
   };
@@ -183,7 +193,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 <SectionSpacer />
                 <FormRow>
                   <CanvasTemplatesChooser
-                    name="canvasTemplateTitle"
+                    name="canvasTemplateData"
                     templates={[...hubTemplates, ...libraryCanvasTemplates]}
                     editMode={editMode}
                     updateLibraryTemplates={updateLibraryTemplates}

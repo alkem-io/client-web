@@ -19004,6 +19004,85 @@ export function refetchInnovationPackCanvasTemplateWithValueQuery(
   return { query: InnovationPackCanvasTemplateWithValueDocument, variables: variables };
 }
 
+export const InnovationPackFullCanvasTemplateWithValueDocument = gql`
+  query InnovationPackFullCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          templates {
+            canvasTemplate(ID: $canvasTemplateId) {
+              ...CanvasTemplateWithValue
+            }
+          }
+        }
+      }
+    }
+  }
+  ${CanvasTemplateWithValueFragmentDoc}
+`;
+
+/**
+ * __useInnovationPackFullCanvasTemplateWithValueQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackFullCanvasTemplateWithValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackFullCanvasTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackFullCanvasTemplateWithValueQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *      canvasTemplateId: // value for 'canvasTemplateId'
+ *   },
+ * });
+ */
+export function useInnovationPackFullCanvasTemplateWithValueQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >(InnovationPackFullCanvasTemplateWithValueDocument, options);
+}
+
+export function useInnovationPackFullCanvasTemplateWithValueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >(InnovationPackFullCanvasTemplateWithValueDocument, options);
+}
+
+export type InnovationPackFullCanvasTemplateWithValueQueryHookResult = ReturnType<
+  typeof useInnovationPackFullCanvasTemplateWithValueQuery
+>;
+export type InnovationPackFullCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
+  typeof useInnovationPackFullCanvasTemplateWithValueLazyQuery
+>;
+export type InnovationPackFullCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+  SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+>;
+export function refetchInnovationPackFullCanvasTemplateWithValueQuery(
+  variables: SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+) {
+  return { query: InnovationPackFullCanvasTemplateWithValueDocument, variables: variables };
+}
+
 export const UpdateInnovationTemplateDocument = gql`
   mutation updateInnovationTemplate(
     $templateId: UUID!

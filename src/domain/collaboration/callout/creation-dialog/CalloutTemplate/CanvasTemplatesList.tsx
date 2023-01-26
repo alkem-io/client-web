@@ -14,10 +14,11 @@ import CanvasTemplatePreview from '../../../../platform/admin/templates/CanvasTe
 import ImportTemplatesDialog from '../../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialog';
 import { TemplateInnovationPackMetaInfo } from '../../../../platform/admin/templates/InnovationPacks/InnovationPack';
 import CanvasListItem from '../../../canvas/CanvasList/CanvasListItem';
-import { CanvasTemplateListItem, LibraryCanvasTemplate } from './CanvasTemplateChooser';
+import { CanvasTemplateData } from '../../CalloutForm';
+import { CanvasTemplateListItem, LibraryCanvasTemplate, TemplateOrigin } from './CanvasTemplateChooser';
 interface CanvasTemplatesListProps {
   actions: {
-    onSelect: (canvasTemplateTitle: string) => void;
+    onSelect: (canvasTemplateTitle: CanvasTemplateData) => void;
     updateLibraryTemplates: (template: LibraryCanvasTemplate) => void;
   };
   entities: {
@@ -43,6 +44,14 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
     setImportTemplatesDialogOpen(true);
   }, [loadInnovationPacks]);
   const closeImportTemplatesDialog = useCallback(() => setImportTemplatesDialogOpen(false), []);
+  const handleTemplateSelect = (canvas: CanvasTemplateListItem) => {
+    actions.onSelect({
+      id: canvas.id,
+      title: canvas.info.title,
+      origin: canvas.origin,
+      innovationPackId: canvas.innovationPackId,
+    });
+  };
 
   const canvasInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
@@ -56,6 +65,13 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
 
   const handleImportTemplate = async (template: LibraryCanvasTemplate) => {
     actions.updateLibraryTemplates(template);
+    const selectedLibraryTemplate = {
+      id: template.id,
+      info: { title: template.info.title },
+      origin: 'Library' as TemplateOrigin,
+      innovationPackId: template.innovationPackId,
+    };
+    handleTemplateSelect(selectedLibraryTemplate);
   };
 
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
@@ -79,7 +95,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
               {templates.map(canvas => (
                 <CanvasListItem
                   key={canvas.id}
-                  onClick={() => actions.onSelect(canvas.info.title)}
+                  onClick={() => handleTemplateSelect(canvas)}
                   canvas={formatCanvasTemplate(canvas)}
                   isSelected={canvas.id === selectedTemplate?.id}
                 />

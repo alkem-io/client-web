@@ -12,9 +12,12 @@ import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
+import CalloutForm, { CalloutFormOutput, CanvasTemplateData } from '../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
-import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useHubTemplatesCanvasTemplateWithValueLazyQuery,
+  useInnovationPackFullCanvasTemplateWithValueLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { createCanvasTemplateForCalloutCreation } from '../utils/createCanvasTemplateForCalloutCreation';
 
@@ -25,7 +28,7 @@ export type CalloutCreationDialogFields = {
   type?: CalloutType;
   state?: CalloutState;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 export interface CalloutCreationDialogProps {
@@ -73,6 +76,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     fetchPolicy: 'cache-and-network',
   });
 
+  const [fetchCanvasValueFromLibrary] = useInnovationPackFullCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
   const handleValueChange = useCallback(
     (calloutValues: CalloutFormOutput) => {
       setCallout({ ...callout, ...calloutValues });
@@ -83,18 +90,28 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   const handleSaveAsDraft = useCallback(async () => {
     const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
-    const referenceCanvasTemplate = templates.canvasTemplates.find(
-      template => template.info.title === callout.canvasTemplateTitle
+    const referenceHubCanvasTemplate = templates.canvasTemplates.find(
+      template => template.info.title === callout.canvasTemplateData?.title
     );
 
     const canvasTemplateQueryResult =
-      referenceCanvasTemplate &&
+      referenceHubCanvasTemplate &&
       (await fetchCanvasValue({
-        variables: { hubId: hubNameId!, canvasTemplateId: referenceCanvasTemplate.id },
+        variables: { hubId: hubNameId!, canvasTemplateId: referenceHubCanvasTemplate.id },
       }));
 
+    const libraryCanvasTemplateQueryResult = referenceHubCanvasTemplate
+      ? undefined
+      : await fetchCanvasValueFromLibrary({
+          variables: {
+            innovationPackId: callout.canvasTemplateData?.innovationPackId!,
+            canvasTemplateId: callout.canvasTemplateData?.id!,
+          },
+        });
+
     const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
-      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate
+      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate ??
+        libraryCanvasTemplateQueryResult?.data?.platform.library.innovationPack?.templates?.canvasTemplate
     );
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
@@ -110,7 +127,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValue]);
+  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValue, fetchCanvasValueFromLibrary]);
 
   const handleClose = useCallback(() => {
     onClose?.();
