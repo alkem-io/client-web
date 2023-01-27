@@ -108,6 +108,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     cardTemplateType: yup
       .string()
       .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
+    canvasTemplateTitle: yup
+      .string()
+      .when('type', { is: CalloutType.Canvas, then: yup.string().required(t('common.field-required')) }),
   });
 
   const handleChange = (values: FormValueType) => {

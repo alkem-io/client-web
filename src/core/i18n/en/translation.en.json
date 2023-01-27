@@ -425,8 +425,7 @@
     "share-this": "Share this {{entity}}",
     "url": "URL",
     "copy": "Copy",
-    "copied": "Copied!",
-    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+    "copied": "Copied!"
   },
   "context": {
     "hub": {
@@ -1454,6 +1453,7 @@
       "subheader": "Create your custom visualization and share it with others.",
       "add-canvas": "Create canvas",
       "no-canvases": "No canvases have been created yet. Be the first to add one.",
+      "locked-by": "{{user}} is currently editing this Canvas",
       "state": {
         "checkedout": "Someone else is currently editing this Canvas"
       },

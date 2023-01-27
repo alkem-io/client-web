@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { MutableRefObject } from 'react';
 
 interface FunctionalRef<T> {
   (refValue: T): void;
@@ -7,20 +7,22 @@ interface FunctionalRef<T> {
 type Ref<T> = MutableRefObject<T> | FunctionalRef<T> | undefined | null;
 
 export function useCombinedRefs<T>(initialValue: T, ...refs: Ref<T>[]) {
-  const targetRef = useRef<T>(initialValue);
-
-  useEffect(() => {
+  const callbackRef: FunctionalRef<T> & Partial<MutableRefObject<T>> = (current: T) => {
     refs.forEach(ref => {
       if (!ref) {
         return;
       }
       if (typeof ref === 'function') {
-        ref(targetRef.current);
+        ref(current);
       } else {
-        ref.current = targetRef.current;
+        ref.current = current;
       }
-    }); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [targetRef.current, ...refs]);
+    });
 
-  return targetRef;
+    callbackRef.current = current; // Making this callback ref act as a .current ref to save on useRefs
+  };
+
+  callbackRef.current = initialValue;
+
+  return callbackRef as FunctionalRef<T> & MutableRefObject<T>;
 }

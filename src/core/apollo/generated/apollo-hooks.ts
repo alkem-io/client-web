@@ -1239,6 +1239,18 @@ export const CollaborationWithCanvasDetailsFragmentDoc = gql`
   }
   ${CanvasDetailsFragmentDoc}
 `;
+export const LockedByDetailsFragmentDoc = gql`
+  fragment LockedByDetails on User {
+    id
+    displayName
+    profile {
+      avatar {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const AspectsOnCalloutFragmentDoc = gql`
   fragment AspectsOnCallout on Callout {
     id
@@ -10812,6 +10824,67 @@ export function useCanvasContentUpdatedSubscription(
 export type CanvasContentUpdatedSubscriptionHookResult = ReturnType<typeof useCanvasContentUpdatedSubscription>;
 export type CanvasContentUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CanvasContentUpdatedSubscription>;
+export const CanvasLockedByDetailsDocument = gql`
+  query CanvasLockedByDetails($ids: [UUID!]!) {
+    usersById(IDs: $ids) {
+      ...LockedByDetails
+    }
+  }
+  ${LockedByDetailsFragmentDoc}
+`;
+
+/**
+ * __useCanvasLockedByDetailsQuery__
+ *
+ * To run a query within a React component, call `useCanvasLockedByDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCanvasLockedByDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCanvasLockedByDetailsQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useCanvasLockedByDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CanvasLockedByDetailsQuery,
+    SchemaTypes.CanvasLockedByDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CanvasLockedByDetailsQuery, SchemaTypes.CanvasLockedByDetailsQueryVariables>(
+    CanvasLockedByDetailsDocument,
+    options
+  );
+}
+
+export function useCanvasLockedByDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CanvasLockedByDetailsQuery,
+    SchemaTypes.CanvasLockedByDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CanvasLockedByDetailsQuery, SchemaTypes.CanvasLockedByDetailsQueryVariables>(
+    CanvasLockedByDetailsDocument,
+    options
+  );
+}
+
+export type CanvasLockedByDetailsQueryHookResult = ReturnType<typeof useCanvasLockedByDetailsQuery>;
+export type CanvasLockedByDetailsLazyQueryHookResult = ReturnType<typeof useCanvasLockedByDetailsLazyQuery>;
+export type CanvasLockedByDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CanvasLockedByDetailsQuery,
+  SchemaTypes.CanvasLockedByDetailsQueryVariables
+>;
+export function refetchCanvasLockedByDetailsQuery(variables: SchemaTypes.CanvasLockedByDetailsQueryVariables) {
+  return { query: CanvasLockedByDetailsDocument, variables: variables };
+}
+
 export const CalloutAspectCreatedDocument = gql`
   subscription CalloutAspectCreated($calloutID: UUID!) {
     calloutAspectCreated(calloutID: $calloutID) {

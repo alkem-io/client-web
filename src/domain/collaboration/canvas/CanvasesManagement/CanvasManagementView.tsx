@@ -14,6 +14,11 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
+import { useCanvasLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import UrlParams from '../../../../core/routing/urlParams';
+import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 
 export interface ActiveCanvasIdHolder {
   canvasNameId?: string;
@@ -65,6 +70,16 @@ export interface CanvasManagementViewProps
     >,
     CanvasNavigationMethods {}
 
+const getCanvasShareUrl = (urlParams: UrlParams) => {
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
+
+  return buildCanvasUrl(urlParams.calloutNameId, urlParams.canvasNameId, {
+    hubNameId: urlParams.hubNameId,
+    challengeNameId: urlParams.challengeNameId,
+    opportunityNameId: urlParams.opportunityNameId,
+  });
+};
+
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options, backToCanvases }) => {
   const { canvasNameId, calloutId, canvas } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
@@ -72,9 +87,18 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
 
-  const isCanvasCheckedoutByMe =
+  const isCanvasCheckedOutByMe =
     canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && canvas.checkout.lockedBy === user?.user.id;
+
   const isCanvasAvailable = canvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
+
+  const { data: lockedByDetailsData } = useCanvasLockedByDetailsQuery({
+    variables: canvas?.checkout?.lockedBy ? { ids: [canvas?.checkout?.lockedBy] } : { ids: [] },
+    skip: isCanvasCheckedOutByMe,
+  });
+
+  const urlParams = useUrlParams();
+  const canvasUrl = getCanvasShareUrl(urlParams);
 
   const handleCancel = (canvas: CanvasDetailsFragment) => {
     backToCanvases();
@@ -86,7 +110,10 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
       <CanvasValueContainer canvasId={canvas?.id} calloutId={calloutId}>
         {entities => (
           <CanvasDialog
-            entities={{ canvas: entities.canvas }}
+            entities={{
+              canvas: entities.canvas,
+              lockedBy: lockedByDetailsData?.usersById[0],
+            }}
             actions={{
               onCancel: handleCancel,
               onCheckin: actions.onCheckin,
@@ -97,8 +124,10 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
             options={{
               show: Boolean(canvasNameId),
               canCheckout: isCanvasAvailable && options.canUpdate,
-              canEdit: isCanvasCheckedoutByMe && options.canUpdate,
+              canEdit: isCanvasCheckedOutByMe && options.canUpdate,
               canDelete: isCanvasAvailable && options.canDelete,
+              checkedOutByMe: isCanvasCheckedOutByMe,
+              headerActions: <ShareButton url={canvasUrl} entityTypeName="canvas" disabled={!canvasUrl} />,
             }}
             state={state}
           />

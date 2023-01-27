@@ -13589,6 +13589,34 @@ export type CanvasContentUpdatedSubscription = {
   canvasContentUpdated: { __typename?: 'CanvasContentUpdated'; canvasID: string; value: string };
 };
 
+export type CanvasLockedByDetailsQueryVariables = Exact<{
+  ids: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type CanvasLockedByDetailsQuery = {
+  __typename?: 'Query';
+  usersById: Array<{
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        }
+      | undefined;
+  }>;
+};
+
+export type LockedByDetailsFragment = {
+  __typename?: 'User';
+  id: string;
+  displayName: string;
+  profile?:
+    | { __typename?: 'Profile'; avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined }
+    | undefined;
+};
+
 export type AspectsOnCalloutFragment = {
   __typename?: 'Callout';
   id: string;
