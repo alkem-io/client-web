@@ -19951,6 +19951,10 @@ export const HubCalendarEventsDocument = gql`
         id
         calendar {
           id
+          authorization {
+            id
+            myPrivileges
+          }
           events {
             ...CalendarEventDetails
           }

@@ -20169,6 +20169,9 @@ export type HubCalendarEventsQuery = {
           calendar: {
             __typename?: 'Calendar';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             events?:
               | Array<{
                   __typename?: 'CalendarEvent';

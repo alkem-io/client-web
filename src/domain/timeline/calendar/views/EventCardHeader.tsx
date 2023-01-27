@@ -9,12 +9,14 @@ import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
 import { ClockIcon } from '../icons/ClockIcon';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 interface CardTitleSectionProps {
   event: CalendarEventCardData;
 }
 
 const EventCardHeader = ({ event, children }: PropsWithChildren<CardTitleSectionProps>) => {
+  const { t } = useTranslation();
   return (
     <BadgeCardView
       visual={
@@ -31,7 +33,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<CardTitleSection
       <Box display="flex" gap={gutters()} flexDirection="row">
         {/* event.location && <CardHeaderDetail iconComponent={LocationIcon}>Location, City</CardHeaderDetail> */}
         <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(event.startDate)}</CardHeaderDetail>
-        <CardHeaderDetail iconComponent={ClockIcon}>{formatTimeAndDuration(event)}</CardHeaderDetail>
+        <CardHeaderDetail iconComponent={ClockIcon}>{formatTimeAndDuration(event, t)}</CardHeaderDetail>
       </Box>
       {children}
     </BadgeCardView>

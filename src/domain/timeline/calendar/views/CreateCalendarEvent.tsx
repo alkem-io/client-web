@@ -23,6 +23,7 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { displayNameValidator } from '../../../../common/utils/validator';
 
 interface CreateCalendarEventProps {
+  dialogTitle: string;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (eventValues: CalendarEventForm) => void;
   actions?: ReactNode;
@@ -55,7 +56,7 @@ const typeOptions: FormikSelectValue[] = [
   }
 ];
 
-const CreateCalendarEvent = ({ onSubmit, onClose, actions }: CreateCalendarEventProps) => {
+const CreateCalendarEvent = ({ dialogTitle, onSubmit, onClose, actions }: CreateCalendarEventProps) => {
   const { t } = useTranslation();
 
   const handleSubmit = (formValues: Partial<CalendarEventFormValues>) => {
@@ -100,7 +101,7 @@ const CreateCalendarEvent = ({ onSubmit, onClose, actions }: CreateCalendarEvent
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
-        <BlockTitle>Add Event</BlockTitle>
+        <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
       <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
         {({ isValid }) => (

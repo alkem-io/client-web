@@ -35,6 +35,10 @@ query hubCalendarEvents ($hubId: UUID_NAMEID!) {
       id
       calendar {
         id
+        authorization{
+          id
+          myPrivileges
+        }
         events {
           ...CalendarEventDetails
         }

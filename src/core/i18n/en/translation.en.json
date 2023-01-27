@@ -27,8 +27,13 @@
     "endTime": "End Time"
   },
   "calendar": {
+    "add-event": "Add event",
+    "edit-event": "Edit event",
+    "delete-event": "Delete event",
     "event": {
-      "type": "Type of Event"
+      "type": "Type of Event",
+      "multiple-days": "{{days}} days",
+      "whole-day": "Entire Day"
     }
   },
   "buttons": {

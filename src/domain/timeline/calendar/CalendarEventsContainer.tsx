@@ -1,13 +1,14 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import {
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
   useHubCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { CalendarEvent, CardProfile } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalendarEvent, CardProfile, HubCalendarEventsQuery } from '../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
+import { extend, sortBy } from 'lodash';
 
 export interface CalendarEventForm
   extends Pick<
@@ -26,6 +27,10 @@ export interface CalendarEventsContainerProps {
     actions: CalendarEventsActions,
     loading: CalendarEventsState
   ) => React.ReactNode;
+  options?: {
+    sortByStartDate?: boolean;
+    filterPastEvents?: boolean;
+  }
 }
 
 export interface CalendarEventsActions {
@@ -44,17 +49,44 @@ export interface CalendarEventsState {
 
 export interface CalendarEventsEntities {
   events: CalendarEventCardData[];
+  privileges: {
+    canCreateEvents: boolean;
+    canEditEvents: boolean;
+    canDeleteEvents: boolean;
+  }
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children }) => {
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children, options = {} }) => {
   const handleError = useApolloErrorHandler();
+  const defaultOptions = {
+    sortByStartDate: true,
+    filterPastEvents: true
+  };
+  const { sortByStartDate, filterPastEvents } = extend(options, defaultOptions);
 
   const { data, loading } = useHubCalendarEventsQuery({
     variables: { hubId: hubId! },
     skip: !hubId,
   });
 
-  const events = data?.hub.timeline?.calendar.events ?? [];
+  const privileges = {
+    canCreateEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Create),
+    canEditEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Update),
+    canDeleteEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Delete)
+  }
+
+  const events = useMemo(() => {
+    let result: Required<HubCalendarEventsQuery['hub']>['timeline']['calendar']['events'] = data?.hub.timeline?.calendar.events ?? [];
+    if (sortByStartDate) {
+      result = sortBy(result, event => event.startDate);
+    }
+    if (filterPastEvents) {
+      const now = new Date();
+      result = result.filter(event => event.startDate && (new Date(event.startDate) > now));
+    }
+    return result;
+  }
+  ,[data, sortByStartDate, filterPastEvents]);
 
   const calendarId = data?.hub.timeline?.calendar.id;
 
@@ -132,7 +164,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   return (
     <>
       {children(
-        { events },
+        { events, privileges },
         { createEvent, updateEvent, deleteEvent },
         {
           loading,
