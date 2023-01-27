@@ -8,9 +8,9 @@ interface CardHeaderDetailProps extends TypographyProps {
   iconComponent?: SvgIconComponent;
 }
 
-const CardHeaderDetail = ({ iconComponent, children, ...props }: PropsWithChildren<CardHeaderDetailProps>) => {
+const CardHeaderDetail = ({ iconComponent, children, ...containerProps }: PropsWithChildren<CardHeaderDetailProps>) => {
   return (
-    <Box display="flex" gap={gutters(0.5)} {...props}>
+    <Box display="flex" gap={gutters(0.5)} {...containerProps}>
       {iconComponent && <Box component={iconComponent} maxHeight={gutters()} maxWidth={gutters()} color="primary" />}
       <DetailText noWrap>{children}</DetailText>
     </Box>

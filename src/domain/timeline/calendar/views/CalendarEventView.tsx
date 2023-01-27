@@ -50,7 +50,7 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
         </RoundedBadge>
       }
     >
-      <BlockSectionTitle component={RouterLink} to={url} loose>
+      <BlockSectionTitle component={RouterLink} to={url}>
         {event.displayName}
       </BlockSectionTitle>
       <EventDescription>{event.profile?.description}</EventDescription>

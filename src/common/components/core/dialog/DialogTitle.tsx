@@ -12,10 +12,10 @@ export interface DialogTitleProps {
 /**
  * @deprecated
  */
-const DialogTitle = ({ children, onClose, classes, ...other }: PropsWithChildren<DialogTitleProps>) => {
+const DialogTitle = ({ children, onClose, classes, ...containerProps }: PropsWithChildren<DialogTitleProps>) => {
   return (
     <MuiDialogTitle
-      {...other}
+      {...containerProps}
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       classes={classes}
     >
