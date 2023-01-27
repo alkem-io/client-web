@@ -123,6 +123,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
               options={{
                 show: showCreateCanvasDialog,
                 canEdit: true,
+                checkedOutByMe: true,
               }}
               state={{}}
             />
