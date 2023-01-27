@@ -1,3 +1,4 @@
+import { DialogContent } from '@mui/material';
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -29,13 +30,14 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('dashboard-calendar-section.dialog-title')}</BlockTitle>
       </DialogHeader>
-
-      <CardsLayout items={events} disablePadding cards={false}>
-        {event => <CalendarEventCard key={event.id} event={event} onClick={() => handleClickOnEvent(event.nameID)} />}
-      </CardsLayout>
-      <Actions justifyContent="space-between" sx={{position: 'absolute', bottom: gutters(), right: gutters()}}>
-        {actions}
-      </Actions>
+      <DialogContent>
+        <CardsLayout items={events} disablePadding cards={false}>
+          {event => <CalendarEventCard key={event.id} event={event} onClick={() => handleClickOnEvent(event.nameID)} />}
+        </CardsLayout>
+        <Actions justifyContent="space-between" sx={{ position: 'absolute', bottom: gutters(), right: gutters() }}>
+          {actions}
+        </Actions>
+      </DialogContent>
     </GridProvider>
   );
 };

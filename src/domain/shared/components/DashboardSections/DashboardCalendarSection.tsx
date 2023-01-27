@@ -12,6 +12,7 @@ import { EntityPageSection } from '../../layout/EntityPageSection';
 import { useNavigate } from 'react-router-dom';
 
 const MAX_NUMBER_OF_EVENTS = 3;
+
 export interface DashboardCalendarSectionProps {
   journeyLocation: JourneyLocation | undefined;
 }

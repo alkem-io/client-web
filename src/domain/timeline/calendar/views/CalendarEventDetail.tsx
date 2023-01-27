@@ -1,10 +1,11 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
-import { Button, IconButton } from '@mui/material';
+import { Button, DialogContent, IconButton } from '@mui/material';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
+import { gutters } from '../../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../../core/ui/typography';
 import AspectDashboardView from '../../../collaboration/aspect/views/AspectDashboardView';
 import CalendarEventDetailContainer from '../CalendarEventDetailContainer';
@@ -52,27 +53,29 @@ const CalendarEventDetail = ({
             >
               <BlockTitle>{t('dashboard-calendar-section.dialog-title')}</BlockTitle>
             </DialogHeader>
-            <AspectDashboardView
-              mode="messages"
-              displayName={event?.displayName}
-              description={event?.profile?.description}
-              type={event?.type}
-              tags={event?.profile?.tagset?.tags}
-              references={event?.profile?.references}
-              messages={messages}
-              commentId={event?.comments?.id}
-              aspectUrl=""
-              bannerOverlayOverride={<EventCardHeader event={event} />}
-              {...rest}
-            />
-            <Actions justifyContent="space-between">
-              {actions}
-              {canDelete && (
-                <Button startIcon={<DeleteIcon />} onClick={onDelete}>
-                  {t('buttons.delete')}
-                </Button>
-              )}
-            </Actions>
+            <DialogContent>
+              <AspectDashboardView
+                mode="messages"
+                displayName={event?.displayName}
+                description={event?.profile?.description}
+                type={event?.type}
+                tags={event?.profile?.tagset?.tags}
+                references={event?.profile?.references}
+                messages={messages}
+                commentId={event?.comments?.id}
+                aspectUrl=""
+                bannerOverlayOverride={<EventCardHeader event={event} />}
+                {...rest}
+              />
+              <Actions justifyContent="space-between" marginTop={gutters()}>
+                {actions}
+                {canDelete && (
+                  <Button startIcon={<DeleteIcon />} onClick={onDelete}>
+                    {t('buttons.delete')}
+                  </Button>
+                )}
+              </Actions>
+            </DialogContent>
           </>
         );
       }}

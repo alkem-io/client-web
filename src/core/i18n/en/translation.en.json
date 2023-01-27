@@ -30,7 +30,7 @@
     "add-event": "Add event",
     "edit-event": "Edit event",
     "delete-event": "Delete event",
-    "delete-confirmation": "Are you sure you want to delete this event from the hub?",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the hub?",
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Tooltip } from '@mui/material';
-import { BlockSectionTitle, CaptionBold, CardText } from '../../../../core/ui/typography';
+import { BlockSectionTitle, Caption, CardText } from '../../../../core/ui/typography';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
@@ -45,7 +45,7 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
       visual={
         <RoundedBadge size="medium">
           <Tooltip title={formatTooltipDate(event.startDate)}>
-            <CaptionBold>{formatBadgeDate(event.startDate)}</CaptionBold>
+            <Caption>{formatBadgeDate(event.startDate)}</Caption>
           </Tooltip>
         </RoundedBadge>
       }

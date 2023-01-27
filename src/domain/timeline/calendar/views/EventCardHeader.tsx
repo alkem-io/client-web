@@ -5,7 +5,7 @@ import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
 import { gutters } from '../../../../core/ui/grid/utils';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { BlockSectionTitle, CaptionBold } from '../../../../core/ui/typography';
+import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
 import { formatBadgeDate, formatLongDate, formatTimeAndDuration } from '../../utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
@@ -21,7 +21,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<CardTitleSection
     <BadgeCardView
       visual={
         <RoundedBadge marginLeft={0.5} size="medium">
-          <CaptionBold>{formatBadgeDate(event?.startDate)}</CaptionBold>
+          <Caption>{formatBadgeDate(event?.startDate)}</Caption>
         </RoundedBadge>
       }
       height={gutters(3)}
