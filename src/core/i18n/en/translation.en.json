@@ -583,7 +583,7 @@
         "callout-published": "{{displayName}}",
         "canvas-created": "{{displayName}}",
         "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDescription}}",
+        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
