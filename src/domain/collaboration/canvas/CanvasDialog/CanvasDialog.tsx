@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
@@ -9,9 +9,9 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import {
-  CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
   CanvasValueFragment,
+  LockedByDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../../common/components/core';
@@ -19,12 +19,8 @@ import { DialogContent } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
-import UrlParams from '../../../../core/routing/urlParams';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import Authorship from '../../../../core/ui/authorship/Authorship';
-import { Caption, PageTitle } from '../../../../core/ui/typography';
+import { PageTitle } from '../../../../core/ui/typography';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button, ButtonProps } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -42,6 +38,7 @@ type CanvasWithoutValue<Canvas extends CanvasWithValue> = Omit<Canvas, 'value'>;
 interface CanvasDialogProps<Canvas extends CanvasWithValue> {
   entities: {
     canvas?: Canvas;
+    lockedBy?: LockedByDetailsFragment;
   };
   actions: {
     onCancel: (canvas: CanvasWithoutValue<Canvas>) => void;
@@ -55,6 +52,8 @@ interface CanvasDialogProps<Canvas extends CanvasWithValue> {
     canCheckout?: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
+    checkedOutByMe: boolean;
+    headerActions?: ReactNode;
   };
   state?: {
     updatingCanvas?: boolean;
@@ -91,16 +90,6 @@ type CanvasAction = 'save-and-checkin' | 'checkout';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const getCanvasShareUrl = (urlParams: UrlParams) => {
-  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
-
-  return buildCanvasUrl(urlParams.calloutNameId, urlParams.canvasNameId, {
-    hubNameId: urlParams.hubNameId,
-    challengeNameId: urlParams.challengeNameId,
-    opportunityNameId: urlParams.opportunityNameId,
-  });
-};
-
 const CanvasDialog = <Canvas extends CanvasWithValue>({
   entities,
   actions,
@@ -108,10 +97,8 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
   state,
 }: CanvasDialogProps<Canvas>) => {
   const { t } = useTranslation();
-  const { canvas } = entities;
+  const { canvas, lockedBy } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
-  const urlParams = useUrlParams();
-  const canvasUrl = getCanvasShareUrl(urlParams);
 
   const styles = useStyles();
 
@@ -204,9 +191,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     actions.onCancel(canvas!);
   };
 
-  const isBeingEdited = canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut || (canvas && !canvas.id);
-  const isUnavailable = isBeingEdited && !options.canEdit && Boolean(canvas?.id);
-  const currentAction: CanvasAction = isBeingEdited ? 'save-and-checkin' : 'checkout';
+  const currentAction: CanvasAction = options.checkedOutByMe ? 'save-and-checkin' : 'checkout';
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
@@ -226,7 +211,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     },
     checkout: {
       label: 'pages.canvas.state-actions.check-out',
-      disabled: () => isUnavailable,
+      disabled: () => !options.canCheckout,
       startIcon: <LockClockIcon />,
     },
   };
@@ -245,18 +230,8 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={() => {}} validationSchema={canvasSchema}>
         {({ isValid }) => (
           <>
-            <DialogHeader
-              actions={
-                <ShareButton
-                  url={canvasUrl}
-                  entityTypeName="canvas"
-                  disabled={canvas?.checkout?.status !== CanvasCheckoutStateEnum.Available}
-                  tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
-                />
-              }
-              onClose={onClose}
-            >
-              {isBeingEdited ? (
+            <DialogHeader actions={options.headerActions} onClose={onClose}>
+              {options.checkedOutByMe ? (
                 <Box
                   component={FormikInputField}
                   title={t('fields.displayName')}
@@ -300,13 +275,17 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
               {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
             </DialogContent>
             <Actions padding={gutters()} paddingTop={0} justifyContent="space-between">
-              {isBeingEdited && actions.onDelete && (
+              {options.checkedOutByMe && actions.onDelete && (
                 <Button startIcon={<Delete />} onClick={() => actions.onDelete!(canvas!)} color="error">
                   {t('pages.canvas.state-actions.delete')}
                 </Button>
               )}
               <FlexSpacer />
-              {isUnavailable && <Caption>Edited by someone else.</Caption>}
+              {lockedBy && (
+                <Authorship authorAvatarUri={lockedBy.profile?.avatar?.uri}>
+                  {t('pages.canvas.locked-by', { user: lockedBy.displayName })}
+                </Authorship>
+              )}
               <LoadingButton
                 startIcon={canvasActions[currentAction].startIcon}
                 onClick={() => actionMap[currentAction]?.(canvas!)}
