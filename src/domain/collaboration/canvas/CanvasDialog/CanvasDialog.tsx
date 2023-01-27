@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import { isEqual } from 'lodash';
 import { exportToBlob, serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { Delete, Save } from '@mui/icons-material';
@@ -34,6 +33,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import canvasSchema from '../validation/canvasSchema';
+import isCanvasValueEqual from '../utils/isCanvasValueEqual';
 
 interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -189,7 +189,13 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       const appState = canvasApi.getAppState();
       const files = canvasApi.getFiles();
       const value = serializeAsJSON(elements, appState, files, 'local');
-      if (!isEqual(canvas?.value, value) || formikRef.current?.dirty) {
+
+      console.log(canvas?.value);
+      console.log(value);
+      console.log(isCanvasValueEqual(canvas?.value, value));
+      console.log(formikRef.current?.dirty);
+
+      if (!isCanvasValueEqual(canvas?.value, value) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
         ) {
@@ -209,9 +215,13 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
+  const initialValues = useMemo(() => ({ displayName: canvas?.displayName ?? '' }), [canvas?.displayName]);
+
   useEffect(() => {
-    formikRef.current?.setFieldValue('displayName', canvas?.displayName);
-  }, [canvas?.displayName]);
+    formikRef.current?.resetForm({
+      values: initialValues,
+    });
+  }, [initialValues]);
 
   const canvasActions: Record<CanvasAction, Option> = {
     'save-and-checkin': {
@@ -237,12 +247,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       }}
       onClose={onClose}
     >
-      <Formik
-        innerRef={formikRef}
-        initialValues={{ displayName: canvas?.displayName ?? '' }}
-        onSubmit={() => {}}
-        validationSchema={canvasSchema}
-      >
+      <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={() => {}} validationSchema={canvasSchema}>
         {({ isValid }) => (
           <>
             <DialogHeader
