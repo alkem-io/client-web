@@ -49,7 +49,8 @@ const DiscussionsContext = React.createContext<DiscussionContextProps>({
 
 interface DiscussionProviderProps {}
 
-const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(messages, item => item.timestamp);
+const sortMessages = (messages: MessageDetailsFragment[] = []) =>
+  sortBy(messages, item => item.date.getUTCMilliseconds());
 
 const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
   DiscussionDetailsFragment & {
@@ -104,13 +105,13 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       author: getAuthor(discussionData.createdBy || ''),
       authors: authors,
       description: discussionData.description,
-      createdAt: discussionData.timestamp ? new Date(discussionData.timestamp) : new Date(),
+      createdAt: discussionData.date ? discussionData.date : new Date(),
       totalComments: sortedMessages.length,
       comments: sortedMessages.map<Comment>(m => ({
         id: m.id,
         body: m.message,
         author: getAuthor(m.sender.id),
-        createdAt: new Date(m.timestamp),
+        createdAt: m.date,
       })),
     } as Discussion);
 

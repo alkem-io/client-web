@@ -14,7 +14,7 @@ fragment CommunityMessages on Community {
 fragment MessageDetails on Message {
   id
   message
-  timestamp
+  date
   sender {
     id
     nameID

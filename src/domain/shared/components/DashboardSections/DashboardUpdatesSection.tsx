@@ -21,7 +21,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
     <CommunityUpdatesContainer entities={{ hubId, communityId }}>
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
-        const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
+        const [latestMessage] = messages.sort((a, b) => b.date.getUTCMilliseconds() - a.date.getUTCMilliseconds());
         const latestMessageAuthor = latestMessage?.sender.id ? buildAuthorFromUser(latestMessage.sender) : undefined;
 
         return (
@@ -35,7 +35,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
               <SingleUpdateView
                 loading={retrievingUpdateMessages}
                 author={latestMessageAuthor}
-                createdDate={new Date(latestMessage.timestamp)}
+                createdDate={latestMessage.date}
                 content={latestMessage.message}
               />
             )}

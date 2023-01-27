@@ -924,10 +924,10 @@ export type DiscussionKeySpecifier = (
   | 'category'
   | 'commentsCount'
   | 'createdBy'
+  | 'date'
   | 'description'
   | 'id'
   | 'messages'
-  | 'timestamp'
   | 'title'
   | DiscussionKeySpecifier
 )[];
@@ -936,10 +936,10 @@ export type DiscussionFieldPolicy = {
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  date?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
-  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
   title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
@@ -1112,12 +1112,12 @@ export type LocationFieldPolicy = {
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MessageKeySpecifier = ('id' | 'message' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
+export type MessageKeySpecifier = ('date' | 'id' | 'message' | 'sender' | MessageKeySpecifier)[];
 export type MessageFieldPolicy = {
+  date?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
-  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('metrics' | 'services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {

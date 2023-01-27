@@ -3,7 +3,7 @@ fragment DiscussionDetails on Discussion {
   title
   description
   createdBy
-  timestamp
+  date
   category
   commentsCount
   authorization {
@@ -16,7 +16,7 @@ fragment DiscussionDetailsNoAuth on Discussion {
   title
   description
   createdBy
-  timestamp
+  date
   category
   commentsCount
 }

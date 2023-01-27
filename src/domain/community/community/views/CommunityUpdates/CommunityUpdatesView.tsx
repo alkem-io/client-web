@@ -101,7 +101,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const { messages, authors } = entities;
   const { loadingMessages, removingMessage } = state;
   const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
-  const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
+  const orderedMessages = useMemo(() => orderBy(messages, x => x.date.getUTCMilliseconds(), ['desc']), [messages]);
   const initialValues = {
     'community-update': '',
   };
@@ -230,7 +230,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     )
                   }
                   title={member?.displayName || m.sender}
-                  subheader={new Date(m.timestamp).toLocaleString()}
+                  subheader={m.date.toLocaleString()}
                   action={
                     canEdit ? (
                       <Tooltip title={reviewed ? 'View source text' : 'View markdown'} placement="left">

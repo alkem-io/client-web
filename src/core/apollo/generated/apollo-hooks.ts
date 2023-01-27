@@ -871,7 +871,7 @@ export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
     message
-    timestamp
+    date
     sender {
       id
       nameID
@@ -1258,7 +1258,7 @@ export const DiscussionDetailsFragmentDoc = gql`
     title
     description
     createdBy
-    timestamp
+    date
     category
     commentsCount
     authorization {
@@ -1272,7 +1272,7 @@ export const DiscussionDetailsNoAuthFragmentDoc = gql`
     title
     description
     createdBy
-    timestamp
+    date
     category
     commentsCount
   }
@@ -8133,7 +8133,7 @@ export const PostCommentInAspectDocument = gql`
       sender {
         id
       }
-      timestamp
+      date
     }
   }
 `;
@@ -11935,7 +11935,7 @@ export const CommunicationDiscussionUpdatedDocument = gql`
       title
       description
       createdBy
-      timestamp
+      date
       category
       commentsCount
     }

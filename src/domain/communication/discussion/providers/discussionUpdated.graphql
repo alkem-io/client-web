@@ -4,7 +4,7 @@ subscription communicationDiscussionUpdated($communicationID: UUID!) {
     title
     description
     createdBy
-    timestamp
+    date
     category
     commentsCount
   }

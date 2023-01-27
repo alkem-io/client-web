@@ -163,7 +163,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         id: x.id,
         body: x.message,
         author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
-        createdAt: new Date(x.timestamp),
+        createdAt: x.date,
       })),
     [_messages]
   );

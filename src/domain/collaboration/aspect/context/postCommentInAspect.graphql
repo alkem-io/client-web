@@ -5,6 +5,6 @@ mutation PostCommentInAspect($messageData: CommentsSendMessageInput!) {
     sender {
       id
     }
-    timestamp
+    date
   }
 }

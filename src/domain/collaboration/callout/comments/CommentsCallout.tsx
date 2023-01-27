@@ -60,7 +60,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
           id: x.id,
           body: x.message,
           author: x?.sender.id ? buildAuthorFromUser(x.sender) : undefined,
-          createdAt: new Date(x.timestamp),
+          createdAt: x.date,
         })),
       [_messages]
     );

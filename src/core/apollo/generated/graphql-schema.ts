@@ -668,7 +668,7 @@ export type Callout = {
   /** The user that published this Callout */
   publishedBy?: Maybe<User>;
   /** The timestamp for the publishing of this Callout. */
-  publishedDate?: Maybe<Scalars['Float']>;
+  publishedDate?: Maybe<Scalars['DateTime']>;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float'];
   /** State of the Callout. */
@@ -1658,14 +1658,14 @@ export type Discussion = {
   commentsCount: Scalars['Float'];
   /** The id of the user that created this discussion */
   createdBy: Scalars['UUID'];
+  /** The Date for the creation of this Discussion. */
+  date?: Maybe<Scalars['DateTime']>;
   /** The description of this Discussion. */
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Messages for this Discussion. */
   messages?: Maybe<Array<Message>>;
-  /** The timestamp for the creation of this Discussion. */
-  timestamp?: Maybe<Scalars['Float']>;
   /** The title of the Discussion. */
   title: Scalars['String'];
 };
@@ -1956,14 +1956,14 @@ export type Location = {
 /** A message that was sent either as an Update or as part of a Discussion. */
 export type Message = {
   __typename?: 'Message';
+  /** The date that this message was sent */
+  date: Scalars['DateTime'];
   /** The id for the message event. */
   id: Scalars['MessageID'];
   /** The message being sent */
   message: Scalars['Markdown'];
-  /** The user that created this Aspect */
+  /** The user that created this Message */
   sender: User;
-  /** The server timestamp in UTC */
-  timestamp: Scalars['Float'];
 };
 
 export type Metadata = {
@@ -9367,7 +9367,7 @@ export type HubAspectQuery = {
                                   __typename?: 'Message';
                                   id: string;
                                   message: string;
-                                  timestamp: number;
+                                  date: Date;
                                   sender: {
                                     __typename?: 'User';
                                     id: string;
@@ -9491,7 +9491,7 @@ export type ChallengeAspectQuery = {
                                     __typename?: 'Message';
                                     id: string;
                                     message: string;
-                                    timestamp: number;
+                                    date: Date;
                                     sender: {
                                       __typename?: 'User';
                                       id: string;
@@ -9616,7 +9616,7 @@ export type OpportunityAspectQuery = {
                                     __typename?: 'Message';
                                     id: string;
                                     message: string;
-                                    timestamp: number;
+                                    date: Date;
                                     sender: {
                                       __typename?: 'User';
                                       id: string;
@@ -9723,7 +9723,7 @@ export type AspectDashboardDataFragment = {
                           __typename?: 'Message';
                           id: string;
                           message: string;
-                          timestamp: number;
+                          date: Date;
                           sender: {
                             __typename?: 'User';
                             id: string;
@@ -9799,7 +9799,7 @@ export type AspectDashboardFragment = {
               __typename?: 'Message';
               id: string;
               message: string;
-              timestamp: number;
+              date: Date;
               sender: {
                 __typename?: 'User';
                 id: string;
@@ -10446,7 +10446,7 @@ export type PostCommentInAspectMutation = {
     __typename?: 'Message';
     id: string;
     message: string;
-    timestamp: number;
+    date: Date;
     sender: { __typename?: 'User'; id: string };
   };
 };
@@ -10581,7 +10581,7 @@ export type AspectCommentsMessageReceivedSubscription = {
       __typename?: 'Message';
       id: string;
       message: string;
-      timestamp: number;
+      date: Date;
       sender: {
         __typename?: 'User';
         id: string;
@@ -10817,7 +10817,7 @@ export type PostCommentInCalloutMutation = {
     __typename?: 'Message';
     id: string;
     message: string;
-    timestamp: number;
+    date: Date;
     sender: {
       __typename?: 'User';
       id: string;
@@ -11000,7 +11000,7 @@ export type CreateCalloutMutation = {
                 __typename?: 'Message';
                 id: string;
                 message: string;
-                timestamp: number;
+                date: Date;
                 sender: {
                   __typename?: 'User';
                   id: string;
@@ -11310,7 +11310,7 @@ export type CalloutsQuery = {
                             __typename?: 'Message';
                             id: string;
                             message: string;
-                            timestamp: number;
+                            date: Date;
                             sender: {
                               __typename?: 'User';
                               id: string;
@@ -11515,7 +11515,7 @@ export type CalloutsQuery = {
                               __typename?: 'Message';
                               id: string;
                               message: string;
-                              timestamp: number;
+                              date: Date;
                               sender: {
                                 __typename?: 'User';
                                 id: string;
@@ -11726,7 +11726,7 @@ export type CalloutsQuery = {
                               __typename?: 'Message';
                               id: string;
                               message: string;
-                              timestamp: number;
+                              date: Date;
                               sender: {
                                 __typename?: 'User';
                                 id: string;
@@ -12207,7 +12207,7 @@ export type CollaborationWithCalloutsFragment = {
                     __typename?: 'Message';
                     id: string;
                     message: string;
-                    timestamp: number;
+                    date: Date;
                     sender: {
                       __typename?: 'User';
                       id: string;
@@ -12378,7 +12378,7 @@ export type CalloutFragment = {
               __typename?: 'Message';
               id: string;
               message: string;
-              timestamp: number;
+              date: Date;
               sender: {
                 __typename?: 'User';
                 id: string;
@@ -12482,7 +12482,7 @@ export type CalloutMessageReceivedSubscription = {
       __typename?: 'Message';
       id: string;
       message: string;
-      timestamp: number;
+      date: Date;
       sender: {
         __typename?: 'User';
         id: string;
@@ -13898,7 +13898,7 @@ export type DiscussionDetailsFragment = {
   title: string;
   description: string;
   createdBy: string;
-  timestamp?: number | undefined;
+  date?: Date | undefined;
   category: DiscussionCategory;
   commentsCount: number;
   authorization?:
@@ -13912,7 +13912,7 @@ export type DiscussionDetailsNoAuthFragment = {
   title: string;
   description: string;
   createdBy: string;
-  timestamp?: number | undefined;
+  date?: Date | undefined;
   category: DiscussionCategory;
   commentsCount: number;
 };
@@ -13946,7 +13946,7 @@ export type CommunityDiscussionQuery = {
                       title: string;
                       description: string;
                       createdBy: string;
-                      timestamp?: number | undefined;
+                      date?: Date | undefined;
                       category: DiscussionCategory;
                       commentsCount: number;
                       messages?:
@@ -13954,7 +13954,7 @@ export type CommunityDiscussionQuery = {
                             __typename?: 'Message';
                             id: string;
                             message: string;
-                            timestamp: number;
+                            date: Date;
                             sender: {
                               __typename?: 'User';
                               id: string;
@@ -14018,7 +14018,7 @@ export type CommunityDiscussionListQuery = {
                       title: string;
                       description: string;
                       createdBy: string;
-                      timestamp?: number | undefined;
+                      date?: Date | undefined;
                       category: DiscussionCategory;
                       commentsCount: number;
                     }>
@@ -14040,7 +14040,7 @@ export type PostDiscussionCommentMutation = {
     __typename?: 'Message';
     id: string;
     message: string;
-    timestamp: number;
+    date: Date;
     sender: {
       __typename?: 'User';
       id: string;
@@ -14073,7 +14073,7 @@ export type CreateDiscussionMutation = {
     title: string;
     description: string;
     createdBy: string;
-    timestamp?: number | undefined;
+    date?: Date | undefined;
     category: DiscussionCategory;
     commentsCount: number;
     authorization?:
@@ -14095,7 +14095,7 @@ export type CommunicationDiscussionMessageReceivedSubscription = {
       __typename?: 'Message';
       id: string;
       message: string;
-      timestamp: number;
+      date: Date;
       sender: {
         __typename?: 'User';
         id: string;
@@ -14129,7 +14129,7 @@ export type CommunicationDiscussionUpdatedSubscription = {
     title: string;
     description: string;
     createdBy: string;
-    timestamp?: number | undefined;
+    date?: Date | undefined;
     category: DiscussionCategory;
     commentsCount: number;
   };
@@ -14169,7 +14169,7 @@ export type CommunityUpdatesQuery = {
                             __typename?: 'Message';
                             id: string;
                             message: string;
-                            timestamp: number;
+                            date: Date;
                             sender: {
                               __typename?: 'User';
                               id: string;
@@ -14212,7 +14212,7 @@ export type SendUpdateMutation = {
     __typename?: 'Message';
     id: string;
     message: string;
-    timestamp: number;
+    date: Date;
     sender: {
       __typename?: 'User';
       id: string;
@@ -14250,7 +14250,7 @@ export type CommunicationUpdateMessageReceivedSubscription = {
       __typename?: 'Message';
       id: string;
       message: string;
-      timestamp: number;
+      date: Date;
       sender: {
         __typename?: 'User';
         id: string;
@@ -15302,7 +15302,7 @@ export type CommunityMessagesFragment = {
                     __typename?: 'Message';
                     id: string;
                     message: string;
-                    timestamp: number;
+                    date: Date;
                     sender: {
                       __typename?: 'User';
                       id: string;
@@ -15336,7 +15336,7 @@ export type MessageDetailsFragment = {
   __typename?: 'Message';
   id: string;
   message: string;
-  timestamp: number;
+  date: Date;
   sender: {
     __typename?: 'User';
     id: string;
@@ -15507,7 +15507,7 @@ export type CommunityMessagesQuery = {
                             __typename?: 'Message';
                             id: string;
                             message: string;
-                            timestamp: number;
+                            date: Date;
                             sender: {
                               __typename?: 'User';
                               id: string;
@@ -20053,7 +20053,7 @@ export type CommentsWithMessagesFragment = {
         __typename?: 'Message';
         id: string;
         message: string;
-        timestamp: number;
+        date: Date;
         sender: {
           __typename?: 'User';
           id: string;

@@ -110,7 +110,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       author: getAuthor(x.createdBy || ''),
       authors: [],
       description: x.description,
-      createdAt: x.timestamp ? new Date(x.timestamp) : new Date(),
+      createdAt: x.date ? x.date : new Date(),
       totalComments: x.commentsCount,
     };
   });
