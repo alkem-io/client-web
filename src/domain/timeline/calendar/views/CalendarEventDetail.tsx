@@ -1,16 +1,14 @@
-import { IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsIcon from '@mui/icons-material/SettingsOutlined';
+import { Button, IconButton } from '@mui/material';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import AspectDashboardView from '../../../collaboration/aspect/views/AspectDashboardView';
-import { formatLongDate, formatTimeAndDuration } from '../../utils';
 import CalendarEventDetailContainer from '../CalendarEventDetailContainer';
-import { CalendarIcon } from '../icons/CalendarIcon';
-import { ClockIcon } from '../icons/ClockIcon';
-import SettingsIcon from '@mui/icons-material/SettingsOutlined';
+import EventCardHeader from './EventCardHeader';
 
 interface CalendarEventDetailProps {
   hubNameId: string;
@@ -23,25 +21,35 @@ interface CalendarEventDetailProps {
   actions?: ReactNode;
 }
 
-const CalendarEventDetail = ({ hubNameId, eventId, onClose, canEdit = false, onEdit, canDelete = false, onDelete, actions }: CalendarEventDetailProps) => {
+const CalendarEventDetail = ({
+  hubNameId,
+  eventId,
+  onClose,
+  canEdit = false,
+  onEdit,
+  canDelete = false,
+  onDelete,
+  actions,
+}: CalendarEventDetailProps) => {
   const { t } = useTranslation();
 
   return (
     <CalendarEventDetailContainer hubNameId={hubNameId} eventId={eventId}>
       {({ event, messages, commentsId, createdDate, ...rest }) => {
-
-        const header = (
-          <>
-            <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(event?.startDate)}</CardHeaderDetail>
-            {event && <CardHeaderDetail iconComponent={ClockIcon}>{formatTimeAndDuration(event, t)}</CardHeaderDetail>}
-          </>
-        );
-
         // createdDate is read here to remove it from the rest object and not show it
         // TODO: Instead of reusing Aspect views as is, put something in common
         return (
           <>
-            <DialogHeader onClose={onClose} actions={canEdit && <IconButton onClick={onEdit}><SettingsIcon /></IconButton>}>
+            <DialogHeader
+              onClose={onClose}
+              actions={
+                canEdit && (
+                  <IconButton onClick={onEdit}>
+                    <SettingsIcon />
+                  </IconButton>
+                )
+              }
+            >
               <BlockTitle>{t('dashboard-calendar-section.dialog-title')}</BlockTitle>
             </DialogHeader>
             <AspectDashboardView
@@ -54,11 +62,16 @@ const CalendarEventDetail = ({ hubNameId, eventId, onClose, canEdit = false, onE
               messages={messages}
               commentId={event?.comments?.id}
               aspectUrl=""
-              bannerOverlayOverride={header}
+              bannerOverlayOverride={<EventCardHeader event={event} />}
               {...rest}
             />
             <Actions justifyContent="space-between">
               {actions}
+              {canDelete && (
+                <Button startIcon={<DeleteIcon />} onClick={onDelete}>
+                  {t('buttons.delete')}
+                </Button>
+              )}
             </Actions>
           </>
         );

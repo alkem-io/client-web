@@ -5,12 +5,17 @@ import {
   useHubCalendarEventsQuery,
   useUpdateCalendarEventMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalendarEvent, CardProfile, HubCalendarEventsQuery } from '../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CalendarEvent,
+  CardProfile,
+  HubCalendarEventsQuery,
+} from '../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
 import { extend, sortBy } from 'lodash';
 
-export interface CalendarEventForm
+export interface CalendarEventFormData
   extends Pick<
     CalendarEvent,
     'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'
@@ -30,13 +35,13 @@ export interface CalendarEventsContainerProps {
   options?: {
     sortByStartDate?: boolean;
     filterPastEvents?: boolean;
-  }
+  };
 }
 
 export interface CalendarEventsActions {
   // loadMore: () => void; // TODO: pagination?
-  createEvent: (event: CalendarEventForm) => Promise<string | undefined>;
-  updateEvent: (eventId: string, event: CalendarEventForm) => Promise<string | undefined>;
+  createEvent: (event: CalendarEventFormData) => Promise<string | undefined>;
+  updateEvent: (eventId: string, event: CalendarEventFormData) => Promise<string | undefined>;
   deleteEvent: (eventId: string) => Promise<string | undefined>;
 }
 
@@ -53,14 +58,14 @@ export interface CalendarEventsEntities {
     canCreateEvents: boolean;
     canEditEvents: boolean;
     canDeleteEvents: boolean;
-  }
+  };
 }
 
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children, options = {} }) => {
   const handleError = useApolloErrorHandler();
   const defaultOptions = {
     sortByStartDate: true,
-    filterPastEvents: true
+    filterPastEvents: true,
   };
   const { sortByStartDate, filterPastEvents } = extend(options, defaultOptions);
 
@@ -70,23 +75,29 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   });
 
   const privileges = {
-    canCreateEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Create),
-    canEditEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Update),
-    canDeleteEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(p => p === AuthorizationPrivilege.Delete)
-  }
+    canCreateEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(
+      p => p === AuthorizationPrivilege.Create
+    ),
+    canEditEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(
+      p => p === AuthorizationPrivilege.Update
+    ),
+    canDeleteEvents: (data?.hub.timeline?.calendar.authorization?.myPrivileges ?? []).some(
+      p => p === AuthorizationPrivilege.Delete
+    ),
+  };
 
   const events = useMemo(() => {
-    let result: Required<HubCalendarEventsQuery['hub']>['timeline']['calendar']['events'] = data?.hub.timeline?.calendar.events ?? [];
+    let result: Required<HubCalendarEventsQuery['hub']>['timeline']['calendar']['events'] =
+      data?.hub.timeline?.calendar.events ?? [];
     if (sortByStartDate) {
       result = sortBy(result, event => event.startDate);
     }
     if (filterPastEvents) {
       const now = new Date();
-      result = result.filter(event => event.startDate && (new Date(event.startDate) > now));
+      result = result.filter(event => event.startDate && new Date(event.startDate) > now);
     }
     return result;
-  }
-  ,[data, sortByStartDate, filterPastEvents]);
+  }, [data, sortByStartDate, filterPastEvents]);
 
   const calendarId = data?.hub.timeline?.calendar.id;
 
@@ -103,7 +114,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   });
 
   const createEvent = useCallback(
-    (event: CalendarEventForm) => {
+    (event: CalendarEventFormData) => {
       const { startDate, description, tags, references, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date(); //!!
 
@@ -126,7 +137,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   );
 
   const updateEvent = useCallback(
-    (eventId: string, event: CalendarEventForm) => {
+    (eventId: string, event: CalendarEventFormData) => {
       const { startDate, description, tags, references, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date(); //!!
 

@@ -1,18 +1,23 @@
-import React, { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Skeleton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Box, Button, Skeleton } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { DialogContent } from '../../../common/components/core/dialog';
-import { CalendarEventForm, CalendarEventsContainer } from './CalendarEventsContainer';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import CalendarEventDetail from './views/CalendarEventDetail';
-import CalendarEventsList from './views/CalendarEventsList';
-import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import CreateCalendarEvent from './views/CreateCalendarEvent';
 import IconButton from '../../../common/components/core/IconButton';
+import { useUrlParams } from '../../../core/routing/useUrlParams';
+import { Actions } from '../../../core/ui/actions/Actions';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import { gutters } from '../../../core/ui/grid/utils';
+import { BlockTitle } from '../../../core/ui/typography';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import CalendarEventDetailContainer from './CalendarEventDetailContainer';
+import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
+import CalendarEventDetail from './views/CalendarEventDetail';
+import CalendarEventForm from './views/CalendarEventForm';
+import CalendarEventsList from './views/CalendarEventsList';
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -35,37 +40,52 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
   };
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
+    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="calendar-events-dialog-title">
       <DialogContent dividers>
         <Box marginBottom={2}>
           {!hubNameId && <Skeleton variant="rectangular" />}
           {hubNameId && (
             <CalendarEventsContainer hubId={hubNameId}>
-              {(
-                { events, privileges },
-                { createEvent, updateEvent, deleteEvent },
-                { loading }
-              ) => {
-                const handleNewEventSubmit = async (calendarEvent: CalendarEventForm) => {
+              {({ events, privileges }, { createEvent, updateEvent, deleteEvent }) => {
+                const handleNewEventSubmit = async (calendarEvent: CalendarEventFormData) => {
                   await createEvent(calendarEvent);
                   setIsCreatingEvent(false);
                 };
-                const handleEditEventSubmit = async (eventId: string, calendarEvent: CalendarEventForm) => {
+                const handleEditEventSubmit = async (eventId: string, calendarEvent: CalendarEventFormData) => {
                   await updateEvent(eventId, calendarEvent);
-                  setIsCreatingEvent(false);
+                  setEditingEvent(undefined);
                 };
                 const handleDeleteEvent = async (eventId: string) => {
                   await deleteEvent(eventId);
+                  setDeletingEvent(undefined);
                 };
-
+                if (deletingEvent) {
+                  return (
+                    <Dialog open maxWidth="md">
+                      <DialogHeader onClose={() => setDeletingEvent(undefined)}>
+                        {t('calendar.delete-event')}
+                      </DialogHeader>
+                      <BlockTitle margin={gutters(3)}>{t('calendar.delete-confirmation')}</BlockTitle>
+                      <Actions width="50%" marginX="auto">
+                        <Button onClick={() => handleDeleteEvent(deletingEvent)}>{t('buttons.delete')}</Button>
+                        <Button onClick={() => setDeletingEvent(undefined)} variant="contained">
+                          {t('buttons.cancel')}
+                        </Button>
+                      </Actions>
+                    </Dialog>
+                  );
+                }
                 if (isCreatingEvent) {
                   // Create event form
                   return (
-                    <CreateCalendarEvent
-                      dialogTitle={t('calendar.add-event')}
+                    <CalendarEventForm
                       onSubmit={handleNewEventSubmit}
                       onClose={handleClose}
-                      actions={<Button startIcon={<ArrowBackIcon />} onClick={() => setIsCreatingEvent(false)}>{t('buttons.back')}</Button>}
+                      actions={
+                        <Button startIcon={<ArrowBackIcon />} onClick={() => setIsCreatingEvent(false)}>
+                          {t('buttons.back')}
+                        </Button>
+                      }
                     />
                   );
                 } else if (editingEvent) {
@@ -76,12 +96,22 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                     return;
                   }
                   return (
-                    <CreateCalendarEvent
-                      dialogTitle={event.displayName}
-                      onSubmit={(calendarEvent: CalendarEventForm) => handleEditEventSubmit(event.id, calendarEvent)}
-                      onClose={handleClose}
-                      actions={<Button startIcon={<ArrowBackIcon />} onClick={() => setEditingEvent(undefined)}>{t('buttons.back')}</Button>}
-                    />
+                    <CalendarEventDetailContainer hubNameId={hubNameId} eventId={event.id}>
+                      {({ event: eventDetail }) => (
+                        <CalendarEventForm
+                          event={eventDetail}
+                          onSubmit={(calendarEvent: CalendarEventFormData) =>
+                            handleEditEventSubmit(event.id, calendarEvent)
+                          }
+                          onClose={handleClose}
+                          actions={
+                            <Button startIcon={<ArrowBackIcon />} onClick={() => setEditingEvent(undefined)}>
+                              {t('buttons.back')}
+                            </Button>
+                          }
+                        />
+                      )}
+                    </CalendarEventDetailContainer>
                   );
                 } else {
                   if (!calendarEventNameId) {

@@ -6,7 +6,7 @@ import { Box, Button } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
-import { CalendarEventForm } from '../CalendarEventsContainer';
+import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '../../../../core/apollo/generated/graphql-schema';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
@@ -21,15 +21,17 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import GridItem from '../../../../core/ui/grid/GridItem';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { displayNameValidator } from '../../../../common/utils/validator';
+import { addMinutes } from '../../utils';
+import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 
-interface CreateCalendarEventProps {
-  dialogTitle: string;
+interface CalendarEventFormProps {
+  event?: CalendarEventDetailData;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (eventValues: CalendarEventForm) => void;
+  onSubmit: (eventValues: CalendarEventFormData) => void;
   actions?: ReactNode;
 }
 
-interface CalendarEventFormValues extends Omit<CalendarEventForm, 'durationMinutes'>{
+interface CalendarEventFormValues extends Omit<CalendarEventFormData, 'durationMinutes'> {
   endDate: Date;
 }
 
@@ -53,10 +55,10 @@ const typeOptions: FormikSelectValue[] = [
   {
     id: CalendarEventType.Other,
     name: CalendarEventType.Other,
-  }
+  },
 ];
 
-const CreateCalendarEvent = ({ dialogTitle, onSubmit, onClose, actions }: CreateCalendarEventProps) => {
+const CalendarEventForm = ({ event, onSubmit, onClose, actions }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
   const handleSubmit = (formValues: Partial<CalendarEventFormValues>) => {
@@ -71,22 +73,30 @@ const CreateCalendarEvent = ({ dialogTitle, onSubmit, onClose, actions }: Create
   };
 
   const initialValues = useMemo<Partial<CalendarEventFormValues>>(() => {
-    const startDate = new Date();
-    const endDate = new Date(startDate.valueOf() + MILLISECONDS_IN_HALF_HOUR);
+    const currentHour = new Date();
+    currentHour.setMinutes(0);
+    currentHour.setSeconds(0);
+    currentHour.setMilliseconds(0);
+
+    const startDate = event?.startDate ? new Date(event?.startDate) : currentHour;
+    const endDate =
+      event && event?.startDate && typeof event?.durationMinutes !== 'undefined'
+        ? addMinutes(startDate, event?.durationMinutes)
+        : new Date(startDate.valueOf() + MILLISECONDS_IN_HALF_HOUR);
 
     return {
       startDate,
       endDate,
-      displayName: '',
-      description: '',
-      type: undefined,
-      multipleDays: false,
-      wholeDay: false,
-      durationDays: undefined,
-      tags: [],
-      references: [],
+      displayName: event?.displayName ?? '',
+      description: event?.profile?.description ?? '',
+      type: event?.type,
+      multipleDays: event?.multipleDays ?? false,
+      wholeDay: event?.wholeDay ?? false,
+      durationDays: event?.durationDays,
+      tags: event?.profile?.tagset?.tags ?? [],
+      references: event?.profile?.references ?? [],
     };
-  }, []);
+  }, [event]);
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator,
@@ -101,7 +111,7 @@ const CreateCalendarEvent = ({ dialogTitle, onSubmit, onClose, actions }: Create
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
-        <BlockTitle>{dialogTitle}</BlockTitle>
+        <BlockTitle>{event?.displayName ?? t('calendar.add-event')}</BlockTitle>
       </DialogHeader>
       <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
         {({ isValid }) => (
@@ -124,13 +134,25 @@ const CreateCalendarEvent = ({ dialogTitle, onSubmit, onClose, actions }: Create
                     <FormikTimePicker name="endDate" label={t('fields.endTime')} />
                   </Box>
                 </GridItem>
-                <FormikAutocomplete name="type" label={t('calendar.event.type')} values={typeOptions} sx={{ flexGrow: 1 }} />
+                <FormikAutocomplete
+                  name="type"
+                  label={t('calendar.event.type')}
+                  values={typeOptions}
+                  sx={{ flexGrow: 1 }}
+                />
               </Box>
-              <FormikMarkdownField name="description" title={t('common.description')} withCounter sx={{ marginBottom: gutters(-1) }} />
+              <FormikMarkdownField
+                name="description"
+                title={t('common.description')}
+                withCounter
+                sx={{ marginBottom: gutters(-1) }}
+              />
               <TagsetField name="tags" title={t('common.tags')} />
               <Actions justifyContent="space-between">
                 {actions}
-                <Button type="submit" variant="contained" disabled={!isValid}>{t('buttons.save')}</Button>
+                <Button type="submit" variant="contained" disabled={!isValid}>
+                  {t('buttons.save')}
+                </Button>
               </Actions>
             </Gutters>
           </Form>
@@ -140,4 +162,4 @@ const CreateCalendarEvent = ({ dialogTitle, onSubmit, onClose, actions }: Create
   );
 };
 
-export default CreateCalendarEvent;
+export default CalendarEventForm;

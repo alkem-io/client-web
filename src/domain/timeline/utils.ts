@@ -38,12 +38,15 @@ export const formatLongDate = (date: Date | undefined, defaultValue: string = ''
   });
 };
 
-function addMinutes(date, minutes) {
+export function addMinutes(date, minutes) {
   return new Date(date.getTime() + minutes * 60000);
 }
 
 type NeededFields = 'startDate' | 'durationMinutes' | 'wholeDay';
-export const formatTimeAndDuration = (event: Pick<CalendarEvent, NeededFields>, t: TFunction<'translation', undefined>) => {
+export const formatTimeAndDuration = (
+  event: Pick<CalendarEvent, NeededFields>,
+  t: TFunction<'translation', undefined>
+) => {
   if (!event.startDate) return '';
   if (event.wholeDay) {
     return t('calendar.event.whole-day');
