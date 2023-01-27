@@ -190,11 +190,6 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       const files = canvasApi.getFiles();
       const value = serializeAsJSON(elements, appState, files, 'local');
 
-      console.log(canvas?.value);
-      console.log(value);
-      console.log(isCanvasValueEqual(canvas?.value, value));
-      console.log(formikRef.current?.dirty);
-
       if (!isCanvasValueEqual(canvas?.value, value) || formikRef.current?.dirty) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
