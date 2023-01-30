@@ -1,5 +1,5 @@
 import { Box, Skeleton } from '@mui/material';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { useHubDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -10,6 +10,8 @@ import { Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import { useNavigate } from 'react-router-dom';
+import { sortBy } from 'lodash';
+import { today } from '../../../timeline/utils';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -25,7 +27,14 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
     variables: { hubId: journeyLocation?.hubNameId!, limit: MAX_NUMBER_OF_EVENTS },
     skip: !journeyLocation || !journeyLocation.hubNameId,
   });
-  const events = data?.hub.timeline?.calendar.events ?? [];
+
+  // TODO: Move this to serverside
+  const events = useMemo(() => {
+    const currentDate = today();
+    return sortBy(data?.hub.timeline?.calendar.events ?? [], event => event.startDate) // Sort the returned elements by date
+      .filter(event => event.startDate && new Date(event.startDate) > currentDate) // Filter the past Events
+      .slice(0, MAX_NUMBER_OF_EVENTS); // Get the first N elements
+  }, [data]);
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 

@@ -1055,9 +1055,6 @@
         "profile": {
           "description": ""
         },
-        "calendar": {
-          "description": ""
-        },
         "subentities": {
           "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
           "list": "List of {{entities}}",
@@ -1087,6 +1084,9 @@
           },
           "communications": {
             "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+          },
+          "calendar": {
+            "description": ""
           },
           "authorization": {
             "description": "Here you can tweak authorization settings for this {{entity}}."

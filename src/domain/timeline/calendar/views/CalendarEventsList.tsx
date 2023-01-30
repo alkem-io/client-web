@@ -14,7 +14,7 @@ import CalendarEventCard, { CalendarEventCardData } from './CalendarEventCard';
 
 interface CalendarEventsListProps {
   events: CalendarEventCardData[];
-  onClose: DialogHeaderProps['onClose'];
+  onClose?: DialogHeaderProps['onClose'];
   actions?: ReactNode;
 }
 

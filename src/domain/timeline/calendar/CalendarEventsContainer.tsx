@@ -15,7 +15,8 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
-import { extend, sortBy } from 'lodash';
+import { defaults, sortBy } from 'lodash';
+import { today } from '../utils';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -69,7 +70,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
     sortByStartDate: true,
     filterPastEvents: true,
   };
-  const { sortByStartDate, filterPastEvents } = extend(options, defaultOptions);
+  const { sortByStartDate, filterPastEvents } = defaults({}, options, defaultOptions);
 
   const { data, loading } = useHubCalendarEventsQuery({
     variables: { hubId: hubId! },
@@ -95,8 +96,8 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
       result = sortBy(result, event => event.startDate);
     }
     if (filterPastEvents) {
-      const now = new Date();
-      result = result.filter(event => event.startDate && new Date(event.startDate) > now);
+      const currentDate = today();
+      result = result.filter(event => event.startDate && new Date(event.startDate) > currentDate);
     }
     return result;
   }, [data, sortByStartDate, filterPastEvents]);

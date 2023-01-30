@@ -121,7 +121,7 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
                 <Box display="flex" gap={gutters()}>
                   <GridItem columns={4}>
                     <Box>
-                      <FormikDatePicker name="startDate" label={t('common.date')} />
+                      <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
                     </Box>
                   </GridItem>
                   <Box flexGrow={1}>
