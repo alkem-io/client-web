@@ -149,9 +149,11 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                     events={events}
                     onClose={handleClose}
                     actions={
-                      <IconButton onClick={() => setIsCreatingEvent(true)} size="large" sx={{ padding: 0 }}>
-                        <RoundedIcon component={Add} size="medium" iconSize="small" />
-                      </IconButton>
+                      privileges.canCreateEvents && (
+                        <IconButton onClick={() => setIsCreatingEvent(true)} size="large" sx={{ padding: 0 }}>
+                          <RoundedIcon component={Add} size="medium" iconSize="small" />
+                        </IconButton>
+                      )
                     }
                   />
                 );
