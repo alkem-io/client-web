@@ -1,5 +1,5 @@
 import { TFunction } from 'react-i18next';
-import { CalendarEvent } from '../../core/apollo/generated/graphql-schema';
+import { CalendarEvent } from '../../apollo/generated/graphql-schema';
 
 // Note: In this file some dates are recreated with
 //  `new Date(something that is supposed to be already a Date)`
@@ -43,8 +43,8 @@ export const formatLongDate = (date: Date | undefined, defaultValue: string = ''
   });
 };
 
-export function addMinutes(date: Date, minutes: number) {
-  return new Date(new Date(date).getTime() + minutes * 60000);
+export function addMinutes(date: Date | string, minutes: number) {
+  return new Date(new Date(date).getTime() + minutes * 60 * 1000);
 }
 
 type NeededFields = 'startDate' | 'durationMinutes' | 'wholeDay';

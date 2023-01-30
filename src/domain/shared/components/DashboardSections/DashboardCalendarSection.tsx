@@ -11,7 +11,7 @@ import CalendarEventView from '../../../timeline/calendar/views/CalendarEventVie
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import { useNavigate } from 'react-router-dom';
 import { sortBy } from 'lodash';
-import { today } from '../../../timeline/utils';
+import { today } from '../../../../core/utils/time/utils';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 

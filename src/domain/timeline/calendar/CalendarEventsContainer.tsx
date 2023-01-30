@@ -16,7 +16,7 @@ import {
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
 import { sortBy } from 'lodash';
-import { today } from '../utils';
+import { today } from '../../../core/utils/time/utils';
 
 export interface CalendarEventFormData
   extends Pick<

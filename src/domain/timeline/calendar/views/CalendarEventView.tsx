@@ -6,7 +6,7 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { formatBadgeDate, formatTooltipDate } from '../../utils';
+import { formatBadgeDate, formatTooltipDate } from '../../../../core/utils/time/utils';
 
 interface CalendarEventViewProps extends Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName' | 'profile'> {}
 
