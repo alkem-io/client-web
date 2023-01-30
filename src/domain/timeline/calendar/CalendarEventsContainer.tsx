@@ -1,5 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import {
+  refetchHubCalendarEventsQuery,
+  refetchHubDashboardCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
   useHubCalendarEventsQuery,
@@ -131,9 +133,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             },
           },
         },
+        refetchQueries: [refetchHubCalendarEventsQuery({ hubId }), refetchHubDashboardCalendarEventsQuery({ hubId })],
+        awaitRefetchQueries: true,
       }).then(result => result.data?.createEventOnCalendar?.nameID);
     },
-    [createCalendarEvent, calendarId]
+    [createCalendarEvent, hubId, calendarId]
   );
 
   const updateEvent = useCallback(
@@ -154,9 +158,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             },
           },
         },
+        refetchQueries: [refetchHubCalendarEventsQuery({ hubId }), refetchHubDashboardCalendarEventsQuery({ hubId })],
+        awaitRefetchQueries: true,
       }).then(result => result.data?.updateCalendarEvent?.nameID);
     },
-    [updateCalendarEvent]
+    [updateCalendarEvent, hubId]
   );
 
   const deleteEvent = useCallback(
@@ -167,9 +173,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             ID: eventId,
           },
         },
+        refetchQueries: [refetchHubCalendarEventsQuery({ hubId }), refetchHubDashboardCalendarEventsQuery({ hubId })],
+        awaitRefetchQueries: true,
       }).then(result => result.data?.deleteCalendarEvent?.nameID);
     },
-    [deleteCalendarEvent]
+    [deleteCalendarEvent, hubId]
   );
 
   return (

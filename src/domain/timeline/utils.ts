@@ -1,7 +1,12 @@
 import { TFunction } from 'react-i18next';
 import { CalendarEvent } from '../../core/apollo/generated/graphql-schema';
-// TODO: format dates in a better way. Maybe use momentjs?
 
+// Note: In this file some dates are recreated with
+//  `new Date(something that is supposed to be already a Date)`
+//  because the API is returning strings parseable as a Dates but not a real Javascript Dates, and
+//  Codegen tool wrongly generates models with Date properties.
+
+// TODO: format dates in a better way. Maybe use momentjs?
 // TODO: support en-us format mm/dd?? Maybe get this from the browser?
 const LocaleId = 'en-GB';
 
@@ -38,8 +43,8 @@ export const formatLongDate = (date: Date | undefined, defaultValue: string = ''
   });
 };
 
-export function addMinutes(date, minutes) {
-  return new Date(date.getTime() + minutes * 60000);
+export function addMinutes(date: Date, minutes: number) {
+  return new Date(new Date(date).getTime() + minutes * 60000);
 }
 
 type NeededFields = 'startDate' | 'durationMinutes' | 'wholeDay';
@@ -71,4 +76,12 @@ export const formatTimeAndDuration = (
       })
     );
   }
+};
+
+export const dateRounded = (date: Date = new Date()) => {
+  const result = new Date(new Date(date).getTime() + 59 * 60000); // Round to the next hour
+  result.setMinutes(0);
+  result.setSeconds(0);
+  result.setMilliseconds(0);
+  return result;
 };

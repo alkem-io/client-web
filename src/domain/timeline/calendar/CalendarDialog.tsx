@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, Button, Skeleton } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DialogContent } from '../../../common/components/core/dialog';
@@ -14,7 +14,8 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../core/ui/typography';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import CalendarEventDetailContainer from './CalendarEventDetailContainer';
+import { dateRounded } from '../utils';
+import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
 import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
 import CalendarEventDetail from './views/CalendarEventDetail';
 import CalendarEventForm from './views/CalendarEventForm';
@@ -42,6 +43,25 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
     onClose();
   };
 
+  const emptyCalendarEvent: Partial<CalendarEventDetailData> = useMemo(
+    () => ({
+      startDate: dateRounded(),
+      durationMinutes: 30,
+      displayName: '',
+      profile: {
+        id: '',
+        description: '',
+        references: [],
+        tagset: { id: '', name: '', tags: [] },
+      },
+      multipleDays: false,
+      durationDays: 0,
+      wholeDay: false,
+      type: undefined,
+    }),
+    []
+  );
+
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="calendar-events-dialog-title">
       <Box marginBottom={2}>
@@ -54,6 +74,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                 const handleDeleteEvent = async (eventId: string) => {
                   await deleteEvent(eventId);
                   setDeletingEvent(undefined);
+                  navigate(`${EntityPageSection.Dashboard}/calendar`);
                 };
                 return (
                   <>
@@ -81,6 +102,8 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
 
                 return (
                   <CalendarEventForm
+                    dialogTitle={t('calendar.add-event')}
+                    event={emptyCalendarEvent}
                     onSubmit={handleNewEventSubmit}
                     onClose={handleClose}
                     actions={<BackButton onClick={() => setIsCreatingEvent(false)} />}
@@ -104,6 +127,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                   <CalendarEventDetailContainer hubNameId={hubNameId} eventId={event.id}>
                     {({ event: eventDetail }) => (
                       <CalendarEventForm
+                        dialogTitle={t('calendar.edit-event')}
                         event={eventDetail}
                         onSubmit={(calendarEvent: CalendarEventFormData) =>
                           handleEditEventSubmit(event.id, calendarEvent)

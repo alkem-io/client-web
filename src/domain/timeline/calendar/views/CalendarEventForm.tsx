@@ -25,7 +25,8 @@ import { addMinutes } from '../../utils';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 
 interface CalendarEventFormProps {
-  event?: CalendarEventDetailData;
+  event: Partial<CalendarEventDetailData> | undefined;
+  dialogTitle: string;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (eventValues: CalendarEventFormData) => void;
   actions?: ReactNode;
@@ -58,7 +59,7 @@ const typeOptions: FormikSelectValue[] = [
   },
 ];
 
-const CalendarEventForm = ({ event, onSubmit, onClose, actions }: CalendarEventFormProps) => {
+const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
   const handleSubmit = (formValues: Partial<CalendarEventFormValues>) => {
@@ -73,12 +74,7 @@ const CalendarEventForm = ({ event, onSubmit, onClose, actions }: CalendarEventF
   };
 
   const initialValues = useMemo<Partial<CalendarEventFormValues>>(() => {
-    const currentHour = new Date();
-    currentHour.setMinutes(0);
-    currentHour.setSeconds(0);
-    currentHour.setMilliseconds(0);
-
-    const startDate = event?.startDate ? new Date(event?.startDate) : currentHour;
+    const startDate = event?.startDate ?? new Date();
     const endDate =
       event && event?.startDate && typeof event?.durationMinutes !== 'undefined'
         ? addMinutes(startDate, event?.durationMinutes)
@@ -111,7 +107,7 @@ const CalendarEventForm = ({ event, onSubmit, onClose, actions }: CalendarEventF
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
-        <BlockTitle>{event?.displayName ?? t('calendar.add-event')}</BlockTitle>
+        <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
       <DialogContent>
         <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>

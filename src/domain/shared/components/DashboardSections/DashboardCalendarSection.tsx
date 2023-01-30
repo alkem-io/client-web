@@ -22,7 +22,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
   const navigate = useNavigate();
 
   const { data, loading } = useHubDashboardCalendarEventsQuery({
-    variables: { hubId: journeyLocation!.hubNameId!, limit: MAX_NUMBER_OF_EVENTS },
+    variables: { hubId: journeyLocation?.hubNameId!, limit: MAX_NUMBER_OF_EVENTS },
     skip: !journeyLocation || !journeyLocation.hubNameId,
   });
   const events = data?.hub.timeline?.calendar.events ?? [];
