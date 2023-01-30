@@ -16,7 +16,7 @@ import {
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
 import { sortBy } from 'lodash';
-import { today } from '../../../core/utils/time/utils';
+import { startOfDay } from '../../../core/utils/time/utils';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -92,7 +92,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
       result = sortBy(result, event => event.startDate);
     }
     if (filterPastEvents) {
-      const currentDate = today();
+      const currentDate = startOfDay();
       result = result.filter(event => event.startDate && new Date(event.startDate) > currentDate);
     }
     return result;

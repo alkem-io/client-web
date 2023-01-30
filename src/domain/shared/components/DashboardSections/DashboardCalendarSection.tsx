@@ -11,7 +11,7 @@ import CalendarEventView from '../../../timeline/calendar/views/CalendarEventVie
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import { useNavigate } from 'react-router-dom';
 import { sortBy } from 'lodash';
-import { today } from '../../../../core/utils/time/utils';
+import { startOfDay } from '../../../../core/utils/time/utils';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -30,7 +30,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   // TODO: Move this to serverside
   const events = useMemo(() => {
-    const currentDate = today();
+    const currentDate = startOfDay();
     return sortBy(data?.hub.timeline?.calendar.events ?? [], event => event.startDate) // Sort the returned elements by date
       .filter(event => event.startDate && new Date(event.startDate) > currentDate) // Filter the past Events
       .slice(0, MAX_NUMBER_OF_EVENTS); // Get the first N elements

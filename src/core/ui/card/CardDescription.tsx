@@ -11,9 +11,9 @@ interface CardDescriptionProps extends BoxProps {
   children: string;
 }
 
-export const CardDescription = ({ children, ...rest }: CardDescriptionProps) => {
+export const CardDescription = ({ children, ...containerProps }: CardDescriptionProps) => {
   return (
-    <Box paddingX={1.5} paddingY={1} onClick={stopPropagationFromLinks} {...rest}>
+    <Box paddingX={1.5} paddingY={1} onClick={stopPropagationFromLinks} {...containerProps}>
       <OverflowGradient height={gutters(DESCRIPTION_TEXT_MAX_LINES)} backgroundColor="default">
         <WrapperMarkdown>{children}</WrapperMarkdown>
       </OverflowGradient>

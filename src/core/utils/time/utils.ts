@@ -1,5 +1,4 @@
 import { TFunction } from 'react-i18next';
-import { CalendarEvent } from '../../apollo/generated/graphql-schema';
 
 // Note: In this file some dates are recreated with
 //  `new Date(something that is supposed to be already a Date)`
@@ -47,9 +46,8 @@ export function addMinutes(date: Date | string, minutes: number) {
   return new Date(new Date(date).getTime() + minutes * 60 * 1000);
 }
 
-type NeededFields = 'startDate' | 'durationMinutes' | 'wholeDay';
 export const formatTimeAndDuration = (
-  event: Pick<CalendarEvent, NeededFields>,
+  event: { startDate?: Date; durationMinutes?: number; wholeDay?: boolean },
   t: TFunction<'translation', undefined>
 ) => {
   if (!event.startDate) return '';
@@ -86,7 +84,7 @@ export const dateRounded = (date: Date = new Date()) => {
   return result;
 };
 
-export const today = (date: Date = new Date()) => {
+export const startOfDay = (date: Date = new Date()) => {
   const result = new Date(date);
   result.setHours(0);
   result.setMinutes(0);
