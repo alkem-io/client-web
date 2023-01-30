@@ -6,7 +6,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
-import { formatBadgeDate, formatLongDate, formatTimeAndDuration } from '../../utils';
+import { formatBadgeDate, formatLongDate, formatTimeAndDuration } from '../../../../core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import { CalendarEventCardData } from './CalendarEventCard';

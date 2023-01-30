@@ -14,7 +14,7 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import { gutters } from '../../../core/ui/grid/utils';
 import { BlockTitle } from '../../../core/ui/typography';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import { dateRounded } from '../utils';
+import { dateRounded } from '../../../core/utils/time/utils';
 import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
 import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
 import CalendarEventDetail from './views/CalendarEventDetail';

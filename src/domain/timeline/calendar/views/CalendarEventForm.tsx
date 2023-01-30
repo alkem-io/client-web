@@ -21,8 +21,8 @@ import { TagsetField } from '../../../platform/admin/components/Common/TagsetSeg
 import GridItem from '../../../../core/ui/grid/GridItem';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { displayNameValidator } from '../../../../common/utils/validator';
-import { addMinutes } from '../../utils';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
+import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
 
 interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
@@ -31,14 +31,6 @@ interface CalendarEventFormProps {
   onSubmit: (eventValues: CalendarEventFormData) => void;
   actions?: ReactNode;
 }
-
-interface CalendarEventFormValues extends Omit<CalendarEventFormData, 'durationMinutes'> {
-  endDate: Date;
-}
-
-const MILLISECONDS_IN_MINUTE = 60 * 1000;
-
-const MILLISECONDS_IN_HALF_HOUR = 30 * MILLISECONDS_IN_MINUTE;
 
 const typeOptions: FormikSelectValue[] = [
   {
@@ -62,29 +54,18 @@ const typeOptions: FormikSelectValue[] = [
 const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
-  const handleSubmit = (formValues: Partial<CalendarEventFormValues>) => {
-    const { endDate, ...values } = formValues as CalendarEventFormValues;
-
-    const durationMinutes = (endDate.valueOf() - values.startDate!.valueOf()) / MILLISECONDS_IN_MINUTE;
-
-    onSubmit({
-      ...values,
-      durationMinutes,
-    });
+  const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
+    onSubmit(formValues as CalendarEventFormData);
   };
 
   const initialStartDate = useMemo(() => event?.startDate ?? new Date(), [event]);
 
-  const initialValues = useMemo<Partial<CalendarEventFormValues>>(() => {
+  const initialValues = useMemo<Partial<CalendarEventFormData>>(() => {
     const startDate = initialStartDate;
-    const endDate =
-      event && event?.startDate && typeof event?.durationMinutes !== 'undefined'
-        ? addMinutes(startDate, event?.durationMinutes)
-        : new Date(startDate.valueOf() + MILLISECONDS_IN_HALF_HOUR);
 
     return {
       startDate,
-      endDate,
+      durationMinutes: event?.durationMinutes ?? 30,
       displayName: event?.displayName ?? '',
       description: event?.profile?.description ?? '',
       type: event?.type,
@@ -129,7 +110,11 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
                 <GridItem columns={4}>
                   <Box display="flex" gap={gutters()}>
                     <FormikTimePicker name="startDate" label={t('fields.startTime')} />
-                    <FormikTimePicker name="endDate" label={t('fields.endTime')} />
+                    <FormikDurationMinutes
+                      name="durationMinutes"
+                      dateFieldName="startDate"
+                      label={t('fields.endTime')}
+                    />
                   </Box>
                 </GridItem>
                 <FormikAutocomplete
