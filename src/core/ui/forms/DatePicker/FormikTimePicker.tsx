@@ -12,15 +12,22 @@ const FormikDatePicker = ({ name, ...datePickerProps }: FormikTimePickerProps) =
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleChange: TimePickerProps['onChange'] = (date) => {
+  const handleChange: TimePickerProps['onChange'] = date => {
     helpers.setValue(date);
-    setIsOpen(false);
   };
 
   // TODO consider uncontrolled state (no open/onOpen/onClose)
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <TimePicker open={isOpen} value={field.value} onChange={handleChange} renderInput={(params) => <TextField {...params} fullWidth />} onOpen={() => setIsOpen(true)} onClose={() => setIsOpen(false)} {...datePickerProps} />
+      <TimePicker
+        open={isOpen}
+        value={field.value}
+        onChange={handleChange}
+        renderInput={params => <TextField {...params} fullWidth />}
+        onOpen={() => setIsOpen(true)}
+        onClose={() => setIsOpen(false)}
+        {...datePickerProps}
+      />
     </LocalizationProvider>
   );
 };
