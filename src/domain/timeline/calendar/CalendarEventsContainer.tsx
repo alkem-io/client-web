@@ -15,7 +15,7 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
-import { defaults, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import { today } from '../utils';
 
 export interface CalendarEventFormData
@@ -66,11 +66,7 @@ export interface CalendarEventsEntities {
 
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children, options = {} }) => {
   const handleError = useApolloErrorHandler();
-  const defaultOptions = {
-    sortByStartDate: true,
-    filterPastEvents: true,
-  };
-  const { sortByStartDate, filterPastEvents } = defaults({}, options, defaultOptions);
+  const { sortByStartDate = true, filterPastEvents = true } = options;
 
   const { data, loading } = useHubCalendarEventsQuery({
     variables: { hubId: hubId! },

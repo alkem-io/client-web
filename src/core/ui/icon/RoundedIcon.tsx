@@ -1,16 +1,16 @@
 import React, { ComponentType } from 'react';
-import { BoxProps, SvgIconProps } from '@mui/material';
+import { BoxProps, IconProps, SvgIconProps } from '@mui/material';
 import RoundedBadge, { RoundedBadgeProps } from './RoundedBadge';
-
 
 export interface RoundedIconProps extends Pick<RoundedBadgeProps, 'size'> {
   component: ComponentType<SvgIconProps>;
+  iconSize?: IconProps['fontSize'];
 }
 
-const RoundedIcon = ({ size, component: Icon, ...containerProps }: RoundedIconProps & BoxProps) => {
+const RoundedIcon = ({ size, iconSize = size, component: Icon, ...containerProps }: RoundedIconProps & BoxProps) => {
   return (
     <RoundedBadge size={size} {...containerProps}>
-      <Icon fontSize={size} />
+      <Icon fontSize={iconSize} />
     </RoundedBadge>
   );
 };

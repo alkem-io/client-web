@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo, useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DialogContent } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
@@ -113,65 +113,63 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
       <DialogHeader onClose={onClose}>
         <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
-      <DialogContent>
-        <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-          {({ isValid }) => (
-            <Form>
-              <Gutters paddingTop={0}>
-                <Box display="flex" gap={gutters()}>
-                  <GridItem columns={4}>
-                    <Box>
-                      <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
-                    </Box>
-                  </GridItem>
-                  <Box flexGrow={1}>
-                    <FormikInputField name="displayName" title={t('fields.displayName')} />
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+        {({ isValid }) => (
+          <Form>
+            <Gutters paddingTop={0}>
+              <Box display="flex" gap={gutters()}>
+                <GridItem columns={4}>
+                  <Box>
+                    <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
                   </Box>
+                </GridItem>
+                <Box flexGrow={1}>
+                  <FormikInputField name="displayName" title={t('fields.displayName')} />
                 </Box>
-                <Box display="flex" gap={gutters()}>
-                  <GridItem columns={4}>
-                    <Box display="flex" gap={gutters()}>
-                      <FormikTimePicker
-                        name="startDate"
-                        label={t('fields.startTime')}
-                        open={isOpenStartTime}
-                        onOpen={() => setIsOpenStartTime(true)}
-                        onClose={() => setIsOpenStartTime(false)}
-                      />
-                      <FormikTimePicker
-                        name="endDate"
-                        label={t('fields.endTime')}
-                        open={isOpenEndTime}
-                        onOpen={() => setIsOpenEndTime(true)}
-                        onClose={() => setIsOpenEndTime(false)}
-                      />
-                    </Box>
-                  </GridItem>
-                  <FormikAutocomplete
-                    name="type"
-                    label={t('calendar.event.type')}
-                    values={typeOptions}
-                    sx={{ flexGrow: 1 }}
-                  />
-                </Box>
-                <FormikMarkdownField
-                  name="description"
-                  title={t('common.description')}
-                  withCounter
-                  sx={{ marginBottom: gutters(-1) }}
+              </Box>
+              <Box display="flex" gap={gutters()}>
+                <GridItem columns={4}>
+                  <Box display="flex" gap={gutters()}>
+                    <FormikTimePicker
+                      name="startDate"
+                      label={t('fields.startTime')}
+                      open={isOpenStartTime}
+                      onOpen={() => setIsOpenStartTime(true)}
+                      onClose={() => setIsOpenStartTime(false)}
+                    />
+                    <FormikTimePicker
+                      name="endDate"
+                      label={t('fields.endTime')}
+                      open={isOpenEndTime}
+                      onOpen={() => setIsOpenEndTime(true)}
+                      onClose={() => setIsOpenEndTime(false)}
+                    />
+                  </Box>
+                </GridItem>
+                <FormikAutocomplete
+                  name="type"
+                  label={t('calendar.event.type')}
+                  values={typeOptions}
+                  sx={{ flexGrow: 1 }}
                 />
-                <TagsetField name="tags" title={t('common.tags')} />
-                <Actions justifyContent="space-between">
-                  {actions}
-                  <Button type="submit" variant="contained" disabled={!isValid}>
-                    {t('buttons.save')}
-                  </Button>
-                </Actions>
-              </Gutters>
-            </Form>
-          )}
-        </Formik>
-      </DialogContent>
+              </Box>
+              <FormikMarkdownField
+                name="description"
+                title={t('common.description')}
+                withCounter
+                sx={{ marginBottom: gutters(-1) }}
+              />
+              <TagsetField name="tags" title={t('common.tags')} />
+              <Actions justifyContent="space-between">
+                {actions}
+                <Button type="submit" variant="contained" disabled={!isValid}>
+                  {t('buttons.save')}
+                </Button>
+              </Actions>
+            </Gutters>
+          </Form>
+        )}
+      </Formik>
     </GridProvider>
   );
 };
