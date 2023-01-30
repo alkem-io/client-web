@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -73,8 +73,10 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
     });
   };
 
+  const initialStartDate = useMemo(() => event?.startDate ?? new Date(), [event]);
+
   const initialValues = useMemo<Partial<CalendarEventFormValues>>(() => {
-    const startDate = event?.startDate ?? new Date();
+    const startDate = initialStartDate;
     const endDate =
       event && event?.startDate && typeof event?.durationMinutes !== 'undefined'
         ? addMinutes(startDate, event?.durationMinutes)
@@ -92,7 +94,7 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
       tags: event?.profile?.tagset?.tags ?? [],
       references: event?.profile?.references ?? [],
     };
-  }, [event]);
+  }, [event, initialStartDate]);
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator,
@@ -103,6 +105,8 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
       .max(500, ({ max }) => t('common.field-max-length', { max })),
     type: yup.string().required(t('common.field-required')),
   });
+  const [isOpenStartTime, setIsOpenStartTime] = useState(false);
+  const [isOpenEndTime, setIsOpenEndTime] = useState(false);
 
   return (
     <GridProvider columns={12}>
@@ -127,8 +131,20 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
                 <Box display="flex" gap={gutters()}>
                   <GridItem columns={4}>
                     <Box display="flex" gap={gutters()}>
-                      <FormikTimePicker name="startDate" label={t('fields.startTime')} />
-                      <FormikTimePicker name="endDate" label={t('fields.endTime')} />
+                      <FormikTimePicker
+                        name="startDate"
+                        label={t('fields.startTime')}
+                        open={isOpenStartTime}
+                        onOpen={() => setIsOpenStartTime(true)}
+                        onClose={() => setIsOpenStartTime(false)}
+                      />
+                      <FormikTimePicker
+                        name="endDate"
+                        label={t('fields.endTime')}
+                        open={isOpenEndTime}
+                        onOpen={() => setIsOpenEndTime(true)}
+                        onClose={() => setIsOpenEndTime(false)}
+                      />
                     </Box>
                   </GridItem>
                   <FormikAutocomplete
