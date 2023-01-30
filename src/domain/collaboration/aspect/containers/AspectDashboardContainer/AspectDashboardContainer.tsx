@@ -10,8 +10,8 @@ import {
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
-  usePostCommentInAspectMutation,
-  useRemoveCommentFromAspectMutation,
+  usePostCommentMutation,
+  useRemoveCommentMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../../../community/contributor/user';
@@ -183,7 +183,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
@@ -198,7 +198,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
+  const [postComment, { loading: postingComment }] = usePostCommentMutation({
     onError: handleError,
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({

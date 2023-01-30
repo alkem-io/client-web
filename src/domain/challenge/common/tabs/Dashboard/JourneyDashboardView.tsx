@@ -27,6 +27,7 @@ import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopC
 import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
 import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
+import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -39,6 +40,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   recommendations: Reference[] | undefined;
   community?: unknown;
   communityReadAccess?: boolean;
+  timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   childEntities?: ChildEntity[];
@@ -60,6 +62,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   references,
   recommendations,
   communityReadAccess = false,
+  timelineReadAccess = false,
   childEntityReadAccess = false,
   memberUsers,
   memberUsersCount,
@@ -115,6 +118,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             leadOrganizations={leadOrganizations}
           />
         )}
+        {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         <PageContentBlock>
           <PageContentBlockHeader title={t('components.referenceSegment.title')} />
           <References references={references} />

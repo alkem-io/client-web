@@ -7139,6 +7139,19 @@ export type HubPageQuery = {
         }>
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    timeline?:
+      | {
+          __typename?: 'Timeline';
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                anonymousReadAccess: boolean;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -7431,6 +7444,19 @@ export type HubPageFragment = {
       }>
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  timeline?:
+    | {
+        __typename?: 'Timeline';
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              anonymousReadAccess: boolean;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type AdminHubFragment = {
@@ -10436,27 +10462,6 @@ export type CalloutAspectInfoFragment = {
     | undefined;
 };
 
-export type PostCommentInAspectMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
-}>;
-
-export type PostCommentInAspectMutation = {
-  __typename?: 'Mutation';
-  sendComment: {
-    __typename?: 'Message';
-    id: string;
-    message: string;
-    timestamp: number;
-    sender: { __typename?: 'User'; id: string };
-  };
-};
-
-export type RemoveCommentFromAspectMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type AspectCardFragment = {
   __typename?: 'Aspect';
   id: string;
@@ -10993,7 +10998,12 @@ export type CreateCalloutMutation = {
           id: string;
           commentsCount: number;
           authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
             | undefined;
           messages?:
             | Array<{
@@ -11303,6 +11313,7 @@ export type CalloutsQuery = {
                             __typename?: 'Authorization';
                             id: string;
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
                           }
                         | undefined;
                       messages?:
@@ -11508,6 +11519,7 @@ export type CalloutsQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         messages?:
@@ -11719,6 +11731,7 @@ export type CalloutsQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         messages?:
@@ -12200,7 +12213,12 @@ export type CollaborationWithCalloutsFragment = {
               id: string;
               commentsCount: number;
               authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
                 | undefined;
               messages?:
                 | Array<{
@@ -12371,7 +12389,12 @@ export type CalloutFragment = {
         id: string;
         commentsCount: number;
         authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
           | undefined;
         messages?:
           | Array<{
@@ -20046,7 +20069,12 @@ export type CommentsWithMessagesFragment = {
   id: string;
   commentsCount: number;
   authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        anonymousReadAccess: boolean;
+      }
     | undefined;
   messages?:
     | Array<{
@@ -20075,9 +20103,635 @@ export type CommentsWithMessagesFragment = {
     | undefined;
 };
 
+export type PostCommentMutationVariables = Exact<{
+  messageData: CommentsSendMessageInput;
+}>;
+
+export type PostCommentMutation = {
+  __typename?: 'Mutation';
+  sendComment: {
+    __typename?: 'Message';
+    id: string;
+    message: string;
+    timestamp: number;
+    sender: { __typename?: 'User'; id: string };
+  };
+};
+
+export type RemoveCommentMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
+
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
   startCursor?: string | undefined;
   endCursor?: string | undefined;
   hasNextPage: boolean;
+};
+
+export type HubDashboardCalendarEventsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  limit?: InputMaybe<Scalars['Float']>;
+}>;
+
+export type HubDashboardCalendarEventsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    timeline?:
+      | {
+          __typename?: 'Timeline';
+          id: string;
+          calendar: {
+            __typename?: 'Calendar';
+            id: string;
+            events?:
+              | Array<{
+                  __typename?: 'CalendarEvent';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  startDate?: Date | undefined;
+                  durationDays?: number | undefined;
+                  durationMinutes: number;
+                  wholeDay: boolean;
+                  multipleDays: boolean;
+                  profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CalendarEventInfoFragment = {
+  __typename?: 'CalendarEvent';
+  id: string;
+  nameID: string;
+  displayName: string;
+  startDate?: Date | undefined;
+  durationDays?: number | undefined;
+  durationMinutes: number;
+  wholeDay: boolean;
+  multipleDays: boolean;
+  profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
+};
+
+export type HubCalendarEventsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCalendarEventsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    timeline?:
+      | {
+          __typename?: 'Timeline';
+          id: string;
+          calendar: {
+            __typename?: 'Calendar';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            events?:
+              | Array<{
+                  __typename?: 'CalendarEvent';
+                  type: CalendarEventType;
+                  createdDate: Date;
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  startDate?: Date | undefined;
+                  durationDays?: number | undefined;
+                  durationMinutes: number;
+                  wholeDay: boolean;
+                  multipleDays: boolean;
+                  createdBy: {
+                    __typename?: 'User';
+                    id: string;
+                    displayName: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                        }
+                      | undefined;
+                  };
+                  profile?:
+                    | {
+                        __typename?: 'CardProfile';
+                        id: string;
+                        description: string;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        commentsCount: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              timestamp: number;
+                              sender: {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                displayName: string;
+                                lastName: string;
+                                profile?:
+                                  | {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                          }>
+                                        | undefined;
+                                      location?:
+                                        | { __typename?: 'Location'; id: string; city: string; country: string }
+                                        | undefined;
+                                    }
+                                  | undefined;
+                              };
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CalendarEventDetailsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  eventId: Scalars['UUID'];
+}>;
+
+export type CalendarEventDetailsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    timeline?:
+      | {
+          __typename?: 'Timeline';
+          id: string;
+          calendar: {
+            __typename?: 'Calendar';
+            id: string;
+            event?:
+              | {
+                  __typename?: 'CalendarEvent';
+                  type: CalendarEventType;
+                  createdDate: Date;
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  startDate?: Date | undefined;
+                  durationDays?: number | undefined;
+                  durationMinutes: number;
+                  wholeDay: boolean;
+                  multipleDays: boolean;
+                  createdBy: {
+                    __typename?: 'User';
+                    id: string;
+                    displayName: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                        }
+                      | undefined;
+                  };
+                  profile?:
+                    | {
+                        __typename?: 'CardProfile';
+                        id: string;
+                        description: string;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        commentsCount: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              timestamp: number;
+                              sender: {
+                                __typename?: 'User';
+                                id: string;
+                                nameID: string;
+                                firstName: string;
+                                displayName: string;
+                                lastName: string;
+                                profile?:
+                                  | {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                          }>
+                                        | undefined;
+                                      location?:
+                                        | { __typename?: 'Location'; id: string; city: string; country: string }
+                                        | undefined;
+                                    }
+                                  | undefined;
+                              };
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CalendarEventDetailsFragment = {
+  __typename?: 'CalendarEvent';
+  type: CalendarEventType;
+  createdDate: Date;
+  id: string;
+  nameID: string;
+  displayName: string;
+  startDate?: Date | undefined;
+  durationDays?: number | undefined;
+  durationMinutes: number;
+  wholeDay: boolean;
+  multipleDays: boolean;
+  createdBy: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+  };
+  profile?:
+    | {
+        __typename?: 'CardProfile';
+        id: string;
+        description: string;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      }
+    | undefined;
+  comments?:
+    | {
+        __typename?: 'Comments';
+        id: string;
+        commentsCount: number;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+        messages?:
+          | Array<{
+              __typename?: 'Message';
+              id: string;
+              message: string;
+              timestamp: number;
+              sender: {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                firstName: string;
+                displayName: string;
+                lastName: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                        | undefined;
+                      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                    }
+                  | undefined;
+              };
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type EventProfileFragment = {
+  __typename?: 'CardProfile';
+  id: string;
+  description: string;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+    | undefined;
+};
+
+export type CreateCalendarEventMutationVariables = Exact<{
+  eventData: CreateCalendarEventOnCalendarInput;
+}>;
+
+export type CreateCalendarEventMutation = {
+  __typename?: 'Mutation';
+  createEventOnCalendar: {
+    __typename?: 'CalendarEvent';
+    type: CalendarEventType;
+    createdDate: Date;
+    id: string;
+    nameID: string;
+    displayName: string;
+    startDate?: Date | undefined;
+    durationDays?: number | undefined;
+    durationMinutes: number;
+    wholeDay: boolean;
+    multipleDays: boolean;
+    createdBy: {
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+    };
+    profile?:
+      | {
+          __typename?: 'CardProfile';
+          id: string;
+          description: string;
+          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+    comments?:
+      | {
+          __typename?: 'Comments';
+          id: string;
+          commentsCount: number;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          messages?:
+            | Array<{
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender: {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  firstName: string;
+                  displayName: string;
+                  lastName: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                      }
+                    | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type UpdateCalendarEventMutationVariables = Exact<{
+  eventData: UpdateCalendarEventInput;
+}>;
+
+export type UpdateCalendarEventMutation = {
+  __typename?: 'Mutation';
+  updateCalendarEvent: {
+    __typename?: 'CalendarEvent';
+    type: CalendarEventType;
+    createdDate: Date;
+    id: string;
+    nameID: string;
+    displayName: string;
+    startDate?: Date | undefined;
+    durationDays?: number | undefined;
+    durationMinutes: number;
+    wholeDay: boolean;
+    multipleDays: boolean;
+    createdBy: {
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+    };
+    profile?:
+      | {
+          __typename?: 'CardProfile';
+          id: string;
+          description: string;
+          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+    comments?:
+      | {
+          __typename?: 'Comments';
+          id: string;
+          commentsCount: number;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          messages?:
+            | Array<{
+                __typename?: 'Message';
+                id: string;
+                message: string;
+                timestamp: number;
+                sender: {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  firstName: string;
+                  displayName: string;
+                  lastName: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                      }
+                    | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type DeleteCalendarEventMutationVariables = Exact<{
+  deleteData: DeleteCalendarEventInput;
+}>;
+
+export type DeleteCalendarEventMutation = {
+  __typename?: 'Mutation';
+  deleteCalendarEvent: { __typename?: 'CalendarEvent'; id: string; nameID: string };
+};
+
+export type CalendarEventCommentsMessageReceivedSubscriptionVariables = Exact<{
+  calendarEventID: Scalars['UUID'];
+}>;
+
+export type CalendarEventCommentsMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  calendarEventCommentsMessageReceived: {
+    __typename?: 'CalendarEventCommentsMessageReceived';
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender: {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        firstName: string;
+        displayName: string;
+        lastName: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            }
+          | undefined;
+      };
+    };
+  };
 };
