@@ -115,7 +115,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
       const { startDate, description, tags, references, ...rest } = event;
-      const parsedStartDate = startDate ? new Date(startDate) : new Date(); //!!
+      const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
       return createCalendarEvent({
         variables: {
@@ -140,7 +140,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   const updateEvent = useCallback(
     (eventId: string, event: CalendarEventFormData) => {
       const { startDate, description, tags, references, ...rest } = event;
-      const parsedStartDate = startDate ? new Date(startDate) : new Date(); //!!
+      const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
       return updateCalendarEvent({
         variables: {
@@ -150,7 +150,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             ...rest,
             profileData: {
               description: description,
-              // references: ...references  //!!
+              // references: ...references  // TODO...
               tags: tags,
             },
           },

@@ -40,6 +40,7 @@ const FormikDurationMinutes = ({ name, dateFieldName, ...datePickerProps }: Form
         onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}
         minTime={new Date(dateField.value)}
+        ampm={false}
         {...datePickerProps}
       />
     </LocalizationProvider>

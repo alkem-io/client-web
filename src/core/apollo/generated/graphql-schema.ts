@@ -20222,7 +20222,7 @@ export type HubCalendarEventsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                         }
                       | undefined;
                   };
@@ -20339,7 +20339,7 @@ export type CalendarEventDetailsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+                          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                         }
                       | undefined;
                   };
@@ -20438,7 +20438,7 @@ export type CalendarEventDetailsFragment = {
           __typename?: 'Profile';
           id: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         }
       | undefined;
   };
@@ -20534,7 +20534,7 @@ export type CreateCalendarEventMutation = {
             __typename?: 'Profile';
             id: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           }
         | undefined;
     };
@@ -20627,7 +20627,7 @@ export type UpdateCalendarEventMutation = {
             __typename?: 'Profile';
             id: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           }
         | undefined;
     };

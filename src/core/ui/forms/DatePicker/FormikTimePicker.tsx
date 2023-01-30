@@ -26,6 +26,7 @@ const FormikDatePicker = ({ name, ...datePickerProps }: FormikTimePickerProps) =
         renderInput={params => <TextField {...params} fullWidth />}
         onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}
+        ampm={false}
         {...datePickerProps}
       />
     </LocalizationProvider>

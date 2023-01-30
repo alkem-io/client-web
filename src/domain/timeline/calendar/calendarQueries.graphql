@@ -75,6 +75,7 @@ fragment CalendarEventDetails on CalendarEvent {
         uri
       }
       tagsets {
+        id
         tags
       }
     }
@@ -84,9 +85,8 @@ fragment CalendarEventDetails on CalendarEvent {
     ...EventProfile
   }
   comments {
-  ...CommentsWithMessages
+    ...CommentsWithMessages
   }
-
 }
 
 fragment EventProfile on CardProfile {
