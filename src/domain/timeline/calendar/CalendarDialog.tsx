@@ -73,7 +73,11 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
       {!hubNameId && <Skeleton variant="rectangular" />}
       {hubNameId && (
         <CalendarEventsContainer hubId={hubNameId}>
-          {({ events, privileges }, { createEvent, updateEvent, deleteEvent }) => {
+          {(
+            { events, privileges },
+            { createEvent, updateEvent, deleteEvent },
+            { creatingCalendarEvent, updatingCalendarEvent, deletingCalendarEvent }
+          ) => {
             // Deleting an event:
             if (deletingEvent) {
               const handleDeleteEvent = async (eventId: string) => {
@@ -87,7 +91,13 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                   <DialogContent>
                     <BlockTitle>{t('calendar.delete-confirmation', { title: deletingEvent.displayName })}</BlockTitle>
                     <Actions justifyContent="space-around" marginTop={gutters()}>
-                      <Button onClick={() => handleDeleteEvent(deletingEvent.id)}>{t('buttons.delete')}</Button>
+                      <Button
+                        color="error"
+                        onClick={() => handleDeleteEvent(deletingEvent.id)}
+                        disabled={deletingCalendarEvent}
+                      >
+                        {t('buttons.delete')}
+                      </Button>
                       <Button onClick={() => setDeletingEvent(undefined)} variant="contained">
                         {t('buttons.cancel')}
                       </Button>
@@ -109,6 +119,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                   event={emptyCalendarEvent}
                   onSubmit={handleNewEventSubmit}
                   onClose={handleClose}
+                  isSubmitting={creatingCalendarEvent}
                   actions={<BackButton onClick={() => setIsCreatingEvent(false)} />}
                 />
               );
@@ -136,6 +147,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                         handleEditEventSubmit(event.id, calendarEvent)
                       }
                       onClose={handleClose}
+                      isSubmitting={updatingCalendarEvent}
                       actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
                     />
                   )}

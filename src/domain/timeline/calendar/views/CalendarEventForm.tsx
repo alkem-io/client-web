@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
@@ -23,12 +23,14 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { displayNameValidator } from '../../../../common/utils/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
+import { LoadingButton } from '@mui/lab';
 
 interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
   dialogTitle: string;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (eventValues: CalendarEventFormData) => void;
+  isSubmitting: boolean;
   actions?: ReactNode;
 }
 
@@ -51,13 +53,21 @@ const typeOptions: FormikSelectValue[] = [
   },
 ];
 
-const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: CalendarEventFormProps) => {
+const CalendarEventForm = ({
+  event,
+  dialogTitle,
+  onSubmit,
+  onClose,
+  isSubmitting,
+  actions,
+}: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
   const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
     onSubmit(formValues as CalendarEventFormData);
   };
 
+  // TODO: Remove startDate from here
   const initialStartDate = useMemo(() => event?.startDate ?? new Date(), [event]);
 
   const initialValues = useMemo<Partial<CalendarEventFormData>>(() => {
@@ -127,15 +137,16 @@ const CalendarEventForm = ({ event, dialogTitle, onSubmit, onClose, actions }: C
               <FormikMarkdownField
                 name="description"
                 title={t('common.description')}
+                maxLength={500}
                 withCounter
                 sx={{ marginBottom: gutters(-1) }}
               />
               <TagsetField name="tags" title={t('common.tags')} />
               <Actions justifyContent="space-between">
                 {actions}
-                <Button type="submit" variant="contained" disabled={!isValid}>
+                <LoadingButton type="submit" variant="contained" disabled={!isValid} loading={isSubmitting}>
                   {t('buttons.save')}
-                </Button>
+                </LoadingButton>
               </Actions>
             </Gutters>
           </Form>

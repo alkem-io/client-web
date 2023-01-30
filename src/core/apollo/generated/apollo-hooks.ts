@@ -2409,6 +2409,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
           uri
         }
         tagsets {
+          id
           tags
         }
       }
