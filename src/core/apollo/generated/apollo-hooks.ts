@@ -672,6 +672,7 @@ export const HubPageFragmentDoc = gql`
       tags
     }
     timeline {
+      id
       authorization {
         id
         anonymousReadAccess
