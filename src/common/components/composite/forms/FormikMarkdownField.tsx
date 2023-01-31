@@ -140,6 +140,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   withCounter = false,
   helperText: _helperText,
   loading,
+  sx,
 }) => {
   const { t, i18n } = useTranslation();
   const [field, meta, helper] = useField(name);
@@ -248,7 +249,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   };
 
   return (
-    <FormGroup>
+    <FormGroup sx={sx}>
       <FormControl required={required} disabled={disabled} variant="outlined" fullWidth>
         <FieldContainer isFocused={isFocused}>
           {title && (

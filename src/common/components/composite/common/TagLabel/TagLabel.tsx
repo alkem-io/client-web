@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Box, styled, SxProps, Theme } from '@mui/material';
 import WrapperTypography from '../../../core/WrapperTypography';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 const PREFIX = 'TagLabel';
 
@@ -15,8 +16,9 @@ const Root = styled('div')(({ theme }) => ({
     background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
     boxShadow: '0px 3px 6px #00000029',
     borderRadius: '15px 0px 0px 15px',
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
+    paddingLeft: gutters(1)(theme),
+    paddingRight: gutters(1)(theme),
+    marginRight: gutters(-1)(theme),
     flexShrink: 0,
   },
   [`& .${classes.entityType}`]: {

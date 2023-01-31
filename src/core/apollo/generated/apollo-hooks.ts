@@ -671,6 +671,13 @@ export const HubPageFragmentDoc = gql`
       name
       tags
     }
+    timeline {
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
+      }
+    }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
@@ -1086,6 +1093,7 @@ export const CommentsWithMessagesFragmentDoc = gql`
     authorization {
       id
       myPrivileges
+      anonymousReadAccess
     }
     messages {
       ...MessageDetails
@@ -2353,6 +2361,70 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     }
     message
   }
+`;
+export const CalendarEventInfoFragmentDoc = gql`
+  fragment CalendarEventInfo on CalendarEvent {
+    id
+    nameID
+    displayName
+    startDate
+    durationDays
+    durationMinutes
+    wholeDay
+    multipleDays
+    profile {
+      id
+      description
+    }
+  }
+`;
+export const EventProfileFragmentDoc = gql`
+  fragment EventProfile on CardProfile {
+    id
+    description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+  }
+`;
+export const CalendarEventDetailsFragmentDoc = gql`
+  fragment CalendarEventDetails on CalendarEvent {
+    ...CalendarEventInfo
+    type
+    createdBy {
+      id
+      displayName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+      }
+    }
+    createdDate
+    profile {
+      ...EventProfile
+    }
+    comments {
+      ...CommentsWithMessages
+    }
+  }
+  ${CalendarEventInfoFragmentDoc}
+  ${EventProfileFragmentDoc}
+  ${CommentsWithMessagesFragmentDoc}
 `;
 export const UploadFileDocument = gql`
   mutation UploadFile($file: Upload!) {
@@ -8125,105 +8197,6 @@ export function refetchOpportunityAspectProviderQuery(variables: SchemaTypes.Opp
   return { query: OpportunityAspectProviderDocument, variables: variables };
 }
 
-export const PostCommentInAspectDocument = gql`
-  mutation PostCommentInAspect($messageData: CommentsSendMessageInput!) {
-    sendComment(messageData: $messageData) {
-      id
-      message
-      sender {
-        id
-      }
-      timestamp
-    }
-  }
-`;
-export type PostCommentInAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostCommentInAspectMutation,
-  SchemaTypes.PostCommentInAspectMutationVariables
->;
-
-/**
- * __usePostCommentInAspectMutation__
- *
- * To run a mutation, you first call `usePostCommentInAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostCommentInAspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postCommentInAspectMutation, { data, loading, error }] = usePostCommentInAspectMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function usePostCommentInAspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.PostCommentInAspectMutation,
-    SchemaTypes.PostCommentInAspectMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.PostCommentInAspectMutation, SchemaTypes.PostCommentInAspectMutationVariables>(
-    PostCommentInAspectDocument,
-    options
-  );
-}
-
-export type PostCommentInAspectMutationHookResult = ReturnType<typeof usePostCommentInAspectMutation>;
-export type PostCommentInAspectMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInAspectMutation>;
-export type PostCommentInAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostCommentInAspectMutation,
-  SchemaTypes.PostCommentInAspectMutationVariables
->;
-export const RemoveCommentFromAspectDocument = gql`
-  mutation RemoveCommentFromAspect($messageData: CommentsRemoveMessageInput!) {
-    removeComment(messageData: $messageData)
-  }
-`;
-export type RemoveCommentFromAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveCommentFromAspectMutation,
-  SchemaTypes.RemoveCommentFromAspectMutationVariables
->;
-
-/**
- * __useRemoveCommentFromAspectMutation__
- *
- * To run a mutation, you first call `useRemoveCommentFromAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCommentFromAspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeCommentFromAspectMutation, { data, loading, error }] = useRemoveCommentFromAspectMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useRemoveCommentFromAspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveCommentFromAspectMutation,
-    SchemaTypes.RemoveCommentFromAspectMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveCommentFromAspectMutation,
-    SchemaTypes.RemoveCommentFromAspectMutationVariables
-  >(RemoveCommentFromAspectDocument, options);
-}
-
-export type RemoveCommentFromAspectMutationHookResult = ReturnType<typeof useRemoveCommentFromAspectMutation>;
-export type RemoveCommentFromAspectMutationResult = Apollo.MutationResult<SchemaTypes.RemoveCommentFromAspectMutation>;
-export type RemoveCommentFromAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveCommentFromAspectMutation,
-  SchemaTypes.RemoveCommentFromAspectMutationVariables
->;
 export const CreateAspectDocument = gql`
   mutation CreateAspect($aspectData: CreateAspectOnCalloutInput!) {
     createAspectOnCallout(aspectData: $aspectData) {
@@ -19874,3 +19847,507 @@ export function refetchActivityLogOnCollaborationQuery(
 ) {
   return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
+
+export const PostCommentDocument = gql`
+  mutation PostComment($messageData: CommentsSendMessageInput!) {
+    sendComment(messageData: $messageData) {
+      id
+      message
+      sender {
+        id
+      }
+      timestamp
+    }
+  }
+`;
+export type PostCommentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.PostCommentMutation,
+  SchemaTypes.PostCommentMutationVariables
+>;
+
+/**
+ * __usePostCommentMutation__
+ *
+ * To run a mutation, you first call `usePostCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postCommentMutation, { data, loading, error }] = usePostCommentMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function usePostCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.PostCommentMutation, SchemaTypes.PostCommentMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.PostCommentMutation, SchemaTypes.PostCommentMutationVariables>(
+    PostCommentDocument,
+    options
+  );
+}
+
+export type PostCommentMutationHookResult = ReturnType<typeof usePostCommentMutation>;
+export type PostCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentMutation>;
+export type PostCommentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.PostCommentMutation,
+  SchemaTypes.PostCommentMutationVariables
+>;
+export const RemoveCommentDocument = gql`
+  mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
+    removeComment(messageData: $messageData)
+  }
+`;
+export type RemoveCommentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveCommentMutation,
+  SchemaTypes.RemoveCommentMutationVariables
+>;
+
+/**
+ * __useRemoveCommentMutation__
+ *
+ * To run a mutation, you first call `useRemoveCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCommentMutation, { data, loading, error }] = useRemoveCommentMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useRemoveCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveCommentMutation,
+    SchemaTypes.RemoveCommentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemoveCommentMutation, SchemaTypes.RemoveCommentMutationVariables>(
+    RemoveCommentDocument,
+    options
+  );
+}
+
+export type RemoveCommentMutationHookResult = ReturnType<typeof useRemoveCommentMutation>;
+export type RemoveCommentMutationResult = Apollo.MutationResult<SchemaTypes.RemoveCommentMutation>;
+export type RemoveCommentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveCommentMutation,
+  SchemaTypes.RemoveCommentMutationVariables
+>;
+export const HubDashboardCalendarEventsDocument = gql`
+  query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
+    hub(ID: $hubId) {
+      id
+      timeline {
+        id
+        calendar {
+          id
+          events(limit: $limit) {
+            ...CalendarEventInfo
+          }
+        }
+      }
+    }
+  }
+  ${CalendarEventInfoFragmentDoc}
+`;
+
+/**
+ * __useHubDashboardCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useHubDashboardCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubDashboardCalendarEventsQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useHubDashboardCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >(HubDashboardCalendarEventsDocument, options);
+}
+
+export function useHubDashboardCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubDashboardCalendarEventsQuery,
+    SchemaTypes.HubDashboardCalendarEventsQueryVariables
+  >(HubDashboardCalendarEventsDocument, options);
+}
+
+export type HubDashboardCalendarEventsQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsQuery>;
+export type HubDashboardCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubDashboardCalendarEventsLazyQuery>;
+export type HubDashboardCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardCalendarEventsQuery,
+  SchemaTypes.HubDashboardCalendarEventsQueryVariables
+>;
+export function refetchHubDashboardCalendarEventsQuery(
+  variables: SchemaTypes.HubDashboardCalendarEventsQueryVariables
+) {
+  return { query: HubDashboardCalendarEventsDocument, variables: variables };
+}
+
+export const HubCalendarEventsDocument = gql`
+  query hubCalendarEvents($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      timeline {
+        id
+        calendar {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          events {
+            ...CalendarEventDetails
+          }
+        }
+      }
+    }
+  }
+  ${CalendarEventDetailsFragmentDoc}
+`;
+
+/**
+ * __useHubCalendarEventsQuery__
+ *
+ * To run a query within a React component, call `useHubCalendarEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCalendarEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubCalendarEventsQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubCalendarEventsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>(
+    HubCalendarEventsDocument,
+    options
+  );
+}
+
+export function useHubCalendarEventsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubCalendarEventsQuery,
+    SchemaTypes.HubCalendarEventsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubCalendarEventsQuery, SchemaTypes.HubCalendarEventsQueryVariables>(
+    HubCalendarEventsDocument,
+    options
+  );
+}
+
+export type HubCalendarEventsQueryHookResult = ReturnType<typeof useHubCalendarEventsQuery>;
+export type HubCalendarEventsLazyQueryHookResult = ReturnType<typeof useHubCalendarEventsLazyQuery>;
+export type HubCalendarEventsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCalendarEventsQuery,
+  SchemaTypes.HubCalendarEventsQueryVariables
+>;
+export function refetchHubCalendarEventsQuery(variables: SchemaTypes.HubCalendarEventsQueryVariables) {
+  return { query: HubCalendarEventsDocument, variables: variables };
+}
+
+export const CalendarEventDetailsDocument = gql`
+  query calendarEventDetails($hubId: UUID_NAMEID!, $eventId: UUID!) {
+    hub(ID: $hubId) {
+      id
+      timeline {
+        id
+        calendar {
+          id
+          event(ID: $eventId) {
+            ...CalendarEventDetails
+          }
+        }
+      }
+    }
+  }
+  ${CalendarEventDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalendarEventDetailsQuery__
+ *
+ * To run a query within a React component, call `useCalendarEventDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarEventDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarEventDetailsQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useCalendarEventDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalendarEventDetailsQuery,
+    SchemaTypes.CalendarEventDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalendarEventDetailsQuery, SchemaTypes.CalendarEventDetailsQueryVariables>(
+    CalendarEventDetailsDocument,
+    options
+  );
+}
+
+export function useCalendarEventDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalendarEventDetailsQuery,
+    SchemaTypes.CalendarEventDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalendarEventDetailsQuery, SchemaTypes.CalendarEventDetailsQueryVariables>(
+    CalendarEventDetailsDocument,
+    options
+  );
+}
+
+export type CalendarEventDetailsQueryHookResult = ReturnType<typeof useCalendarEventDetailsQuery>;
+export type CalendarEventDetailsLazyQueryHookResult = ReturnType<typeof useCalendarEventDetailsLazyQuery>;
+export type CalendarEventDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalendarEventDetailsQuery,
+  SchemaTypes.CalendarEventDetailsQueryVariables
+>;
+export function refetchCalendarEventDetailsQuery(variables: SchemaTypes.CalendarEventDetailsQueryVariables) {
+  return { query: CalendarEventDetailsDocument, variables: variables };
+}
+
+export const CreateCalendarEventDocument = gql`
+  mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!) {
+    createEventOnCalendar(eventData: $eventData) {
+      ...CalendarEventDetails
+    }
+  }
+  ${CalendarEventDetailsFragmentDoc}
+`;
+export type CreateCalendarEventMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCalendarEventMutation,
+  SchemaTypes.CreateCalendarEventMutationVariables
+>;
+
+/**
+ * __useCreateCalendarEventMutation__
+ *
+ * To run a mutation, you first call `useCreateCalendarEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCalendarEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCalendarEventMutation, { data, loading, error }] = useCreateCalendarEventMutation({
+ *   variables: {
+ *      eventData: // value for 'eventData'
+ *   },
+ * });
+ */
+export function useCreateCalendarEventMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateCalendarEventMutation,
+    SchemaTypes.CreateCalendarEventMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateCalendarEventMutation, SchemaTypes.CreateCalendarEventMutationVariables>(
+    CreateCalendarEventDocument,
+    options
+  );
+}
+
+export type CreateCalendarEventMutationHookResult = ReturnType<typeof useCreateCalendarEventMutation>;
+export type CreateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.CreateCalendarEventMutation>;
+export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCalendarEventMutation,
+  SchemaTypes.CreateCalendarEventMutationVariables
+>;
+export const UpdateCalendarEventDocument = gql`
+  mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
+    updateCalendarEvent(eventData: $eventData) {
+      ...CalendarEventDetails
+    }
+  }
+  ${CalendarEventDetailsFragmentDoc}
+`;
+export type UpdateCalendarEventMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalendarEventMutation,
+  SchemaTypes.UpdateCalendarEventMutationVariables
+>;
+
+/**
+ * __useUpdateCalendarEventMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalendarEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalendarEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalendarEventMutation, { data, loading, error }] = useUpdateCalendarEventMutation({
+ *   variables: {
+ *      eventData: // value for 'eventData'
+ *   },
+ * });
+ */
+export function useUpdateCalendarEventMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalendarEventMutation,
+    SchemaTypes.UpdateCalendarEventMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateCalendarEventMutation, SchemaTypes.UpdateCalendarEventMutationVariables>(
+    UpdateCalendarEventDocument,
+    options
+  );
+}
+
+export type UpdateCalendarEventMutationHookResult = ReturnType<typeof useUpdateCalendarEventMutation>;
+export type UpdateCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalendarEventMutation>;
+export type UpdateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalendarEventMutation,
+  SchemaTypes.UpdateCalendarEventMutationVariables
+>;
+export const DeleteCalendarEventDocument = gql`
+  mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
+    deleteCalendarEvent(deleteData: $deleteData) {
+      id
+      nameID
+    }
+  }
+`;
+export type DeleteCalendarEventMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCalendarEventMutation,
+  SchemaTypes.DeleteCalendarEventMutationVariables
+>;
+
+/**
+ * __useDeleteCalendarEventMutation__
+ *
+ * To run a mutation, you first call `useDeleteCalendarEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCalendarEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCalendarEventMutation, { data, loading, error }] = useDeleteCalendarEventMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteCalendarEventMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCalendarEventMutation,
+    SchemaTypes.DeleteCalendarEventMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteCalendarEventMutation, SchemaTypes.DeleteCalendarEventMutationVariables>(
+    DeleteCalendarEventDocument,
+    options
+  );
+}
+
+export type DeleteCalendarEventMutationHookResult = ReturnType<typeof useDeleteCalendarEventMutation>;
+export type DeleteCalendarEventMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalendarEventMutation>;
+export type DeleteCalendarEventMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCalendarEventMutation,
+  SchemaTypes.DeleteCalendarEventMutationVariables
+>;
+export const CalendarEventCommentsMessageReceivedDocument = gql`
+  subscription CalendarEventCommentsMessageReceived($calendarEventID: UUID!) {
+    calendarEventCommentsMessageReceived(calendarEventID: $calendarEventID) {
+      message {
+        ...MessageDetails
+      }
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalendarEventCommentsMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useCalendarEventCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalendarEventCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalendarEventCommentsMessageReceivedSubscription({
+ *   variables: {
+ *      calendarEventID: // value for 'calendarEventID'
+ *   },
+ * });
+ */
+export function useCalendarEventCommentsMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscription,
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscription,
+    SchemaTypes.CalendarEventCommentsMessageReceivedSubscriptionVariables
+  >(CalendarEventCommentsMessageReceivedDocument, options);
+}
+
+export type CalendarEventCommentsMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useCalendarEventCommentsMessageReceivedSubscription
+>;
+export type CalendarEventCommentsMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalendarEventCommentsMessageReceivedSubscription>;

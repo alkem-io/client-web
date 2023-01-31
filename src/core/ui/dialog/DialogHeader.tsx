@@ -3,7 +3,7 @@ import { Close } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 import ActionsBar from '../actions/ActionsBar/ActionsBar';
 
-interface DialogHeaderProps {
+export interface DialogHeaderProps {
   actions?: ReactNode;
   onClose?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }

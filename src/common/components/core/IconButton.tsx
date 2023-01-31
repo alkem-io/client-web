@@ -61,6 +61,9 @@ interface ButtonProps extends Record<string, unknown> {
   children: React.ReactNode;
 }
 
+/**
+ * @deprecated - use MUI IconButton
+ */
 const IconButton: FC<ButtonProps> = ({
   className,
   children,
