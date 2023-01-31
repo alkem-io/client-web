@@ -3,6 +3,7 @@ import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
+  Community,
   ContextTabFragment,
   DashboardLeadUserFragment,
   LifecycleContextTabFragment,
@@ -126,14 +127,15 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,
-  };
+  } as Community;
   const leadUsers = memberJourney?.community?.leadUsers;
   const leadOrganizations = memberJourney?.community?.leadOrganizations;
   const references = memberContext?.references;
 
   const metrics = nonMemberJourney?.metrics;
 
-  const memberUsersCount = getMetricCount(metrics, MetricType.Member);
+  const membersCount = getMetricCount(metrics, MetricType.Member);
+  const memberUsersCount = membersCount - (community.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =
