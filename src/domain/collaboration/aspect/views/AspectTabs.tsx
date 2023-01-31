@@ -6,15 +6,16 @@ import NavigationTab from '../../../../common/components/core/NavigationTab/Navi
 import { useAspect } from '../context/AspectProvider';
 import { AspectDialogSection } from './AspectDialogSection';
 import { styled } from '@mui/styles';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export interface AspectTabsProps {
   currentTab: AspectDialogSection;
   onClose: () => void;
 }
 
-const RightAlignedTabs = styled(Tabs)({
-  '& .MuiTabs-flexContainer': { justifyContent: 'end' },
-});
+const RightAlignedTabs = styled(Tabs)(({ theme }) => ({
+  '& .MuiTabs-flexContainer': { justifyContent: 'end', gap: gutters(1)(theme) },
+}));
 
 const AspectTabs: FC<AspectTabsProps> = ({ currentTab, onClose }) => {
   const { permissions } = useAspect();

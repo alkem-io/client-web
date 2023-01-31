@@ -7,6 +7,8 @@ import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { formatBadgeDate, formatTooltipDate } from '../../../../core/utils/time/utils';
+import OneLineMarkdown from '../../../../core/ui/markdown/OneLineMarkdown';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface CalendarEventViewProps extends Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName' | 'profile'> {}
 
@@ -25,11 +27,15 @@ const EventDescription: FC<EventDescriptionProps> = ({ children }) => {
 
   const descriptionText = isCut ? `${children.slice(0, EVENT_DESCRIPTION_MAX_LENGTH)}…` : children;
 
-  const formattedDescription = <CardText>{descriptionText}</CardText>;
+  const formattedDescription = (
+    <CardText>
+      <OneLineMarkdown>{descriptionText}</OneLineMarkdown>
+    </CardText>
+  );
 
   if (isCut) {
     return (
-      <Tooltip title={children} placement="top-start" disableInteractive>
+      <Tooltip title={<WrapperMarkdown>{children}</WrapperMarkdown>} placement="top-start" disableInteractive>
         {formattedDescription}
       </Tooltip>
     );
