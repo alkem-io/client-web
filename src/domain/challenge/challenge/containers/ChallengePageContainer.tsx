@@ -118,7 +118,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.metrics);
 
-  const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
+  const memberUsersCount = getMetricCount(metrics, MetricType.Member);
+  const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community, { memberUsersCount });
 
   const references = referenceData?.hub?.challenge?.context?.references;
   const recommendations = referenceData?.hub?.challenge?.context?.recommendations;

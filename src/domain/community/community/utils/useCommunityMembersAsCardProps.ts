@@ -22,6 +22,8 @@ interface Options {
   membersLimit?: number;
   memberUsersLimit?: number;
   memberOrganizationsLimit?: number;
+  memberUsersCount?: number;
+  memberOrganizationsCount?: number;
 }
 
 const mapUserToContributorCardProps = (user: DashboardContributingUserFragment): WithId<ContributorCardProps> => ({
@@ -72,14 +74,14 @@ const useCommunityMembersAsCardProps = (
     [community?.memberUsers, memberUsersLimit]
   );
 
-  const memberUsersCount = community?.memberUsers?.length;
+  const memberUsersCount = options.memberUsersCount ?? community?.memberUsers?.length;
 
   const memberOrganizations: WithId<ContributorCardProps>[] | undefined = useMemo(
     () => community?.memberOrganizations?.slice(0, memberOrganizationsLimit).map(mapOrganizationToContributorCardProps),
     [community?.memberOrganizations, memberOrganizationsLimit]
   );
 
-  const memberOrganizationsCount = community?.memberOrganizations?.length;
+  const memberOrganizationsCount = options.memberOrganizationsCount ?? community?.memberOrganizations?.length;
 
   return {
     memberUsers,
