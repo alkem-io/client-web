@@ -1,17 +1,18 @@
 import React from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
-import NativeTimePicker, { NativeTimePickerProps } from './NativeTimePicker';
+import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
 
-type FormikTimePickerProps = FormikInputProps &
-  NativeTimePickerProps & {
-    step?: number;
-  };
+interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {}
 
 const FormikTimePicker = ({ name, ...datePickerProps }: FormikTimePickerProps) => {
   const [field, , helpers] = useField<Date | string>(name);
 
-  return <NativeTimePicker value={field.value} onChange={helpers.setValue} fullWidth {...datePickerProps} />;
+  const handleChange = (date: Date | null) => {
+    date && helpers.setValue(date);
+  };
+
+  return <AlkemioTimePicker value={field.value} onChange={handleChange} fullWidth {...datePickerProps} />;
 };
 
 export default FormikTimePicker;
