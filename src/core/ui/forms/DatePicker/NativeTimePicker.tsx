@@ -1,7 +1,5 @@
 import React from 'react';
-import { LocalizationProvider } from '@mui/lab';
 import { TextField, TextFieldProps } from '@mui/material';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 export type NativeTimePickerProps = Partial<Omit<TextFieldProps, 'value' | 'onChange'>> & {
   value?: Date | string;
@@ -32,20 +30,18 @@ const NativeTimePicker = ({
   const stringValue = dateValue?.toLocaleTimeString() ?? '';
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <TextField
-        value={stringValue}
-        onChange={handleChange}
-        type="time"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        inputProps={{
-          step,
-        }}
-        {...datePickerProps}
-      />
-    </LocalizationProvider>
+    <TextField
+      value={stringValue}
+      onChange={handleChange}
+      type="time"
+      InputLabelProps={{
+        shrink: true,
+      }}
+      inputProps={{
+        step,
+      }}
+      {...datePickerProps}
+    />
   );
 };
 
