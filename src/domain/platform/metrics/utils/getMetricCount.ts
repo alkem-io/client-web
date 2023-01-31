@@ -10,14 +10,10 @@ export interface Metric {
  * @param metrics
  * @param name
  */
-const getMetricCount = <DefaultValue = undefined>(
-  metrics: Metric[] | undefined,
-  name: MetricType,
-  defaultValue?: DefaultValue
-): number | DefaultValue => {
+const getMetricCount = (metrics: Metric[] | undefined, name: MetricType): number => {
   const metric = metrics?.find(x => x.name === name);
 
-  return metric ? Number(metric.value) : (defaultValue as DefaultValue);
+  return metric ? Number(metric.value) : 0;
 };
 
 export default getMetricCount;
