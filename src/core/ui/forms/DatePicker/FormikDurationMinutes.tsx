@@ -2,12 +2,11 @@ import React from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
 import { addMinutes } from '../../../utils/time/utils';
-import NativeTimePicker, { NativeTimePickerProps } from './NativeTimePicker';
+import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
 
-type FormikTimePickerProps = FormikInputProps &
-  NativeTimePickerProps & {
-    dateFieldName: string;
-  };
+interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {
+  dateFieldName: string;
+}
 
 const MILLISECONDS_IN_MINUTE = 60 * 1000;
 
@@ -15,7 +14,11 @@ const FormikDurationMinutes = ({ name, dateFieldName, ...datePickerProps }: Form
   const [field, , helpers] = useField<number>(name);
   const [dateField] = useField<Date | string>(dateFieldName);
 
-  const handleChange = (endDate: Date) => {
+  const handleChange = (endDate: Date | null) => {
+    if (!endDate) {
+      return;
+    }
+
     const startDate = new Date(dateField.value);
 
     const durationMinutes = (endDate.valueOf() - startDate.valueOf()) / MILLISECONDS_IN_MINUTE;
@@ -25,7 +28,7 @@ const FormikDurationMinutes = ({ name, dateFieldName, ...datePickerProps }: Form
 
   const date = addMinutes(dateField.value, field.value);
 
-  return <NativeTimePicker value={date} onChange={handleChange} fullWidth {...datePickerProps} />;
+  return <AlkemioTimePicker value={date} onChange={handleChange} fullWidth {...datePickerProps} />;
 };
 
 export default FormikDurationMinutes;
