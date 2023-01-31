@@ -6,7 +6,7 @@ export interface Metric {
 }
 
 /***
- * Return a value by activity's name
+ * Return a value by the Metric name
  * @param metrics
  * @param name
  */
