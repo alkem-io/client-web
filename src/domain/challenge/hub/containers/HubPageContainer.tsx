@@ -123,7 +123,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const canvasesCount = useCanvasesCount(_hub?.hub.metrics);
 
-  const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
+  const memberUsersCount = getMetricCount(_hub?.hub.metrics, MetricType.Member);
+  const contributors = useCommunityMembersAsCardProps(_hub?.hub.community, { memberUsersCount });
 
   const references = referencesData?.hub?.context?.references;
   const recommendations = referencesData?.hub?.context?.recommendations;

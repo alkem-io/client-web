@@ -17,6 +17,8 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
+import { MetricType } from '../../../platform/metrics/MetricType';
 
 interface AboutPagePermissions {
   canCreateCommunityContextReview: boolean;
@@ -131,7 +133,8 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
 
   const metrics = nonMemberJourney?.metrics;
 
-  const contributors = useCommunityMembersAsCardProps(community);
+  const memberUsersCount = getMetricCount(metrics, MetricType.Member);
+  const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =
     nonMembersData?.hub?.challenge?.authorization?.myPrivileges?.includes(

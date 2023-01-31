@@ -27,6 +27,8 @@ import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../c
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
+import { MetricType } from '../../../platform/metrics/MetricType';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -152,7 +154,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const canvasesCount = useCanvasesCount(metrics);
 
-  const contributors = useCommunityMembersAsCardProps(opportunity?.community);
+  const memberUsersCount = getMetricCount(metrics, MetricType.Member);
+  const contributors = useCommunityMembersAsCardProps(opportunity?.community, { memberUsersCount });
 
   const topCallouts = collaboration?.callouts?.slice(0, 3);
 
