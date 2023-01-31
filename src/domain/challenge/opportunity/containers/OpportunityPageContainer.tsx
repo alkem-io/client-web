@@ -154,7 +154,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const canvasesCount = useCanvasesCount(metrics);
 
-  const memberUsersCount = getMetricCount(metrics, MetricType.Member);
+  const membersCount = getMetricCount(metrics, MetricType.Member);
+  const memberUsersCount = membersCount - (opportunity?.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(opportunity?.community, { memberUsersCount });
 
   const topCallouts = collaboration?.callouts?.slice(0, 3);
