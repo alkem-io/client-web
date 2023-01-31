@@ -7142,6 +7142,7 @@ export type HubPageQuery = {
     timeline?:
       | {
           __typename?: 'Timeline';
+          id: string;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -7447,6 +7448,7 @@ export type HubPageFragment = {
   timeline?:
     | {
         __typename?: 'Timeline';
+        id: string;
         authorization?:
           | {
               __typename?: 'Authorization';
