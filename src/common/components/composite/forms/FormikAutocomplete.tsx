@@ -16,7 +16,7 @@ export type FormikAutocompleteProps = TextFieldProps & {
   helpText?: string;
 };
 
-export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({ name, values, helpText, ...textFieldProps }) => {
+export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({ name, values, helpText, sx, ...textFieldProps }) => {
   const tErr = useValidationMessageTranslation();
 
   const [field, meta, helpers] = useField(name);
@@ -46,6 +46,7 @@ export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({ name, values, 
       onBlur={field.onBlur}
       onChange={handleChange}
       getOptionLabel={option => option?.name}
+      sx={sx}
       renderInput={params => (
         <TextField
           variant="outlined"

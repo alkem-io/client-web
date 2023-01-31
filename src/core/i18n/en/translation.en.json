@@ -22,7 +22,20 @@
     "ua": "Ukranian"
   },
   "fields": {
-    "displayName": "Title"
+    "displayName": "Title",
+    "startTime": "Start Time",
+    "endTime": "End Time"
+  },
+  "calendar": {
+    "add-event": "Add event",
+    "edit-event": "Edit event",
+    "delete-event": "Delete event",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the hub?",
+    "event": {
+      "type": "Type of Event",
+      "multiple-days": "{{days}} days",
+      "whole-day": "Entire Day"
+    }
   },
   "buttons": {
     "leave": "Leave",
@@ -74,7 +87,8 @@
     "preview": "Preview",
     "import": "Import",
     "importing": "Importing...",
-    "go-to-entity": "Go to {{entity}}"
+    "go-to-entity": "Go to {{entity}}",
+    "read-more": "Read more"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -116,6 +130,7 @@
     "callouts": "Callouts",
     "canvas": "Canvas",
     "canvases": "Canvases",
+    "calendar": "Calendar",
     "comment": "Comment",
     "comments": "Comments",
     "contributions": "Contributions",
@@ -124,6 +139,7 @@
     "create": "Create",
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
+    "date": "Date",
     "description": "Description",
     "about": "About",
     "explore": "Contribute",
@@ -583,7 +599,7 @@
         "callout-published": "{{displayName}}",
         "canvas-created": "{{displayName}}",
         "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDescription}}",
+        "card-created": "{{cardDisplayName}} - {{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -1068,6 +1084,9 @@
           },
           "communications": {
             "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+          },
+          "calendar": {
+            "description": ""
           },
           "authorization": {
             "description": "Here you can tweak authorization settings for this {{entity}}."
@@ -1652,6 +1671,11 @@
   },
   "dashboard-community-section": {
     "title": "Community"
+  },
+  "dashboard-calendar-section": {
+    "title": "Upcoming Events",
+    "dialog-title": "Upcoming Events",
+    "no-data": "No events found"
   },
   "aspect-edit": {
     "new": "New Card",

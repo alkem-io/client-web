@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError, FetchResult } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
@@ -37,6 +37,7 @@ export interface AspectDashboardViewProps {
   commentId?: string;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
+  bannerOverlayOverride?: ReactNode;
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
@@ -103,15 +104,16 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
+
+  const bannerOverlay = props.bannerOverlayOverride ?? <AuthorComponent avatarSrc={creatorAvatar} name={creatorName} createdDate={createdDate} loading={loading} />;
+
   return (
     <Grid container spacing={2}>
       <DashboardColumn>
         <DashboardGenericSection
           bannerUrl={banner}
           alwaysShowBanner
-          bannerOverlay={
-            <AuthorComponent avatarSrc={creatorAvatar} name={creatorName} createdDate={createdDate} loading={loading} />
-          }
+          bannerOverlay={bannerOverlay}
           headerText={displayName}
           primaryAction={loading ? <Skeleton width={'30%'} /> : <TagLabel>{type}</TagLabel>}
         >

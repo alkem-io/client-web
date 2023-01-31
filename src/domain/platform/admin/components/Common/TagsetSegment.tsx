@@ -97,6 +97,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
     return meta.error;
   }, [isError, meta.error, _helperText]);
 
+  // TODO remove Grid wrapping, it breaks single responsibility
   return (
     <Grid item xs={12}>
       <TagsInput
