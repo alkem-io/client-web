@@ -70,6 +70,7 @@ fragment HubPage on Hub {
     tags
   }
   timeline {
+    id
     authorization {
       id
       anonymousReadAccess
