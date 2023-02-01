@@ -9,6 +9,8 @@ import { TFunction } from 'react-i18next';
 // TODO: support en-us format mm/dd?? Maybe get this from the browser?
 const LocaleId = 'en-GB';
 
+export const DAYJS_DATEFORMAT = 'DD/MM/YYYY';
+
 export const formatBadgeDate = (date: Date | undefined, defaultValue: string = '') => {
   if (!date) {
     return defaultValue;
