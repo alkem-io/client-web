@@ -12,6 +12,7 @@ import {
 import { Send } from '@mui/icons-material';
 import { useField, useFormikContext } from 'formik';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
+import MarkdownTextField from '../../../../core/ui/markdown/editor/MarkdownTextField';
 
 interface CommentInputField extends InputProps {
   name: string;
@@ -50,6 +51,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   return (
     <FormGroup>
       <FormControl>
+        <MarkdownTextField value={field.value} onChange={value => helper.setValue(value)} />
         <OutlinedInput
           multiline
           value={field.value}
