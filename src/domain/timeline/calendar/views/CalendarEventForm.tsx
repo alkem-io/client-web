@@ -96,6 +96,7 @@ const CalendarEventForm = ({
       .min(3, ({ min }) => t('common.field-min-length', { min }))
       .max(MID_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
     type: yup.string().required(t('common.field-required')),
+    durationMinutes: yup.number().positive(t('calendar.validation.durationMinutes.positive')),
   });
 
   return (
@@ -123,7 +124,7 @@ const CalendarEventForm = ({
                     <FormikTimePicker name="startDate" label={t('fields.startTime')} />
                     <FormikDurationMinutes
                       name="durationMinutes"
-                      dateFieldName="startDate"
+                      startTimeFieldName="startDate"
                       label={t('fields.endTime')}
                     />
                   </Box>

@@ -35,6 +35,11 @@
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
       "whole-day": "Entire Day"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "Event End Time can't be before event Start Time"
+      }
     }
   },
   "buttons": {

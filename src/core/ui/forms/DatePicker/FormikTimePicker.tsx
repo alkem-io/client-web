@@ -1,17 +1,36 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
-import NativeTimePicker, { NativeTimePickerProps } from './NativeTimePicker';
+import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
+import TranslationKey from '../../../../types/TranslationKey';
+import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 
-type FormikTimePickerProps = FormikInputProps &
-  NativeTimePickerProps & {
-    step?: number;
-  };
+interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {}
 
 const FormikTimePicker = ({ name, ...datePickerProps }: FormikTimePickerProps) => {
-  const [field, , helpers] = useField<Date | string>(name);
+  const [field, meta, helpers] = useField<Date | string>(name);
 
-  return <NativeTimePicker value={field.value} onChange={helpers.setValue} fullWidth {...datePickerProps} />;
+  const tErr = useValidationMessageTranslation();
+
+  const isError = Boolean(meta.error) && meta.touched;
+
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return;
+    }
+    return tErr(meta.error as TranslationKey, { field: datePickerProps.label as string });
+  }, [isError, meta.error, tErr, datePickerProps.label]);
+
+  return (
+    <AlkemioTimePicker
+      value={field.value}
+      onChange={helpers.setValue}
+      error={helperText}
+      onBlur={() => helpers.setTouched(true)}
+      fullWidth
+      {...datePickerProps}
+    />
+  );
 };
 
 export default FormikTimePicker;
