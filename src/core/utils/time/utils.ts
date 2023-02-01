@@ -1,4 +1,5 @@
 import { TFunction } from 'react-i18next';
+import dayjs from 'dayjs';
 
 // Note: In this file some dates are recreated with
 //  `new Date(something that is supposed to be already a Date)`
@@ -44,8 +45,8 @@ export const formatLongDate = (date: Date | undefined, defaultValue: string = ''
   });
 };
 
-export function addMinutes(date: Date | string, minutes: number) {
-  return new Date(new Date(date).getTime() + minutes * 60 * 1000);
+export function addMinutes(date: Date | string, minutes: number): Date {
+  return dayjs(date).add(minutes, 'minutes').toDate();
 }
 
 export const formatTimeAndDuration = (
