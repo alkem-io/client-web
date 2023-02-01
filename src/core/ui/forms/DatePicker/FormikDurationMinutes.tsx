@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
 import { addMinutes } from '../../../utils/time/utils';
@@ -35,6 +35,29 @@ const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }:
 
     helpers.setValue(durationMinutes);
   };
+
+  const oldStartTimeRef = useRef(new Date(startTimeField.value));
+
+  useLayoutEffect(() => {
+    // Normally we keep durationMinutes when startTime changes, except for the case when
+    // startTime was after endTime (negative durationMinutes) but then it got changed
+    // to be before endTime (valid combination).
+    // In this case we keep endTime intact by increasing durationMinutes by the difference
+    // between old startTime and new startTime.
+    const startTime = new Date(startTimeField.value);
+    const isStartTimeValid = !isNaN(startTime.getTime());
+
+    if (field.value < 0 && isStartTimeValid) {
+      const durationMinutes =
+        (addMinutes(oldStartTimeRef.current, field.value).getTime() - startTime.getTime()) / MILLISECONDS_IN_MINUTE;
+      helpers.setValue(durationMinutes);
+    }
+
+    if (isStartTimeValid) {
+      oldStartTimeRef.current = startTime;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startTimeField.value]);
 
   const date = addMinutes(startTimeField.value, field.value);
 
