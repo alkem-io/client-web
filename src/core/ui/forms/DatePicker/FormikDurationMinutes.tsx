@@ -21,8 +21,6 @@ const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }:
 
   const isError = Boolean(meta.error) && meta.touched;
 
-  console.log({ isError, meta });
-
   const helperText = useMemo(() => {
     if (!isError) {
       return;
