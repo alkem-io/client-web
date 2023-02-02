@@ -92,7 +92,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       cardTemplateType: callout?.cardTemplateType ?? '',
       canvasTemplateData: callout?.canvasTemplateData ?? {
+        id: '',
         title: '',
+        origin: 'Hub',
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,7 +207,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
                     name="canvasTemplateData"
                     templates={[...hubTemplates, ...libraryCanvasTemplates]}
                     editMode={editMode}
-                    updateLibraryTemplates={updateLibraryTemplates}
+                    onSelectLibraryTemplate={updateLibraryTemplates}
                   />
                 </FormRow>
               </>

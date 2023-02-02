@@ -15,7 +15,7 @@ interface CanvasTemplatesChooserProps {
   name: string;
   templates: CanvasTemplateListItem[];
   editMode?: boolean;
-  updateLibraryTemplates: (template: LibraryCanvasTemplate) => void;
+  onSelectLibraryTemplate: (template: LibraryCanvasTemplate) => void;
 }
 
 export type TemplateOrigin = 'Hub' | 'Library';
@@ -44,7 +44,7 @@ export const CanvasTemplatesChooser: FC<CanvasTemplatesChooserProps> = ({
   name,
   templates,
   editMode = false,
-  updateLibraryTemplates,
+  onSelectLibraryTemplate: updateLibraryTemplates,
 }) => {
   const [field, , helpers] = useField(name);
   const { hubNameId } = useUrlParams();

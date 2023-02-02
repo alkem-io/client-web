@@ -91,29 +91,30 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   const handleSaveAsDraft = useCallback(async () => {
     const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
-    const referenceHubCanvasTemplate = templates.canvasTemplates.find(
-      template => template.info.title === callout.canvasTemplateData?.title
-    );
 
-    const canvasTemplateQueryResult =
-      referenceHubCanvasTemplate &&
-      (await fetchCanvasValue({
-        variables: { hubId: hubNameId!, canvasTemplateId: referenceHubCanvasTemplate.id },
-      }));
+    const getCanvasValueFromHub = async () => {
+      const result = await fetchCanvasValue({
+        variables: { hubId: hubNameId!, canvasTemplateId: callout.canvasTemplateData?.id! },
+      });
 
-    const libraryCanvasTemplateQueryResult = referenceHubCanvasTemplate
-      ? undefined
-      : await fetchCanvasValueFromLibrary({
-          variables: {
-            innovationPackId: callout.canvasTemplateData?.innovationPackId!,
-            canvasTemplateId: callout.canvasTemplateData?.id!,
-          },
-        });
+      return result.data?.hub.templates;
+    };
 
-    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
-      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate ??
-        libraryCanvasTemplateQueryResult?.data?.platform.library.innovationPack?.templates?.canvasTemplate
-    );
+    const getCanvasValueFromLibrary = async () => {
+      const result = await fetchCanvasValueFromLibrary({
+        variables: {
+          innovationPackId: callout.canvasTemplateData?.innovationPackId!,
+          canvasTemplateId: callout.canvasTemplateData?.id!,
+        },
+      });
+
+      return result.data?.platform.library.innovationPack?.templates;
+    };
+
+    const queryResult =
+      callout.canvasTemplateData?.origin === 'Hub' ? await getCanvasValueFromHub() : await getCanvasValueFromLibrary();
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,

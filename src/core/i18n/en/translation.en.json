@@ -93,8 +93,7 @@
     "import": "Import",
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
-    "read-more": "Read more",
-    "more-templates": "More templates"
+    "read-more": "Read more"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

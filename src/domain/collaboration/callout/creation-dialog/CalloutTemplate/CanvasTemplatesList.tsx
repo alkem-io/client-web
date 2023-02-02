@@ -108,7 +108,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
             sx={{ marginRight: theme => theme.spacing(1) }}
             startIcon={<LibraryIcon />}
           >
-            {t('buttons.more-templates')}
+            {t('buttons.see-all', { subject: t('common.templates') })}
           </Button>
         </Grid>
         <Grid item xs={6}>
