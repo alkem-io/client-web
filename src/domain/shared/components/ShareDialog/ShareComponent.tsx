@@ -52,7 +52,7 @@ export const ShareComponent: FC<Pick<ShareComponentProps, 'url' | 'loading'>> = 
             sx={{ flexGrow: 1, width: theme => theme.spacing(FIELD_WIDTH) }}
           />
           <Tooltip
-            title={copied ? t('share-dialog.copied') : t('share-dialog.copy')}
+            title={copied ? t('share-dialog.platforms.clipboard.copied') : t('share-dialog.platforms.clipboard.copy')}
             arrow
             onClose={() => setAlreadyCopied(false)}
           >

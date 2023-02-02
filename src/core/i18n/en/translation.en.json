@@ -428,9 +428,32 @@
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
+    "share-this-on": "Share this {{entity}} on {{platform}}",
+    "or": "or",
     "url": "URL",
-    "copy": "Copy",
-    "copied": "Copied!"
+    "platforms": {
+      "clipboard": {
+        "title": "Copy Link",
+        "copy": "Copy",
+        "copied": "Copied!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Share on Alkemio"
+      },
+      "linkedin": {
+        "title": "Share on Linkedin"
+      },
+      "twitter": {
+        "title": "Share on Twitter"
+      },
+      "whatsapp": {
+        "title": "Share on Whatsapp"
+      },
+      "email": {
+        "title": "Share through E-mail"
+      }
+    }
   },
   "context": {
     "hub": {
