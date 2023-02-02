@@ -8,7 +8,7 @@ export interface MetricItem {
   name: string;
   type?: MetricType;
   isLoading?: boolean;
-  count: number;
+  count: number | undefined;
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
 }
 

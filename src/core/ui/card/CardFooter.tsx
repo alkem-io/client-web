@@ -1,10 +1,17 @@
 import React, { PropsWithChildren } from 'react';
-import { Box } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 
-const CardFooter = ({ children }: PropsWithChildren<{}>) => {
+const CardFooter = ({ children, ...containerProps }: PropsWithChildren<BoxProps>) => {
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" height={gutters(2)} paddingX={1}>
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      height={gutters(2)}
+      paddingX={1}
+      {...containerProps}
+    >
       {children}
     </Box>
   );

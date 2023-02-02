@@ -3,6 +3,7 @@ import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
+  Community,
   ContextTabFragment,
   DashboardLeadUserFragment,
   LifecycleContextTabFragment,
@@ -17,6 +18,8 @@ import { ContainerChildProps } from '../../../../core/container/container';
 import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
+import { MetricType } from '../../../platform/metrics/MetricType';
 
 interface AboutPagePermissions {
   canCreateCommunityContextReview: boolean;
@@ -124,14 +127,16 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,
-  };
+  } as Community;
   const leadUsers = memberJourney?.community?.leadUsers;
   const leadOrganizations = memberJourney?.community?.leadOrganizations;
   const references = memberContext?.references;
 
   const metrics = nonMemberJourney?.metrics;
 
-  const contributors = useCommunityMembersAsCardProps(community);
+  const membersCount = getMetricCount(metrics, MetricType.Member);
+  const memberUsersCount = membersCount - (community.memberOrganizations?.length ?? 0);
+  const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const canCreateCommunityContextReview =
     nonMembersData?.hub?.challenge?.authorization?.myPrivileges?.includes(

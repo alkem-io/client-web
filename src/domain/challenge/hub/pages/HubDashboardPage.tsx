@@ -12,9 +12,10 @@ import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
+import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 
 export interface HubDashboardPageProps {
-  dialog?: 'updates' | 'contributors';
+  dialog?: 'updates' | 'contributors' | 'calendar';
 }
 
 const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
@@ -36,6 +37,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               childEntities={entities.challenges}
               childEntitiesCount={entities.challengesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
+              timelineReadAccess={entities.permissions.timelineReadAccess}
               childEntityReadAccess={entities.permissions.challengesReadAccess}
               references={entities.references}
               recommendations={entities.recommendations}
@@ -77,6 +79,9 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               onClose={backToDashboard}
               dialogContent={HubContributorsDialogContent}
             />
+            {entities.permissions.timelineReadAccess && (
+              <CalendarDialog open={dialog === 'calendar'} onClose={backToDashboard} hubNameId={entities.hub?.nameID} />
+            )}
           </>
         )}
       </HubPageContainer>

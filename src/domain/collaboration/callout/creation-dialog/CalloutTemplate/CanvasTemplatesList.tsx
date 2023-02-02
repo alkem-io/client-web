@@ -18,7 +18,7 @@ import { CanvasTemplateData } from '../../CalloutForm';
 import { CanvasTemplateListItem, LibraryCanvasTemplate, TemplateOrigin } from './CanvasTemplateChooser';
 interface CanvasTemplatesListProps {
   actions: {
-    onSelect: (canvasTemplateTitle: CanvasTemplateData) => void;
+    onSelect: (canvasTemplateData: CanvasTemplateData) => void;
     updateLibraryTemplates: (template: LibraryCanvasTemplate) => void;
   };
   entities: {

@@ -69,4 +69,12 @@ fragment HubPage on Hub {
     name
     tags
   }
+  timeline {
+    id
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
 }

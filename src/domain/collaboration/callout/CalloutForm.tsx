@@ -122,6 +122,15 @@ const CalloutForm: FC<CalloutFormProps> = ({
     cardTemplateType: yup
       .string()
       .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
+    canvasTemplateData: yup.object().when('type', {
+      is: CalloutType.Canvas,
+      then: yup.object().shape({
+        id: yup.string().required(),
+        title: yup.string().required(),
+        origin: yup.string().required(),
+        innovationPackId: yup.string().optional(),
+      }),
+    }),
   });
 
   const handleChange = (values: FormValueType) => {
