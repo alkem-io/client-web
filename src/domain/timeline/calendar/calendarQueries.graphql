@@ -1,0 +1,133 @@
+query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
+  hub(ID: $hubId) {
+    id
+    timeline {
+      id
+      calendar {
+        id
+        events(limit: $limit) {
+          ...CalendarEventInfo
+        }
+      }
+    }
+  }
+}
+
+fragment CalendarEventInfo on CalendarEvent {
+  id
+  nameID
+  displayName
+  startDate
+  durationDays
+  durationMinutes
+  wholeDay
+  multipleDays
+  profile{
+    id
+    description
+  }
+}
+
+query hubCalendarEvents ($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    timeline {
+      id
+      calendar {
+        id
+        authorization{
+          id
+          myPrivileges
+        }
+        events {
+          ...CalendarEventDetails
+        }
+      }
+    }
+  }
+}
+
+query calendarEventDetails  ($hubId: UUID_NAMEID!, $eventId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    timeline {
+      id
+      calendar {
+        id
+        event (ID: $eventId) {
+          ...CalendarEventDetails
+        }
+      }
+    }
+  }
+}
+
+fragment CalendarEventDetails on CalendarEvent {
+  ...CalendarEventInfo
+  type
+  createdBy {
+    id
+    displayName
+    profile {
+      id
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+  createdDate
+  profile {
+    ...EventProfile
+  }
+  comments {
+    ...CommentsWithMessages
+  }
+}
+
+fragment EventProfile on CardProfile {
+  id
+  description
+  tagset {
+    id
+    name
+    tags
+  }
+  references {
+    id
+    name
+    uri
+    description
+  }
+}
+
+mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!) {
+  createEventOnCalendar(eventData: $eventData) {
+    ...CalendarEventDetails
+  }
+}
+
+mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
+  updateCalendarEvent(eventData: $eventData) {
+    ...CalendarEventDetails
+  }
+}
+
+mutation deleteCalendarEvent($deleteData: DeleteCalendarEventInput!) {
+  deleteCalendarEvent(deleteData: $deleteData) {
+    id
+    nameID
+  }
+}
+
+subscription CalendarEventCommentsMessageReceived($calendarEventID: UUID!) {
+  calendarEventCommentsMessageReceived(calendarEventID: $calendarEventID) {
+    message {
+      ...MessageDetails
+    }
+  }
+}

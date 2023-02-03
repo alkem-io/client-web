@@ -52,8 +52,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   });
 
   const handleStatusChanged = (valid: boolean) => setValid(valid);
+
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
-  const handleSave = async () => {
+
+  const handleSave = useCallback(async () => {
     setLoading(true);
     const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
     const referenceCanvasTemplate = templates.canvasTemplates.find(
@@ -73,16 +75,19 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       id: callout.id,
       displayName: newCallout.displayName,
       description: newCallout.description,
+      state: newCallout.state,
       cardTemplate: calloutCardTemplate,
       canvasTemplate: calloutCanvasTemplate,
     });
     setLoading(false);
-  };
+  }, [callout, fetchCanvasValue, newCallout, hubNameId, onCalloutEdit, templates]);
+
   const handleDelete = useCallback(async () => {
     setLoading(true);
     await onDelete(callout);
     setLoading(false);
   }, [onDelete, callout]);
+
   const handleDialogDelete = () => setConfirmDialogOpened(true);
 
   const [confirmDialogOpened, setConfirmDialogOpened] = useState(false);

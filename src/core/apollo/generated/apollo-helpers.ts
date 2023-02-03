@@ -443,6 +443,55 @@ export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
   credentialName?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalendarKeySpecifier = ('authorization' | 'event' | 'events' | 'id' | CalendarKeySpecifier)[];
+export type CalendarFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  event?: FieldPolicy<any> | FieldReadFunction<any>;
+  events?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalendarEventKeySpecifier = (
+  | 'authorization'
+  | 'comments'
+  | 'createdBy'
+  | 'createdDate'
+  | 'displayName'
+  | 'durationDays'
+  | 'durationMinutes'
+  | 'id'
+  | 'multipleDays'
+  | 'nameID'
+  | 'profile'
+  | 'startDate'
+  | 'type'
+  | 'wholeDay'
+  | CalendarEventKeySpecifier
+)[];
+export type CalendarEventFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  comments?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  durationDays?: FieldPolicy<any> | FieldReadFunction<any>;
+  durationMinutes?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  multipleDays?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  startDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  wholeDay?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalendarEventCommentsMessageReceivedKeySpecifier = (
+  | 'calendarEventID'
+  | 'message'
+  | CalendarEventCommentsMessageReceivedKeySpecifier
+)[];
+export type CalendarEventCommentsMessageReceivedFieldPolicy = {
+  calendarEventID?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutKeySpecifier = (
   | 'activity'
   | 'aspects'
@@ -953,6 +1002,7 @@ export type HubKeySpecifier = (
   | 'projects'
   | 'tagset'
   | 'templates'
+  | 'timeline'
   | 'visibility'
   | HubKeySpecifier
 )[];
@@ -980,6 +1030,7 @@ export type HubFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubAspectTemplateKeySpecifier = (
@@ -1111,6 +1162,7 @@ export type MutationKeySpecifier = (
   | 'createChallenge'
   | 'createChildChallenge'
   | 'createDiscussion'
+  | 'createEventOnCalendar'
   | 'createFeedbackOnCommunityContext'
   | 'createGroupOnCommunity'
   | 'createGroupOnOrganization'
@@ -1131,6 +1183,7 @@ export type MutationKeySpecifier = (
   | 'deleteActorGroup'
   | 'deleteAspect'
   | 'deleteAspectTemplate'
+  | 'deleteCalendarEvent'
   | 'deleteCallout'
   | 'deleteCanvas'
   | 'deleteCanvasTemplate'
@@ -1184,6 +1237,7 @@ export type MutationKeySpecifier = (
   | 'updateActor'
   | 'updateAspect'
   | 'updateAspectTemplate'
+  | 'updateCalendarEvent'
   | 'updateCallout'
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
@@ -1251,6 +1305,7 @@ export type MutationFieldPolicy = {
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   createFeedbackOnCommunityContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1271,6 +1326,7 @@ export type MutationFieldPolicy = {
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1324,6 +1380,7 @@ export type MutationFieldPolicy = {
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1918,6 +1975,7 @@ export type StorageConfigFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
   | 'aspectCommentsMessageReceived'
+  | 'calendarEventCommentsMessageReceived'
   | 'calloutAspectCreated'
   | 'calloutMessageReceived'
   | 'canvasContentUpdated'
@@ -1932,6 +1990,7 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   activityCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendarEventCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2014,6 +2073,12 @@ export type TemplatesSetFieldPolicy = {
 export type TemplatesSetPolicyKeySpecifier = ('minInnovationFlow' | TemplatesSetPolicyKeySpecifier)[];
 export type TemplatesSetPolicyFieldPolicy = {
   minInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type TimelineKeySpecifier = ('authorization' | 'calendar' | 'id' | TimelineKeySpecifier)[];
+export type TimelineFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  calendar?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UpdatesKeySpecifier = ('authorization' | 'id' | 'messages' | UpdatesKeySpecifier)[];
 export type UpdatesFieldPolicy = {
@@ -2294,6 +2359,21 @@ export type StrictTypedTypePolicies = {
       | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier
       | (() => undefined | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier);
     fields?: AuthorizationPolicyRuleVerifiedCredentialFieldPolicy;
+  };
+  Calendar?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalendarKeySpecifier | (() => undefined | CalendarKeySpecifier);
+    fields?: CalendarFieldPolicy;
+  };
+  CalendarEvent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalendarEventKeySpecifier | (() => undefined | CalendarEventKeySpecifier);
+    fields?: CalendarEventFieldPolicy;
+  };
+  CalendarEventCommentsMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalendarEventCommentsMessageReceivedKeySpecifier
+      | (() => undefined | CalendarEventCommentsMessageReceivedKeySpecifier);
+    fields?: CalendarEventCommentsMessageReceivedFieldPolicy;
   };
   Callout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutKeySpecifier | (() => undefined | CalloutKeySpecifier);
@@ -2698,6 +2778,10 @@ export type StrictTypedTypePolicies = {
   TemplatesSetPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplatesSetPolicyKeySpecifier | (() => undefined | TemplatesSetPolicyKeySpecifier);
     fields?: TemplatesSetPolicyFieldPolicy;
+  };
+  Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
+    fields?: TimelineFieldPolicy;
   };
   Updates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UpdatesKeySpecifier | (() => undefined | UpdatesKeySpecifier);
