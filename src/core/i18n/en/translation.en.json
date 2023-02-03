@@ -586,7 +586,18 @@
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Recent Contributions"
+      "title": "Recent Contributions",
+      "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
+      "activity-join-error-message": {
+        "hub": "To see the recent contributions, please join if you are not yet a member of this $t(common.hub).",
+        "challenge": "To see the recent contributions, please join if you are not yet a member of this $t(common.challenge).",
+        "opportunity": "To see the recent contributions, please join if you are not yet a member of this $t(common.opportunity)."
+      },
+      "activity-sign-in-and-join-error-message": {
+        "hub": "To see the recent contributions, please sign in and join if you are not yet a member of this $t(common.hub).",
+        "challenge": "To see the recent contributions, please sign in and join if you are not yet a member of this $t(common.challenge).",
+        "opportunity": "To see the recent contributions, please sign in and join if you are not yet a member of this $t(common.opportunity)."
+      }
     },
     "activity-log-view": {
       "actions": {

@@ -7,6 +7,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesAndRecommendationsQuery,
   useChallengePageQuery,
+  usePlatformLevelAuthorizationQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
@@ -46,6 +47,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
     canEdit: boolean;
     communityReadAccess: boolean;
     opportunitiesReadAccess: boolean;
+    readUsers: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
@@ -82,9 +84,10 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
-
   const challengePrivileges = _challenge?.hub?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+
+  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
+  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
@@ -92,7 +95,13 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
       x => x === AuthorizationPrivilege.Read
     ),
     opportunitiesReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
+
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(
+    collaborationID,
+    !permissions.opportunitiesReadAccess || !permissions.readUsers
+  );
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read

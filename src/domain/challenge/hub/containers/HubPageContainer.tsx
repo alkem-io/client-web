@@ -5,6 +5,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import {
   useHubDashboardReferencesAndRecommendationsQuery,
   useHubPageQuery,
+  usePlatformLevelAuthorizationQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -39,7 +40,8 @@ export interface HubContainerEntities {
     canEdit: boolean;
     communityReadAccess: boolean;
     timelineReadAccess: boolean;
-    challengesReadAccess: boolean;
+    hubReadAccess: boolean;
+    readUsers: boolean;
   };
   challengesCount: number | undefined;
   isAuthenticated: boolean;
@@ -83,8 +85,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '');
-
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   const { user, isAuthenticated } = useUserContext();
   // don't load references without READ privilige on Context
@@ -108,12 +108,21 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
   const hubPrivileges = _hub?.hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
+  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
+  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
+
   const permissions = {
     canEdit: user?.isHubAdmin(hubId) || false,
     communityReadAccess,
     timelineReadAccess,
-    challengesReadAccess: hubPrivileges.includes(AuthorizationPrivilege.Read),
+    hubReadAccess: hubPrivileges.includes(AuthorizationPrivilege.Read),
+    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
+
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(
+    collaborationID || '',
+    !permissions.hubReadAccess || !permissions.readUsers
+  );
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
