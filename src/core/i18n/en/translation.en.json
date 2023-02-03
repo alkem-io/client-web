@@ -94,7 +94,8 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
-    "select": "Select"
+    "select": "Select",
+    "change-field": "Change {{field}}"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -174,6 +175,7 @@
     "project": "Project",
     "agreements": "Agreements",
     "templates": "Templates",
+    "template": "Template",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",

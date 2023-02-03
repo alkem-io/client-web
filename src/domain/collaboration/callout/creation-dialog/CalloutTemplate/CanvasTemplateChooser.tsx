@@ -89,18 +89,19 @@ export const CanvasTemplatesChooser: FC<CanvasTemplatesChooserProps> = ({
       </Text>
       {editMode ? (
         <>
+          <CardText sx={{ color: FORM_TEXT_COLOR }}>
+            {t('components.callout-edit.canvas-template-edit-help-text')}
+          </CardText>
           {!isTemplateChooserVisible && (
             <Button
               startIcon={<ChangeCircleIcon />}
               variant="contained"
               onClick={() => setIsTemplateChooserVisible(true)}
+              sx={{ margin: theme => theme.spacing(1) }}
             >
-              change template
+              {t('buttons.change-field', { field: t('common.template') })}
             </Button>
           )}
-          <CardText sx={{ color: FORM_TEXT_COLOR }}>
-            {t('components.callout-edit.canvas-template-edit-help-text')}
-          </CardText>
           {isTemplateChooserVisible && (
             <CanvasTemplatesList
               entities={{ templates, selectedTemplate: selectedTemplateWithValue }}

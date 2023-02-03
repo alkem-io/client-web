@@ -63,7 +63,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    console.log(newCallout);
     const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
     const getCanvasValueFromHub = async () => {
       const result = await fetchCanvasValueFromHub({
