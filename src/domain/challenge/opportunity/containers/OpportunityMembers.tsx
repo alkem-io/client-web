@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   refetchUsersWithCredentialsQuery,
@@ -58,17 +57,12 @@ export interface OpportunityMembersEntities {
 }
 
 export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, entities }) => {
-  const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
   const { communityId } = entities;
 
-  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOpportunityAdminMutation({
-    onError: handleError,
-  });
+  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOpportunityAdminMutation({});
 
-  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOpportunityAdminMutation({
-    onError: handleError,
-  });
+  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOpportunityAdminMutation({});
 
   const handleAssignAdmin = useCallback(
     (memberId: string) => {

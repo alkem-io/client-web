@@ -3,7 +3,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Path } from '../../../../core/routing/NavigationProvider';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import {
@@ -36,7 +35,6 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
 
   const { challengeNameId = '', hubNameId = '' } = useUrlParams();
 
@@ -45,14 +43,12 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
       notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
       navigateToEdit(data.createChallenge.nameID);
     },
-    onError: handleError,
     refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => notify(t('pages.admin.challenge.notifications.challenge-updated'), 'success'),
-    onError: handleError,
     refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });

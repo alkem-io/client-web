@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { ContainerHook } from '../../../../../core/container/container';
 import { PushFunc, RemoveFunc, useEditReference } from '../../../../shared/Reference/useEditReference';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
   useChallengeAspectSettingsQuery,
@@ -61,7 +60,6 @@ const useAspectSettings: ContainerHook<
   AspectSettingsContainerActions,
   AspectSettingsContainerState
 > = ({ hubNameId, aspectNameId, challengeNameId, opportunityNameId, calloutNameId }) => {
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
   const isAspectDefined = aspectNameId && hubNameId;
@@ -73,7 +71,6 @@ const useAspectSettings: ContainerHook<
   } = useHubAspectSettingsQuery({
     variables: { hubNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
-    onError: handleError,
   });
 
   const {
@@ -83,7 +80,6 @@ const useAspectSettings: ContainerHook<
   } = useChallengeAspectSettingsQuery({
     variables: { hubNameId, challengeNameId: challengeNameId ?? '', aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
-    onError: handleError,
   });
 
   const {
@@ -93,7 +89,6 @@ const useAspectSettings: ContainerHook<
   } = useOpportunityAspectSettingsQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
-    onError: handleError,
   });
 
   const collaborationCallouts =
@@ -110,7 +105,6 @@ const useAspectSettings: ContainerHook<
   const error = hubError ?? challengeError ?? opportunityError;
 
   const [updateAspect, { loading: updating, error: updateError }] = useUpdateAspectMutation({
-    onError: handleError,
     onCompleted: () => notify('Aspect updated successfully', 'success'),
   });
 
@@ -137,7 +131,6 @@ const useAspectSettings: ContainerHook<
   };
 
   const [deleteAspect, { loading: deleting }] = useDeleteAspectMutation({
-    onError: handleError,
     update: removeFromCache,
   });
 

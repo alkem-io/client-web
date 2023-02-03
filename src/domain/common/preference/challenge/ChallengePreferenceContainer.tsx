@@ -1,7 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useChallengePreferencesQuery,
   useUpdatePreferenceOnChallengeMutation,
@@ -34,8 +33,6 @@ export interface ChallengePreferenceContainerProps
 const excludedPreferences = [PreferenceType.MembershipFeedbackOnChallengeContext];
 
 const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, hubId, challengeId }) => {
-  const handleError = useApolloErrorHandler();
-
   const { data, loading, error } = useChallengePreferencesQuery({
     variables: { hubNameId: hubId, challengeNameId: challengeId },
     fetchPolicy: 'network-only',
@@ -43,9 +40,7 @@ const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ c
     skip: !hubId,
   });
 
-  const [updatePreference] = useUpdatePreferenceOnChallengeMutation({
-    onError: handleError,
-  });
+  const [updatePreference] = useUpdatePreferenceOnChallengeMutation({});
 
   const preferences = (data?.hub?.challenge?.preferences ?? []).filter(
     p => !excludedPreferences.includes(p.definition.type)

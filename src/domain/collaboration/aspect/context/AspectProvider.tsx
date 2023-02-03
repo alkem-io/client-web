@@ -1,6 +1,5 @@
 import React, { FC, useContext } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useChallengeAspectProviderQuery,
   useHubAspectProviderQuery,
@@ -39,7 +38,6 @@ const AspectProvider: FC = ({ children }) => {
     calloutNameId = '',
   } = useUrlParams();
 
-  const handleError = useApolloErrorHandler();
   const isAspectDefined = aspectNameId && hubNameId;
 
   const {
@@ -49,7 +47,6 @@ const AspectProvider: FC = ({ children }) => {
   } = useHubAspectProviderQuery({
     variables: { hubNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
-    onError: handleError,
   });
   const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
     x => x.nameID === aspectNameId
@@ -61,7 +58,6 @@ const AspectProvider: FC = ({ children }) => {
   } = useChallengeAspectProviderQuery({
     variables: { hubNameId, challengeNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
-    onError: handleError,
   });
   const challengeAspect = getCardCallout(
     challengeData?.hub?.challenge?.collaboration?.callouts,
@@ -75,7 +71,6 @@ const AspectProvider: FC = ({ children }) => {
   } = useOpportunityAspectProviderQuery({
     variables: { hubNameId, opportunityNameId, aspectNameId, calloutNameId },
     skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
-    onError: handleError,
   });
   const opportunityAspect = getCardCallout(
     opportunityData?.hub?.opportunity?.collaboration?.callouts,

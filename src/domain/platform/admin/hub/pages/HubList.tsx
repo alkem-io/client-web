@@ -5,7 +5,6 @@ import {
   useAdminHubsListQuery,
   useDeleteHubMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import ListPage from '../../components/ListPage';
@@ -17,7 +16,6 @@ import { buildAdminHubUrl } from '../../../../../common/utils/urlBuilders';
 
 export const HubList: FC = () => {
   const { pathname: url } = useResolvedPath('.');
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { t } = useTranslation();
 
@@ -43,7 +41,6 @@ export const HubList: FC = () => {
   const [deleteHub] = useDeleteHubMutation({
     refetchQueries: [refetchAdminHubsListQuery()],
     awaitRefetchQueries: true,
-    onError: handleError,
     onCompleted: data =>
       notify(t('pages.admin.hub.notifications.hub-removed', { name: data.deleteHub.displayName }), 'success'),
   });

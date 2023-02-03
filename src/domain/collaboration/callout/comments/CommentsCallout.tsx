@@ -2,7 +2,6 @@ import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLay
 import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   MessageDetailsFragmentDoc,
@@ -48,7 +47,6 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     },
     ref
   ) => {
-    const handleError = useApolloErrorHandler();
     const { user: userMetadata, isAuthenticated } = useUserContext();
     const user = userMetadata?.user;
 
@@ -82,7 +80,6 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
       commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
 
     const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
-      onError: handleError,
       update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
     });
 
@@ -97,7 +94,6 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
       });
 
     const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
-      onError: handleError,
       update: (cache, { data }) => {
         if (isSubscribedToComments) {
           return;

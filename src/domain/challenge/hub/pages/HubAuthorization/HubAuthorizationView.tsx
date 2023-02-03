@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 
 import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useHub } from '../../HubContext/useHub';
 import {
   refetchUsersWithCredentialsQuery,
@@ -18,15 +17,9 @@ interface HubAuthorizationViewProps {
 }
 
 const HubAuthorizationView: FC<HubAuthorizationViewProps> = ({ credential, resourceId = '' }) => {
-  const handleError = useApolloErrorHandler();
+  const [grant, { loading: addingMember }] = useAssignUserAsHubAdminMutation({});
 
-  const [grant, { loading: addingMember }] = useAssignUserAsHubAdminMutation({
-    onError: handleError,
-  });
-
-  const [revoke, { loading: removingMember }] = useRemoveUserAsHubAdminMutation({
-    onError: handleError,
-  });
+  const [revoke, { loading: removingMember }] = useRemoveUserAsHubAdminMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({

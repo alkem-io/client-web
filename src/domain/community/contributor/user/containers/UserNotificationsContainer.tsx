@@ -1,7 +1,6 @@
 import { sortBy } from 'lodash';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useUpdatePreferenceOnUserMutation,
   useUserNotificationsPreferencesQuery,
@@ -33,16 +32,13 @@ const excludeNotifications = [PreferenceType.NotificationCommunicationDiscussion
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
   const { userNameId = '' } = useUrlParams();
 
-  const handleError = useApolloErrorHandler();
   const { data, loading } = useUserNotificationsPreferencesQuery({
     variables: {
       userId: userNameId,
     },
   });
 
-  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation({
-    onError: handleError,
-  });
+  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation({});
 
   const userUUID = data?.user.id;
 

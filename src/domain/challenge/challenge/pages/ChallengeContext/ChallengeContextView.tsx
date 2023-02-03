@@ -2,7 +2,6 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeProfileInfoQuery,
@@ -17,14 +16,12 @@ import { ChallengeContextSegment } from '../../../../platform/admin/challenge/Ch
 const ChallengeContextView: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
   const { challengeNameId = '', hubNameId = '' } = useUrlParams();
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
     refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });

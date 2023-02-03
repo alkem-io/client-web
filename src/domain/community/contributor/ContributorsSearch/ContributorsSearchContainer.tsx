@@ -6,7 +6,6 @@ import {
   useContributorsPageOrganizationsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../user';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   ContributorsPageUsersQuery,
   ContributorsPageUsersQueryVariables,
@@ -51,14 +50,12 @@ export interface ContributorsSearchContainerProps
 
 const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ searchTerms, pageSize, children }) => {
   const { isAuthenticated } = useUserContext();
-  const handleError = useApolloErrorHandler();
 
   const usersQueryResult = usePaginatedQuery<ContributorsPageUsersQuery, ContributorsPageUsersQueryVariables>({
     useQuery: useContributorsPageUsersQuery,
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
-      onError: handleError,
       skip: !isAuthenticated,
     },
     variables: {

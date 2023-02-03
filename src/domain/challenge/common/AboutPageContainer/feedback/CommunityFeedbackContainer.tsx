@@ -8,7 +8,6 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { CreateNvpInput, FeedbackTemplate } from '../../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../../../community/community/CommunityContext';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useTranslation } from 'react-i18next';
 
@@ -38,14 +37,12 @@ export interface CommunityFeedbackContainerProps
 
 const CommunityFeedbackContainer: FC<CommunityFeedbackContainerProps> = ({ children }) => {
   const navigate = useNavigate();
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { t } = useTranslation();
 
   const { communityId } = useCommunityContext();
   const { data: templateQuery, loading, error: templateError } = useCommunityFeedbackTemplatesQuery();
   const [createFeedback, { loading: isSubmitting, error: submitError }] = useCreateFeedbackOnCommunityContextMutation({
-    onError: handleError,
     onCompleted: () => notify(t('pages.feedback.success'), 'success'),
   });
 

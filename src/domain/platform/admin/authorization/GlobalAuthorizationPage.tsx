@@ -4,7 +4,6 @@ import EditMemberCredentials from '../components/Authorization/EditMemberCredent
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsGlobalAdminMutation,
@@ -17,15 +16,9 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalRegistered } = useUrlParams();
 
-  const handleError = useApolloErrorHandler();
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobalAdminMutation({});
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobalAdminMutation({
-    onError: handleError,
-  });
-
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalAdminMutation({
-    onError: handleError,
-  });
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalAdminMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({

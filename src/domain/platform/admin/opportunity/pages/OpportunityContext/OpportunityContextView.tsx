@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { updateContextInput } from '../../../../../../common/utils/buildContext';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
   useUpdateOpportunityMutation,
@@ -17,14 +16,12 @@ import { OpportunityContextSegment } from '../../OpportunityContextSegment';
 const OpportunityContextView: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
     refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
