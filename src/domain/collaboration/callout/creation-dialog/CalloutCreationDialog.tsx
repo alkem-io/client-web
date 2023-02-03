@@ -74,7 +74,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
 
-  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromHub] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -94,7 +94,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
 
     const getCanvasValueFromHub = async () => {
-      const result = await fetchCanvasValue({
+      const result = await fetchCanvasValueFromHub({
         variables: { hubId: hubNameId!, canvasTemplateId: callout.canvasTemplateData?.id! },
       });
 
@@ -130,7 +130,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValue, fetchCanvasValueFromLibrary]);
+  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValueFromHub, fetchCanvasValueFromLibrary]);
 
   const handleClose = useCallback(() => {
     onClose?.();
