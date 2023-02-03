@@ -79,7 +79,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
       hubId: hubNameId,
       challengeId: challengeNameId,
     },
-    errorPolicy: 'all',
   });
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;

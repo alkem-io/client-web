@@ -5,10 +5,11 @@ import { env } from '../../../types/env';
 import {
   omitTypenameLink,
   consoleLink,
-  errorLink,
+  errorLoggerLink,
   retryLink,
   redirectLink,
   httpLink,
+  useErrorReporterLink,
 } from '../../../common/utils/graphql-links';
 import { typePolicies } from '../config/typePolicies';
 
@@ -25,17 +26,20 @@ export const useGraphQLClient = (
   // If that happens, we don't want to lose the cache.
   const cache = useRef(once(() => new InMemoryCache({ addTypename: true, typePolicies }))).current();
 
+  const errorReporterLink = useErrorReporterLink();
+
   return useMemo(() => {
     return new ApolloClient({
       link: from([
         omitTypenameLink,
         consoleLink(enableQueryDebug),
-        errorLink(enableErrorLogging),
+        errorLoggerLink(enableErrorLogging),
+        errorReporterLink,
         retryLink,
         redirectLink,
         httpLink(graphQLEndpoint, enableWebSockets),
       ]),
       cache,
     });
-  }, [enableWebSockets, graphQLEndpoint, cache]);
+  }, [enableWebSockets, graphQLEndpoint, errorReporterLink, cache]);
 };

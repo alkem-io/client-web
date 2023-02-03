@@ -2,7 +2,6 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useEventOnApplicationMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ApplicationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '../../../../community/application/dialogs/ApplicationDialog';
@@ -35,11 +34,7 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
 
   const applicationsVm = useMemo(() => toApplicationViewmodel(applications), [applications]);
 
-  const handleError = useApolloErrorHandler();
-
-  const [updateApplication] = useEventOnApplicationMutation({
-    onError: handleError,
-  });
+  const [updateApplication] = useEventOnApplicationMutation({});
 
   const setNewStateHandler = (appId: string, newState: string) => {
     updateApplication({

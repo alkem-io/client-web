@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
 import { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import { useDeleteUserMutation, useUserListQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { UserListQuery, UserListQueryVariables } from '../../../../../core/apollo/generated/graphql-schema';
@@ -26,7 +25,6 @@ interface Provided {
 const PAGE_SIZE = 10;
 
 const useUserList = (): Provided => {
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -59,7 +57,6 @@ const useUserList = (): Provided => {
   );
 
   const [deleteUser, { loading: deleting }] = useDeleteUserMutation({
-    onError: handleError,
     update: cache => clearCacheForQuery(cache, 'usersPaginated'),
     onCompleted: () => notify(t('pages.admin.users.notifications.user-removed'), 'success'),
   });

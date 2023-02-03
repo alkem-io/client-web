@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
@@ -27,7 +26,6 @@ interface Props {
 }
 
 const OrganizationPage: FC<Props> = ({ title, mode }) => {
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const { organizationNameId } = useOrganization();
 
@@ -55,12 +53,10 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
         navigateToEdit(organizationId);
       }
     },
-    onError: handleError,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('Organization updated successfully', 'success');
     },

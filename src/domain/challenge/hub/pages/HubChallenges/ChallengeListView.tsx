@@ -12,7 +12,6 @@ import {
   useCreateChallengeMutation,
   useDeleteChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useHub } from '../../HubContext/useHub';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
@@ -22,7 +21,6 @@ import { buildAdminChallengeUrl } from '../../../../../common/utils/urlBuilders'
 import { CreateChallengeForm } from '../../../challenge/forms/CreateChallengeForm';
 
 export const ChallengeListView: FC = () => {
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
   const { hubNameId } = useHub();
@@ -49,7 +47,6 @@ export const ChallengeListView: FC = () => {
       }),
     ],
     awaitRefetchQueries: true,
-    onError: handleError,
     onCompleted: () => notify(t('pages.admin.challenge.notifications.challenge-removed'), 'success'),
   });
 
@@ -67,7 +64,6 @@ export const ChallengeListView: FC = () => {
     onCompleted: () => {
       notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
     },
-    onError: handleError,
     refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
     awaitRefetchQueries: true,
   });

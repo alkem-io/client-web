@@ -1,4 +1,3 @@
-import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useChallengeCalloutAspectsSubscriptionQuery,
   useHubCalloutAspectsSubscriptionQuery,
@@ -28,12 +27,9 @@ export const useAspectCreatedOnCalloutSubscription = ({
   challengeNameId = undefined,
   opportunityNameId = undefined,
 }: UseAspectDataHookProps): AspectsData => {
-  const handleError = useApolloErrorHandler();
-
   const { data: hubCollaborationData } = usePrivilegesOnHubCollaborationQuery({
     variables: { hubNameId },
     skip: !!(challengeNameId || opportunityNameId),
-    onError: handleError,
   });
   const hubCollaboration = hubCollaborationData?.hub?.collaboration;
   const hubCollaborationPrivileges = hubCollaboration?.authorization?.myPrivileges;
@@ -41,13 +37,11 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const { data: hubAspectData, subscribeToMore: subscribeToHub } = useHubCalloutAspectsSubscriptionQuery({
     variables: { hubNameId, calloutId },
     skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId),
-    onError: handleError,
   });
 
   const { data: challengeCollaborationData } = usePrivilegesOnChallengeCollaborationQuery({
     variables: { hubNameId, challengeNameId: challengeNameId! },
     skip: !challengeNameId || !!opportunityNameId,
-    onError: handleError,
   });
   const challengeCollaboration = challengeCollaborationData?.hub?.challenge?.collaboration;
   const challengeCollaborationPrivileges = challengeCollaboration?.authorization?.myPrivileges;
@@ -57,13 +51,11 @@ export const useAspectCreatedOnCalloutSubscription = ({
     useChallengeCalloutAspectsSubscriptionQuery({
       variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
       skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
-      onError: handleError,
     });
 
   const { data: opportunityCollaborationData } = usePrivilegesOnOpportunityCollaborationQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId! },
     skip: !opportunityNameId,
-    onError: handleError,
   });
   const opportunityCollaboration = opportunityCollaborationData?.hub?.opportunity?.collaboration;
   const opportunityCollaborationPrivileges = opportunityCollaboration?.authorization?.myPrivileges;
@@ -73,7 +65,6 @@ export const useAspectCreatedOnCalloutSubscription = ({
     useOpportunityCalloutAspectsSubscriptionQuery({
       variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
       skip: !canReadOpportunityCollaboration || !opportunityNameId,
-      onError: handleError,
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'cache-first',
     });

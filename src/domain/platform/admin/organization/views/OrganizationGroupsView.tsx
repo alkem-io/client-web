@@ -1,6 +1,5 @@
 import React, { FC, useCallback } from 'react';
 import { ListPage } from '../../components/ListPage';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -12,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 
 export const OrganizationGroupsView: FC = () => {
   const { t } = useTranslation();
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const notifySuccess = () => notify('Group deleted successfully!', 'success');
 
@@ -23,7 +21,6 @@ export const OrganizationGroupsView: FC = () => {
   const groups = data?.organization?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/groups/${g.id}` }));
 
   const [deleteGroup] = useDeleteGroupMutation({
-    onError: handleError,
     onCompleted: notifySuccess,
   });
 

@@ -7,7 +7,6 @@ import UploadButton from '../../../core/UploadButton';
 import { DialogTitle, DialogActions, DialogContent } from '../../../core/dialog';
 import { useConfig } from '../../../../../domain/platform/config/useConfig';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUploadFileMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { TranslateWithElements } from '../../../../../domain/shared/i18n/TranslateWithElements';
 import SectionSpacer from '../../../../../domain/shared/components/Section/SectionSpacer';
@@ -21,7 +20,6 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { storage, platform } = useConfig();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
 
   const [dialogOpened, setDialogOpened] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
@@ -31,7 +29,6 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
   const MB_LIMIT = storage?.file.maxFileSize ? storage.file.maxFileSize / (1024 * 1024) : 0;
 
   const [uploadFile, { loading }] = useUploadFileMutation({
-    onError: handleError,
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
       onUpload?.(data.uploadFile);

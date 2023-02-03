@@ -2,7 +2,6 @@ import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchChallengeProfileInfoQuery,
@@ -28,7 +27,6 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
   const { challengeNameId = '', hubNameId = '' } = useUrlParams();
@@ -38,14 +36,12 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
       onSuccess('Successfully created');
       navigateToEdit(data.createChallenge.nameID);
     },
-    onError: handleError,
     refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
     refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });

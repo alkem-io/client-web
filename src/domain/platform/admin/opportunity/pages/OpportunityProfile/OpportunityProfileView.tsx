@@ -5,7 +5,6 @@ import { createContextInput, updateContextInput } from '../../../../../../common
 import FormMode from '../../../components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../../common/components/composite/forms/ProfileForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useChallenge } from '../../../../../challenge/challenge/hooks/useChallenge';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
@@ -28,7 +27,6 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
   const { challengeId } = useChallenge();
@@ -42,11 +40,9 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
       onSuccess('Successfully created');
       navigateToEdit(data.createOpportunity.nameID);
     },
-    onError: handleError,
   });
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
     refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });

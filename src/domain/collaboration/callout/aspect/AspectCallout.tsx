@@ -8,7 +8,6 @@ import {
   AspectCardFragmentDoc,
   useCreateAspectFromContributeTabMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useAspectCreatedOnCalloutSubscription } from '../useAspectCreatedOnCalloutSubscription';
 import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
@@ -49,7 +48,6 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
     const openCreateDialog = () => setAspectDialogOpen(true);
     const closeCreateDialog = () => setAspectDialogOpen(false);
-    const handleError = useApolloErrorHandler();
     const navigate = useNavigate();
 
     const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
@@ -60,7 +58,6 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     });
 
     const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
-      onError: handleError,
       update: (cache, { data }) => {
         if (subscriptionEnabled || !data) {
           return;
