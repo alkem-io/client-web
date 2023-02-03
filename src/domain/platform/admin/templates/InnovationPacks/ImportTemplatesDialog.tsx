@@ -1,6 +1,6 @@
-import { Button, DialogContent, DialogProps, Skeleton } from '@mui/material';
+import { Button, ButtonProps, DialogContent, DialogProps, Skeleton } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { ComponentType, useState } from 'react';
+import React, { cloneElement, ComponentType, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogActions } from '../../../../../common/components/core/dialog';
 import DialogTitleWithIcon from '../../../../../common/components/core/dialog/DialogTitleWithIcon';
@@ -25,6 +25,8 @@ export interface ImportTemplatesDialogProps<
   onClose: DialogProps['onClose'];
   onImportTemplate: (template: Q, templateValue?: V) => Promise<void>;
   loading?: boolean;
+  dialogSubtitle: string;
+  actionButton: ReactElement<ButtonProps>;
 }
 
 const ImportTemplatesDialog = <
@@ -42,25 +44,28 @@ const ImportTemplatesDialog = <
   open,
   onClose,
   onImportTemplate,
+  dialogSubtitle,
+  actionButton,
 }: ImportTemplatesDialogProps<T, Q, V>) => {
   const { t } = useTranslation();
-
-  const handleClose = () => {
-    onClose?.({}, 'escapeKeyDown');
-    handleClosePreview();
-  };
   const [previewTemplate, setPreviewTemplate] = useState<Q>();
 
-  const handleImportTemplate = async (template: Q, templateValue: V | undefined) => {
-    await onImportTemplate?.(template, templateValue);
+  const handleImportTemplate = async () => {
+    previewTemplate && (await onImportTemplate?.(previewTemplate, importedTemplateValue));
     handleClosePreview();
   };
 
   const handlePreviewTemplate = (template: Q) => {
     setPreviewTemplate(template);
   };
+
   const handleClosePreview = () => {
     setPreviewTemplate(undefined);
+  };
+
+  const handleClose = () => {
+    onClose?.({}, 'escapeKeyDown');
+    handleClosePreview();
   };
 
   return (
@@ -70,11 +75,7 @@ const ImportTemplatesDialog = <
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(150) } }}
       maxWidth={false}
     >
-      <DialogTitleWithIcon
-        subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
-        onClose={handleClose}
-        icon={<LibraryIcon />}
-      >
+      <DialogTitleWithIcon subtitle={dialogSubtitle} onClose={handleClose} icon={<LibraryIcon />}>
         {headerText}
       </DialogTitleWithIcon>
       <DialogContent>
@@ -89,12 +90,12 @@ const ImportTemplatesDialog = <
           ) : (
             <ImportTemplatesDialogPreviewStep
               template={previewTemplate}
-              onImportTemplate={handleImportTemplate}
               onClose={handleClosePreview}
               templatePreviewCardComponent={templateImportCardComponent}
               templatePreviewComponent={templatePreviewComponent}
               getImportedTemplateValue={getImportedTemplateValue}
               importedTemplateValue={importedTemplateValue}
+              actions={cloneElement(actionButton, { onClick: handleImportTemplate })}
             />
           ))}
       </DialogContent>

@@ -47,10 +47,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const initialValues: CalloutFormInput = {
     ...callout,
     cardTemplateType: callout.cardTemplate?.type,
-    canvasTemplateData: { title: callout.canvasTemplate?.info.title },
+    canvasTemplateData: { id: callout.canvasTemplate?.id, title: callout.canvasTemplate?.info.title },
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
-  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromHub] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
   const [fetchCanvasValueFromLibrary] = useInnovationPackFullCanvasTemplateWithValueLazyQuery({
@@ -63,29 +63,35 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
+    console.log(newCallout);
     const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
-    const referenceHubCanvasTemplate = templates.canvasTemplates.find(
-      template => template.info.title === newCallout.canvasTemplateData?.title
-    );
-    const canvasTemplateQueryResult =
-      referenceHubCanvasTemplate &&
-      (await fetchCanvasValue({
-        variables: { hubId: hubNameId!, canvasTemplateId: referenceHubCanvasTemplate.id },
-      }));
+    const getCanvasValueFromHub = async () => {
+      const result = await fetchCanvasValueFromHub({
+        variables: { hubId: hubNameId!, canvasTemplateId: newCallout.canvasTemplateData?.id! },
+      });
+      return result.data?.hub.templates;
+    };
 
-    const libraryCanvasTemplateQueryResult = referenceHubCanvasTemplate
-      ? undefined
-      : await fetchCanvasValueFromLibrary({
-          variables: {
-            innovationPackId: newCallout.canvasTemplateData?.innovationPackId!,
-            canvasTemplateId: newCallout.canvasTemplateData?.id!,
-          },
-        });
+    const getCanvasValueFromLibrary = async () => {
+      const result = await fetchCanvasValueFromLibrary({
+        variables: {
+          innovationPackId: newCallout.canvasTemplateData?.innovationPackId!,
+          canvasTemplateId: newCallout.canvasTemplateData?.id!,
+        },
+      });
+      return result.data?.platform.library.innovationPack?.templates;
+    };
 
-    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
-      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate ??
-        libraryCanvasTemplateQueryResult?.data?.platform.library.innovationPack?.templates?.canvasTemplate
-    );
+    const fetchCanvasValue = async () => {
+      if (!newCallout.canvasTemplateData?.origin) return undefined;
+      return newCallout.canvasTemplateData?.origin === 'Hub'
+        ? await getCanvasValueFromHub()
+        : await getCanvasValueFromLibrary();
+    };
+
+    const queryResult = await fetchCanvasValue();
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
 
     await onCalloutEdit({
       id: callout.id,
@@ -96,7 +102,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       canvasTemplate: calloutCanvasTemplate,
     });
     setLoading(false);
-  }, [callout, fetchCanvasValue, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);
+  }, [callout, fetchCanvasValueFromHub, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);
 
   const handleDelete = useCallback(async () => {
     setLoading(true);

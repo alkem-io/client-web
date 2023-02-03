@@ -1,6 +1,7 @@
 import { Box, Button, Grid, List, Typography } from '@mui/material';
 import { FC, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import CheckIcon from '@mui/icons-material/Check';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { Loading } from '../../../../../common/components/core';
 import { LibraryIcon } from '../../../../../common/icons/LibraryIcon';
@@ -64,7 +65,10 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
   }, [innovationPacks]);
 
   const handleImportTemplate = async (template: LibraryCanvasTemplate) => {
-    if (templates.find(templ => templ.id === template.id)) return;
+    if (templates.find(templ => templ.info.title === template.info.title)) {
+      closeImportTemplatesDialog();
+      return;
+    }
     actions.updateLibraryTemplates(template);
     const selectedLibraryTemplate = {
       id: template.id,
@@ -73,6 +77,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
       innovationPackId: template.innovationPackId,
     };
     handleTemplateSelect(selectedLibraryTemplate);
+    closeImportTemplatesDialog();
   };
 
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
@@ -149,6 +154,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
         headerText={t('pages.admin.generic.sections.templates.import.title', {
           templateType: t('common.canvases'),
         })}
+        dialogSubtitle={t('pages.admin.generic.sections.templates.import.callout-template-import-subtitle')}
         templateImportCardComponent={CanvasImportTemplateCard}
         templatePreviewComponent={CanvasTemplatePreview}
         open={isImportTemplatesDialogOpen}
@@ -157,6 +163,11 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
         innovationPacks={canvasInnovationPacks}
         getImportedTemplateValue={getImportedTemplateValue}
         importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.canvasTemplate}
+        actionButton={
+          <Button startIcon={<CheckIcon />} variant="contained" sx={{ marginLeft: theme => theme.spacing(1) }}>
+            {t('buttons.select')}
+          </Button>
+        }
       />
     </>
   );

@@ -1,12 +1,10 @@
 import { Box, Button, Grid } from '@mui/material';
-import React, { ComponentType, useCallback } from 'react';
+import React, { ComponentType, ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Template, TemplatePreviewProps, TemplateValue } from '../AdminTemplatesSection';
 import { TemplateInnovationPackMetaInfo } from './InnovationPack';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 export interface ImportTemplatesDialogPreviewStepProps<
@@ -14,13 +12,13 @@ export interface ImportTemplatesDialogPreviewStepProps<
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue
 > {
-  onImportTemplate: (template: Q, templateValue: V | undefined) => Promise<void>;
   onClose: () => void;
   template: Q;
   templatePreviewCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T, V>>;
   getImportedTemplateValue?: (template: Q) => void;
   importedTemplateValue?: V | undefined;
+  actions?: ReactNode;
 }
 
 const ImportTemplatesDialogPreviewStep = <
@@ -33,18 +31,10 @@ const ImportTemplatesDialogPreviewStep = <
   templatePreviewComponent: TemplatePreview,
   getImportedTemplateValue,
   importedTemplateValue,
-  onImportTemplate,
+  actions,
   onClose,
 }: ImportTemplatesDialogPreviewStepProps<T, Q, V>) => {
   const { t } = useTranslation();
-
-  const [doImportTemplate, importingTemplate] = useLoadingState(() =>
-    onImportTemplate(template, importedTemplateValue)
-  );
-
-  const handleClickImport = async () => {
-    doImportTemplate();
-  };
 
   const getTemplateValue = useCallback(
     () => (getImportedTemplateValue ? getImportedTemplateValue(template) : undefined),
@@ -61,15 +51,7 @@ const ImportTemplatesDialogPreviewStep = <
           <Button startIcon={<ArrowBackIcon />} variant="text" onClick={() => onClose()}>
             {t('buttons.back')}
           </Button>
-          <Button
-            startIcon={<SystemUpdateAltIcon />}
-            variant="contained"
-            onClick={handleClickImport}
-            disabled={importingTemplate}
-            sx={{ marginLeft: theme => theme.spacing(1) }}
-          >
-            {importingTemplate ? t('buttons.importing') : t('buttons.import')}
-          </Button>
+          {actions}
         </Box>
       </Grid>
       <Grid item xs={12} md={9}>

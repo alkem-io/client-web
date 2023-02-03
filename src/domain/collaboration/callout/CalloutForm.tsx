@@ -129,7 +129,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       then: yup.object().shape({
         id: yup.string().required(),
         title: yup.string().required(),
-        origin: yup.string().required(),
+        origin: yup.string().optional(),
         innovationPackId: yup.string().optional(),
       }),
     }),

@@ -1,6 +1,7 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import { CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useHubTemplatesCanvasTemplateWithValueQuery,
@@ -9,6 +10,7 @@ import {
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import CanvasTemplatesList from './CanvasTemplatesList';
 import { CardText, Text } from '../../../../../core/ui/typography/components';
+import { Button } from '@mui/material';
 
 const FORM_TEXT_COLOR = '#00000099';
 interface CanvasTemplatesChooserProps {
@@ -48,6 +50,7 @@ export const CanvasTemplatesChooser: FC<CanvasTemplatesChooserProps> = ({
 }) => {
   const [field, , helpers] = useField(name);
   const { hubNameId } = useUrlParams();
+  const [isTemplateChooserVisible, setIsTemplateChooserVisible] = useState(!editMode);
 
   const selectedTemplate = templates.find(template => template.info.title === field.value.title);
 
@@ -84,21 +87,45 @@ export const CanvasTemplatesChooser: FC<CanvasTemplatesChooserProps> = ({
       <Text sx={{ color: FORM_TEXT_COLOR }}>
         {t('components.callout-creation.template-step.canvas-template-label')}
       </Text>
-      {editMode && (
-        <CardText sx={{ color: FORM_TEXT_COLOR }}>
-          {t('components.callout-edit.canvas-template-edit-help-text')}
-        </CardText>
+      {editMode ? (
+        <>
+          {!isTemplateChooserVisible && (
+            <Button
+              startIcon={<ChangeCircleIcon />}
+              variant="contained"
+              onClick={() => setIsTemplateChooserVisible(true)}
+            >
+              change template
+            </Button>
+          )}
+          <CardText sx={{ color: FORM_TEXT_COLOR }}>
+            {t('components.callout-edit.canvas-template-edit-help-text')}
+          </CardText>
+          {isTemplateChooserVisible && (
+            <CanvasTemplatesList
+              entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
+              actions={{
+                onSelect: helpers.setValue,
+                updateLibraryTemplates,
+              }}
+              state={{
+                canvasLoading: isCanvasValueLoading || isLibraryCanvasValueLoading,
+              }}
+            />
+          )}
+        </>
+      ) : (
+        <CanvasTemplatesList
+          entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
+          actions={{
+            onSelect: helpers.setValue,
+            updateLibraryTemplates,
+          }}
+          state={{
+            canvasLoading: isCanvasValueLoading || isLibraryCanvasValueLoading,
+          }}
+        />
       )}
-      <CanvasTemplatesList
-        entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
-        actions={{
-          onSelect: helpers.setValue,
-          updateLibraryTemplates,
-        }}
-        state={{
-          canvasLoading: isCanvasValueLoading || isLibraryCanvasValueLoading,
-        }}
-      />
     </>
   );
 };

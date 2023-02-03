@@ -1,5 +1,6 @@
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { Box, Button, DialogProps } from '@mui/material';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -284,12 +285,22 @@ const AdminTemplatesSection = <
       <ImportTemplatesDialog
         {...dialogProps}
         headerText={importDialogHeaderText}
+        dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
         templateImportCardComponent={TemplateImportCard}
         templatePreviewComponent={TemplatePreview}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onImportTemplate={handleImportTemplate}
         innovationPacks={innovationPacks}
+        actionButton={
+          <Button
+            startIcon={<SystemUpdateAltIcon />}
+            variant="contained"
+            sx={{ marginLeft: theme => theme.spacing(1) }}
+          >
+            {t('buttons.import')}
+          </Button>
+        }
       />
       {selectedTemplate && (
         <EditTemplateDialog
