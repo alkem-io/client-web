@@ -123,10 +123,11 @@ const Image = styled(Avatar)(() => ({
   height: '100%',
 }));
 
+export type LocationSummary = Pick<Location, 'id' | 'country' | 'city'>;
 export interface ProfileBannerProps {
   title: string | undefined;
   tagline?: string;
-  location?: Location;
+  location?: LocationSummary;
   phone?: string;
   socialLinks?: SocialLinkItem[];
   avatarUrl?: string;

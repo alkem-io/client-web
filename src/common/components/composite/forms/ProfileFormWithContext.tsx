@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { ElementType, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, LifecycleType, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { LifecycleType, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import {
   ContextSegmentProps,
@@ -20,6 +20,7 @@ import { LocationSegment } from '../../../../domain/common/location/LocationSegm
 import { InnovationFlowTemplateSegment } from '../../../../domain/platform/admin/components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
 import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
+import { ContextWithLocationSummary } from '../../../../domain/platform/admin/components/HubEditForm';
 
 export interface ProfileFormValuesType {
   name: string;
@@ -48,7 +49,7 @@ interface LifecycleTemplate {
 }
 
 interface ProfileFormWithContextProps {
-  context?: Context;
+  context?: ContextWithLocationSummary;
   journeyType: JourneyTypeName;
   contextSegment: ElementType<ContextSegmentProps>;
   name?: string;

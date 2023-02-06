@@ -4,7 +4,6 @@ import PublicIcon from '@mui/icons-material/Public';
 import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
@@ -15,6 +14,7 @@ import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/D
 import LocationView from '../../../../domain/common/location/LocationView';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
+import { LocationSummary } from '../../../../domain/shared/components/PageHeader/ProfileBanner';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -23,7 +23,7 @@ export interface ContextSectionProps {
   displayName?: string;
   tagline?: string;
   keywords?: string[];
-  location?: Location;
+  location?: LocationSummary;
   vision?: string;
   background?: string;
   impact?: string;

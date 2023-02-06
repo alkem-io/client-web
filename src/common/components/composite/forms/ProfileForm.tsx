@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
@@ -16,6 +16,7 @@ import { EmptyLocation, Location } from '../../../../domain/common/location/Loca
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
 import RecommendationsSegment from '../../../../domain/platform/admin/components/Common/RecommendationsSegment';
+import { ContextWithLocationSummary } from '../../../../domain/platform/admin/components/HubEditForm';
 
 export interface ProfileFormValues {
   name: string;
@@ -29,7 +30,7 @@ export interface ProfileFormValues {
 }
 
 interface Props {
-  context?: Context;
+  context?: ContextWithLocationSummary;
   journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;

@@ -17,9 +17,11 @@ import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
 import RecommendationsSegment from './Common/RecommendationsSegment';
+import { LocationSummary } from '../../../shared/components/PageHeader/ProfileBanner';
 
+export type ContextWithLocationSummary = Omit<Context, 'location'> & { location?: LocationSummary };
 interface Props {
-  context?: Context;
+  context?: ContextWithLocationSummary;
   name?: string;
   nameID?: string;
   hostID?: string;

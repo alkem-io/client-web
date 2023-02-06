@@ -4,16 +4,17 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Location, EmptyLocation } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
-import { Context, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import { nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
 import { HubContextSegment } from '../hub/HubContextSegment';
+import { ContextWithLocationSummary } from './HubEditForm';
 
 interface HubEditFormProps {
-  context?: Context;
+  context?: ContextWithLocationSummary;
   name?: string;
   nameID?: string;
   hostID?: string;
