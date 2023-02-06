@@ -171,7 +171,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           )}
           {!entityReadAccess && readUsersAccess && (
             <Caption>
-              {t(`components.activity-log-section.activity-join-error-message.${journeyTypeName}` as const)}
+              {t('components.activity-log-section.activity-join-error-message', {
+                journeyType: t(`common.${journeyTypeName}` as const),
+              })}
             </Caption>
           )}
           {!readUsersAccess && entityReadAccess && (
@@ -179,7 +181,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           )}
           {!entityReadAccess && !readUsersAccess && (
             <Caption>
-              {t(`components.activity-log-section.activity-sign-in-and-join-error-message.${journeyTypeName}` as const)}
+              {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
+                journeyType: t(`common.${journeyTypeName}` as const),
+              })}
             </Caption>
           )}
         </PageContentBlock>
