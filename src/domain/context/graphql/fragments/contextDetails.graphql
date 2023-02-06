@@ -3,13 +3,7 @@ fragment ContextDetails on Context {
   tagline
   background
   location {
-    id
-    country
-    city
-    addressLine1
-    addressLine2
-    stateOrProvince
-    postalCode
+    ...fullLocation
   }
   vision
   impact

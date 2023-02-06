@@ -5991,8 +5991,8 @@ export type ContextTabFragment = {
     | {
         __typename?: 'Location';
         id: string;
-        city: string;
         country: string;
+        city: string;
         addressLine1: string;
         addressLine2: string;
         stateOrProvince: string;
@@ -6083,8 +6083,8 @@ export type AboutPageNonMembersQuery = {
             | {
                 __typename?: 'Location';
                 id: string;
-                city: string;
                 country: string;
+                city: string;
                 addressLine1: string;
                 addressLine2: string;
                 stateOrProvince: string;
@@ -6133,8 +6133,8 @@ export type AboutPageNonMembersQuery = {
               | {
                   __typename?: 'Location';
                   id: string;
-                  city: string;
                   country: string;
+                  city: string;
                   addressLine1: string;
                   addressLine2: string;
                   stateOrProvince: string;
@@ -6191,8 +6191,8 @@ export type AboutPageNonMembersQuery = {
               | {
                   __typename?: 'Location';
                   id: string;
-                  city: string;
                   country: string;
+                  city: string;
                   addressLine1: string;
                   addressLine2: string;
                   stateOrProvince: string;
@@ -18166,6 +18166,17 @@ export type ContextDetailsProviderFragment = {
   impact?: string | undefined;
   who?: string | undefined;
   visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+};
+
+export type FullLocationFragment = {
+  __typename?: 'Location';
+  id: string;
+  country: string;
+  city: string;
+  addressLine1: string;
+  addressLine2: string;
+  stateOrProvince: string;
+  postalCode: string;
 };
 
 export type ChallengeApplicationsQueryVariables = Exact<{
