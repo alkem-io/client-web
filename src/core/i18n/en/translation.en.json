@@ -821,6 +821,22 @@
         "city": {
           "name": "City",
           "placeholder": "City name"
+        },
+        "addressLine1": {
+          "name": "Address line 1",
+          "placeholder": "Address line 1"
+        },
+        "addressLine2": {
+          "name": "Address Line 2",
+          "placeholder": "Address Line 2"
+        },
+        "stateOrProvince": {
+          "name": "State or Province",
+          "placeholder": "State or Province"
+        },
+        "postalCode": {
+          "name": "Postal code",
+          "placeholder": "Postal code"
         }
       }
     },
