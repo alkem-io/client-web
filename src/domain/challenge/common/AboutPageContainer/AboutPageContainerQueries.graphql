@@ -11,6 +11,10 @@ fragment ContextTab on Context {
     id
     city
     country
+    addressLine1
+    addressLine2
+    stateOrProvince
+    postalCode
   }
   vision
   impact

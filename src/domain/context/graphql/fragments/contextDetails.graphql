@@ -6,6 +6,10 @@ fragment ContextDetails on Context {
     id
     country
     city
+    addressLine1
+    addressLine2
+    stateOrProvince
+    postalCode
   }
   vision
   impact

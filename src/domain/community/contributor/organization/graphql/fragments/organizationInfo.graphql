@@ -29,6 +29,10 @@ fragment OrganizationInfo on Organization {
       id
       country
       city
+      addressLine1
+      addressLine2
+      stateOrProvince
+      postalCode
     }
   }
   associates {

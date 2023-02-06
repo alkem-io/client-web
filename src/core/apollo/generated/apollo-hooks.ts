@@ -265,6 +265,10 @@ export const ContextDetailsFragmentDoc = gql`
       id
       country
       city
+      addressLine1
+      addressLine2
+      stateOrProvince
+      postalCode
     }
     vision
     impact
@@ -445,6 +449,10 @@ export const ContextTabFragmentDoc = gql`
       id
       city
       country
+      addressLine1
+      addressLine2
+      stateOrProvince
+      postalCode
     }
     vision
     impact
@@ -1633,6 +1641,10 @@ export const OrganizationInfoFragmentDoc = gql`
         id
         country
         city
+        addressLine1
+        addressLine2
+        stateOrProvince
+        postalCode
       }
     }
     associates {
