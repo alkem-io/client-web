@@ -35,14 +35,17 @@ interface ActivityOnCollaborationReturnType {
   loading: boolean;
 }
 
-export const useActivityOnCollaboration = (collaborationID: string | undefined): ActivityOnCollaborationReturnType => {
+export const useActivityOnCollaboration = (
+  collaborationID: string | undefined,
+  skipCondition?: boolean
+): ActivityOnCollaborationReturnType => {
   const {
     data: activityLogData,
     loading,
     subscribeToMore,
   } = useActivityLogOnCollaborationQuery({
     variables: { queryData: { collaborationID: collaborationID!, limit: LATEST_ACTIVITIES_COUNT } },
-    skip: !collaborationID,
+    skip: !collaborationID || skipCondition,
     fetchPolicy: 'cache-and-network',
   });
 

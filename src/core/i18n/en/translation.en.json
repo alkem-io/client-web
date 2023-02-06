@@ -586,7 +586,10 @@
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Recent Contributions"
+      "title": "Recent Contributions",
+      "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
     },
     "activity-log-view": {
       "actions": {
