@@ -1802,6 +1802,7 @@ export const UserDetailsFragmentDoc = gql`
     gender
     phone
     accountUpn
+    isContactable
     agent {
       credentials {
         type

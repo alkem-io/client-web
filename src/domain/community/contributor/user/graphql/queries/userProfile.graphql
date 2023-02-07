@@ -3,7 +3,7 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     ...UserDetails
     ...UserAgent
   }
-  rolesUser(rolesData: { userID: $input, filter: {visibilities: [ACTIVE, DEMO]} }) {
+  rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     ...UserRolesDetails
   }
@@ -13,5 +13,5 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
 }
 
 fragment MyPrivileges on Authorization {
-    myPrivileges
+  myPrivileges
 }

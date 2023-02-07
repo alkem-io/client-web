@@ -135,6 +135,7 @@ export interface ProfileBannerProps {
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
   loading: boolean;
   onSendMessage: (text: string) => Promise<void>;
+  isContactable?: boolean;
 }
 
 /**
@@ -149,6 +150,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   avatarUrl,
   loading: dataLoading = false,
   onSendMessage,
+  isContactable = true,
 }) => {
   const { t } = useTranslation();
 
@@ -197,9 +199,11 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
               />
               <Box>
                 <SocialLinks items={socialLinks} iconSize="medium" />
-                <IconButton onClick={openMessageUserDialog}>
-                  <EmailOutlinedIcon />
-                </IconButton>
+                {isContactable && (
+                  <IconButton onClick={openMessageUserDialog}>
+                    <EmailOutlinedIcon />
+                  </IconButton>
+                )}
               </Box>
             </ProfileInfo>
           </ProfileInfoWrapper>

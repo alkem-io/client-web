@@ -37,7 +37,7 @@ const UserPageBanner: FC = () => {
   }, [references]);
 
   if (!loading && userMetadata) {
-    const { displayName, profile, phone } = userMetadata.user;
+    const { displayName, profile, phone, isContactable } = userMetadata.user;
 
     return (
       <ProfileBanner
@@ -49,6 +49,7 @@ const UserPageBanner: FC = () => {
         avatarUrl={profile?.avatar?.uri}
         loading={loading}
         onSendMessage={handleSendMessage}
+        isContactable={isContactable}
       />
     );
   } else {

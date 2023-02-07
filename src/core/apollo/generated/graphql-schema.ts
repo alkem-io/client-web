@@ -17221,6 +17221,7 @@ export type UserDetailsFragment = {
   gender: string;
   phone: string;
   accountUpn: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17346,6 +17347,7 @@ export type CreateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17404,6 +17406,7 @@ export type CreateUserNewRegistrationMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17527,6 +17530,7 @@ export type UpdateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17652,6 +17656,7 @@ export type UserQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17796,6 +17801,7 @@ export type UserProfileQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17973,6 +17979,7 @@ export type MeQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
