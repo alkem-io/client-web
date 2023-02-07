@@ -12005,6 +12005,52 @@ export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
+export const SendMessageToUserDocument = gql`
+  mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
+    sendMessageToUser(messageData: $messageData)
+  }
+`;
+export type SendMessageToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToUserMutation,
+  SchemaTypes.SendMessageToUserMutationVariables
+>;
+
+/**
+ * __useSendMessageToUserMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToUserMutation, { data, loading, error }] = useSendMessageToUserMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToUserMutation,
+    SchemaTypes.SendMessageToUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.SendMessageToUserMutation, SchemaTypes.SendMessageToUserMutationVariables>(
+    SendMessageToUserDocument,
+    options
+  );
+}
+
+export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
+export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
+export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToUserMutation,
+  SchemaTypes.SendMessageToUserMutationVariables
+>;
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {

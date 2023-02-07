@@ -1,0 +1,3 @@
+mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
+  sendMessageToUser(messageData: $messageData)
+}

@@ -1,5 +1,6 @@
-import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
+import { Avatar, Box, Grid, IconButton, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import { DEFAULT_BANNER_URL } from './EntityPageBanner';
 import { Location } from '../../../../core/apollo/generated/graphql-schema';
@@ -10,6 +11,7 @@ import { ContactDetail } from '../ContactDetails/ContactDetails';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
+import { MessageUserDialog } from '../../../communication/messaging/MessageUserDialog';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
@@ -124,6 +126,7 @@ const Image = styled(Avatar)(() => ({
 }));
 
 export interface ProfileBannerProps {
+  id: string;
   title: string | undefined;
   tagline?: string;
   location?: Location;
@@ -139,6 +142,7 @@ export interface ProfileBannerProps {
  * For Hubs/Challenges/Opportunities and anything else see PageBanner
  */
 const ProfileBanner: FC<ProfileBannerProps> = ({
+  id,
   title,
   location,
   phone,
@@ -151,6 +155,10 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   const [imageLoading, setImageLoading] = useState(true);
+  const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
+
+  const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
+  const openMessageUserDialog = () => setIsMessageUserDialogOpen(true);
 
   const imageLoadError = () => {
     setImageLoading(false);
@@ -181,16 +189,21 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
                   {title}
                 </Typography>
               </Title>
-
               <LocationView location={formatLocation(location)} mode="icon" iconSize={'small'} />
               <ContactDetail
                 icon={<LocalPhoneIcon color="primary" fontSize="small" />}
                 title={t('components.profile.fields.telephone.title')}
                 value={phone}
               />
-              <SocialLinks items={socialLinks} iconSize="medium" />
+              <Box>
+                <SocialLinks items={socialLinks} iconSize="medium" />
+                <IconButton onClick={openMessageUserDialog}>
+                  <EmailOutlinedIcon />
+                </IconButton>
+              </Box>
             </ProfileInfo>
           </ProfileInfoWrapper>
+          <MessageUserDialog userId={id} open={isMessageUserDialogOpen} onClose={closeMessageUserDialog} />
         </Grid>
       )}
       {dataLoading && <Skeleton variant="rectangular" width="100%" height="100%" />}

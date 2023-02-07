@@ -7,6 +7,7 @@ const OrganizationPageBanner: FC = () => {
     <OrganizationPageContainer>
       {({ organization, permissions, socialLinks }, { loading }) => (
         <ProfileBanner
+          id={organization?.id ?? ''}
           title={organization?.displayName}
           tagline={organization?.profile?.description}
           location={organization?.profile?.location}

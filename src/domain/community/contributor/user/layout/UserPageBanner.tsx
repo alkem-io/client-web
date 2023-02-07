@@ -21,10 +21,11 @@ const UserPageBanner: FC = () => {
   }, [references]);
 
   if (!loading && userMetadata) {
-    const { displayName, profile, phone } = userMetadata.user;
+    const { id, displayName, profile, phone } = userMetadata.user;
 
     return (
       <ProfileBanner
+        id={id}
         title={displayName}
         tagline={profile?.description}
         location={profile?.location}
@@ -35,7 +36,7 @@ const UserPageBanner: FC = () => {
       />
     );
   } else {
-    return <ProfileBanner title={undefined} loading />;
+    return <ProfileBanner id="" title={undefined} loading />;
   }
 };
 
