@@ -1,6 +1,5 @@
 import { sortBy, uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '../../../platform/config/useConfig';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
@@ -66,7 +65,6 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
 });
 
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
-  const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const { discussionId = '' } = useUrlParams();
   const { hubNameId, loading: loadingHub } = useHub();
@@ -78,7 +76,6 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
-    onError: handleError,
   });
 
   useDiscussionMessagesSubscription(data, data1 => data1?.hub.community?.communication?.discussion, subscribeToMore);
@@ -147,14 +144,12 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
           message: post,
         },
       },
-      onError: handleError,
     });
   };
 
   const [deleteMessage, { loading: deletingComment }] = useRemoveMessageFromDiscussionMutation({
     update: (cache, { data }) =>
       data?.removeMessageFromDiscussion && evictFromCache(cache, String(data.removeMessageFromDiscussion), 'Message'),
-    onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
         communityId: communityId,

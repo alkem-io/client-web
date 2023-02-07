@@ -416,20 +416,24 @@ export type AuthorizationPolicyRuleCredentialKeySpecifier = (
   | 'criterias'
   | 'grantedPrivileges'
   | 'inheritable'
+  | 'name'
   | AuthorizationPolicyRuleCredentialKeySpecifier
 )[];
 export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   criterias?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritable?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRulePrivilegeKeySpecifier = (
   | 'grantedPrivileges'
+  | 'name'
   | 'sourcePrivilege'
   | AuthorizationPolicyRulePrivilegeKeySpecifier
 )[];
 export type AuthorizationPolicyRulePrivilegeFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
   sourcePrivilege?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleVerifiedCredentialKeySpecifier = (
@@ -603,6 +607,7 @@ export type CardProfileKeySpecifier = (
   | 'authorization'
   | 'description'
   | 'id'
+  | 'location'
   | 'references'
   | 'tagset'
   | CardProfileKeySpecifier
@@ -611,6 +616,7 @@ export type CardProfileFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1106,11 +1112,24 @@ export type LifecycleTemplateFieldPolicy = {
   info?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LocationKeySpecifier = ('city' | 'country' | 'id' | LocationKeySpecifier)[];
+export type LocationKeySpecifier = (
+  | 'addressLine1'
+  | 'addressLine2'
+  | 'city'
+  | 'country'
+  | 'id'
+  | 'postalCode'
+  | 'stateOrProvince'
+  | LocationKeySpecifier
+)[];
 export type LocationFieldPolicy = {
+  addressLine1?: FieldPolicy<any> | FieldReadFunction<any>;
+  addressLine2?: FieldPolicy<any> | FieldReadFunction<any>;
   city?: FieldPolicy<any> | FieldReadFunction<any>;
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
+  stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = ('id' | 'message' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
 export type MessageFieldPolicy = {
@@ -1232,7 +1251,10 @@ export type MutationKeySpecifier = (
   | 'revokeCredentialFromUser'
   | 'sendComment'
   | 'sendMessageOnCallout'
+  | 'sendMessageToCommunityLeads'
   | 'sendMessageToDiscussion'
+  | 'sendMessageToOrganization'
+  | 'sendMessageToUser'
   | 'sendUpdate'
   | 'updateActor'
   | 'updateAspect'
@@ -1375,7 +1397,10 @@ export type MutationFieldPolicy = {
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   sendComment?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   sendUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;

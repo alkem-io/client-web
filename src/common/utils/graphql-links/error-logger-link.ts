@@ -5,7 +5,7 @@ import { logger } from '../../../services/logging/winston/logger';
  * This function is called after the GraphQL operation completes and execution is moving back up your link chain
  * The function should not return a value unless you want to retry the operation.
  */
-export const errorLink = (errorLogging = false) =>
+export const errorLoggerLink = (errorLogging = false) =>
   onError(({ graphQLErrors, networkError }) => {
     if (!errorLogging) {
       return;

@@ -8,9 +8,7 @@ fragment ContextTab on Context {
     myPrivileges
   }
   location {
-    id
-    city
-    country
+    ...fullLocation
   }
   vision
   impact

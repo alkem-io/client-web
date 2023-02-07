@@ -9,7 +9,6 @@ import {
   useRemoveUserAsOrganizationOwnerMutation,
   useRemoveUserFromOrganizationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   AuthorizationCredential,
   Organization,
@@ -70,32 +69,19 @@ export interface OrganizationAssociatesEntities {
 }
 
 export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = ({ children, entities }) => {
-  const handleError = useApolloErrorHandler();
   const { user } = useUserContext();
 
-  const [grantMember, { loading: addingUser }] = useAssignUserToOrganizationMutation({
-    onError: handleError,
-  });
+  const [grantMember, { loading: addingUser }] = useAssignUserToOrganizationMutation({});
 
-  const [revokeMember, { loading: removingUser }] = useRemoveUserFromOrganizationMutation({
-    onError: handleError,
-  });
+  const [revokeMember, { loading: removingUser }] = useRemoveUserFromOrganizationMutation({});
 
-  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOrganizationAdminMutation({
-    onError: handleError,
-  });
+  const [grantAdmin, { loading: addingAdmin }] = useAssignUserAsOrganizationAdminMutation({});
 
-  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganizationAdminMutation({
-    onError: handleError,
-  });
+  const [revokeAdmin, { loading: removingAdmin }] = useRemoveUserAsOrganizationAdminMutation({});
 
-  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganizationOwnerMutation({
-    onError: handleError,
-  });
+  const [grantOwner, { loading: addingOwner }] = useAssignUserAsOrganizationOwnerMutation({});
 
-  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganizationOwnerMutation({
-    onError: handleError,
-  });
+  const [revokeOwner, { loading: removingOwner }] = useRemoveUserAsOrganizationOwnerMutation({});
 
   const handleAssignMember = useCallback(
     (memberId: string) => {

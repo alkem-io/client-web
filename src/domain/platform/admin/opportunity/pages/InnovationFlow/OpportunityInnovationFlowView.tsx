@@ -1,7 +1,6 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchOpportunityLifecycleQuery,
   useHubLifecycleTemplatesQuery,
@@ -16,7 +15,6 @@ import { SelectInnovationFlowFormValuesType } from '../../../templates/Innovatio
 
 const OpportunityInnovationFlowView: FC = () => {
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
-  const handleError = useApolloErrorHandler();
 
   const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
     variables: { hubId: hubNameId },
@@ -35,7 +33,6 @@ const OpportunityInnovationFlowView: FC = () => {
   const opportunityId = opportunity?.id;
 
   const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
-    onError: handleError,
     refetchQueries: [refetchOpportunityLifecycleQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });

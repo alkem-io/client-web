@@ -1,5 +1,4 @@
 import React, { FC, useCallback } from 'react';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '../../../platform/config/useConfig';
 import {
   CommunicationUpdateMessageReceivedDocument,
@@ -52,7 +51,6 @@ export interface CommunityUpdatesEntities {
 const EMPTY = [];
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
-  const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const { communityId, hubId } = entities;
   const { data, loading } = useCommunityUpdatesData(hubId, communityId);
@@ -60,7 +58,6 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   const updatesId = data?.hub.community?.communication?.updates?.id || '';
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
-    onError: handleError,
     refetchQueries:
       isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !hubId || !communityId
         ? []
@@ -131,14 +128,12 @@ const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEn
 });
 
 const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
-  const handleError = useApolloErrorHandler();
   const { data, loading, subscribeToMore } = useCommunityUpdatesQuery({
     variables: {
       hubId: hubNameId!,
       communityId: communityId!,
     },
     skip: !hubNameId || !communityId,
-    onError: handleError,
   });
 
   useCommunicationUpdateMessageReceivedSubscription(

@@ -2,7 +2,6 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useChallenge } from '../../hooks/useChallenge';
 import {
   refetchUsersWithCredentialsQuery,
@@ -17,15 +16,9 @@ interface ChallengeAuthorizationViewProps {
 }
 
 const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ credential, resourceId = '' }) => {
-  const handleError = useApolloErrorHandler();
+  const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({});
 
-  const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({
-    onError: handleError,
-  });
-
-  const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({
-    onError: handleError,
-  });
+  const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({

@@ -6,7 +6,6 @@ import {
   useUpdatePreferenceOnOrganizationMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { OrganizationPreferenceType, Preference } from '../../../../core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 
 export interface OrganizationPreferenceContainerEntities {
   preferences: Preference[];
@@ -31,16 +30,13 @@ export interface OrganizationPreferenceContainerProps
 }
 
 const OrganizationPreferenceContainer: FC<OrganizationPreferenceContainerProps> = ({ children, orgId }) => {
-  const handleError = useApolloErrorHandler();
   const { data, loading, error } = useOrganizationPreferencesQuery({
     variables: { orgId },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
 
-  const [updatePreference] = useUpdatePreferenceOnOrganizationMutation({
-    onError: handleError,
-  });
+  const [updatePreference] = useUpdatePreferenceOnOrganizationMutation({});
 
   const preferences = data?.organization?.preferences ?? [];
 

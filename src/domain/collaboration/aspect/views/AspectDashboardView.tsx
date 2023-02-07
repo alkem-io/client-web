@@ -104,8 +104,9 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
-
-  const bannerOverlay = props.bannerOverlayOverride ?? <AuthorComponent avatarSrc={creatorAvatar} name={creatorName} createdDate={createdDate} loading={loading} />;
+  const bannerOverlay = props.bannerOverlayOverride ?? (
+    <AuthorComponent avatarSrc={creatorAvatar} name={creatorName} createdDate={createdDate} loading={loading} />
+  );
 
   return (
     <Grid container spacing={2}>

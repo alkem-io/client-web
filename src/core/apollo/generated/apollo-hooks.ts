@@ -256,15 +256,24 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
+export const FullLocationFragmentDoc = gql`
+  fragment fullLocation on Location {
+    id
+    country
+    city
+    addressLine1
+    addressLine2
+    stateOrProvince
+    postalCode
+  }
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
     tagline
     background
     location {
-      id
-      country
-      city
+      ...fullLocation
     }
     vision
     impact
@@ -290,6 +299,7 @@ export const ContextDetailsFragmentDoc = gql`
       anonymousReadAccess
     }
   }
+  ${FullLocationFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 export const OpportunityCardFragmentDoc = gql`
@@ -442,9 +452,7 @@ export const ContextTabFragmentDoc = gql`
       myPrivileges
     }
     location {
-      id
-      city
-      country
+      ...fullLocation
     }
     vision
     impact
@@ -453,6 +461,7 @@ export const ContextTabFragmentDoc = gql`
       ...VisualFull
     }
   }
+  ${FullLocationFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 export const LifecycleContextTabFragmentDoc = gql`
@@ -1630,9 +1639,7 @@ export const OrganizationInfoFragmentDoc = gql`
         uri
       }
       location {
-        id
-        country
-        city
+        ...fullLocation
       }
     }
     associates {
@@ -1664,6 +1671,7 @@ export const OrganizationInfoFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${FullLocationFragmentDoc}
 `;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {

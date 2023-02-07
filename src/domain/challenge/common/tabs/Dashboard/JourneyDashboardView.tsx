@@ -28,6 +28,7 @@ import { RecommendationIcon } from '../../../../shared/components/References/ico
 import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
+import { Caption } from '../../../../../core/ui/typography/components';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -44,7 +45,8 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   childEntities?: ChildEntity[];
-  childEntityReadAccess?: boolean;
+  entityReadAccess?: boolean;
+  readUsersAccess?: boolean;
   childEntitiesCount?: number;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
@@ -63,7 +65,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   recommendations,
   communityReadAccess = false,
   timelineReadAccess = false,
-  childEntityReadAccess = false,
+  entityReadAccess = false,
+  readUsersAccess = false,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
@@ -89,7 +92,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           opportunityNameId,
         };
 
-  const showActivity = (!activities && activityLoading) || !!activities;
+  const showActivities = activities || activityLoading;
 
   const isHub = journeyTypeName === 'hub';
   const leadOrganizationsHeader = isHub
@@ -158,14 +161,33 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             ))}
           </PageContentBlock>
         )}
-        {showActivity && (
-          <PageContentBlock>
-            <PageContentBlockHeader title={t('components.activity-log-section.title')} />
-            <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-            <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
-          </PageContentBlock>
-        )}
-        {childEntityReadAccess && renderChildEntityCard && childEntityTitle && (
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('components.activity-log-section.title')} />
+          {readUsersAccess && entityReadAccess && showActivities && (
+            <>
+              <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+              <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
+            </>
+          )}
+          {!entityReadAccess && readUsersAccess && (
+            <Caption>
+              {t('components.activity-log-section.activity-join-error-message', {
+                journeyType: t(`common.${journeyTypeName}` as const),
+              })}
+            </Caption>
+          )}
+          {!readUsersAccess && entityReadAccess && (
+            <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
+          )}
+          {!entityReadAccess && !readUsersAccess && (
+            <Caption>
+              {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
+                journeyType: t(`common.${journeyTypeName}` as const),
+              })}
+            </Caption>
+          )}
+        </PageContentBlock>
+        {entityReadAccess && renderChildEntityCard && childEntityTitle && (
           <PageContentBlock>
             <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
             <ScrollableCardsLayout items={childEntities} deps={[hubNameId]}>
