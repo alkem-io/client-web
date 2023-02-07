@@ -7,6 +7,7 @@ import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesAndRecommendationsQuery,
   useChallengePageQuery,
+  usePlatformLevelAuthorizationQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
@@ -45,7 +46,8 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
-    opportunitiesReadAccess: boolean;
+    challengeReadAccess: boolean;
+    readUsers: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
@@ -77,22 +79,28 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
       hubId: hubNameId,
       challengeId: challengeNameId,
     },
-    errorPolicy: 'all',
   });
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
-
   const challengePrivileges = _challenge?.hub?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+
+  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
+  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
     communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
-    opportunitiesReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
+
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(
+    collaborationID,
+    !permissions.challengeReadAccess || !permissions.readUsers
+  );
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read

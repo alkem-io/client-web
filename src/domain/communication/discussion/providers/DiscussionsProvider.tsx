@@ -1,7 +1,6 @@
 import { uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import {
@@ -76,7 +75,6 @@ const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
 const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const navigate = useNavigate();
   const { pathname } = useResolvedPath('.');
-  const handleError = useApolloErrorHandler();
   const { hubNameId, loading: loadingHub } = useHub();
   const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
 
@@ -91,7 +89,6 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     },
     errorPolicy: 'all',
     skip: !hubNameId || !communityId,
-    onError: handleError,
   });
 
   useSubscriptionToCommunication(data, data1 => data1?.hub.community?.communication, subscribeToMore);
@@ -126,7 +123,6 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
     onCompleted: data => navigate(buildDiscussionUrl(pathname, data.createDiscussion.id), { replace: true }),
-    onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
         communityId: communityId,
@@ -137,7 +133,6 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const [deleteDiscussion, { loading: deletingDiscussion }] = useDeleteDiscussionMutation({
     onCompleted: () => navigate(buildDiscussionsUrl(pathname)),
-    onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
         communityId: communityId,

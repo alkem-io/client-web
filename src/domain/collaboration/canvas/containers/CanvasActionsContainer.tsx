@@ -1,5 +1,4 @@
 import { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   CanvasDetailsFragmentDoc,
   useCheckoutCanvasMutation,
@@ -36,10 +35,7 @@ export interface CanvasActionsContainerProps
   extends ContainerChildProps<{}, ICanvasActions, CanvasActionsContainerState> {}
 
 const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) => {
-  const handleError = useApolloErrorHandler();
-  const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnCalloutMutation({
-    onError: handleError,
-  });
+  const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnCalloutMutation({});
 
   const handleCreateCanvas = useCallback(
     async (canvas: CreateCanvasOnCalloutInput) => {
@@ -77,9 +73,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     [createCanvas]
   );
 
-  const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasMutation({
-    onError: handleError,
-  });
+  const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasMutation({});
 
   const handleDeleteCanvas = useCallback(
     async (canvas: DeleteCanvasInput) => {
@@ -102,9 +96,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     [deleteCanvas]
   );
 
-  const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasMutation({
-    onError: handleError,
-  });
+  const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasMutation({});
 
   const LifecycleEventHandler = (eventName: 'CHECKIN' | 'CHECKOUT') => async (canvas: CanvasDetailsFragment) => {
     if (!canvas.checkout?.id) {
@@ -143,13 +135,9 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCheckout = useCallback(LifecycleEventHandler('CHECKOUT'), [checkoutCanvas]);
 
-  const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({
-    onError: handleError,
-  });
+  const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({});
 
-  const [uploadVisual, { loading: uploadingVisual }] = useUploadVisualMutation({
-    onError: handleError,
-  });
+  const [uploadVisual, { loading: uploadingVisual }] = useUploadVisualMutation({});
 
   const handleUpdateCanvas = useCallback(
     async (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => {

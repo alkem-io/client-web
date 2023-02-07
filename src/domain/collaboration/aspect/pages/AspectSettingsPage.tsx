@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography';
 import AspectForm, { AspectFormInput, AspectFormOutput } from '../AspectForm/AspectForm';
 import useAspectSettings from '../containers/AspectSettings/useAspectSettings';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import {
   AspectSettingsFragment,
@@ -59,14 +58,11 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
     calloutNameId,
   });
 
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
 
   const canMoveCard = entities.aspect?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.MoveCard);
 
-  const [moveAspectToCallout, { loading: isMovingAspect }] = useMoveAspectToCalloutMutation({
-    onError: handleError,
-  });
+  const [moveAspectToCallout, { loading: isMovingAspect }] = useMoveAspectToCalloutMutation({});
 
   const [targetCalloutId, setTargetCalloutId] = useState(entities.parentCallout?.id);
 

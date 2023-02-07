@@ -6,7 +6,6 @@ import Link from '@mui/material/Link';
 import HelpOutline from '@mui/icons-material/HelpOutline';
 import MultipleSelect, { MultiSelectElement } from '../../../../common/components/core/MultipleSelect';
 import { SubHeader } from '../../../../common/components/core/Section';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../../community/contributor/user';
 import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -83,8 +82,6 @@ export type SearchResultMetaType = SearchResultT<
 >;
 
 const SearchPage: FC = () => {
-  const handleError = useApolloErrorHandler();
-
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
@@ -134,7 +131,6 @@ const SearchPage: FC = () => {
 
   const [search, { loading: isSearching }] = useSearchLazyQuery({
     fetchPolicy: 'no-cache',
-    onError: handleError,
     onCompleted: data => {
       const updatedResult = toResultType(data);
       setResults(updatedResult);

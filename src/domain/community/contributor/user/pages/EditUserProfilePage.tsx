@@ -7,7 +7,6 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
@@ -48,10 +47,8 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
     // there is an issue handling multiple snackbars.
     onError: error => logger.error(error.message),
   });
-  const handleError = useApolloErrorHandler();
 
   const [updateUser] = useUpdateUserMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },

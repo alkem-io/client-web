@@ -3,7 +3,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Path } from '../../../../core/routing/NavigationProvider';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
@@ -37,7 +36,6 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
 
   const { challengeId } = useChallenge();
 
@@ -50,11 +48,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
       notify(t('pages.admin.opportunity.notifications.opportunity-created'), 'success');
       navigateToEdit(data.createOpportunity.nameID);
     },
-    onError: handleError,
   });
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => notify(t('pages.admin.opportunity.notifications.opportunity-updated'), 'success'),
-    onError: handleError,
     refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });

@@ -4,7 +4,6 @@ import {
   useAdminGlobalOrganizationsListQuery,
   useDeleteOrganizationMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../../shared/components/SimpleSearchableList';
@@ -25,12 +24,10 @@ export const useAdminGlobalOrganizationsList = () => {
     getPageInfo: data => data?.organizationsPaginated.pageInfo,
   });
 
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
 
   const [deleteOrganization] = useDeleteOrganizationMutation({
-    onError: handleError,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
     onCompleted: () => notify(t('pages.admin.organization.notifications.organization-removed'), 'success'),
   });

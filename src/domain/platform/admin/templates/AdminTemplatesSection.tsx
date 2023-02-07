@@ -17,7 +17,6 @@ import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 export interface Template extends Identifiable {
@@ -131,7 +130,6 @@ const AdminTemplatesSection = <
   >;
   const EditTemplateDialog = editTemplateDialogComponent as ComponentType<EditTemplateDialogProps<T, SubmittedValues>>;
 
-  const onError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -148,9 +146,9 @@ const AdminTemplatesSection = <
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
-  const [updateAspectTemplate] = useUpdateTemplateMutation({ onError });
-  const [createAspectTemplate] = useCreateTemplateMutation({ onError });
-  const [deleteAspectTemplate, { loading: isDeletingAspectTemplate }] = useDeleteTemplateMutation({ onError });
+  const [updateAspectTemplate] = useUpdateTemplateMutation();
+  const [createAspectTemplate] = useCreateTemplateMutation();
+  const [deleteAspectTemplate, { loading: isDeletingAspectTemplate }] = useDeleteTemplateMutation();
 
   const handleTemplateUpdate = async (values: SubmittedValues) => {
     if (!templateId) {

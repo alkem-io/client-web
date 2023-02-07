@@ -19,7 +19,6 @@ import { createUserNameID } from '../../../../../common/utils/createUserNameId';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 
 interface UserPageProps {
   mode: EditMode;
@@ -35,10 +34,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
 
   const user = data?.user as UserModel;
 
-  const handleError = useApolloErrorHandler();
-
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('User updated successfully', 'success');
     },
@@ -58,13 +54,11 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
     onCompleted: () => {
       navigate('/admin/users', { replace: true });
     },
-    onError: handleError,
   });
 
   const isEditMode = mode === EditMode.edit;
 
   const [createUser, { loading: createMutationLoading }] = useCreateUserMutation({
-    onError: handleError,
     onCompleted: () => {
       notify('User saved successfully!', 'success');
     },

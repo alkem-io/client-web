@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
 import { useDeleteGroupMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { DeleteGroupMutation } from '../../../../../core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 
 type Options = {
@@ -12,7 +11,6 @@ type Options = {
 
 export const useDeleteUserGroup = (options?: Options) => {
   const { t } = useTranslation();
-  const handleError = useApolloErrorHandler();
   const notify = useNotification();
 
   const success = (message: string) => notify(message, 'success');
@@ -22,7 +20,7 @@ export const useDeleteUserGroup = (options?: Options) => {
       success(t('operations.user-group.deleted-successfuly', { name: data.deleteUserGroup.name }));
       options && options.onComplete && options.onComplete(data);
     },
-    onError: (options && options.onError && options.onError) || handleError,
+    onError: options && options.onError && options.onError,
 
     update: (cache, { data }) => {
       if (data) {

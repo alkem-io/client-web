@@ -9,7 +9,6 @@ import { AdminSection } from '../../layout/toplevel/constants';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   HubDetailsFragmentDoc,
   useCreateHubMutation,
@@ -27,7 +26,6 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
 
   const [createHub, { loading: loading1 }] = useCreateHubMutation({
@@ -58,7 +56,6 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
         });
       }
     },
-    onError: handleError,
   });
 
   const organizations = useMemo(

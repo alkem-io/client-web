@@ -2,7 +2,6 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import EditMemberCredentials from '../components/Authorization/EditMemberCredentials';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsGlobalCommunityAdminMutation,
@@ -17,15 +16,9 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = () => {
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalAdminCommunity } = useUrlParams();
 
-  const handleError = useApolloErrorHandler();
+  const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityAdminMutation({});
 
-  const [grant, { loading: addingMember }] = useAssignUserAsGlobalCommunityAdminMutation({
-    onError: handleError,
-  });
-
-  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalCommunityAdminMutation({
-    onError: handleError,
-  });
+  const [revoke, { loading: removingMember }] = useRemoveUserAsGlobalCommunityAdminMutation({});
 
   const handleAdd = (memberId: string) => {
     grant({
