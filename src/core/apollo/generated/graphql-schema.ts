@@ -14433,6 +14433,12 @@ export type SendMessageToUserMutationVariables = Exact<{
 
 export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
 
+export type SendMessageToOrganizationMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToOrganizationInput;
+}>;
+
+export type SendMessageToOrganizationMutation = { __typename?: 'Mutation'; sendMessageToOrganization: boolean };
+
 export type CommunityUpdatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   communityId: Scalars['UUID'];

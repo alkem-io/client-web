@@ -1,4 +1,5 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
+import { useSendMessageToUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanner';
 import { toSocialNetworkEnum } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
@@ -9,6 +10,21 @@ const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
+  const userId = userMetadata?.user.id ?? '';
+  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const handleSendMessage = useCallback(
+    async (messageText: string) => {
+      await sendMessageToUser({
+        variables: {
+          messageData: {
+            message: messageText,
+            receiverIds: [userId],
+          },
+        },
+      });
+    },
+    [sendMessageToUser, userId]
+  );
 
   const references = userMetadata?.user?.profile?.references;
   const socialLinks = useMemo(() => {
@@ -21,11 +37,10 @@ const UserPageBanner: FC = () => {
   }, [references]);
 
   if (!loading && userMetadata) {
-    const { id, displayName, profile, phone } = userMetadata.user;
+    const { displayName, profile, phone } = userMetadata.user;
 
     return (
       <ProfileBanner
-        id={id}
         title={displayName}
         tagline={profile?.description}
         location={profile?.location}
@@ -33,10 +48,11 @@ const UserPageBanner: FC = () => {
         socialLinks={socialLinks}
         avatarUrl={profile?.avatar?.uri}
         loading={loading}
+        onSendMessage={handleSendMessage}
       />
     );
   } else {
-    return <ProfileBanner id="" title={undefined} loading />;
+    return <ProfileBanner title={undefined} loading onSendMessage={handleSendMessage} />;
   }
 };
 

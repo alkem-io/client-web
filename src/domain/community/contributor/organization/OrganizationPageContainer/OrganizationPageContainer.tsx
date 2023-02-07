@@ -1,12 +1,15 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { ContributorCardProps } from '../../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
 import { RoleType } from '../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
 import useUserCardRoleName from '../../user/hooks/useUserCardRoleName';
 import { useUserContext } from '../../user';
-import { useRolesOrganizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import {
+  useRolesOrganizationQuery,
+  useSendMessageToOrganizationMutation,
+} from '../../../../../core/apollo/generated/apollo-hooks';
 import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
 import { ContainerChildProps } from '../../../../../core/container/container';
@@ -35,6 +38,7 @@ export interface OrganizationContainerEntities {
     canEdit: boolean;
   };
   website?: string;
+  handleSendMessage: (text: string) => Promise<void>;
 }
 
 export interface OrganizationContainerActions {}
@@ -145,10 +149,34 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     return [...hubContributions, ...challengeContributions];
   }, [orgRolesData]);
 
+  const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
+  const handleSendMessage = useCallback(
+    async (messageText: string) => {
+      await sendMessageToOrganization({
+        variables: {
+          messageData: {
+            message: messageText,
+            organizationId: organizationId,
+          },
+        },
+      });
+    },
+    [sendMessageToOrganization, organizationId]
+  );
   return (
     <>
       {children(
-        { organization, permissions, socialLinks, links, keywords, capabilities, associates, contributions },
+        {
+          organization,
+          permissions,
+          socialLinks,
+          links,
+          keywords,
+          capabilities,
+          associates,
+          contributions,
+          handleSendMessage,
+        },
         {
           loading: loading || orgRolesLoading,
         },

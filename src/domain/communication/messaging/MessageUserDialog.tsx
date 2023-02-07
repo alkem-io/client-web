@@ -4,33 +4,21 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import DialogContent from '../../../common/components/core/dialog/DialogContent';
 import { PageTitle } from '../../../core/ui/typography/components';
-import { useSendMessageToUserMutation } from '../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 
 interface MessageUserDialogProps {
-  userId: string;
   open: boolean;
   onClose: () => void;
+  onSendMessage: (text: string) => Promise<void>;
 }
 
-export const MessageUserDialog: FC<MessageUserDialogProps> = ({ userId, open, onClose }) => {
+export const DirectMessageDialog: FC<MessageUserDialogProps> = ({ open, onClose, onSendMessage }) => {
   const { t } = useTranslation();
   const [isLoading, setIsloading] = useState(false);
   const [messageText, setMessageText] = useState('');
-  const [sendMessageToUser] = useSendMessageToUserMutation();
   const handleSendMessage = async () => {
     setIsloading(false);
-    const { data } = await sendMessageToUser({
-      variables: {
-        messageData: {
-          message: messageText,
-          receiverIds: [userId],
-        },
-      },
-    });
-    if (data?.sendMessageToUser) {
-      // showInfoText Message succesfully sent
-    }
+    await onSendMessage(messageText);
     setIsloading(false);
   };
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {

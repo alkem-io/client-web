@@ -11,7 +11,7 @@ import { ContactDetail } from '../ContactDetails/ContactDetails';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
-import { MessageUserDialog } from '../../../communication/messaging/MessageUserDialog';
+import { DirectMessageDialog } from '../../../communication/messaging/MessageUserDialog';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
@@ -126,7 +126,6 @@ const Image = styled(Avatar)(() => ({
 }));
 
 export interface ProfileBannerProps {
-  id: string;
   title: string | undefined;
   tagline?: string;
   location?: Location;
@@ -135,6 +134,7 @@ export interface ProfileBannerProps {
   avatarUrl?: string;
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
   loading: boolean;
+  onSendMessage: (text: string) => Promise<void>;
 }
 
 /**
@@ -142,13 +142,13 @@ export interface ProfileBannerProps {
  * For Hubs/Challenges/Opportunities and anything else see PageBanner
  */
 const ProfileBanner: FC<ProfileBannerProps> = ({
-  id,
   title,
   location,
   phone,
   socialLinks,
   avatarUrl,
   loading: dataLoading = false,
+  onSendMessage,
 }) => {
   const { t } = useTranslation();
 
@@ -203,7 +203,11 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
               </Box>
             </ProfileInfo>
           </ProfileInfoWrapper>
-          <MessageUserDialog userId={id} open={isMessageUserDialogOpen} onClose={closeMessageUserDialog} />
+          <DirectMessageDialog
+            open={isMessageUserDialogOpen}
+            onClose={closeMessageUserDialog}
+            onSendMessage={onSendMessage}
+          />
         </Grid>
       )}
       {dataLoading && <Skeleton variant="rectangular" width="100%" height="100%" />}
