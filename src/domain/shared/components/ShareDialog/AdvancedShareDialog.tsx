@@ -22,7 +22,7 @@ export const AdvancedShareDialog: FC<AdvancedShareDialogProps> = ({ open, onClos
         <PageTitle>{t('share-dialog.share-this', { entity: t(`common.${entityTypeName}` as const) })}</PageTitle>
       </DialogHeader>
       <DialogContent>
-        <AdvancedShareComponent onClose={onClose} {...props} />
+        <AdvancedShareComponent onClose={onClose} entityTypeName={entityTypeName} {...props} />
       </DialogContent>
     </Dialog>
   );
@@ -30,11 +30,12 @@ export const AdvancedShareDialog: FC<AdvancedShareDialogProps> = ({ open, onClos
 
 interface AdvancedShareComponentProps {
   url: string | undefined;
+  entityTypeName: AdvancedShareDialogProps['entityTypeName'];
   loading?: boolean;
   onClose: () => void;
 }
 
-const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, loading, onClose }) => {
+const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, entityTypeName, loading, onClose }) => {
   const { t } = useTranslation();
   const [ShareHandler, setShareHandler] = useState<ComponentType<ShareOnPlatformHandlerProps>>();
   const fullUrl = window.location.protocol + '//' + window.location.host + url;
@@ -48,7 +49,12 @@ const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, loading,
   }
 
   return ShareHandler ? (
-    <ShareHandler url={fullUrl} goBack={() => setShareHandler(undefined)} closeDialog={onClose} />
+    <ShareHandler
+      url={fullUrl}
+      entityTypeName={entityTypeName}
+      goBack={() => setShareHandler(undefined)}
+      closeDialog={onClose}
+    />
   ) : (
     <Box display="flex" flexDirection="column" justifyContent="space-between">
       <TextField
@@ -73,6 +79,7 @@ const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, loading,
 
 export interface ShareOnPlatformHandlerProps {
   url: string;
+  entityTypeName: AdvancedShareDialogProps['entityTypeName'];
   goBack: () => void;
   closeDialog: () => void;
 }

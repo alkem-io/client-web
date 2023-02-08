@@ -1,14 +1,18 @@
 import React, { FC, useState } from 'react';
 import { useField } from 'formik';
-import { TextField } from '@mui/material';
+import { FormHelperText, TextField } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useMessagingAvailableRecipientsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
-import { UserSelectedView, UserSelectorView } from './FormikUserSelector/UserSelectorView';
+import { UserSelectorView } from './FormikUserSelector/UserSelectorView';
 import { remove, uniqueId } from 'lodash';
 import SearchIcon from '@mui/icons-material/Search';
 import { gutters } from '../../../../core/ui/grid/utils';
-import PageContent from '../../../../core/ui/content/PageContent';
+import GridContainer from '../../../../core/ui/grid/GridContainer';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import GridProvider from '../../../../core/ui/grid/GridProvider';
+import { GRID_COLUMNS_DESKTOP, GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
+import { UserSelectedView } from './FormikUserSelector/UserSelectedView';
 
 const MAX_USERS_SHOWN = 10;
 
@@ -16,11 +20,19 @@ interface FormikUserSelectorProps {
   name: string;
   required?: boolean;
   readonly?: boolean;
+  onChange?: (currentValue: string[]) => void;
 }
 
-export const FormikUserSelector: FC<FormikUserSelectorProps> = ({ name, required, readonly, ...containerProps }) => {
+export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
+  name,
+  required,
+  readonly,
+  onChange,
+  ...containerProps
+}) => {
   // This field is the array of user Ids
-  const [field, , helpers] = useField<string[] | undefined>(name);
+  const [field, meta, helpers] = useField<string[] | undefined>(name);
+  const validationError = Boolean(meta.error) && meta.touched;
 
   const [filter, setFilter] = useState<UserFilterInput>();
 
@@ -36,12 +48,17 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({ name, required
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
   // Autocomplete is re-rendered when we change the key property
+  // Setting id of the input to a random string also disables autocomplete browser features
   const [autocompleteKey, setAutocompleteKey] = useState<string>(uniqueId());
 
+  const breakpoint = useCurrentBreakpoint();
+
   const handleSelect = (user: Pick<User, 'id'> | null) => {
+    helpers.setTouched(true);
+
     if (user === null) return;
     let value = field.value;
-    if (!Array.isArray(value)) {
+    if (!value || !Array.isArray(value)) {
       value = [];
     }
     value.push(user.id);
@@ -49,66 +66,79 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({ name, required
     // Clear autocomplete on every select
     setAutocompleteValue(null);
     setAutocompleteKey(uniqueId()); // Force re-render
+
+    // Call change event:
+    onChange && onChange(value);
   };
 
   const handleRemove = (userId: string) => {
+    helpers.setTouched(true);
+
     const value = field.value;
     if (readonly || !Array.isArray(value) || !userId) return;
     remove(value, id => id === userId);
     helpers.setValue(value);
+
+    // Call change event:
+    onChange && onChange(value);
   };
 
   return (
     <>
       {!readonly && (
-        <Autocomplete
-          key={autocompleteKey}
-          id={autocompleteKey}
-          options={listedUsers}
-          value={autocompleteValue}
-          autoHighlight
-          getOptionLabel={option => option.displayName}
-          popupIcon={<SearchIcon />}
-          sx={{
-            marginBottom: gutters(1),
-            [`& .${autocompleteClasses.popupIndicator}`]: {
-              transform: 'none',
-            },
-          }}
-          onChange={(evt, value) => handleSelect(value)}
-          renderOption={(props, user) => (
-            <li {...props}>
-              <UserSelectorView
-                id={user.id}
-                displayName={user.displayName}
-                avatarUrl={user.profile?.avatar?.uri}
-                city={user.profile?.location?.city}
-                country={user.profile?.location?.country}
+        <>
+          <Autocomplete
+            key={autocompleteKey}
+            id={autocompleteKey}
+            options={listedUsers}
+            value={autocompleteValue}
+            autoHighlight
+            getOptionLabel={option => option.displayName}
+            popupIcon={<SearchIcon />}
+            sx={{
+              marginBottom: gutters(1),
+              [`& .${autocompleteClasses.popupIndicator}`]: {
+                transform: 'none',
+              },
+            }}
+            onChange={(evt, value) => handleSelect(value)}
+            renderOption={(props, user) => (
+              <li {...props}>
+                <UserSelectorView
+                  id={user.id}
+                  displayName={user.displayName}
+                  avatarUrl={user.profile?.avatar?.uri}
+                  city={user.profile?.location?.city}
+                  country={user.profile?.location?.country}
+                />
+              </li>
+            )}
+            renderInput={params => (
+              <TextField
+                {...params}
+                onChange={({ target }) => {
+                  setFilter({ email: target.value, firstName: target.value, lastName: target.value });
+                  loadUsers();
+                }}
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'none', // disable autocomplete and autofill
+                  'aria-autocomplete': 'none',
+                }}
               />
-            </li>
-          )}
-          renderInput={params => (
-            <TextField
-              {...params}
-              onChange={({ target }) => {
-                setFilter({ email: target.value, firstName: target.value, lastName: target.value });
-                loadUsers();
-              }}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: 'none', // disable autocomplete and autofill
-                'aria-autocomplete': 'none',
-              }}
-            />
-          )}
-          {...containerProps}
-        />
+            )}
+            {...containerProps}
+          />
+          <FormHelperText error={validationError}>{meta.error}</FormHelperText>
+        </>
       )}
-      <PageContent>
-        {field.value?.map(id => (
-          <UserSelectedView id={id} removable={!readonly} onRemove={() => handleRemove(id)} />
-        ))}
-      </PageContent>
+      <GridContainer disablePadding marginBottom={gutters(1)}>
+        <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
+          {field.value?.map(id => (
+            <UserSelectedView key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
+          ))}
+        </GridProvider>
+      </GridContainer>
     </>
   );
 };

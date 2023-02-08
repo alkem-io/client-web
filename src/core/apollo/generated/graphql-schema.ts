@@ -3647,6 +3647,19 @@ export type SearchResult = {
   type: SearchResultType;
 };
 
+export type SearchResultCard = SearchResult & {
+  __typename?: 'SearchResultCard';
+  /** The Card that was found. */
+  card: Aspect;
+  id: Scalars['UUID'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float'];
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']>;
+  /** The event type for this Activity. */
+  type: SearchResultType;
+};
+
 export type SearchResultChallenge = SearchResult & {
   __typename?: 'SearchResultChallenge';
   /** The Challenge that was found. */
@@ -3706,6 +3719,7 @@ export type SearchResultOrganization = SearchResult & {
 };
 
 export enum SearchResultType {
+  Card = 'CARD',
   Challenge = 'CHALLENGE',
   Hub = 'HUB',
   Opportunity = 'OPPORTUNITY',
@@ -4692,6 +4706,7 @@ export type ChallengeExplorerSearchQueryVariables = Exact<{
 export type ChallengeExplorerSearchQuery = {
   __typename?: 'Query';
   search: Array<
+    | { __typename?: 'SearchResultCard'; id: string; type: SearchResultType; terms: Array<string> }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;
@@ -19180,6 +19195,7 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = {
   __typename?: 'Query';
   search: Array<
+    | { __typename?: 'SearchResultCard'; id: string; score: number; terms: Array<string>; type: SearchResultType }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;
@@ -20501,6 +20517,12 @@ export type RemoveCommentMutationVariables = Exact<{
 }>;
 
 export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
+
+export type ShareLinkWithUserMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUserInput;
+}>;
+
+export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';

@@ -1,10 +1,8 @@
+import { Box, BoxProps } from '@mui/material';
 import { FC } from 'react';
-import { Box, BoxProps, Button, Skeleton } from '@mui/material';
-import { gutters } from '../../../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
-import { useMessagingUserDetailsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { gutters } from '../../../../../core/ui/grid/utils';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 
 interface UserSelectorViewProps extends BoxProps {
   id: string;
@@ -20,6 +18,7 @@ export const UserSelectorView: FC<UserSelectorViewProps> = ({
   city,
   country,
   avatarUrl,
+  children,
   ...containerProps
 }) => {
   const { t } = useTranslation();
@@ -43,37 +42,8 @@ export const UserSelectorView: FC<UserSelectorViewProps> = ({
             {country}
           </BlockSectionTitle>
         </Box>
+        {children}
       </Box>
     </Box>
-  );
-};
-
-interface UserSelectedViewProps {
-  id: string;
-  removable: boolean;
-  onRemove: () => void;
-}
-
-export const UserSelectedView: FC<UserSelectedViewProps> = ({ id, removable, onRemove }) => {
-  const { data, loading } = useMessagingUserDetailsQuery({
-    variables: { id },
-  });
-
-  const user = data?.user;
-
-  return (
-    <PageContentBlock accent>
-      {(!user || loading) && <Skeleton />}
-      {user && !loading && (
-        <UserSelectorView
-          id={user.id}
-          displayName={user.displayName}
-          city={user.profile?.location?.city}
-          country={user.profile?.location?.country}
-          avatarUrl={user.profile?.avatar?.uri}
-        />
-      )}
-      {removable && <Button onClick={onRemove}>-</Button>}
-    </PageContentBlock>
   );
 };

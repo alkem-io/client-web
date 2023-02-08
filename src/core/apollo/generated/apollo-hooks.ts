@@ -20100,6 +20100,52 @@ export type RemoveCommentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommentMutation,
   SchemaTypes.RemoveCommentMutationVariables
 >;
+export const ShareLinkWithUserDocument = gql`
+  mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
+    sendMessageToUser(messageData: $messageData)
+  }
+`;
+export type ShareLinkWithUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ShareLinkWithUserMutation,
+  SchemaTypes.ShareLinkWithUserMutationVariables
+>;
+
+/**
+ * __useShareLinkWithUserMutation__
+ *
+ * To run a mutation, you first call `useShareLinkWithUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useShareLinkWithUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [shareLinkWithUserMutation, { data, loading, error }] = useShareLinkWithUserMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useShareLinkWithUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ShareLinkWithUserMutation,
+    SchemaTypes.ShareLinkWithUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.ShareLinkWithUserMutation, SchemaTypes.ShareLinkWithUserMutationVariables>(
+    ShareLinkWithUserDocument,
+    options
+  );
+}
+
+export type ShareLinkWithUserMutationHookResult = ReturnType<typeof useShareLinkWithUserMutation>;
+export type ShareLinkWithUserMutationResult = Apollo.MutationResult<SchemaTypes.ShareLinkWithUserMutation>;
+export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ShareLinkWithUserMutation,
+  SchemaTypes.ShareLinkWithUserMutationVariables
+>;
 export const HubDashboardCalendarEventsDocument = gql`
   query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
     hub(ID: $hubId) {

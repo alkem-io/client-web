@@ -26,7 +26,7 @@ export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShar
 const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   HTMLDivElement | null,
   ShareOnPlatformHandlerProps
->(({ url, closeDialog }) => {
+>(({ url, closeDialog }, _ref) => {
   const { t } = useTranslation();
 
   // On render of this element we copy the url to clipboard
