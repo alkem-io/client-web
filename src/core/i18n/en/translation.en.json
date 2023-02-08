@@ -124,6 +124,7 @@
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
     "avatar": "Avatar",
+    "avatar-of": "Avatar of {{user}}",
     "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
@@ -431,6 +432,9 @@
     "share-this-on": "Share this {{entity}} on {{platform}}",
     "or": "or",
     "url": "URL",
+    "message": "Message",
+    "message-optional": "Message (Optional)",
+    "warning": "Please note that your personal email will be visible for the user when you send them a message.",
     "platforms": {
       "clipboard": {
         "title": "Copy Link",
@@ -439,7 +443,8 @@
       },
       "alkemio": {
         "name": "Alkemio",
-        "title": "Share on Alkemio"
+        "title": "Share on Alkemio",
+        "description": "Share this Hub directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message."
       },
       "linkedin": {
         "title": "Share on Linkedin"

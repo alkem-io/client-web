@@ -1798,6 +1798,7 @@ export type RelayPaginatedUserKeySpecifier = (
   | 'firstName'
   | 'gender'
   | 'id'
+  | 'isContactable'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -1816,6 +1817,7 @@ export type RelayPaginatedUserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   gender?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2122,6 +2124,7 @@ export type UserKeySpecifier = (
   | 'firstName'
   | 'gender'
   | 'id'
+  | 'isContactable'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -2140,6 +2143,7 @@ export type UserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   gender?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
