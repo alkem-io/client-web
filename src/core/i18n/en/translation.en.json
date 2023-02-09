@@ -68,7 +68,6 @@
     "remove": "Remove",
     "cancel": "Cancel",
     "explore-and-connect": "Explore and connect",
-    "send": "Send",
     "send-message": "Send message",
     "edit-members": "Edit members",
     "my-profile": "My profile",
@@ -432,6 +431,9 @@
     "message": "Message",
     "message-optional": "Message (Optional)",
     "successfully-sent": "Message successfully sent"
+  },
+  "send-message-dialog": {
+    "title": "Send a message"
   },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",

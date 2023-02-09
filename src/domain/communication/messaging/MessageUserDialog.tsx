@@ -1,11 +1,15 @@
 import React, { FC, useState } from 'react';
-import { Dialog, TextField, DialogActions } from '@mui/material';
+import { Dialog, DialogActions, Box, Alert } from '@mui/material';
+import { Form, Formik } from 'formik';
+import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import SendIcon from '@mui/icons-material/Send';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import DialogContent from '../../../common/components/core/dialog/DialogContent';
-import { PageTitle } from '../../../core/ui/typography/components';
-import { LoadingButton } from '@mui/lab';
+import { Caption, PageTitle } from '../../../core/ui/typography/components';
+import SendButton from '../../shared/components/SendButton';
+import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import { FormikUserSelector } from '../../../common/components/composite/forms/FormikUserSelector';
+import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 
 interface MessageUserDialogProps {
   open: boolean;
@@ -13,41 +17,74 @@ interface MessageUserDialogProps {
   onSendMessage: (text: string) => Promise<void>;
 }
 
+interface SendMessageData {
+  message: string;
+}
+
 export const DirectMessageDialog: FC<MessageUserDialogProps> = ({ open, onClose, onSendMessage }) => {
   const { t } = useTranslation();
   const [isLoading, setIsloading] = useState(false);
-  const [messageText, setMessageText] = useState('');
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (values: SendMessageData, { resetForm }) => {
     setIsloading(true);
-    await onSendMessage(messageText);
+    await onSendMessage(values.message);
+    resetForm();
     setIsloading(false);
   };
-  const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMessageText(event.target.value);
-  };
+
   const handleClose = () => {
-    setMessageText('');
     onClose();
+  };
+
+  const validationSchema = yup.object().shape({
+    message: yup.string().required(t('forms.validations.required')),
+  });
+
+  const [isMessageSent, setMessageSent] = useState(false);
+
+  const initialValues: SendMessageData = {
+    message: '',
   };
 
   return (
     <Dialog open={open} fullWidth maxWidth="md">
       <DialogHeader onClose={handleClose}>
-        <PageTitle>{}</PageTitle>
+        <PageTitle>{t('send-message-dialog.title')}</PageTitle>
       </DialogHeader>
       <DialogContent>
-        <TextField value={messageText} onChange={handleTextChange} fullWidth />
-        <DialogActions sx={{ p: 0, marginTop: 2 }}>
-          <LoadingButton
-            loading={isLoading}
-            disabled={isLoading}
-            variant="contained"
-            onClick={handleSendMessage}
-            startIcon={<SendIcon />}
+        <Box>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            enableReinitialize
+            onSubmit={handleSendMessage}
           >
-            {t('buttons.send')}
-          </LoadingButton>
-        </DialogActions>
+            {({ handleSubmit, isValid }) => (
+              <Form noValidate autoComplete="off">
+                <FormikUserSelector name="users" onChange={() => setMessageSent(false)} readonly />
+                <FormikInputField
+                  name="message"
+                  title={t('messaging.message')}
+                  placeholder={t('messaging.message')}
+                  multiline
+                  rows={5}
+                  onFocus={() => setMessageSent(false)}
+                  withCounter
+                  maxLength={LONG_TEXT_LENGTH}
+                />
+                <Caption>{t('share-dialog.warning')}</Caption>
+
+                <DialogActions sx={{ paddingX: 0 }}>
+                  {isMessageSent && (
+                    <Alert severity="info" sx={{ marginRight: 'auto' }}>
+                      {t('messaging.successfully-sent')}
+                    </Alert>
+                  )}
+                  <SendButton loading={isLoading} disabled={!isValid} onClick={() => handleSubmit()} />
+                </DialogActions>
+              </Form>
+            )}
+          </Formik>
+        </Box>
       </DialogContent>
     </Dialog>
   );
