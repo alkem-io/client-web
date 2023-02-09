@@ -164,11 +164,15 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const topCallouts = collaboration?.callouts?.slice(0, 3);
 
-  const communityId = opportunity?.community?.id ?? '';
+  const communityId = opportunity?.community?.id;
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
   const handleSendMessageToCommunityLeads = useCallback(
     async (messageText: string) => {
+      if (!communityId) {
+        throw new Error('Community not loaded.');
+      }
+
       await sendMessageToCommunityLeads({
         variables: {
           messageData: {
