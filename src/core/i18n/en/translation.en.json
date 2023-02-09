@@ -95,7 +95,7 @@
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
     "send": "Send",
-    "contact-leads": "Contact the {{leadUsersHeader}}(s)"
+    "contact-leads": "Contact the {{contact}}(s)"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -435,7 +435,7 @@
   },
   "send-message-dialog": {
     "direct-message-title": "Send a message",
-    "community-message-title": "Send a message to {{leadUsersHeader}}(s)"
+    "community-message-title": "Send a message to {{contact}}(s)"
   },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",

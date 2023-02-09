@@ -147,11 +147,11 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
         )}
         {communityReadAccess && (
           <ContactLeadsButton onClick={openContactLeadsDialog}>
-            {t('buttons.contact-leads', { leadUsersHeader: t(leadUsersHeader) })}
+            {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
           </ContactLeadsButton>
         )}
         <DirectMessageDialog
-          title={t('send-message-dialog.community-message-title', { leadUsersHeader: t(leadUsersHeader) })}
+          title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
           open={isOpenContactLeadUsersDialog}
           onClose={closeContactLeadsDialog}
           onSendMessage={sendMessageToCommunityLeads}
