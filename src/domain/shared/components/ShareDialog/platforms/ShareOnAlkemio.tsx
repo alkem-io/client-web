@@ -117,6 +117,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
               withCounter
               maxLength={LONG_TEXT_LENGTH}
             />
+
             <Caption>{t('share-dialog.warning')}</Caption>
 
             <DialogActions sx={{ paddingX: 0 }}>
