@@ -44,7 +44,7 @@ const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
         sx={{
           verticalAlign: 'middle',
           width: gutters(1),
-          mr: gutters(0.5),
+          marginRight: gutters(0.5),
           color: theme => theme.palette.primary.main,
         }}
       />

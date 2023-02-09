@@ -97,7 +97,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
       <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
         {({ handleSubmit, isValid }) => (
           <Form noValidate autoComplete="off">
-            <Text mb={gutters(1)}>
+            <Text marginBottom={gutters(1)}>
               {t('share-dialog.platforms.alkemio.description', { entity: t(`common.${entityTypeName}` as const) })}
             </Text>
 
