@@ -4,15 +4,15 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { remove } from 'lodash';
 import { FC, useState } from 'react';
-import { useMessagingAvailableRecipientsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
-import GridContainer from '../../../../core/ui/grid/GridContainer';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import { gutters } from '../../../../core/ui/grid/utils';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { ProfileView } from '../common/ProfileChip/ProfileView';
-import { UserChip } from './FormikUserSelector/UserChip';
+import { useMessagingAvailableRecipientsLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { User, UserFilterInput } from '../../../../../core/apollo/generated/graphql-schema';
+import GridContainer from '../../../../../core/ui/grid/GridContainer';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import GridItem from '../../../../../core/ui/grid/GridItem';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
+import { ProfileChipView } from '../../ProfileChip/ProfileChipView';
+import { UserChip } from './UserChip';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
@@ -106,7 +106,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             onChange={(evt, value) => handleSelect(value)}
             renderOption={(props, user) => (
               <li {...props}>
-                <ProfileView
+                <ProfileChipView
                   displayName={user.displayName}
                   avatarUrl={user.profile?.avatar?.uri}
                   city={user.profile?.location?.city}

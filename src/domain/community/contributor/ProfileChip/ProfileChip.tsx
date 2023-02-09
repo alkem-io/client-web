@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import { gutters } from '../../../../core/ui/grid/utils';
 import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
-import { ProfileView, ProfileViewProps } from './ProfileView';
+import { ProfileChipView, ProfileChipViewProps } from './ProfileChipView';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { FC } from 'react';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 
-export interface ProfileChipProps extends ProfileViewProps {
+export interface ProfileChipProps extends ProfileChipViewProps {
   loading?: boolean;
   removable?: boolean;
   onRemove?: () => void;
@@ -26,8 +27,6 @@ const RemoveButton = styled(Button)(({ theme }) => ({
   height: gutters(1.5)(theme),
   padding: 0,
   color: theme.palette.grey.dark,
-  // Put the button on the right of the flex
-  marginLeft: 'auto',
 }));
 
 export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, onRemove, ...props }) => {
@@ -45,15 +44,18 @@ export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, 
         </Box>
       )}
       {!loading && (
-        <ProfileView {...props}>
+        <ProfileChipView {...props}>
           {removable && (
             <Tooltip title={t('common.remove')} arrow>
-              <RemoveButton onClick={onRemove}>
-                <RemoveIcon />
-              </RemoveButton>
+              <>
+                <FlexSpacer />
+                <RemoveButton onClick={onRemove}>
+                  <RemoveIcon />
+                </RemoveButton>
+              </>
             </Tooltip>
           )}
-        </ProfileView>
+        </ProfileChipView>
       )}
     </Root>
   );
