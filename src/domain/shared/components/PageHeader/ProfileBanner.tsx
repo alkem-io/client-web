@@ -1,6 +1,5 @@
-import { Avatar, Box, Grid, IconButton, Skeleton, styled, Typography } from '@mui/material';
+import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import { DEFAULT_BANNER_URL } from './EntityPageBanner';
 import { Location } from '../../../../core/apollo/generated/graphql-schema';
@@ -135,7 +134,7 @@ export interface ProfileBannerProps {
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
   loading: boolean;
   onSendMessage: (text: string) => Promise<void>;
-  contactable?: boolean;
+  isContactable?: boolean;
 }
 
 /**
@@ -150,7 +149,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   avatarUrl,
   loading: dataLoading = false,
   onSendMessage,
-  contactable = true,
+  isContactable = true,
 }) => {
   const { t } = useTranslation();
 
@@ -199,12 +198,12 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
                 value={phone}
               />
               <Box>
-                <SocialLinks items={socialLinks} iconSize="medium" />
-                {contactable && (
-                  <IconButton onClick={openMessageUserDialog}>
-                    <EmailOutlinedIcon />
-                  </IconButton>
-                )}
+                <SocialLinks
+                  items={socialLinks}
+                  iconSize="medium"
+                  isContactable={isContactable}
+                  onContact={openMessageUserDialog}
+                />
               </Box>
             </ProfileInfo>
           </ProfileInfoWrapper>
