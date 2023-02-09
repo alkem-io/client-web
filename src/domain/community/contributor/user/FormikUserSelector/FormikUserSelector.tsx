@@ -63,13 +63,14 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   const handleSelect = (user: Pick<User, 'id'> | null) => {
     helpers.setTouched(true);
 
-    if (user === null) return;
-    let value = field.value;
-    if (!value || !Array.isArray(value)) {
-      value = [];
+    if (user === null) {
+      return;
     }
-    value.push(user.id);
-    helpers.setValue(value);
+
+    const value = Array.isArray(field.value) ? field.value : [];
+
+    helpers.setValue([...value, user.id]);
+
     // Clear autocomplete on every select
     setAutocompleteValue(null);
     setInputValue('');

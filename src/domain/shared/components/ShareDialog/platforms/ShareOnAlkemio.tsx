@@ -1,4 +1,4 @@
-import { FC, forwardRef, useCallback, useState } from 'react';
+import { FC, forwardRef, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -43,17 +43,20 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
 
-  const initialValues: ShareOnAlkemioData = {
-    url,
-    message: t('share-dialog.platforms.alkemio.default-template', {
+  const initialValues: ShareOnAlkemioData = useMemo(
+    () => ({
       url,
-      entity: t(`common.${entityTypeName}` as const),
-      interpolation: {
-        escapeValue: false,
-      },
+      message: t('share-dialog.platforms.alkemio.default-template', {
+        url,
+        entity: t(`common.${entityTypeName}` as const),
+        interpolation: {
+          escapeValue: false,
+        },
+      }),
+      users: [],
     }),
-    users: [],
-  };
+    [entityTypeName, t, url]
+  );
 
   const validationSchema = yup.object().shape({
     url: yup.string().required(t('forms.validations.required')),
@@ -90,11 +93,12 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
       resetForm();
     }
   };
+
   const [isMessageSent, setMessageSent] = useState(false);
 
   return (
     <Box>
-      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize>
         {({ handleSubmit, isValid }) => (
           <Form noValidate autoComplete="off">
             <Text marginBottom={gutters(1)}>
