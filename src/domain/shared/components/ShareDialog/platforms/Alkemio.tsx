@@ -58,7 +58,6 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   const validationSchema = yup.object().shape({
     url: yup.string().required(t('forms.validations.required')),
     users: yup.array().min(1, t('forms.validations.at-least-one', { item: t('common.user') })),
-    //message: yup.string().required(t('forms.validations.required'))
   });
 
   const [shareLinkMutation, { loading, error }] = useShareLinkWithUserMutation({
@@ -66,16 +65,12 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   });
   const shareLink = useCallback(
     async (receiverIds: string[], url: string, message: string) => {
-      // TODO: With a proper template for sharing entities this shouldn't be needed:
-      // Make sure the message includes the link, if not, append it:
-      if (message.indexOf(url)) {
-        message += t('share-dialog.platforms.alkemio.append-link', {
-          url,
-          interpolation: {
-            escapeValue: false,
-          },
-        });
+      // Make sure the message includes the link, if not, append it to the end:
+      // TODO: With a proper notification template for sharing entities this shouldn't be needed
+      if (message.indexOf(url) === -1) {
+        message = `${message}\n\n${url}`;
       }
+
       await shareLinkMutation({
         variables: {
           messageData: {
@@ -85,7 +80,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
         },
       });
     },
-    [shareLinkMutation, t]
+    [shareLinkMutation]
   );
 
   const onSubmit = async (values: ShareOnAlkemioData, { resetForm }) => {

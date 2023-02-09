@@ -1,25 +1,23 @@
-import { FC } from 'react';
-import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useMessagingUserDetailsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import { UserSelectorView } from './UserSelectorView';
+import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
+import { ProfileView, ProfileViewProps } from './ProfileView';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { FC } from 'react';
 
-interface UserSelectedViewProps {
-  userId: string;
-  removable: boolean;
-  onRemove: () => void;
+export interface ProfileChipProps extends ProfileViewProps {
+  loading?: boolean;
+  removable?: boolean;
+  onRemove?: () => void;
 }
 
-const UserChip = styled(Box)(({ theme }) => ({
+const Root = styled(Box)(({ theme }) => ({
   borderWidth: 1,
   borderStyle: 'solid',
   borderColor: theme.palette.grey.main,
   borderRadius: theme.shape.borderRadius,
   paddingLeft: gutters(0.5)(theme),
   paddingRight: gutters(0.5)(theme),
-  flex: 6,
 }));
 
 const RemoveButton = styled(Button)(({ theme }) => ({
@@ -32,23 +30,12 @@ const RemoveButton = styled(Button)(({ theme }) => ({
   marginLeft: 'auto',
 }));
 
-/**
- * Just a wrapper border around UserSelectorView to reuse the same styles and to add a RemoveButton if needed
- * @param param0
- * @returns
- */
-export const UserSelectedView: FC<UserSelectedViewProps> = ({ userId, removable, onRemove }) => {
+export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, onRemove, ...props }) => {
   const { t } = useTranslation();
 
-  const { data, loading } = useMessagingUserDetailsQuery({
-    variables: { id: userId },
-  });
-
-  const user = data?.user;
-
   return (
-    <UserChip>
-      {(!user || loading) && (
+    <Root>
+      {loading && (
         <Box display="flex" flexDirection="row" alignItems="center" height={gutters(3)} gap={gutters(1)}>
           <Skeleton variant="circular" sx={{ height: gutters(2), width: gutters(2) }} />
           <Box flex="1">
@@ -57,14 +44,8 @@ export const UserSelectedView: FC<UserSelectedViewProps> = ({ userId, removable,
           </Box>
         </Box>
       )}
-      {user && !loading && (
-        <UserSelectorView
-          id={user.id}
-          displayName={user.displayName}
-          city={user.profile?.location?.city}
-          country={user.profile?.location?.country}
-          avatarUrl={user.profile?.avatar?.uri}
-        >
+      {!loading && (
+        <ProfileView {...props}>
           {removable && (
             <Tooltip title={t('common.remove')} arrow>
               <RemoveButton onClick={onRemove}>
@@ -72,8 +53,8 @@ export const UserSelectedView: FC<UserSelectedViewProps> = ({ userId, removable,
               </RemoveButton>
             </Tooltip>
           )}
-        </UserSelectorView>
+        </ProfileView>
       )}
-    </UserChip>
+    </Root>
   );
 };
