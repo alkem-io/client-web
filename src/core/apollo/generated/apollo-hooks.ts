@@ -174,6 +174,7 @@ export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
     id
     displayName
+    isContactable
     nameID
     profile {
       id
@@ -1342,6 +1343,7 @@ export const UserCardFragmentDoc = gql`
     id
     nameID
     displayName
+    isContactable
     agent {
       id
       credentials {
@@ -1534,6 +1536,7 @@ export const UserContributorFragmentDoc = gql`
     id
     nameID
     displayName
+    isContactable
     agent {
       id
       credentials {
@@ -13502,6 +13505,7 @@ export const ContributingUsersDocument = gql`
       id
       nameID
       displayName
+      isContactable
       profile {
         id
         location {

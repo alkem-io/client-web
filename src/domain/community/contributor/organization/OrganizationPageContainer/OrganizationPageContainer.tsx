@@ -124,6 +124,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
           tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
         },
         url: buildUserProfileUrl(x.nameID),
+        isContactable: x.isContactable,
       })) || []
     );
   }, [usersWithRoles]);

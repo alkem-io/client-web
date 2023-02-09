@@ -4902,6 +4902,7 @@ export type ChallengePageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -5224,6 +5225,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -6275,6 +6277,7 @@ export type AboutPageMembersQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -6369,6 +6372,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -6464,6 +6468,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -7251,6 +7256,7 @@ export type HubPageQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -7557,6 +7563,7 @@ export type HubPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -8490,6 +8497,7 @@ export type OpportunityPageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -8729,6 +8737,7 @@ export type OpportunityPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -14148,6 +14157,7 @@ export type AuthorDetailsQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -15009,6 +15019,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -15042,6 +15053,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -15117,6 +15129,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15150,6 +15163,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15246,6 +15260,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15279,6 +15294,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15360,6 +15376,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15386,6 +15403,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15465,6 +15483,7 @@ export type EntityDashboardCommunityFragment = {
         __typename?: 'User';
         id: string;
         displayName: string;
+        isContactable: boolean;
         nameID: string;
         profile?:
           | {
@@ -15515,6 +15534,7 @@ export type DashboardContributingUserFragment = {
   __typename?: 'User';
   id: string;
   displayName: string;
+  isContactable: boolean;
   nameID: string;
   profile?:
     | {
@@ -15568,6 +15588,7 @@ export type ContributingUsersQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     profile?:
       | {
           __typename?: 'Profile';
@@ -16253,6 +16274,7 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      isContactable: boolean;
       agent?:
         | {
             __typename?: 'Agent';
@@ -16327,6 +16349,7 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -16359,6 +16382,7 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17200,6 +17224,7 @@ export type UserCardFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17798,6 +17823,7 @@ export type UserCardQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';

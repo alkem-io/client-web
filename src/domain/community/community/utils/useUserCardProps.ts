@@ -27,6 +27,7 @@ const useUserCardProps = (
       city: user.profile?.location?.city,
       country: user.profile?.location?.country,
       url: buildUserProfileUrl(user.nameID),
+      isContactable: user.isContactable,
     }));
   }, [data, resourceId, t]);
 };

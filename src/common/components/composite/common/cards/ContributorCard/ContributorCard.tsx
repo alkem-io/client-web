@@ -19,6 +19,7 @@ export interface ContributorCardProps {
   displayName: string;
   tooltip?: ContributorCardTooltip;
   url: string;
+  isContactable?: boolean;
 }
 
 const useStyles = makeStyles(_ =>
@@ -52,7 +53,7 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
-  const { displayName, avatar, url, tooltip } = props;
+  const { displayName, avatar, url, tooltip, isContactable } = props;
 
   const TooltipElement = useMemo(
     () =>
@@ -69,6 +70,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
                 city={tooltip?.city}
                 country={tooltip?.country}
                 url=""
+                isContactable={isContactable}
               />
             }
             classes={{ tooltip: styles.tooltip }}
@@ -78,7 +80,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
         ) : (
           <>{children}</>
         ),
-    [displayName, avatar, tooltip, styles.tooltip]
+    [displayName, avatar, tooltip, styles.tooltip, isContactable]
   );
 
   return (
