@@ -6,7 +6,7 @@ import { EntityPageSection } from './EntityPageSection';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { ShareDialog } from '../components/ShareDialog';
+import { AdvancedShareDialog } from '../components/ShareDialog';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -58,7 +58,7 @@ enum NavigationActions {
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare
 interface ShareCapableNavigator extends Navigator {
-  canShare?(data: ShareData): boolean;
+  canShare(data?: ShareData | undefined): boolean;
 }
 
 const EntityPageTabs: FC<EntityPageTabsProps> = ({
@@ -93,7 +93,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
     entityTypeName === 'opportunity' ? theme.palette.hub.main : */ theme.palette.common.white;
 
   const shareDialog = shareUrl && (
-    <ShareDialog
+    <AdvancedShareDialog
       open={shareDialogOpen}
       onClose={() => setShareDialogOpen(false)}
       url={shareUrl}
