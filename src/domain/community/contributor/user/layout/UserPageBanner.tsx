@@ -10,10 +10,15 @@ const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
-  const userId = userMetadata?.user.id ?? '';
+  const userId = userMetadata?.user.id;
   const [sendMessageToUser] = useSendMessageToUserMutation();
+
   const handleSendMessage = useCallback(
     async (messageText: string) => {
+      if (!userId) {
+        throw new Error('User not loaded.');
+      }
+
       await sendMessageToUser({
         variables: {
           messageData: {
