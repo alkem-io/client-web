@@ -58,7 +58,6 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   const validationSchema = yup.object().shape({
     url: yup.string().required(t('forms.validations.required')),
     users: yup.array().min(1, t('forms.validations.at-least-one', { item: t('common.user') })),
-    //message: yup.string().required(t('forms.validations.required'))
   });
 
   const [shareLinkMutation, { loading, error }] = useShareLinkWithUserMutation({
