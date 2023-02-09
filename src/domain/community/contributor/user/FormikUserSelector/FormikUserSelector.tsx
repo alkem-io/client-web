@@ -2,7 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { FormHelperText, TextField } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
-import { remove } from 'lodash';
+import { without } from 'lodash';
 import { FC, useEffect, useState } from 'react';
 import { useMessagingAvailableRecipientsLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '../../../../../core/apollo/generated/graphql-schema';
@@ -75,20 +75,21 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
     setAutocompleteValue(null);
     setInputValue('');
 
-    // Call change event:
-    onChange && onChange(value);
+    onChange?.(value);
   };
 
   const handleRemove = (userId: string) => {
     helpers.setTouched(true);
 
     const value = field.value;
-    if (readonly || !Array.isArray(value) || !userId) return;
-    remove(value, id => id === userId);
-    helpers.setValue(value);
+    if (readonly || !Array.isArray(value) || !userId) {
+      return;
+    }
 
-    // Call change event:
-    onChange && onChange(value);
+    const nextValue = without(value, userId);
+    helpers.setValue(nextValue);
+
+    onChange?.(value);
   };
 
   return (
