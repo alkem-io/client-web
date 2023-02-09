@@ -86,6 +86,6 @@ export interface ShareOnPlatformButtonProps extends ButtonProps {
   setShareHandler: (handler: ComponentType<ShareOnPlatformHandlerProps>) => void;
 }
 
-export const ShareButton: FC<ButtonProps> = ({ ...props }) => {
+export const ShareButton: FC<ButtonProps> = props => {
   return <Button sx={{ height: gutters(2) }} {...props} />;
 };

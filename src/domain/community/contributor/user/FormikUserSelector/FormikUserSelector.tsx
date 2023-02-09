@@ -140,7 +140,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
         </>
       )}
       <GridContainer disablePadding marginBottom={gutters(1)}>
-        <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
+        <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
           {field.value?.map(id => (
             <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
           ))}
