@@ -1798,6 +1798,7 @@ export type RelayPaginatedUserKeySpecifier = (
   | 'firstName'
   | 'gender'
   | 'id'
+  | 'isContactable'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -1816,6 +1817,7 @@ export type RelayPaginatedUserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   gender?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1903,6 +1905,21 @@ export type RolesResultOrganizationFieldPolicy = {
 };
 export type SearchResultKeySpecifier = ('id' | 'score' | 'terms' | 'type' | SearchResultKeySpecifier)[];
 export type SearchResultFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultCardKeySpecifier = (
+  | 'card'
+  | 'id'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | SearchResultCardKeySpecifier
+)[];
+export type SearchResultCardFieldPolicy = {
+  card?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2122,6 +2139,7 @@ export type UserKeySpecifier = (
   | 'firstName'
   | 'gender'
   | 'id'
+  | 'isContactable'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -2140,6 +2158,7 @@ export type UserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   gender?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2743,6 +2762,10 @@ export type StrictTypedTypePolicies = {
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);
     fields?: SearchResultFieldPolicy;
+  };
+  SearchResultCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultCardKeySpecifier | (() => undefined | SearchResultCardKeySpecifier);
+    fields?: SearchResultCardFieldPolicy;
   };
   SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);

@@ -5,8 +5,7 @@ import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import { EntityPageSection } from './EntityPageSection';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { ShareDialog } from '../components/ShareDialog';
+import { ShareDialog } from '../components/ShareDialog/ShareDialog';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -58,7 +57,7 @@ enum NavigationActions {
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare
 interface ShareCapableNavigator extends Navigator {
-  canShare?(data: ShareData): boolean;
+  canShare(data?: ShareData | undefined): boolean;
 }
 
 const EntityPageTabs: FC<EntityPageTabsProps> = ({
@@ -246,7 +245,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           to={`${rootUrl}/${EntityPageSection.About}`}
         />
         {shareUrl && (
-          <HeaderNavigationButton icon={<ShareOutlinedIcon />} value={NavigationActions.Share} onClick={share} />
+          <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}
       </HeaderNavigationTabs>
       {shareDialog}

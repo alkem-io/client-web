@@ -19,7 +19,7 @@ import { mapWithSeparator } from '../../../shared/utils/joinNodes';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { ShareComponent, ShareComponentTitle } from '../../../shared/components/ShareDialog/ShareComponent';
+import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDialog';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -185,8 +185,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
       {mode === 'share' && (
         <DashboardColumn>
           <DashboardGenericSection>
-            <ShareComponentTitle entityTypeName="card" />
-            <ShareComponent url={props.aspectUrl} />
+            <ShareComponent url={props.aspectUrl} entityTypeName="card" />
           </DashboardGenericSection>
         </DashboardColumn>
       )}

@@ -1,0 +1,32 @@
+query MessagingAvailableRecipients(
+  $filter: UserFilterInput
+  $first: Int
+) {
+	usersPaginated(filter: $filter, first: $first) {
+    users {
+      ...MessagingUserInformation
+    }
+  }
+}
+
+query MessagingUserDetails ($id: UUID_NAMEID_EMAIL!) {
+  user(ID: $id) {
+    ...MessagingUserInformation
+  }
+}
+
+fragment MessagingUserInformation on User {
+  id
+  displayName
+  profile {
+    id
+    location {
+      id
+      city
+      country
+    }
+    avatar {
+      ...VisualUri
+    }
+  }
+}

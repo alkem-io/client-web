@@ -47,7 +47,7 @@ query hubCalendarEvents ($hubId: UUID_NAMEID!) {
   }
 }
 
-query calendarEventDetails  ($hubId: UUID_NAMEID!, $eventId: UUID!) {
+query calendarEventDetails  ($hubId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     timeline {
