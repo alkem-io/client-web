@@ -94,7 +94,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
 
   return (
     <Box>
-      <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {({ handleSubmit, isValid }) => (
           <Form noValidate autoComplete="off">
             <Text marginBottom={gutters(1)}>
