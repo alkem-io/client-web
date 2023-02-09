@@ -5,6 +5,7 @@ import { useMessagingUserDetailsQuery } from '../../../../../core/apollo/generat
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { UserSelectorView } from './UserSelectorView';
 import RemoveIcon from '@mui/icons-material/Remove';
+import GridItem from '../../../../../core/ui/grid/GridItem';
 
 interface UserSelectedViewProps {
   userId: string;
@@ -19,7 +20,6 @@ const UserChip = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   paddingLeft: gutters(0.5)(theme),
   paddingRight: gutters(0.5)(theme),
-  flex: 6,
 }));
 
 const RemoveButton = styled(Button)(({ theme }) => ({
@@ -47,33 +47,35 @@ export const UserSelectedView: FC<UserSelectedViewProps> = ({ userId, removable,
   const user = data?.user;
 
   return (
-    <UserChip>
-      {(!user || loading) && (
-        <Box display="flex" flexDirection="row" alignItems="center" height={gutters(3)} gap={gutters(1)}>
-          <Skeleton variant="circular" sx={{ height: gutters(2), width: gutters(2) }} />
-          <Box flex="1">
-            <Skeleton />
-            <Skeleton />
+    <GridItem columns={3}>
+      <UserChip>
+        {(!user || loading) && (
+          <Box display="flex" flexDirection="row" alignItems="center" height={gutters(3)} gap={gutters(1)}>
+            <Skeleton variant="circular" sx={{ height: gutters(2), width: gutters(2) }} />
+            <Box flex="1">
+              <Skeleton />
+              <Skeleton />
+            </Box>
           </Box>
-        </Box>
-      )}
-      {user && !loading && (
-        <UserSelectorView
-          id={user.id}
-          displayName={user.displayName}
-          city={user.profile?.location?.city}
-          country={user.profile?.location?.country}
-          avatarUrl={user.profile?.avatar?.uri}
-        >
-          {removable && (
-            <Tooltip title={t('common.remove')} arrow>
-              <RemoveButton onClick={onRemove}>
-                <RemoveIcon />
-              </RemoveButton>
-            </Tooltip>
-          )}
-        </UserSelectorView>
-      )}
-    </UserChip>
+        )}
+        {user && !loading && (
+          <UserSelectorView
+            id={user.id}
+            displayName={user.displayName}
+            city={user.profile?.location?.city}
+            country={user.profile?.location?.country}
+            avatarUrl={user.profile?.avatar?.uri}
+          >
+            {removable && (
+              <Tooltip title={t('common.remove')} arrow>
+                <RemoveButton onClick={onRemove}>
+                  <RemoveIcon />
+                </RemoveButton>
+              </Tooltip>
+            )}
+          </UserSelectorView>
+        )}
+      </UserChip>
+    </GridItem>
   );
 };

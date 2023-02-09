@@ -449,8 +449,7 @@
         "name": "Alkemio",
         "title": "Share on Alkemio",
         "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
-        "default-template": "Hi! Check this out, I think this {{entity}} may be interesting for you: {{url}}",
-        "append-link": "\n\nLink: {{url}}"
+        "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
       },
       "linkedin": {
         "title": "Share on Linkedin"

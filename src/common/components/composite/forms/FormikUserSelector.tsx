@@ -5,16 +5,18 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useMessagingAvailableRecipientsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
 import { UserSelectorView } from './FormikUserSelector/UserSelectorView';
-import { remove, uniqueId } from 'lodash';
+import { remove } from 'lodash';
 import SearchIcon from '@mui/icons-material/Search';
 import { gutters } from '../../../../core/ui/grid/utils';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import { GRID_COLUMNS_DESKTOP, GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
 import { UserSelectedView } from './FormikUserSelector/UserSelectedView';
 
 const MAX_USERS_SHOWN = 10;
+const GRID_COLUMNS_DESKTOP = 6;
+const GRID_COLUMNS_MOBILE = 3;
+const uniqueId = () => Math.random().toString(36).slice(2);
 
 interface FormikUserSelectorProps {
   name: string;
@@ -48,7 +50,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
   // Autocomplete is re-rendered when we change the key property
-  // Setting id of the input to a random string also disables autocomplete browser features
+  // Setting name of the text input to a random string also disables autocomplete browser features
   const [autocompleteKey, setAutocompleteKey] = useState<string>(uniqueId());
 
   const breakpoint = useCurrentBreakpoint();
@@ -89,7 +91,6 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
         <>
           <Autocomplete
             key={autocompleteKey}
-            id={autocompleteKey}
             options={listedUsers}
             value={autocompleteValue}
             autoHighlight
@@ -115,6 +116,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             )}
             renderInput={params => (
               <TextField
+                name={autocompleteKey}
                 {...params}
                 onChange={({ target }) => {
                   setFilter({ email: target.value, firstName: target.value, lastName: target.value });
@@ -122,7 +124,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
                 }}
                 inputProps={{
                   ...params.inputProps,
-                  autoComplete: 'none', // disable autocomplete and autofill
+                  autocomplete: 'none', // disable autocomplete and autofill
                   'aria-autocomplete': 'none',
                 }}
               />
