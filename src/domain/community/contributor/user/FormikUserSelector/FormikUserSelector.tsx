@@ -3,16 +3,16 @@ import { FormHelperText, TextField } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { remove } from 'lodash';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useMessagingAvailableRecipientsLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '../../../../../core/apollo/generated/graphql-schema';
 import GridContainer from '../../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
-import GridItem from '../../../../../core/ui/grid/GridItem';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 import { ProfileChipView } from '../../ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
+import { useUserContext } from '../hooks/useUserContext';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
@@ -42,11 +42,18 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
     variables: { filter, first: MAX_USERS_SHOWN },
   });
 
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers, filter]);
+
+  const { user: currentUser } = useUserContext();
+
   const users = data?.usersPaginated.users ?? [];
-  // Filter out users that are already selected
-  const listedUsers = users.filter(user =>
-    field.value && field.value.length ? field.value.indexOf(user.id) === -1 : true
-  );
+  // Filter out users that are already selected, and myself
+  const listedUsers = users
+    .filter(user => (field.value && field.value.length ? field.value.indexOf(user.id) === -1 : true))
+    .filter(user => user.id !== currentUser?.user.id);
+
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
   const [inputValue, setInputValue] = useState('');
@@ -56,13 +63,14 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   const handleSelect = (user: Pick<User, 'id'> | null) => {
     helpers.setTouched(true);
 
-    if (user === null) return;
-    let value = field.value;
-    if (!value || !Array.isArray(value)) {
-      value = [];
+    if (user === null) {
+      return;
     }
-    value.push(user.id);
-    helpers.setValue(value);
+
+    const value = Array.isArray(field.value) ? field.value : [];
+
+    helpers.setValue([...value, user.id]);
+
     // Clear autocomplete on every select
     setAutocompleteValue(null);
     setInputValue('');
@@ -115,14 +123,13 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             renderInput={params => (
               <TextField
                 {...params}
+                name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
                 onChange={({ target }) => {
                   setFilter({ email: target.value, firstName: target.value, lastName: target.value });
-                  loadUsers();
                 }}
                 inputProps={{
                   ...params.inputProps,
-                  autocomplete: 'none', // disable autocomplete and autofill
-                  'aria-autocomplete': 'none',
+                  autoComplete: 'new-password', // disable autocomplete and autofill
                 }}
               />
             )}
@@ -134,9 +141,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
       <GridContainer disablePadding marginBottom={gutters(1)}>
         <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
           {field.value?.map(id => (
-            <GridItem columns={3}>
-              <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
-            </GridItem>
+            <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
           ))}
         </GridProvider>
       </GridContainer>

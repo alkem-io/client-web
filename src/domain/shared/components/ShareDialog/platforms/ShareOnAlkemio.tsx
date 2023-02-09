@@ -1,4 +1,4 @@
-import { FC, forwardRef, useCallback, useState } from 'react';
+import { FC, forwardRef, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -7,7 +7,7 @@ import FormikInputField from '../../../../../common/components/composite/forms/F
 import { FormikUserSelector } from '../../../../community/contributor/user/FormikUserSelector/FormikUserSelector';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, Text } from '../../../../../core/ui/typography';
-import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../AdvancedShareDialog';
+import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
 import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import SendButton from '../../SendButton';
 import { useShareLinkWithUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -43,21 +43,24 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
 
-  const initialValues: ShareOnAlkemioData = {
-    url,
-    message: t('share-dialog.platforms.alkemio.default-template', {
+  const initialValues: ShareOnAlkemioData = useMemo(
+    () => ({
       url,
-      entity: t(`common.${entityTypeName}` as const),
-      interpolation: {
-        escapeValue: false,
-      },
+      message: t('share-dialog.platforms.alkemio.default-template', {
+        url,
+        entity: t(`common.${entityTypeName}` as const),
+        interpolation: {
+          escapeValue: false,
+        },
+      }),
+      users: [],
     }),
-    users: [],
-  };
+    [entityTypeName, t, url]
+  );
 
   const validationSchema = yup.object().shape({
     url: yup.string().required(t('forms.validations.required')),
-    users: yup.array().min(1, t('forms.validations.at-least-one', { item: t('common.user') })),
+    users: yup.array().min(1, t('forms.validations.atLeastOne', { item: t('common.user') })),
   });
 
   const [shareLinkMutation, { loading, error }] = useShareLinkWithUserMutation({
@@ -90,14 +93,15 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
       resetForm();
     }
   };
+
   const [isMessageSent, setMessageSent] = useState(false);
 
   return (
     <Box>
-      <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} enableReinitialize>
         {({ handleSubmit, isValid }) => (
           <Form noValidate autoComplete="off">
-            <Text mb={gutters(1)}>
+            <Text marginBottom={gutters(1)}>
               {t('share-dialog.platforms.alkemio.description', { entity: t(`common.${entityTypeName}` as const) })}
             </Text>
 

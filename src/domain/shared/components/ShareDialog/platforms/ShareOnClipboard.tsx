@@ -5,7 +5,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { delay } from 'lodash';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Text } from '../../../../../core/ui/typography';
-import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../AdvancedShareDialog';
+import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
 
 export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();
@@ -44,7 +44,7 @@ const ClipboardShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
         sx={{
           verticalAlign: 'middle',
           width: gutters(1),
-          mr: gutters(0.5),
+          marginRight: gutters(0.5),
           color: theme => theme.palette.primary.main,
         }}
       />

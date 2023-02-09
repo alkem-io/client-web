@@ -5,8 +5,7 @@ import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import { EntityPageSection } from './EntityPageSection';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { AdvancedShareDialog } from '../components/ShareDialog';
+import { ShareDialog } from '../components/ShareDialog/ShareDialog';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -93,7 +92,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
     entityTypeName === 'opportunity' ? theme.palette.hub.main : */ theme.palette.common.white;
 
   const shareDialog = shareUrl && (
-    <AdvancedShareDialog
+    <ShareDialog
       open={shareDialogOpen}
       onClose={() => setShareDialogOpen(false)}
       url={shareUrl}
@@ -246,7 +245,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           to={`${rootUrl}/${EntityPageSection.About}`}
         />
         {shareUrl && (
-          <HeaderNavigationButton icon={<ShareOutlinedIcon />} value={NavigationActions.Share} onClick={share} />
+          <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}
       </HeaderNavigationTabs>
       {shareDialog}
