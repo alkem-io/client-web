@@ -30,7 +30,10 @@ import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/Scrol
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
 import { Caption } from '../../../../../core/ui/typography/components';
 import ContactLeadsButton from '../../../../../common/components/composite/common/ContactLeadsButton/ContactLeadsButton';
-import { DirectMessageDialog } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import {
+  DirectMessageDialog,
+  MessageReceiverChipData,
+} from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -114,6 +117,12 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
   const hasRecommendations = validRecommendations.length > 0;
   const hasTopCallouts = (topCallouts ?? []).length > 0;
+  const messageReceivers = (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
+    title: user.displayName,
+    country: user.profile?.location?.country,
+    city: user.profile?.location?.city,
+    avatarUri: user.profile?.avatar?.uri,
+  }));
 
   return (
     <PageContent>
@@ -143,6 +152,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           open={isOpenContactLeadUsersDialog}
           onClose={closeContactLeadsDialog}
           onSendMessage={sendMessageToCommunityLeads}
+          messageReceivers={messageReceivers}
         />
         {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         <PageContentBlock>
