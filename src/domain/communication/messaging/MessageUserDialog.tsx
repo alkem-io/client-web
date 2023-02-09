@@ -8,20 +8,34 @@ import DialogContent from '../../../common/components/core/dialog/DialogContent'
 import { Caption, PageTitle } from '../../../core/ui/typography/components';
 import SendButton from '../../shared/components/SendButton';
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
-import { FormikUserSelector } from '../../../common/components/composite/forms/FormikUserSelector';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
+import { ProfileChip } from '../../../common/components/composite/common/ProfileChip/ProfileChip';
+import GridContainer from '../../../core/ui/grid/GridContainer';
+import { gutters } from '../../../core/ui/grid/utils';
 
 interface MessageUserDialogProps {
   open: boolean;
   onClose: () => void;
   onSendMessage: (text: string) => Promise<void>;
+  title?: string;
+  city?: string;
+  country?: string;
+  avatarUri?: string;
 }
 
 interface SendMessageData {
   message: string;
 }
 
-export const DirectMessageDialog: FC<MessageUserDialogProps> = ({ open, onClose, onSendMessage }) => {
+export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
+  open,
+  onClose,
+  onSendMessage,
+  title,
+  city,
+  country,
+  avatarUri,
+}) => {
   const { t } = useTranslation();
   const [isLoading, setIsloading] = useState(false);
   const handleSendMessage = async (values: SendMessageData, { resetForm }) => {
@@ -60,7 +74,9 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({ open, onClose,
           >
             {({ handleSubmit, isValid }) => (
               <Form noValidate autoComplete="off">
-                <FormikUserSelector name="users" onChange={() => setMessageSent(false)} readonly />
+                <GridContainer disablePadding marginBottom={gutters(1)}>
+                  <ProfileChip displayName={title} avatarUrl={avatarUri} city={city} country={country} />
+                </GridContainer>
                 <FormikInputField
                   name="message"
                   title={t('messaging.message')}

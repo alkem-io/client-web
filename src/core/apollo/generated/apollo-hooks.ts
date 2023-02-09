@@ -1820,7 +1820,6 @@ export const UserDetailsFragmentDoc = gql`
     gender
     phone
     accountUpn
-    isContactable
     agent {
       credentials {
         type
@@ -17289,6 +17288,7 @@ export function refetchUserNotificationsPreferencesQuery(
 export const UserProfileDocument = gql`
   query userProfile($input: UUID_NAMEID_EMAIL!) {
     user(ID: $input) {
+      isContactable
       ...UserDetails
       ...UserAgent
     }

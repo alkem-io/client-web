@@ -211,6 +211,10 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
             open={isMessageUserDialogOpen}
             onClose={closeMessageUserDialog}
             onSendMessage={onSendMessage}
+            title={title}
+            avatarUri={avatarUrl}
+            city={location?.city}
+            country={location?.country}
           />
         </Grid>
       )}

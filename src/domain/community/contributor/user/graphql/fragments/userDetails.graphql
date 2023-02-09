@@ -8,7 +8,6 @@ fragment UserDetails on User {
   gender
   phone
   accountUpn
-  isContactable
   agent {
     credentials {
       type
