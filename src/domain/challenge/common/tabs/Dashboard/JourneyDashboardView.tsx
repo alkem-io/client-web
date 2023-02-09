@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../../shared/components/References/References';
 import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
@@ -117,12 +117,16 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
   const hasRecommendations = validRecommendations.length > 0;
   const hasTopCallouts = (topCallouts ?? []).length > 0;
-  const messageReceivers = (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
-    title: user.displayName,
-    country: user.profile?.location?.country,
-    city: user.profile?.location?.city,
-    avatarUri: user.profile?.avatar?.uri,
-  }));
+  const messageReceivers = useMemo(
+    () =>
+      (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
+        title: user.displayName,
+        country: user.profile?.location?.country,
+        city: user.profile?.location?.city,
+        avatarUri: user.profile?.avatar?.uri,
+      })),
+    [leadUsers]
+  );
 
   return (
     <PageContent>
@@ -142,10 +146,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           />
         )}
         {communityReadAccess && (
-          <ContactLeadsButton
-            onClick={openContactLeadsDialog}
-            title={t('buttons.contact-leads', { leadUsersHeader: t(leadUsersHeader) })}
-          />
+          <ContactLeadsButton onClick={openContactLeadsDialog}>
+            {t('buttons.contact-leads', { leadUsersHeader: t(leadUsersHeader) })}
+          </ContactLeadsButton>
         )}
         <DirectMessageDialog
           title={t('send-message-dialog.community-message-title', { leadUsersHeader: t(leadUsersHeader) })}

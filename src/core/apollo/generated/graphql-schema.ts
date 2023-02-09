@@ -3647,19 +3647,6 @@ export type SearchResult = {
   type: SearchResultType;
 };
 
-export type SearchResultCard = SearchResult & {
-  __typename?: 'SearchResultCard';
-  /** The Card that was found. */
-  card: Aspect;
-  id: Scalars['UUID'];
-  /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float'];
-  /** The terms that were matched for this result */
-  terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
-  type: SearchResultType;
-};
-
 export type SearchResultChallenge = SearchResult & {
   __typename?: 'SearchResultChallenge';
   /** The Challenge that was found. */
@@ -3719,7 +3706,6 @@ export type SearchResultOrganization = SearchResult & {
 };
 
 export enum SearchResultType {
-  Card = 'CARD',
   Challenge = 'CHALLENGE',
   Hub = 'HUB',
   Opportunity = 'OPPORTUNITY',
@@ -4489,66 +4475,6 @@ export type UploadFileMutationVariables = Exact<{
 
 export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
 
-export type MessagingAvailableRecipientsQueryVariables = Exact<{
-  filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type MessagingAvailableRecipientsQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      displayName: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          }
-        | undefined;
-    }>;
-  };
-};
-
-export type MessagingUserDetailsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type MessagingUserDetailsQuery = {
-  __typename?: 'Query';
-  user: {
-    __typename?: 'User';
-    id: string;
-    displayName: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type MessagingUserInformationFragment = {
-  __typename?: 'User';
-  id: string;
-  displayName: string;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      }
-    | undefined;
-};
-
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
@@ -4706,7 +4632,6 @@ export type ChallengeExplorerSearchQueryVariables = Exact<{
 export type ChallengeExplorerSearchQuery = {
   __typename?: 'Query';
   search: Array<
-    | { __typename?: 'SearchResultCard'; id: string; type: SearchResultType; terms: Array<string> }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;
@@ -19274,7 +19199,6 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = {
   __typename?: 'Query';
   search: Array<
-    | { __typename?: 'SearchResultCard'; id: string; score: number; terms: Array<string>; type: SearchResultType }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;
