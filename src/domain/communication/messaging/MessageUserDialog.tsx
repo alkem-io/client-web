@@ -9,9 +9,9 @@ import { Caption, PageTitle } from '../../../core/ui/typography/components';
 import SendButton from '../../shared/components/SendButton';
 import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
-import { ProfileChip } from '../../../common/components/composite/common/ProfileChip/ProfileChip';
 import GridContainer from '../../../core/ui/grid/GridContainer';
 import { gutters } from '../../../core/ui/grid/utils';
+import { ProfileChip } from '../../community/contributor/ProfileChip/ProfileChip';
 
 interface MessageUserDialogProps {
   open: boolean;
