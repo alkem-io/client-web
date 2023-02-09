@@ -4,6 +4,7 @@ import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
 import { ProfileChipView, ProfileChipViewProps } from './ProfileChipView';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { FC } from 'react';
+import GridItem from '../../../../core/ui/grid/GridItem';
 
 export interface ProfileChipProps extends ProfileChipViewProps {
   loading?: boolean;
@@ -26,35 +27,35 @@ const RemoveButton = styled(Button)(({ theme }) => ({
   height: gutters(1.5)(theme),
   padding: 0,
   color: theme.palette.grey.dark,
-  // Put the button on the right of the flex
-  marginLeft: 'auto',
 }));
 
 export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, onRemove, ...props }) => {
   const { t } = useTranslation();
 
   return (
-    <Root>
-      {loading && (
-        <Box display="flex" flexDirection="row" alignItems="center" height={gutters(3)} gap={gutters(1)}>
-          <Skeleton variant="circular" sx={{ height: gutters(2), width: gutters(2) }} />
-          <Box flex="1">
-            <Skeleton />
-            <Skeleton />
+    <GridItem columns={3}>
+      <Root>
+        {loading && (
+          <Box display="flex" flexDirection="row" alignItems="center" height={gutters(3)} gap={gutters(1)}>
+            <Skeleton variant="circular" sx={{ height: gutters(2), width: gutters(2) }} />
+            <Box flex="1">
+              <Skeleton />
+              <Skeleton />
+            </Box>
           </Box>
-        </Box>
-      )}
-      {!loading && (
-        <ProfileChipView {...props}>
-          {removable && (
-            <Tooltip title={t('common.remove')} arrow>
-              <RemoveButton onClick={onRemove}>
-                <RemoveIcon />
-              </RemoveButton>
-            </Tooltip>
-          )}
-        </ProfileChipView>
-      )}
-    </Root>
+        )}
+        {!loading && (
+          <ProfileChipView {...props}>
+            {removable && (
+              <Tooltip title={t('common.remove')} arrow>
+                <RemoveButton onClick={onRemove} sx={{ marginLeft: 'auto' }}>
+                  <RemoveIcon />
+                </RemoveButton>
+              </Tooltip>
+            )}
+          </ProfileChipView>
+        )}
+      </Root>
+    </GridItem>
   );
 };
