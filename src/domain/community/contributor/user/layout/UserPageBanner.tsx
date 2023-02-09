@@ -54,7 +54,7 @@ const UserPageBanner: FC = () => {
         avatarUrl={profile?.avatar?.uri}
         loading={loading}
         onSendMessage={handleSendMessage}
-        isContactable={isContactable}
+        contactable={isContactable}
       />
     );
   } else {
