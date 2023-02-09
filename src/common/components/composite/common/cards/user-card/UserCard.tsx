@@ -1,20 +1,12 @@
+import { FC, MouseEventHandler } from 'react';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import { Avatar, IconButton, SvgIcon, Typography } from '@mui/material';
-import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Grid';
+import { Avatar, Box, Card, CardContent, Grid, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, useCallback, useState } from 'react';
 import TagsComponent from '../../../../../../domain/shared/components/TagsComponent/TagsComponent';
-import Skeleton from '@mui/material/Skeleton';
-import ConditionalLink from '../../../../core/ConditionalLink';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
-import { useSendMessageToUserMutation } from '../../../../../../core/apollo/generated/apollo-hooks';
-import { DirectMessageDialog } from '../../../../../../domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useTranslation } from 'react-i18next';
+import ConditionalLink from '../../../../core/ConditionalLink';
 
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
@@ -58,6 +50,7 @@ export interface UserCardProps {
   country?: string;
   loading?: boolean;
   isContactable?: boolean;
+  onContact?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const ElevatedCard = withElevationOnHover(Card);
@@ -71,36 +64,10 @@ const UserCard: FC<UserCardProps> = ({
   url,
   roleName,
   loading,
-  id,
   isContactable = true,
+  onContact,
 }) => {
   const styles = useStyles();
-  const { t } = useTranslation();
-  const [sendMessageToUser] = useSendMessageToUserMutation();
-  const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
-
-  const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
-  const openMessageUserDialog = () => setIsMessageUserDialogOpen(true);
-
-  const handleSendMessage = useCallback(
-    async (messageText: string) => {
-      if (!id) {
-        throw new Error('User not loaded.');
-      }
-
-      await sendMessageToUser({
-        variables: {
-          messageData: {
-            message: messageText,
-            receiverIds: [id],
-          },
-        },
-      });
-    },
-    [sendMessageToUser, id]
-  );
-
-  const messageReceivers = [{ title: displayName, avatarUri: avatarSrc, city, country }];
 
   const location = [city, country].filter(x => !!x).join(', ');
   return (
@@ -127,14 +94,16 @@ const UserCard: FC<UserCardProps> = ({
           <CardContent className={styles.cardContent}>
             <Grid container spacing={1}>
               <Grid item xs zeroMinWidth>
-                <Typography color="primary" variant={'h5'} noWrap fontWeight={600}>
-                  {displayName}
-                </Typography>
-                {isContactable && (
-                  <IconButton onClick={openMessageUserDialog}>
-                    <EmailOutlinedIcon />
-                  </IconButton>
-                )}
+                <Box display="flex" justifyContent="space-between">
+                  <Typography color="primary" variant={'h5'} noWrap fontWeight={600}>
+                    {displayName}
+                  </Typography>
+                  {isContactable && (
+                    <IconButton onClick={onContact}>
+                      <EmailOutlinedIcon />
+                    </IconButton>
+                  )}
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" loading={loading} />
@@ -152,13 +121,6 @@ const UserCard: FC<UserCardProps> = ({
           </CardContent>
         </Box>
       </ElevatedCard>
-      <DirectMessageDialog
-        title={t('send-message-dialog.direct-message-title')}
-        open={isMessageUserDialogOpen}
-        onClose={closeMessageUserDialog}
-        onSendMessage={handleSendMessage}
-        messageReceivers={messageReceivers}
-      />
     </ConditionalLink>
   );
 };

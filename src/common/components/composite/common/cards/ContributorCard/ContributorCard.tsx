@@ -1,10 +1,13 @@
 import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, useMemo } from 'react';
+import React, { FC, MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import ConditionalLink from '../../../../core/ConditionalLink';
 import UserCard from '../user-card/UserCard';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
+import { useTranslation } from 'react-i18next';
+import { useSendMessageToUserMutation } from '../../../../../../core/apollo/generated/apollo-hooks';
+import { DirectMessageDialog } from '../../../../../../domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -53,7 +56,37 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
-  const { displayName, avatar, url, tooltip, isContactable } = props;
+  const { id, displayName, avatar, url, tooltip, isContactable } = props;
+
+  const { t } = useTranslation();
+  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
+
+  const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
+  const openMessageUserDialog: MouseEventHandler<HTMLButtonElement> = event => {
+    event.stopPropagation();
+    setIsMessageUserDialogOpen(true);
+  };
+
+  const messageReceivers = [{ title: displayName, avatarUri: avatar, city: tooltip?.city, country: tooltip?.country }];
+
+  const handleSendMessage = useCallback(
+    async (messageText: string) => {
+      if (!id) {
+        throw new Error('User not loaded.');
+      }
+
+      await sendMessageToUser({
+        variables: {
+          messageData: {
+            message: messageText,
+            receiverIds: [id],
+          },
+        },
+      });
+    },
+    [sendMessageToUser, id]
+  );
 
   const TooltipElement = useMemo(
     () =>
@@ -71,6 +104,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
                 country={tooltip?.country}
                 url=""
                 isContactable={isContactable}
+                onContact={openMessageUserDialog}
               />
             }
             classes={{ tooltip: styles.tooltip }}
@@ -84,17 +118,26 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
   );
 
   return (
-    <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
-      <ElevatedPaper>
-        <Box className={styles.wrapper}>
-          <TooltipElement>
-            <Avatar variant="rounded" className={styles.avatar} src={avatar}>
-              {displayName[0]}
-            </Avatar>
-          </TooltipElement>
-        </Box>
-      </ElevatedPaper>
-    </ConditionalLink>
+    <>
+      <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
+        <ElevatedPaper>
+          <Box className={styles.wrapper}>
+            <TooltipElement>
+              <Avatar variant="rounded" className={styles.avatar} src={avatar}>
+                {displayName[0]}
+              </Avatar>
+            </TooltipElement>
+          </Box>
+        </ElevatedPaper>
+      </ConditionalLink>
+      <DirectMessageDialog
+        title={t('send-message-dialog.direct-message-title')}
+        open={isMessageUserDialogOpen}
+        onClose={closeMessageUserDialog}
+        onSendMessage={handleSendMessage}
+        messageReceivers={messageReceivers}
+      />
+    </>
   );
 };
 
