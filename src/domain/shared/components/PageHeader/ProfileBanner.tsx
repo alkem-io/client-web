@@ -11,7 +11,7 @@ import { ContactDetail } from '../ContactDetails/ContactDetails';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
-import { DirectMessageDialog } from '../../../communication/messaging/MessageUserDialog';
+import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
@@ -165,6 +165,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   const imageLoadError = () => {
     setImageLoading(false);
   };
+  const messageReceivers = [{ title, avatarUri: avatarUrl, city: location?.city, country: location?.country }];
 
   return (
     <Root ref={containerReference}>
@@ -208,13 +209,11 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
             </ProfileInfo>
           </ProfileInfoWrapper>
           <DirectMessageDialog
+            title={t('send-message-dialog.direct-message-title')}
             open={isMessageUserDialogOpen}
             onClose={closeMessageUserDialog}
             onSendMessage={onSendMessage}
-            title={title}
-            avatarUri={avatarUrl}
-            city={location?.city}
-            country={location?.country}
+            messageReceivers={messageReceivers}
           />
         </Grid>
       )}

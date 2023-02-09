@@ -5,3 +5,6 @@ mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
 mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {
   sendMessageToOrganization(messageData: $messageData)
 }
+mutation sendMessageToCommunityLeads($messageData: CommunicationSendMessageToCommunityLeadsInput!) {
+  sendMessageToCommunityLeads(messageData: $messageData)
+}

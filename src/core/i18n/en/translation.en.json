@@ -94,7 +94,8 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
-    "send": "Send"
+    "send": "Send",
+    "contact-leads": "Contact the {{leadUsersHeader}}(s)"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -433,7 +434,8 @@
     "successfully-sent": "Message successfully sent"
   },
   "send-message-dialog": {
-    "title": "Send a message"
+    "direct-message-title": "Send a message",
+    "community-message-title": "Send a message to {{leadUsersHeader}}(s)"
   },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
