@@ -28,14 +28,14 @@ export const AdvancedShareDialog: FC<AdvancedShareDialogProps> = ({ open, onClos
   );
 };
 
-interface AdvancedShareComponentProps {
+export interface AdvancedShareComponentProps {
   url: string | undefined;
   entityTypeName: AdvancedShareDialogProps['entityTypeName'];
   loading?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
-const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, entityTypeName, loading, onClose }) => {
+export const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, entityTypeName, loading, onClose }) => {
   const { t } = useTranslation();
   const [ShareHandler, setShareHandler] = useState<ComponentType<ShareOnPlatformHandlerProps>>();
   const fullUrl = window.location.protocol + '//' + window.location.host + url;
@@ -48,13 +48,11 @@ const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, entityTy
     return <Skeleton variant="rectangular" />;
   }
 
+  // Return to the list of available platforms to share
+  const goBack = () => setShareHandler(undefined);
+
   return ShareHandler ? (
-    <ShareHandler
-      url={fullUrl}
-      entityTypeName={entityTypeName}
-      goBack={() => setShareHandler(undefined)}
-      closeDialog={onClose}
-    />
+    <ShareHandler url={fullUrl} entityTypeName={entityTypeName} goBack={goBack} closeDialog={onClose ?? goBack} />
   ) : (
     <Box display="flex" flexDirection="column" justifyContent="space-between">
       <TextField
@@ -65,7 +63,7 @@ const AdvancedShareComponent: FC<AdvancedShareComponentProps> = ({ url, entityTy
         }}
         label={t('share-dialog.url')}
         value={fullUrl}
-        sx={{ flexGrow: 1, width: gutters(13), marginBottom: gutters(1.5) }}
+        sx={{ flexGrow: 1, minWidth: gutters(13), marginBottom: gutters(1.5) }}
       />
 
       <ShareOnClipboardButton setShareHandler={setShareHandler} />
