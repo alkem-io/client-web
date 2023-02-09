@@ -84,7 +84,7 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
             {({ handleSubmit, isValid }) => (
               <Form noValidate autoComplete="off">
                 <GridContainer disablePadding marginBottom={gutters(1)}>
-                  <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
+                  <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
                     {messageReceivers?.map(receiver => (
                       <ProfileChip
                         displayName={receiver.title}
