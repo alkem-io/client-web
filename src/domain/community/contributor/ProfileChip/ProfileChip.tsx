@@ -4,7 +4,6 @@ import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
 import { ProfileChipView, ProfileChipViewProps } from './ProfileChipView';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { FC } from 'react';
-import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 
 export interface ProfileChipProps extends ProfileChipViewProps {
   loading?: boolean;
@@ -27,6 +26,8 @@ const RemoveButton = styled(Button)(({ theme }) => ({
   height: gutters(1.5)(theme),
   padding: 0,
   color: theme.palette.grey.dark,
+  // Put the button on the right of the flex
+  marginLeft: 'auto',
 }));
 
 export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, onRemove, ...props }) => {
@@ -47,12 +48,9 @@ export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, 
         <ProfileChipView {...props}>
           {removable && (
             <Tooltip title={t('common.remove')} arrow>
-              <>
-                <FlexSpacer />
-                <RemoveButton onClick={onRemove}>
-                  <RemoveIcon />
-                </RemoveButton>
-              </>
+              <RemoveButton onClick={onRemove}>
+                <RemoveIcon />
+              </RemoveButton>
             </Tooltip>
           )}
         </ProfileChipView>
