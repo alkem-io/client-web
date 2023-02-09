@@ -13,6 +13,8 @@ import SendButton from '../../SendButton';
 import { useShareLinkWithUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 
+const ICON_URL = '/share-dialog/alkemio.png';
+
 interface ShareOnAlkemioData {
   url: string;
   users: string[];
@@ -21,7 +23,6 @@ interface ShareOnAlkemioData {
 
 export const ShareOnAlkemioButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();
-  const ICON_URL = '/share-dialog/alkemio.png';
 
   return (
     <ShareButton
