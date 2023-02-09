@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useMessagingUserDetailsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { ProfileChip } from '../../common/ProfileChip/ProfileChip';
+import { ProfileChip } from '../../../../../domain/community/contributor/ProfileChip/ProfileChip';
 
 interface UserChipProps {
   userId: string;

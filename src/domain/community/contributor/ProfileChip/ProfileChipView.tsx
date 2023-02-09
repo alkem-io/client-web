@@ -1,17 +1,17 @@
 import { Box, BoxProps } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { BlockSectionTitle } from '../../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
 
-export interface ProfileViewProps extends BoxProps {
+export interface ProfileChipViewProps extends BoxProps {
   displayName: string | undefined;
   city: string | undefined;
   country: string | undefined;
   avatarUrl: string | undefined;
 }
 
-export const ProfileView: FC<ProfileViewProps> = ({
+export const ProfileChipView: FC<ProfileChipViewProps> = ({
   displayName,
   city,
   country,
@@ -28,7 +28,7 @@ export const ProfileView: FC<ProfileViewProps> = ({
           component="img"
           width={gutters(2)}
           height={gutters(2)}
-          mr={gutters(1)}
+          marginRight={gutters(1)}
           src={avatarUrl}
           loading="lazy"
           alt={t('common.avatar-of', { user: displayName })}

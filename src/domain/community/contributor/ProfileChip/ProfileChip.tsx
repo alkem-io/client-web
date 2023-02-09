@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import { gutters } from '../../../../core/ui/grid/utils';
 import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
-import { ProfileView, ProfileViewProps } from './ProfileView';
+import { ProfileChipView, ProfileChipViewProps } from './ProfileChipView';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { FC } from 'react';
 
-export interface ProfileChipProps extends ProfileViewProps {
+export interface ProfileChipProps extends ProfileChipViewProps {
   loading?: boolean;
   removable?: boolean;
   onRemove?: () => void;
@@ -45,7 +45,7 @@ export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, 
         </Box>
       )}
       {!loading && (
-        <ProfileView {...props}>
+        <ProfileChipView {...props}>
           {removable && (
             <Tooltip title={t('common.remove')} arrow>
               <RemoveButton onClick={onRemove}>
@@ -53,7 +53,7 @@ export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, 
               </RemoveButton>
             </Tooltip>
           )}
-        </ProfileView>
+        </ProfileChipView>
       )}
     </Root>
   );

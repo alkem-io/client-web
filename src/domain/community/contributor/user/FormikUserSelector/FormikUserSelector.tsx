@@ -4,20 +4,19 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { remove } from 'lodash';
 import { FC, useState } from 'react';
-import { useMessagingAvailableRecipientsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
-import GridContainer from '../../../../core/ui/grid/GridContainer';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import { gutters } from '../../../../core/ui/grid/utils';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { ProfileView } from '../common/ProfileChip/ProfileView';
-import { UserChip } from './FormikUserSelector/UserChip';
+import { useMessagingAvailableRecipientsLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { User, UserFilterInput } from '../../../../../core/apollo/generated/graphql-schema';
+import GridContainer from '../../../../../core/ui/grid/GridContainer';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import GridItem from '../../../../../core/ui/grid/GridItem';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
+import { ProfileChipView } from '../../ProfileChip/ProfileChipView';
+import { UserChip } from './UserChip';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
-const uniqueId = () => Math.random().toString(36).slice(2);
 
 interface FormikUserSelectorProps {
   name: string;
@@ -50,9 +49,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   );
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
-  // Autocomplete is re-rendered when we change the key property
-  // Setting name of the text input to a random string also disables autocomplete browser features
-  const [autocompleteKey, setAutocompleteKey] = useState<string>(uniqueId());
+  const [inputValue, setInputValue] = useState('');
 
   const breakpoint = useCurrentBreakpoint();
 
@@ -68,7 +65,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
     helpers.setValue(value);
     // Clear autocomplete on every select
     setAutocompleteValue(null);
-    setAutocompleteKey(uniqueId()); // Force re-render
+    setInputValue('');
 
     // Call change event:
     onChange && onChange(value);
@@ -91,9 +88,10 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
       {!readonly && (
         <>
           <Autocomplete
-            key={autocompleteKey}
             options={listedUsers}
             value={autocompleteValue}
+            inputValue={inputValue}
+            onInputChange={(event, value) => setInputValue(value)}
             autoHighlight
             getOptionLabel={option => option.displayName}
             popupIcon={<SearchIcon />}
@@ -106,7 +104,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             onChange={(evt, value) => handleSelect(value)}
             renderOption={(props, user) => (
               <li {...props}>
-                <ProfileView
+                <ProfileChipView
                   displayName={user.displayName}
                   avatarUrl={user.profile?.avatar?.uri}
                   city={user.profile?.location?.city}
@@ -116,7 +114,6 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             )}
             renderInput={params => (
               <TextField
-                name={autocompleteKey}
                 {...params}
                 onChange={({ target }) => {
                   setFilter({ email: target.value, firstName: target.value, lastName: target.value });
