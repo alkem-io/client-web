@@ -4,16 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 
-interface UserSelectorViewProps extends BoxProps {
-  id: string;
-  displayName: string;
+export interface ProfileViewProps extends BoxProps {
+  displayName: string | undefined;
   city: string | undefined;
   country: string | undefined;
   avatarUrl: string | undefined;
 }
 
-export const UserSelectorView: FC<UserSelectorViewProps> = ({
-  id,
+export const ProfileView: FC<ProfileViewProps> = ({
   displayName,
   city,
   country,

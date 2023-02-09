@@ -1,17 +1,18 @@
-import React, { FC, useState } from 'react';
-import { useField } from 'formik';
+import SearchIcon from '@mui/icons-material/Search';
 import { FormHelperText, TextField } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
+import { useField } from 'formik';
+import { remove } from 'lodash';
+import { FC, useState } from 'react';
 import { useMessagingAvailableRecipientsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
-import { UserSelectorView } from './FormikUserSelector/UserSelectorView';
-import { remove } from 'lodash';
-import SearchIcon from '@mui/icons-material/Search';
-import { gutters } from '../../../../core/ui/grid/utils';
 import GridContainer from '../../../../core/ui/grid/GridContainer';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import { UserSelectedView } from './FormikUserSelector/UserSelectedView';
+import GridItem from '../../../../core/ui/grid/GridItem';
+import { gutters } from '../../../../core/ui/grid/utils';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { ProfileView } from '../common/ProfileChip/ProfileView';
+import { UserChip } from './FormikUserSelector/UserChip';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
@@ -105,8 +106,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             onChange={(evt, value) => handleSelect(value)}
             renderOption={(props, user) => (
               <li {...props}>
-                <UserSelectorView
-                  id={user.id}
+                <ProfileView
                   displayName={user.displayName}
                   avatarUrl={user.profile?.avatar?.uri}
                   city={user.profile?.location?.city}
@@ -137,7 +137,9 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
       <GridContainer disablePadding marginBottom={gutters(1)}>
         <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
           {field.value?.map(id => (
-            <UserSelectedView key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
+            <GridItem columns={3}>
+              <UserChip key={id} userId={id} removable={!readonly} onRemove={() => handleRemove(id)} />
+            </GridItem>
           ))}
         </GridProvider>
       </GridContainer>
