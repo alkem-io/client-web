@@ -122,13 +122,13 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             renderInput={params => (
               <TextField
                 {...params}
+                name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
                 onChange={({ target }) => {
                   setFilter({ email: target.value, firstName: target.value, lastName: target.value });
                 }}
                 inputProps={{
                   ...params.inputProps,
-                  autocomplete: 'none', // disable autocomplete and autofill
-                  'aria-autocomplete': 'none',
+                  autocomplete: 'new-password', // disable autocomplete and autofill
                 }}
               />
             )}
