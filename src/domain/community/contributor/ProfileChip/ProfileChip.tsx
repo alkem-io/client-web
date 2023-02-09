@@ -5,6 +5,7 @@ import { ProfileChipView, ProfileChipViewProps } from './ProfileChipView';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { FC } from 'react';
 import GridItem from '../../../../core/ui/grid/GridItem';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 
 export interface ProfileChipProps extends ProfileChipViewProps {
   loading?: boolean;
@@ -47,11 +48,14 @@ export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, 
         {!loading && (
           <ProfileChipView {...props}>
             {removable && (
-              <Tooltip title={t('common.remove')} arrow>
-                <RemoveButton onClick={onRemove} sx={{ marginLeft: 'auto' }}>
-                  <RemoveIcon />
-                </RemoveButton>
-              </Tooltip>
+              <>
+                <FlexSpacer />
+                <Tooltip title={t('common.remove')} arrow>
+                  <RemoveButton onClick={onRemove}>
+                    <RemoveIcon />
+                  </RemoveButton>
+                </Tooltip>
+              </>
             )}
           </ProfileChipView>
         )}
