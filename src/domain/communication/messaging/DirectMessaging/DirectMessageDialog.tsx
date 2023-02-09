@@ -14,6 +14,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { ProfileChip } from '../../../community/contributor/ProfileChip/ProfileChip';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import useLoadingState from '../../../shared/utils/useLoadingState';
 
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
@@ -44,13 +45,11 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
   title,
 }) => {
   const { t } = useTranslation();
-  const [isLoading, setIsloading] = useState(false);
-  const handleSendMessage = async (values: SendMessageData, { resetForm }) => {
-    setIsloading(true);
+
+  const [handleSendMessage, isLoading] = useLoadingState(async (values: SendMessageData, { resetForm }) => {
     await onSendMessage(values.message);
     resetForm();
-    setIsloading(false);
-  };
+  });
 
   const handleClose = () => {
     onClose();
