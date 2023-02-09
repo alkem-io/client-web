@@ -128,7 +128,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
                 }}
                 inputProps={{
                   ...params.inputProps,
-                  autocomplete: 'new-password', // disable autocomplete and autofill
+                  autoComplete: 'new-password', // disable autocomplete and autofill
                 }}
               />
             )}
