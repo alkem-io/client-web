@@ -5,7 +5,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { delay } from 'lodash';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Text } from '../../../../../core/ui/typography';
-import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../AdvancedShareDialog';
+import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
 
 export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {
   const { t } = useTranslation();

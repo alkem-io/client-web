@@ -1,9 +1,9 @@
 import React, { FC, ReactNode, useState } from 'react';
 import { Box, Button, IconButton, IconButtonProps, Tooltip } from '@mui/material';
 import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
-import { AdvancedShareDialog, AdvancedShareComponentProps } from './AdvancedShareDialog';
+import { ShareDialog, ShareComponentProps } from './ShareDialog';
 
-interface ShareButtonProps extends AdvancedShareComponentProps {
+interface ShareButtonProps extends ShareComponentProps {
   disabled?: boolean;
   title?: ReactNode;
   tooltip?: string;
@@ -54,7 +54,7 @@ const ShareButton: FC<ShareButtonProps> = ({
           )}
         </Box>
       </Tooltip>
-      <AdvancedShareDialog open={dialogOpen} {...dialogProps} onClose={() => setDialogOpen(false)} />
+      <ShareDialog open={dialogOpen} {...dialogProps} onClose={() => setDialogOpen(false)} />
     </>
   );
 };

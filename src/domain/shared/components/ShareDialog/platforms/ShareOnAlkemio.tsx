@@ -7,7 +7,7 @@ import FormikInputField from '../../../../../common/components/composite/forms/F
 import { FormikUserSelector } from '../../../../community/contributor/user/FormikUserSelector/FormikUserSelector';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { Caption, Text } from '../../../../../core/ui/typography';
-import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../AdvancedShareDialog';
+import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
 import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import SendButton from '../../SendButton';
 import { useShareLinkWithUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
