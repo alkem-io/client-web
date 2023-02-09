@@ -13,10 +13,10 @@ import GridContainer from '../../../../core/ui/grid/GridContainer';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { ProfileChip } from '../../../community/contributor/ProfileChip/ProfileChip';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
-import { GRID_COLUMNS_DESKTOP, GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import GridItem from '../../../../core/ui/grid/GridItem';
 
+const GRID_COLUMNS_DESKTOP = 6;
+const GRID_COLUMNS_MOBILE = 3;
 export interface MessageReceiverChipData {
   title?: string;
   city?: string;
@@ -86,14 +86,12 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
                 <GridContainer disablePadding marginBottom={gutters(1)}>
                   <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
                     {messageReceivers?.map(receiver => (
-                      <GridItem columns={3}>
-                        <ProfileChip
-                          displayName={receiver.title}
-                          avatarUrl={receiver.avatarUri}
-                          city={receiver.city}
-                          country={receiver.country}
-                        />
-                      </GridItem>
+                      <ProfileChip
+                        displayName={receiver.title}
+                        avatarUrl={receiver.avatarUri}
+                        city={receiver.city}
+                        country={receiver.country}
+                      />
                     ))}
                   </GridProvider>
                 </GridContainer>
