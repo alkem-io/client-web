@@ -38,7 +38,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               childEntitiesCount={entities.challengesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
               timelineReadAccess={entities.permissions.timelineReadAccess}
-              childEntityReadAccess={entities.permissions.challengesReadAccess}
+              entityReadAccess={entities.permissions.hubReadAccess}
+              readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
               recommendations={entities.recommendations}
               memberUsers={entities.memberUsers}
@@ -50,6 +51,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               activities={entities.activities}
               activityLoading={entities.activityLoading}
               topCallouts={entities.topCallouts}
+              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               renderChildEntityCard={challenge => (
                 <ChallengeCard
                   challengeId={challenge.id}

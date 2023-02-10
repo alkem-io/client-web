@@ -12,7 +12,6 @@ import {
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import { useChallenge } from '../../../../challenge/challenge/hooks/useChallenge';
@@ -24,7 +23,6 @@ import { JourneyFormValues } from '../../../../shared/components/JorneyCreationD
 import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 
 export const OpportunityList: FC = () => {
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
   const { hubNameId } = useHub();
@@ -52,7 +50,6 @@ export const OpportunityList: FC = () => {
       }),
     ],
     awaitRefetchQueries: true,
-    onError: handleError,
     onCompleted: () => notify(t('pages.admin.opportunity.notifications.opportunity-removed'), 'success'),
   });
 
@@ -72,7 +69,6 @@ export const OpportunityList: FC = () => {
     onCompleted: () => {
       notify(t('pages.admin.opportunity.notifications.opportunity-created'), 'success');
     },
-    onError: handleError,
   });
 
   const handleCreate = useCallback(

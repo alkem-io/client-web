@@ -3,7 +3,6 @@ import { ApolloError, useMutation, useQuery } from '@apollo/client';
 import { DocumentNode } from 'graphql';
 import { Preference, PreferenceType } from '../../../../core/apollo/generated/graphql-schema';
 import { PreferenceTypes } from '../preference-types';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 
 interface Provided {
   loading: boolean;
@@ -22,8 +21,6 @@ export const usePreferences = <TQuery, TQVariable, TMVariable>(
   selectedGroups?: string[],
   excludeTypes?: PreferenceType[]
 ): Provided => {
-  const handleError = useApolloErrorHandler();
-
   const { data, loading, error } = useQuery<TQuery, TQVariable>(queryDocument, {
     variables: queryVariables,
     fetchPolicy: 'network-only',
@@ -35,7 +32,7 @@ export const usePreferences = <TQuery, TQVariable, TMVariable>(
       ? prefs.filter(x => selectedGroups?.includes(x.definition.group) && !excludeTypes?.includes(x.definition.type))
       : prefs;
 
-  const [updatePreference, { loading: submitting }] = useMutation(mutationDocument, { onError: handleError });
+  const [updatePreference, { loading: submitting }] = useMutation(mutationDocument);
 
   const onUpdate = useCallback(
     (type: PreferenceTypes, checked: boolean) => {

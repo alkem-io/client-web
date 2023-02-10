@@ -1,7 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import { ApplicationForRoleResult, User } from '../../../../core/apollo/generated/graphql-schema';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../constants/ApplicationState';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchUserApplicationsQuery,
   useDeleteUserApplicationMutation,
@@ -37,8 +36,6 @@ export interface PendingApplicationsEntities {
 }
 
 const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, entities }) => {
-  const handleError = useApolloErrorHandler();
-
   const { data: memberShip, loading: loadingMembership } = useUserProfileApplicationsQuery({
     variables: {
       input: entities.userId,
@@ -50,9 +47,7 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
     .map(getApplicationWithType)
     .sort(sortApplications);
 
-  const [deleteApplication, { loading: isDeleting }] = useDeleteUserApplicationMutation({
-    onError: handleError,
-  });
+  const [deleteApplication, { loading: isDeleting }] = useDeleteUserApplicationMutation({});
 
   const handleDelete = useCallback(
     (application: ApplicationWithType) => {

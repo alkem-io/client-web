@@ -524,11 +524,13 @@ export type AuthorizationPolicyRuleCredential = {
   criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
   inheritable: Scalars['Boolean'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type AuthorizationPolicyRulePrivilege = {
   __typename?: 'AuthorizationPolicyRulePrivilege';
   grantedPrivileges: Array<AuthorizationPrivilege>;
+  name?: Maybe<Scalars['String']>;
   sourcePrivilege: AuthorizationPrivilege;
 };
 
@@ -585,11 +587,11 @@ export type Calendar = {
 };
 
 export type CalendarEventArgs = {
-  ID: Scalars['UUID'];
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type CalendarEventsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
 };
 
@@ -798,6 +800,8 @@ export type CardProfile = {
   description: Scalars['Markdown'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The location for this Profile. */
+  location?: Maybe<Location>;
   /** The References for this Aspect. */
   references?: Maybe<Array<Reference>>;
   /** The set of tags for the Aspect */
@@ -1028,6 +1032,27 @@ export type CommunicationRoom = {
   id: Scalars['String'];
   /** The messages that have been sent to the Room. */
   messages: Array<Message>;
+};
+
+export type CommunicationSendMessageToCommunityLeadsInput = {
+  /** The Community the message is being sent to */
+  communityId: Scalars['UUID'];
+  /** The message being sent */
+  message: Scalars['String'];
+};
+
+export type CommunicationSendMessageToOrganizationInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** The Organization the message is being sent to */
+  organizationId: Scalars['UUID'];
+};
+
+export type CommunicationSendMessageToUserInput = {
+  /** The message being sent */
+  message: Scalars['String'];
+  /** All Users the message is being sent to */
+  receiverIds: Array<Scalars['UUID']>;
 };
 
 export type CommunicationUpdateMessageReceived = {
@@ -1305,6 +1330,7 @@ export type CreateCanvasTemplateOnTemplatesSetInput = {
 
 export type CreateCardProfileInput = {
   description?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<CreateLocationInput>;
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1384,8 +1410,12 @@ export type CreateLifecycleTemplateOnTemplatesSetInput = {
 };
 
 export type CreateLocationInput = {
+  addressLine1?: InputMaybe<Scalars['String']>;
+  addressLine2?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  stateOrProvince?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateNvpInput = {
@@ -1947,10 +1977,14 @@ export enum LifecycleType {
 
 export type Location = {
   __typename?: 'Location';
+  addressLine1: Scalars['String'];
+  addressLine2: Scalars['String'];
   city: Scalars['String'];
   country: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  postalCode: Scalars['String'];
+  stateOrProvince: Scalars['String'];
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -2197,8 +2231,14 @@ export type Mutation = {
   sendComment: Message;
   /** Send a message on a Comments Callout */
   sendMessageOnCallout: Message;
+  /** Send message to Community Leads. */
+  sendMessageToCommunityLeads: Scalars['Boolean'];
   /** Sends a message to the specified Discussion.  */
   sendMessageToDiscussion: Message;
+  /** Send message to an Organization. */
+  sendMessageToOrganization: Scalars['Boolean'];
+  /** Send message to a User. */
+  sendMessageToUser: Scalars['Boolean'];
   /** Sends an update message. Returns the id of the new Update message. */
   sendUpdate: Message;
   /** Updates the specified Actor. */
@@ -2681,8 +2721,20 @@ export type MutationSendMessageOnCalloutArgs = {
   data: SendMessageOnCalloutInput;
 };
 
+export type MutationSendMessageToCommunityLeadsArgs = {
+  messageData: CommunicationSendMessageToCommunityLeadsInput;
+};
+
 export type MutationSendMessageToDiscussionArgs = {
   messageData: DiscussionSendMessageInput;
+};
+
+export type MutationSendMessageToOrganizationArgs = {
+  messageData: CommunicationSendMessageToOrganizationInput;
+};
+
+export type MutationSendMessageToUserArgs = {
+  messageData: CommunicationSendMessageToUserInput;
 };
 
 export type MutationSendUpdateArgs = {
@@ -3391,6 +3443,8 @@ export type RelayPaginatedUser = {
   gender: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Can a message be sent to this User. */
+  isContactable: Scalars['Boolean'];
   lastName: Scalars['String'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
@@ -3969,6 +4023,8 @@ export type UpdateCalloutPublishInfoInput = {
 export type UpdateCalloutVisibilityInput = {
   /** The identifier for the Callout whose visibility is to be updated. */
   calloutID: Scalars['String'];
+  /** Send a notification on publishing. */
+  sendNotification?: InputMaybe<Scalars['Boolean']>;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
 };
@@ -3991,6 +4047,7 @@ export type UpdateCanvasTemplateInput = {
 
 export type UpdateCardProfileInput = {
   description?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<UpdateLocationInput>;
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the tags on the Aspect. */
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -4100,8 +4157,12 @@ export type UpdateLifecycleTemplateInput = {
 };
 
 export type UpdateLocationInput = {
+  addressLine1?: InputMaybe<Scalars['String']>;
+  addressLine2?: InputMaybe<Scalars['String']>;
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  stateOrProvince?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateOpportunityInnovationFlowInput = {
@@ -4261,6 +4322,8 @@ export type User = {
   gender: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Can a message be sent to this User. */
+  isContactable: Scalars['Boolean'];
   lastName: Scalars['String'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
@@ -4839,6 +4902,7 @@ export type ChallengePageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -4907,7 +4971,18 @@ export type ChallengePageQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
-                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  location?:
+                    | {
+                        __typename?: 'Location';
+                        id: string;
+                        country: string;
+                        city: string;
+                        addressLine1: string;
+                        addressLine2: string;
+                        stateOrProvince: string;
+                        postalCode: string;
+                      }
+                    | undefined;
                   references?:
                     | Array<{
                         __typename?: 'Reference';
@@ -5150,6 +5225,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -5218,7 +5294,18 @@ export type ChallengeProfileFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
-              location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+              location?:
+                | {
+                    __typename?: 'Location';
+                    id: string;
+                    country: string;
+                    city: string;
+                    addressLine1: string;
+                    addressLine2: string;
+                    stateOrProvince: string;
+                    postalCode: string;
+                  }
+                | undefined;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -5383,7 +5470,18 @@ export type OpportunitiesOnChallengeFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
-              location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+              location?:
+                | {
+                    __typename?: 'Location';
+                    id: string;
+                    country: string;
+                    city: string;
+                    addressLine1: string;
+                    addressLine2: string;
+                    stateOrProvince: string;
+                    postalCode: string;
+                  }
+                | undefined;
               references?:
                 | Array<{
                     __typename?: 'Reference';
@@ -5747,7 +5845,18 @@ export type ChallengeProfileInfoQuery = {
                   minWidth: number;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -5804,7 +5913,18 @@ export type OpportunityCreatedSubscription = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -5873,7 +5993,18 @@ export type ContextTabFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  location?:
+    | {
+        __typename?: 'Location';
+        id: string;
+        country: string;
+        city: string;
+        addressLine1: string;
+        addressLine2: string;
+        stateOrProvince: string;
+        postalCode: string;
+      }
+    | undefined;
   visuals?:
     | Array<{
         __typename?: 'Visual';
@@ -5954,7 +6085,18 @@ export type AboutPageNonMembersQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          location?:
+            | {
+                __typename?: 'Location';
+                id: string;
+                country: string;
+                city: string;
+                addressLine1: string;
+                addressLine2: string;
+                stateOrProvince: string;
+                postalCode: string;
+              }
+            | undefined;
           visuals?:
             | Array<{
                 __typename?: 'Visual';
@@ -5993,7 +6135,18 @@ export type AboutPageNonMembersQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
+              | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -6040,7 +6193,18 @@ export type AboutPageNonMembersQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
+              | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -6113,6 +6277,7 @@ export type AboutPageMembersQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -6207,6 +6372,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -6302,6 +6468,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -6453,7 +6620,18 @@ export type HubProviderQuery = {
                 anonymousReadAccess: boolean;
               }
             | undefined;
-          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          location?:
+            | {
+                __typename?: 'Location';
+                id: string;
+                country: string;
+                city: string;
+                addressLine1: string;
+                addressLine2: string;
+                stateOrProvince: string;
+                postalCode: string;
+              }
+            | undefined;
           references?:
             | Array<{
                 __typename?: 'Reference';
@@ -6533,7 +6711,18 @@ export type HubInfoFragment = {
               anonymousReadAccess: boolean;
             }
           | undefined;
-        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
@@ -7067,6 +7256,7 @@ export type HubPageQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -7373,6 +7563,7 @@ export type HubPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -7514,7 +7705,18 @@ export type HubDetailsFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
@@ -7596,7 +7798,18 @@ export type CreateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          location?:
+            | {
+                __typename?: 'Location';
+                id: string;
+                country: string;
+                city: string;
+                addressLine1: string;
+                addressLine2: string;
+                stateOrProvince: string;
+                postalCode: string;
+              }
+            | undefined;
           references?:
             | Array<{
                 __typename?: 'Reference';
@@ -7674,7 +7887,18 @@ export type UpdateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          location?:
+            | {
+                __typename?: 'Location';
+                id: string;
+                country: string;
+                city: string;
+                addressLine1: string;
+                addressLine2: string;
+                stateOrProvince: string;
+                postalCode: string;
+              }
+            | undefined;
           references?:
             | Array<{
                 __typename?: 'Reference';
@@ -8273,6 +8497,7 @@ export type OpportunityPageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -8512,6 +8737,7 @@ export type OpportunityPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -8719,7 +8945,18 @@ export type OpportunityCardFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
@@ -8785,7 +9022,18 @@ export type CreateOpportunityMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          location?:
+            | {
+                __typename?: 'Location';
+                id: string;
+                country: string;
+                city: string;
+                addressLine1: string;
+                addressLine2: string;
+                stateOrProvince: string;
+                postalCode: string;
+              }
+            | undefined;
           references?:
             | Array<{
                 __typename?: 'Reference';
@@ -8997,7 +9245,18 @@ export type OpportunityCardsQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
-                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  location?:
+                    | {
+                        __typename?: 'Location';
+                        id: string;
+                        country: string;
+                        city: string;
+                        addressLine1: string;
+                        addressLine2: string;
+                        stateOrProvince: string;
+                        postalCode: string;
+                      }
+                    | undefined;
                   references?:
                     | Array<{
                         __typename?: 'Reference';
@@ -9187,7 +9446,18 @@ export type OpportunityProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -13887,6 +14157,7 @@ export type AuthorDetailsQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -14165,6 +14436,24 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 }>;
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
+
+export type SendMessageToUserMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUserInput;
+}>;
+
+export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+
+export type SendMessageToOrganizationMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToOrganizationInput;
+}>;
+
+export type SendMessageToOrganizationMutation = { __typename?: 'Mutation'; sendMessageToOrganization: boolean };
+
+export type SendMessageToCommunityLeadsMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToCommunityLeadsInput;
+}>;
+
+export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
 
 export type CommunityUpdatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -14458,7 +14747,18 @@ export type ChallengeApplicationQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country: string;
+                  city: string;
+                  addressLine1: string;
+                  addressLine2: string;
+                  stateOrProvince: string;
+                  postalCode: string;
+                }
+              | undefined;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -14719,6 +15019,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -14752,6 +15053,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -14827,6 +15129,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -14860,6 +15163,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -14956,6 +15260,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -14989,6 +15294,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15070,6 +15376,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15096,6 +15403,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15175,6 +15483,7 @@ export type EntityDashboardCommunityFragment = {
         __typename?: 'User';
         id: string;
         displayName: string;
+        isContactable: boolean;
         nameID: string;
         profile?:
           | {
@@ -15225,6 +15534,7 @@ export type DashboardContributingUserFragment = {
   __typename?: 'User';
   id: string;
   displayName: string;
+  isContactable: boolean;
   nameID: string;
   profile?:
     | {
@@ -15278,6 +15588,7 @@ export type ContributingUsersQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     profile?:
       | {
           __typename?: 'Profile';
@@ -15963,6 +16274,7 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      isContactable: boolean;
       agent?:
         | {
             __typename?: 'Agent';
@@ -16037,6 +16349,7 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -16069,6 +16382,7 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -16289,7 +16603,18 @@ export type OrganizationInfoFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+    location?:
+      | {
+          __typename?: 'Location';
+          id: string;
+          country: string;
+          city: string;
+          addressLine1: string;
+          addressLine2: string;
+          stateOrProvince: string;
+          postalCode: string;
+        }
+      | undefined;
   };
   associates?:
     | Array<{
@@ -16551,7 +16876,18 @@ export type OrganizationInfoQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-      location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+      location?:
+        | {
+            __typename?: 'Location';
+            id: string;
+            country: string;
+            city: string;
+            addressLine1: string;
+            addressLine2: string;
+            stateOrProvince: string;
+            postalCode: string;
+          }
+        | undefined;
     };
     associates?:
       | Array<{
@@ -16653,6 +16989,66 @@ export type OrganizationsListQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
+};
+
+export type MessagingAvailableRecipientsQueryVariables = Exact<{
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MessagingAvailableRecipientsQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
+
+export type MessagingUserDetailsQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type MessagingUserDetailsQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MessagingUserInformationFragment = {
+  __typename?: 'User';
+  id: string;
+  displayName: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      }
+    | undefined;
 };
 
 export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
@@ -16828,6 +17224,7 @@ export type UserCardFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17426,6 +17823,7 @@ export type UserCardQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17481,6 +17879,7 @@ export type UserProfileQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
+    isContactable: boolean;
     id: string;
     nameID: string;
     displayName: string;
@@ -17825,7 +18224,18 @@ export type ContextDetailsFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
-  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+  location?:
+    | {
+        __typename?: 'Location';
+        id: string;
+        country: string;
+        city: string;
+        addressLine1: string;
+        addressLine2: string;
+        stateOrProvince: string;
+        postalCode: string;
+      }
+    | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
     | undefined;
@@ -17865,6 +18275,17 @@ export type ContextDetailsProviderFragment = {
   impact?: string | undefined;
   who?: string | undefined;
   visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+};
+
+export type FullLocationFragment = {
+  __typename?: 'Location';
+  id: string;
+  country: string;
+  city: string;
+  addressLine1: string;
+  addressLine2: string;
+  stateOrProvince: string;
+  postalCode: string;
 };
 
 export type ChallengeApplicationsQueryVariables = Exact<{
@@ -18657,6 +19078,49 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
               | {
                   __typename?: 'TemplatesSet';
                   canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type InnovationPackFullCanvasTemplateWithValueQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type InnovationPackFullCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        value: string;
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          id: string;
+                          title: string;
+                          description: string;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
                 }
               | undefined;
           }
@@ -20126,6 +20590,12 @@ export type RemoveCommentMutationVariables = Exact<{
 
 export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
 
+export type ShareLinkWithUserMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUserInput;
+}>;
+
+export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
   startCursor?: string | undefined;
@@ -20304,7 +20774,7 @@ export type HubCalendarEventsQuery = {
 
 export type CalendarEventDetailsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
-  eventId: Scalars['UUID'];
+  eventId: Scalars['UUID_NAMEID'];
 }>;
 
 export type CalendarEventDetailsQuery = {

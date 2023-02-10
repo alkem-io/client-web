@@ -5,7 +5,6 @@ import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container } from '@mui/material';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
@@ -17,11 +16,9 @@ export const HubProfile: FC = () => {
   const { hubNameId, visuals, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
-  const handleError = useApolloErrorHandler();
 
   const [updateHub, { loading: loading1 }] = useUpdateHubMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    onError: handleError,
   });
 
   const organizations = useMemo(

@@ -1,5 +1,6 @@
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { Box, Button, DialogProps } from '@mui/material';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +17,6 @@ import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 export interface Template extends Identifiable {
@@ -130,7 +130,6 @@ const AdminTemplatesSection = <
   >;
   const EditTemplateDialog = editTemplateDialogComponent as ComponentType<EditTemplateDialogProps<T, SubmittedValues>>;
 
-  const onError = useApolloErrorHandler();
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -147,9 +146,9 @@ const AdminTemplatesSection = <
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string>();
 
-  const [updateAspectTemplate] = useUpdateTemplateMutation({ onError });
-  const [createAspectTemplate] = useCreateTemplateMutation({ onError });
-  const [deleteAspectTemplate, { loading: isDeletingAspectTemplate }] = useDeleteTemplateMutation({ onError });
+  const [updateAspectTemplate] = useUpdateTemplateMutation();
+  const [createAspectTemplate] = useCreateTemplateMutation();
+  const [deleteAspectTemplate, { loading: isDeletingAspectTemplate }] = useDeleteTemplateMutation();
 
   const handleTemplateUpdate = async (values: SubmittedValues) => {
     if (!templateId) {
@@ -284,12 +283,22 @@ const AdminTemplatesSection = <
       <ImportTemplatesDialog
         {...dialogProps}
         headerText={importDialogHeaderText}
+        dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
         templateImportCardComponent={TemplateImportCard}
         templatePreviewComponent={TemplatePreview}
         open={isImportTemplatesDialogOpen}
         onClose={closeImportTemplatesDialog}
         onImportTemplate={handleImportTemplate}
         innovationPacks={innovationPacks}
+        actionButton={
+          <Button
+            startIcon={<SystemUpdateAltIcon />}
+            variant="contained"
+            sx={{ marginLeft: theme => theme.spacing(1) }}
+          >
+            {t('buttons.import')}
+          </Button>
+        }
       />
       {selectedTemplate && (
         <EditTemplateDialog

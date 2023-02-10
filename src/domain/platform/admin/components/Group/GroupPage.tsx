@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useDeleteUserGroup } from './useDeleteUserGroup';
 import {
   useCreateTagsetOnProfileMutation,
@@ -24,7 +23,6 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const success = (message: string) => notify(message, 'success');
-  const handleError = useApolloErrorHandler();
 
   const navigate = useNavigate();
 
@@ -42,7 +40,6 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
   });
 
   const [updateGroup] = useUpdateGroupMutation({
-    onError: handleError,
     onCompleted: data => success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.name })),
   });
 

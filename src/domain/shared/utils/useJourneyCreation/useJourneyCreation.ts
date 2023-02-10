@@ -6,7 +6,6 @@ import {
   useCreateChallengeMutation,
   useCreateOpportunityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useConfig } from '../../../platform/config/useConfig';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
@@ -30,7 +29,6 @@ interface OpportunityCreationInput {
 }
 
 export const useJourneyCreation = () => {
-  const handleError = useApolloErrorHandler();
   const { hubId } = useHub();
   const { challengeId } = useChallenge();
   const { isFeatureEnabled } = useConfig();
@@ -38,7 +36,6 @@ export const useJourneyCreation = () => {
   const subscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
 
   const [createChallengeLazy] = useCreateChallengeMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;
@@ -72,7 +69,6 @@ export const useJourneyCreation = () => {
     refetchQueries: [refetchMeQuery()],
   });
   const [createOpportunityLazy] = useCreateOpportunityMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;

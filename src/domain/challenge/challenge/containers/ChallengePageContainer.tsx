@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useDiscussionsContext } from '../../../communication/discussion/providers/DiscussionsProvider';
 import { useUserContext } from '../../../community/contributor/user';
 import { useHub } from '../../hub/HubContext/useHub';
@@ -7,6 +7,8 @@ import { useChallenge } from '../hooks/useChallenge';
 import {
   useChallengeDashboardReferencesAndRecommendationsQuery,
   useChallengePageQuery,
+  usePlatformLevelAuthorizationQuery,
+  useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
@@ -45,13 +47,15 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
-    opportunitiesReadAccess: boolean;
+    challengeReadAccess: boolean;
+    readUsers: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
   discussions: Discussion[];
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
 }
 
 export interface ChallengeContainerActions {}
@@ -77,22 +81,28 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
       hubId: hubNameId,
       challengeId: challengeNameId,
     },
-    errorPolicy: 'all',
   });
 
   const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
-
   const challengePrivileges = _challenge?.hub?.challenge?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+
+  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
+  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
     communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
-    opportunitiesReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    challengeReadAccess: challengePrivileges.includes(AuthorizationPrivilege.Read),
+    readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
+
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(
+    collaborationID,
+    !permissions.challengeReadAccess || !permissions.readUsers
+  );
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
@@ -127,6 +137,23 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
 
+  const communityId = _challenge?.hub.challenge.community?.id ?? '';
+
+  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+  const handleSendMessageToCommunityLeads = useCallback(
+    async (messageText: string) => {
+      await sendMessageToCommunityLeads({
+        variables: {
+          messageData: {
+            message: messageText,
+            communityId: communityId,
+          },
+        },
+      });
+    },
+    [sendMessageToCommunityLeads, communityId]
+  );
+
   return (
     <>
       {children(
@@ -149,6 +176,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           ...contributors,
           activities,
           topCallouts,
+          sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
         { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions, activityLoading },
         {}

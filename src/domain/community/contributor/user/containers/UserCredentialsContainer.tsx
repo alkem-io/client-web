@@ -1,5 +1,4 @@
 import React, { FC, useCallback } from 'react';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   useBeginAlkemioUserCredentialOfferInteractionMutation,
   useBeginCommunityMemberCredentialOfferInteractionMutation,
@@ -44,8 +43,6 @@ interface UserCredentialsContainerProps
 }
 
 export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ children /* userID */ }) => {
-  const handleError = useApolloErrorHandler();
-
   // TODO - the container should retrieve specific users VCs, hence the userID
   const { data: userData, loading: getUserCredentialsLoading } = useUserSsiQuery({
     fetchPolicy: 'network-only',
@@ -58,7 +55,6 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
   const [_generateAlkemioUserCredentialOffer, { loading: generateAlkemioUserCredentialOfferLoading }] =
     useBeginAlkemioUserCredentialOfferInteractionMutation({
       fetchPolicy: 'no-cache',
-      onError: handleError,
     });
 
   const generateAlkemioUserCredentialOffer = useCallback(async () => {
@@ -75,7 +71,6 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
   const [_generateCommunityMemberCredentialOffer, { loading: generateCommunityMemberCredentialOfferLoading }] =
     useBeginCommunityMemberCredentialOfferInteractionMutation({
       fetchPolicy: 'no-cache',
-      onError: handleError,
     });
 
   const generateCommunityMemberCredentialOffer = useCallback(
@@ -95,7 +90,6 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
   const [_generateCredentialRequest, { loading: generateCredentialRequestLoading }] =
     useBeginCredentialRequestInteractionMutation({
       fetchPolicy: 'no-cache',
-      onError: handleError,
     });
 
   const generateCredentialRequest = useCallback(

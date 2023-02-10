@@ -1,7 +1,6 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   refetchChallengeLifecycleQuery,
   useChallengeProfileInfoQuery,
@@ -16,7 +15,6 @@ import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/t
 
 const ChallengeInnovationFlowView: FC = () => {
   const { challengeNameId = '', hubNameId = '' } = useUrlParams();
-  const handleError = useApolloErrorHandler();
 
   const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
     variables: { hubId: hubNameId },
@@ -34,7 +32,6 @@ const ChallengeInnovationFlowView: FC = () => {
   const challengeId = challenge?.id;
 
   const [updateChallengeInnovationFlow] = useUpdateChallengeInnovationFlowMutation({
-    onError: handleError,
     refetchQueries: [refetchChallengeLifecycleQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
 import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import {
   GroupDetailsFragmentDoc,
   useCreateGroupOnOrganizationMutation,
@@ -13,7 +12,6 @@ import CreateGroupForm from '../Common/CreateGroupForm';
 export const CreateOrganizationGroupPage: FC = () => {
   const navigate = useNavigate();
   const { organizationId, organization } = useOrganization();
-  const handleError = useApolloErrorHandler();
 
   const redirectToCreatedGroup = (groupId: string) => {
     navigate(`../${groupId}`);
@@ -21,7 +19,6 @@ export const CreateOrganizationGroupPage: FC = () => {
 
   const [createGroup] = useCreateGroupOnOrganizationMutation({
     onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganization.id),
-    onError: handleError,
     update: (cache, { data }) => {
       if (data && organization) {
         const { createGroupOnOrganization: newGroup } = data;

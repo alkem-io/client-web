@@ -5,7 +5,6 @@ import {
   useUpdateCalloutVisibilityMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Callout, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 
@@ -16,10 +15,8 @@ type UseCalloutEditReturnType = {
 };
 
 export const useCalloutEdit = (): UseCalloutEditReturnType => {
-  const handleError = useApolloErrorHandler();
-
-  const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
-  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation({ onError: handleError });
+  const [updateCallout] = useUpdateCalloutMutation();
+  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
 
   const handleVisibilityChange = useCallback(
     async (calloutId: string, visibility: CalloutVisibility) => {
@@ -55,7 +52,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
     [updateCallout]
   );
   const [deleteCallout] = useDeleteCalloutMutation({
-    onError: handleError,
     update: removeFromCache,
   });
   const handleDelete = useCallback(

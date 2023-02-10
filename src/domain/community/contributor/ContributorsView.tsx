@@ -40,6 +40,7 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardPr
       city: user.userProfile?.location?.city || '',
       country: user.userProfile?.location?.country || '',
     },
+    isContactable: user.isContactable,
   };
 };
 
@@ -49,6 +50,7 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
     displayName: org.displayName,
     avatar: org.orgProfile.avatar?.uri ?? '',
     url: buildOrganizationUrl(org.nameID),
+    isContactable: true,
   };
 };
 

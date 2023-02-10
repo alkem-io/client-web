@@ -93,7 +93,11 @@
     "import": "Import",
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
-    "read-more": "Read more"
+    "read-more": "Read more",
+    "select": "Select",
+    "change-field": "Change {{field}}",
+    "send": "Send",
+    "contact-leads": "Contact the {{contact}}(s)"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -124,6 +128,7 @@
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
     "avatar": "Avatar",
+    "avatar-of": "Avatar of {{user}}",
     "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
@@ -173,6 +178,7 @@
     "project": "Project",
     "agreements": "Agreements",
     "templates": "Templates",
+    "template": "Template",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -425,12 +431,47 @@
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
   },
+  "messaging": {
+    "message": "Message",
+    "message-optional": "Message (Optional)",
+    "successfully-sent": "Message successfully sent"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Send a message",
+    "community-message-title": "Send a message to {{contact}}(s)"
+  },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
+    "share-this-on": "Share this {{entity}} on {{platform}}",
+    "or": "or",
     "url": "URL",
-    "copy": "Copy",
-    "copied": "Copied!"
+    "warning": "Please note that your personal email will be visible for the user when you send them a message.",
+    "platforms": {
+      "clipboard": {
+        "title": "Copy Link",
+        "copy": "Copy",
+        "copied": "Copied!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Share on Alkemio",
+        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
+        "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
+      },
+      "linkedin": {
+        "title": "Share on Linkedin"
+      },
+      "twitter": {
+        "title": "Share on Twitter"
+      },
+      "whatsapp": {
+        "title": "Share on Whatsapp"
+      },
+      "email": {
+        "title": "Share through E-mail"
+      }
+    }
   },
   "context": {
     "hub": {
@@ -541,7 +582,8 @@
       "minLength": "{{field}} should be at least {{min}} symbols long",
       "maxLength": "Exceeded the limit of {{max}} characters",
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
-      "nonBlank": "{{field}} must not consist of just spaces"
+      "nonBlank": "{{field}} must not consist of just spaces",
+      "atLeastOne": "At least one {{item}} must be selected."
     }
   },
   "aspect-templates": {
@@ -586,7 +628,10 @@
       "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
-      "title": "Recent Contributions"
+      "title": "Recent Contributions",
+      "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
     },
     "activity-log-view": {
       "actions": {
@@ -818,6 +863,22 @@
         "city": {
           "name": "City",
           "placeholder": "City name"
+        },
+        "addressLine1": {
+          "name": "Address line 1",
+          "placeholder": "Address line 1"
+        },
+        "addressLine2": {
+          "name": "Address Line 2",
+          "placeholder": "Address Line 2"
+        },
+        "stateOrProvince": {
+          "name": "State or Province",
+          "placeholder": "State or Province"
+        },
+        "postalCode": {
+          "name": "Postal code",
+          "placeholder": "Postal code"
         }
       }
     },
@@ -1105,6 +1166,7 @@
             "import": {
               "title": "Template Library: {{templateType}}",
               "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "no-templates": "Couldn't find any Template of this type",
               "imported-successfully-notification": "Template imported successfully"
             }
@@ -1660,6 +1722,12 @@
   },
   "apollo": {
     "errors": {
+      "generic": "An error occurred",
+      "generic-with-code": "An error occurred with code {{code}}",
+      "ENTITY_NOT_FOUND": "Entity not found",
+      "FORMAT_NOT_SUPPORTED": "Format not supported",
+      "BAD_USER_INPUT": "Bad user input",
+      "NOT_SUPPORTED": "Not supported",
       "bad-user-input": "Invalid value in the submitted form.",
       "bad-user-input-withfield": "The value of '{{field}}' is not valid."
     }

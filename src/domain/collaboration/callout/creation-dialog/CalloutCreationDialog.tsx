@@ -12,9 +12,12 @@ import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
+import CalloutForm, { CalloutFormOutput, CanvasTemplateData } from '../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
-import { useHubTemplatesCanvasTemplateWithValueLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useHubTemplatesCanvasTemplateWithValueLazyQuery,
+  useInnovationPackFullCanvasTemplateWithValueLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { createCanvasTemplateForCalloutCreation } from '../utils/createCanvasTemplateForCalloutCreation';
 
@@ -25,7 +28,7 @@ export type CalloutCreationDialogFields = {
   type?: CalloutType;
   state?: CalloutState;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 export interface CalloutCreationDialogProps {
@@ -53,6 +56,7 @@ export interface CalloutCardTemplate {
 }
 
 export interface CalloutCanvasTemplate {
+  id?: string;
   value: string;
   info: TemplateInfo;
 }
@@ -70,7 +74,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
 
-  const [fetchCanvasValue] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromHub] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [fetchCanvasValueFromLibrary] = useInnovationPackFullCanvasTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -84,19 +92,30 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   const handleSaveAsDraft = useCallback(async () => {
     const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
-    const referenceCanvasTemplate = templates.canvasTemplates.find(
-      template => template.info.title === callout.canvasTemplateTitle
-    );
 
-    const canvasTemplateQueryResult =
-      referenceCanvasTemplate &&
-      (await fetchCanvasValue({
-        variables: { hubId: hubNameId!, canvasTemplateId: referenceCanvasTemplate.id },
-      }));
+    const getCanvasValueFromHub = async () => {
+      const result = await fetchCanvasValueFromHub({
+        variables: { hubId: hubNameId!, canvasTemplateId: callout.canvasTemplateData?.id! },
+      });
 
-    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(
-      canvasTemplateQueryResult?.data?.hub?.templates?.canvasTemplate
-    );
+      return result.data?.hub.templates;
+    };
+
+    const getCanvasValueFromLibrary = async () => {
+      const result = await fetchCanvasValueFromLibrary({
+        variables: {
+          innovationPackId: callout.canvasTemplateData?.innovationPackId!,
+          canvasTemplateId: callout.canvasTemplateData?.id!,
+        },
+      });
+
+      return result.data?.platform.library.innovationPack?.templates;
+    };
+
+    const queryResult =
+      callout.canvasTemplateData?.origin === 'Hub' ? await getCanvasValueFromHub() : await getCanvasValueFromLibrary();
+
+    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
     const newCallout: CalloutCreationType = {
       displayName: callout.displayName!,
       description: callout.description!,
@@ -111,7 +130,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
 
     return result;
-  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValue]);
+  }, [callout, onSaveAsDraft, templates, hubNameId, fetchCanvasValueFromHub, fetchCanvasValueFromLibrary]);
 
   const handleClose = useCallback(() => {
     onClose?.();

@@ -37,7 +37,8 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               childEntities={entities.challenge?.opportunities ?? undefined}
               childEntitiesCount={entities.opportunitiesCount}
               communityReadAccess={entities.permissions.communityReadAccess}
-              childEntityReadAccess={entities.permissions.opportunitiesReadAccess}
+              entityReadAccess={entities.permissions.challengeReadAccess}
+              readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
               recommendations={entities.recommendations}
               memberUsers={entities.memberUsers}
@@ -49,6 +50,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               activities={entities.activities}
               activityLoading={state.activityLoading}
               topCallouts={entities.topCallouts}
+              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               renderChildEntityCard={opportunity => (
                 <OpportunityCard
                   opportunityId={opportunity.id}

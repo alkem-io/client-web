@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import {
   AspectTemplateFragment,
@@ -19,7 +19,18 @@ import { FormikSwitch } from '../../../common/components/composite/forms/FormikS
 import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
 import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
-import CanvasTemplatesChooser from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
+import CanvasTemplatesChooser, {
+  CanvasTemplateListItem,
+  LibraryCanvasTemplate,
+  TemplateOrigin,
+} from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
+
+export type CanvasTemplateData = {
+  id?: string;
+  title?: string;
+  origin?: TemplateOrigin;
+  innovationPackId?: string;
+};
 
 type FormValueType = {
   displayName: string;
@@ -27,7 +38,7 @@ type FormValueType = {
   type: CalloutType;
   opened: boolean;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -39,7 +50,7 @@ export type CalloutFormInput = {
   type?: CalloutType;
   state?: CalloutState;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 export type CalloutFormOutput = {
@@ -48,7 +59,7 @@ export type CalloutFormOutput = {
   type: CalloutType;
   state: CalloutState;
   cardTemplateType?: string;
-  canvasTemplateTitle?: string;
+  canvasTemplateData?: CanvasTemplateData;
 };
 
 export interface CalloutFormProps {
@@ -71,6 +82,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   children,
 }) => {
   const { t } = useTranslation();
+  const [libraryCanvasTemplates, setLibraryCanvasTemplates] = useState<CanvasTemplateListItem[]>([]);
 
   const initialValues: FormValueType = useMemo(
     () => ({
@@ -79,7 +91,11 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: callout?.type ?? CalloutType.Comments,
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       cardTemplateType: callout?.cardTemplateType ?? '',
-      canvasTemplateTitle: callout?.canvasTemplateTitle ?? '',
+      canvasTemplateData: callout?.canvasTemplateData ?? {
+        id: '',
+        title: '',
+        origin: 'Hub',
+      },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [callout?.id]
@@ -108,9 +124,15 @@ const CalloutForm: FC<CalloutFormProps> = ({
     cardTemplateType: yup
       .string()
       .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
-    canvasTemplateTitle: yup
-      .string()
-      .when('type', { is: CalloutType.Canvas, then: yup.string().required(t('common.field-required')) }),
+    canvasTemplateData: yup.object().when('type', {
+      is: CalloutType.Canvas,
+      then: yup.object().shape({
+        id: yup.string().required(),
+        title: yup.string().required(),
+        origin: yup.string().optional(),
+        innovationPackId: yup.string().optional(),
+      }),
+    }),
   });
 
   const handleChange = (values: FormValueType) => {
@@ -120,10 +142,23 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: values.type,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       cardTemplateType: values.cardTemplateType,
-      canvasTemplateTitle: values.canvasTemplateTitle,
+      canvasTemplateData: values.canvasTemplateData,
     };
     onChange?.(callout);
   };
+
+  const updateLibraryTemplates = useCallback(
+    (template: LibraryCanvasTemplate) => {
+      const newTemplate: CanvasTemplateListItem = { ...template, origin: 'Library' };
+      setLibraryCanvasTemplates([...libraryCanvasTemplates, newTemplate]);
+    },
+    [libraryCanvasTemplates]
+  );
+
+  const hubTemplates = templates.canvasTemplates.map<CanvasTemplateListItem>(templ => ({
+    ...templ,
+    origin: 'Hub',
+  }));
 
   return (
     <Formik
@@ -169,9 +204,10 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 <SectionSpacer />
                 <FormRow>
                   <CanvasTemplatesChooser
-                    name="canvasTemplateTitle"
-                    templates={templates.canvasTemplates}
+                    name="canvasTemplateData"
+                    templates={[...hubTemplates, ...libraryCanvasTemplates]}
                     editMode={editMode}
+                    onSelectLibraryTemplate={updateLibraryTemplates}
                   />
                 </FormRow>
               </>

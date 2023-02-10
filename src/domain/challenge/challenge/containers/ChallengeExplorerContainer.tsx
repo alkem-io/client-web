@@ -6,7 +6,6 @@ import {
   useChallengeExplorerPageQuery,
   useChallengeExplorerSearchQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
@@ -69,7 +68,6 @@ export interface ChallengePageContainerProps
 }
 
 export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ searchTerms, children }) => {
-  const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
 
   // PRIVATE: Challenges if the user is logged in
@@ -78,7 +76,6 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     loading: loadingUserData,
     error,
   } = useChallengeExplorerPageQuery({
-    onError: handleError,
     variables: {
       userID: userMetadata?.user?.id || '',
     },
@@ -93,7 +90,6 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     ) || [];
 
   const { data: challengeData, loading: loadingChallengeData } = useChallengeExplorerDataQuery({
-    onError: handleError,
     variables: {
       hubIDs,
     },
@@ -125,7 +121,6 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
 
   // PUBLIC: Search for challenges
   const { data: rawSearchResults, loading: loadingSearchResults } = useChallengeExplorerSearchQuery({
-    onError: handleError,
     variables: {
       searchData: {
         terms: searchTerms,

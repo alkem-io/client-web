@@ -2,6 +2,7 @@ fragment UserCard on User {
   id
   nameID
   displayName
+  isContactable
   agent {
     id
     credentials {

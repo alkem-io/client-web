@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../../shared/components/References/References';
 import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
@@ -28,6 +28,12 @@ import { RecommendationIcon } from '../../../../shared/components/References/ico
 import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
+import { Caption } from '../../../../../core/ui/typography/components';
+import ContactLeadsButton from '../../../../community/community/ContactLeadsButton/ContactLeadsButton';
+import {
+  DirectMessageDialog,
+  MessageReceiverChipData,
+} from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -44,12 +50,14 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   childEntities?: ChildEntity[];
-  childEntityReadAccess?: boolean;
+  entityReadAccess?: boolean;
+  readUsersAccess?: boolean;
   childEntitiesCount?: number;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
   childEntityTitle?: string;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
 }
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
@@ -63,7 +71,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   recommendations,
   communityReadAccess = false,
   timelineReadAccess = false,
-  childEntityReadAccess = false,
+  entityReadAccess = false,
+  readUsersAccess = false,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
@@ -77,8 +86,16 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   journeyTypeName,
   childEntityTitle,
   topCallouts,
+  sendMessageToCommunityLeads,
 }: JourneyDashboardViewProps<ChildEntity>) => {
   const { t } = useTranslation();
+  const [isOpenContactLeadUsersDialog, setIsOpenContactLeadUsersDialog] = useState(false);
+  const openContactLeadsDialog = () => {
+    setIsOpenContactLeadUsersDialog(true);
+  };
+  const closeContactLeadsDialog = () => {
+    setIsOpenContactLeadUsersDialog(false);
+  };
 
   const journeyLocation: JourneyLocation | undefined =
     typeof hubNameId === 'undefined'
@@ -89,7 +106,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           opportunityNameId,
         };
 
-  const showActivity = (!activities && activityLoading) || !!activities;
+  const showActivities = activities || activityLoading;
 
   const isHub = journeyTypeName === 'hub';
   const leadOrganizationsHeader = isHub
@@ -100,6 +117,16 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
   const hasRecommendations = validRecommendations.length > 0;
   const hasTopCallouts = (topCallouts ?? []).length > 0;
+  const messageReceivers = useMemo(
+    () =>
+      (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
+        title: user.displayName,
+        country: user.profile?.location?.country,
+        city: user.profile?.location?.city,
+        avatarUri: user.profile?.avatar?.uri,
+      })),
+    [leadUsers]
+  );
 
   return (
     <PageContent>
@@ -118,6 +145,18 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             leadOrganizations={leadOrganizations}
           />
         )}
+        {communityReadAccess && (
+          <ContactLeadsButton onClick={openContactLeadsDialog}>
+            {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
+          </ContactLeadsButton>
+        )}
+        <DirectMessageDialog
+          title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
+          open={isOpenContactLeadUsersDialog}
+          onClose={closeContactLeadsDialog}
+          onSendMessage={sendMessageToCommunityLeads}
+          messageReceivers={messageReceivers}
+        />
         {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
         <PageContentBlock>
           <PageContentBlockHeader title={t('components.referenceSegment.title')} />
@@ -158,14 +197,33 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             ))}
           </PageContentBlock>
         )}
-        {showActivity && (
-          <PageContentBlock>
-            <PageContentBlockHeader title={t('components.activity-log-section.title')} />
-            <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-            <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
-          </PageContentBlock>
-        )}
-        {childEntityReadAccess && renderChildEntityCard && childEntityTitle && (
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('components.activity-log-section.title')} />
+          {readUsersAccess && entityReadAccess && showActivities && (
+            <>
+              <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+              <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
+            </>
+          )}
+          {!entityReadAccess && readUsersAccess && (
+            <Caption>
+              {t('components.activity-log-section.activity-join-error-message', {
+                journeyType: t(`common.${journeyTypeName}` as const),
+              })}
+            </Caption>
+          )}
+          {!readUsersAccess && entityReadAccess && (
+            <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
+          )}
+          {!entityReadAccess && !readUsersAccess && (
+            <Caption>
+              {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
+                journeyType: t(`common.${journeyTypeName}` as const),
+              })}
+            </Caption>
+          )}
+        </PageContentBlock>
+        {entityReadAccess && renderChildEntityCard && childEntityTitle && (
           <PageContentBlock>
             <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
             <ScrollableCardsLayout items={childEntities} deps={[hubNameId]}>
