@@ -592,7 +592,7 @@
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "canvas-template": "Canvas template"
+    "canvas-template": "Whiteboard template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
@@ -636,7 +636,7 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new $t(common.callout)",
-        "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
+        "canvas-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
         "card-comment-created": "commented on '{{cardDisplayName}}'",
         "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
@@ -687,8 +687,8 @@
         "no-templates": "No templates available",
         "card-template-label": "Card Template",
         "no-card-template-selected": "Please select a card template",
-        "canvas-template-label": "Canvas Template",
-        "no-canvas-template-selected": "Please select a canvas template"
+        "canvas-template-label": "Whiteboard Template",
+        "no-canvas-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
         "title": "Create",
@@ -798,6 +798,7 @@
     "card-filter": {
       "title": "Filter"
     },
+
 
     "backdrop": {
       "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
