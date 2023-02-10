@@ -29,6 +29,7 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
     id: string;
+    nameID: string;
     displayName: string;
     description: string;
     type: CalloutType;

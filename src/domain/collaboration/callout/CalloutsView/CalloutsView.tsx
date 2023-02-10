@@ -127,7 +127,6 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
                         callout={callout}
                         calloutNames={calloutNames}
                         contributionsCount={getItemsCount(callout)}
-                        loading={loading}
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
                         opportunityNameId={opportunityNameId}
@@ -145,7 +144,6 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
                         callout={callout}
                         calloutNames={calloutNames}
                         contributionsCount={getItemsCount(callout)}
-                        loading={loading}
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
                         opportunityNameId={opportunityNameId}
@@ -163,7 +161,6 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
                         callout={callout}
                         calloutNames={calloutNames}
                         contributionsCount={getItemsCount(callout)}
-                        loading={loading}
                         hubNameId={hubNameId!}
                         challengeNameId={challengeNameId}
                         opportunityNameId={opportunityNameId}
