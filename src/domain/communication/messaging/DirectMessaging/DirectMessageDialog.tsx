@@ -46,9 +46,12 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [handleSendMessage, isLoading] = useLoadingState(async (values: SendMessageData, { resetForm }) => {
+  const [handleSendMessage, isLoading, error] = useLoadingState(async (values: SendMessageData, { resetForm }) => {
     await onSendMessage(values.message);
-    resetForm();
+    if (!error) {
+      setMessageSent(true);
+      resetForm();
+    }
   });
 
   const handleClose = () => {

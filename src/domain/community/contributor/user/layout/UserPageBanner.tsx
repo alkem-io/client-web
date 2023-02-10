@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useSendMessageToUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanner';
 import { toSocialNetworkEnum } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
@@ -10,10 +11,13 @@ import { useUserMetadata } from '../hooks/useUserMetadata';
 const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: currentUser } = useUserContext();
+  const handleError = useApolloErrorHandler();
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
   const userId = userMetadata?.user.id;
-  const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToUser] = useSendMessageToUserMutation({
+    onError: handleError,
+  });
 
   const handleSendMessage = useCallback(
     async (messageText: string) => {
