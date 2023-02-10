@@ -19086,6 +19086,49 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
   };
 };
 
+export type InnovationPackFullCanvasTemplateWithValueQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type InnovationPackFullCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        value: string;
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          id: string;
+                          title: string;
+                          description: string;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type UpdateInnovationTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   info?: InputMaybe<UpdateTemplateInfoInput>;

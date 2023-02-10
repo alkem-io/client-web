@@ -51,3 +51,20 @@ query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTem
     }
   }
 }
+
+query InnovationPackFullCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        templates {
+          canvasTemplate(ID: $canvasTemplateId) {
+            ...CanvasTemplateWithValue
+          }
+        }
+      }
+    }
+  }
+}
