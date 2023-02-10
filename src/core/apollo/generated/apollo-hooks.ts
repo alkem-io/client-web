@@ -174,6 +174,7 @@ export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
     id
     displayName
+    isContactable
     nameID
     profile {
       id
@@ -1339,6 +1340,7 @@ export const UserCardFragmentDoc = gql`
     id
     nameID
     displayName
+    isContactable
     agent {
       id
       credentials {
@@ -1531,6 +1533,7 @@ export const UserContributorFragmentDoc = gql`
     id
     nameID
     displayName
+    isContactable
     agent {
       id
       credentials {
@@ -12020,6 +12023,146 @@ export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
+export const SendMessageToUserDocument = gql`
+  mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
+    sendMessageToUser(messageData: $messageData)
+  }
+`;
+export type SendMessageToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToUserMutation,
+  SchemaTypes.SendMessageToUserMutationVariables
+>;
+
+/**
+ * __useSendMessageToUserMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToUserMutation, { data, loading, error }] = useSendMessageToUserMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToUserMutation,
+    SchemaTypes.SendMessageToUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.SendMessageToUserMutation, SchemaTypes.SendMessageToUserMutationVariables>(
+    SendMessageToUserDocument,
+    options
+  );
+}
+
+export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
+export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
+export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToUserMutation,
+  SchemaTypes.SendMessageToUserMutationVariables
+>;
+export const SendMessageToOrganizationDocument = gql`
+  mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {
+    sendMessageToOrganization(messageData: $messageData)
+  }
+`;
+export type SendMessageToOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToOrganizationMutation,
+  SchemaTypes.SendMessageToOrganizationMutationVariables
+>;
+
+/**
+ * __useSendMessageToOrganizationMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToOrganizationMutation, { data, loading, error }] = useSendMessageToOrganizationMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToOrganizationMutation,
+    SchemaTypes.SendMessageToOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SendMessageToOrganizationMutation,
+    SchemaTypes.SendMessageToOrganizationMutationVariables
+  >(SendMessageToOrganizationDocument, options);
+}
+
+export type SendMessageToOrganizationMutationHookResult = ReturnType<typeof useSendMessageToOrganizationMutation>;
+export type SendMessageToOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.SendMessageToOrganizationMutation>;
+export type SendMessageToOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToOrganizationMutation,
+  SchemaTypes.SendMessageToOrganizationMutationVariables
+>;
+export const SendMessageToCommunityLeadsDocument = gql`
+  mutation sendMessageToCommunityLeads($messageData: CommunicationSendMessageToCommunityLeadsInput!) {
+    sendMessageToCommunityLeads(messageData: $messageData)
+  }
+`;
+export type SendMessageToCommunityLeadsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToCommunityLeadsMutation,
+  SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+>;
+
+/**
+ * __useSendMessageToCommunityLeadsMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToCommunityLeadsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToCommunityLeadsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToCommunityLeadsMutation, { data, loading, error }] = useSendMessageToCommunityLeadsMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToCommunityLeadsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToCommunityLeadsMutation,
+    SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SendMessageToCommunityLeadsMutation,
+    SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+  >(SendMessageToCommunityLeadsDocument, options);
+}
+
+export type SendMessageToCommunityLeadsMutationHookResult = ReturnType<typeof useSendMessageToCommunityLeadsMutation>;
+export type SendMessageToCommunityLeadsMutationResult =
+  Apollo.MutationResult<SchemaTypes.SendMessageToCommunityLeadsMutation>;
+export type SendMessageToCommunityLeadsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToCommunityLeadsMutation,
+  SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+>;
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {
@@ -13359,6 +13502,7 @@ export const ContributingUsersDocument = gql`
       id
       nameID
       displayName
+      isContactable
       profile {
         id
         location {
@@ -17192,6 +17336,7 @@ export function refetchUserNotificationsPreferencesQuery(
 export const UserProfileDocument = gql`
   query userProfile($input: UUID_NAMEID_EMAIL!) {
     user(ID: $input) {
+      isContactable
       ...UserDetails
       ...UserAgent
     }
@@ -19213,6 +19358,85 @@ export function refetchInnovationPackCanvasTemplateWithValueQuery(
   variables: SchemaTypes.InnovationPackCanvasTemplateWithValueQueryVariables
 ) {
   return { query: InnovationPackCanvasTemplateWithValueDocument, variables: variables };
+}
+
+export const InnovationPackFullCanvasTemplateWithValueDocument = gql`
+  query InnovationPackFullCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          templates {
+            canvasTemplate(ID: $canvasTemplateId) {
+              ...CanvasTemplateWithValue
+            }
+          }
+        }
+      }
+    }
+  }
+  ${CanvasTemplateWithValueFragmentDoc}
+`;
+
+/**
+ * __useInnovationPackFullCanvasTemplateWithValueQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackFullCanvasTemplateWithValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackFullCanvasTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackFullCanvasTemplateWithValueQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *      canvasTemplateId: // value for 'canvasTemplateId'
+ *   },
+ * });
+ */
+export function useInnovationPackFullCanvasTemplateWithValueQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >(InnovationPackFullCanvasTemplateWithValueDocument, options);
+}
+
+export function useInnovationPackFullCanvasTemplateWithValueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >(InnovationPackFullCanvasTemplateWithValueDocument, options);
+}
+
+export type InnovationPackFullCanvasTemplateWithValueQueryHookResult = ReturnType<
+  typeof useInnovationPackFullCanvasTemplateWithValueQuery
+>;
+export type InnovationPackFullCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
+  typeof useInnovationPackFullCanvasTemplateWithValueLazyQuery
+>;
+export type InnovationPackFullCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+  SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+>;
+export function refetchInnovationPackFullCanvasTemplateWithValueQuery(
+  variables: SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+) {
+  return { query: InnovationPackFullCanvasTemplateWithValueDocument, variables: variables };
 }
 
 export const UpdateInnovationTemplateDocument = gql`

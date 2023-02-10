@@ -94,7 +94,10 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
-    "send": "Send"
+    "select": "Select",
+    "change-field": "Change {{field}}",
+    "send": "Send",
+    "contact-leads": "Contact the {{contact}}(s)"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -175,6 +178,7 @@
     "project": "Project",
     "agreements": "Agreements",
     "templates": "Templates",
+    "template": "Template",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -431,6 +435,10 @@
     "message": "Message",
     "message-optional": "Message (Optional)",
     "successfully-sent": "Message successfully sent"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Send a message",
+    "community-message-title": "Send a message to {{contact}}(s)"
   },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
@@ -1158,6 +1166,7 @@
             "import": {
               "title": "Template Library: {{templateType}}",
               "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "no-templates": "Couldn't find any Template of this type",
               "imported-successfully-notification": "Template imported successfully"
             }

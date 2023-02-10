@@ -6,11 +6,14 @@ import WrapperTypography from '../../../../common/components/core/WrapperTypogra
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import * as yup from 'yup';
 interface SocialLinksProps {
   title?: string;
   items?: SocialLinkItem[];
   iconSize?: SvgIconProps['fontSize'];
+  isContactable: boolean;
+  onContact: () => void;
 }
 
 const getSocialIcon = (type: SocialNetworkEnum, fontSize: SvgIconProps['fontSize'] = 'large') => {
@@ -48,7 +51,7 @@ export interface SocialLinkItem {
 
 const schema = yup.string().url();
 
-export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) => {
+export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize, isContactable, onContact }) => {
   const filteredSortedItems = useMemo(
     () =>
       items
@@ -56,7 +59,7 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
         .sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type]) || [],
     [items]
   );
-  return filteredSortedItems && filteredSortedItems.length > 0 ? (
+  return (
     <Box>
       {title && (
         <WrapperTypography color="primary" weight="boldLight">
@@ -66,19 +69,27 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
 
       {filteredSortedItems.map((item, i) => (
         <Link
-          key={i}
+          key={`icon-${i}`}
           href={getSocialLinkUrl(item.type, item.url)}
           rel="noreferrer"
-          tabIndex={0}
           aria-label="social-link"
           target="_blank"
         >
           {getSocialIcon(item.type, iconSize)}
         </Link>
       ))}
+
+      {isContactable && (
+        <Link
+          key="icon-contact"
+          sx={{ cursor: 'pointer' }} // Links without href don't change cursor
+          onClick={onContact}
+          aria-label="social-link"
+        >
+          <EmailOutlinedIcon />
+        </Link>
+      )}
     </Box>
-  ) : (
-    <></>
   );
 };
 

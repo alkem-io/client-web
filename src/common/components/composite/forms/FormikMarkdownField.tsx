@@ -20,6 +20,8 @@ import hexToRGBA from '../../../utils/hexToRGBA';
 import { useTranslation } from 'react-i18next';
 import { ToolbarConfiguration, ToolbarTranslationKeys } from './FormikMarkdownField/toolbar.configuration';
 import { mdToDraftjs, draftjsToMd } from '@alkemio/draftjs-md-converter';
+import TranslationKey from '../../../../types/TranslationKey';
+import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 
 const EditorWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -117,7 +119,7 @@ const LoadingOverlay = styled(Skeleton)(() => ({
 }));
 
 interface MarkdownFieldProps extends InputProps {
-  title?: string;
+  title: string;
   name: string;
   required?: boolean;
   readOnly?: boolean;
@@ -143,6 +145,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   sx,
 }) => {
   const { t, i18n } = useTranslation();
+  const tErr = useValidationMessageTranslation();
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
 
@@ -156,9 +159,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     if (!isError) {
       return _helperText;
     }
-
-    return meta.error;
-  }, [isError, meta.error, _helperText]);
+    return tErr(meta.error as TranslationKey, { field: title });
+  }, [isError, meta.error, _helperText, tErr, title]);
 
   // Handle editor state and sync with formik field:
   const [editorState, setEditorState] = useState(() => {
@@ -218,6 +220,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const [isFocused, setFocus] = useState(false);
 
   const handleOnFocus = () => {
+    helper.setTouched(true);
     setFocus(true);
   };
 

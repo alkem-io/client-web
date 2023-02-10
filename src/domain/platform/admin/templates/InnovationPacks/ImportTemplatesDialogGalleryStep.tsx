@@ -4,6 +4,7 @@ import { Template } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { Text } from '../../../../../core/ui/typography';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
 
 export interface TemplateImportCardComponentProps<Q extends TemplateInnovationPackMetaInfo> {
   template: Q;
@@ -62,12 +63,12 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
       <Grid item xs={12} md={9}>
 */
   return (
-    <>
+    <GridProvider columns={12} force>
       <CardsLayout items={templates} deps={[templates]} disablePadding cards={false}>
         {template => <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />}
       </CardsLayout>
       {templates.length === 0 && <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>}
-    </>
+    </GridProvider>
   );
 };
 

@@ -24,7 +24,7 @@ import { displayNameValidator } from '../../../../common/utils/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
 import { LoadingButton } from '@mui/lab';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
@@ -94,7 +94,7 @@ const CalendarEventForm = ({
       .string()
       .required(t('common.field-required'))
       .min(3, ({ min }) => t('common.field-min-length', { min }))
-      .max(MID_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
+      .max(VERY_LONG_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
     type: yup.string().required(t('common.field-required')),
     durationMinutes: yup.number().positive(t('calendar.validation.durationMinutes.positive')),
   });
@@ -139,7 +139,7 @@ const CalendarEventForm = ({
               <FormikMarkdownField
                 name="description"
                 title={t('common.description')}
-                maxLength={MID_TEXT_LENGTH}
+                maxLength={VERY_LONG_TEXT_LENGTH}
                 withCounter
                 sx={{ marginBottom: gutters(-1) }}
               />
