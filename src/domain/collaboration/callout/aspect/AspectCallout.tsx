@@ -1,6 +1,6 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useInView } from 'react-intersection-observer';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
@@ -18,13 +18,12 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
 interface AspectCalloutProps extends BaseCalloutImpl {
-  callout: CalloutLayoutProps['callout'] & {
-    aspects: AspectCardAspect[];
-  };
+  callout: CalloutLayoutProps['callout'];
 }
 
 const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
@@ -32,7 +31,6 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     {
       callout,
       calloutNames,
-      loading,
       canCreate = false,
       hubNameId,
       challengeNameId,
@@ -50,11 +48,14 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     const closeCreateDialog = () => setAspectDialogOpen(false);
     const navigate = useNavigate();
 
-    const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
+    const { ref: intersectionObserverRef, inView } = useInView();
+
+    const { subscriptionEnabled, aspects, loading } = useAspectCreatedOnCalloutSubscription({
       hubNameId: hubNameId || '',
       calloutId: callout.id,
       challengeNameId,
       opportunityNameId,
+      skip: !inView,
     });
 
     const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
@@ -139,7 +140,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
       return nameID ? { nameID } : undefined;
     };
 
-    const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
+    const aspectNames = useMemo(() => aspects?.map(x => x.displayName) ?? [], [aspects]);
 
     const createButton = canCreate && callout.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />
@@ -147,7 +148,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     const navigateToAspect = (aspect: AspectCardAspect) => {
       navigate(
-        buildAspectUrl(aspect.calloutNameId, aspect.nameID, {
+        buildAspectUrl(callout.nameID, aspect.nameID, {
           hubNameId: hubNameId!,
           challengeNameId,
           opportunityNameId,
@@ -159,9 +160,11 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     const isMobile = breakpoint === 'xs';
 
+    const containerRef = useCombinedRefs(null, ref, intersectionObserverRef);
+
     return (
       <>
-        <PageContentBlock ref={ref} disablePadding disableGap>
+        <PageContentBlock ref={containerRef} disablePadding disableGap>
           <CalloutLayout
             callout={callout}
             calloutNames={calloutNames}
@@ -171,7 +174,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
             contributionsCount={contributionsCount}
           >
             <ScrollableCardsLayout
-              items={loading ? [undefined, undefined] : callout.aspects}
+              items={loading || !inView ? [undefined, undefined] : aspects ?? []}
               deps={[hubNameId, challengeNameId, opportunityNameId]}
               createButton={!isMobile && createButton}
               maxHeight={gutters(22)}

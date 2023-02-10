@@ -1087,16 +1087,6 @@ export const PrivilegesOnCollaborationFragmentDoc = gql`
     }
   }
 `;
-export const ContributeTabAspectFragmentDoc = gql`
-  fragment ContributeTabAspect on Aspect {
-    ...AspectCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${AspectCardFragmentDoc}
-`;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Comments {
     id
@@ -1159,9 +1149,7 @@ export const CalloutFragmentDoc = gql`
     displayName
     description
     state
-    aspects {
-      ...ContributeTabAspect
-    }
+    activity
     canvases {
       ...CanvasDetails
     }
@@ -1176,7 +1164,6 @@ export const CalloutFragmentDoc = gql`
     ...CalloutCardTemplate
     ...CalloutCanvasTemplate
   }
-  ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutCardTemplateFragmentDoc}
@@ -1261,6 +1248,16 @@ export const LockedByDetailsFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const ContributeTabAspectFragmentDoc = gql`
+  fragment ContributeTabAspect on Aspect {
+    ...AspectCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${AspectCardFragmentDoc}
 `;
 export const AspectsOnCalloutFragmentDoc = gql`
   fragment AspectsOnCallout on Callout {
