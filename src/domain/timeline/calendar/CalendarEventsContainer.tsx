@@ -13,7 +13,6 @@ import {
   CardProfile,
   HubCalendarEventsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
-import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { CalendarEventCardData } from './views/CalendarEventCard';
 import { sortBy } from 'lodash';
 import { startOfDay } from '../../../core/utils/time/utils';
@@ -65,7 +64,6 @@ export interface CalendarEventsEntities {
 }
 
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children, options = {} }) => {
-  const handleError = useApolloErrorHandler();
   const { sortByStartDate = true, filterPastEvents = true } = options;
 
   const { data, loading } = useHubCalendarEventsQuery({
@@ -100,17 +98,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
 
   const calendarId = data?.hub.timeline?.calendar.id;
 
-  const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation({
-    onError: handleError,
-  });
+  const [createCalendarEvent, { loading: creatingCalendarEvent }] = useCreateCalendarEventMutation();
 
-  const [updateCalendarEvent, { loading: updatingCalendarEvent }] = useUpdateCalendarEventMutation({
-    onError: handleError,
-  });
+  const [updateCalendarEvent, { loading: updatingCalendarEvent }] = useUpdateCalendarEventMutation();
 
-  const [deleteCalendarEvent, { loading: deletingCalendarEvent }] = useDeleteCalendarEventMutation({
-    onError: handleError,
-  });
+  const [deleteCalendarEvent, { loading: deletingCalendarEvent }] = useDeleteCalendarEventMutation();
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {

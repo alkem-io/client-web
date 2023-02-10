@@ -5,7 +5,7 @@ import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanne
 const OrganizationPageBanner: FC = () => {
   return (
     <OrganizationPageContainer>
-      {({ organization, permissions, socialLinks }, { loading }) => (
+      {({ organization, permissions, socialLinks, handleSendMessage }, { loading }) => (
         <ProfileBanner
           title={organization?.displayName}
           tagline={organization?.profile?.description}
@@ -14,6 +14,7 @@ const OrganizationPageBanner: FC = () => {
           avatarUrl={organization?.profile?.avatar?.uri}
           avatarEditable={permissions.canEdit}
           loading={loading}
+          onSendMessage={handleSendMessage}
         />
       )}
     </OrganizationPageContainer>

@@ -3647,19 +3647,6 @@ export type SearchResult = {
   type: SearchResultType;
 };
 
-export type SearchResultCard = SearchResult & {
-  __typename?: 'SearchResultCard';
-  /** The Card that was found. */
-  card: Aspect;
-  id: Scalars['UUID'];
-  /** The score for this search result; more matches means a higher score. */
-  score: Scalars['Float'];
-  /** The terms that were matched for this result */
-  terms: Array<Scalars['String']>;
-  /** The event type for this Activity. */
-  type: SearchResultType;
-};
-
 export type SearchResultChallenge = SearchResult & {
   __typename?: 'SearchResultChallenge';
   /** The Challenge that was found. */
@@ -3719,7 +3706,6 @@ export type SearchResultOrganization = SearchResult & {
 };
 
 export enum SearchResultType {
-  Card = 'CARD',
   Challenge = 'CHALLENGE',
   Hub = 'HUB',
   Opportunity = 'OPPORTUNITY',
@@ -4489,66 +4475,6 @@ export type UploadFileMutationVariables = Exact<{
 
 export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
 
-export type MessagingAvailableRecipientsQueryVariables = Exact<{
-  filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type MessagingAvailableRecipientsQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      displayName: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          }
-        | undefined;
-    }>;
-  };
-};
-
-export type MessagingUserDetailsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type MessagingUserDetailsQuery = {
-  __typename?: 'Query';
-  user: {
-    __typename?: 'User';
-    id: string;
-    displayName: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type MessagingUserInformationFragment = {
-  __typename?: 'User';
-  id: string;
-  displayName: string;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      }
-    | undefined;
-};
-
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
@@ -4706,7 +4632,6 @@ export type ChallengeExplorerSearchQueryVariables = Exact<{
 export type ChallengeExplorerSearchQuery = {
   __typename?: 'Query';
   search: Array<
-    | { __typename?: 'SearchResultCard'; id: string; type: SearchResultType; terms: Array<string> }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;
@@ -4977,6 +4902,7 @@ export type ChallengePageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -5299,6 +5225,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -6350,6 +6277,7 @@ export type AboutPageMembersQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -6444,6 +6372,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -6539,6 +6468,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -7326,6 +7256,7 @@ export type HubPageQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -7632,6 +7563,7 @@ export type HubPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -8565,6 +8497,7 @@ export type OpportunityPageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -8804,6 +8737,7 @@ export type OpportunityPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -14223,6 +14157,7 @@ export type AuthorDetailsQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -14501,6 +14436,24 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 }>;
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
+
+export type SendMessageToUserMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUserInput;
+}>;
+
+export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+
+export type SendMessageToOrganizationMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToOrganizationInput;
+}>;
+
+export type SendMessageToOrganizationMutation = { __typename?: 'Mutation'; sendMessageToOrganization: boolean };
+
+export type SendMessageToCommunityLeadsMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToCommunityLeadsInput;
+}>;
+
+export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
 
 export type CommunityUpdatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -15066,6 +15019,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -15099,6 +15053,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -15174,6 +15129,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15207,6 +15163,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15303,6 +15260,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15336,6 +15294,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15417,6 +15376,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15443,6 +15403,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15522,6 +15483,7 @@ export type EntityDashboardCommunityFragment = {
         __typename?: 'User';
         id: string;
         displayName: string;
+        isContactable: boolean;
         nameID: string;
         profile?:
           | {
@@ -15572,6 +15534,7 @@ export type DashboardContributingUserFragment = {
   __typename?: 'User';
   id: string;
   displayName: string;
+  isContactable: boolean;
   nameID: string;
   profile?:
     | {
@@ -15625,6 +15588,7 @@ export type ContributingUsersQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     profile?:
       | {
           __typename?: 'Profile';
@@ -16310,6 +16274,7 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      isContactable: boolean;
       agent?:
         | {
             __typename?: 'Agent';
@@ -16384,6 +16349,7 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -16416,6 +16382,7 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17024,6 +16991,66 @@ export type OrganizationsListQuery = {
   }>;
 };
 
+export type MessagingAvailableRecipientsQueryVariables = Exact<{
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MessagingAvailableRecipientsQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
+
+export type MessagingUserDetailsQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type MessagingUserDetailsQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MessagingUserInformationFragment = {
+  __typename?: 'User';
+  id: string;
+  displayName: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      }
+    | undefined;
+};
+
 export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSupportedCredentialMetadataQuery = {
@@ -17197,6 +17224,7 @@ export type UserCardFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17795,6 +17823,7 @@ export type UserCardQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17850,6 +17879,7 @@ export type UserProfileQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
+    isContactable: boolean;
     id: string;
     nameID: string;
     displayName: string;
@@ -19195,7 +19225,6 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = {
   __typename?: 'Query';
   search: Array<
-    | { __typename?: 'SearchResultCard'; id: string; score: number; terms: Array<string>; type: SearchResultType }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;

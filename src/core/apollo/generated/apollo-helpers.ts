@@ -1910,21 +1910,6 @@ export type SearchResultFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SearchResultCardKeySpecifier = (
-  | 'card'
-  | 'id'
-  | 'score'
-  | 'terms'
-  | 'type'
-  | SearchResultCardKeySpecifier
-)[];
-export type SearchResultCardFieldPolicy = {
-  card?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  score?: FieldPolicy<any> | FieldReadFunction<any>;
-  terms?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SearchResultChallengeKeySpecifier = (
   | 'challenge'
   | 'hub'
@@ -2762,10 +2747,6 @@ export type StrictTypedTypePolicies = {
   SearchResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultKeySpecifier | (() => undefined | SearchResultKeySpecifier);
     fields?: SearchResultFieldPolicy;
-  };
-  SearchResultCard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SearchResultCardKeySpecifier | (() => undefined | SearchResultCardKeySpecifier);
-    fields?: SearchResultCardFieldPolicy;
   };
   SearchResultChallenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultChallengeKeySpecifier | (() => undefined | SearchResultChallengeKeySpecifier);

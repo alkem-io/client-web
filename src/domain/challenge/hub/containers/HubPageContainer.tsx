@@ -1,11 +1,12 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   useHubDashboardReferencesAndRecommendationsQuery,
   useHubPageQuery,
   usePlatformLevelAuthorizationQuery,
+  useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -62,6 +63,7 @@ export interface HubContainerEntities {
   memberOrganizationsCount: number | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
 }
 
 export interface HubContainerActions {}
@@ -143,6 +145,23 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const topCallouts = _hub?.hub.collaboration?.callouts?.slice(0, 3);
 
+  const communityId = _hub?.hub.community?.id ?? '';
+
+  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+  const handleSendMessageToCommunityLeads = useCallback(
+    async (messageText: string) => {
+      await sendMessageToCommunityLeads({
+        variables: {
+          messageData: {
+            message: messageText,
+            communityId: communityId,
+          },
+        },
+      });
+    },
+    [sendMessageToCommunityLeads, communityId]
+  );
+
   return (
     <>
       {children(
@@ -166,6 +185,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           ...contributors,
           hostOrganizations,
           topCallouts,
+          sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,

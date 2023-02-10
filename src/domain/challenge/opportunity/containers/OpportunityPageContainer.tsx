@@ -1,8 +1,11 @@
 import { ApolloError } from '@apollo/client';
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { useUserContext } from '../../../community/contributor/user';
-import { useOpportunityPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useOpportunityPageQuery,
+  useSendMessageToCommunityLeadsMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
@@ -68,6 +71,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   recommendations: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
 }
 
 export interface OpportunityContainerActions {
@@ -160,6 +164,27 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const topCallouts = collaboration?.callouts?.slice(0, 3);
 
+  const communityId = opportunity?.community?.id;
+
+  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+  const handleSendMessageToCommunityLeads = useCallback(
+    async (messageText: string) => {
+      if (!communityId) {
+        throw new Error('Community not loaded.');
+      }
+
+      await sendMessageToCommunityLeads({
+        variables: {
+          messageData: {
+            message: messageText,
+            communityId: communityId,
+          },
+        },
+      });
+    },
+    [sendMessageToCommunityLeads, communityId]
+  );
+
   return (
     <>
       {children(
@@ -196,6 +221,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           ...contributors,
           activities,
           topCallouts,
+          sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
         {
           loading: loadingOpportunity,

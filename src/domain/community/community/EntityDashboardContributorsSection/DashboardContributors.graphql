@@ -1,6 +1,7 @@
 fragment DashboardContributingUser on User {
   id
   displayName
+  isContactable
   nameID
   profile {
     id

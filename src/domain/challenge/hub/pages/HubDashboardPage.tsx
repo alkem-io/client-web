@@ -51,6 +51,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               activities={entities.activities}
               activityLoading={entities.activityLoading}
               topCallouts={entities.topCallouts}
+              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
               renderChildEntityCard={challenge => (
                 <ChallengeCard
                   challengeId={challenge.id}
