@@ -40,7 +40,7 @@ const useScrollToElement = (
   elementAliasToScrollTo: string | undefined,
   { enabled = true, method = 'window', defer: shouldDefer = false }: Options = {}
 ) => {
-  const elements = useRef<Record<string, HTMLElement | null>>({}).current;
+  const elements = useRef<Record<string, HTMLElement>>({}).current;
 
   const scrollImplementation = chooseScrollImplementation(method);
 
@@ -62,7 +62,10 @@ const useScrollToElement = (
   const scrollable =
     <El extends HTMLElement>(alias: string): Ref<El> =>
     (element: El | null) => {
-      if (enabled && !elements[alias] && element && alias === elementAliasToScrollTo) {
+      if (!element) {
+        return;
+      }
+      if (enabled && elements[alias] !== element && alias === elementAliasToScrollTo) {
         // The element has just been added to the DOM and is marked as currently-scrolled-to
         scrollToElement(element);
       }

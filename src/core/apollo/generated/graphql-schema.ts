@@ -4489,66 +4489,6 @@ export type UploadFileMutationVariables = Exact<{
 
 export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
 
-export type MessagingAvailableRecipientsQueryVariables = Exact<{
-  filter?: InputMaybe<UserFilterInput>;
-  first?: InputMaybe<Scalars['Int']>;
-}>;
-
-export type MessagingAvailableRecipientsQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      displayName: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          }
-        | undefined;
-    }>;
-  };
-};
-
-export type MessagingUserDetailsQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type MessagingUserDetailsQuery = {
-  __typename?: 'Query';
-  user: {
-    __typename?: 'User';
-    id: string;
-    displayName: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type MessagingUserInformationFragment = {
-  __typename?: 'User';
-  id: string;
-  displayName: string;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      }
-    | undefined;
-};
-
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
@@ -11541,47 +11481,8 @@ export type CalloutsQuery = {
                 displayName: string;
                 description: string;
                 state: CalloutState;
+                activity: number;
                 visibility: CalloutVisibility;
-                aspects?:
-                  | Array<{
-                      __typename?: 'Aspect';
-                      id: string;
-                      nameID: string;
-                      displayName: string;
-                      type: string;
-                      createdDate: Date;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                      createdBy: { __typename?: 'User'; displayName: string };
-                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      profile?:
-                        | {
-                            __typename?: 'CardProfile';
-                            id: string;
-                            description: string;
-                            tagset?:
-                              | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
-                              | undefined;
-                            references?:
-                              | Array<{
-                                  __typename?: 'Reference';
-                                  id: string;
-                                  name: string;
-                                  uri: string;
-                                  description?: string | undefined;
-                                }>
-                              | undefined;
-                          }
-                        | undefined;
-                    }>
-                  | undefined;
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -11743,47 +11644,8 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  activity: number;
                   visibility: CalloutVisibility;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        type: string;
-                        createdDate: Date;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        profile?:
-                          | {
-                              __typename?: 'CardProfile';
-                              id: string;
-                              description: string;
-                              tagset?:
-                                | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
-                                | undefined;
-                              references?:
-                                | Array<{
-                                    __typename?: 'Reference';
-                                    id: string;
-                                    name: string;
-                                    uri: string;
-                                    description?: string | undefined;
-                                  }>
-                                | undefined;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -11955,47 +11817,8 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  activity: number;
                   visibility: CalloutVisibility;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        type: string;
-                        createdDate: Date;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        profile?:
-                          | {
-                              __typename?: 'CardProfile';
-                              id: string;
-                              description: string;
-                              tagset?:
-                                | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
-                                | undefined;
-                              references?:
-                                | Array<{
-                                    __typename?: 'Reference';
-                                    id: string;
-                                    name: string;
-                                    uri: string;
-                                    description?: string | undefined;
-                                  }>
-                                | undefined;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -12451,41 +12274,8 @@ export type CollaborationWithCalloutsFragment = {
         displayName: string;
         description: string;
         state: CalloutState;
+        activity: number;
         visibility: CalloutVisibility;
-        aspects?:
-          | Array<{
-              __typename?: 'Aspect';
-              id: string;
-              nameID: string;
-              displayName: string;
-              type: string;
-              createdDate: Date;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-              createdBy: { __typename?: 'User'; displayName: string };
-              comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              profile?:
-                | {
-                    __typename?: 'CardProfile';
-                    id: string;
-                    description: string;
-                    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                    references?:
-                      | Array<{
-                          __typename?: 'Reference';
-                          id: string;
-                          name: string;
-                          uri: string;
-                          description?: string | undefined;
-                        }>
-                      | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
         canvases?:
           | Array<{
               __typename?: 'Canvas';
@@ -12631,41 +12421,8 @@ export type CalloutFragment = {
   displayName: string;
   description: string;
   state: CalloutState;
+  activity: number;
   visibility: CalloutVisibility;
-  aspects?:
-    | Array<{
-        __typename?: 'Aspect';
-        id: string;
-        nameID: string;
-        displayName: string;
-        type: string;
-        createdDate: Date;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        createdBy: { __typename?: 'User'; displayName: string };
-        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        profile?:
-          | {
-              __typename?: 'CardProfile';
-              id: string;
-              description: string;
-              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
-            }
-          | undefined;
-      }>
-    | undefined;
   canvases?:
     | Array<{
         __typename?: 'Canvas';
@@ -17022,6 +16779,66 @@ export type OrganizationsListQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
+};
+
+export type MessagingAvailableRecipientsQueryVariables = Exact<{
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MessagingAvailableRecipientsQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
+
+export type MessagingUserDetailsQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type MessagingUserDetailsQuery = {
+  __typename?: 'Query';
+  user: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MessagingUserInformationFragment = {
+  __typename?: 'User';
+  id: string;
+  displayName: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      }
+    | undefined;
 };
 
 export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
