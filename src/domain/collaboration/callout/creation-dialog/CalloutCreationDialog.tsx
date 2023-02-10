@@ -94,18 +94,22 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
 
     const getCanvasValueFromHub = async () => {
+      if (!callout.canvasTemplateData?.id) return undefined;
+
       const result = await fetchCanvasValueFromHub({
-        variables: { hubId: hubNameId!, canvasTemplateId: callout.canvasTemplateData?.id! },
+        variables: { hubId: hubNameId!, canvasTemplateId: callout.canvasTemplateData?.id },
       });
 
       return result.data?.hub.templates;
     };
 
     const getCanvasValueFromLibrary = async () => {
+      if (!callout.canvasTemplateData?.id || !callout.canvasTemplateData?.innovationPackId) return undefined;
+
       const result = await fetchCanvasValueFromLibrary({
         variables: {
-          innovationPackId: callout.canvasTemplateData?.innovationPackId!,
-          canvasTemplateId: callout.canvasTemplateData?.id!,
+          innovationPackId: callout.canvasTemplateData?.innovationPackId,
+          canvasTemplateId: callout.canvasTemplateData?.id,
         },
       });
 
