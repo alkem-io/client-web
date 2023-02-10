@@ -95,7 +95,9 @@
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
     "select": "Select",
-    "change-field": "Change {{field}}"
+    "change-field": "Change {{field}}",
+    "send": "Send",
+    "contact-leads": "Contact the {{contact}}(s)"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -126,6 +128,7 @@
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
     "avatar": "Avatar",
+    "avatar-of": "Avatar of {{user}}",
     "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
@@ -428,12 +431,47 @@
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
   },
+  "messaging": {
+    "message": "Message",
+    "message-optional": "Message (Optional)",
+    "successfully-sent": "Message successfully sent"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Send a message",
+    "community-message-title": "Send a message to {{contact}}(s)"
+  },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
     "share-this": "Share this {{entity}}",
+    "share-this-on": "Share this {{entity}} on {{platform}}",
+    "or": "or",
     "url": "URL",
-    "copy": "Copy",
-    "copied": "Copied!"
+    "warning": "Please note that your personal email will be visible for the user when you send them a message.",
+    "platforms": {
+      "clipboard": {
+        "title": "Copy Link",
+        "copy": "Copy",
+        "copied": "Copied!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Share on Alkemio",
+        "description": "Share this {{entity}} directly with other Alkemio users. You can search for Alkemio users below and attach a personalized message.",
+        "default-template": "Hi!\n\nI would like to share this {{entity}} with you.\n\nHave a look!"
+      },
+      "linkedin": {
+        "title": "Share on Linkedin"
+      },
+      "twitter": {
+        "title": "Share on Twitter"
+      },
+      "whatsapp": {
+        "title": "Share on Whatsapp"
+      },
+      "email": {
+        "title": "Share through E-mail"
+      }
+    }
   },
   "context": {
     "hub": {
@@ -544,7 +582,8 @@
       "minLength": "{{field}} should be at least {{min}} symbols long",
       "maxLength": "Exceeded the limit of {{max}} characters",
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
-      "nonBlank": "{{field}} must not consist of just spaces"
+      "nonBlank": "{{field}} must not consist of just spaces",
+      "atLeastOne": "At least one {{item}} must be selected."
     }
   },
   "aspect-templates": {

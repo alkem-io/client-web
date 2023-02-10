@@ -1,16 +1,12 @@
+import { FC, MouseEventHandler } from 'react';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import { Avatar, SvgIcon, Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Grid';
+import { Avatar, Box, Card, CardContent, Grid, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC } from 'react';
 import TagsComponent from '../../../../../../domain/shared/components/TagsComponent/TagsComponent';
-import Skeleton from '@mui/material/Skeleton';
-import ConditionalLink from '../../../../core/ConditionalLink';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
+import ConditionalLink from '../../../../core/ConditionalLink';
 
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
@@ -53,6 +49,8 @@ export interface UserCardProps {
   city?: string;
   country?: string;
   loading?: boolean;
+  isContactable?: boolean;
+  onContact?: MouseEventHandler<HTMLButtonElement>;
 }
 
 const ElevatedCard = withElevationOnHover(Card);
@@ -66,8 +64,11 @@ const UserCard: FC<UserCardProps> = ({
   url,
   roleName,
   loading,
+  isContactable = true,
+  onContact,
 }) => {
   const styles = useStyles();
+
   const location = [city, country].filter(x => !!x).join(', ');
   return (
     <ConditionalLink condition={!!url} to={url} aria-label="user-card">
@@ -93,9 +94,16 @@ const UserCard: FC<UserCardProps> = ({
           <CardContent className={styles.cardContent}>
             <Grid container spacing={1}>
               <Grid item xs zeroMinWidth>
-                <Typography color="primary" variant={'h5'} noWrap fontWeight={600}>
-                  {displayName}
-                </Typography>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography color="primary" variant={'h5'} noWrap fontWeight={600}>
+                    {displayName}
+                  </Typography>
+                  {isContactable && (
+                    <IconButton onClick={onContact}>
+                      <EmailOutlinedIcon />
+                    </IconButton>
+                  )}
+                </Box>
               </Grid>
               <Grid item xs={12}>
                 <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" loading={loading} />

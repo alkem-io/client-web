@@ -1,12 +1,12 @@
 query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
-  organizationsPaginated (first: $first, after: $after, filter: $filter){
-		...OrganizationContributorPaginated
+  organizationsPaginated(first: $first, after: $after, filter: $filter) {
+    ...OrganizationContributorPaginated
   }
 }
 
 query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
-  usersPaginated (first: $first, after: $after, filter: $filter){
-		...UserContributorPaginated
+  usersPaginated(first: $first, after: $after, filter: $filter) {
+    ...UserContributorPaginated
   }
 }
 
@@ -54,6 +54,7 @@ fragment UserContributor on User {
   id
   nameID
   displayName
+  isContactable
   agent {
     id
     credentials {

@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { Form, Formik } from 'formik';
 import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
-import { MARKDOWN_TEXT_LENGTH, NORMAL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { VERY_LONG_TEXT_LENGTH, NORMAL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
@@ -58,7 +58,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     vision: yup
       .string()
       .trim()
-      .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .max(VERY_LONG_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
   });
@@ -99,7 +99,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
             helperText={t('context.opportunity.vision.description')}
             disabled={isSubmitting}
             withCounter
-            maxLength={MARKDOWN_TEXT_LENGTH}
+            maxLength={VERY_LONG_TEXT_LENGTH}
           />
           <SectionSpacer double />
           <TagsetField

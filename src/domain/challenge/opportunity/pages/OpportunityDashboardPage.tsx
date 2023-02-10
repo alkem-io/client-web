@@ -42,6 +42,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               activityLoading={state.activityLoading}
               journeyTypeName="opportunity"
               topCallouts={entities.topCallouts}
+              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}

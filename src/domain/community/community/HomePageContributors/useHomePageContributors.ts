@@ -50,6 +50,7 @@ const useHomePageContributors = () => {
         city: user.profile?.location?.city,
         country: COUNTRIES_BY_CODE[user.profile?.location?.country || ''],
       },
+      isContactable: user.isContactable,
     }));
 
     const organizations = organizationsData?.organizations ?? [];

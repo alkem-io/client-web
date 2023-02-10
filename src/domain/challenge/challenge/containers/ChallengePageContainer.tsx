@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useDiscussionsContext } from '../../../communication/discussion/providers/DiscussionsProvider';
 import { useUserContext } from '../../../community/contributor/user';
 import { useHub } from '../../hub/HubContext/useHub';
@@ -8,6 +8,7 @@ import {
   useChallengeDashboardReferencesAndRecommendationsQuery,
   useChallengePageQuery,
   usePlatformLevelAuthorizationQuery,
+  useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
@@ -54,6 +55,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   discussions: Discussion[];
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
 }
 
 export interface ChallengeContainerActions {}
@@ -135,6 +137,23 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
 
+  const communityId = _challenge?.hub.challenge.community?.id ?? '';
+
+  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+  const handleSendMessageToCommunityLeads = useCallback(
+    async (messageText: string) => {
+      await sendMessageToCommunityLeads({
+        variables: {
+          messageData: {
+            message: messageText,
+            communityId: communityId,
+          },
+        },
+      });
+    },
+    [sendMessageToCommunityLeads, communityId]
+  );
+
   return (
     <>
       {children(
@@ -157,6 +176,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           ...contributors,
           activities,
           topCallouts,
+          sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
         { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions, activityLoading },
         {}
