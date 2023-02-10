@@ -6,7 +6,7 @@ import FormikInputField from '../../../../../common/components/composite/forms/F
 import { CreateTemplateInfoInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
-import { LONG_MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import TemplateForm from '../TemplateForm';
 
 export interface AspectTemplateFormValues {
@@ -53,7 +53,7 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
         <FormikMarkdownField
           name="defaultDescription"
           title={t('aspect-templates.default-description')}
-          maxLength={LONG_MARKDOWN_TEXT_LENGTH}
+          maxLength={VERY_LONG_TEXT_LENGTH}
           withCounter
         />
       </TemplateFormRows>
