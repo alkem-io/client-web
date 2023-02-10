@@ -104,12 +104,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     };
 
     const getCanvasValueFromLibrary = async () => {
-      if (!callout.canvasTemplateData?.id) return undefined;
+      if (!callout.canvasTemplateData?.id || !callout.canvasTemplateData?.innovationPackId) return undefined;
 
       const result = await fetchCanvasValueFromLibrary({
         variables: {
-          innovationPackId: callout.canvasTemplateData?.innovationPackId!,
-          canvasTemplateId: callout.canvasTemplateData?.id!,
+          innovationPackId: callout.canvasTemplateData?.innovationPackId,
+          canvasTemplateId: callout.canvasTemplateData?.id,
         },
       });
 
