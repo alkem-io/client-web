@@ -139,7 +139,7 @@
     "callout": "Callout",
     "callouts": "Callouts",
     "canvas": "Canvas",
-    "canvases": "Canvases",
+    "canvases": "Whiteboards",
     "calendar": "Calendar",
     "comment": "Comment",
     "comments": "Comments",
@@ -424,7 +424,7 @@
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All aspects, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries."
   },
@@ -678,8 +678,8 @@
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
-        "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "type-canvases": "Whiteboards",
+        "type-canvases-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
@@ -697,7 +697,7 @@
     },
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed",
-      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted canvases will not be changed"
+      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards      will not be changed"
     },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
@@ -798,6 +798,7 @@
     "card-filter": {
       "title": "Filter"
     },
+
     "backdrop": {
       "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
