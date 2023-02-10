@@ -636,7 +636,7 @@
     "activity-log-view": {
       "actions": {
         "callout-published": "published a new $t(common.callout)",
-        "canvas-created": "added a $t(common.whiteboard) to '{{parentDisplayName}}'",
+        "canvas-created": "added a $t(common.canvas) to '{{parentDisplayName}}'",
         "card-comment-created": "commented on '{{cardDisplayName}}'",
         "card-created": "added a {{cardType}} Card to '{{calloutDisplayName}}'",
         "discussion-comment-created": "commented on '{{calloutDisplayName}}'",
