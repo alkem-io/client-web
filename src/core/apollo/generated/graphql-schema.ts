@@ -764,6 +764,8 @@ export type CanvasCheckout = {
 
 export type CanvasCheckoutEventInput = {
   canvasCheckoutID: Scalars['UUID'];
+  /** Report an error if this event fails to trigger a transition. */
+  errorOnFailedTransition?: InputMaybe<Scalars['Boolean']>;
   eventName: Scalars['String'];
 };
 
@@ -3273,7 +3275,7 @@ export type Query = {
   rolesOrganization: ContributorRoles;
   /** The roles that that the specified User has. */
   rolesUser: ContributorRoles;
-  /** Search the hub for terms supplied */
+  /** Search the platform for terms supplied */
   search: Array<SearchResult>;
   /** A particular user, identified by the ID or by email */
   user: User;
@@ -3627,8 +3629,8 @@ export type RolesUserInput = {
 };
 
 export type SearchInput = {
-  /** Restrict the search to only the specified challenges. Default is all Challenges. */
-  challengesFilter?: InputMaybe<Array<Scalars['Float']>>;
+  /** Restrict the search to only the specified Hub. Default is all Hubs. */
+  searchInHubFilter?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** Expand the search to includes Tagsets with the provided names. Max 2. */
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
   /** The terms to be searched for within this Hub. Max 5. */
@@ -3638,6 +3640,19 @@ export type SearchInput = {
 };
 
 export type SearchResult = {
+  id: Scalars['UUID'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float'];
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']>;
+  /** The event type for this Activity. */
+  type: SearchResultType;
+};
+
+export type SearchResultCard = SearchResult & {
+  __typename?: 'SearchResultCard';
+  /** The Card that was found. */
+  card: Aspect;
   id: Scalars['UUID'];
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float'];
@@ -3706,6 +3721,7 @@ export type SearchResultOrganization = SearchResult & {
 };
 
 export enum SearchResultType {
+  Card = 'CARD',
   Challenge = 'CHALLENGE',
   Hub = 'HUB',
   Opportunity = 'OPPORTUNITY',
@@ -4632,6 +4648,7 @@ export type ChallengeExplorerSearchQueryVariables = Exact<{
 export type ChallengeExplorerSearchQuery = {
   __typename?: 'Query';
   search: Array<
+    | { __typename?: 'SearchResultCard'; id: string; type: SearchResultType; terms: Array<string> }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;
@@ -19085,6 +19102,7 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = {
   __typename?: 'Query';
   search: Array<
+    | { __typename?: 'SearchResultCard'; id: string; score: number; terms: Array<string>; type: SearchResultType }
     | {
         __typename?: 'SearchResultChallenge';
         id: string;

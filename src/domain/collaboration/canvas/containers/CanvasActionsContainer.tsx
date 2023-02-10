@@ -125,6 +125,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
         input: {
           canvasCheckoutID: canvas.checkout?.id,
           eventName,
+          errorOnFailedTransition: false,
         },
       },
     });
