@@ -29,7 +29,7 @@ import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
 import { Caption } from '../../../../../core/ui/typography/components';
-import ContactLeadsButton from '../../../../../common/components/composite/common/ContactLeadsButton/ContactLeadsButton';
+import ContactLeadsButton from '../../../../community/community/ContactLeadsButton/ContactLeadsButton';
 import {
   DirectMessageDialog,
   MessageReceiverChipData,

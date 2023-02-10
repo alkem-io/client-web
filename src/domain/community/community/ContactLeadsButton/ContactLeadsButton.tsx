@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Box, Button, IconButtonProps, Tooltip } from '@mui/material';
+import { Button, IconButtonProps, Tooltip } from '@mui/material';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 
 interface ContactLeadsButtonProps {
@@ -11,12 +11,10 @@ interface ContactLeadsButtonProps {
 const ContactLeadsButton: FC<ContactLeadsButtonProps> = ({ children, tooltip = '', sx, onClick }) => {
   return (
     <Tooltip title={tooltip} arrow placement="top">
-      <Box>
-        <Button variant="contained" color="primary" onClick={() => onClick()} sx={{ width: '100%', ...sx }}>
-          <EmailOutlinedIcon sx={{ marginRight: theme => theme.spacing(2) }} />
-          {children}
-        </Button>
-      </Box>
+      <Button variant="contained" color="primary" onClick={() => onClick()} sx={{ width: '100%', ...sx }}>
+        <EmailOutlinedIcon sx={{ marginRight: theme => theme.spacing(2) }} />
+        {children}
+      </Button>
     </Tooltip>
   );
 };
