@@ -8,7 +8,6 @@ import withElevationOnHover from '../../../../../../domain/shared/components/wit
 import { useTranslation } from 'react-i18next';
 import { useSendMessageToUserMutation } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog } from '../../../../../../domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useApolloErrorHandler } from '../../../../../../core/apollo/hooks/useApolloErrorHandler';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -58,11 +57,8 @@ const ElevatedPaper = withElevationOnHover(Paper);
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
   const { id, displayName, avatar, url, tooltip, isContactable } = props;
-  const handleError = useApolloErrorHandler();
   const { t } = useTranslation();
-  const [sendMessageToUser] = useSendMessageToUserMutation({
-    onError: handleError,
-  });
+  const [sendMessageToUser] = useSendMessageToUserMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
 
   const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);

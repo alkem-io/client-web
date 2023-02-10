@@ -11,7 +11,6 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../common/utils/containers/ComponentOrChildrenFn';
-import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { useUserContext } from '../../community/contributor/user';
 import { Message } from '../../shared/components/Comments/models/message';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
@@ -47,7 +46,6 @@ export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<Event
 // TODO: VERY BASED ON domain/collaboration/aspect/containers/AspectDashboardContainer/AspectDashboardContainer.tsx
 // Maybe put common logic together
 const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ hubNameId, eventId, ...rendered }) => {
-  const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
@@ -59,7 +57,6 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
   } = useCalendarEventDetailsQuery({
     variables: { hubId: hubNameId, eventId: eventId! },
     skip: !hubNameId || !eventId,
-    onError: handleError,
     fetchPolicy: 'cache-and-network',
   });
   const loading = !eventId || loadingEvent;
@@ -107,7 +104,6 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
-    onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
 
@@ -122,7 +118,6 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
     });
 
   const [postComment, { loading: postingComment }] = usePostCommentMutation({
-    onError: handleError,
     update: (cache, { data }) => {
       const cacheCommentsId = cache.identify({
         id: commentsId,
