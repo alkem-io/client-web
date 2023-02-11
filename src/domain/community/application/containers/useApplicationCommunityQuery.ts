@@ -32,6 +32,10 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: challengeTemplateError,
   } = useChallengeApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.challenge,
+    variables: {
+      hubId: hubNameId,
+      challengeId: challengeNameId,
+    },
   });
 
   const {
@@ -52,6 +56,9 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: hubTemplateError,
   } = useHubApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.hub,
+    variables: {
+      hubId: hubNameId,
+    },
   });
 
   const result = useMemo(() => {
