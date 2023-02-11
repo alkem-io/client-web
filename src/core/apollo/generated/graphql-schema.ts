@@ -1066,7 +1066,7 @@ export type CommunicationUpdateMessageReceived = {
 export type Community = Groupable & {
   __typename?: 'Community';
   /** The Form used for Applications to this community. */
-  applicationForm: Form;
+  applicationForm?: Maybe<Form>;
   /** Application available for this community. */
   applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
@@ -5684,18 +5684,20 @@ export type ChallengeApplicationTemplateQuery = {
         | {
             __typename?: 'Community';
             id: string;
-            applicationForm: {
-              __typename?: 'Form';
-              description?: string | undefined;
-              questions: Array<{
-                __typename?: 'FormQuestion';
-                required: boolean;
-                question: string;
-                sortOrder: number;
-                explanation: string;
-                maxLength: number;
-              }>;
-            };
+            applicationForm?:
+              | {
+                  __typename?: 'Form';
+                  description?: string | undefined;
+                  questions: Array<{
+                    __typename?: 'FormQuestion';
+                    required: boolean;
+                    question: string;
+                    sortOrder: number;
+                    explanation: string;
+                    maxLength: number;
+                  }>;
+                }
+              | undefined;
           }
         | undefined;
     };
@@ -8049,18 +8051,20 @@ export type HubApplicationTemplateQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          applicationForm: {
-            __typename?: 'Form';
-            id: string;
-            description?: string | undefined;
-            questions: Array<{
-              __typename?: 'FormQuestion';
-              required: boolean;
-              question: string;
-              explanation: string;
-              sortOrder: number;
-            }>;
-          };
+          applicationForm?:
+            | {
+                __typename?: 'Form';
+                id: string;
+                description?: string | undefined;
+                questions: Array<{
+                  __typename?: 'FormQuestion';
+                  required: boolean;
+                  question: string;
+                  explanation: string;
+                  sortOrder: number;
+                }>;
+              }
+            | undefined;
         }
       | undefined;
   };
