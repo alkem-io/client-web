@@ -1,4 +1,4 @@
-query hubPage($hubId: UUID_NAMEID!) {
+query hubPage($hubId: UUID_NAMEID!, $isAuthorized: Boolean!) {
   hub(ID: $hubId) {
     ...HubPage
   }
@@ -55,26 +55,28 @@ fragment HubPage on Hub {
       myPrivileges
     }
   }
-  collaboration {
-    ...DashboardTopCallouts
-  }
-  community {
-    ...EntityDashboardCommunity
-  }
-  challenges(limit: 3, shuffle: true) {
-    ...ChallengeCard
-  }
   tagset {
     id
     name
     tags
   }
-  timeline {
-    id
-    authorization {
+  ...on Hub @include(if: $isAuthorized) {
+    collaboration {
+      ...DashboardTopCallouts
+    }
+    community {
+      ...EntityDashboardCommunity
+    }
+    challenges(limit: 3, shuffle: true) {
+      ...ChallengeCard
+    }
+    timeline {
       id
-      anonymousReadAccess
-      myPrivileges
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
+      }
     }
   }
 }

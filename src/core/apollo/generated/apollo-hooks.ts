@@ -667,26 +667,28 @@ export const HubPageFragmentDoc = gql`
         myPrivileges
       }
     }
-    collaboration {
-      ...DashboardTopCallouts
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
     tagset {
       id
       name
       tags
     }
-    timeline {
-      id
-      authorization {
+    ... on Hub @include(if: $isAuthorized) {
+      collaboration {
+        ...DashboardTopCallouts
+      }
+      community {
+        ...EntityDashboardCommunity
+      }
+      challenges(limit: 3, shuffle: true) {
+        ...ChallengeCard
+      }
+      timeline {
         id
-        anonymousReadAccess
-        myPrivileges
+        authorization {
+          id
+          anonymousReadAccess
+          myPrivileges
+        }
       }
     }
   }
@@ -5086,7 +5088,7 @@ export function refetchHubTemplatesCanvasTemplateWithValueQuery(
 }
 
 export const HubPageDocument = gql`
-  query hubPage($hubId: UUID_NAMEID!) {
+  query hubPage($hubId: UUID_NAMEID!, $isAuthorized: Boolean!) {
     hub(ID: $hubId) {
       ...HubPage
     }
@@ -5107,6 +5109,7 @@ export const HubPageDocument = gql`
  * const { data, loading, error } = useHubPageQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      isAuthorized: // value for 'isAuthorized'
  *   },
  * });
  */
