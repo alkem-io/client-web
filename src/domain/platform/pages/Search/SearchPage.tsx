@@ -253,10 +253,26 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     return [];
   }
 
-  return (query.search || [])
+  const contributorResults = (query.search.contributorResults || [])
     .map<SearchResultMetaType>(
       ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
       []
     )
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+
+  const journeyResults = (query.search.journeyResults || [])
+    .map<SearchResultMetaType>(
+      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
+      []
+    )
+    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+
+  const contributionResults = (query.search.contributionResults || [])
+    .map<SearchResultMetaType>(
+      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
+      []
+    )
+    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+
+  return contributorResults.concat(journeyResults).concat(contributionResults);
 };

@@ -133,7 +133,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   });
 
   const searchResults: SimpleChallengeWithSearchTerms[] | undefined =
-    rawSearchResults?.search?.flatMap(result => {
+    rawSearchResults?.search?.journeyResults.flatMap(result => {
       const entry = result as SearchResultT<SearchResultChallengeFragment>;
       const ch = entry.challenge;
       const hub = entry.hub;
