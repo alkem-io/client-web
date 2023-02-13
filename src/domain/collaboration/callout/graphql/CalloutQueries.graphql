@@ -150,9 +150,7 @@ fragment Callout on Callout {
   displayName
   description
   state
-  aspects {
-    ...ContributeTabAspect
-  }
+  activity
   canvases {
     ...CanvasDetails
   }

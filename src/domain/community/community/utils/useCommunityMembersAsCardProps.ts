@@ -36,6 +36,7 @@ const mapUserToContributorCardProps = (user: DashboardContributingUserFragment):
     city: user.profile?.location?.city,
     country: COUNTRIES_BY_CODE[user.profile?.location?.country || ''],
   },
+  isContactable: user.isContactable,
 });
 
 export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): WithId<ContributorCardProps> => ({
@@ -48,6 +49,7 @@ export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): Wit
     city: user.city,
     country: user.country,
   },
+  isContactable: user.isContactable ?? true,
 });
 
 const mapOrganizationToContributorCardProps = (
@@ -57,6 +59,7 @@ const mapOrganizationToContributorCardProps = (
   avatar: getVisualAvatar(org.profile?.avatar) || '',
   displayName: org.displayName,
   url: buildOrganizationUrl(org.nameID),
+  isContactable: true,
 });
 
 const useCommunityMembersAsCardProps = (

@@ -11,7 +11,6 @@ import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } 
 import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import SendButton from '../../SendButton';
 import { useShareLinkWithUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useApolloErrorHandler } from '../../../../../core/apollo/hooks/useApolloErrorHandler';
 
 const ICON_URL = '/share-dialog/alkemio.png';
 
@@ -42,7 +41,6 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
   ShareOnPlatformHandlerProps
 >(({ entityTypeName, url, goBack }, _ref) => {
   const { t } = useTranslation();
-  const handleError = useApolloErrorHandler();
 
   const initialValues: ShareOnAlkemioData = useMemo(
     () => ({
@@ -64,9 +62,7 @@ const AlkemioShareHandler: FC<ShareOnPlatformHandlerProps> = forwardRef<
     users: yup.array().min(1, t('forms.validations.atLeastOne', { item: t('common.user') })),
   });
 
-  const [shareLinkMutation, { loading, error }] = useShareLinkWithUserMutation({
-    onError: handleError,
-  });
+  const [shareLinkMutation, { loading, error }] = useShareLinkWithUserMutation();
   const shareLink = useCallback(
     async (receiverIds: string[], url: string, message: string) => {
       // Make sure the message includes the link, if not, append it to the end:

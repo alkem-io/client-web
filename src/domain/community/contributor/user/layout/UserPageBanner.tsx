@@ -1,14 +1,37 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
+import { useSendMessageToUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanner';
 import { toSocialNetworkEnum } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import { isSocialLink } from '../../../../shared/components/SocialLinks/SocialLinks';
+import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 
 const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
+  const { user: currentUser } = useUserContext();
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
+  const userId = userMetadata?.user.id;
+  const [sendMessageToUser] = useSendMessageToUserMutation();
+
+  const handleSendMessage = useCallback(
+    async (messageText: string) => {
+      if (!userId) {
+        throw new Error('User not loaded.');
+      }
+
+      await sendMessageToUser({
+        variables: {
+          messageData: {
+            message: messageText,
+            receiverIds: [userId],
+          },
+        },
+      });
+    },
+    [sendMessageToUser, userId]
+  );
 
   const references = userMetadata?.user?.profile?.references;
   const socialLinks = useMemo(() => {
@@ -21,7 +44,7 @@ const UserPageBanner: FC = () => {
   }, [references]);
 
   if (!loading && userMetadata) {
-    const { displayName, profile, phone } = userMetadata.user;
+    const { displayName, profile, phone, isContactable } = userMetadata.user;
 
     return (
       <ProfileBanner
@@ -32,10 +55,12 @@ const UserPageBanner: FC = () => {
         socialLinks={socialLinks}
         avatarUrl={profile?.avatar?.uri}
         loading={loading}
+        onSendMessage={handleSendMessage}
+        isContactable={isContactable && currentUser?.user.id !== userId}
       />
     );
   } else {
-    return <ProfileBanner title={undefined} loading />;
+    return <ProfileBanner title={undefined} loading onSendMessage={handleSendMessage} />;
   }
 };
 

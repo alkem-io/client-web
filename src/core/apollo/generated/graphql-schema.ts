@@ -764,6 +764,8 @@ export type CanvasCheckout = {
 
 export type CanvasCheckoutEventInput = {
   canvasCheckoutID: Scalars['UUID'];
+  /** Report an error if this event fails to trigger a transition. */
+  errorOnFailedTransition?: InputMaybe<Scalars['Boolean']>;
   eventName: Scalars['String'];
 };
 
@@ -4938,6 +4940,7 @@ export type ChallengePageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -5260,6 +5263,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -6311,6 +6315,7 @@ export type AboutPageMembersQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -6405,6 +6410,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -6500,6 +6506,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -7287,6 +7294,7 @@ export type HubPageQuery = {
                 __typename?: 'User';
                 id: string;
                 displayName: string;
+                isContactable: boolean;
                 nameID: string;
                 profile?:
                   | {
@@ -7593,6 +7601,7 @@ export type HubPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -8526,6 +8535,7 @@ export type OpportunityPageQuery = {
                   __typename?: 'User';
                   id: string;
                   displayName: string;
+                  isContactable: boolean;
                   nameID: string;
                   profile?:
                     | {
@@ -8765,6 +8775,7 @@ export type OpportunityPageFragment = {
               __typename?: 'User';
               id: string;
               displayName: string;
+              isContactable: boolean;
               nameID: string;
               profile?:
                 | {
@@ -11502,47 +11513,8 @@ export type CalloutsQuery = {
                 displayName: string;
                 description: string;
                 state: CalloutState;
+                activity: number;
                 visibility: CalloutVisibility;
-                aspects?:
-                  | Array<{
-                      __typename?: 'Aspect';
-                      id: string;
-                      nameID: string;
-                      displayName: string;
-                      type: string;
-                      createdDate: Date;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                      createdBy: { __typename?: 'User'; displayName: string };
-                      comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      profile?:
-                        | {
-                            __typename?: 'CardProfile';
-                            id: string;
-                            description: string;
-                            tagset?:
-                              | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
-                              | undefined;
-                            references?:
-                              | Array<{
-                                  __typename?: 'Reference';
-                                  id: string;
-                                  name: string;
-                                  uri: string;
-                                  description?: string | undefined;
-                                }>
-                              | undefined;
-                          }
-                        | undefined;
-                    }>
-                  | undefined;
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -11704,47 +11676,8 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  activity: number;
                   visibility: CalloutVisibility;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        type: string;
-                        createdDate: Date;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        profile?:
-                          | {
-                              __typename?: 'CardProfile';
-                              id: string;
-                              description: string;
-                              tagset?:
-                                | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
-                                | undefined;
-                              references?:
-                                | Array<{
-                                    __typename?: 'Reference';
-                                    id: string;
-                                    name: string;
-                                    uri: string;
-                                    description?: string | undefined;
-                                  }>
-                                | undefined;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -11916,47 +11849,8 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  activity: number;
                   visibility: CalloutVisibility;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        type: string;
-                        createdDate: Date;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                        createdBy: { __typename?: 'User'; displayName: string };
-                        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        profile?:
-                          | {
-                              __typename?: 'CardProfile';
-                              id: string;
-                              description: string;
-                              tagset?:
-                                | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
-                                | undefined;
-                              references?:
-                                | Array<{
-                                    __typename?: 'Reference';
-                                    id: string;
-                                    name: string;
-                                    uri: string;
-                                    description?: string | undefined;
-                                  }>
-                                | undefined;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -12412,41 +12306,8 @@ export type CollaborationWithCalloutsFragment = {
         displayName: string;
         description: string;
         state: CalloutState;
+        activity: number;
         visibility: CalloutVisibility;
-        aspects?:
-          | Array<{
-              __typename?: 'Aspect';
-              id: string;
-              nameID: string;
-              displayName: string;
-              type: string;
-              createdDate: Date;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-              createdBy: { __typename?: 'User'; displayName: string };
-              comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              profile?:
-                | {
-                    __typename?: 'CardProfile';
-                    id: string;
-                    description: string;
-                    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                    references?:
-                      | Array<{
-                          __typename?: 'Reference';
-                          id: string;
-                          name: string;
-                          uri: string;
-                          description?: string | undefined;
-                        }>
-                      | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
         canvases?:
           | Array<{
               __typename?: 'Canvas';
@@ -12592,41 +12453,8 @@ export type CalloutFragment = {
   displayName: string;
   description: string;
   state: CalloutState;
+  activity: number;
   visibility: CalloutVisibility;
-  aspects?:
-    | Array<{
-        __typename?: 'Aspect';
-        id: string;
-        nameID: string;
-        displayName: string;
-        type: string;
-        createdDate: Date;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        createdBy: { __typename?: 'User'; displayName: string };
-        comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        profile?:
-          | {
-              __typename?: 'CardProfile';
-              id: string;
-              description: string;
-              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
-            }
-          | undefined;
-      }>
-    | undefined;
   canvases?:
     | Array<{
         __typename?: 'Canvas';
@@ -14184,6 +14012,7 @@ export type AuthorDetailsQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -14462,6 +14291,24 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 }>;
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
+
+export type SendMessageToUserMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToUserInput;
+}>;
+
+export type SendMessageToUserMutation = { __typename?: 'Mutation'; sendMessageToUser: boolean };
+
+export type SendMessageToOrganizationMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToOrganizationInput;
+}>;
+
+export type SendMessageToOrganizationMutation = { __typename?: 'Mutation'; sendMessageToOrganization: boolean };
+
+export type SendMessageToCommunityLeadsMutationVariables = Exact<{
+  messageData: CommunicationSendMessageToCommunityLeadsInput;
+}>;
+
+export type SendMessageToCommunityLeadsMutation = { __typename?: 'Mutation'; sendMessageToCommunityLeads: boolean };
 
 export type CommunityUpdatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -15027,6 +14874,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -15060,6 +14908,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
+                isContactable: boolean;
                 agent?:
                   | {
                       __typename?: 'Agent';
@@ -15135,6 +14984,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15168,6 +15018,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15264,6 +15115,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15297,6 +15149,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
+                  isContactable: boolean;
                   agent?:
                     | {
                         __typename?: 'Agent';
@@ -15378,6 +15231,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15404,6 +15258,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
+        isContactable: boolean;
         agent?:
           | {
               __typename?: 'Agent';
@@ -15483,6 +15338,7 @@ export type EntityDashboardCommunityFragment = {
         __typename?: 'User';
         id: string;
         displayName: string;
+        isContactable: boolean;
         nameID: string;
         profile?:
           | {
@@ -15533,6 +15389,7 @@ export type DashboardContributingUserFragment = {
   __typename?: 'User';
   id: string;
   displayName: string;
+  isContactable: boolean;
   nameID: string;
   profile?:
     | {
@@ -15586,6 +15443,7 @@ export type ContributingUsersQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     profile?:
       | {
           __typename?: 'Profile';
@@ -16271,6 +16129,7 @@ export type ContributorsPageUsersQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      isContactable: boolean;
       agent?:
         | {
             __typename?: 'Agent';
@@ -16345,6 +16204,7 @@ export type UserContributorPaginatedFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -16377,6 +16237,7 @@ export type UserContributorFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17218,6 +17079,7 @@ export type UserCardFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  isContactable: boolean;
   agent?:
     | {
         __typename?: 'Agent';
@@ -17816,6 +17678,7 @@ export type UserCardQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    isContactable: boolean;
     agent?:
       | {
           __typename?: 'Agent';
@@ -17871,6 +17734,7 @@ export type UserProfileQuery = {
   __typename?: 'Query';
   user: {
     __typename?: 'User';
+    isContactable: boolean;
     id: string;
     nameID: string;
     displayName: string;
@@ -19069,6 +18933,49 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
               | {
                   __typename?: 'TemplatesSet';
                   canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type InnovationPackFullCanvasTemplateWithValueQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type InnovationPackFullCanvasTemplateWithValueQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        value: string;
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          id: string;
+                          title: string;
+                          description: string;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
                 }
               | undefined;
           }

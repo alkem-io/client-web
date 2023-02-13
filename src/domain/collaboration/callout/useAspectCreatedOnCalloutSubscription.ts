@@ -6,12 +6,17 @@ import {
   usePrivilegesOnHubCollaborationQuery,
   usePrivilegesOnOpportunityCollaborationQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  ContributeTabAspectFragment,
+  Scalars,
+} from '../../../core/apollo/generated/graphql-schema';
 import useCalloutAspectCreatedSubscription from '../collaboration/useCalloutAspectCreatedSubscription';
 
-export type AspectWithPermissions = AspectCardFragment & { canDelete: boolean | undefined };
 export interface AspectsData {
   subscriptionEnabled: boolean;
+  aspects: ContributeTabAspectFragment[] | undefined;
+  loading: boolean;
 }
 
 interface UseAspectDataHookProps {
@@ -19,6 +24,7 @@ interface UseAspectDataHookProps {
   calloutId: Scalars['UUID_NAMEID'];
   challengeNameId?: Scalars['UUID_NAMEID'];
   opportunityNameId?: Scalars['UUID_NAMEID'];
+  skip?: boolean;
 }
 
 export const useAspectCreatedOnCalloutSubscription = ({
@@ -26,6 +32,7 @@ export const useAspectCreatedOnCalloutSubscription = ({
   calloutId,
   challengeNameId = undefined,
   opportunityNameId = undefined,
+  skip = false,
 }: UseAspectDataHookProps): AspectsData => {
   const { data: hubCollaborationData } = usePrivilegesOnHubCollaborationQuery({
     variables: { hubNameId },
@@ -34,9 +41,13 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const hubCollaboration = hubCollaborationData?.hub?.collaboration;
   const hubCollaborationPrivileges = hubCollaboration?.authorization?.myPrivileges;
   const canReadHubCollaboration = hubCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
-  const { data: hubAspectData, subscribeToMore: subscribeToHub } = useHubCalloutAspectsSubscriptionQuery({
+  const {
+    data: hubAspectData,
+    subscribeToMore: subscribeToHub,
+    loading: hubAspectDataLoading,
+  } = useHubCalloutAspectsSubscriptionQuery({
     variables: { hubNameId, calloutId },
-    skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId),
+    skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId) || skip,
   });
 
   const { data: challengeCollaborationData } = usePrivilegesOnChallengeCollaborationQuery({
@@ -47,11 +58,14 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const challengeCollaborationPrivileges = challengeCollaboration?.authorization?.myPrivileges;
   const canReadChallengeCollaboration = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: challengeAspectData, subscribeToMore: subscribeToChallenges } =
-    useChallengeCalloutAspectsSubscriptionQuery({
-      variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
-      skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
-    });
+  const {
+    data: challengeAspectData,
+    subscribeToMore: subscribeToChallenges,
+    loading: challengeAspectDataLoading,
+  } = useChallengeCalloutAspectsSubscriptionQuery({
+    variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
+    skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId || skip,
+  });
 
   const { data: opportunityCollaborationData } = usePrivilegesOnOpportunityCollaborationQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId! },
@@ -61,13 +75,16 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const opportunityCollaborationPrivileges = opportunityCollaboration?.authorization?.myPrivileges;
   const canReadOpportunityCollaboration = opportunityCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: opportunityAspectData, subscribeToMore: subscribeToOpportunity } =
-    useOpportunityCalloutAspectsSubscriptionQuery({
-      variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
-      skip: !canReadOpportunityCollaboration || !opportunityNameId,
-      fetchPolicy: 'network-only',
-      nextFetchPolicy: 'cache-first',
-    });
+  const {
+    data: opportunityAspectData,
+    subscribeToMore: subscribeToOpportunity,
+    loading: opportunityAspectDataLoading,
+  } = useOpportunityCalloutAspectsSubscriptionQuery({
+    variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
+    skip: !canReadOpportunityCollaboration || !opportunityNameId || skip,
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-first',
+  });
 
   const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
@@ -88,7 +105,15 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const isSubscriptionEnabled =
     hubAspectSubscription.enabled || challengeAspectSubscription.enabled || opportunityAspectSubscription.enabled;
 
+  const callout = (
+    opportunityAspectData?.hub.opportunity ??
+    challengeAspectData?.hub.challenge ??
+    hubAspectData?.hub
+  )?.collaboration?.callouts?.find(callout => callout.id === calloutId);
+
   return {
+    aspects: callout?.aspects,
+    loading: hubAspectDataLoading || challengeAspectDataLoading || opportunityAspectDataLoading,
     subscriptionEnabled: isSubscriptionEnabled,
   };
 };
