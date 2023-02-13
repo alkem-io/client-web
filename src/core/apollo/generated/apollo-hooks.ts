@@ -2056,6 +2056,15 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const SearchResultCardFragmentDoc = gql`
+  fragment SearchResultCard on SearchResultCard {
+    card {
+      id
+      nameID
+      displayName
+    }
+  }
+`;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
     id
@@ -3172,11 +3181,13 @@ export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.Challen
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      id
-      type
-      terms
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
+      journeyResults {
+        id
+        type
+        terms
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
       }
     }
   }
@@ -19723,25 +19734,45 @@ export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadat
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      id
-      score
-      terms
-      type
-      ... on SearchResultHub {
-        ...SearchResultHub
+      journeyResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultHub {
+          ...SearchResultHub
+        }
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
+        ... on SearchResultOpportunity {
+          ...SearchResultOpportunity
+        }
       }
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
+      journeyResultsCount
+      contributorResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultUser {
+          ...SearchResultUser
+        }
+        ... on SearchResultOrganization {
+          ...SearchResultOrganization
+        }
       }
-      ... on SearchResultOpportunity {
-        ...SearchResultOpportunity
+      contributorResultsCount
+      contributionResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultCard {
+          ...SearchResultCard
+        }
       }
-      ... on SearchResultUser {
-        ...SearchResultUser
-      }
-      ... on SearchResultOrganization {
-        ...SearchResultOrganization
-      }
+      contributionResultsCount
     }
   }
   ${SearchResultHubFragmentDoc}
@@ -19749,6 +19780,7 @@ export const SearchDocument = gql`
   ${SearchResultOpportunityFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
+  ${SearchResultCardFragmentDoc}
 `;
 
 /**
