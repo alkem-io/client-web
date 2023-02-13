@@ -1050,6 +1050,25 @@ export type HubAspectTemplateFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ISearchResultsKeySpecifier = (
+  | 'contributionResults'
+  | 'contributionResultsCount'
+  | 'contributorResults'
+  | 'contributorResultsCount'
+  | 'groupResults'
+  | 'journeyResults'
+  | 'journeyResultsCount'
+  | ISearchResultsKeySpecifier
+)[];
+export type ISearchResultsFieldPolicy = {
+  contributionResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  groupResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovatonPackKeySpecifier = (
   | 'authorization'
   | 'displayName'
@@ -1911,16 +1930,24 @@ export type SearchResultFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultCardKeySpecifier = (
+  | 'calloutNameID'
   | 'card'
+  | 'challengeNameID'
+  | 'hubNameID'
   | 'id'
+  | 'opportunityNameID'
   | 'score'
   | 'terms'
   | 'type'
   | SearchResultCardKeySpecifier
 )[];
 export type SearchResultCardFieldPolicy = {
+  calloutNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   card?: FieldPolicy<any> | FieldReadFunction<any>;
+  challengeNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunityNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2596,6 +2623,10 @@ export type StrictTypedTypePolicies = {
   HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
     fields?: HubAspectTemplateFieldPolicy;
+  };
+  ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
+    fields?: ISearchResultsFieldPolicy;
   };
   InnovatonPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovatonPackKeySpecifier | (() => undefined | InnovatonPackKeySpecifier);
