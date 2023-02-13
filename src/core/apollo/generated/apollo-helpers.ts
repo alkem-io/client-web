@@ -1930,16 +1930,24 @@ export type SearchResultFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultCardKeySpecifier = (
+  | 'calloutNameID'
   | 'card'
+  | 'challengeNameID'
+  | 'hubNameID'
   | 'id'
+  | 'opportunityNameID'
   | 'score'
   | 'terms'
   | 'type'
   | SearchResultCardKeySpecifier
 )[];
 export type SearchResultCardFieldPolicy = {
+  calloutNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   card?: FieldPolicy<any> | FieldReadFunction<any>;
+  challengeNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  opportunityNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

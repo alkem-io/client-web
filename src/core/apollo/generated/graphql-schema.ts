@@ -3669,9 +3669,17 @@ export type SearchResult = {
 
 export type SearchResultCard = SearchResult & {
   __typename?: 'SearchResultCard';
+  /** The Callout nameID of the Card. */
+  calloutNameID: Scalars['String'];
   /** The Card that was found. */
   card: Aspect;
+  /** The Challenge nameID of the Card. Applicable for Callouts on Opportunities and Challenges. */
+  challengeNameID?: Maybe<Scalars['String']>;
+  /** The Hub nameID of the Card. */
+  hubNameID: Scalars['String'];
   id: Scalars['UUID'];
+  /** The Opportunity nameID of the Card. Applicable only for Callouts on Opportunities. */
+  opportunityNameID?: Maybe<Scalars['String']>;
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float'];
   /** The terms that were matched for this result */
