@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import {
   FormControl,
   FormGroup,
@@ -11,7 +11,12 @@ import {
 } from '@mui/material';
 import { Send } from '@mui/icons-material';
 import { useField, useFormikContext } from 'formik';
-import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
+import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
+import { MentionsInput, Mention, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
+import { useMessagingAvailableRecipientsLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { UserFilterInput } from '../../../../core/apollo/generated/graphql-schema';
+
+const MAX_USERS_MENTIONABLE = 10;
 
 interface CommentInputField extends InputProps {
   name: string;
@@ -34,6 +39,30 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
 }) => {
   const [field, meta, helper] = useField(name);
 
+  const [filter, setFilter] = useState<UserFilterInput>();
+  const [loadUsers, { data }] = useMessagingAvailableRecipientsLazyQuery({
+    variables: { filter, first: MAX_USERS_MENTIONABLE },
+  });
+  const users = data?.usersPaginated.users ?? [];
+
+  const onChange: OnChangeHandlerFunc = (event, newValue, newPlaintextValue, mentions) => {
+    console.log('onChange', event, newValue, newPlaintextValue, mentions);
+    helper.setValue(newValue);
+  };
+
+  const queryUsers = (search: string, callback: (users: SuggestionDataItem[]) => void) => {
+    console.log('queryUser', search);
+    setFilter({ email: search, firstName: search, lastName: search });
+    loadUsers().then(() => {
+      callback(
+        users.map(user => ({
+          id: user.id,
+          display: user.displayName,
+        }))
+      );
+    });
+  };
+
   const { submitForm } = useFormikContext();
 
   const inactive = disabled || submitting;
@@ -50,6 +79,19 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   return (
     <FormGroup>
       <FormControl>
+        <MentionsInput value={field.value} onChange={onChange}>
+          <Mention
+            trigger="@"
+            data={queryUsers}
+            renderSuggestion={user => {
+              return (
+                <p>
+                  {user.id} {user.display}
+                </p>
+              );
+            }}
+          />
+        </MentionsInput>
         <OutlinedInput
           multiline
           value={field.value}
