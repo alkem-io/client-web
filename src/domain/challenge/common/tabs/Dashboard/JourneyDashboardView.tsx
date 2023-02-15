@@ -120,6 +120,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   const messageReceivers = useMemo(
     () =>
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
+        id: user.id,
         title: user.displayName,
         country: user.profile?.location?.country,
         city: user.profile?.location?.city,
