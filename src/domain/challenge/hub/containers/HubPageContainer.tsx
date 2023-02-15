@@ -36,7 +36,7 @@ import { useActivityOnCollaboration } from '../../../shared/components/ActivityL
 
 export interface HubContainerEntities {
   hub: HubPageFragment | undefined;
-  isPrivate: boolean;
+  isPrivate: boolean | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -80,16 +80,20 @@ const EMPTY = [];
 const NO_PRIVILEGES = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
-  const { hubId, hubNameId, loading: loadingHub } = useHub();
+  const { hubId, hubNameId, loading: loadingHub, isPrivate } = useHub();
+  const { user, isAuthenticated } = useUserContext();
+
+  const isMember = user?.ofHub(hubId) ?? false;
+
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
-    variables: { hubId: hubNameId },
+    variables: { hubId: hubNameId, isAuthorized: isMember || !isPrivate },
     errorPolicy: 'all',
+    skip: loadingHub,
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-  const { user, isAuthenticated } = useUserContext();
-  // don't load references without READ privilige on Context
+  // don't load references without READ privilege on Context
   const { data: referencesData } = useHubDashboardReferencesAndRecommendationsQuery({
     variables: { hubId },
     skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
@@ -105,9 +109,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challengesCount = useMemo(() => getMetricCount(_hub?.hub.metrics, MetricType.Challenge), [_hub]);
 
-  const isMember = user?.ofHub(hubId) ?? false;
-
-  const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
   const hubPrivileges = _hub?.hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
