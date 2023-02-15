@@ -6,6 +6,9 @@ import {
   useOpportunityCommunityQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CommunityContext, CommunityContextValue } from './CommunityContext';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useChallenge } from '../../../challenge/challenge/hooks/useChallenge';
+import { useOpportunity } from '../../../challenge/opportunity/hooks/useOpportunity';
 
 /**
  * @deprecated
@@ -17,22 +20,26 @@ import { CommunityContext, CommunityContextValue } from './CommunityContext';
 const CommunityContextProvider: FC = ({ children }) => {
   const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
 
+  const { permissions: hubPermissions } = useHub();
+  const { permissions: challengePermissions } = useChallenge();
+  const { permissions: opportunityPermissions } = useOpportunity();
+
   const { data: hubData, loading: loadingHub } = useHubCommunityQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
-    skip: !hubNameId || Boolean(challengeNameId) || Boolean(opportunityNameId),
+    skip: !hubNameId || Boolean(challengeNameId) || Boolean(opportunityNameId) || !hubPermissions.communityReadAccess,
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !hubNameId || !challengeNameId || Boolean(opportunityNameId),
+    skip: !hubNameId || !challengeNameId || Boolean(opportunityNameId) || !challengePermissions.canReadCommunity,
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCommunityQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
-    skip: !hubNameId || !opportunityNameId,
+    skip: !hubNameId || !opportunityNameId || !opportunityPermissions.communityReadAccess,
   });
 
   const community =
