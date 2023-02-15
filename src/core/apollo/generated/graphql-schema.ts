@@ -7163,6 +7163,7 @@ export type LifecycleTemplateFragment = {
 
 export type HubPageQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
+  isAuthorized: Scalars['Boolean'];
 }>;
 
 export type HubPageQuery = {
@@ -7172,48 +7173,6 @@ export type HubPageQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-    authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
-      | undefined;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          displayName: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            description?: string | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-        }
-      | undefined;
-    context?:
-      | {
-          __typename?: 'Context';
-          id: string;
-          tagline?: string | undefined;
-          vision?: string | undefined;
-          visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                anonymousReadAccess: boolean;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
     collaboration?:
       | {
           __typename?: 'Collaboration';
@@ -7422,7 +7381,6 @@ export type HubPageQuery = {
           lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
         }>
       | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     timeline?:
       | {
           __typename?: 'Timeline';
@@ -7437,6 +7395,49 @@ export type HubPageQuery = {
             | undefined;
         }
       | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    authorization?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          anonymousReadAccess: boolean;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          displayName: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            description?: string | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | undefined;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          tagline?: string | undefined;
+          vision?: string | undefined;
+          visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                anonymousReadAccess: boolean;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
 };
 
@@ -7481,48 +7482,6 @@ export type HubPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
-    | undefined;
-  host?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        displayName: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      }
-    | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        vision?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              anonymousReadAccess: boolean;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
   collaboration?:
     | {
         __typename?: 'Collaboration';
@@ -7729,7 +7688,6 @@ export type HubPageFragment = {
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
       }>
     | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   timeline?:
     | {
         __typename?: 'Timeline';
@@ -7744,6 +7702,49 @@ export type HubPageFragment = {
           | undefined;
       }
     | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        anonymousReadAccess: boolean;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      }
+    | undefined;
+  host?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }
+    | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        vision?: string | undefined;
+        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              anonymousReadAccess: boolean;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
 };
 
 export type AdminHubFragment = {
