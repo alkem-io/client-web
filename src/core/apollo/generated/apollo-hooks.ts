@@ -3741,17 +3741,21 @@ export function refetchChallengeActivityQuery(variables: SchemaTypes.ChallengeAc
 }
 
 export const ChallengeApplicationTemplateDocument = gql`
-  query challengeApplicationTemplate {
-    configuration {
-      template {
-        challenges {
-          name
-          applications {
-            name
+  query challengeApplicationTemplate($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        community {
+          id
+          applicationForm {
+            description
             questions {
               required
               question
               sortOrder
+              explanation
+              maxLength
             }
           }
         }
@@ -3772,11 +3776,13 @@ export const ChallengeApplicationTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeApplicationTemplateQuery({
  *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
 export function useChallengeApplicationTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ChallengeApplicationTemplateQuery,
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
   >
@@ -3810,7 +3816,7 @@ export type ChallengeApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationTemplateQueryVariables
 >;
 export function refetchChallengeApplicationTemplateQuery(
-  variables?: SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  variables: SchemaTypes.ChallengeApplicationTemplateQueryVariables
 ) {
   return { query: ChallengeApplicationTemplateDocument, variables: variables };
 }
@@ -5479,18 +5485,19 @@ export function refetchHubActivityQuery(variables: SchemaTypes.HubActivityQueryV
 }
 
 export const HubApplicationTemplateDocument = gql`
-  query hubApplicationTemplate {
-    configuration {
-      template {
-        hubs {
-          name
-          applications {
-            name
-            questions {
-              required
-              question
-              sortOrder
-            }
+  query hubApplicationTemplate($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      community {
+        id
+        applicationForm {
+          id
+          description
+          questions {
+            required
+            question
+            explanation
+            sortOrder
           }
         }
       }
@@ -5510,11 +5517,12 @@ export const HubApplicationTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useHubApplicationTemplateQuery({
  *   variables: {
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
 export function useHubApplicationTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.HubApplicationTemplateQuery,
     SchemaTypes.HubApplicationTemplateQueryVariables
   >
@@ -5545,7 +5553,7 @@ export type HubApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.HubApplicationTemplateQuery,
   SchemaTypes.HubApplicationTemplateQueryVariables
 >;
-export function refetchHubApplicationTemplateQuery(variables?: SchemaTypes.HubApplicationTemplateQueryVariables) {
+export function refetchHubApplicationTemplateQuery(variables: SchemaTypes.HubApplicationTemplateQueryVariables) {
   return { query: HubApplicationTemplateDocument, variables: variables };
 }
 
