@@ -1,15 +1,16 @@
-query hubApplicationTemplate {
-  configuration {
-    template {
-      hubs {
-        name
-        applications {
-          name
-          questions {
-            required
-            question
-            sortOrder
-          }
+query hubApplicationTemplate($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    community {
+      id
+      applicationForm {
+        id
+        description
+        questions {
+          required
+          question
+          explanation
+          sortOrder
         }
       }
     }

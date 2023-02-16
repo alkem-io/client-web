@@ -660,9 +660,8 @@ export type ChallengeCreatedFieldPolicy = {
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   hubID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ChallengeTemplateKeySpecifier = ('applications' | 'feedback' | 'name' | ChallengeTemplateKeySpecifier)[];
+export type ChallengeTemplateKeySpecifier = ('feedback' | 'name' | ChallengeTemplateKeySpecifier)[];
 export type ChallengeTemplateFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -776,6 +775,7 @@ export type CommunicationUpdateMessageReceivedFieldPolicy = {
   updatesID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityKeySpecifier = (
+  | 'applicationForm'
   | 'applications'
   | 'authorization'
   | 'availableLeadUsers'
@@ -792,6 +792,7 @@ export type CommunityKeySpecifier = (
   | CommunityKeySpecifier
 )[];
 export type CommunityFieldPolicy = {
+  applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -975,6 +976,27 @@ export type FileStorageConfigKeySpecifier = ('maxFileSize' | 'mimeTypes' | FileS
 export type FileStorageConfigFieldPolicy = {
   maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
   mimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type FormKeySpecifier = ('description' | 'id' | 'questions' | FormKeySpecifier)[];
+export type FormFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type FormQuestionKeySpecifier = (
+  | 'explanation'
+  | 'maxLength'
+  | 'question'
+  | 'required'
+  | 'sortOrder'
+  | FormQuestionKeySpecifier
+)[];
+export type FormQuestionFieldPolicy = {
+  explanation?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxLength?: FieldPolicy<any> | FieldReadFunction<any>;
+  question?: FieldPolicy<any> | FieldReadFunction<any>;
+  required?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoKeySpecifier = ('endpoint' | GeoKeySpecifier)[];
 export type GeoFieldPolicy = {
@@ -1286,6 +1308,7 @@ export type MutationKeySpecifier = (
   | 'updateCanvasTemplate'
   | 'updateChallenge'
   | 'updateChallengeInnovationFlow'
+  | 'updateCommunityApplicationForm'
   | 'updateDiscussion'
   | 'updateEcosystemModel'
   | 'updateHub'
@@ -1432,6 +1455,7 @@ export type MutationFieldPolicy = {
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallengeInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1495,14 +1519,12 @@ export type OpportunityCreatedFieldPolicy = {
 };
 export type OpportunityTemplateKeySpecifier = (
   | 'actorGroups'
-  | 'applications'
   | 'name'
   | 'relations'
   | OpportunityTemplateKeySpecifier
 )[];
 export type OpportunityTemplateFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1595,12 +1617,6 @@ export type PlatformFieldPolicy = {
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
-export type PlatformHubTemplateFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformLocationsKeySpecifier = (
   | 'about'
@@ -2026,6 +2042,21 @@ export type SearchResultUserFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultUserGroupKeySpecifier = (
+  | 'id'
+  | 'score'
+  | 'terms'
+  | 'type'
+  | 'userGroup'
+  | SearchResultUserGroupKeySpecifier
+)[];
+export type SearchResultUserGroupFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  userGroup?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2085,7 +2116,6 @@ export type TagsetTemplateFieldPolicy = {
 export type TemplateKeySpecifier = (
   | 'challenges'
   | 'description'
-  | 'hubs'
   | 'name'
   | 'opportunities'
   | 'organizations'
@@ -2095,7 +2125,6 @@ export type TemplateKeySpecifier = (
 export type TemplateFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2608,6 +2637,14 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | FileStorageConfigKeySpecifier | (() => undefined | FileStorageConfigKeySpecifier);
     fields?: FileStorageConfigFieldPolicy;
   };
+  Form?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | FormKeySpecifier | (() => undefined | FormKeySpecifier);
+    fields?: FormFieldPolicy;
+  };
+  FormQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | FormQuestionKeySpecifier | (() => undefined | FormQuestionKeySpecifier);
+    fields?: FormQuestionFieldPolicy;
+  };
   Geo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GeoKeySpecifier | (() => undefined | GeoKeySpecifier);
     fields?: GeoFieldPolicy;
@@ -2707,10 +2744,6 @@ export type StrictTypedTypePolicies = {
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
-  };
-  PlatformHubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PlatformHubTemplateKeySpecifier | (() => undefined | PlatformHubTemplateKeySpecifier);
-    fields?: PlatformHubTemplateFieldPolicy;
   };
   PlatformLocations?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformLocationsKeySpecifier | (() => undefined | PlatformLocationsKeySpecifier);
@@ -2817,6 +2850,10 @@ export type StrictTypedTypePolicies = {
   SearchResultUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultUserKeySpecifier | (() => undefined | SearchResultUserKeySpecifier);
     fields?: SearchResultUserFieldPolicy;
+  };
+  SearchResultUserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SearchResultUserGroupKeySpecifier | (() => undefined | SearchResultUserGroupKeySpecifier);
+    fields?: SearchResultUserGroupFieldPolicy;
   };
   Sentry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SentryKeySpecifier | (() => undefined | SentryKeySpecifier);

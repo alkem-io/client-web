@@ -875,8 +875,6 @@ export enum ChallengePreferenceType {
 
 export type ChallengeTemplate = {
   __typename?: 'ChallengeTemplate';
-  /** Application templates. */
-  applications?: Maybe<Array<ApplicationTemplate>>;
   /** Feedback templates. */
   feedback?: Maybe<Array<FeedbackTemplate>>;
   /** Challenge template name. */
@@ -1067,6 +1065,8 @@ export type CommunicationUpdateMessageReceived = {
 
 export type Community = Groupable & {
   __typename?: 'Community';
+  /** The Form used for Applications to this community. */
+  applicationForm?: Maybe<Form>;
   /** Application available for this community. */
   applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
@@ -1764,6 +1764,30 @@ export type FileStorageConfig = {
   mimeTypes: Array<Scalars['String']>;
 };
 
+export type Form = {
+  __typename?: 'Form';
+  /** A description of the purpose of this Form. */
+  description?: Maybe<Scalars['Markdown']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The set of Questions in this Form. */
+  questions: Array<FormQuestion>;
+};
+
+export type FormQuestion = {
+  __typename?: 'FormQuestion';
+  /** The explation text to clarify the question. */
+  explanation: Scalars['String'];
+  /** The maxiumum length of the answer, in characters, up to a limit of 512. */
+  maxLength: Scalars['Float'];
+  /** The question to be answered */
+  question: Scalars['String'];
+  /** Whether this Question requires an answer or not. */
+  required: Scalars['Boolean'];
+  /** The sort order of this question in a wider set of questions. */
+  sortOrder: Scalars['Float'];
+};
+
 export type Geo = {
   __typename?: 'Geo';
   /** Endpoint where geo information is consumed from. */
@@ -2283,6 +2307,8 @@ export type Mutation = {
   updateChallenge: Challenge;
   /** Updates the Innovation Flow on the specified Challenge. */
   updateChallengeInnovationFlow: Challenge;
+  /** Update the Application Form used by this Community. */
+  updateCommunityApplicationForm: Community;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified EcosystemModel. */
@@ -2805,6 +2831,10 @@ export type MutationUpdateChallengeInnovationFlowArgs = {
   challengeData: UpdateChallengeInnovationFlowInput;
 };
 
+export type MutationUpdateCommunityApplicationFormArgs = {
+  applicationFormData: UpdateCommunityApplicationFormInput;
+};
+
 export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
@@ -2939,8 +2969,6 @@ export type OpportunityTemplate = {
   __typename?: 'OpportunityTemplate';
   /** Template actor groups. */
   actorGroups?: Maybe<Array<Scalars['String']>>;
-  /** Application templates. */
-  applications?: Maybe<Array<ApplicationTemplate>>;
   /** Template opportunity name. */
   name: Scalars['String'];
   /** Template relations. */
@@ -3074,16 +3102,6 @@ export type Platform = {
   id: Scalars['UUID'];
   /** The Innovation Library for the platform */
   library: Library;
-};
-
-export type PlatformHubTemplate = {
-  __typename?: 'PlatformHubTemplate';
-  /** Application templates. */
-  applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Hub aspect templates. */
-  aspects?: Maybe<Array<HubAspectTemplate>>;
-  /** Hub template name. */
-  name: Scalars['String'];
 };
 
 export type PlatformLocations = {
@@ -3769,6 +3787,19 @@ export type SearchResultUser = SearchResult & {
   user: User;
 };
 
+export type SearchResultUserGroup = SearchResult & {
+  __typename?: 'SearchResultUserGroup';
+  id: Scalars['UUID'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float'];
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']>;
+  /** The event type for this Activity. */
+  type: SearchResultType;
+  /** The User Group that was found. */
+  userGroup: UserGroup;
+};
+
 export type SendMessageOnCalloutInput = {
   /** The Callout the message is being sent to */
   calloutID: Scalars['UUID'];
@@ -3895,8 +3926,6 @@ export type Template = {
   challenges: Array<ChallengeTemplate>;
   /** Template description. */
   description: Scalars['String'];
-  /** Hub templates. */
-  hubs: Array<PlatformHubTemplate>;
   /** Template name. */
   name: Scalars['String'];
   /** Opportunity templates. */
@@ -4122,6 +4151,11 @@ export type UpdateChallengePreferenceInput = {
   value: Scalars['String'];
 };
 
+export type UpdateCommunityApplicationFormInput = {
+  communityID: Scalars['UUID'];
+  formData: UpdateFormInput;
+};
+
 export type UpdateContextInput = {
   background?: InputMaybe<Scalars['Markdown']>;
   impact?: InputMaybe<Scalars['Markdown']>;
@@ -4147,6 +4181,24 @@ export type UpdateDiscussionInput = {
 export type UpdateEcosystemModelInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateFormInput = {
+  description: Scalars['Markdown'];
+  questions: Array<UpdateFormQuestionInput>;
+};
+
+export type UpdateFormQuestionInput = {
+  /** The explation text to clarify the question. */
+  explanation: Scalars['String'];
+  /** The maxiumum length of the answer, in characters, up to a limit of 512. */
+  maxLength: Scalars['Float'];
+  /** The question to be answered */
+  question: Scalars['String'];
+  /** Whether an answer is required for this Question. */
+  required: Scalars['Boolean'];
+  /** The sort order of this question in a wider set of questions. */
+  sortOrder: Scalars['Float'];
 };
 
 export type UpdateHubInput = {
@@ -4711,6 +4763,7 @@ export type ChallengeExplorerSearchQuery = {
       | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }
       | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType; terms: Array<string> }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
     >;
   };
 };
@@ -5657,30 +5710,39 @@ export type ChallengeActivityQuery = {
   };
 };
 
-export type ChallengeApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+export type ChallengeApplicationTemplateQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
 
 export type ChallengeApplicationTemplateQuery = {
   __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      challenges: Array<{
-        __typename?: 'ChallengeTemplate';
-        name: string;
-        applications?:
-          | Array<{
-              __typename?: 'ApplicationTemplate';
-              name: string;
-              questions: Array<{
-                __typename?: 'QuestionTemplate';
-                required: boolean;
-                question: string;
-                sortOrder?: number | undefined;
-              }>;
-            }>
-          | undefined;
-      }>;
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            applicationForm?:
+              | {
+                  __typename?: 'Form';
+                  description?: string | undefined;
+                  questions: Array<{
+                    __typename?: 'FormQuestion';
+                    required: boolean;
+                    question: string;
+                    sortOrder: number;
+                    explanation: string;
+                    maxLength: number;
+                  }>;
+                }
+              | undefined;
+          }
+        | undefined;
     };
   };
 };
@@ -8020,31 +8082,35 @@ export type HubActivityQuery = {
   };
 };
 
-export type HubApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+export type HubApplicationTemplateQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
 
 export type HubApplicationTemplateQuery = {
   __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      hubs: Array<{
-        __typename?: 'PlatformHubTemplate';
-        name: string;
-        applications?:
-          | Array<{
-              __typename?: 'ApplicationTemplate';
-              name: string;
-              questions: Array<{
-                __typename?: 'QuestionTemplate';
-                required: boolean;
-                question: string;
-                sortOrder?: number | undefined;
-              }>;
-            }>
-          | undefined;
-      }>;
-    };
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          applicationForm?:
+            | {
+                __typename?: 'Form';
+                id: string;
+                description?: string | undefined;
+                questions: Array<{
+                  __typename?: 'FormQuestion';
+                  required: boolean;
+                  question: string;
+                  explanation: string;
+                  sortOrder: number;
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -14730,6 +14796,7 @@ export type OpportunityNameIdQuery = {
 export type ChallengeCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ChallengeCommunityQuery = {
@@ -14781,6 +14848,7 @@ export type CommunityDetailsFragment = {
 
 export type HubCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type HubCommunityQuery = {
@@ -14814,6 +14882,7 @@ export type HubCommunityQuery = {
 export type OpportunityCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type OpportunityCommunityQuery = {
@@ -19225,6 +19294,13 @@ export type SearchQuery = {
           type: SearchResultType;
         }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
     >;
     contributorResults: Array<
       | { __typename?: 'SearchResultCard'; id: string; score: number; terms: Array<string>; type: SearchResultType }
@@ -19285,6 +19361,13 @@ export type SearchQuery = {
               | undefined;
           };
         }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
     >;
     contributionResults: Array<
       | {
@@ -19318,6 +19401,13 @@ export type SearchQuery = {
           type: SearchResultType;
         }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
     >;
   };
 };
