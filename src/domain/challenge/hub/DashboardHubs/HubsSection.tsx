@@ -15,6 +15,7 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { FilterByTag } from '../FilterByTag';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -68,18 +69,25 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const isLoading = loading || areHubsLoading;
 
   return (
-    <DashboardHubsSection
-      headerText={t('pages.home.sections.hub.header')}
-      primaryAction={<MetricTooltip metricsItems={metricItems} />}
-      hubs={hubs}
-      getHubCardProps={getHubCardProps}
+    <FilterByTag
+      items={hubs}
+      valueGetter={hub => ({ id: hub.id, values: hub?.tagset?.tags ?? [] })}
     >
-      <Box>
-        <Caption>{t('pages.home.sections.hub.body')}</Caption>
-        <Caption>{t('pages.home.sections.hub.body1')}</Caption>
-      </Box>
-      {isLoading && <Loading />}
-    </DashboardHubsSection>
+      {hubs => (
+        <DashboardHubsSection
+          headerText={t('pages.home.sections.hub.header')}
+          primaryAction={<MetricTooltip metricsItems={metricItems} />}
+          hubs={hubs}
+          getHubCardProps={getHubCardProps}
+        >
+          <Box>
+            <Caption>{t('pages.home.sections.hub.body')}</Caption>
+            <Caption>{t('pages.home.sections.hub.body1')}</Caption>
+          </Box>
+          {isLoading && <Loading />}
+        </DashboardHubsSection>
+      )}
+    </FilterByTag>
   );
 };
 
