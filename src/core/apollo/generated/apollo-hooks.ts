@@ -3,31 +3,6 @@ import * as SchemaTypes from './graphql-schema';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {} as const;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
-`;
-export const MessagingUserInformationFragmentDoc = gql`
-  fragment MessagingUserInformation on User {
-    id
-    displayName
-    profile {
-      id
-      location {
-        id
-        city
-        country
-      }
-      avatar {
-        ...VisualUri
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const MyPrivilegesFragmentDoc = gql`
   fragment MyPrivileges on Authorization {
     myPrivileges
@@ -44,6 +19,13 @@ export const VisualFullFragmentDoc = gql`
     maxWidth
     minHeight
     minWidth
+  }
+`;
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
+    id
+    uri
+    name
   }
 `;
 export const AspectCardFragmentDoc = gql`
@@ -192,6 +174,7 @@ export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
     id
     displayName
+    isContactable
     nameID
     profile {
       id
@@ -684,26 +667,28 @@ export const HubPageFragmentDoc = gql`
         myPrivileges
       }
     }
-    collaboration {
-      ...DashboardTopCallouts
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
     tagset {
       id
       name
       tags
     }
-    timeline {
-      id
-      authorization {
+    ... on Hub @include(if: $isAuthorized) {
+      collaboration {
+        ...DashboardTopCallouts
+      }
+      community {
+        ...EntityDashboardCommunity
+      }
+      challenges(limit: 3, shuffle: true) {
+        ...ChallengeCard
+      }
+      timeline {
         id
-        anonymousReadAccess
-        myPrivileges
+        authorization {
+          id
+          anonymousReadAccess
+          myPrivileges
+        }
       }
     }
   }
@@ -1104,16 +1089,6 @@ export const PrivilegesOnCollaborationFragmentDoc = gql`
     }
   }
 `;
-export const ContributeTabAspectFragmentDoc = gql`
-  fragment ContributeTabAspect on Aspect {
-    ...AspectCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${AspectCardFragmentDoc}
-`;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Comments {
     id
@@ -1176,9 +1151,7 @@ export const CalloutFragmentDoc = gql`
     displayName
     description
     state
-    aspects {
-      ...ContributeTabAspect
-    }
+    activity
     canvases {
       ...CanvasDetails
     }
@@ -1193,7 +1166,6 @@ export const CalloutFragmentDoc = gql`
     ...CalloutCardTemplate
     ...CalloutCanvasTemplate
   }
-  ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutCardTemplateFragmentDoc}
@@ -1279,6 +1251,16 @@ export const LockedByDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const ContributeTabAspectFragmentDoc = gql`
+  fragment ContributeTabAspect on Aspect {
+    ...AspectCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${AspectCardFragmentDoc}
+`;
 export const AspectsOnCalloutFragmentDoc = gql`
   fragment AspectsOnCallout on Callout {
     id
@@ -1360,6 +1342,7 @@ export const UserCardFragmentDoc = gql`
     id
     nameID
     displayName
+    isContactable
     agent {
       id
       credentials {
@@ -1552,6 +1535,7 @@ export const UserContributorFragmentDoc = gql`
     id
     nameID
     displayName
+    isContactable
     agent {
       id
       credentials {
@@ -1728,6 +1712,24 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+`;
+export const MessagingUserInformationFragmentDoc = gql`
+  fragment MessagingUserInformation on User {
+    id
+    displayName
+    profile {
+      id
+      location {
+        id
+        city
+        country
+      }
+      avatar {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -2051,6 +2053,15 @@ export const ConfigurationFragmentDoc = gql`
     }
     geo {
       endpoint
+    }
+  }
+`;
+export const SearchResultCardFragmentDoc = gql`
+  fragment SearchResultCard on SearchResultCard {
+    card {
+      id
+      nameID
+      displayName
     }
   }
 `;
@@ -2496,135 +2507,6 @@ export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileMutation,
   SchemaTypes.UploadFileMutationVariables
 >;
-export const MessagingAvailableRecipientsDocument = gql`
-  query MessagingAvailableRecipients($filter: UserFilterInput, $first: Int) {
-    usersPaginated(filter: $filter, first: $first) {
-      users {
-        ...MessagingUserInformation
-      }
-    }
-  }
-  ${MessagingUserInformationFragmentDoc}
-`;
-
-/**
- * __useMessagingAvailableRecipientsQuery__
- *
- * To run a query within a React component, call `useMessagingAvailableRecipientsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMessagingAvailableRecipientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMessagingAvailableRecipientsQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *      first: // value for 'first'
- *   },
- * });
- */
-export function useMessagingAvailableRecipientsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >(MessagingAvailableRecipientsDocument, options);
-}
-
-export function useMessagingAvailableRecipientsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.MessagingAvailableRecipientsQuery,
-    SchemaTypes.MessagingAvailableRecipientsQueryVariables
-  >(MessagingAvailableRecipientsDocument, options);
-}
-
-export type MessagingAvailableRecipientsQueryHookResult = ReturnType<typeof useMessagingAvailableRecipientsQuery>;
-export type MessagingAvailableRecipientsLazyQueryHookResult = ReturnType<
-  typeof useMessagingAvailableRecipientsLazyQuery
->;
-export type MessagingAvailableRecipientsQueryResult = Apollo.QueryResult<
-  SchemaTypes.MessagingAvailableRecipientsQuery,
-  SchemaTypes.MessagingAvailableRecipientsQueryVariables
->;
-export function refetchMessagingAvailableRecipientsQuery(
-  variables?: SchemaTypes.MessagingAvailableRecipientsQueryVariables
-) {
-  return { query: MessagingAvailableRecipientsDocument, variables: variables };
-}
-
-export const MessagingUserDetailsDocument = gql`
-  query MessagingUserDetails($id: UUID_NAMEID_EMAIL!) {
-    user(ID: $id) {
-      ...MessagingUserInformation
-    }
-  }
-  ${MessagingUserInformationFragmentDoc}
-`;
-
-/**
- * __useMessagingUserDetailsQuery__
- *
- * To run a query within a React component, call `useMessagingUserDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useMessagingUserDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMessagingUserDetailsQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useMessagingUserDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.MessagingUserDetailsQuery,
-    SchemaTypes.MessagingUserDetailsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MessagingUserDetailsQuery, SchemaTypes.MessagingUserDetailsQueryVariables>(
-    MessagingUserDetailsDocument,
-    options
-  );
-}
-
-export function useMessagingUserDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.MessagingUserDetailsQuery,
-    SchemaTypes.MessagingUserDetailsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MessagingUserDetailsQuery, SchemaTypes.MessagingUserDetailsQueryVariables>(
-    MessagingUserDetailsDocument,
-    options
-  );
-}
-
-export type MessagingUserDetailsQueryHookResult = ReturnType<typeof useMessagingUserDetailsQuery>;
-export type MessagingUserDetailsLazyQueryHookResult = ReturnType<typeof useMessagingUserDetailsLazyQuery>;
-export type MessagingUserDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.MessagingUserDetailsQuery,
-  SchemaTypes.MessagingUserDetailsQueryVariables
->;
-export function refetchMessagingUserDetailsQuery(variables: SchemaTypes.MessagingUserDetailsQueryVariables) {
-  return { query: MessagingUserDetailsDocument, variables: variables };
-}
-
 export const AssignUserAsChallengeAdminDocument = gql`
   mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
     assignUserAsChallengeAdmin(membershipData: $input) {
@@ -3299,11 +3181,13 @@ export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.Challen
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      id
-      type
-      terms
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
+      journeyResults {
+        id
+        type
+        terms
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
       }
     }
   }
@@ -3857,17 +3741,21 @@ export function refetchChallengeActivityQuery(variables: SchemaTypes.ChallengeAc
 }
 
 export const ChallengeApplicationTemplateDocument = gql`
-  query challengeApplicationTemplate {
-    configuration {
-      template {
-        challenges {
-          name
-          applications {
-            name
+  query challengeApplicationTemplate($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        community {
+          id
+          applicationForm {
+            description
             questions {
               required
               question
               sortOrder
+              explanation
+              maxLength
             }
           }
         }
@@ -3888,11 +3776,13 @@ export const ChallengeApplicationTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeApplicationTemplateQuery({
  *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
 export function useChallengeApplicationTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ChallengeApplicationTemplateQuery,
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
   >
@@ -3926,7 +3816,7 @@ export type ChallengeApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationTemplateQueryVariables
 >;
 export function refetchChallengeApplicationTemplateQuery(
-  variables?: SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  variables: SchemaTypes.ChallengeApplicationTemplateQueryVariables
 ) {
   return { query: ChallengeApplicationTemplateDocument, variables: variables };
 }
@@ -5215,7 +5105,7 @@ export function refetchHubTemplatesCanvasTemplateWithValueQuery(
 }
 
 export const HubPageDocument = gql`
-  query hubPage($hubId: UUID_NAMEID!) {
+  query hubPage($hubId: UUID_NAMEID!, $isAuthorized: Boolean!) {
     hub(ID: $hubId) {
       ...HubPage
     }
@@ -5236,6 +5126,7 @@ export const HubPageDocument = gql`
  * const { data, loading, error } = useHubPageQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      isAuthorized: // value for 'isAuthorized'
  *   },
  * });
  */
@@ -5594,18 +5485,19 @@ export function refetchHubActivityQuery(variables: SchemaTypes.HubActivityQueryV
 }
 
 export const HubApplicationTemplateDocument = gql`
-  query hubApplicationTemplate {
-    configuration {
-      template {
-        hubs {
-          name
-          applications {
-            name
-            questions {
-              required
-              question
-              sortOrder
-            }
+  query hubApplicationTemplate($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      community {
+        id
+        applicationForm {
+          id
+          description
+          questions {
+            required
+            question
+            explanation
+            sortOrder
           }
         }
       }
@@ -5625,11 +5517,12 @@ export const HubApplicationTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useHubApplicationTemplateQuery({
  *   variables: {
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
 export function useHubApplicationTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.HubApplicationTemplateQuery,
     SchemaTypes.HubApplicationTemplateQueryVariables
   >
@@ -5660,7 +5553,7 @@ export type HubApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.HubApplicationTemplateQuery,
   SchemaTypes.HubApplicationTemplateQueryVariables
 >;
-export function refetchHubApplicationTemplateQuery(variables?: SchemaTypes.HubApplicationTemplateQueryVariables) {
+export function refetchHubApplicationTemplateQuery(variables: SchemaTypes.HubApplicationTemplateQueryVariables) {
   return { query: HubApplicationTemplateDocument, variables: variables };
 }
 
@@ -12152,6 +12045,146 @@ export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
+export const SendMessageToUserDocument = gql`
+  mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
+    sendMessageToUser(messageData: $messageData)
+  }
+`;
+export type SendMessageToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToUserMutation,
+  SchemaTypes.SendMessageToUserMutationVariables
+>;
+
+/**
+ * __useSendMessageToUserMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToUserMutation, { data, loading, error }] = useSendMessageToUserMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToUserMutation,
+    SchemaTypes.SendMessageToUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.SendMessageToUserMutation, SchemaTypes.SendMessageToUserMutationVariables>(
+    SendMessageToUserDocument,
+    options
+  );
+}
+
+export type SendMessageToUserMutationHookResult = ReturnType<typeof useSendMessageToUserMutation>;
+export type SendMessageToUserMutationResult = Apollo.MutationResult<SchemaTypes.SendMessageToUserMutation>;
+export type SendMessageToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToUserMutation,
+  SchemaTypes.SendMessageToUserMutationVariables
+>;
+export const SendMessageToOrganizationDocument = gql`
+  mutation sendMessageToOrganization($messageData: CommunicationSendMessageToOrganizationInput!) {
+    sendMessageToOrganization(messageData: $messageData)
+  }
+`;
+export type SendMessageToOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToOrganizationMutation,
+  SchemaTypes.SendMessageToOrganizationMutationVariables
+>;
+
+/**
+ * __useSendMessageToOrganizationMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToOrganizationMutation, { data, loading, error }] = useSendMessageToOrganizationMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToOrganizationMutation,
+    SchemaTypes.SendMessageToOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SendMessageToOrganizationMutation,
+    SchemaTypes.SendMessageToOrganizationMutationVariables
+  >(SendMessageToOrganizationDocument, options);
+}
+
+export type SendMessageToOrganizationMutationHookResult = ReturnType<typeof useSendMessageToOrganizationMutation>;
+export type SendMessageToOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.SendMessageToOrganizationMutation>;
+export type SendMessageToOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToOrganizationMutation,
+  SchemaTypes.SendMessageToOrganizationMutationVariables
+>;
+export const SendMessageToCommunityLeadsDocument = gql`
+  mutation sendMessageToCommunityLeads($messageData: CommunicationSendMessageToCommunityLeadsInput!) {
+    sendMessageToCommunityLeads(messageData: $messageData)
+  }
+`;
+export type SendMessageToCommunityLeadsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendMessageToCommunityLeadsMutation,
+  SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+>;
+
+/**
+ * __useSendMessageToCommunityLeadsMutation__
+ *
+ * To run a mutation, you first call `useSendMessageToCommunityLeadsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendMessageToCommunityLeadsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendMessageToCommunityLeadsMutation, { data, loading, error }] = useSendMessageToCommunityLeadsMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendMessageToCommunityLeadsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendMessageToCommunityLeadsMutation,
+    SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SendMessageToCommunityLeadsMutation,
+    SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+  >(SendMessageToCommunityLeadsDocument, options);
+}
+
+export type SendMessageToCommunityLeadsMutationHookResult = ReturnType<typeof useSendMessageToCommunityLeadsMutation>;
+export type SendMessageToCommunityLeadsMutationResult =
+  Apollo.MutationResult<SchemaTypes.SendMessageToCommunityLeadsMutation>;
+export type SendMessageToCommunityLeadsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendMessageToCommunityLeadsMutation,
+  SchemaTypes.SendMessageToCommunityLeadsMutationVariables
+>;
 export const CommunityUpdatesDocument = gql`
   query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
     hub(ID: $hubId) {
@@ -13067,13 +13100,14 @@ export function refetchOpportunityNameIdQuery(variables: SchemaTypes.Opportunity
 }
 
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
         community {
-          ...CommunityDetails
+          id
+          ...CommunityDetails @include(if: $includeDetails)
         }
       }
     }
@@ -13095,6 +13129,7 @@ export const ChallengeCommunityDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13135,11 +13170,12 @@ export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeC
 }
 
 export const HubCommunityDocument = gql`
-  query hubCommunity($hubId: UUID_NAMEID!) {
+  query hubCommunity($hubId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       community {
-        ...CommunityDetails
+        id
+        ...CommunityDetails @include(if: $includeDetails)
       }
     }
   }
@@ -13159,6 +13195,7 @@ export const HubCommunityDocument = gql`
  * const { data, loading, error } = useHubCommunityQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13193,13 +13230,14 @@ export function refetchHubCommunityQuery(variables: SchemaTypes.HubCommunityQuer
 }
 
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
         community {
-          ...CommunityDetails
+          id
+          ...CommunityDetails @include(if: $includeDetails)
         }
       }
     }
@@ -13221,6 +13259,7 @@ export const OpportunityCommunityDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13491,6 +13530,7 @@ export const ContributingUsersDocument = gql`
       id
       nameID
       displayName
+      isContactable
       profile {
         id
         location {
@@ -16031,6 +16071,135 @@ export function refetchOrganizationsListQuery(variables?: SchemaTypes.Organizati
   return { query: OrganizationsListDocument, variables: variables };
 }
 
+export const MessagingAvailableRecipientsDocument = gql`
+  query MessagingAvailableRecipients($filter: UserFilterInput, $first: Int) {
+    usersPaginated(filter: $filter, first: $first) {
+      users {
+        ...MessagingUserInformation
+      }
+    }
+  }
+  ${MessagingUserInformationFragmentDoc}
+`;
+
+/**
+ * __useMessagingAvailableRecipientsQuery__
+ *
+ * To run a query within a React component, call `useMessagingAvailableRecipientsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagingAvailableRecipientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagingAvailableRecipientsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useMessagingAvailableRecipientsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.MessagingAvailableRecipientsQuery,
+    SchemaTypes.MessagingAvailableRecipientsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.MessagingAvailableRecipientsQuery,
+    SchemaTypes.MessagingAvailableRecipientsQueryVariables
+  >(MessagingAvailableRecipientsDocument, options);
+}
+
+export function useMessagingAvailableRecipientsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MessagingAvailableRecipientsQuery,
+    SchemaTypes.MessagingAvailableRecipientsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.MessagingAvailableRecipientsQuery,
+    SchemaTypes.MessagingAvailableRecipientsQueryVariables
+  >(MessagingAvailableRecipientsDocument, options);
+}
+
+export type MessagingAvailableRecipientsQueryHookResult = ReturnType<typeof useMessagingAvailableRecipientsQuery>;
+export type MessagingAvailableRecipientsLazyQueryHookResult = ReturnType<
+  typeof useMessagingAvailableRecipientsLazyQuery
+>;
+export type MessagingAvailableRecipientsQueryResult = Apollo.QueryResult<
+  SchemaTypes.MessagingAvailableRecipientsQuery,
+  SchemaTypes.MessagingAvailableRecipientsQueryVariables
+>;
+export function refetchMessagingAvailableRecipientsQuery(
+  variables?: SchemaTypes.MessagingAvailableRecipientsQueryVariables
+) {
+  return { query: MessagingAvailableRecipientsDocument, variables: variables };
+}
+
+export const MessagingUserDetailsDocument = gql`
+  query MessagingUserDetails($id: UUID_NAMEID_EMAIL!) {
+    user(ID: $id) {
+      ...MessagingUserInformation
+    }
+  }
+  ${MessagingUserInformationFragmentDoc}
+`;
+
+/**
+ * __useMessagingUserDetailsQuery__
+ *
+ * To run a query within a React component, call `useMessagingUserDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMessagingUserDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessagingUserDetailsQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMessagingUserDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.MessagingUserDetailsQuery,
+    SchemaTypes.MessagingUserDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MessagingUserDetailsQuery, SchemaTypes.MessagingUserDetailsQueryVariables>(
+    MessagingUserDetailsDocument,
+    options
+  );
+}
+
+export function useMessagingUserDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MessagingUserDetailsQuery,
+    SchemaTypes.MessagingUserDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MessagingUserDetailsQuery, SchemaTypes.MessagingUserDetailsQueryVariables>(
+    MessagingUserDetailsDocument,
+    options
+  );
+}
+
+export type MessagingUserDetailsQueryHookResult = ReturnType<typeof useMessagingUserDetailsQuery>;
+export type MessagingUserDetailsLazyQueryHookResult = ReturnType<typeof useMessagingUserDetailsLazyQuery>;
+export type MessagingUserDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.MessagingUserDetailsQuery,
+  SchemaTypes.MessagingUserDetailsQueryVariables
+>;
+export function refetchMessagingUserDetailsQuery(variables: SchemaTypes.MessagingUserDetailsQueryVariables) {
+  return { query: MessagingUserDetailsDocument, variables: variables };
+}
+
 export const GetSupportedCredentialMetadataDocument = gql`
   query getSupportedCredentialMetadata {
     getSupportedVerifiedCredentialMetadata {
@@ -17195,6 +17364,7 @@ export function refetchUserNotificationsPreferencesQuery(
 export const UserProfileDocument = gql`
   query userProfile($input: UUID_NAMEID_EMAIL!) {
     user(ID: $input) {
+      isContactable
       ...UserDetails
       ...UserAgent
     }
@@ -19218,6 +19388,85 @@ export function refetchInnovationPackCanvasTemplateWithValueQuery(
   return { query: InnovationPackCanvasTemplateWithValueDocument, variables: variables };
 }
 
+export const InnovationPackFullCanvasTemplateWithValueDocument = gql`
+  query InnovationPackFullCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          templates {
+            canvasTemplate(ID: $canvasTemplateId) {
+              ...CanvasTemplateWithValue
+            }
+          }
+        }
+      }
+    }
+  }
+  ${CanvasTemplateWithValueFragmentDoc}
+`;
+
+/**
+ * __useInnovationPackFullCanvasTemplateWithValueQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackFullCanvasTemplateWithValueQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackFullCanvasTemplateWithValueQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackFullCanvasTemplateWithValueQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *      canvasTemplateId: // value for 'canvasTemplateId'
+ *   },
+ * });
+ */
+export function useInnovationPackFullCanvasTemplateWithValueQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >(InnovationPackFullCanvasTemplateWithValueDocument, options);
+}
+
+export function useInnovationPackFullCanvasTemplateWithValueLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+    SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+  >(InnovationPackFullCanvasTemplateWithValueDocument, options);
+}
+
+export type InnovationPackFullCanvasTemplateWithValueQueryHookResult = ReturnType<
+  typeof useInnovationPackFullCanvasTemplateWithValueQuery
+>;
+export type InnovationPackFullCanvasTemplateWithValueLazyQueryHookResult = ReturnType<
+  typeof useInnovationPackFullCanvasTemplateWithValueLazyQuery
+>;
+export type InnovationPackFullCanvasTemplateWithValueQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackFullCanvasTemplateWithValueQuery,
+  SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+>;
+export function refetchInnovationPackFullCanvasTemplateWithValueQuery(
+  variables: SchemaTypes.InnovationPackFullCanvasTemplateWithValueQueryVariables
+) {
+  return { query: InnovationPackFullCanvasTemplateWithValueDocument, variables: variables };
+}
+
 export const UpdateInnovationTemplateDocument = gql`
   mutation updateInnovationTemplate(
     $templateId: UUID!
@@ -19499,25 +19748,45 @@ export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadat
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      id
-      score
-      terms
-      type
-      ... on SearchResultHub {
-        ...SearchResultHub
+      journeyResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultHub {
+          ...SearchResultHub
+        }
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
+        ... on SearchResultOpportunity {
+          ...SearchResultOpportunity
+        }
       }
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
+      journeyResultsCount
+      contributorResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultUser {
+          ...SearchResultUser
+        }
+        ... on SearchResultOrganization {
+          ...SearchResultOrganization
+        }
       }
-      ... on SearchResultOpportunity {
-        ...SearchResultOpportunity
+      contributorResultsCount
+      contributionResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultCard {
+          ...SearchResultCard
+        }
       }
-      ... on SearchResultUser {
-        ...SearchResultUser
-      }
-      ... on SearchResultOrganization {
-        ...SearchResultOrganization
-      }
+      contributionResultsCount
     }
   }
   ${SearchResultHubFragmentDoc}
@@ -19525,6 +19794,7 @@ export const SearchDocument = gql`
   ${SearchResultOpportunityFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
+  ${SearchResultCardFragmentDoc}
 `;
 
 /**

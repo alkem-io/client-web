@@ -94,7 +94,10 @@
     "importing": "Importing...",
     "go-to-entity": "Go to {{entity}}",
     "read-more": "Read more",
-    "send": "Send"
+    "select": "Select",
+    "change-field": "Change {{field}}",
+    "send": "Send",
+    "contact-leads": "Contact the {{contact}}(s)"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -135,8 +138,8 @@
     "remove": "Remove",
     "callout": "Callout",
     "callouts": "Callouts",
-    "canvas": "Canvas",
-    "canvases": "Canvases",
+    "canvas": "Whiteboard",
+    "canvases": "Whiteboards",
     "calendar": "Calendar",
     "comment": "Comment",
     "comments": "Comments",
@@ -175,6 +178,7 @@
     "project": "Project",
     "agreements": "Agreements",
     "templates": "Templates",
+    "template": "Template",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -420,7 +424,7 @@
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All aspects, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries."
   },
@@ -431,6 +435,10 @@
     "message": "Message",
     "message-optional": "Message (Optional)",
     "successfully-sent": "Message successfully sent"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Send a message",
+    "community-message-title": "Send a message to {{contact}}(s)"
   },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
@@ -584,7 +592,7 @@
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "canvas-template": "Canvas template"
+    "canvas-template": "Whiteboard template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
@@ -670,8 +678,8 @@
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
-        "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "type-canvases": "Whiteboards",
+        "type-canvases-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
@@ -679,8 +687,8 @@
         "no-templates": "No templates available",
         "card-template-label": "Card Template",
         "no-card-template-selected": "Please select a card template",
-        "canvas-template-label": "Canvas Template",
-        "no-canvas-template-selected": "Please select a canvas template"
+        "canvas-template-label": "Whiteboard Template",
+        "no-canvas-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
         "title": "Create",
@@ -689,7 +697,7 @@
     },
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed",
-      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted canvases will not be changed"
+      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards      will not be changed"
     },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
@@ -1118,7 +1126,7 @@
           "description": "Here you can read and participate in discussions around this {{entity}}."
         },
         "canvases": {
-          "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+          "description": "Whiteboards can be seen as digital canvases. Here you can create a whiteboard for this {{entity}} as well as find ones created by the others."
         },
         "profile": {
           "description": ""
@@ -1162,12 +1170,13 @@
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
             "aspect-templates": "Card Templates",
-            "canvas-templates": "Canvas Templates",
+            "canvas-templates": "Whiteboard Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
               "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "no-templates": "Couldn't find any Template of this type",
               "imported-successfully-notification": "Template imported successfully"
             }
@@ -1517,13 +1526,13 @@
       }
     },
     "canvas": {
-      "header": "Canvases in this {{blockName}}",
+      "header": "Whiteboards in this {{blockName}}",
       "subheader": "Create your custom visualization and share it with others.",
-      "add-canvas": "Create canvas",
-      "no-canvases": "No canvases have been created yet. Be the first to add one.",
-      "locked-by": "{{user}} is currently editing this Canvas",
+      "add-canvas": "Create whiteboard",
+      "no-canvases": "No whiteboards have been created yet. Be the first to add one.",
+      "locked-by": "{{user}} is currently editing this Whiteboard",
       "state": {
-        "checkedout": "Someone else is currently editing this Canvas"
+        "checkedout": "Someone else is currently editing this Whiteboard"
       },
       "state-actions": {
         "check-out": "Edit",
@@ -1535,21 +1544,21 @@
       },
       "delete": {
         "confirmation-title": "Deleting <b>{{ blockName }}</b>",
-        "confirmation-text": "Are you sure you want to delete this canvas? The action is irreversible."
+        "confirmation-text": "Are you sure you want to delete this whiteboard? The action is irreversible."
       },
       "create-dialog": {
-        "header": "Create a new canvas",
+        "header": "Create a new whiteboard",
         "steps": {
-          "naming": "Define a suitable name for your canvas. What will your canvas capture?",
-          "templating": "Choose from the list of templates if you want to use it as a blueprint for your canvas.",
-          "completing": "The canvas will be created with the following parameters"
+          "naming": "Define a suitable name for your whiteboard. What will your whiteboard capture?",
+          "templating": "Choose from the list of templates if you want to use it as a blueprint for your whiteboard.",
+          "completing": "The whiteboard will be created with the following parameters"
         },
         "no-template-selected": "To see a preview of the template please select one."
       },
       "template": {
         "header": "Templates defined in Alkemio",
         "no-templates": "There are no templates defined here yet. Be the first to add one.",
-        "how-to": "To create a template create a new canvas or use an existing one and save it as a template."
+        "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
       },
       "hub": {
         "templatesHeader": "Templates defined in this hub",

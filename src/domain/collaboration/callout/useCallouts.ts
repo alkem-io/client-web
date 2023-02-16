@@ -27,7 +27,7 @@ export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId:
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 interface CalloutChildPropValue {
-  aspects: AspectFragmentWithCallout[];
+  aspects: never;
   canvases: CanvasFragmentWithCallout[];
   comments: CommentsWithMessagesFragmentWithCallout;
 }
@@ -47,7 +47,10 @@ type CalloutTypesWithChildTypes = {
     CalloutCardTemplateType[Type];
 };
 
-export type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'authorization'> &
+export type TypedCallout = Pick<
+  Callout,
+  'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'activity' | 'authorization'
+> &
   (
     | CalloutTypesWithChildTypes[CalloutType.Card]
     | CalloutTypesWithChildTypes[CalloutType.Canvas]
@@ -102,14 +105,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
 
   const getItemsCount = (callout: TypedCallout) => {
-    switch (callout.type) {
-      case CalloutType.Card:
-        return callout.aspects.length;
-      case CalloutType.Canvas:
-        return callout.canvases.length;
-      case CalloutType.Comments:
-        return callout.comments.commentsCount;
-    }
+    return callout.activity;
   };
 
   const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
@@ -118,9 +114,8 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     const isSubscribedToComments = commentCalloutIds.includes(callout.id) && subscribedToComments;
     return {
       ...callout,
-      // Add calloutNameId to all the canvases and aspects
+      // Add calloutNameId to all canvases
       canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
-      aspects: callout.aspects?.map(aspect => ({ ...aspect, calloutNameId: callout.nameID })),
       comments: { ...callout.comments, calloutNameId: callout.nameID },
       authorization,
       draft,

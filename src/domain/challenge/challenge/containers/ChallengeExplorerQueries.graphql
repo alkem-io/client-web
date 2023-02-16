@@ -1,5 +1,5 @@
 query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
-  rolesUser(rolesData: { userID: $userID, filter: {visibilities: [ACTIVE, DEMO]} }) {
+  rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
     hubs {
       id
       roles
@@ -13,11 +13,13 @@ query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
 
 query ChallengeExplorerSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
-    id
-    type
-    terms
-    ... on SearchResultChallenge {
-      ...SearchResultChallenge
+    journeyResults {
+      id
+      type
+      terms
+      ... on SearchResultChallenge {
+        ...SearchResultChallenge
+      }
     }
   }
 }

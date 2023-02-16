@@ -10,6 +10,7 @@ import { ContactDetail } from '../ContactDetails/ContactDetails';
 import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
+import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
@@ -132,6 +133,8 @@ export interface ProfileBannerProps {
   avatarUrl?: string;
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
   loading: boolean;
+  onSendMessage: (text: string) => Promise<void>;
+  isContactable?: boolean;
 }
 
 /**
@@ -145,16 +148,23 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   socialLinks,
   avatarUrl,
   loading: dataLoading = false,
+  onSendMessage,
+  isContactable = true,
 }) => {
   const { t } = useTranslation();
 
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   const [imageLoading, setImageLoading] = useState(true);
+  const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
+
+  const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
+  const openMessageUserDialog = () => setIsMessageUserDialogOpen(true);
 
   const imageLoadError = () => {
     setImageLoading(false);
   };
+  const messageReceivers = [{ title, avatarUri: avatarUrl, city: location?.city, country: location?.country }];
 
   return (
     <Root ref={containerReference}>
@@ -181,16 +191,29 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
                   {title}
                 </Typography>
               </Title>
-
               <LocationView location={formatLocation(location)} mode="icon" iconSize={'small'} />
               <ContactDetail
                 icon={<LocalPhoneIcon color="primary" fontSize="small" />}
                 title={t('components.profile.fields.telephone.title')}
                 value={phone}
               />
-              <SocialLinks items={socialLinks} iconSize="medium" />
+              <Box>
+                <SocialLinks
+                  items={socialLinks}
+                  iconSize="medium"
+                  isContactable={isContactable}
+                  onContact={openMessageUserDialog}
+                />
+              </Box>
             </ProfileInfo>
           </ProfileInfoWrapper>
+          <DirectMessageDialog
+            title={t('send-message-dialog.direct-message-title')}
+            open={isMessageUserDialogOpen}
+            onClose={closeMessageUserDialog}
+            onSendMessage={onSendMessage}
+            messageReceivers={messageReceivers}
+          />
         </Grid>
       )}
       {dataLoading && <Skeleton variant="rectangular" width="100%" height="100%" />}

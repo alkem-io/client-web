@@ -1,11 +1,12 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   useHubDashboardReferencesAndRecommendationsQuery,
   useHubPageQuery,
   usePlatformLevelAuthorizationQuery,
+  useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -35,7 +36,7 @@ import { useActivityOnCollaboration } from '../../../shared/components/ActivityL
 
 export interface HubContainerEntities {
   hub: HubPageFragment | undefined;
-  isPrivate: boolean;
+  isPrivate: boolean | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -62,6 +63,7 @@ export interface HubContainerEntities {
   memberOrganizationsCount: number | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
+  sendMessageToCommunityLeads: (message: string) => Promise<void>;
 }
 
 export interface HubContainerActions {}
@@ -78,16 +80,20 @@ const EMPTY = [];
 const NO_PRIVILEGES = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
-  const { hubId, hubNameId, loading: loadingHub } = useHub();
+  const { hubId, hubNameId, loading: loadingHub, isPrivate } = useHub();
+  const { user, isAuthenticated } = useUserContext();
+
+  const isMember = user?.ofHub(hubId) ?? false;
+
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
-    variables: { hubId: hubNameId },
+    variables: { hubId: hubNameId, isAuthorized: isMember || !isPrivate },
     errorPolicy: 'all',
+    skip: loadingHub,
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-  const { user, isAuthenticated } = useUserContext();
-  // don't load references without READ privilige on Context
+  // don't load references without READ privilege on Context
   const { data: referencesData } = useHubDashboardReferencesAndRecommendationsQuery({
     variables: { hubId },
     skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
@@ -103,9 +109,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challengesCount = useMemo(() => getMetricCount(_hub?.hub.metrics, MetricType.Challenge), [_hub]);
 
-  const isMember = user?.ofHub(hubId) ?? false;
-
-  const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
   const hubPrivileges = _hub?.hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
@@ -143,6 +146,23 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const topCallouts = _hub?.hub.collaboration?.callouts?.slice(0, 3);
 
+  const communityId = _hub?.hub.community?.id ?? '';
+
+  const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+  const handleSendMessageToCommunityLeads = useCallback(
+    async (messageText: string) => {
+      await sendMessageToCommunityLeads({
+        variables: {
+          messageData: {
+            message: messageText,
+            communityId: communityId,
+          },
+        },
+      });
+    },
+    [sendMessageToCommunityLeads, communityId]
+  );
+
   return (
     <>
       {children(
@@ -166,6 +186,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           ...contributors,
           hostOrganizations,
           topCallouts,
+          sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,
