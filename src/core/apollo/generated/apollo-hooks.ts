@@ -13100,13 +13100,14 @@ export function refetchOpportunityNameIdQuery(variables: SchemaTypes.Opportunity
 }
 
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
         community {
-          ...CommunityDetails
+          id
+          ...CommunityDetails @include(if: $includeDetails)
         }
       }
     }
@@ -13128,6 +13129,7 @@ export const ChallengeCommunityDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13168,11 +13170,12 @@ export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeC
 }
 
 export const HubCommunityDocument = gql`
-  query hubCommunity($hubId: UUID_NAMEID!) {
+  query hubCommunity($hubId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       community {
-        ...CommunityDetails
+        id
+        ...CommunityDetails @include(if: $includeDetails)
       }
     }
   }
@@ -13192,6 +13195,7 @@ export const HubCommunityDocument = gql`
  * const { data, loading, error } = useHubCommunityQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13226,13 +13230,14 @@ export function refetchHubCommunityQuery(variables: SchemaTypes.HubCommunityQuer
 }
 
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
         community {
-          ...CommunityDetails
+          id
+          ...CommunityDetails @include(if: $includeDetails)
         }
       }
     }
@@ -13254,6 +13259,7 @@ export const OpportunityCommunityDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */

@@ -14782,6 +14782,7 @@ export type OpportunityNameIdQuery = {
 export type ChallengeCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ChallengeCommunityQuery = {
@@ -14833,6 +14834,7 @@ export type CommunityDetailsFragment = {
 
 export type HubCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type HubCommunityQuery = {
@@ -14866,6 +14868,7 @@ export type HubCommunityQuery = {
 export type OpportunityCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type OpportunityCommunityQuery = {
