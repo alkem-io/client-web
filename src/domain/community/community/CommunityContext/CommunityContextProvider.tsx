@@ -25,21 +25,29 @@ const CommunityContextProvider: FC = ({ children }) => {
   const { permissions: opportunityPermissions } = useOpportunity();
 
   const { data: hubData, loading: loadingHub } = useHubCommunityQuery({
-    variables: { hubId: hubNameId },
+    variables: { hubId: hubNameId, includeDetails: hubPermissions.communityReadAccess },
     errorPolicy: 'all',
-    skip: !hubNameId || Boolean(challengeNameId) || Boolean(opportunityNameId) || !hubPermissions.communityReadAccess,
+    skip: !hubNameId || Boolean(challengeNameId) || Boolean(opportunityNameId),
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
-    variables: { hubId: hubNameId, challengeId: challengeNameId },
+    variables: {
+      hubId: hubNameId,
+      challengeId: challengeNameId,
+      includeDetails: challengePermissions.canReadCommunity,
+    },
     errorPolicy: 'all',
-    skip: !hubNameId || !challengeNameId || Boolean(opportunityNameId) || !challengePermissions.canReadCommunity,
+    skip: !hubNameId || !challengeNameId || Boolean(opportunityNameId),
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCommunityQuery({
-    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
+    variables: {
+      hubId: hubNameId,
+      opportunityId: opportunityNameId,
+      includeDetails: opportunityPermissions.communityReadAccess,
+    },
     errorPolicy: 'all',
-    skip: !hubNameId || !opportunityNameId || !opportunityPermissions.communityReadAccess,
+    skip: !hubNameId || !opportunityNameId,
   });
 
   const community =
