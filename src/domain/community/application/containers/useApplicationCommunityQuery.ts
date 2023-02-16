@@ -32,6 +32,10 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: challengeTemplateError,
   } = useChallengeApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.challenge,
+    variables: {
+      hubId: hubNameId,
+      challengeId: challengeNameId,
+    },
   });
 
   const {
@@ -52,6 +56,9 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: hubTemplateError,
   } = useHubApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.hub,
+    variables: {
+      hubId: hubNameId,
+    },
   });
 
   const result = useMemo(() => {
@@ -61,7 +68,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: hubData?.hub.displayName || '',
         avatar: getVisualAvatar(hubData?.hub.context?.visuals),
         tagline: hubData?.hub.context?.tagline || '',
-        questions: hubTemplateData?.configuration.template.hubs[0].applications?.[0].questions || [],
+        questions: hubTemplateData?.hub.community?.applicationForm?.questions || [],
         backUrl: buildHubUrl(hubNameId),
       };
     }
@@ -71,7 +78,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: challengeData?.hub.challenge.displayName || '',
         avatar: getVisualAvatar(challengeData?.hub.challenge.context?.visuals),
         tagline: challengeData?.hub.challenge.context?.tagline || '',
-        questions: challengeTemplateData?.configuration.template.challenges[0].applications?.[0].questions || [],
+        questions: challengeTemplateData?.hub.challenge.community?.applicationForm?.questions || [],
         backUrl: buildChallengeUrl(hubNameId, challengeNameId),
       };
     }

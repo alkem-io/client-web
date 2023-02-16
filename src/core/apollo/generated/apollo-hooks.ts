@@ -667,26 +667,28 @@ export const HubPageFragmentDoc = gql`
         myPrivileges
       }
     }
-    collaboration {
-      ...DashboardTopCallouts
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
     tagset {
       id
       name
       tags
     }
-    timeline {
-      id
-      authorization {
+    ... on Hub @include(if: $isAuthorized) {
+      collaboration {
+        ...DashboardTopCallouts
+      }
+      community {
+        ...EntityDashboardCommunity
+      }
+      challenges(limit: 3, shuffle: true) {
+        ...ChallengeCard
+      }
+      timeline {
         id
-        anonymousReadAccess
-        myPrivileges
+        authorization {
+          id
+          anonymousReadAccess
+          myPrivileges
+        }
       }
     }
   }
@@ -2054,6 +2056,15 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const SearchResultCardFragmentDoc = gql`
+  fragment SearchResultCard on SearchResultCard {
+    card {
+      id
+      nameID
+      displayName
+    }
+  }
+`;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
     id
@@ -3170,11 +3181,13 @@ export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.Challen
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      id
-      type
-      terms
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
+      journeyResults {
+        id
+        type
+        terms
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
       }
     }
   }
@@ -3728,17 +3741,21 @@ export function refetchChallengeActivityQuery(variables: SchemaTypes.ChallengeAc
 }
 
 export const ChallengeApplicationTemplateDocument = gql`
-  query challengeApplicationTemplate {
-    configuration {
-      template {
-        challenges {
-          name
-          applications {
-            name
+  query challengeApplicationTemplate($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        community {
+          id
+          applicationForm {
+            description
             questions {
               required
               question
               sortOrder
+              explanation
+              maxLength
             }
           }
         }
@@ -3759,11 +3776,13 @@ export const ChallengeApplicationTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeApplicationTemplateQuery({
  *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
 export function useChallengeApplicationTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ChallengeApplicationTemplateQuery,
     SchemaTypes.ChallengeApplicationTemplateQueryVariables
   >
@@ -3797,7 +3816,7 @@ export type ChallengeApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationTemplateQueryVariables
 >;
 export function refetchChallengeApplicationTemplateQuery(
-  variables?: SchemaTypes.ChallengeApplicationTemplateQueryVariables
+  variables: SchemaTypes.ChallengeApplicationTemplateQueryVariables
 ) {
   return { query: ChallengeApplicationTemplateDocument, variables: variables };
 }
@@ -5086,7 +5105,7 @@ export function refetchHubTemplatesCanvasTemplateWithValueQuery(
 }
 
 export const HubPageDocument = gql`
-  query hubPage($hubId: UUID_NAMEID!) {
+  query hubPage($hubId: UUID_NAMEID!, $isAuthorized: Boolean!) {
     hub(ID: $hubId) {
       ...HubPage
     }
@@ -5107,6 +5126,7 @@ export const HubPageDocument = gql`
  * const { data, loading, error } = useHubPageQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      isAuthorized: // value for 'isAuthorized'
  *   },
  * });
  */
@@ -5465,18 +5485,19 @@ export function refetchHubActivityQuery(variables: SchemaTypes.HubActivityQueryV
 }
 
 export const HubApplicationTemplateDocument = gql`
-  query hubApplicationTemplate {
-    configuration {
-      template {
-        hubs {
-          name
-          applications {
-            name
-            questions {
-              required
-              question
-              sortOrder
-            }
+  query hubApplicationTemplate($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      community {
+        id
+        applicationForm {
+          id
+          description
+          questions {
+            required
+            question
+            explanation
+            sortOrder
           }
         }
       }
@@ -5496,11 +5517,12 @@ export const HubApplicationTemplateDocument = gql`
  * @example
  * const { data, loading, error } = useHubApplicationTemplateQuery({
  *   variables: {
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
 export function useHubApplicationTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.HubApplicationTemplateQuery,
     SchemaTypes.HubApplicationTemplateQueryVariables
   >
@@ -5531,7 +5553,7 @@ export type HubApplicationTemplateQueryResult = Apollo.QueryResult<
   SchemaTypes.HubApplicationTemplateQuery,
   SchemaTypes.HubApplicationTemplateQueryVariables
 >;
-export function refetchHubApplicationTemplateQuery(variables?: SchemaTypes.HubApplicationTemplateQueryVariables) {
+export function refetchHubApplicationTemplateQuery(variables: SchemaTypes.HubApplicationTemplateQueryVariables) {
   return { query: HubApplicationTemplateDocument, variables: variables };
 }
 
@@ -13078,13 +13100,14 @@ export function refetchOpportunityNameIdQuery(variables: SchemaTypes.Opportunity
 }
 
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
         community {
-          ...CommunityDetails
+          id
+          ...CommunityDetails @include(if: $includeDetails)
         }
       }
     }
@@ -13106,6 +13129,7 @@ export const ChallengeCommunityDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13146,11 +13170,12 @@ export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeC
 }
 
 export const HubCommunityDocument = gql`
-  query hubCommunity($hubId: UUID_NAMEID!) {
+  query hubCommunity($hubId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       community {
-        ...CommunityDetails
+        id
+        ...CommunityDetails @include(if: $includeDetails)
       }
     }
   }
@@ -13170,6 +13195,7 @@ export const HubCommunityDocument = gql`
  * const { data, loading, error } = useHubCommunityQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -13204,13 +13230,14 @@ export function refetchHubCommunityQuery(variables: SchemaTypes.HubCommunityQuer
 }
 
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
         community {
-          ...CommunityDetails
+          id
+          ...CommunityDetails @include(if: $includeDetails)
         }
       }
     }
@@ -13232,6 +13259,7 @@ export const OpportunityCommunityDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
+ *      includeDetails: // value for 'includeDetails'
  *   },
  * });
  */
@@ -19720,25 +19748,45 @@ export function refetchServerMetadataQuery(variables?: SchemaTypes.ServerMetadat
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
-      id
-      score
-      terms
-      type
-      ... on SearchResultHub {
-        ...SearchResultHub
+      journeyResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultHub {
+          ...SearchResultHub
+        }
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
+        ... on SearchResultOpportunity {
+          ...SearchResultOpportunity
+        }
       }
-      ... on SearchResultChallenge {
-        ...SearchResultChallenge
+      journeyResultsCount
+      contributorResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultUser {
+          ...SearchResultUser
+        }
+        ... on SearchResultOrganization {
+          ...SearchResultOrganization
+        }
       }
-      ... on SearchResultOpportunity {
-        ...SearchResultOpportunity
+      contributorResultsCount
+      contributionResults {
+        id
+        score
+        terms
+        type
+        ... on SearchResultCard {
+          ...SearchResultCard
+        }
       }
-      ... on SearchResultUser {
-        ...SearchResultUser
-      }
-      ... on SearchResultOrganization {
-        ...SearchResultOrganization
-      }
+      contributionResultsCount
     }
   }
   ${SearchResultHubFragmentDoc}
@@ -19746,6 +19794,7 @@ export const SearchDocument = gql`
   ${SearchResultOpportunityFragmentDoc}
   ${SearchResultUserFragmentDoc}
   ${SearchResultOrganizationFragmentDoc}
+  ${SearchResultCardFragmentDoc}
 `;
 
 /**

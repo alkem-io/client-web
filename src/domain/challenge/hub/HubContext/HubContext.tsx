@@ -26,7 +26,7 @@ interface HubContextProps {
   displayName: string;
   communityId: string;
   visuals: Visual[];
-  isPrivate: boolean;
+  isPrivate?: boolean;
   loading: boolean;
   permissions: HubPermissions;
   error?: ApolloError;
@@ -41,7 +41,7 @@ interface HubContextProps {
 
 const HubContext = React.createContext<HubContextProps>({
   loading: false,
-  isPrivate: false,
+  isPrivate: undefined,
   hubId: '',
   hubNameId: '',
   displayName: '',
@@ -86,7 +86,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const displayName = hub?.displayName || '';
   const communityId = hub?.community?.id ?? '';
   const visuals = hub?.context?.visuals ?? [];
-  const isPrivate = !Boolean(hub?.authorization?.anonymousReadAccess ?? true);
+  const isPrivate = hub && !hub.authorization?.anonymousReadAccess;
   const error = configError || hubError;
 
   const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
