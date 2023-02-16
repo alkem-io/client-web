@@ -26,3 +26,8 @@ export const normalizeLink = (link: string) => {
   }
   return link;
 };
+
+export const makeAbsoluteUrl = (link: string) => {
+  if (isAbsoluteUrl(link)) return link;
+  return `${window.location.origin}${link.startsWith('/') ? '' : '/'}${link}`;
+};

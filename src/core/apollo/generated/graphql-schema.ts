@@ -3669,17 +3669,17 @@ export type SearchResult = {
 
 export type SearchResultCard = SearchResult & {
   __typename?: 'SearchResultCard';
-  /** The Callout nameID of the Card. */
-  calloutNameID: Scalars['String'];
+  /** The Callout of the Card. */
+  callout: Callout;
   /** The Card that was found. */
   card: Aspect;
-  /** The Challenge nameID of the Card. Applicable for Callouts on Opportunities and Challenges. */
-  challengeNameID?: Maybe<Scalars['String']>;
-  /** The Hub nameID of the Card. */
-  hubNameID: Scalars['String'];
+  /** The Challenge of the Card. Applicable for Callouts on Opportunities and Challenges. */
+  challenge?: Maybe<Challenge>;
+  /** The Hub of the Card. */
+  hub: Hub;
   id: Scalars['UUID'];
-  /** The Opportunity nameID of the Card. Applicable only for Callouts on Opportunities. */
-  opportunityNameID?: Maybe<Scalars['String']>;
+  /** The Opportunity of the Card. Applicable only for Callouts on Opportunities. */
+  opportunity?: Maybe<Opportunity>;
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float'];
   /** The terms that were matched for this result */
@@ -20524,6 +20524,32 @@ export type RemoveCommentMutationVariables = Exact<{
 }>;
 
 export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
+
+export type MentionableUsersQueryVariables = Exact<{
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MentionableUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
 
 export type ShareLinkWithUserMutationVariables = Exact<{
   messageData: CommunicationSendMessageToUserInput;
