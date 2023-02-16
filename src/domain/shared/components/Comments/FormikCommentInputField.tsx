@@ -17,17 +17,20 @@ import {
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import React, { FC, PropsWithChildren, useRef, useState } from 'react';
-import { Mention, MentionItem, MentionsInput, OnChangeHandlerFunc } from 'react-mentions';
+import { useTranslation } from 'react-i18next';
+import { Mention, MentionItem, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { Caption } from '../../../../core/ui/typography';
 import { makeAbsoluteUrl } from '../../../../core/utils/links';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 
 const MAX_USERS_MENTIONABLE = 5;
 const POPPER_Z_INDEX = 1400; // Dialogs are 1300
-interface MentionableUser {
+
+interface MentionableUser extends SuggestionDataItem {
   id: string;
   display: string;
   avatarUrl: string | undefined;
@@ -43,7 +46,7 @@ const StyledSuggestions = styled(Box)(({ theme }) => ({
     padding: `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`,
   },
   '& li:hover': {
-    background: '#DEEFF6', //!! put this somewhere
+    background: theme.palette.highlight.light,
   },
 }));
 
@@ -69,34 +72,28 @@ interface CommentsInputProps {
   popperAnchor: SuggestionsContainerProps['anchorElement'];
 }
 
-/*const StyledInput = styled((props: BoxProps & { inactive?: boolean }) => <Box {...props} />)(props => ({
+const StyledInput = styled(Box)(({ theme }) => ({
   flex: 1,
   '& textarea': {
-    color: props.inactive ? props.theme.palette.neutralMedium.main : props.theme.palette.common.black,
+    //TODO: Maybe this should be somewhere else
+    lineHeight: '20px',
+    top: '-1px !important',
+    left: '-1px !important',
     border: 'none !important',
     outline: 'none',
-    top: 3,
   },
   '& textarea:focus': {
     outline: 'none',
+  },
+  '& strong': {
+    color: theme.palette.common.black,
   },
 }));
-*/
-const StyledInput = styled(Box)({
-  flex: 1,
-  '& textarea': {
-    border: 'none !important',
-    outline: 'none',
-    top: 3,
-  },
-  '& textarea:focus': {
-    outline: 'none',
-  },
-});
 
 export const CommentsInput: FC<InputBaseComponentProps> = props => {
   const { name, inactive, readOnly, maxLength, submitOnReturnKey = false, popperAnchor } = props as CommentsInputProps;
 
+  const { t } = useTranslation();
   const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
 
   const [loadUsers, { data }] = useMentionableUsersLazyQuery();
@@ -141,22 +138,32 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
     helper.setValue(newValue);
   };
 
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => {
-    if (!submitOnReturnKey) {
-      return;
-    }
+    setTooltipOpen(false);
     if (inactive) {
       event.preventDefault();
       return;
     }
+    if (event.key === '@') {
+      setTooltipOpen(true);
+      console.log('@ pressed');
+    }
     if (event.key === 'Enter' && event.shiftKey === false) {
-      event.preventDefault();
-      submitForm();
+      if (submitOnReturnKey) {
+        event.preventDefault();
+        submitForm();
+      }
     }
   };
 
   return (
-    <StyledInput>
+    <StyledInput
+      sx={theme => ({
+        '& textarea': { color: inactive ? theme.palette.neutralMedium.main : theme.palette.common.black },
+      })}
+    >
       <MentionsInput
         value={field.value}
         onChange={onChange}
@@ -173,6 +180,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
           trigger="@"
           data={queryUsers}
           appendSpaceOnAdd
+          displayTransform={(id, display) => `@${display}`}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           renderSuggestion={(userAny: any) => {
             const user = userAny as MentionableUser;
@@ -189,6 +197,11 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
           markup={`[@__display__](${makeAbsoluteUrl(buildUserProfileUrl(''))}__id__)`}
         />
       </MentionsInput>
+      {tooltipOpen && (
+        <SuggestionsContainer anchorElement={popperAnchor}>
+          <Caption sx={{ padding: gutters() }}>{t('components.post-comment.tooltip.mentions')}</Caption>
+        </SuggestionsContainer>
+      )}
     </StyledInput>
   );
 };

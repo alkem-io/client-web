@@ -13,6 +13,8 @@ const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => 
   paddingX: theme.spacing(1),
   '& > p:first-of-type': { marginTop: 0 },
   '& > p:last-child': { marginBottom: 0 },
+  '& a': { textDecoration: 'none', color: theme.palette.primary.main },
+  '& a:hover': { color: theme.palette.primary.light },
 }));
 
 const CommentWrapper = styled(Box)(({ theme }) => ({
