@@ -65,6 +65,10 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
   );
 };
 
+/**
+ * CommentsInput
+ * Wrapper around MentionsInput to style it properly and to query for users on mentions
+ */
 interface CommentsInputProps {
   name: string;
   inactive?: boolean;
@@ -74,7 +78,7 @@ interface CommentsInputProps {
   popperAnchor: SuggestionsContainerProps['anchorElement'];
 }
 
-const StyledInput = styled(Box)(({ theme }) => ({
+const StyledCommentsInput = styled(Box)(({ theme }) => ({
   flex: 1,
   '& textarea': {
     //TODO: Maybe this should be somewhere else
@@ -93,10 +97,12 @@ const StyledInput = styled(Box)(({ theme }) => ({
 }));
 
 export const CommentsInput: FC<InputBaseComponentProps> = props => {
+  // Need to extract properties like this because OutlinedInput doesn't accept an ElementType<CommentsInputProps>
   const { name, inactive, readOnly, maxLength, submitOnReturnKey = false, popperAnchor } = props as CommentsInputProps;
 
   const { t } = useTranslation();
   const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const [loadUsers, { data }] = useMentionableUsersLazyQuery();
   const users = data?.usersPaginated.users ?? [];
@@ -132,6 +138,12 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
   const [field, , helper] = useField(name);
 
   const onChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
+    if (newValue && (newValue === '@' || newValue.endsWith(' @') || newValue.endsWith('\n@'))) {
+      setTooltipOpen(true);
+    } else {
+      setTooltipOpen(false);
+    }
+
     if (readOnly) {
       return;
     }
@@ -140,17 +152,10 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
     helper.setValue(newValue);
   };
 
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-
   const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => {
-    setTooltipOpen(false);
     if (inactive) {
       event.preventDefault();
       return;
-    }
-    if (event.key === '@') {
-      setTooltipOpen(true);
-      console.log('@ pressed');
     }
     if (event.key === 'Enter' && event.shiftKey === false) {
       if (submitOnReturnKey) {
@@ -161,7 +166,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
   };
 
   return (
-    <StyledInput
+    <StyledCommentsInput
       sx={theme => ({
         '& textarea': { color: inactive ? theme.palette.neutralMedium.main : theme.palette.common.black },
       })}
@@ -204,7 +209,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
           <Caption sx={{ padding: gutters() }}>{t('components.post-comment.tooltip.mentions')}</Caption>
         </SuggestionsContainer>
       )}
-    </StyledInput>
+    </StyledCommentsInput>
   );
 };
 

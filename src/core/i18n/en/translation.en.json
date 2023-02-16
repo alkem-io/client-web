@@ -1027,7 +1027,7 @@
       },
       "tooltip": {
         "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)",
-        "mentions": "Type a few characters find relevant users"
+        "mentions": "Type a few characters to find relevant users"
       }
     },
     "new-discussion": {
