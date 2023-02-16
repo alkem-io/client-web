@@ -45,7 +45,7 @@ const StyledSuggestions = styled(Box)(({ theme }) => ({
   '& li': {
     listStyle: 'none',
     margin: 0,
-    padding: `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`,
+    padding: 0,
   },
   '& li:hover': {
     background: theme.palette.highlight.light,
@@ -97,31 +97,28 @@ const StyledCommentsInput = styled(Box)(({ theme }) => ({
 }));
 
 export const CommentsInput: FC<InputBaseComponentProps> = props => {
-  // Need to extract properties like this because OutlinedInput doesn't accept an ElementType<CommentsInputProps>
+  // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentsInputProps>
   const { name, inactive, readOnly, maxLength, submitOnReturnKey = false, popperAnchor } = props as CommentsInputProps;
 
   const { t } = useTranslation();
   const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const [loadUsers, { data }] = useMentionableUsersLazyQuery();
-  const users = data?.usersPaginated.users ?? [];
+  const [queryUsers] = useMentionableUsersLazyQuery();
 
-  const queryUsers = (search: string, callback: (users: MentionableUser[]) => void) => {
+  const findMentionableUsers = (search: string, callback: (users: MentionableUser[]) => void) => {
     if (!search) {
       callback([]);
       return;
     }
     const filter = { email: search, firstName: search, lastName: search };
-    loadUsers({
+    queryUsers({
       variables: { filter, first: MAX_USERS_MENTIONABLE },
-    }).then(() => {
-      callback(
-        users
+      onCompleted: data => {
+        const users = data?.usersPaginated.users ?? [];
+        const mentionableUsers = users
           // Only show users that are not already mentioned
-          .filter(user => {
-            return currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined;
-          })
+          .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
           // Map users to MentionableUser
           .map(user => ({
             id: user.nameID,
@@ -129,8 +126,9 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
             avatarUrl: user.profile?.avatar?.uri,
             city: user.profile?.location?.city,
             country: user.profile?.location?.country,
-          }))
-      );
+          }));
+        callback(mentionableUsers);
+      },
     });
   };
 
@@ -147,7 +145,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
     if (readOnly) {
       return;
     }
-    //TODO: newPlaintextValue should be the char counter
+    // TODO: newPlaintextValue should be the char counter
     setCurrentMentionedUsers(mentions);
     helper.setValue(newValue);
   };
@@ -185,12 +183,11 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
       >
         <Mention
           trigger="@"
-          data={queryUsers}
+          data={findMentionableUsers}
           appendSpaceOnAdd
           displayTransform={(id, display) => `@${display}`}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          renderSuggestion={(userAny: any) => {
-            const user = userAny as MentionableUser;
+          renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => {
+            const user = suggestion as MentionableUser;
             return (
               <ProfileChipView
                 key={user.id}
@@ -198,6 +195,8 @@ export const CommentsInput: FC<InputBaseComponentProps> = props => {
                 avatarUrl={user.avatarUrl}
                 city={user.city}
                 country={user.country}
+                padding={theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`}
+                selected={focused}
               />
             );
           }}
