@@ -16,7 +16,7 @@ import {
   styled,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, PropsWithChildren, useRef, useState } from 'react';
+import React, { FC, PropsWithChildren, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionItem, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
@@ -25,7 +25,9 @@ import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
 import { makeAbsoluteUrl } from '../../../../core/utils/links';
+import TranslationKey from '../../../../types/TranslationKey';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
+import { useValidationMessageTranslation } from '../../i18n/ValidationMessageTranslation';
 
 const MAX_USERS_MENTIONABLE = 5;
 const POPPER_Z_INDEX = 1400; // Dialogs are 1300
@@ -217,6 +219,7 @@ interface FormikCommentInputFieldProps extends InputProps {
   readOnly?: boolean;
   submitting?: boolean;
   maxLength?: number;
+  helpText?: string;
   withCounter?: boolean;
   submitOnReturnKey?: boolean;
   size?: OutlinedInputProps['size'];
@@ -228,12 +231,24 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   readOnly = false,
   submitting = false,
   maxLength,
+  helpText,
   withCounter = false,
   submitOnReturnKey = false,
   size = 'medium',
 }) => {
   const ref = useRef(null);
+  const tErr = useValidationMessageTranslation();
+
   const [field, meta] = useField(name);
+
+  const isError = Boolean(meta.error);
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return helpText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: name });
+  }, [isError, meta.error, helpText, name, tErr]);
 
   const inactive = disabled || submitting;
 
@@ -264,7 +279,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         />
       </FormControl>
       <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={!withCounter}>
-        <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>
+        <FormHelperText error={isError}>{helperText}</FormHelperText>
       </CharacterCounter>
     </FormGroup>
   );
