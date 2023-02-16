@@ -3687,17 +3687,17 @@ export type SearchResult = {
 
 export type SearchResultCard = SearchResult & {
   __typename?: 'SearchResultCard';
-  /** The Callout nameID of the Card. */
-  calloutNameID: Scalars['String'];
+  /** The Callout of the Card. */
+  callout: Callout;
   /** The Card that was found. */
   card: Aspect;
-  /** The Challenge nameID of the Card. Applicable for Callouts on Opportunities and Challenges. */
-  challengeNameID?: Maybe<Scalars['String']>;
-  /** The Hub nameID of the Card. */
-  hubNameID: Scalars['String'];
+  /** The Challenge of the Card. Applicable for Callouts on Opportunities and Challenges. */
+  challenge?: Maybe<Challenge>;
+  /** The Hub of the Card. */
+  hub: Hub;
   id: Scalars['UUID'];
-  /** The Opportunity nameID of the Card. Applicable only for Callouts on Opportunities. */
-  opportunityNameID?: Maybe<Scalars['String']>;
+  /** The Opportunity of the Card. Applicable only for Callouts on Opportunities. */
+  opportunity?: Maybe<Opportunity>;
   /** The score for this search result; more matches means a higher score. */
   score: Scalars['Float'];
   /** The terms that were matched for this result */
@@ -3785,6 +3785,19 @@ export type SearchResultUser = SearchResult & {
   type: SearchResultType;
   /** The User that was found. */
   user: User;
+};
+
+export type SearchResultUserGroup = SearchResult & {
+  __typename?: 'SearchResultUserGroup';
+  id: Scalars['UUID'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float'];
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']>;
+  /** The event type for this Activity. */
+  type: SearchResultType;
+  /** The User Group that was found. */
+  userGroup: UserGroup;
 };
 
 export type SendMessageOnCalloutInput = {
@@ -4750,6 +4763,7 @@ export type ChallengeExplorerSearchQuery = {
       | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }
       | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType; terms: Array<string> }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
     >;
   };
 };
@@ -19280,6 +19294,13 @@ export type SearchQuery = {
           type: SearchResultType;
         }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
     >;
     contributorResults: Array<
       | { __typename?: 'SearchResultCard'; id: string; score: number; terms: Array<string>; type: SearchResultType }
@@ -19340,6 +19361,13 @@ export type SearchQuery = {
               | undefined;
           };
         }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
     >;
     contributionResults: Array<
       | {
@@ -19373,6 +19401,13 @@ export type SearchQuery = {
           type: SearchResultType;
         }
       | { __typename?: 'SearchResultUser'; id: string; score: number; terms: Array<string>; type: SearchResultType }
+      | {
+          __typename?: 'SearchResultUserGroup';
+          id: string;
+          score: number;
+          terms: Array<string>;
+          type: SearchResultType;
+        }
     >;
   };
 };
