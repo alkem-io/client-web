@@ -15,7 +15,8 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { FilterByTag } from '../FilterByTag';
+import FilterByTag, { filterKeys } from '../FilterByTag/FilterByTag';
+import FilterButtons from '../FilterByTag/FilterButtons';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -69,21 +70,19 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const isLoading = loading || areHubsLoading;
 
   return (
-    <FilterByTag
-      items={hubs}
-      valueGetter={hub => ({ id: hub.id, values: hub?.tagset?.tags ?? [] })}
-    >
-      {hubs => (
+    <FilterByTag items={hubs} valueGetter={hub => ({ id: hub.id, values: hub?.tagset?.tags ?? [] })}>
+      {({ items: filteredHubs, value, handleChange }) => (
         <DashboardHubsSection
           headerText={t('pages.home.sections.hub.header')}
           primaryAction={<MetricTooltip metricsItems={metricItems} />}
-          hubs={hubs}
+          hubs={filteredHubs}
           getHubCardProps={getHubCardProps}
         >
           <Box>
             <Caption>{t('pages.home.sections.hub.body')}</Caption>
             <Caption>{t('pages.home.sections.hub.body1')}</Caption>
           </Box>
+          <FilterButtons value={value} options={filterKeys} onChange={handleChange} />
           {isLoading && <Loading />}
         </DashboardHubsSection>
       )}

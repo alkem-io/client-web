@@ -1,118 +1,73 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { ToggleButton, ToggleButtonGroup, styled } from '@mui/material';
+import React, { ReactNode, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
-import { FILTER_PARAM_NAME } from '../../../../core/routing/route.constants';
+import { FILTER_PARAM_NAME } from '../../../platform/routes/constants';
+import { useQueryParams } from '../../../../core/routing/useQueryParams';
+import { without } from 'lodash';
 
-const showAllKey = 'show-all';
 const otherKey = 'other';
 
 const filterConfig = {
   'energy-transition': ['Energy Transition', 'Energietransitie'],
   'inclusive-society': ['Inclusive Society', 'Inclusieve Samenleving'],
   'public-services': ['Public Services', 'Publieke Diensten'],
-  'innovation': ['Innovation', 'Innovatie'],
+  innovation: ['Innovation', 'Innovatie'],
   'supporting-vulnerable-groups': ['Supporting Vulnerable Groups', 'Kwetsbare Groepen'],
   'digitalization-of-society': ['Digitalization of Society', 'Digitalisering'],
-};
+} as const;
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  gap: theme.spacing(2),
-  '& .MuiToggleButtonGroup-grouped': {
-    border: `1px solid ${theme.palette.primary.main}`,
-    '&:not(:first-of-type)': {
-      border: `1px solid ${theme.palette.primary.main}`,
-      borderRadius: theme.shape.borderRadius,
-    },
-    '&:first-of-type': {
-      borderRadius: theme.shape.borderRadius,
-    },
-    '& .Mui-selected': {
-      color: 'white',
-      backgroundColor: theme.palette.primary.main,
-    }
-  },
-}));
+export const filterKeys: (keyof typeof filterConfig)[] = [
+  'energy-transition',
+  'inclusive-society',
+  'public-services',
+  'innovation',
+  'supporting-vulnerable-groups',
+  'digitalization-of-society',
+];
 
-const StyledToggleButton = styled(ToggleButton)(({ theme }) => ({
-}));
-
-
-interface FilterByTagProps<T extends Identifiable> {
-  items: T[];
-  valueGetter: (data: T) => ValueType;
-  children: (filteredItems: T[]) => React.ReactNode;
+interface ChildProps<Item extends Identifiable> {
+  items: Item[];
+  value: string[];
+  handleChange: (value: string[]) => void;
 }
 
-const FilterByTag = <T extends Identifiable>({ items, valueGetter, children }: FilterByTagProps<T>) => {
+interface FilterByTagProps<Item extends Identifiable> {
+  items: Item[];
+  valueGetter: (data: Item) => ValueType;
+  children: ({ items, value, handleChange }: ChildProps<Item>) => ReactNode;
+}
+
+const FilterByTag = <Item extends Identifiable>({ items, valueGetter, children }: FilterByTagProps<Item>) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [categories, setCategories] = useState<string[]>([]);
-  const [showAll, setShowAll] = useState(true);
-  const [showOther, setShowOther] = useState(false);
+  const queryParams = useQueryParams();
 
-  const { search: params } = useLocation();
-  const queryParams = new URLSearchParams(params);
-  const queryParam = queryParams.get(FILTER_PARAM_NAME);
+  const termsFromUrl = useMemo(() => queryParams.getAll(FILTER_PARAM_NAME), [queryParams]);
 
-  const termsFromUrl = useMemo(
-    () => (queryParam?.split(',') ?? []).map(escape),
-    [queryParam]
-  );
+  const categories = without(termsFromUrl, otherKey);
+  const showOther = termsFromUrl.includes(otherKey);
 
-  const filterKeys = Object.keys(filterConfig);
-  const filterValues = Object.values(filterConfig).flat(1).map(x => x.toLocaleLowerCase());
+  const filterValues = Object.values(filterConfig)
+    .flat(1)
+    .map(x => x.toLocaleLowerCase());
 
-  // useEffect(() => {
-  //   if (termsFromUrl.length > 0) {
-  //     setShowAll(false);
-  //   }
-  //
-  //   const validCategories = termsFromUrl.filter(x => filterKeys.includes(x));
-  //   setCategories(validCategories);
-  //
-  //   if (termsFromUrl.includes(otherKey)) {
-  //     setShowOther(true);
-  //   }
-  // }, [termsFromUrl, filterKeys, setShowAll, setShowOther]);
-
-  const handleChangeCategory = (event: React.MouseEvent<HTMLElement>, newValue: string[]) => {
-    setCategories(newValue);
-    // if no categories are selected - select 'show all'
-    setShowAll(newValue.length === 0 && !showOther);
-
-    const termsArray = [...categories];
-
-    if (showOther) {
-      termsArray.push(otherKey);
+  const updateQueryString = (nextCategories: string[]) => {
+    const params = new URLSearchParams();
+    for (const category of nextCategories) {
+      params.append(FILTER_PARAM_NAME, category);
     }
-
-    const terms = termsArray.join(',');
-    const params = new URLSearchParams({ [FILTER_PARAM_NAME]: terms });
-    navigate(`/?${params}`);
+    navigate(`./?${params}`, { replace: true });
   };
 
-  const handleShowAll = () => {
-    setCategories([]);
-    setShowOther(false);
-    setShowAll(true);
-  };
-
-  const handleShowOther = () => {
-    setShowAll(categories.length === 0 && showOther);
-    setShowOther(oldValue => !oldValue);
-  };
   // terms that fit the "Other" category -> the subset of tags that are not in any filters
   // used to filter by them if "Other" is selected
   const otherTerms = useMemo(
-    () => items
-      .map(x => valueGetter(x).values)
-      .flat(1)
-      .map(x => x.toLocaleLowerCase())
-      .filter(x => !filterValues.includes(x))
-    ,
+    () =>
+      items
+        .map(x => valueGetter(x).values)
+        .flat(1)
+        .map(x => x.toLocaleLowerCase())
+        .filter(x => !filterValues.includes(x)),
     [items, filterValues, valueGetter]
   );
   // todo: how to include items without tags in the "Other" category
@@ -124,52 +79,17 @@ const FilterByTag = <T extends Identifiable>({ items, valueGetter, children }: F
   // all terms from the button selection
   const categoryTerms = categories?.map<string[]>(x => filterConfig[x]).flat(1);
 
-  const filteredItems = useMemo(
-    () => {
-      const filtered = filterFn(items, showOther ? [ ...categoryTerms, ...otherTerms] : categoryTerms, valueGetter);
+  const filteredItems = useMemo(() => {
+    const filtered = filterFn(items, showOther ? [...categoryTerms, ...otherTerms] : categoryTerms, valueGetter);
 
-      if (showOther) {
-        return [...filtered, ...itemsWithoutTags];
-      }
+    if (showOther) {
+      return [...filtered, ...itemsWithoutTags];
+    }
 
-      return filtered;
-    },
-    [items, categoryTerms, valueGetter, otherTerms, showOther, itemsWithoutTags]
-  );
+    return filtered;
+  }, [items, categoryTerms, valueGetter, otherTerms, showOther, itemsWithoutTags]);
 
-
-  return (
-    <>
-      <StyledToggleButton
-        selected={showAll}
-        value={showAllKey}
-        onClick={handleShowAll}
-      >
-        {t(`components.tag-filter.${showAllKey}` as const)}
-      </StyledToggleButton>
-      <StyledToggleButtonGroup
-        color="primary"
-        value={categories}
-        onChange={handleChangeCategory}
-        aria-label="Filter Hubs by category"
-      >
-        {filterKeys.map(key => (
-          <StyledToggleButton value={key} key={key}>
-            {/* @ts-ignore */}
-            {t(`components.tag-filter.${key}` as const)}
-          </StyledToggleButton>
-        ))}
-      </StyledToggleButtonGroup>
-      <StyledToggleButton
-        selected={showOther}
-        value={showOther}
-        onClick={handleShowOther}
-      >
-        {t(`components.tag-filter.${otherKey}` as const)}
-      </StyledToggleButton>
-      {children(filteredItems)}
-    </>
-  )
+  return <>{children({ items: filteredItems, value: termsFromUrl, handleChange: updateQueryString })}</>;
 };
 
 export default FilterByTag;
