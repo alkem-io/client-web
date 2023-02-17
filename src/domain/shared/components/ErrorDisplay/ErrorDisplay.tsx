@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Link, styled, Typography } from '@mui/material';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
+import { ROUTE_HOME } from '../../../platform/routes/routes';
 
 const FullscreenBox = styled(Box)(() => ({
   display: 'flex',
@@ -38,7 +39,7 @@ export const ErrorDisplay: FC<ErrorDisplayProps> = () => {
           <Typography variant="h4">{t('components.error-display.went-wrong')}</Typography>
           <Typography variant="h4">{t('components.error-display.contact-support-sentence')}</Typography>
           <ButtonBox>
-            <Button component={RouterLink} to="/">
+            <Button component={RouterLink} to={ROUTE_HOME}>
               {t('components.error-display.buttons.take-me-home')}
             </Button>
             <Button onClick={handleReload}>{t('components.error-display.buttons.reload')}</Button>
