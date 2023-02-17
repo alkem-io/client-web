@@ -59,35 +59,35 @@ const FilterByTag = <Item extends Identifiable>({ items, valueGetter, children }
     navigate(`./?${params}`, { replace: true });
   };
 
-  // terms that fit the "Other" category -> the subset of tags that are not in any filters
-  // used to filter by them if "Other" is selected
-  const otherTerms = useMemo(
+  // Items included in the results when the Other filter is selected
+  // Hubs that don't have any of the selectable filters
+  const itemsOther = useMemo(
     () =>
       items
-        .map(x => valueGetter(x).values)
-        .flat(1)
-        .map(x => x.toLocaleLowerCase())
-        .filter(x => !filterValues.includes(x)),
-    [items, filterValues, valueGetter]
+        .filter(hub => !valueGetter(hub).values.some(tag => filterValues.includes(tag.toLowerCase())))
+        .map(x => ({ ...x, matchedTerms: [] })),
+    [filterValues, items, valueGetter]
   );
-  // todo: how to include items without tags in the "Other" category
-  // included in the result when "Other" is selected
-  const itemsWithoutTags = useMemo(
-    () => items.filter(x => valueGetter(x).values.length === 0).map(x => ({ ...x, matchedTerms: [] })),
-    [items, valueGetter]
-  );
+
   // all terms from the button selection
   const categoryTerms = categories?.map<string[]>(x => filterConfig[x]).flat(1);
 
   const filteredItems = useMemo(() => {
-    const filtered = filterFn(items, showOther ? [...categoryTerms, ...otherTerms] : categoryTerms, valueGetter);
-
-    if (showOther) {
-      return [...filtered, ...itemsWithoutTags];
+    if (categoryTerms.length === 0) {
+      if (showOther) {
+        return itemsOther; // Show only others:
+      } else {
+        return items; // Show all
+      }
+    } else {
+      const filtered = filterFn(items, categoryTerms, valueGetter); // filter the items
+      if (showOther) {
+        return [...filtered, ...itemsOther];
+      } else {
+        return filtered;
+      }
     }
-
-    return filtered;
-  }, [items, categoryTerms, valueGetter, otherTerms, showOther, itemsWithoutTags]);
+  }, [items, categoryTerms, valueGetter, showOther, itemsOther]);
 
   return <>{children({ items: filteredItems, value: termsFromUrl, handleChange: updateQueryString })}</>;
 };
