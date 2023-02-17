@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import HelpIcon from '@mui/icons-material/Help';
 import { useUserContext } from '../../../community/contributor/user';
-import FormikCommentInputField from '../../../../common/components/composite/forms/FormikCommentInputField';
+import FormikCommentInputField from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
 

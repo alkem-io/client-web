@@ -20615,6 +20615,32 @@ export type RemoveCommentMutationVariables = Exact<{
 
 export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
 
+export type MentionableUsersQueryVariables = Exact<{
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+}>;
+
+export type MentionableUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      displayName: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
+
 export type ShareLinkWithUserMutationVariables = Exact<{
   messageData: CommunicationSendMessageToUserInput;
 }>;
