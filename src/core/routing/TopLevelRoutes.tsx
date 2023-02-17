@@ -25,6 +25,8 @@ import { INSPIRATION_ROUTE } from './route.constants';
 import InspirationPage from '../help/pages/InspirationPage';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
+import RootRedirect from '../../domain/platform/routes/RootRedirect';
+import { ROUTE_HOME } from '../../domain/platform/routes/routes';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -41,10 +43,11 @@ export const TopLevelRoutes: FC = () => {
           </WithApmTransaction>
         }
       >
+        <Route index element={<RootRedirect />} />
         <Route
-          index
+          path={ROUTE_HOME}
           element={
-            <WithApmTransaction path="/">
+            <WithApmTransaction path="/home">
               <HomePage />
             </WithApmTransaction>
           }

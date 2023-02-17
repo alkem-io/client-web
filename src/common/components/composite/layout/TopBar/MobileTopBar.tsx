@@ -28,6 +28,7 @@ import { supportedLngs } from '../../../../../core/i18n/config';
 import ListItemText from '@mui/material/ListItemText';
 import SearchBar from './SearchBar';
 import { ReactComponent as LogoSmallImage } from './alkemio-logo-small.svg';
+import { ROUTE_HOME } from '../../../../../domain/platform/routes/routes';
 
 export const MobileTopBarHeight = 7;
 
@@ -80,7 +81,7 @@ const LogoSmall = () => {
   const theme = useTheme();
 
   return (
-    <Box component={Link} mx={1} to="/">
+    <Box component={Link} mx={1} to={ROUTE_HOME}>
       <LogoSmallImage width={theme.spacing(6)} />
     </Box>
   );
