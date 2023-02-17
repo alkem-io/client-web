@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Link, styled, Typography } from '@mui/material';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
-import { ROUTE_HOME } from '../../../platform/routes/routes';
+import { ROUTE_HOME } from '../../../platform/routes/constants';
 
 const FullscreenBox = styled(Box)(() => ({
   display: 'flex',

@@ -7,7 +7,7 @@ import { Box, BoxProps, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import { useQueryParams } from '../../../../../core/routing/useQueryParams';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../../core/routing/route.constants';
+import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../../domain/platform/routes/constants';
 
 const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.split(' ').join(',');

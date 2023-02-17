@@ -19,7 +19,7 @@ import {
   SearchResultUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../core/routing/route.constants';
+import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../routes/constants';
 import { AUTH_LOGIN_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
 import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
