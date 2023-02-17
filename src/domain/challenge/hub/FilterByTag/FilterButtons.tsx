@@ -1,28 +1,43 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { styled, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { without } from 'lodash';
+import { Box, Button, ButtonProps, styled } from '@mui/material';
+import { uniq, without } from 'lodash';
+import { Caption } from '../../../../core/ui/typography';
+import CloseIcon from '@mui/icons-material/Close';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 const showAllKey = 'show-all';
 const otherKey = 'other';
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
-  gap: theme.spacing(2),
-  '& .MuiToggleButtonGroup-grouped': {
-    border: `1px solid ${theme.palette.primary.main}`,
-    '&:not(:first-of-type)': {
-      border: `1px solid ${theme.palette.primary.main}`,
-      borderRadius: theme.shape.borderRadius,
-    },
-    '&:first-of-type': {
-      borderRadius: theme.shape.borderRadius,
-    },
-    '& .Mui-selected': {
-      color: 'white',
-      backgroundColor: theme.palette.primary.main,
-    },
-  },
+const StyledFilterList = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  flexWrap: 'wrap',
+  gap: gutters(0.5)(theme),
 }));
+
+interface FilterChipProps {
+  selected?: boolean;
+  canRemove?: boolean;
+  onClick?: ButtonProps['onClick'];
+}
+
+const FilterChip = ({ children, selected = false, canRemove = false, onClick }: PropsWithChildren<FilterChipProps>) => {
+  return (
+    <Button
+      sx={{
+        height: gutters(1.5),
+        textTransform: 'none',
+        whiteSpace: 'nowrap',
+      }}
+      variant={selected ? 'contained' : 'outlined'}
+      endIcon={canRemove ? <CloseIcon /> : undefined}
+      onClick={onClick}
+    >
+      {children}
+    </Button>
+  );
+};
 
 interface FilterByTagButtonsProps {
   value: string[];
@@ -38,34 +53,44 @@ const FilterByTagButtons = ({ value, options, onChange }: FilterByTagButtonsProp
   const showOther = value.includes(otherKey);
 
   const handleShowAll = () => onChange([]);
-  const handleChangeCategory = (event: React.MouseEvent<HTMLElement>, nextCategories: string[]) => {
-    onChange(showOther ? [...nextCategories, otherKey] : nextCategories);
-  };
+
   const handleShowOther = () => {
     onChange(showOther ? categories : [...categories, otherKey]);
   };
 
+  const handleAddFilter = (key: string) => {
+    onChange(uniq([...value, key]));
+  };
+  const handleRemoveFilter = (key: string) => {
+    onChange(without(value, key));
+  };
+
   return (
     <>
-      <ToggleButton selected={showAll} value={showAllKey} onClick={handleShowAll}>
-        {t(`components.tag-filter.${showAllKey}` as const)}
-      </ToggleButton>
-      <StyledToggleButtonGroup
-        color="primary"
-        value={categories}
-        onChange={handleChangeCategory}
-        aria-label="Filter Hubs by category"
-      >
-        {options.map(key => (
-          <ToggleButton value={key} key={key}>
+      <StyledFilterList>
+        <Caption>{t('components.tag-filter.current-filter')}</Caption>
+        {showAll && <FilterChip selected>{t(`components.tag-filter.${showAllKey}` as const)}</FilterChip>}
+        {value.map(key => (
+          <FilterChip key={key} selected canRemove onClick={() => handleRemoveFilter(key)}>
             {/* @ts-ignore */}
             {t(`components.tag-filter.${key}` as const)}
-          </ToggleButton>
+          </FilterChip>
         ))}
-      </StyledToggleButtonGroup>
-      <ToggleButton selected={showOther} value={showOther} onClick={handleShowOther}>
-        {t(`components.tag-filter.${otherKey}` as const)}
-      </ToggleButton>
+      </StyledFilterList>
+      <StyledFilterList>
+        {without(options, ...value).map(key => (
+          <FilterChip key={key} onClick={() => handleAddFilter(key)}>
+            {/* @ts-ignore */}
+            {t(`components.tag-filter.${key}` as const)}
+          </FilterChip>
+        ))}
+        {!showOther && (
+          <FilterChip onClick={handleShowOther}>{t(`components.tag-filter.${otherKey}` as const)}</FilterChip>
+        )}
+        {!showAll && (
+          <FilterChip onClick={handleShowAll}>{t(`components.tag-filter.${showAllKey}` as const)}</FilterChip>
+        )}
+      </StyledFilterList>
     </>
   );
 };
