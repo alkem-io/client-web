@@ -927,6 +927,9 @@
     "filter": {
       "placeholder": "Search"
     },
+    "user-selector": {
+      "tooltip": "Start typing to find users"
+    },
     "communityUpdates": {
       "title": "Let your community know what's next",
       "updatesTitle": "Published updates",

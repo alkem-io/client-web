@@ -40,26 +40,32 @@ interface MentionableUser extends SuggestionDataItem {
   country: string | undefined;
 }
 
-const StyledSuggestions = styled(Box)(({ theme }) => ({
-  width: gutters(17)(theme),
-  '& li': {
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-  },
-  '& li:hover': {
-    background: theme.palette.highlight.light,
-  },
-}));
-
+/**
+ * Rounded paper that pops under the input field showing the mentions
+ */
 interface SuggestionsContainerProps {
   anchorElement: PopperProps['anchorEl'];
 }
+
 const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({ anchorElement, children }) => {
   return (
     <Popper open placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
       <Paper elevation={3}>
-        <StyledSuggestions>{children}</StyledSuggestions>
+        <Box
+          sx={theme => ({
+            width: gutters(17)(theme),
+            '& li': {
+              listStyle: 'none',
+              margin: 0,
+              padding: 0,
+            },
+            '& li:hover': {
+              background: theme.palette.highlight.light,
+            },
+          })}
+        >
+          {children}
+        </Box>
       </Paper>
     </Popper>
   );
@@ -81,7 +87,8 @@ interface CommentsInputProps {
 const StyledCommentsInput = styled(Box)(({ theme }) => ({
   flex: 1,
   '& textarea': {
-    //TODO: Maybe this should be somewhere else
+    // TODO: Maybe this should be somewhere else
+    // Align the textarea contents and override default react-mentions styles
     lineHeight: '20px',
     top: '-1px !important',
     left: '-1px !important',
