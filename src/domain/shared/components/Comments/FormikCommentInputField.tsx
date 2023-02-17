@@ -16,7 +16,7 @@ import {
   styled,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, PropsWithChildren, useMemo, useRef, useState } from 'react';
+import React, { FC, forwardRef, PropsWithChildren, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionItem, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
@@ -103,121 +103,131 @@ const StyledCommentsInput = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const CommentsInput: FC<InputBaseComponentProps> = props => {
-  // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentsInputProps>
-  const { name, inactive, readOnly, maxLength, submitOnReturnKey = false, popperAnchor } = props as CommentsInputProps;
+export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElement | null, InputBaseComponentProps>(
+  (props, ref) => {
+    // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentsInputProps>
+    const {
+      name,
+      inactive,
+      readOnly,
+      maxLength,
+      submitOnReturnKey = false,
+      popperAnchor,
+    } = props as CommentsInputProps;
 
-  const { t } = useTranslation();
-  const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
-  const [tooltipOpen, setTooltipOpen] = useState(false);
+    const { t } = useTranslation();
+    const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const [queryUsers] = useMentionableUsersLazyQuery();
+    const [queryUsers] = useMentionableUsersLazyQuery();
 
-  const findMentionableUsers = (search: string, callback: (users: MentionableUser[]) => void) => {
-    if (!search) {
-      callback([]);
-      return;
-    }
-    const filter = { email: search, firstName: search, lastName: search };
-    queryUsers({
-      variables: { filter, first: MAX_USERS_MENTIONABLE },
-      onCompleted: data => {
-        const users = data?.usersPaginated.users ?? [];
-        const mentionableUsers = users
-          // Only show users that are not already mentioned
-          .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
-          // Map users to MentionableUser
-          .map(user => ({
-            id: user.nameID,
-            display: user.displayName,
-            avatarUrl: user.profile?.avatar?.uri,
-            city: user.profile?.location?.city,
-            country: user.profile?.location?.country,
-          }));
-        callback(mentionableUsers);
-      },
-    });
-  };
-
-  const { submitForm } = useFormikContext();
-  const [field, , helper] = useField(name);
-
-  const onChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
-    if (newValue && (newValue === '@' || newValue.endsWith(' @') || newValue.endsWith('\n@'))) {
-      setTooltipOpen(true);
-    } else {
-      setTooltipOpen(false);
-    }
-
-    if (readOnly) {
-      return;
-    }
-    // TODO: newPlaintextValue should be the char counter
-    setCurrentMentionedUsers(mentions);
-    helper.setValue(newValue);
-  };
-
-  const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => {
-    if (inactive) {
-      event.preventDefault();
-      return;
-    }
-    if (event.key === 'Enter' && event.shiftKey === false) {
-      if (submitOnReturnKey) {
-        event.preventDefault();
-        submitForm();
+    const findMentionableUsers = (search: string, callback: (users: MentionableUser[]) => void) => {
+      if (!search) {
+        callback([]);
+        return;
       }
-    }
-  };
+      const filter = { email: search, firstName: search, lastName: search };
+      queryUsers({
+        variables: { filter, first: MAX_USERS_MENTIONABLE },
+        onCompleted: data => {
+          const users = data?.usersPaginated.users ?? [];
+          const mentionableUsers = users
+            // Only show users that are not already mentioned
+            .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
+            // Map users to MentionableUser
+            .map(user => ({
+              id: user.nameID,
+              display: user.displayName,
+              avatarUrl: user.profile?.avatar?.uri,
+              city: user.profile?.location?.city,
+              country: user.profile?.location?.country,
+            }));
+          callback(mentionableUsers);
+        },
+      });
+    };
 
-  return (
-    <StyledCommentsInput
-      sx={theme => ({
-        '& textarea': { color: inactive ? theme.palette.neutralMedium.main : theme.palette.common.black },
-      })}
-    >
-      <MentionsInput
-        value={field.value}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        readOnly={readOnly}
-        maxLength={maxLength}
-        onBlur={() => helper.setTouched(true)}
-        forceSuggestionsAboveCursor
-        customSuggestionsContainer={children => (
-          <SuggestionsContainer anchorElement={popperAnchor}>{children}</SuggestionsContainer>
-        )}
+    const { submitForm } = useFormikContext();
+    const [field, , helper] = useField(name);
+
+    const onChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
+      if (newValue && (newValue === '@' || newValue.endsWith(' @') || newValue.endsWith('\n@'))) {
+        setTooltipOpen(true);
+      } else {
+        setTooltipOpen(false);
+      }
+
+      if (readOnly) {
+        return;
+      }
+      // TODO: newPlaintextValue should be the char counter
+      setCurrentMentionedUsers(mentions);
+      helper.setValue(newValue);
+    };
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => {
+      if (inactive) {
+        event.preventDefault();
+        return;
+      }
+      if (event.key === 'Enter' && event.shiftKey === false) {
+        if (submitOnReturnKey) {
+          event.preventDefault();
+          submitForm();
+        }
+      }
+    };
+
+    return (
+      <StyledCommentsInput
+        ref={ref}
+        sx={theme => ({
+          '& textarea': { color: inactive ? theme.palette.neutralMedium.main : theme.palette.common.black },
+        })}
       >
-        <Mention
-          trigger="@"
-          data={findMentionableUsers}
-          appendSpaceOnAdd
-          displayTransform={(id, display) => `@${display}`}
-          renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => {
-            const user = suggestion as MentionableUser;
-            return (
-              <ProfileChipView
-                key={user.id}
-                displayName={user.display}
-                avatarUrl={user.avatarUrl}
-                city={user.city}
-                country={user.country}
-                padding={theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`}
-                selected={focused}
-              />
-            );
-          }}
-          markup={`[@__display__](${makeAbsoluteUrl(buildUserProfileUrl(''))}__id__)`}
-        />
-      </MentionsInput>
-      {tooltipOpen && (
-        <SuggestionsContainer anchorElement={popperAnchor}>
-          <Caption sx={{ padding: gutters() }}>{t('components.post-comment.tooltip.mentions')}</Caption>
-        </SuggestionsContainer>
-      )}
-    </StyledCommentsInput>
-  );
-};
+        <MentionsInput
+          value={field.value}
+          onChange={onChange}
+          onKeyDown={onKeyDown}
+          readOnly={readOnly}
+          maxLength={maxLength}
+          onBlur={() => helper.setTouched(true)}
+          forceSuggestionsAboveCursor
+          customSuggestionsContainer={children => (
+            <SuggestionsContainer anchorElement={popperAnchor}>{children}</SuggestionsContainer>
+          )}
+        >
+          <Mention
+            trigger="@"
+            data={findMentionableUsers}
+            appendSpaceOnAdd
+            displayTransform={(id, display) => `@${display}`}
+            renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => {
+              const user = suggestion as MentionableUser;
+              return (
+                <ProfileChipView
+                  key={user.id}
+                  displayName={user.display}
+                  avatarUrl={user.avatarUrl}
+                  city={user.city}
+                  country={user.country}
+                  padding={theme => `0 ${gutters(0.5)(theme)} 0 ${gutters(0.5)(theme)}`}
+                  selected={focused}
+                />
+              );
+            }}
+            markup={`[@__display__](${makeAbsoluteUrl(buildUserProfileUrl(''))}__id__)`}
+          />
+        </MentionsInput>
+        {tooltipOpen && (
+          <SuggestionsContainer anchorElement={popperAnchor}>
+            <Caption sx={{ padding: gutters() }}>{t('components.post-comment.tooltip.mentions')}</Caption>
+          </SuggestionsContainer>
+        )}
+      </StyledCommentsInput>
+    );
+  }
+);
 
 /**
  * Material styles wrapper, with the border and the Send arrow IconButton and the char counter
