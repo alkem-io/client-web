@@ -53,8 +53,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
     return users
       .filter(user => (field.value && field.value.length ? field.value.indexOf(user.id) === -1 : true))
       .filter(user => user.id !== currentUser?.user.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, filter]);
+  }, [currentUser?.user.id, data?.usersPaginated.users, field.value]);
 
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
