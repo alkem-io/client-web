@@ -20370,6 +20370,80 @@ export type RemoveCommentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommentMutation,
   SchemaTypes.RemoveCommentMutationVariables
 >;
+export const MentionableUsersDocument = gql`
+  query MentionableUsers($filter: UserFilterInput, $first: Int) {
+    usersPaginated(filter: $filter, first: $first) {
+      users {
+        id
+        nameID
+        displayName
+        profile {
+          id
+          location {
+            id
+            city
+            country
+          }
+          avatar {
+            ...VisualUri
+          }
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useMentionableUsersQuery__
+ *
+ * To run a query within a React component, call `useMentionableUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMentionableUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMentionableUsersQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useMentionableUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
+    MentionableUsersDocument,
+    options
+  );
+}
+
+export function useMentionableUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.MentionableUsersQuery,
+    SchemaTypes.MentionableUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MentionableUsersQuery, SchemaTypes.MentionableUsersQueryVariables>(
+    MentionableUsersDocument,
+    options
+  );
+}
+
+export type MentionableUsersQueryHookResult = ReturnType<typeof useMentionableUsersQuery>;
+export type MentionableUsersLazyQueryHookResult = ReturnType<typeof useMentionableUsersLazyQuery>;
+export type MentionableUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.MentionableUsersQuery,
+  SchemaTypes.MentionableUsersQueryVariables
+>;
+export function refetchMentionableUsersQuery(variables?: SchemaTypes.MentionableUsersQueryVariables) {
+  return { query: MentionableUsersDocument, variables: variables };
+}
+
 export const ShareLinkWithUserDocument = gql`
   mutation shareLinkWithUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)

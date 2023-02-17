@@ -3,8 +3,8 @@ import { FormHelperText, TextField } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { without } from 'lodash';
-import { FC, useEffect, useState } from 'react';
-import { useMessagingAvailableRecipientsLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { FC, useMemo, useState } from 'react';
+import { useMessagingAvailableRecipientsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '../../../../../core/apollo/generated/graphql-schema';
 import GridContainer from '../../../../../core/ui/grid/GridContainer';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
@@ -13,6 +13,7 @@ import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpo
 import { ProfileChipView } from '../../ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
 import { useUserContext } from '../hooks/useUserContext';
+import { useTranslation } from 'react-i18next';
 
 const MAX_USERS_SHOWN = 10;
 const GRID_COLUMNS_DESKTOP = 6;
@@ -38,21 +39,21 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
 
   const [filter, setFilter] = useState<UserFilterInput>();
 
-  const [loadUsers, { data }] = useMessagingAvailableRecipientsLazyQuery({
+  const { data } = useMessagingAvailableRecipientsQuery({
     variables: { filter, first: MAX_USERS_SHOWN },
+    skip: !filter,
   });
 
-  useEffect(() => {
-    loadUsers();
-  }, [loadUsers, filter]);
-
+  const { t } = useTranslation();
   const { user: currentUser } = useUserContext();
 
-  const users = data?.usersPaginated.users ?? [];
   // Filter out users that are already selected, and myself
-  const listedUsers = users
-    .filter(user => (field.value && field.value.length ? field.value.indexOf(user.id) === -1 : true))
-    .filter(user => user.id !== currentUser?.user.id);
+  const listedUsers = useMemo(() => {
+    const users = data?.usersPaginated.users ?? [];
+    return users
+      .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
+      .filter(user => user.id !== currentUser?.user.id);
+  }, [currentUser?.user.id, data?.usersPaginated.users, field.value]);
 
   // Clear Autocomplete when a user is selected
   const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
@@ -103,6 +104,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             onInputChange={(event, value) => setInputValue(value)}
             autoHighlight
             getOptionLabel={option => option.displayName}
+            noOptionsText={t('components.user-selector.tooltip')}
             popupIcon={<SearchIcon />}
             sx={{
               marginBottom: gutters(1),
@@ -126,7 +128,11 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
                 {...params}
                 name={Math.random().toString(36).slice(2)} // Disables autofill in Chrome
                 onChange={({ target }) => {
-                  setFilter({ email: target.value, firstName: target.value, lastName: target.value });
+                  if (target.value) {
+                    setFilter({ email: target.value, firstName: target.value, lastName: target.value });
+                  } else {
+                    setFilter(undefined);
+                  }
                 }}
                 inputProps={{
                   ...params.inputProps,
