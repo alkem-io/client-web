@@ -33,6 +33,7 @@ const MAX_USERS_MENTIONABLE = 5;
 const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 
 interface MentionableUser extends SuggestionDataItem {
+  // `id` and `display` are from SuggestionDataItem and used by react-mentions
   id: string;
   display: string;
   avatarUrl: string | undefined;
@@ -216,7 +217,10 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
                 />
               );
             }}
-            markup={`[@__display__](${makeAbsoluteUrl(buildUserProfileUrl(''))}__id__)`}
+            // Markdown link generated:
+            // __id__ and __display__ are replaced by react-mentions,
+            // they'll be nameId and displayName of the mentioned user
+            markup={`[@__display__](${makeAbsoluteUrl(buildUserProfileUrl('__id__'))})`}
           />
         </MentionsInput>
         {tooltipOpen && (

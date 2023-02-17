@@ -51,7 +51,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   const listedUsers = useMemo(() => {
     const users = data?.usersPaginated.users ?? [];
     return users
-      .filter(user => (field.value && field.value.length ? field.value.indexOf(user.id) === -1 : true))
+      .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
       .filter(user => user.id !== currentUser?.user.id);
   }, [currentUser?.user.id, data?.usersPaginated.users, field.value]);
 
