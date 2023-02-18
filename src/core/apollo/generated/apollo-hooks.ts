@@ -12796,7 +12796,13 @@ export const ChallengeApplicationDocument = gql`
         id
         displayName
         context {
-          ...ContextDetails
+          id
+          tagline
+          visuals {
+            id
+            uri
+            name
+          }
         }
         community {
           id
@@ -12804,7 +12810,6 @@ export const ChallengeApplicationDocument = gql`
       }
     }
   }
-  ${ContextDetailsFragmentDoc}
 `;
 
 /**
