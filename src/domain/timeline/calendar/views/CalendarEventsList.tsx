@@ -48,18 +48,18 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
-        <BlockTitle>{t('dashboard-calendar-section.dialog-title')}</BlockTitle>
+        <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
       <Gutters minHeight={0} flexGrow={1}>
         <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1}>
           <PageContentBlockGrid paddingBottom={gutters(4)}>
-            {sortedFutureEvents.length === 0 && <Caption>Nothing</Caption>}
+            {sortedFutureEvents.length === 0 && <Caption>{t('calendar.no-upcoming-events')}</Caption>}
             {sortedFutureEvents.map(event => (
               <CalendarEventCard key={event.id} event={event} onClick={() => handleClickOnEvent(event.nameID)} />
             ))}
             {sortedPastEvents.length > 0 && (
               <>
-                <BlockSectionTitle>Also past:</BlockSectionTitle>
+                <BlockSectionTitle>{t('calendar.past-events')}</BlockSectionTitle>
                 {sortedPastEvents.map(event => (
                   <CalendarEventCard key={event.id} event={event} onClick={() => handleClickOnEvent(event.nameID)} />
                 ))}

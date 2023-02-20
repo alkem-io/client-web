@@ -41,10 +41,10 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeaderWithDialogAction title={t('dashboard-calendar-section.title')} onDialogOpen={openDialog} />
+      <PageContentBlockHeaderWithDialogAction title={t('common.events')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
         {loading && <Skeleton />}
-        {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
+        {!loading && events.length === 0 && <Text>{t('calendar.no-data')}</Text>}
         {!loading && events.map(event => <CalendarEventView key={event.id} {...event} />)}
       </Box>
     </PageContentBlock>
