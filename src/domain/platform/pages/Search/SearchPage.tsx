@@ -1,11 +1,9 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Link from '@mui/material/Link';
-import HelpOutline from '@mui/icons-material/HelpOutline';
-import MultipleSelect, { MultiSelectElement } from '../../../../common/components/core/MultipleSelect';
-import { SubHeader } from '../../../../common/components/core/Section';
+import MultipleSelect from './MultipleSelect';
 import { useUserContext } from '../../../community/contributor/user';
 import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -19,14 +17,17 @@ import {
   SearchResultUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../core/routing/route.constants';
+import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../routes/constants';
 import { AUTH_LOGIN_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
-import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
 import { escape } from 'lodash';
 import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import { gutters } from '../../../../core/ui/grid/utils';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+
+export const MAX_TERMS_SEARCH = 5;
 
 const tagsetNames = ['skills', 'keywords'];
 // todo translate
@@ -85,16 +86,21 @@ const SearchPage: FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
+  const breakpoint = useCurrentBreakpoint();
 
   const { search: params } = useLocation();
   const queryParams = new URLSearchParams(params);
   const queryParam = queryParams.get('terms');
 
-  const termsFromUrl = useMemo(
-    () => (queryParam?.split(',') ?? []).map(escape).map(x => ({ id: x, name: x })) || [],
-    [queryParam]
-  );
-  const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
+  const termsFromUrl = useMemo(() => {
+    const terms = (queryParam?.split(',') ?? []).map(term => term.trim()).map(escape) || [];
+    if (terms.length > MAX_TERMS_SEARCH) {
+      // If too many terms come in the url, return an array with the first 4 elements + a fith element containing the rest of the terms all together
+      return [...terms.slice(0, MAX_TERMS_SEARCH - 1), terms.slice(MAX_TERMS_SEARCH - 1).join(' ')];
+    }
+    return terms;
+  }, [queryParam]);
+  const [termsFromQuery, setTermsFromQuery] = useState<string[] | undefined>(undefined);
 
   const [results, setResults] = useState<SearchResultMetaType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
@@ -104,7 +110,7 @@ const SearchPage: FC = () => {
 
   useEffect(() => {
     setTermsFromQuery(termsFromUrl);
-    setSearchTerms(termsFromUrl.map(x => x.name));
+    setSearchTerms(termsFromUrl);
   }, [termsFromUrl, setTermsFromQuery, setSearchTerms]);
 
   const resetState = () => {
@@ -114,8 +120,8 @@ const SearchPage: FC = () => {
     setResults(undefined);
   };
 
-  const handleTermChange = (newValue: MultiSelectElement[]) => {
-    const newTerms = newValue.map(x => x.name);
+  const handleTermChange = (newValue: string[]) => {
+    const newTerms = newValue.filter(term => term) ?? [];
     setSearchTerms(newTerms);
 
     // avoid sending unnecessary query
@@ -157,7 +163,7 @@ const SearchPage: FC = () => {
       return;
     }
 
-    searchQuery(termsFromQuery?.map(x => x.name) || [], [...contributorFilterValue, ...entityFilterValue]);
+    searchQuery(termsFromQuery ?? [], [...contributorFilterValue, ...entityFilterValue]);
   }, [searchQuery, termsFromQuery, contributorFilterValue, entityFilterValue]);
 
   useEffect(() => {
@@ -182,44 +188,21 @@ const SearchPage: FC = () => {
     [results]
   );
 
+  const suggestions = t('pages.search.suggestions-array', { returnObjects: true });
+
   return (
     <TopLevelDesktopLayout>
+      <Box marginTop={gutters(0.5)} marginX="auto" display={breakpoint === 'xs' ? 'none' : 'block'}>
+        <MultipleSelect
+          onChange={handleTermChange}
+          defaultValue={termsFromQuery}
+          elements={suggestions}
+          allowUnknownValues
+          minLength={2}
+          disabled={isSearching}
+        />
+      </Box>
       <PageContentColumn columns={12}>
-        <Grid container padding={{ xs: 0, sm: 2, md: 8 }}>
-          <Grid
-            item
-            textAlign={'center'}
-            marginBottom={4}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'middle'}
-            xs={12}
-            md={4}
-          >
-            <HelpOutline color="primary" sx={{ fontSize: { xs: 80, sm: 100, md: 130 } }} />
-          </Grid>
-          <Grid
-            item
-            sx={{ display: 'table-cell', verticalAlign: 'middle', textAlign: { xs: 'center', md: 'left' } }}
-            marginBottom={2}
-            xs={12}
-            md={8}
-          >
-            <Typography variant={'h2'} sx={{ textTransform: 'uppercase' }}>
-              {t('pages.search.header')}
-            </Typography>
-            <SubHeader text={t('pages.search.alternativesubheader')} />
-          </Grid>
-          <Grid item xs={12}>
-            <MultipleSelect
-              onChange={handleTermChange}
-              defaultValue={termsFromQuery}
-              elements={tags}
-              allowUnknownValues
-              minLength={2}
-            />
-          </Grid>
-        </Grid>
         {!isAuthenticated && (
           <Box display="flex" justifyContent="center" paddingBottom={2}>
             <Link component={RouterLink} to={AUTH_LOGIN_PATH}>

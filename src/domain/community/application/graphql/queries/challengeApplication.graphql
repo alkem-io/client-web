@@ -5,7 +5,13 @@ query challengeApplication($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       id
       displayName
       context {
-        ...ContextDetails
+        id
+        tagline
+        visuals {
+          id
+          uri
+          name
+        }
       }
       community {
         id

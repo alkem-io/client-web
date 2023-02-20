@@ -9,6 +9,7 @@ export interface ProfileChipViewProps extends BoxProps {
   city: string | undefined;
   country: string | undefined;
   avatarUrl: string | undefined;
+  selected?: boolean;
 }
 
 export const ProfileChipView: FC<ProfileChipViewProps> = ({
@@ -16,13 +17,19 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
   city,
   country,
   avatarUrl,
+  selected,
   children,
   ...containerProps
 }) => {
   const { t } = useTranslation();
 
   return (
-    <Box {...containerProps}>
+    <Box
+      {...containerProps}
+      sx={theme => ({
+        backgroundColor: selected ? theme.palette.highlight.light : undefined,
+      })}
+    >
       <Box sx={{ display: 'flex', flexDirection: 'row', height: gutters(3), alignItems: 'center' }}>
         <Box
           component="img"

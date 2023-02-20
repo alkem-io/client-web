@@ -13,6 +13,19 @@ const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => 
   paddingX: theme.spacing(1),
   '& > p:first-of-type': { marginTop: 0 },
   '& > p:last-child': { marginBottom: 0 },
+  '& a': { textDecoration: 'none', color: theme.palette.primary.main },
+  '& a:hover': { color: theme.palette.primary.light },
+}));
+
+const CommentWrapper = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  flexShrink: 1,
+  minWidth: 0,
+  padding: gutters(0.5)(theme),
+  display: 'flex',
+  alignItems: 'top',
+  justifyContent: 'space-between',
+  borderRadius: theme.shape.borderRadius,
 }));
 
 interface MessageViewProps {
@@ -33,17 +46,7 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
   return (
     <Box display="flex" gap={gutters(0.5)}>
       <AuthorAvatar author={author} />
-      <Box
-        flexGrow={1}
-        flexShrink={1}
-        minWidth={0}
-        padding={1}
-        display="flex"
-        alignItems="top"
-        justifyContent="space-between"
-        bgcolor={isRootComment ? 'background.paper' : 'neutralMedium.light'}
-        borderRadius={theme => theme.shape.borderRadius}
-      >
+      <CommentWrapper bgcolor={isRootComment ? 'background.paper' : 'neutralMedium.light'}>
         <Grid container direction="column">
           <Grid item>
             <Grid container spacing={1}>
@@ -76,7 +79,7 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
             </Box>
           </Grid>
         </Grid>
-      </Box>
+      </CommentWrapper>
     </Box>
   );
 };

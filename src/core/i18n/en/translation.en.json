@@ -675,11 +675,11 @@
         "title": "Details",
         "description": "Description",
         "type-comments": "Comments",
-        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
+        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
         "type-cards": "Cards",
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Whiteboards",
-        "type-canvases-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. ",
+        "type-canvases-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "template-step": {
@@ -697,7 +697,7 @@
     },
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed",
-      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards      will not be changed"
+      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards will not be changed"
     },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
@@ -798,8 +798,17 @@
     "card-filter": {
       "title": "Filter"
     },
-
-
+    "tag-filter": {
+      "current-filter": "Current filter: ",
+      "energy-transition": "Energy Transition",
+      "inclusive-society": "Inclusive Society",
+      "public-services": "Public Services",
+      "innovation": "Innovation",
+      "supporting-vulnerable-groups": "Supporting Vulnerable Groups",
+      "digitalization-of-society": "Digitalization of Society",
+      "show-all": "Show All",
+      "other": "Other"
+    },
     "backdrop": {
       "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
@@ -928,6 +937,9 @@
     "filter": {
       "placeholder": "Search"
     },
+    "user-selector": {
+      "tooltip": "Start typing to find users"
+    },
     "communityUpdates": {
       "title": "Let your community know what's next",
       "updatesTitle": "Published updates",
@@ -1027,7 +1039,8 @@
         "post": "Post comment"
       },
       "tooltip": {
-        "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)"
+        "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)",
+        "mentions": "Type a few characters to find relevant users"
       }
     },
     "new-discussion": {
@@ -1311,19 +1324,21 @@
       }
     },
     "search": {
-      "header": "Search",
-      "subheader": "Find relevant users, organizations, groups and not least Challenges!",
-      "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
-      "body": "",
-      "organization": {
-        "no-hosted": "None",
-        "no-leading": "None"
-      },
-      "no-results": "No results",
-      "more-results": "There are more search results. Please use more specific search criteria to narrow down the results",
-      "user-not-logged": "Login or Register to include users in your search results",
-      "search-suggestions": "Search suggestions",
-      "no-suggestions": "No suggestions"
+      "placeholder": "Search...",
+      "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
+      "search-suggestions": "Search suggestions:",
+      "suggestions-array": [
+        "Innovation",
+        "Energy",
+        "Inclusive",
+        "Design",
+        "3D",
+        "Community",
+        "Transition",
+        "SSI",
+        "Privacy"
+      ],
+      "user-not-logged": "Login or Register to include users in your search results"
     },
     "challenge-explorer": {
       "search": {

@@ -19,6 +19,7 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
 export interface MessageReceiverChipData {
+  id?: string;
   title?: string;
   city?: string;
   country?: string;
@@ -87,8 +88,9 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
               <Form noValidate autoComplete="off">
                 <GridContainer disablePadding marginBottom={gutters(1)}>
                   <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
-                    {messageReceivers?.map(receiver => (
+                    {messageReceivers?.map((receiver, index) => (
                       <ProfileChip
+                        key={receiver.id ?? index}
                         displayName={receiver.title}
                         avatarUrl={receiver.avatarUri}
                         city={receiver.city}

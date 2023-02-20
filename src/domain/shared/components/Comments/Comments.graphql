@@ -25,3 +25,24 @@ mutation PostComment($messageData: CommentsSendMessageInput!) {
 mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
   removeComment(messageData: $messageData)
 }
+
+query MentionableUsers($filter: UserFilterInput, $first: Int) {
+  usersPaginated(filter: $filter, first: $first) {
+    users {
+      id
+      nameID
+      displayName
+      profile {
+        id
+        location {
+          id
+          city
+          country
+        }
+        avatar {
+          ...VisualUri
+        }
+      }
+    }
+  }
+}

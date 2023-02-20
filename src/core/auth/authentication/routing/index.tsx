@@ -13,6 +13,7 @@ import RegistrationRoute from './RegistrationRoute';
 import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
 import SignUp from '../pages/SignUp';
+import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
 
 export const IdentityRoute: FC = () => {
   const {
@@ -44,7 +45,14 @@ export const IdentityRoute: FC = () => {
         }
       />
       <Route path="*" element={<Error404 />} />
-      <Route path="sign_up" element={<SignUp />} />
+      <Route
+        path="sign_up"
+        element={
+          <NotAuthenticatedRoute>
+            <SignUp />
+          </NotAuthenticatedRoute>
+        }
+      />
     </Routes>
   );
 };

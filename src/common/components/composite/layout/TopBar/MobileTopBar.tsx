@@ -20,7 +20,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
-import { HELP_ROUTE, SEARCH_ROUTE } from '../../../../../core/routing/route.constants';
+import { HELP_ROUTE, SEARCH_ROUTE } from '../../../../../domain/platform/routes/constants';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LanguageIcon from '@mui/icons-material/Language';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -28,6 +28,7 @@ import { supportedLngs } from '../../../../../core/i18n/config';
 import ListItemText from '@mui/material/ListItemText';
 import SearchBar from './SearchBar';
 import { ReactComponent as LogoSmallImage } from './alkemio-logo-small.svg';
+import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
 
 export const MobileTopBarHeight = 7;
 
@@ -80,7 +81,7 @@ const LogoSmall = () => {
   const theme = useTheme();
 
   return (
-    <Box component={Link} mx={1} to="/">
+    <Box component={Link} mx={1} to={ROUTE_HOME}>
       <LogoSmallImage width={theme.spacing(6)} />
     </Box>
   );

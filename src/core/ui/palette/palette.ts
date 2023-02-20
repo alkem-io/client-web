@@ -28,6 +28,7 @@ export const paletteOptions: PaletteOptions = {
   highlight: {
     main: COLOR_POSITIVE_CONTAINER,
     contrastText: '#1D384A',
+    light: '#DEEFF6',
   },
   hub: {
     main: '#1D384A',
