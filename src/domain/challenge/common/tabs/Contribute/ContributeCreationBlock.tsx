@@ -7,7 +7,7 @@ import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { RouterLink } from '../../../../../common/components/core/RouterLink';
-import { INSPIRATION_ROUTE } from '../../../../../core/routing/route.constants';
+import { INSPIRATION_ROUTE } from '../../../../platform/routes/constants';
 
 interface ContributeCreationBlockProps {
   canCreate: boolean;

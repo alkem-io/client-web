@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { ROUTE_HOME } from './routes';
+import { ROUTE_HOME } from './constants';
 import { useConfig } from '../config/useConfig';
 import { FEATURE_LANDING_PAGE } from '../config/features.constants';
 

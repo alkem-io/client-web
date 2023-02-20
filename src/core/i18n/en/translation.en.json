@@ -798,7 +798,17 @@
     "card-filter": {
       "title": "Filter"
     },
-
+    "tag-filter": {
+      "current-filter": "Current filter: ",
+      "energy-transition": "Energy Transition",
+      "inclusive-society": "Inclusive Society",
+      "public-services": "Public Services",
+      "innovation": "Innovation",
+      "supporting-vulnerable-groups": "Supporting Vulnerable Groups",
+      "digitalization-of-society": "Digitalization of Society",
+      "show-all": "Show All",
+      "other": "Other"
+    },
     "backdrop": {
       "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
