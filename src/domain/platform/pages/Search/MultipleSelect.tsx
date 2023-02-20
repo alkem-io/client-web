@@ -37,7 +37,7 @@ const SelectedTerms: FC<SelectedTermsProps> = ({ selectedTerms, disabled, handle
   return (
     <Box
       display="flex"
-      flexWrap={['xl', 'lg'].includes(breakpoint) ? 'nowrap' : 'wrap'}
+      flexWrap={['xl', 'lg', 'md'].includes(breakpoint) ? 'nowrap' : 'wrap'}
       gap={gutters(0.5)}
       margin={gutters(0.5)}
     >

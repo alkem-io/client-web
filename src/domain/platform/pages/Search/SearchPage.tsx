@@ -25,6 +25,7 @@ import { escape } from 'lodash';
 import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../../core/ui/grid/utils';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -85,6 +86,7 @@ const SearchPage: FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
+  const breakpoint = useCurrentBreakpoint();
 
   const { search: params } = useLocation();
   const queryParams = new URLSearchParams(params);
@@ -190,7 +192,7 @@ const SearchPage: FC = () => {
 
   return (
     <TopLevelDesktopLayout>
-      <Box marginTop={gutters(0.5)} marginX="auto">
+      <Box marginTop={gutters(0.5)} marginX="auto" display={breakpoint === 'xs' ? 'none' : 'block'}>
         <MultipleSelect
           onChange={handleTermChange}
           defaultValue={termsFromQuery}
