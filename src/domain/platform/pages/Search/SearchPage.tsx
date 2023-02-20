@@ -93,7 +93,7 @@ const SearchPage: FC = () => {
   const queryParam = queryParams.get('terms');
 
   const termsFromUrl = useMemo(() => {
-    const terms = (queryParam?.split(',') ?? []).map(escape) || [];
+    const terms = (queryParam?.split(',') ?? []).map(term => term.trim()).map(escape) || [];
     if (terms.length > MAX_TERMS_SEARCH) {
       // If too many terms come in the url, return an array with the first 4 elements + a fith element containing the rest of the terms all together
       return [...terms.slice(0, MAX_TERMS_SEARCH - 1), terms.slice(MAX_TERMS_SEARCH - 1).join(' ')];
