@@ -199,6 +199,7 @@ const SearchPage: FC = () => {
           elements={suggestions}
           allowUnknownValues
           minLength={2}
+          disabled={isSearching}
         />
       </Box>
       <PageContentColumn columns={12}>

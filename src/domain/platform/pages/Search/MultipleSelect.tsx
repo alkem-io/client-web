@@ -42,12 +42,7 @@ const SelectedTerms: FC<SelectedTermsProps> = ({ selectedTerms, disabled, handle
       margin={gutters(0.5)}
     >
       {selectedTerms.map((term, index) => (
-        <Chip
-          key={index}
-          label={term}
-          color={disabled ? 'default' : 'primary'}
-          onDelete={disabled ? undefined : () => handleRemove(term)}
-        />
+        <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
       ))}
     </Box>
   );
@@ -69,7 +64,6 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const [elementsNoFilter, setElementsNoFilter] = useState<string[]>(_elements || []);
   const [selectedElements, setSelected] = useState<string[]>(filterTerms(defaultValue));
   const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
-  const [isDisabled, setIsDisabled] = useState(disabled ?? true);
 
   useEffect(() => setElements(_elements), [_elements]);
   useEffect(() => {
@@ -99,6 +93,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     if (selectedElements.find(el => el === term)) return;
     // If it's empty or whitespace
     if (!term.trim()) return;
+    if (disabled) return;
 
     const newSelected = filterTerms([...selectedElements, term]);
     const newElements = elementsNoFilter.filter(el => el !== term);
@@ -144,9 +139,9 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   };
 
   const handleInputChange = e => {
-    const value = e.target.value.toLowerCase();
-    setIsDisabled(value.length < minLength);
-    if (allowUnknownValues && e.key === 'Enter' && value.length >= minLength) {
+    const value = e.target.value.trim().toLowerCase();
+    if (value.length < minLength) return;
+    if (allowUnknownValues && e.key === 'Enter') {
       handleSearch(value);
     }
   };
@@ -165,10 +160,11 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           onKeyDown={handleInputChange}
           placeholder={t('pages.search.placeholder')}
           InputProps={{
+            disabled: disabled,
             endAdornment: (
               <>
                 <SelectedTerms selectedTerms={selectedElements} disabled={disabled} handleRemove={handleRemove} />
-                <IconButton onClick={() => handleSearch()} disabled={isDisabled}>
+                <IconButton onClick={() => handleSearch()} disabled={disabled}>
                   <SearchIcon color="primary" />
                 </IconButton>
               </>
