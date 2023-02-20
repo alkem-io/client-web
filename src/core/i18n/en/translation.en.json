@@ -1324,19 +1324,21 @@
       }
     },
     "search": {
-      "header": "Search",
-      "subheader": "Find relevant users, organizations, groups and not least Challenges!",
-      "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
-      "body": "",
-      "organization": {
-        "no-hosted": "None",
-        "no-leading": "None"
-      },
-      "no-results": "No results",
-      "more-results": "There are more search results. Please use more specific search criteria to narrow down the results",
-      "user-not-logged": "Login or Register to include users in your search results",
-      "search-suggestions": "Search suggestions",
-      "no-suggestions": "No suggestions"
+      "placeholder": "Search...",
+      "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
+      "search-suggestions": "Search suggestions:",
+      "suggestions-array": [
+        "Innovation",
+        "Energy",
+        "Inclusive",
+        "Design",
+        "3D",
+        "Community",
+        "Transition",
+        "SSI",
+        "Privacy"
+      ],
+      "user-not-logged": "Login or Register to include users in your search results"
     },
     "challenge-explorer": {
       "search": {
