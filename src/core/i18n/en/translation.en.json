@@ -1763,9 +1763,13 @@
     "title": "Community"
   },
   "dashboard-calendar-section": {
-    "title": "Upcoming Events",
-    "dialog-title": "Upcoming Events",
-    "no-data": "No events found"
+    "title": "Events",
+    "dialog-title": "Events",
+    "no-data": "No events found",
+    "no-events": "Currently, there are no upcoming events to be displayed",
+    "upcoming": "upcoming",
+    "past": "past",
+    "past-events": "Past Events"
   },
   "aspect-edit": {
     "new": "New Card",
