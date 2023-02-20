@@ -697,7 +697,7 @@
     },
     "callout-edit": {
       "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed",
-      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards      will not be changed"
+      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards will not be changed"
     },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",
