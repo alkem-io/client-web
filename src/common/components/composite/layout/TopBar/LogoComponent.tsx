@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, BoxProps, styled } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { ReactComponent as LogoImage } from './logo-preview.svg';
-import { ROUTE_HOME } from '../../../../../domain/platform/routes/routes';
+import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
 
 export interface LogoComponentProps extends BoxProps {
   url?: string;
