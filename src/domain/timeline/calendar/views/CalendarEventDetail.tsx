@@ -53,7 +53,7 @@ const CalendarEventDetail = ({
                 )
               }
             >
-              <BlockTitle>{t('dashboard-calendar-section.dialog-title')}</BlockTitle>
+              <BlockTitle>{t('common.events')}</BlockTitle>
             </DialogHeader>
             <DialogContent>
               <AspectDashboardView

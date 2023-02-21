@@ -11,7 +11,7 @@ export const paletteOptions: PaletteOptions = {
   },
   positive: { main: '#00D4B4' },
   negative: { main: '#D40062' },
-  neutral: { main: '#181828' },
+  neutral: { main: '#181828', light: '#646464' },
   neutralMedium: {
     light: grey[200],
     main: grey[500],

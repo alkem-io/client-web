@@ -1,6 +1,9 @@
 import { Box, Skeleton } from '@mui/material';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import { sortBy } from 'lodash';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { useHubDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -9,9 +12,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
 import { EntityPageSection } from '../../layout/EntityPageSection';
-import { useNavigate } from 'react-router-dom';
-import { sortBy } from 'lodash';
-import { startOfDay } from '../../../../core/utils/time/utils';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -30,20 +30,21 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   // TODO: Move this to serverside
   const events = useMemo(() => {
-    const currentDate = startOfDay();
-    return sortBy(data?.hub.timeline?.calendar.events ?? [], event => event.startDate) // Sort the returned elements by date
-      .filter(event => event.startDate && new Date(event.startDate) > currentDate) // Filter the past Events
-      .slice(0, MAX_NUMBER_OF_EVENTS); // Get the first N elements
+    const mostRecent = sortBy(data?.hub.timeline?.calendar.events ?? [], event => -dayjs(event.startDate)).slice(
+      0,
+      MAX_NUMBER_OF_EVENTS
+    ); // Get the first N elements
+    return sortBy(mostRecent, event => dayjs(event.startDate).valueOf());
   }, [data]);
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeaderWithDialogAction title={t('dashboard-calendar-section.title')} onDialogOpen={openDialog} />
+      <PageContentBlockHeaderWithDialogAction title={t('common.events')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
         {loading && <Skeleton />}
-        {!loading && events.length === 0 && <Text>{t('dashboard-calendar-section.no-data')}</Text>}
+        {!loading && events.length === 0 && <Text>{t('calendar.no-data')}</Text>}
         {!loading && events.map(event => <CalendarEventView key={event.id} {...event} />)}
       </Box>
     </PageContentBlock>

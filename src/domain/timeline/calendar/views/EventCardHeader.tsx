@@ -3,27 +3,24 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
 import { gutters } from '../../../../core/ui/grid/utils';
-import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
-import { formatBadgeDate, formatLongDate, formatTimeAndDuration } from '../../../../core/utils/time/utils';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
+import { formatLongDate, formatTimeAndDuration } from '../../../../core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import { CalendarEventCardData } from './CalendarEventCard';
+import CalendarEventBadge from './CalendarEventBadge';
 
-interface CardTitleSectionProps {
+interface EventCardHeaderProps {
   event: CalendarEventCardData | undefined;
 }
 
-const EventCardHeader = ({ event, children }: PropsWithChildren<CardTitleSectionProps>) => {
+const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderProps>) => {
   const { t } = useTranslation();
+
   return (
     <BadgeCardView
-      visual={
-        <RoundedBadge marginLeft={0.5} size="medium">
-          <Caption>{formatBadgeDate(event?.startDate)}</Caption>
-        </RoundedBadge>
-      }
+      visual={<CalendarEventBadge eventStartDate={event?.startDate} marginLeft={0.5} tooltipDisabled />}
       height={gutters(3)}
       paddingX={1}
       gap={1}
