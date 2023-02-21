@@ -1,19 +1,11 @@
 import React, { PropsWithChildren } from 'react';
-import { Box, BoxProps, styled, useTheme } from '@mui/material';
-
-export const RoundedBadgeContainer = styled(Box)(({ theme }) => ({
-  background: theme.palette.primary.main,
-  color: theme.palette.common.white,
-  borderRadius: '50%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-}));
+import { Box, BoxProps, useTheme } from '@mui/material';
 
 export type RoundedBadgeSize = 'medium' | 'small';
 
-export interface RoundedBadgeProps {
+export interface RoundedBadgeProps extends BoxProps {
   size: RoundedBadgeSize;
+  color?: string;
 }
 
 const getSizeInSpacing = (size: RoundedBadgeSize) => {
@@ -25,15 +17,34 @@ const getSizeInSpacing = (size: RoundedBadgeSize) => {
   }
 };
 
-const RoundedBadge = ({ size, children, ...containerProps }: PropsWithChildren<RoundedBadgeProps & BoxProps>) => {
+const RoundedBadge = ({
+  size,
+  color = 'primary.main',
+  children,
+  sx,
+  ...containerProps
+}: PropsWithChildren<RoundedBadgeProps>) => {
   const theme = useTheme();
 
   const sizePx = theme.spacing(getSizeInSpacing(size));
 
   return (
-    <RoundedBadgeContainer width={sizePx} height={sizePx} {...containerProps}>
+    <Box
+      width={sizePx}
+      height={sizePx}
+      sx={{
+        backgroundColor: color,
+        color: 'common.white',
+        borderRadius: '50%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...sx,
+      }}
+      {...containerProps}
+    >
       {children}
-    </RoundedBadgeContainer>
+    </Box>
   );
 };
 
