@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import {
   refetchHubCalendarEventsQuery,
   refetchHubDashboardCalendarEventsQuery,
@@ -10,12 +10,9 @@ import {
 import {
   AuthorizationPrivilege,
   CalendarEvent,
+  CalendarEventDetailsFragment,
   CardProfile,
-  HubCalendarEventsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
-import { CalendarEventCardData } from './views/CalendarEventCard';
-import { sortBy } from 'lodash';
-import { startOfDay } from '../../../core/utils/time/utils';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -34,10 +31,7 @@ export interface CalendarEventsContainerProps {
     actions: CalendarEventsActions,
     loading: CalendarEventsState
   ) => React.ReactNode;
-  options?: {
-    sortByStartDate?: boolean;
-    filterPastEvents?: boolean;
-  };
+  options?: {};
 }
 
 export interface CalendarEventsActions {
@@ -55,7 +49,7 @@ export interface CalendarEventsState {
 }
 
 export interface CalendarEventsEntities {
-  events: CalendarEventCardData[];
+  events: CalendarEventDetailsFragment[];
   privileges: {
     canCreateEvents: boolean;
     canEditEvents: boolean;
@@ -63,9 +57,7 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children, options = {} }) => {
-  const { sortByStartDate = true, filterPastEvents = true } = options;
-
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubId, children }) => {
   const { data, loading } = useHubCalendarEventsQuery({
     variables: { hubId: hubId! },
     skip: !hubId,
@@ -83,18 +75,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
     ),
   };
 
-  const events = useMemo(() => {
-    let result: Required<HubCalendarEventsQuery['hub']>['timeline']['calendar']['events'] =
-      data?.hub.timeline?.calendar.events ?? [];
-    if (sortByStartDate) {
-      result = sortBy(result, event => event.startDate);
-    }
-    if (filterPastEvents) {
-      const currentDate = startOfDay();
-      result = result.filter(event => event.startDate && new Date(event.startDate) > currentDate);
-    }
-    return result;
-  }, [data, sortByStartDate, filterPastEvents]);
+  const events = data?.hub.timeline?.calendar.events ?? [];
 
   const calendarId = data?.hub.timeline?.calendar.id;
 
