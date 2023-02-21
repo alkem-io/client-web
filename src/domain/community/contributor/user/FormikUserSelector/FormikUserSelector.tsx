@@ -47,17 +47,20 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   const { t } = useTranslation();
   const { user: currentUser } = useUserContext();
 
+  // Clear Autocomplete when a user is selected
+  const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
+  const [inputValue, setInputValue] = useState('');
+
   // Filter out users that are already selected, and myself
   const listedUsers = useMemo(() => {
+    if (!inputValue) {
+      return [];
+    }
     const users = data?.usersPaginated.users ?? [];
     return users
       .filter(user => (Array.isArray(field.value) ? !field.value.includes(user.id) : true))
       .filter(user => user.id !== currentUser?.user.id);
-  }, [currentUser?.user.id, data?.usersPaginated.users, field.value]);
-
-  // Clear Autocomplete when a user is selected
-  const [autocompleteValue, setAutocompleteValue] = useState<User | null>(null);
-  const [inputValue, setInputValue] = useState('');
+  }, [currentUser?.user.id, data?.usersPaginated.users, field.value, inputValue]);
 
   const breakpoint = useCurrentBreakpoint();
 

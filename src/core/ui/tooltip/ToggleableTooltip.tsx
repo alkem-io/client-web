@@ -6,7 +6,7 @@ interface ToggleableTooltipProps extends TooltipProps {
 }
 
 const ToggleableTooltip = ({ disabled, ...tooltipProps }: ToggleableTooltipProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Tooltip
