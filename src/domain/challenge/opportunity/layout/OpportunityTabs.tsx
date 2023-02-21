@@ -19,7 +19,8 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
       shareUrl={rootUrl}
-      // TODO: Add specific subentity tab for opportunities
+      // TODO: Add specific subentity tab for opportunities,
+      // and cleanup Agreements code if at the end is not agreements
     />
   );
 };
