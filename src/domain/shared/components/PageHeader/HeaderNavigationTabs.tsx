@@ -15,6 +15,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     paddingLeft: gutters()(theme),
     paddingRight: gutters()(theme),
     gap: gutters()(theme),
+    justifyContent: 'space-between',
   },
   '.MuiTabs-indicator': {
     backgroundColor: theme.palette.primary.contrastText,
