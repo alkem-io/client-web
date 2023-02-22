@@ -6,9 +6,14 @@ import PageContent from '../../content/PageContent';
 
 interface TopLevelDesktopLayoutProps {
   heading?: ReactNode;
+  floatingButtons?: ReactNode;
 }
 
-const TopLevelDesktopLayout = ({ heading, children }: PropsWithChildren<TopLevelDesktopLayoutProps>) => {
+const TopLevelDesktopLayout = ({
+  heading,
+  floatingButtons,
+  children,
+}: PropsWithChildren<TopLevelDesktopLayoutProps>) => {
   return (
     <>
       <TopBar />
@@ -16,7 +21,7 @@ const TopLevelDesktopLayout = ({ heading, children }: PropsWithChildren<TopLevel
       {heading}
       <PageContent>{children}</PageContent>
       <Footer />
-      <FloatingActionButtons />
+      <FloatingActionButtons>{floatingButtons}</FloatingActionButtons>
     </>
   );
 };
