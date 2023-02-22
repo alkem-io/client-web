@@ -78,7 +78,7 @@ const SearchPage: FC = () => {
     setResults(undefined);
   };
 
-  const handleTermChange = (newValue: string[]) => {
+  const handleTermsChange = (newValue: string[]) => {
     const newTerms = newValue.filter(term => term) ?? [];
     setSearchTerms(newTerms);
 
@@ -152,11 +152,11 @@ const SearchPage: FC = () => {
 
   return (
     <TopLevelDesktopLayout>
-      <Box marginTop={gutters(0.5)} marginX="auto">
+      <Box marginTop={gutters(0.5)} marginX="auto" minWidth="75%">
         <MultipleSelect
-          onChange={handleTermChange}
-          defaultValue={termsFromQuery}
-          elements={suggestions}
+          onChange={handleTermsChange}
+          selectedTerms={searchTerms}
+          suggestions={suggestions}
           minLength={2}
           disabled={isSearching}
         />
