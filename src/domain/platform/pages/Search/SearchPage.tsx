@@ -1,10 +1,9 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { escape } from 'lodash';
 import { useLocation, useNavigate } from 'react-router';
-import { Box } from '@mui/material';
-import Link from '@mui/material/Link';
-import MultipleSelect from './MultipleSelect';
-import { useUserContext } from '../../../community/contributor/user';
+import { RouterLink } from '../../../../common/components/core/RouterLink';
 import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
@@ -16,61 +15,19 @@ import {
   SearchResultType,
   SearchResultUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../routes/constants';
 import { AUTH_LOGIN_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
-import { FilterConfig } from './Filter';
-import SearchResultSection from './SearchResultSection';
-import { escape } from 'lodash';
-import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../../core/ui/grid/utils';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
+import { useUserContext } from '../../../community/contributor/user';
+import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../routes/constants';
+import { contributionFilterConfig, contributorFilterConfig, FilterDefinition, journeyFilterConfig } from './Filter';
+import MultipleSelect from './MultipleSelect';
+import SearchResultSection from './SearchResultSection';
 
 export const MAX_TERMS_SEARCH = 5;
 
 const tagsetNames = ['skills', 'keywords'];
-// todo translate
-const contributorFilterConfig: FilterConfig = {
-  all: {
-    title: 'All',
-    value: ['user', 'organization'],
-    typename: 'all',
-  },
-  user: {
-    title: 'Users only',
-    value: ['user'],
-    typename: 'User',
-  },
-  organization: {
-    title: 'Organizations only',
-    value: ['organization'],
-    typename: 'Organization',
-  },
-};
-// todo translate
-const journeyFilterConfig: FilterConfig = {
-  all: {
-    title: 'All',
-    value: ['hub', 'opportunity', 'challenge'],
-    typename: 'all',
-  },
-  opportunity: {
-    title: 'Opportunities only',
-    value: ['opportunity'],
-    typename: 'Opportunity',
-  },
-  challenge: {
-    title: 'Challenges only',
-    value: ['challenge'],
-    typename: 'Challenge',
-  },
-  hub: {
-    title: 'Hubs only',
-    value: ['hub'],
-    typename: 'Hub',
-  },
-};
 
 export type SearchResultT<T> = T & SearchResult;
 
@@ -86,7 +43,6 @@ const SearchPage: FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
-  const breakpoint = useCurrentBreakpoint();
 
   const { search: params } = useLocation();
   const queryParams = new URLSearchParams(params);
@@ -104,9 +60,10 @@ const SearchPage: FC = () => {
 
   const [results, setResults] = useState<SearchResultMetaType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
-  // todo only the value can be used instead
-  const [contributorFilterValue, setContributorFilterValue] = useState<string[]>(contributorFilterConfig.all.value);
-  const [entityFilterValue, setEntityFilterValue] = useState<string[]>(journeyFilterConfig.all.value);
+
+  const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
+  const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
+  const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
 
   useEffect(() => {
     setTermsFromQuery(termsFromUrl);
@@ -114,8 +71,9 @@ const SearchPage: FC = () => {
   }, [termsFromUrl, setTermsFromQuery, setSearchTerms]);
 
   const resetState = () => {
-    setContributorFilterValue(contributorFilterConfig.all.value);
-    setEntityFilterValue(journeyFilterConfig.all.value);
+    setJourneyFilter(journeyFilterConfig.all);
+    setContributionFilter(contributionFilterConfig.all);
+    setContributorFilter(contributorFilterConfig.all);
     setSearchTerms([]);
     setResults(undefined);
   };
@@ -131,7 +89,7 @@ const SearchPage: FC = () => {
       const terms = newTerms.join(',');
       const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
       navigate(`${SEARCH_ROUTE}?${params}`);
-      searchQuery(newTerms, [...contributorFilterValue, ...entityFilterValue]);
+      searchQuery(newTerms, [...contributorFilter.value, ...journeyFilter.value]);
     }
   };
 
@@ -163,25 +121,27 @@ const SearchPage: FC = () => {
       return;
     }
 
-    searchQuery(termsFromQuery ?? [], [...contributorFilterValue, ...entityFilterValue]);
-  }, [searchQuery, termsFromQuery, contributorFilterValue, entityFilterValue]);
+    searchQuery(termsFromQuery ?? [], [...contributorFilter.value, ...journeyFilter.value]);
+  }, [searchQuery, termsFromQuery, contributorFilter, journeyFilter]);
 
   useEffect(() => {
     if (!searchTerms.length) {
       return;
     }
 
-    searchQuery(searchTerms, [...contributorFilterValue, ...entityFilterValue]);
-  }, [searchQuery, searchTerms, contributorFilterValue, entityFilterValue]);
+    searchQuery(searchTerms, [...contributorFilter.value, ...journeyFilter.value]);
+  }, [searchQuery, searchTerms, contributorFilter, journeyFilter]);
 
-  const handleContributorFilterChange = (value: string[]) => setContributorFilterValue(value);
-  const handleEntityFilterChange = (value: string[]) => setEntityFilterValue(value);
-
-  const [journeyResults, contributorResults] = useMemo(
+  const [journeyResults, contributionResults, contributorResults] = useMemo(
     () => [
       results?.filter(
         ({ type }) =>
           type === SearchResultType.Hub || type === SearchResultType.Challenge || type === SearchResultType.Opportunity
+      ),
+      results?.filter(
+        ({ type }) =>
+          type ===
+          SearchResultType.Card /*|| type === SearchResultType.Whiteboard || type === SearchResultType.Callout*/
       ),
       results?.filter(({ type }) => type === SearchResultType.User || type === SearchResultType.Organization),
     ],
@@ -192,12 +152,11 @@ const SearchPage: FC = () => {
 
   return (
     <TopLevelDesktopLayout>
-      <Box marginTop={gutters(0.5)} marginX="auto" display={breakpoint === 'xs' ? 'none' : 'block'}>
+      <Box marginTop={gutters(0.5)} marginX="auto">
         <MultipleSelect
           onChange={handleTermChange}
           defaultValue={termsFromQuery}
           elements={suggestions}
-          allowUnknownValues
           minLength={2}
           disabled={isSearching}
         />
@@ -212,16 +171,29 @@ const SearchPage: FC = () => {
         )}
         <SearchResultSection
           title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
+          filterTitle={t('pages.search.filter.type.journey')}
           filterConfig={journeyFilterConfig}
           results={journeyResults}
-          onFilterChange={handleEntityFilterChange}
+          currentFilter={journeyFilter}
+          onFilterChange={setJourneyFilter}
           loading={isSearching}
         />
         <SearchResultSection
-          filterConfig={contributorFilterConfig}
+          title={t('common.contributions')}
+          filterTitle={t('pages.search.filter.type.contribution')}
+          filterConfig={contributionFilterConfig}
+          results={contributionResults}
+          currentFilter={contributionFilter}
+          onFilterChange={setContributionFilter}
+          loading={isSearching}
+        />
+        <SearchResultSection
           title={t('common.contributors')}
+          filterTitle={t('pages.search.filter.type.contributor')}
+          filterConfig={contributorFilterConfig}
           results={contributorResults}
-          onFilterChange={handleContributorFilterChange}
+          currentFilter={contributorFilter}
+          onFilterChange={setContributorFilter}
           loading={isSearching}
         />
       </PageContentColumn>
@@ -236,13 +208,6 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     return [];
   }
 
-  const contributorResults = (query.search.contributorResults || [])
-    .map<SearchResultMetaType>(
-      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
-      []
-    )
-    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
-
   const journeyResults = (query.search.journeyResults || [])
     .map<SearchResultMetaType>(
       ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
@@ -251,6 +216,13 @@ const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
     .sort((a, b) => (b?.score || 0) - (a?.score || 0));
 
   const contributionResults = (query.search.contributionResults || [])
+    .map<SearchResultMetaType>(
+      ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
+      []
+    )
+    .sort((a, b) => (b?.score || 0) - (a?.score || 0));
+
+  const contributorResults = (query.search.contributorResults || [])
     .map<SearchResultMetaType>(
       ({ score, terms, ...rest }) => ({ ...rest, score: score || 0, terms: terms || [] } as SearchResultMetaType),
       []

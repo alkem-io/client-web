@@ -2,7 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
 import { Chip, TextField } from '@mui/material';
 import { uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,6 @@ interface MultipleSelectProps {
   elements: string[];
   onChange?: (elements: string[]) => void;
   onSearch?: () => void;
-  allowUnknownValues?: boolean;
   defaultValue?: string[];
   disabled?: boolean;
   minLength?: number;
@@ -36,8 +35,10 @@ const SelectedTerms: FC<SelectedTermsProps> = ({ selectedTerms, disabled, handle
 
   return (
     <Box
+      flex={5}
       display="flex"
       flexWrap={['xl', 'lg', 'md'].includes(breakpoint) ? 'nowrap' : 'wrap'}
+      justifyContent="flex-end"
       gap={gutters(0.5)}
       margin={gutters(0.5)}
     >
@@ -52,7 +53,6 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   elements: _elements,
   onChange,
   onSearch,
-  allowUnknownValues,
   defaultValue,
   disabled,
   minLength = 2,
@@ -138,10 +138,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     onSearch && onSearch();
   };
 
-  const handleInputChange = e => {
-    const value = e.target.value.trim().toLowerCase();
-    if (value.length < minLength) return;
-    if (allowUnknownValues && e.key === 'Enter') {
+  const handleInputChange: KeyboardEventHandler<HTMLInputElement> = e => {
+    const value = inputRef.current?.value?.trim();
+    if (!value || value.length < minLength) return;
+    if (e.key === 'Enter') {
       handleSearch(value);
     }
   };
@@ -156,7 +156,6 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
       >
         <TextField
           inputRef={inputRef}
-          onChange={handleInputChange}
           onKeyDown={handleInputChange}
           placeholder={t('pages.search.placeholder')}
           InputProps={{
@@ -169,7 +168,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 </IconButton>
               </>
             ),
-            sx: { backgroundColor: theme => theme.palette.common.white },
+            sx: { backgroundColor: theme => theme.palette.common.white, '& input': { flex: 2 } },
           }}
           sx={{ width: '100%' }}
         />

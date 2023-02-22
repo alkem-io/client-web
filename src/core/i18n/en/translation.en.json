@@ -1342,7 +1342,25 @@
         "SSI",
         "Privacy"
       ],
-      "user-not-logged": "Login or Register to include users in your search results"
+      "user-not-logged": "Login or Register to include users in your search results",
+      "filter": {
+        "type": {
+          "journey": "Journey type",
+          "contribution": "Contribution type",
+          "contributor": "Contributor type"
+        },
+        "key": {
+          "all": "All",
+          "hub": "Hubs",
+          "challenge": "Challenges",
+          "opportunity": "Opportunities",
+          "user": "Users",
+          "organization": "Organizations",
+          "card": "Cards",
+          "whiteboard": "Whiteboards (available soon)",
+          "callout": "Callouts (available soon)"
+        }
+      }
     },
     "challenge-explorer": {
       "search": {
