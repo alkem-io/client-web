@@ -37,7 +37,7 @@ export const journeyFilterConfig: FilterConfig = {
 export const contributionFilterConfig: FilterConfig = {
   all: {
     title: 'pages.search.filter.key.all',
-    value: ['card', 'whiteboard', 'callout'],
+    value: ['card'], // , 'whiteboard', 'callout'], // TODO: Enable 'whiteboard' and 'callout' when server is ready
     typename: 'all',
   },
   card: {
@@ -49,13 +49,13 @@ export const contributionFilterConfig: FilterConfig = {
     title: 'pages.search.filter.key.whiteboard',
     value: ['whiteboard'],
     typename: 'whiteboard',
-    disabled: true,
+    disabled: true, // TODO: Needs server work
   },
   callout: {
     title: 'pages.search.filter.key.callout',
     value: ['callout'],
     typename: 'callout',
-    disabled: true,
+    disabled: true, // TODO: Needs server work
   },
 };
 

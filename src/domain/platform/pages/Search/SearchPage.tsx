@@ -8,6 +8,7 @@ import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hoo
 import {
   SearchQuery,
   SearchResult,
+  SearchResultCardFragment,
   SearchResultChallengeFragment,
   SearchResultHubFragment,
   SearchResultOpportunityFragment,
@@ -34,6 +35,7 @@ export type SearchResultT<T> = T & SearchResult;
 export type SearchResultMetaType = SearchResultT<
   | SearchResultUserFragment
   | SearchResultOrganizationFragment
+  | SearchResultCardFragment
   | SearchResultHubFragment
   | SearchResultChallengeFragment
   | SearchResultOpportunityFragment
@@ -89,7 +91,7 @@ const SearchPage: FC = () => {
       const terms = newTerms.join(',');
       const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
       navigate(`${SEARCH_ROUTE}?${params}`);
-      searchQuery(newTerms, [...contributorFilter.value, ...journeyFilter.value]);
+      searchQuery(newTerms, [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value]);
     }
   };
 
@@ -121,16 +123,20 @@ const SearchPage: FC = () => {
       return;
     }
 
-    searchQuery(termsFromQuery ?? [], [...contributorFilter.value, ...journeyFilter.value]);
-  }, [searchQuery, termsFromQuery, contributorFilter, journeyFilter]);
+    searchQuery(termsFromQuery ?? [], [
+      ...journeyFilter.value,
+      ...contributionFilter.value,
+      ...contributorFilter.value,
+    ]);
+  }, [searchQuery, termsFromQuery, journeyFilter, contributionFilter, contributorFilter]);
 
   useEffect(() => {
     if (!searchTerms.length) {
       return;
     }
 
-    searchQuery(searchTerms, [...contributorFilter.value, ...journeyFilter.value]);
-  }, [searchQuery, searchTerms, contributorFilter, journeyFilter]);
+    searchQuery(searchTerms, [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value]);
+  }, [searchQuery, searchTerms, journeyFilter, contributionFilter, contributorFilter]);
 
   const [journeyResults, contributionResults, contributorResults] = useMemo(
     () => [

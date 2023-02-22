@@ -56,6 +56,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
               value={config[key].typename}
               selected={config[key].typename === currentFilter.typename}
               onClick={() => handleChange(key)}
+              disabled={config[key].disabled}
             >
               {t(config[key].title)}
             </MenuItem>
@@ -75,6 +76,7 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
                 <FormControlLabel
                   key={`menu-item-${i}`}
                   labelPlacement="start"
+                  disabled={config[key].disabled}
                   sx={{ justifyContent: 'space-between' }}
                   control={
                     <Checkbox

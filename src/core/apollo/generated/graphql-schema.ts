@@ -336,14 +336,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1897,16 +1889,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -19321,7 +19303,21 @@ export type SearchQuery = {
           score: number;
           terms: Array<string>;
           type: SearchResultType;
-          card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+          card: {
+            __typename?: 'Aspect';
+            id: string;
+            nameID: string;
+            displayName: string;
+            profile?:
+              | {
+                  __typename?: 'CardProfile';
+                  id: string;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                }
+              | undefined;
+            bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
         }
       | {
           __typename?: 'SearchResultChallenge';
@@ -19359,7 +19355,21 @@ export type SearchQuery = {
 
 export type SearchResultCardFragment = {
   __typename?: 'SearchResultCard';
-  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'CardProfile';
+          id: string;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        }
+      | undefined;
+    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
 };
 
 export type SearchResultUserFragment = {
@@ -19404,6 +19414,13 @@ export type SearchResultProfileFragment = {
   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type SearchResultCardProfileFragment = {
+  __typename?: 'CardProfile';
+  id: string;
+  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
 };
 
 export type SearchResultHubFragment = {

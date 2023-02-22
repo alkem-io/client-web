@@ -18,13 +18,17 @@ export const theme: ThemeOptions = {
   cards: {
     search: {
       width: 258,
-      contributor: {
-        height: 418,
-        imgHeight: 264,
-      },
       journey: {
         height: 342,
         imgHeight: 88,
+      },
+      contribution: {
+        height: 342,
+        imgHeight: 88,
+      },
+      contributor: {
+        height: 418,
+        imgHeight: 264,
       },
     },
     simpleCard: {
@@ -49,11 +53,15 @@ declare module '@mui/material/styles' {
     cards: {
       search: {
         width: number;
-        contributor: {
+        journey: {
           height: number;
           imgHeight: number;
         };
-        journey: {
+        contribution: {
+          height: number;
+          imgHeight: number;
+        };
+        contributor: {
           height: number;
           imgHeight: number;
         };

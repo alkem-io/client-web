@@ -47,6 +47,12 @@ fragment SearchResultCard on SearchResultCard {
     id
     nameID
     displayName
+    profile {
+      ...SearchResultCardProfile
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
   }
 }
 
@@ -85,6 +91,19 @@ fragment SearchResultProfile on Profile {
   }
   avatar {
     ...VisualUri
+  }
+}
+
+fragment SearchResultCardProfile on CardProfile {
+  id
+  location {
+    id
+    country
+    city
+  }
+  tagset {
+    id
+    tags
   }
 }
 

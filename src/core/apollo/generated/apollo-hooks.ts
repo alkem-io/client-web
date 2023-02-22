@@ -2056,14 +2056,36 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const SearchResultCardProfileFragmentDoc = gql`
+  fragment SearchResultCardProfile on CardProfile {
+    id
+    location {
+      id
+      country
+      city
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+`;
 export const SearchResultCardFragmentDoc = gql`
   fragment SearchResultCard on SearchResultCard {
     card {
       id
       nameID
       displayName
+      profile {
+        ...SearchResultCardProfile
+      }
+      bannerNarrow {
+        ...VisualUri
+      }
     }
   }
+  ${SearchResultCardProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
