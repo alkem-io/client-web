@@ -3,15 +3,16 @@ import TopBar, { TopBarSpacer } from '../../../../common/components/composite/la
 import Footer from '../Footer/Footer';
 import { FloatingActionButtons } from '../../../../common/components/core';
 import PageContent from '../../content/PageContent';
+import HelpButton from '../../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
 interface TopLevelDesktopLayoutProps {
   heading?: ReactNode;
-  floatingButtons?: ReactNode;
+  floatingActions?: ReactNode; // Defaults to the HelpButton
 }
 
 const TopLevelDesktopLayout = ({
   heading,
-  floatingButtons,
+  floatingActions,
   children,
 }: PropsWithChildren<TopLevelDesktopLayoutProps>) => {
   return (
@@ -21,7 +22,7 @@ const TopLevelDesktopLayout = ({
       {heading}
       <PageContent>{children}</PageContent>
       <Footer />
-      <FloatingActionButtons>{floatingButtons}</FloatingActionButtons>
+      <FloatingActionButtons floatingActions={floatingActions ?? <HelpButton />} />
     </>
   );
 };

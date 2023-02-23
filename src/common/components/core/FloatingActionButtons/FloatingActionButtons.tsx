@@ -1,14 +1,13 @@
 import { Box, BoxProps, Fade } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
-import HelpButton from './HelpButton/HelpButton';
 import ScrollToTop from './ScrollToTop/ScrollToTop';
 
 export interface FloatingActionButtonsProps extends BoxProps {
   visible?: boolean;
-  children?: ReactNode; // Passing children to FloatingActionButtons overrides the default HelpButton
+  floatingActions?: ReactNode;
 }
 
-const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true, children, ...boxProps }) => {
+const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true, floatingActions, ...boxProps }) => {
   return (
     <Fade in={visible}>
       <Box
@@ -21,7 +20,7 @@ const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true,
         {...boxProps}
       >
         <ScrollToTop />
-        {children ?? <HelpButton />}
+        {floatingActions}
       </Box>
     </Fade>
   );

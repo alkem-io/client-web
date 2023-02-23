@@ -30,6 +30,7 @@ import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
+import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
 export interface SubEntityTabDefinition {
   label: string;
@@ -207,7 +208,11 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             </List>
           </Drawer>
         )}
-        <FloatingActionButtons bottom={theme => theme.spacing(10)} visibility={isDrawerOpen ? 'hidden' : 'visible'} />
+        <FloatingActionButtons
+          bottom={theme => theme.spacing(10)}
+          visibility={isDrawerOpen ? 'hidden' : 'visible'}
+          floatingActions={<HelpButton />}
+        />
       </>
     );
   }
