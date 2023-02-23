@@ -50,9 +50,9 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
       {/* Popup menu for big screens */}
       {breakpoint !== 'xs' && (
         <Menu anchorEl={buttonRef.current} open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
-          {Object.keys(config).map((key, i) => (
+          {Object.keys(config).map(key => (
             <MenuItem
-              key={`menu-item-${i}`}
+              key={`filter-menu-item-${key}`}
               value={config[key].typename}
               selected={config[key].typename === currentFilter.typename}
               onClick={() => handleChange(key)}
@@ -72,9 +72,9 @@ export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, conf
               <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
             </Box>
             <FormGroup>
-              {Object.keys(config).map((key, i) => (
+              {Object.keys(config).map(key => (
                 <FormControlLabel
-                  key={`menu-item-${i}`}
+                  key={`filter-checkbox-${key}`}
                   labelPlacement="start"
                   disabled={config[key].disabled}
                   sx={{ justifyContent: 'space-between' }}

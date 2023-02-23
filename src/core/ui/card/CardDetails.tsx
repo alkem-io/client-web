@@ -1,16 +1,13 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { Box, BoxProps } from '@mui/material';
 
-const CardDetails = ({
-  children,
-  transparent = false,
-  ...props
-}: PropsWithChildren<{ transparent?: boolean } & BoxProps>) => {
-  return (
-    <Box {...props} sx={{ backgroundColor: transparent ? undefined : 'background.default' }}>
-      {children}
-    </Box>
-  );
+const CardDetails = ({ transparent = false, sx, ...boxProps }: { transparent?: boolean } & BoxProps) => {
+  const mergedSx = {
+    backgroundColor: transparent ? undefined : 'background.default',
+    ...sx,
+  };
+
+  return <Box sx={mergedSx} {...boxProps} />;
 };
 
 export default CardDetails;
