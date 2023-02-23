@@ -19330,6 +19330,7 @@ export type SearchQuery = {
               | {
                   __typename?: 'CardProfile';
                   id: string;
+                  description: string;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 }
@@ -19386,6 +19387,7 @@ export type SearchResultCardFragment = {
       | {
           __typename?: 'CardProfile';
           id: string;
+          description: string;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         }
@@ -19453,6 +19455,7 @@ export type SearchResultProfileFragment = {
 export type SearchResultCardProfileFragment = {
   __typename?: 'CardProfile';
   id: string;
+  description: string;
   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
 };

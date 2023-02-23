@@ -116,6 +116,7 @@ fragment SearchResultProfile on Profile {
 
 fragment SearchResultCardProfile on CardProfile {
   id
+  description
   location {
     id
     country

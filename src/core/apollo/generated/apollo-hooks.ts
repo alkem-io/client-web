@@ -2059,6 +2059,7 @@ export const ConfigurationFragmentDoc = gql`
 export const SearchResultCardProfileFragmentDoc = gql`
   fragment SearchResultCardProfile on CardProfile {
     id
+    description
     location {
       id
       country
