@@ -18,6 +18,8 @@ import HubDashboardPage from '../pages/HubDashboardPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import HubPageLayout from '../layout/HubPageLayout';
 import Redirect from '../../../../core/routing/Redirect';
+import { SearchContextProvider } from '../../../platform/search/SearchContext';
+import HubSearchPage from '../pages/HubSearchPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();
@@ -29,7 +31,14 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route path="/" element={<EntityPageLayoutHolder />}>
+      <Route
+        path="/"
+        element={
+          <SearchContextProvider>
+            <EntityPageLayoutHolder />
+          </SearchContextProvider>
+        }
+      >
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
@@ -42,7 +51,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={routes.Contribute} element={<ContributePage entityTypeName="hub" />} />
         <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage />} />
-
+        <Route path={routes.Search} element={<HubSearchPage />} />
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
           element={<ContributePage entityTypeName="hub" scrollToCallout />}

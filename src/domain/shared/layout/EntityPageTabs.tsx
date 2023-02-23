@@ -16,6 +16,7 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  TabProps,
   useTheme,
 } from '@mui/material';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
@@ -32,9 +33,17 @@ import getEntityColor from '../utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
 import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
-export interface SubEntityTabDefinition {
-  label: string;
-  icon: ReactNode;
+interface TabDefinition {
+  label: ReactNode;
+  icon: TabProps['icon'];
+  section?: EntityPageSection;
+}
+
+export interface ActionDefinition extends TabDefinition {
+  onClick: () => void;
+}
+
+export interface SubEntityTabDefinition extends TabDefinition {
   section: EntityPageSection;
   disabled?: boolean;
 }
@@ -49,6 +58,7 @@ export interface EntityPageTabsProps {
   rootUrl: string;
   shareUrl: string;
   mobile?: boolean;
+  actions?: ActionDefinition[];
 }
 
 enum NavigationActions {
@@ -70,6 +80,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   rootUrl,
   shareUrl,
   mobile,
+  actions,
 }) => {
   const { t } = useTranslation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -121,6 +132,9 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
                   return;
                 }
                 case EntityPageSection.Settings: {
+                  return;
+                }
+                case EntityPageSection.Search: {
                   return;
                 }
               }
@@ -184,6 +198,19 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
+              {actions?.map(action => (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setIsDrawerOpen(false);
+                      action.onClick();
+                    }}
+                  >
+                    <ListItemIcon>{action.icon}</ListItemIcon>
+                    <ListItemText primary={action.label} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
@@ -249,6 +276,9 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           value={EntityPageSection.About}
           to={`${rootUrl}/${EntityPageSection.About}`}
         />
+        {actions?.map(action => (
+          <HeaderNavigationButton icon={action.icon} onClick={action.onClick} value={action.section} />
+        ))}
         {shareUrl && (
           <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}

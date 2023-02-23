@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
-import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
+import EntityPageTabs, { ActionDefinition } from '../../../shared/layout/EntityPageTabs';
 import { useHub } from '../HubContext/useHub';
 import { buildAdminHubUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useTranslation } from 'react-i18next';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
+import { Search } from '@mui/icons-material';
+import { useSearchContext } from '../../../platform/search/SearchContext';
 
 const HubTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
@@ -13,6 +15,20 @@ const HubTabs = (props: EntityTabsProps) => {
   const { hubNameId, permissions } = useHub();
   const rootUrl = buildHubUrl(hubNameId);
   const settingsUrl = buildAdminHubUrl(hubNameId);
+
+  const { setIsSearchOpen } = useSearchContext();
+
+  const actions = useMemo<ActionDefinition[]>(
+    () => [
+      {
+        label: t('common.search'),
+        icon: <Search />,
+        section: EntityPageSection.Search,
+        onClick: () => setIsSearchOpen(true),
+      },
+    ],
+    [t, setIsSearchOpen]
+  );
 
   return (
     <EntityPageTabs
@@ -28,6 +44,7 @@ const HubTabs = (props: EntityTabsProps) => {
         icon: <ChallengeIcon />,
         disabled: !permissions.canReadChallenges,
       }}
+      actions={actions}
     />
   );
 };
