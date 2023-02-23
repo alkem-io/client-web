@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import { CalloutIcon } from '../../callout/icon/CalloutIcon';
 import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
 import { CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
@@ -93,7 +93,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="aspect-creation-title">
       <DialogTitle id="aspect-creation-title" onClose={handleClose}>
         <Box display="flex" alignItems="center">
-          <CampaignOutlinedIcon sx={{ marginRight: 1 }} />
+          <CalloutIcon sx={{ marginRight: 1 }} />
           {t('components.aspect-creation.title', { calloutDisplayName: calloutDisplayName })}
         </Box>
       </DialogTitle>

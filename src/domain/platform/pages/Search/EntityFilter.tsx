@@ -1,62 +1,97 @@
-import React, { FC, useMemo, useState } from 'react';
+import { FC, useRef, useState } from 'react';
+import {
+  Box,
+  Checkbox,
+  Drawer,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Menu,
+  MenuItem,
+} from '@mui/material';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import { useTranslation } from 'react-i18next';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel/InputLabel';
-import Select from '@mui/material/Select';
-import { OutlinedInput, SelectChangeEvent } from '@mui/material';
-import getDepsValueFromObject from '../../../shared/utils/getDepsValueFromObject';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '../../../../core/ui/grid/utils';
 import { FilterConfig, FilterDefinition } from './Filter';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 
 interface EntityFilterProps {
+  title?: string;
+  currentFilter: FilterDefinition;
   config: FilterConfig;
-  onChange: (value: FilterDefinition['value']) => void;
+  onChange: (value: FilterDefinition) => void;
 }
 
-export const EntityFilter: FC<EntityFilterProps> = ({ config, onChange }) => {
+export const EntityFilter: FC<EntityFilterProps> = ({ title, currentFilter, config, onChange }) => {
   const { t } = useTranslation();
+  const breakpoint = useCurrentBreakpoint();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [isFilterMenuOpen, setFilterMenuOpen] = useState<boolean>(false);
 
-  const [state, setState] = useState<FilterDefinition>(config['all']);
-
-  const handleChange = (e: SelectChangeEvent<string>) => {
-    const typename = e.target.value;
-    const filterKey = Object.keys(config).find(x => config[x].typename === typename);
+  const handleChange = (typename: string) => {
+    const filterKey = Object.keys(config).find(x => x === typename);
 
     if (!filterKey) {
       throw new Error(`Unrecognized filter key: ${filterKey}`);
     }
 
-    setState(config[filterKey]);
-    onChange(config[filterKey].value);
+    onChange(config[filterKey]);
+    setFilterMenuOpen(false);
   };
 
-  const depsValueFromObjectConfig = getDepsValueFromObject(config);
-
-  const menuItems = useMemo(
-    () =>
-      Object.keys(config).map((x, i) => (
-        <MenuItem key={`menu-item-${i}`} value={config[x].typename}>
-          {config[x].title}
-        </MenuItem>
-      )),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [depsValueFromObjectConfig]
-  );
-
   return (
-    <FormControl variant="outlined" size="small" sx={{ minWidth: 180 }}>
-      <InputLabel id="filter-select-label">{t('common.filter')}</InputLabel>
-      <Select
-        labelId="filter-select-label"
-        id="filter-select"
-        variant="outlined"
-        value={state.typename}
-        label={state.title}
-        onChange={handleChange}
-        input={<OutlinedInput notched label={t('common.filter')} />}
-      >
-        {menuItems}
-      </Select>
-    </FormControl>
+    <>
+      <IconButton ref={buttonRef} onClick={() => setFilterMenuOpen(true)} sx={{ marginRight: gutters(-0.5) }}>
+        <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
+      </IconButton>
+      {/* Popup menu for big screens */}
+      {breakpoint !== 'xs' && (
+        <Menu anchorEl={buttonRef.current} open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
+          {Object.keys(config).map(key => (
+            <MenuItem
+              key={`filter-menu-item-${key}`}
+              value={config[key].typename}
+              selected={config[key].typename === currentFilter.typename}
+              onClick={() => handleChange(key)}
+              disabled={config[key].disabled}
+            >
+              {t(config[key].title)}
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
+      {/* Bottom Drawer for small screens */}
+      {breakpoint === 'xs' && (
+        <Drawer anchor="bottom" open={isFilterMenuOpen} onClose={() => setFilterMenuOpen(false)}>
+          <FormControl sx={{ padding: gutters(1) }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={gutters(1)}>
+              <BlockTitle>{title}</BlockTitle>
+              <RoundedIcon component={FilterAltOutlinedIcon} size="medium" />
+            </Box>
+            <FormGroup>
+              {Object.keys(config).map(key => (
+                <FormControlLabel
+                  key={`filter-checkbox-${key}`}
+                  labelPlacement="start"
+                  disabled={config[key].disabled}
+                  sx={{ justifyContent: 'space-between' }}
+                  control={
+                    <Checkbox
+                      checked={currentFilter.typename === config[key].typename}
+                      onClick={() => handleChange(key)}
+                      sx={{ marginRight: gutters(0.5) }}
+                    />
+                  }
+                  label={t(config[key].title)}
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
+        </Drawer>
+      )}
+    </>
   );
 };

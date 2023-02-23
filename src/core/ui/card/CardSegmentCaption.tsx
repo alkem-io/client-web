@@ -7,12 +7,14 @@ import { BoxTypeMap } from '@mui/material/Box/Box';
 interface CardSegmentCaptionProps {
   align: 'left' | 'right';
   icon?: ReactNode;
+  noWrap?: boolean;
   children: Exclude<ReactNode, boolean | null | undefined>;
 }
 
 const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
   icon,
   align,
+  noWrap,
   children,
   ...containerProps
 }: CardSegmentCaptionProps & BoxProps<D, P>) => {
@@ -26,7 +28,9 @@ const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultCom
       flexDirection={align === 'right' ? 'row' : 'row-reverse'}
       {...containerProps}
     >
-      <Caption minWidth={0}>{children}</Caption>
+      <Caption minWidth={0} noWrap={noWrap}>
+        {children}
+      </Caption>
       {icon}
     </Box>
   );

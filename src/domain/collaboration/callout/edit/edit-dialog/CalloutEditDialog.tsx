@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
-import { CampaignOutlined } from '@mui/icons-material';
+import { CalloutIcon } from '../../icon/CalloutIcon';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
 import ConfirmationDialog, {
   ConfirmationDialogProps,
@@ -136,7 +136,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
         <DialogTitle onClose={onClose}>
           <Box display="flex" alignItems="center">
-            <CampaignOutlined sx={{ mr: theme => theme.spacing(1) }} />
+            <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
             {title}
           </Box>
         </DialogTitle>
