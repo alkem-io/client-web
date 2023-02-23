@@ -210,7 +210,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         )}
         <FloatingActionButtons
           bottom={theme => theme.spacing(10)}
-          visibility={isDrawerOpen ? 'hidden' : 'visible'}
+          visible={!isDrawerOpen}
           floatingActions={<HelpButton />}
         />
       </>
