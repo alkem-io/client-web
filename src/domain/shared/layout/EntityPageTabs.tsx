@@ -20,13 +20,13 @@ import {
 } from '@mui/material';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import {
-  CampaignOutlined,
   DashboardOutlined,
   InfoOutlined,
   MoreVertOutlined,
   SettingsOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
+import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
@@ -145,7 +145,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             <BottomNavigationAction
               value={EntityPageSection.Contribute}
               label={t('common.contribute')}
-              icon={<CampaignOutlined />}
+              icon={<CalloutIcon />}
             />
             {subEntityTab && (
               <BottomNavigationAction

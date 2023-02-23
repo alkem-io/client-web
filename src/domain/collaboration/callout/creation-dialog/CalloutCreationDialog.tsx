@@ -11,7 +11,7 @@ import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import { CalloutIcon } from '../icon/CalloutIcon';
 import CalloutForm, { CalloutFormOutput, CanvasTemplateData } from '../CalloutForm';
 import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
 import {
@@ -145,7 +145,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
       <DialogTitle id="callout-creation-title" onClose={handleClose}>
         <Box display="flex">
-          <CampaignOutlinedIcon sx={{ marginRight: 1 }} />
+          <CalloutIcon sx={{ marginRight: 1 }} />
           {t('components.callout-creation.title')}
         </Box>
       </DialogTitle>

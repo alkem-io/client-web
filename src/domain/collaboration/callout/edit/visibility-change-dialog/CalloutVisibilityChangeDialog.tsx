@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import { LoadingButton } from '@mui/lab';
-import { CampaignOutlined } from '@mui/icons-material';
+import { CalloutIcon } from '../../icon/CalloutIcon';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
 import { CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 
@@ -37,7 +37,7 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
       <DialogTitle onClose={onClose}>
         <Box display="flex" alignItems="center">
-          <CampaignOutlined sx={{ mr: theme => theme.spacing(1) }} />
+          <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
           {title}
         </Box>
       </DialogTitle>
