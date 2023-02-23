@@ -85,7 +85,6 @@ const FilterByTagButtons = <Option extends string>({ value, config, onChange }: 
   };
 
   const handleRemoveOther = () => {
-    console.log(tags, optionallyAddOther(tags, false));
     onChange(optionallyAddOther(tags, false));
   };
 
