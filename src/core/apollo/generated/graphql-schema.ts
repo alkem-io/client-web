@@ -336,6 +336,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1889,6 +1897,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -19318,6 +19336,10 @@ export type SearchQuery = {
               | undefined;
             bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
+          hub: { __typename?: 'Hub'; id: string; nameID: string };
+          challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
+          opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string } | undefined;
+          callout: { __typename?: 'Callout'; id: string; nameID: string };
         }
       | {
           __typename?: 'SearchResultChallenge';
@@ -19370,6 +19392,18 @@ export type SearchResultCardFragment = {
       | undefined;
     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
+  hub: { __typename?: 'Hub'; id: string; nameID: string };
+  challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
+  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string } | undefined;
+  callout: { __typename?: 'Callout'; id: string; nameID: string };
+};
+
+export type CardUriParamsFragment = {
+  __typename?: 'SearchResultCard';
+  hub: { __typename?: 'Hub'; id: string; nameID: string };
+  challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
+  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string } | undefined;
+  callout: { __typename?: 'Callout'; id: string; nameID: string };
 };
 
 export type SearchResultUserFragment = {

@@ -2070,6 +2070,26 @@ export const SearchResultCardProfileFragmentDoc = gql`
     }
   }
 `;
+export const CardUriParamsFragmentDoc = gql`
+  fragment CardUriParams on SearchResultCard {
+    hub {
+      id
+      nameID
+    }
+    challenge {
+      id
+      nameID
+    }
+    opportunity {
+      id
+      nameID
+    }
+    callout {
+      id
+      nameID
+    }
+  }
+`;
 export const SearchResultCardFragmentDoc = gql`
   fragment SearchResultCard on SearchResultCard {
     card {
@@ -2083,9 +2103,11 @@ export const SearchResultCardFragmentDoc = gql`
         ...VisualUri
       }
     }
+    ...CardUriParams
   }
   ${SearchResultCardProfileFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${CardUriParamsFragmentDoc}
 `;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {

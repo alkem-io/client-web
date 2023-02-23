@@ -54,6 +54,26 @@ fragment SearchResultCard on SearchResultCard {
       ...VisualUri
     }
   }
+  ...CardUriParams
+}
+
+fragment CardUriParams on SearchResultCard {
+  hub {
+    id
+    nameID
+  }
+  challenge {
+    id
+    nameID
+  }
+  opportunity {
+    id
+    nameID
+  }
+  callout {
+    id
+    nameID
+  }
 }
 
 fragment SearchResultUser on SearchResultUser {
