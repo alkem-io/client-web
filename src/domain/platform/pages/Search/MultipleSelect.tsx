@@ -136,11 +136,14 @@ const MultipleSelect: FC<MultipleSelectProps> = ({ selectedTerms, suggestions, o
 
       <Box display="flex" gap={gutters(0.5)} flexWrap="wrap" marginTop={gutters(1)}>
         <Caption>{t('pages.search.search-suggestions')}</Caption>
-        {suggestions.map((term, index) => {
-          return !selectedTerms.includes(term) ? (
-            <Chip key={index} label={term} variant="filled" color="primary" onClick={() => handleSelect(term)} />
-          ) : undefined;
-        })}
+        <Box display="flex" gap={gutters(0.5)} flexWrap="wrap">
+          {suggestions.map((term, index) => {
+            // Don't show suggestions if they are already selected (case insensitive)
+            return !selectedTerms.map(selectedTerm => selectedTerm.toLowerCase()).includes(term.toLowerCase()) ? (
+              <Chip key={index} label={term} variant="filled" color="primary" onClick={() => handleSelect(term)} />
+            ) : undefined;
+          })}
+        </Box>
       </Box>
     </Box>
   );
