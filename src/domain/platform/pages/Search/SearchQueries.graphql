@@ -47,6 +47,45 @@ fragment SearchResultCard on SearchResultCard {
     id
     nameID
     displayName
+    profile {
+      ...SearchResultCardProfile
+    }
+    createdBy {
+      id
+      displayName
+    }
+    createdDate
+    comments {
+      id
+      commentsCount
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
+  }
+  ...CardParent
+}
+
+fragment CardParent on SearchResultCard {
+  hub {
+    id
+    nameID
+    displayName
+  }
+  challenge {
+    id
+    nameID
+    displayName
+  }
+  opportunity {
+    id
+    nameID
+    displayName
+  }
+  callout {
+    id
+    nameID
+    displayName
   }
 }
 
@@ -85,6 +124,15 @@ fragment SearchResultProfile on Profile {
   }
   avatar {
     ...VisualUri
+  }
+}
+
+fragment SearchResultCardProfile on CardProfile {
+  id
+  description
+  tagset {
+    id
+    tags
   }
 }
 
