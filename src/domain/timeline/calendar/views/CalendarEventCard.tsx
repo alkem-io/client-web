@@ -37,7 +37,7 @@ const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
     <ContributeCard onClick={handleClick} columns={0}>
       <EventCardHeader event={event} />
       <CardDetails transparent>
-        <CardDescription marginLeft={gutters(2.5)} paddingY={0} maxHeight={gutters(3)} overflow="hidden">
+        <CardDescription marginLeft={gutters(2.5)} paddingY={0} overflow="hidden" overflowGradientColor="paper">
           {event.profile?.description!}
         </CardDescription>
       </CardDetails>
