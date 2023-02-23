@@ -15,8 +15,9 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import FilterByTag, { filterKeys } from '../FilterByTag/FilterByTag';
+import FilterByTag from '../FilterByTag/FilterByTag';
 import FilterButtons from '../FilterByTag/FilterButtons';
+import { useTranslation } from 'react-i18next';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -26,6 +27,7 @@ interface HubsSectionProps {
 const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const { t } = useTranslationWithLineBreaks();
   const { data: hubsData, loading: areHubsLoading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
+  const { t: tRaw } = useTranslation();
 
   const hubRolesByHubId = useMemo(() => keyBy(userHubRoles, 'id'), [userHubRoles]);
   const hubs = useMemo(
@@ -82,7 +84,11 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
             <Caption>{t('pages.home.sections.hub.body')}</Caption>
             <Caption>{t('pages.home.sections.hub.body1')}</Caption>
           </Box>
-          <FilterButtons value={value} options={filterKeys} onChange={handleChange} />
+          <FilterButtons
+            value={value}
+            config={tRaw('hubs-filter.config', { returnObjects: true })}
+            onChange={handleChange}
+          />
           {isLoading && <Loading />}
         </DashboardHubsSection>
       )}
