@@ -2071,23 +2071,27 @@ export const SearchResultCardProfileFragmentDoc = gql`
     }
   }
 `;
-export const CardUriParamsFragmentDoc = gql`
-  fragment CardUriParams on SearchResultCard {
+export const CardParentFragmentDoc = gql`
+  fragment CardParent on SearchResultCard {
     hub {
       id
       nameID
+      displayName
     }
     challenge {
       id
       nameID
+      displayName
     }
     opportunity {
       id
       nameID
+      displayName
     }
     callout {
       id
       nameID
+      displayName
     }
   }
 `;
@@ -2100,15 +2104,24 @@ export const SearchResultCardFragmentDoc = gql`
       profile {
         ...SearchResultCardProfile
       }
+      createdBy {
+        id
+        displayName
+      }
+      createdDate
+      comments {
+        id
+        commentsCount
+      }
       bannerNarrow {
         ...VisualUri
       }
     }
-    ...CardUriParams
+    ...CardParent
   }
   ${SearchResultCardProfileFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${CardUriParamsFragmentDoc}
+  ${CardParentFragmentDoc}
 `;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {

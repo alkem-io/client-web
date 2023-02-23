@@ -50,29 +50,42 @@ fragment SearchResultCard on SearchResultCard {
     profile {
       ...SearchResultCardProfile
     }
+    createdBy {
+      id
+      displayName
+    }
+    createdDate
+    comments {
+      id
+      commentsCount
+    }
     bannerNarrow {
       ...VisualUri
     }
   }
-  ...CardUriParams
+  ...CardParent
 }
 
-fragment CardUriParams on SearchResultCard {
+fragment CardParent on SearchResultCard {
   hub {
     id
     nameID
+    displayName
   }
   challenge {
     id
     nameID
+    displayName
   }
   opportunity {
     id
     nameID
+    displayName
   }
   callout {
     id
     nameID
+    displayName
   }
 }
 

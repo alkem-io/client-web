@@ -19326,6 +19326,7 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             displayName: string;
+            createdDate: Date;
             profile?:
               | {
                   __typename?: 'CardProfile';
@@ -19335,12 +19336,14 @@ export type SearchQuery = {
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 }
               | undefined;
+            createdBy: { __typename?: 'User'; id: string; displayName: string };
+            comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
             bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
-          hub: { __typename?: 'Hub'; id: string; nameID: string };
-          challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
-          opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string } | undefined;
-          callout: { __typename?: 'Callout'; id: string; nameID: string };
+          hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+          challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
+          opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
         }
       | {
           __typename?: 'SearchResultChallenge';
@@ -19383,6 +19386,7 @@ export type SearchResultCardFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    createdDate: Date;
     profile?:
       | {
           __typename?: 'CardProfile';
@@ -19392,20 +19396,22 @@ export type SearchResultCardFragment = {
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         }
       | undefined;
+    createdBy: { __typename?: 'User'; id: string; displayName: string };
+    comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
-  hub: { __typename?: 'Hub'; id: string; nameID: string };
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
-  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string } | undefined;
-  callout: { __typename?: 'Callout'; id: string; nameID: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
+  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 
-export type CardUriParamsFragment = {
+export type CardParentFragment = {
   __typename?: 'SearchResultCard';
-  hub: { __typename?: 'Hub'; id: string; nameID: string };
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string } | undefined;
-  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string } | undefined;
-  callout: { __typename?: 'Callout'; id: string; nameID: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
+  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 
 export type SearchResultUserFragment = {
