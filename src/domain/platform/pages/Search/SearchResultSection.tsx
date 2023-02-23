@@ -1,5 +1,5 @@
 import { FilterConfig, FilterDefinition } from './Filter';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
 import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
@@ -10,34 +10,43 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 interface ResultSectionProps {
   title: string;
   results: SearchResultMetaType[] | undefined;
+  filterTitle?: string;
   filterConfig: FilterConfig;
-  onFilterChange: (value: FilterDefinition['value']) => void;
+  currentFilter: FilterDefinition;
+  onFilterChange: (value: FilterDefinition) => void;
   loading?: boolean;
 }
 
 const SearchResultSection: FC<ResultSectionProps> = ({
   title,
   results = [],
+  filterTitle,
   filterConfig,
+  currentFilter,
   onFilterChange,
   loading,
 }) => {
-  const [filter, setFilter] = useState<string>();
-
-  const handleFilterChange = value => {
-    onFilterChange(value);
-    setFilter(value);
-  };
-
   const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
 
   return (
     <PageContentBlock>
       <PageContentBlockHeader
         title={titleWithCount}
-        actions={<EntityFilter config={filterConfig} onChange={handleFilterChange} />}
+        actions={
+          <EntityFilter
+            title={filterTitle}
+            currentFilter={currentFilter}
+            config={filterConfig}
+            onChange={onFilterChange}
+          />
+        }
       />
-      <CardsLayout items={loading ? [undefined, undefined] : results} deps={[filter]} cards={false} disablePadding>
+      <CardsLayout
+        items={loading ? [undefined, undefined] : results}
+        deps={[currentFilter]}
+        cards={false}
+        disablePadding
+      >
         {result => <SearchResultCardChooser result={result} />}
       </CardsLayout>
     </PageContentBlock>

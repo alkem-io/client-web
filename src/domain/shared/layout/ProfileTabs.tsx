@@ -11,6 +11,7 @@ import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
 import { FloatingActionButtons } from '../../../common/components/core';
+import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
 interface ProfileTabsProps extends EntityTabsProps {
   showSettings: boolean;
@@ -68,7 +69,7 @@ const ProfileTabs = ({
             )}
           </BottomNavigation>
         </Paper>
-        <FloatingActionButtons bottom={theme => theme.spacing(10)} />
+        <FloatingActionButtons bottom={theme => theme.spacing(10)} floatingActions={<HelpButton />} />
       </>
     );
   }

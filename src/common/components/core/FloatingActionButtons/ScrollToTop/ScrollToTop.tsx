@@ -1,6 +1,6 @@
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import React, { useEffect, useState } from 'react';
-import IconButton from '../../IconButton';
+import { IconButton } from '@mui/material';
 
 const SCROLL_OFFSET = 36;
 
@@ -27,8 +27,8 @@ const ScrollToTop = () => {
   if (!visible) return null;
 
   return (
-    <IconButton onClick={scrollToTop} size="large">
-      <ExpandLessIcon color="inherit" fontSize="large" />
+    <IconButton onClick={scrollToTop}>
+      <ExpandLessIcon color="primary" fontSize="large" />
     </IconButton>
   );
 };
