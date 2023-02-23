@@ -2,9 +2,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import React, { FC, KeyboardEventHandler, useRef, useState } from 'react';
+import React, { FC, KeyboardEventHandler, useMemo, useRef, useState } from 'react';
 import { Chip, TextField } from '@mui/material';
-import { intersectionBy, uniq } from 'lodash';
+import { differenceBy, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
@@ -106,7 +106,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({ selectedTerms, suggestions, o
     }
   };
 
-  const suggestionsAlreadySelected = intersectionBy(suggestions, selectedTerms, (s: string) => s.toLowerCase());
+  const suggestionsShown = useMemo(
+    () => differenceBy(suggestions, selectedTerms, s => s.toLowerCase()),
+    [suggestions, selectedTerms]
+  );
 
   return (
     <Box>
@@ -139,11 +142,9 @@ const MultipleSelect: FC<MultipleSelectProps> = ({ selectedTerms, suggestions, o
       <Box display="flex" gap={gutters(0.5)} flexWrap="wrap" marginTop={gutters(1)}>
         <Caption>{t('pages.search.search-suggestions')}</Caption>
         <Box display="flex" gap={gutters(0.5)} flexWrap="wrap">
-          {suggestions.map(term =>
-            !suggestionsAlreadySelected.includes(term) ? (
-              <Chip key={term} label={term} variant="filled" color="primary" onClick={() => handleSelect(term)} />
-            ) : undefined
-          )}
+          {suggestionsShown.map(term => (
+            <Chip key={term} label={term} variant="filled" color="primary" onClick={() => handleSelect(term)} />
+          ))}
         </Box>
       </Box>
     </Box>
