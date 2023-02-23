@@ -802,17 +802,6 @@
     "card-filter": {
       "title": "Filter"
     },
-    "tag-filter": {
-      "current-filter": "Current filter: ",
-      "energy-transition": "Energy Transition",
-      "inclusive-society": "Inclusive Society",
-      "public-services": "Public Services",
-      "innovation": "Innovation",
-      "supporting-vulnerable-groups": "Supporting Vulnerable Groups",
-      "digitalization-of-society": "Digitalization of Society",
-      "show-all": "Show All",
-      "other": "Other"
-    },
     "backdrop": {
       "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
@@ -1804,5 +1793,42 @@
   "associates-view": {
     "less": "show less",
     "more": "...plus {{count}} more"
+  },
+  "hubs-filter": {
+    "current-filter": "Current filter: ",
+    "show-all": "Show All",
+    "other": "Other",
+    "config": [
+      {
+        "key": "energy-transition",
+        "name": "Energy Transition",
+        "tags": ["Energy Transition", "Energietransitie"]
+      },
+      {
+        "key": "inclusive-society",
+        "name": "Inclusive Society",
+        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+      },
+      {
+        "key": "public-services",
+        "name": "Public Services",
+        "tags": ["Public Services", "Publieke Diensten"]
+      },
+      {
+        "key": "innovation",
+        "name": "Innovation",
+        "tags": ["Innovation", "Innovatie"]
+      },
+      {
+        "key": "supporting-vulnerable-groups",
+        "name": "Supporting Vulnerable Groups",
+        "tags": ["Supporting Vulnerable Groups", "Kwetsbare Groepen"]
+      },
+      {
+        "key": "digitalization-of-society",
+        "name": "Digitalization of Society",
+        "tags": ["Digitalization of Society", "Digitalisering"]
+      }
+    ]
   }
 }
