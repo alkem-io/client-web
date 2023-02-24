@@ -3,7 +3,7 @@ import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
-import { sortBy } from 'lodash';
+import { groupBy, sortBy } from 'lodash';
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { useHubDashboardCalendarEventsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -30,11 +30,13 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   // TODO: Move this to serverside
   const events = useMemo(() => {
-    const mostRecent = sortBy(data?.hub.timeline?.calendar.events ?? [], event => -dayjs(event.startDate)).slice(
-      0,
-      MAX_NUMBER_OF_EVENTS
-    ); // Get the first N elements
-    return sortBy(mostRecent, event => dayjs(event.startDate).valueOf());
+    const eventGroups = groupBy(data?.hub.timeline?.calendar.events ?? [], event =>
+      dayjs(event.startDate).isBefore(dayjs().startOf('day')) ? 'past' : 'future'
+    );
+    return [
+      ...sortBy(eventGroups['future'], event => dayjs(event.startDate).valueOf()),
+      ...sortBy(eventGroups['past'], event => -dayjs(event.startDate).valueOf()),
+    ].slice(0, MAX_NUMBER_OF_EVENTS);
   }, [data]);
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
