@@ -127,16 +127,10 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
                   share();
                   return;
                 }
-                case NavigationActions.More: {
-                  setIsDrawerOpen(true);
+                case NavigationActions.More:
+                case EntityPageSection.Settings:
+                case EntityPageSection.Search:
                   return;
-                }
-                case EntityPageSection.Settings: {
-                  return;
-                }
-                case EntityPageSection.Search: {
-                  return;
-                }
               }
               // TODO remove rootUrl after refactoring EntitySettingsLayout
               // navigate(nextValue);
@@ -183,6 +177,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
                 value={NavigationActions.More}
                 label={t('common.more')}
                 icon={<MoreVertOutlined />}
+                onClick={() => setIsDrawerOpen(true)}
               />
             )}
             {showSettings && currentTab === EntityPageSection.Settings && (

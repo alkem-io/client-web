@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
 import EntityPageTabs, { ActionDefinition } from '../../../shared/layout/EntityPageTabs';
 import { useHub } from '../HubContext/useHub';
@@ -16,7 +16,7 @@ const HubTabs = (props: EntityTabsProps) => {
   const rootUrl = buildHubUrl(hubNameId);
   const settingsUrl = buildAdminHubUrl(hubNameId);
 
-  const { setIsSearchOpen } = useSearchContext();
+  const { openSearch, closeSearch } = useSearchContext();
 
   const actions = useMemo<ActionDefinition[]>(
     () => [
@@ -24,11 +24,16 @@ const HubTabs = (props: EntityTabsProps) => {
         label: t('common.search'),
         icon: <Search />,
         section: EntityPageSection.Search,
-        onClick: () => setIsSearchOpen(true),
+        onClick: openSearch,
       },
     ],
-    [t, setIsSearchOpen]
+    [t, openSearch]
   );
+
+  useEffect(() => {
+    closeSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.currentTab]);
 
   return (
     <EntityPageTabs

@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
 import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
-import { SearchResultMetaType } from './SearchPage';
+import { SearchResultMetaType } from '../../search/SearchView';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 

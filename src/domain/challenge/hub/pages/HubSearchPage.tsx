@@ -1,33 +1,20 @@
 import React, { FC } from 'react';
-import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { useHub } from '../HubContext/useHub';
 import HubPageLayout from '../layout/HubPageLayout';
-import { HubAboutView } from '../views/HubAboutView';
+import SearchView from '../../../platform/search/SearchView';
+import PageContent from '../../../../core/ui/content/PageContent';
+import { useResolvedPath } from 'react-router-dom';
 
 const HubSearchPage: FC = () => {
-  const { hubNameId, displayName, communityId } = useHub();
+  // const { hubNameId, displayName, communityId } = useHub();
+
+  const { pathname } = useResolvedPath('.');
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Search} searchDisabled>
-      <AboutPageContainer hubNameId={hubNameId}>
-        {({ tagset, context, permissions, ...rest }, state) => (
-          <HubAboutView
-            name={displayName}
-            tagline={context?.tagline}
-            tags={tagset?.tags}
-            who={context?.who}
-            impact={context?.impact}
-            background={context?.background}
-            vision={context?.vision}
-            communityReadAccess={permissions.communityReadAccess}
-            hubNameId={hubNameId}
-            communityId={communityId}
-            {...rest}
-            {...state}
-          />
-        )}
-      </AboutPageContainer>
+      <PageContent>
+        <SearchView searchRoute={pathname} />
+      </PageContent>
     </HubPageLayout>
   );
 };

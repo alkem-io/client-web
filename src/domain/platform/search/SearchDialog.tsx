@@ -1,37 +1,44 @@
-import { Formik } from 'formik';
-import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 import { Box, BoxProps, Dialog } from '@mui/material';
 import { useSearchContext } from './SearchContext';
 import { useNavigate } from 'react-router-dom';
 import MultipleSelect from '../pages/Search/MultipleSelect';
+import GridItem from '../../../core/ui/grid/GridItem';
+import GridProvider from '../../../core/ui/grid/GridProvider';
+import { SEARCH_TERMS_PARAM } from '../routes/constants';
+import { gutters } from '../../../core/ui/grid/utils';
 
 const DialogContainer = ({ className, ...props }: BoxProps) => {
-  return <Box {...props} />;
+  return (
+    <GridItem columns={6}>
+      <Box {...props} marginTop={gutters(17)} />
+    </GridItem>
+  );
 };
 
 const SearchDialog = () => {
-  const { isSearchOpen, setIsSearchOpen } = useSearchContext();
+  const { isSearchOpen, closeSearch } = useSearchContext();
   const navigate = useNavigate();
 
-  const handleSearch = () => {
-    setIsSearchOpen(false);
-    navigate('../search');
+  const handleSearch = (terms: string[]) => {
+    closeSearch();
+    const params = new URLSearchParams();
+    for (const term of terms) {
+      params.append(SEARCH_TERMS_PARAM, term);
+    }
+    navigate(`../search?${params}`);
   };
 
   return (
-    <Dialog open={isSearchOpen} onClose={() => setIsSearchOpen(false)} PaperComponent={DialogContainer}>
-      <MultipleSelect onChange={handleSearch} selectedTerms={[]} suggestions={[]} minLength={2} disabled={false} />
-      <Formik initialValues={{ search: '' }} onSubmit={handleSearch}>
-        {({ submitForm }) => (
-          <FormikInputField
-            name="search"
-            title="search"
-            InputProps={{ sx: { backgroundColor: 'background.paper' } }}
-            onBlur={submitForm}
-          />
-        )}
-      </Formik>
-    </Dialog>
+    <GridProvider columns={12}>
+      <Dialog
+        open={isSearchOpen}
+        onClose={closeSearch}
+        PaperComponent={DialogContainer}
+        sx={{ '.MuiDialog-container': { alignItems: 'start' } }}
+      >
+        <MultipleSelect onChange={handleSearch} selectedTerms={[]} suggestions={[]} minLength={2} disabled={false} />
+      </Dialog>
+    </GridProvider>
   );
 };
 

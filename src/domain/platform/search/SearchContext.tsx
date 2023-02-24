@@ -24,8 +24,14 @@ export const SearchContextProvider = ({ children }: PropsWithChildren<{}>) => {
 export const useSearchContext = () => {
   const searchContext = useContext(SearchContext);
   if (!searchContext) {
-    console.log(searchContext);
     throw new Error('Must be a descendant of SearchContextProvider');
   }
-  return searchContext;
+  return useMemo(
+    () => ({
+      isSearchOpen: searchContext.isSearchOpen,
+      openSearch: () => searchContext.setIsSearchOpen(true),
+      closeSearch: () => searchContext.setIsSearchOpen(false),
+    }),
+    [searchContext]
+  );
 };
