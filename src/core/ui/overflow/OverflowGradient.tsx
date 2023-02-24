@@ -3,7 +3,7 @@ import { Box, BoxProps } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { BackgroundColor, overflowBorderGradient } from './utils';
 
-interface OverflowGradientProps extends BoxProps {
+export interface OverflowGradientProps extends BoxProps {
   lastLine?: boolean;
   backgroundColor?: BackgroundColor;
 }
