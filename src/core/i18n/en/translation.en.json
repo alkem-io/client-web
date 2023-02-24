@@ -427,6 +427,7 @@
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
+    "closed": "This Callout is closed. You can still comment on the individual cards.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
