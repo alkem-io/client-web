@@ -47,9 +47,10 @@ export type SearchResultMetaType = SearchResultT<
 
 interface SearchViewProps {
   searchRoute: string;
+  hubId?: string;
 }
 
-const SearchView = ({ searchRoute }: SearchViewProps) => {
+const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
@@ -103,6 +104,7 @@ const SearchView = ({ searchRoute }: SearchViewProps) => {
         terms: termsFromUrl,
         tagsetNames,
         typesFilter: filters,
+        searchInHubFilter: hubId,
       },
     },
     fetchPolicy: 'no-cache',
