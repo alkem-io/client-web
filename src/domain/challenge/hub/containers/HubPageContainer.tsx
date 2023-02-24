@@ -86,7 +86,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const isMember = user?.ofHub(hubId) ?? false;
 
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
-    variables: { hubId: hubNameId, isAuthorized: isMember || !isPrivate },
+    variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: loadingHub,
   });
