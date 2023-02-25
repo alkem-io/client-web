@@ -16,7 +16,7 @@ fragment CanvasDetails on Canvas {
     displayName
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }

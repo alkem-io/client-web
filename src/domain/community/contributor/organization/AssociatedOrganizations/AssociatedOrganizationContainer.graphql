@@ -6,10 +6,10 @@ query associatedOrganization($organizationId: UUID_NAMEID!) {
 
 fragment AssociatedOrganizationDetails on Organization {
   id
-  displayName
   nameID
   profile {
     id
+    displayName
     description
     visual(type: AVATAR) {
       ...VisualUri

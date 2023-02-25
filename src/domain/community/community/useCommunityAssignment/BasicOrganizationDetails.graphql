@@ -1,9 +1,9 @@
 fragment BasicOrganizationDetails on Organization {
   id
-  displayName
   nameID
   profile {
     id
+    displayName
     visual(type: AVATAR) {
       ...VisualUri
     }

@@ -67,9 +67,9 @@ fragment CalendarEventDetails on CalendarEvent {
   type
   createdBy {
     id
-    displayName
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         id
         uri

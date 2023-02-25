@@ -1,7 +1,6 @@
 fragment OrganizationInfo on Organization {
   id
   nameID
-  displayName
   contactEmail
   domain
   verification {
@@ -11,6 +10,7 @@ fragment OrganizationInfo on Organization {
   website
   profile {
     id
+    displayName
     visual(type: AVATAR) {
       ...VisualUri
     }
@@ -32,7 +32,6 @@ fragment OrganizationInfo on Organization {
   associates {
     id
     nameID
-    displayName
     agent {
       id
       credentials {
@@ -43,6 +42,7 @@ fragment OrganizationInfo on Organization {
     }
     profile {
       id
+      displayName
       location {
         country
         city

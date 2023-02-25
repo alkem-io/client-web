@@ -1667,7 +1667,6 @@ export type PreferenceDefinitionFieldPolicy = {
 };
 export type ProfileKeySpecifier = (
   | 'authorization'
-  | 'avatar'
   | 'description'
   | 'displayName'
   | 'id'
@@ -1681,7 +1680,6 @@ export type ProfileKeySpecifier = (
 )[];
 export type ProfileFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  avatar?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;

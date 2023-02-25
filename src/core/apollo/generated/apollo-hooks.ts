@@ -108,7 +108,7 @@ export const CanvasDetailsFragmentDoc = gql`
       displayName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -150,10 +150,10 @@ export const DashboardTopCalloutsFragmentDoc = gql`
 export const DashboardLeadUserFragmentDoc = gql`
   fragment DashboardLeadUser on User {
     id
-    displayName
     nameID
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -173,11 +173,11 @@ export const DashboardLeadUserFragmentDoc = gql`
 export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
     id
-    displayName
     isContactable
     nameID
     profile {
       id
+      displayName
       location {
         city
         country
@@ -196,10 +196,10 @@ export const DashboardContributingUserFragmentDoc = gql`
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
     id
-    displayName
     nameID
     profile {
       id
+      displayName
       description
       visual(type: AVATAR) {
         ...VisualUri
@@ -220,10 +220,10 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
 export const DashboardContributingOrganizationFragmentDoc = gql`
   fragment DashboardContributingOrganization on Organization {
     id
-    displayName
     nameID
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         id
         uri
@@ -896,10 +896,10 @@ export const MessageDetailsFragmentDoc = gql`
       id
       nameID
       firstName
-      displayName
       lastName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           id
           uri
@@ -1307,10 +1307,10 @@ export const ApplicationInfoFragmentDoc = gql`
     }
     user {
       id
-      displayName
       email
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           ...VisualUri
         }
@@ -1341,7 +1341,6 @@ export const UserCardFragmentDoc = gql`
   fragment UserCard on User {
     id
     nameID
-    displayName
     isContactable
     agent {
       id
@@ -1353,6 +1352,7 @@ export const UserCardFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       location {
         country
         city
@@ -1373,7 +1373,6 @@ export const OrganizationCardFragmentDoc = gql`
   fragment OrganizationCard on Organization {
     id
     nameID
-    displayName
     metrics {
       id
       name
@@ -1381,6 +1380,7 @@ export const OrganizationCardFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -1430,7 +1430,6 @@ export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
     nameID
-    displayName
     email
     agent {
       id
@@ -1442,6 +1441,7 @@ export const CommunityPageMembersFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       location {
         country
         city
@@ -1467,10 +1467,10 @@ export const AllCommunityDetailsFragmentDoc = gql`
 export const BasicOrganizationDetailsFragmentDoc = gql`
   fragment BasicOrganizationDetails on Organization {
     id
-    displayName
     nameID
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -1490,7 +1490,6 @@ export const CommunityMemberUserFragmentDoc = gql`
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
-    displayName
     nameID
     metrics {
       id
@@ -1499,6 +1498,7 @@ export const OrganizationContributorFragmentDoc = gql`
     }
     orgProfile: profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -1534,7 +1534,6 @@ export const UserContributorFragmentDoc = gql`
   fragment UserContributor on User {
     id
     nameID
-    displayName
     isContactable
     agent {
       id
@@ -1546,6 +1545,7 @@ export const UserContributorFragmentDoc = gql`
     }
     userProfile: profile {
       id
+      displayName
       location {
         city
         country
@@ -1592,10 +1592,10 @@ export const UserOrganizationsDetailsFragmentDoc = gql`
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
     id
-    displayName
     nameID
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -1616,7 +1616,6 @@ export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {
     id
     nameID
-    displayName
     contactEmail
     domain
     verification {
@@ -1626,6 +1625,7 @@ export const OrganizationInfoFragmentDoc = gql`
     website
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualUri
       }
@@ -1647,7 +1647,6 @@ export const OrganizationInfoFragmentDoc = gql`
     associates {
       id
       nameID
-      displayName
       agent {
         id
         credentials {
@@ -1658,6 +1657,7 @@ export const OrganizationInfoFragmentDoc = gql`
       }
       profile {
         id
+        displayName
         location {
           country
           city
@@ -1679,7 +1679,6 @@ export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
     nameID
-    displayName
     contactEmail
     domain
     legalEntityName
@@ -1690,6 +1689,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualFull
       }
@@ -1716,9 +1716,9 @@ export const OrganizationProfileInfoFragmentDoc = gql`
 export const MessagingUserInformationFragmentDoc = gql`
   fragment MessagingUserInformation on User {
     id
-    displayName
     profile {
       id
+      displayName
       location {
         id
         city
@@ -1815,7 +1815,6 @@ export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
     nameID
-    displayName
     firstName
     lastName
     email
@@ -1830,6 +1829,7 @@ export const UserDetailsFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       location {
         country
         city
@@ -2141,8 +2141,8 @@ export const SearchResultUserFragmentDoc = gql`
     user {
       id
       nameID
-      displayName
       profile {
+        displayName
         ...SearchResultProfile
       }
     }
@@ -2154,8 +2154,8 @@ export const SearchResultOrganizationFragmentDoc = gql`
     organization {
       id
       nameID
-      displayName
       profile {
+        displayName
         ...SearchResultProfile
       }
     }
@@ -2265,13 +2265,11 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
     user {
       id
       nameID
-      displayName
-      nameID
-      displayName
       firstName
       lastName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           id
           uri
@@ -2391,11 +2389,11 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     triggeredBy {
       id
       nameID
-      displayName
       firstName
       lastName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           id
           uri
@@ -2492,9 +2490,9 @@ export const CalendarEventDetailsFragmentDoc = gql`
     type
     createdBy {
       id
-      displayName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           id
           uri
@@ -13586,10 +13584,10 @@ export const ContributingUsersDocument = gql`
     users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
-      displayName
       isContactable
       profile {
         id
+        displayName
         location {
           id
           city
@@ -13664,9 +13662,9 @@ export const ContributingOrganizationsDocument = gql`
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           ...VisualUri
         }
@@ -15736,10 +15734,10 @@ export const OrganizationDetailsDocument = gql`
   query organizationDetails($id: UUID_NAMEID!) {
     organization(ID: $id) {
       id
-      displayName
       nameID
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           ...VisualUri
         }
@@ -16065,9 +16063,9 @@ export const OrganizationsListDocument = gql`
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           ...VisualUri
         }
@@ -16530,9 +16528,9 @@ export const UserAvatarsDocument = gql`
     usersById(IDs: $ids) {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         location {
           country
           city
@@ -16602,9 +16600,9 @@ export const UserCardsContainerDocument = gql`
     usersById(IDs: $ids) {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         location {
           city
           country
@@ -17556,12 +17554,12 @@ export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
       id
-      displayName
       firstName
       lastName
       email
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           ...VisualUri
         }
@@ -20217,11 +20215,11 @@ export const ActivityLogOnCollaborationDocument = gql`
       triggeredBy {
         id
         nameID
-        displayName
         firstName
         lastName
         profile {
           id
+          displayName
           visual(type: AVATAR) {
             id
             uri
@@ -20433,9 +20431,9 @@ export const MentionableUsersDocument = gql`
       users {
         id
         nameID
-        displayName
         profile {
           id
+          displayName
           location {
             id
             city

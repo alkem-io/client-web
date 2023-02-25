@@ -19,10 +19,10 @@ fragment MessageDetails on Message {
     id
     nameID
     firstName
-    displayName
     lastName
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         id
         uri

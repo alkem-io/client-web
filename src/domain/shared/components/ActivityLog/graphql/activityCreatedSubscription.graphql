@@ -16,11 +16,11 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   triggeredBy {
     id
     nameID
-    displayName
     firstName
     lastName
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         id
         uri

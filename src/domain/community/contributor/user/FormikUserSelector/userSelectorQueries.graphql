@@ -17,9 +17,9 @@ query MessagingUserDetails ($id: UUID_NAMEID_EMAIL!) {
 
 fragment MessagingUserInformation on User {
   id
-  displayName
   profile {
     id
+    displayName
     location {
       id
       city

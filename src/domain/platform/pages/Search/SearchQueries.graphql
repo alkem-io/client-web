@@ -93,8 +93,8 @@ fragment SearchResultUser on SearchResultUser {
   user {
     id
     nameID
-    displayName
     profile {
+      displayName
       ...SearchResultProfile
     }
   }
@@ -104,8 +104,8 @@ fragment SearchResultOrganization on SearchResultOrganization {
   organization {
     id
     nameID
-    displayName
     profile {
+      displayName
       ...SearchResultProfile
     }
   }

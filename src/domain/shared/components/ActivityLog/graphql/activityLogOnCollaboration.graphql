@@ -9,11 +9,11 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     triggeredBy {
       id
       nameID
-      displayName
       firstName
       lastName
       profile {
         id
+        displayName
         visual(type: AVATAR) {
           id
           uri
@@ -68,13 +68,11 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
   user {
     id
     nameID
-    displayName
-    nameID
-    displayName
     firstName
     lastName
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         id
         uri

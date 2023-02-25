@@ -31,9 +31,9 @@ query MentionableUsers($filter: UserFilterInput, $first: Int) {
     users {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         location {
           id
           city

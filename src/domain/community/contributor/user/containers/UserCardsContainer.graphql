@@ -2,9 +2,9 @@ query userCardsContainer($ids: [UUID!]!) {
   usersById(IDs: $ids) {
     id
     nameID
-    displayName
     profile {
       id
+      displayName
       location {
         city
         country
