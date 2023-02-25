@@ -29,7 +29,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useValidationMessageTranslation } from '../../i18n/ValidationMessageTranslation';
 
-const MAX_USERS_MENTIONABLE = 5;
+const MAX_USERS_LISTED = 30;
 const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 
 interface MentionableUser extends SuggestionDataItem {
@@ -55,6 +55,8 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
         <Box
           sx={theme => ({
             width: gutters(17)(theme),
+            maxHeight: gutters(20)(theme),
+            overflowY: 'auto',
             '& li': {
               listStyle: 'none',
               margin: 0,
@@ -129,7 +131,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
       }
       const filter = { email: search, firstName: search, lastName: search };
       queryUsers({
-        variables: { filter, first: MAX_USERS_MENTIONABLE },
+        variables: { filter, first: MAX_USERS_LISTED },
         onCompleted: data => {
           const users = data?.usersPaginated.users ?? [];
           const mentionableUsers = users
@@ -194,6 +196,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
           maxLength={maxLength}
           onBlur={() => helper.setTouched(true)}
           forceSuggestionsAboveCursor
+          allowSpaceInQuery
           customSuggestionsContainer={children => (
             <SuggestionsContainer anchorElement={popperAnchor}>{children}</SuggestionsContainer>
           )}
