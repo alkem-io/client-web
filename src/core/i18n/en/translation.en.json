@@ -43,7 +43,8 @@
     },
     "no-data": "No events found",
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
-    "past-events": "Past Events"
+    "past-events": "Past Events",
+    "show-calendar": "Show calendar"
   },
   "buttons": {
     "leave": "Leave",
