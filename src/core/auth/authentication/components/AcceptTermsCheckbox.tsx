@@ -10,7 +10,8 @@ export interface AcceptTermsCheckboxProps
 
 const AcceptTermsCheckbox = ({ value, onChange, ...props }: AcceptTermsCheckboxProps) => {
   const { platform } = useConfig();
-  const tTerms = translateWithElements(<a target="_blank" />); // eslint-disable jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
+  // eslint-disable-next-line jsx-a11y/anchor-has-content, jsx-a11y/anchor-is-valid
+  const tTerms = translateWithElements(<a target="_blank" />);
   const label = tTerms('pages.registration.terms', {
     terms: {
       href: platform?.terms,

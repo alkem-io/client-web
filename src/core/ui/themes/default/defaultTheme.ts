@@ -22,10 +22,6 @@ export const theme: ThemeOptions = {
         height: 418,
         imgHeight: 264,
       },
-      journey: {
-        height: 342,
-        imgHeight: 88,
-      },
     },
     simpleCard: {
       width: 32,
@@ -50,10 +46,6 @@ declare module '@mui/material/styles' {
       search: {
         width: number;
         contributor: {
-          height: number;
-          imgHeight: number;
-        };
-        journey: {
           height: number;
           imgHeight: number;
         };
