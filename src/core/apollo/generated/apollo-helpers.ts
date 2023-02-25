@@ -318,11 +318,6 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
-export type ApplicationTemplateFieldPolicy = {
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-  questions?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type AspectKeySpecifier = (
   | 'authorization'
   | 'banner'
@@ -1061,17 +1056,6 @@ export type HubFieldPolicy = {
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type HubAspectTemplateKeySpecifier = (
-  | 'defaultDescription'
-  | 'type'
-  | 'typeDescription'
-  | HubAspectTemplateKeySpecifier
-)[];
-export type HubAspectTemplateFieldPolicy = {
-  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
   | 'contributionResultsCount'
@@ -1685,20 +1669,28 @@ export type ProfileKeySpecifier = (
   | 'authorization'
   | 'avatar'
   | 'description'
+  | 'displayName'
   | 'id'
   | 'location'
   | 'references'
+  | 'tagline'
   | 'tagsets'
+  | 'visual'
+  | 'visuals'
   | ProfileKeySpecifier
 )[];
 export type ProfileFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   avatar?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+  visual?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | ProfileCredentialVerifiedKeySpecifier)[];
 export type ProfileCredentialVerifiedFieldPolicy = {
@@ -2405,10 +2397,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
-  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
-    fields?: ApplicationTemplateFieldPolicy;
-  };
   Aspect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AspectKeySpecifier | (() => undefined | AspectKeySpecifier);
     fields?: AspectFieldPolicy;
@@ -2656,10 +2644,6 @@ export type StrictTypedTypePolicies = {
   Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
-  };
-  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
-    fields?: HubAspectTemplateFieldPolicy;
   };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);

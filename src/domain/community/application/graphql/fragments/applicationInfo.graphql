@@ -13,7 +13,7 @@ fragment ApplicationInfo on Application {
     email
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }

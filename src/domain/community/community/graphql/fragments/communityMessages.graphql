@@ -23,7 +23,7 @@ fragment MessageDetails on Message {
     lastName
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }

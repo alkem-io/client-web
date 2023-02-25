@@ -17,7 +17,7 @@ fragment UserCard on User {
       country
       city
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     tagsets {

@@ -21,7 +21,7 @@ fragment UserDetails on User {
       city
     }
     description
-    avatar {
+    visual(type: AVATAR) {
       ...VisualFull
     }
     references {

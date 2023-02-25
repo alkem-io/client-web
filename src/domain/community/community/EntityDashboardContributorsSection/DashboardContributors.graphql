@@ -9,7 +9,7 @@ fragment DashboardContributingUser on User {
       city
       country
     }
-    avatar {
+    visual(type: AVATAR) {
       id
       uri
     }
@@ -26,7 +26,7 @@ fragment DashboardContributingOrganization on Organization {
   nameID
   profile {
     id
-    avatar {
+    visual(type: AVATAR) {
       id
       uri
       name

@@ -154,7 +154,7 @@ export const DashboardLeadUserFragmentDoc = gql`
     nameID
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       location {
@@ -182,7 +182,7 @@ export const DashboardContributingUserFragmentDoc = gql`
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }
@@ -201,7 +201,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     profile {
       id
       description
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -224,7 +224,7 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
     nameID
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
         name
@@ -900,7 +900,7 @@ export const MessageDetailsFragmentDoc = gql`
       lastName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -929,7 +929,7 @@ export const AspectDashboardFragmentDoc = gql`
       displayName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -1244,7 +1244,7 @@ export const LockedByDetailsFragmentDoc = gql`
     id
     displayName
     profile {
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -1311,7 +1311,7 @@ export const ApplicationInfoFragmentDoc = gql`
       email
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -1357,7 +1357,7 @@ export const UserCardFragmentDoc = gql`
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {
@@ -1381,7 +1381,7 @@ export const OrganizationCardFragmentDoc = gql`
     }
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1446,7 +1446,7 @@ export const CommunityPageMembersFragmentDoc = gql`
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1471,7 +1471,7 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -1499,7 +1499,7 @@ export const OrganizationContributorFragmentDoc = gql`
     }
     orgProfile: profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1550,7 +1550,7 @@ export const UserContributorFragmentDoc = gql`
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {
@@ -1596,7 +1596,7 @@ export const OrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1626,7 +1626,7 @@ export const OrganizationInfoFragmentDoc = gql`
     website
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1662,7 +1662,7 @@ export const OrganizationInfoFragmentDoc = gql`
           country
           city
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         tagsets {
@@ -1690,7 +1690,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualFull
       }
       description
@@ -1724,7 +1724,7 @@ export const MessagingUserInformationFragmentDoc = gql`
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -1770,7 +1770,7 @@ export const GroupInfoFragmentDoc = gql`
     name
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualFull
       }
       description
@@ -1835,7 +1835,7 @@ export const UserDetailsFragmentDoc = gql`
         city
       }
       description
-      avatar {
+      visual(type: AVATAR) {
         ...VisualFull
       }
       references {
@@ -2130,7 +2130,7 @@ export const SearchResultProfileFragmentDoc = gql`
       id
       tags
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
   }
@@ -2272,7 +2272,7 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
       lastName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -2396,7 +2396,7 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
       lastName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -2495,7 +2495,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
       displayName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -13595,7 +13595,7 @@ export const ContributingUsersDocument = gql`
           city
           country
         }
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -13667,7 +13667,7 @@ export const ContributingOrganizationsDocument = gql`
       displayName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -15740,7 +15740,7 @@ export const OrganizationDetailsDocument = gql`
       nameID
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         description
@@ -16068,7 +16068,7 @@ export const OrganizationsListDocument = gql`
       displayName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -16537,7 +16537,7 @@ export const UserAvatarsDocument = gql`
           country
           city
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         tagsets {
@@ -16609,7 +16609,7 @@ export const UserCardsContainerDocument = gql`
           city
           country
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         tagsets {
@@ -16981,7 +16981,7 @@ export const UpdateGroupDocument = gql`
       name
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         description
@@ -17562,7 +17562,7 @@ export const UsersWithCredentialsDocument = gql`
       email
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -19293,7 +19293,7 @@ export const InnovationPacksDocument = gql`
             displayName
             profile {
               id
-              avatar {
+              visual(type: AVATAR) {
                 id
                 uri
               }
@@ -20222,7 +20222,7 @@ export const ActivityLogOnCollaborationDocument = gql`
         lastName
         profile {
           id
-          avatar {
+          visual(type: AVATAR) {
             id
             uri
           }
@@ -20441,7 +20441,7 @@ export const MentionableUsersDocument = gql`
             city
             country
           }
-          avatar {
+          visual(type: AVATAR) {
             ...VisualUri
           }
         }

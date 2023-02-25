@@ -5,7 +5,7 @@ query organizationDetails($id: UUID_NAMEID!) {
     nameID
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description

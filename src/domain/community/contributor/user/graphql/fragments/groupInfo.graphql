@@ -3,7 +3,7 @@ fragment GroupInfo on UserGroup {
   name
   profile {
     id
-    avatar {
+    visual(type: AVATAR) {
       ...VisualFull
     }
     description

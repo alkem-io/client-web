@@ -21,7 +21,7 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
     lastName
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }

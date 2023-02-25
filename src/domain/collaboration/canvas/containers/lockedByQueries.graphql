@@ -8,7 +8,7 @@ fragment LockedByDetails on User {
   id
   displayName
   profile {
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
   }

@@ -9,7 +9,7 @@ fragment OrganizationCard on Organization {
   }
   profile {
     id
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     description

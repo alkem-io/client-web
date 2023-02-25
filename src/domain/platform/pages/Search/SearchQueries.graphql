@@ -122,7 +122,7 @@ fragment SearchResultProfile on Profile {
     id
     tags
   }
-  avatar {
+  visual(type: AVATAR) {
     ...VisualUri
   }
 }

@@ -5,7 +5,7 @@ query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [A
     displayName
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }

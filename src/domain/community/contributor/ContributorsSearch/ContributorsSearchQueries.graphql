@@ -30,7 +30,7 @@ fragment OrganizationContributor on Organization {
   }
   orgProfile: profile {
     id
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     description
@@ -69,7 +69,7 @@ fragment UserContributor on User {
       city
       country
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     tagsets {

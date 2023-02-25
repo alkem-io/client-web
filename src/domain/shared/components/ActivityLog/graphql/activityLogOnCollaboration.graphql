@@ -14,7 +14,7 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
       lastName
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -75,7 +75,7 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
     lastName
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }

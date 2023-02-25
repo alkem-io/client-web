@@ -11,7 +11,7 @@ fragment OrganizationInfo on Organization {
   website
   profile {
     id
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     description
@@ -47,7 +47,7 @@ fragment OrganizationInfo on Organization {
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {

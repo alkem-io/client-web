@@ -39,7 +39,7 @@ query MentionableUsers($filter: UserFilterInput, $first: Int) {
           city
           country
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }

@@ -4,7 +4,7 @@ fragment DashboardLeadUser on User {
   nameID
   profile {
     id
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     location {

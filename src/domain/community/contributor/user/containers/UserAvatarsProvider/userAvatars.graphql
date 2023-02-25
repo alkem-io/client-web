@@ -9,7 +9,7 @@ query userAvatars($ids: [UUID!]!) {
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {

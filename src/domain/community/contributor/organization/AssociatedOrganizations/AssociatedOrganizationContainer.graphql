@@ -11,7 +11,7 @@ fragment AssociatedOrganizationDetails on Organization {
   profile {
     id
     description
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
   }

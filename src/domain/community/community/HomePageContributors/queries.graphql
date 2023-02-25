@@ -11,7 +11,7 @@ query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [A
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }
@@ -30,7 +30,7 @@ query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredent
     displayName
     profile {
       id
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }

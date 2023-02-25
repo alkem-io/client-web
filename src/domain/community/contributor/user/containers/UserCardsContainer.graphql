@@ -9,7 +9,7 @@ query userCardsContainer($ids: [UUID!]!) {
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {
