@@ -65,7 +65,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
   return (
     <Dialog
       open={open}
-      maxWidth="md"
+      maxWidth="xl"
       fullWidth
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
