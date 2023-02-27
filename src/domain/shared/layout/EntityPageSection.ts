@@ -8,4 +8,5 @@ export enum EntityPageSection {
   Agreements = 'agreements',
   Profile = 'profile',
   Share = 'share',
+  Search = 'search',
 }

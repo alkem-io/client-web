@@ -27,7 +27,7 @@ import { RoleType } from '../../../../community/contributor/user/constants/RoleT
 import { getVisualBanner } from '../../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/contributor/user/hooks/useUserContext';
-import { SearchResultMetaType, SearchResultT } from '../SearchPage';
+import { SearchResultMetaType, SearchResultT } from '../../../search/SearchView';
 import { SearchContributionCardCard } from '../../../../shared/components/search-cards/SearchContributionCardCard';
 import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
