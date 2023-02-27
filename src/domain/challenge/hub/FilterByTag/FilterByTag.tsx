@@ -36,7 +36,8 @@ const FilterByTag = <Item extends Identifiable>({ items, valueGetter, children }
     .map(x => x.toLocaleLowerCase());
 
   const updateQueryString = (nextTags: string[]) => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(window.location.search);
+    params.delete(FILTER_PARAM_NAME);
     for (const tag of nextTags) {
       params.append(FILTER_PARAM_NAME, tag);
     }

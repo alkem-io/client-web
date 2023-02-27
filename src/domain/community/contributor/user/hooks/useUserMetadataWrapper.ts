@@ -29,9 +29,6 @@ export interface UserMetadata {
   ofChallenge: (id: string) => boolean;
   ofHub: (id: string) => boolean;
   ofOpportunity: (id: string) => boolean;
-  isHubAdmin: (hubId: string) => boolean;
-  isChallengeAdmin: (hubId: string, challengeId: string) => boolean;
-  isOpportunityAdmin: (hubId: string, challengeId: string, opportunityId: string) => boolean;
   /** has an entity admin role, i.e. is admin of a community */
   isCommunityAdmin: boolean;
   isOrganizationAdmin: boolean;
@@ -122,15 +119,6 @@ export const useUserMetadataWrapper = () => {
         user?.agent?.credentials?.some(c => c.type === credential && (!resourceId || c.resourceID === resourceId)) ??
         false;
 
-      const isHubAdmin = (id: string) =>
-        hasCredentials(AuthorizationCredential.GlobalAdmin) || hasCredentials(AuthorizationCredential.HubAdmin, id);
-
-      const isChallengeAdmin = (hubId: string, challengeId: string) =>
-        isHubAdmin(hubId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
-
-      const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
-        isChallengeAdmin(hubId, challengeId) || hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
-
       const myPrivileges = platformLevelAuthorization?.myPrivileges ?? [];
       const permissions: UserPermissions = {
         canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
@@ -151,9 +139,6 @@ export const useUserMetadataWrapper = () => {
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
         ofHub: (id: string) => hasCredentials(AuthorizationCredential.HubMember, id),
         ofOpportunity: (id: string) => hasCredentials(AuthorizationCredential.OpportunityMember, id),
-        isHubAdmin,
-        isChallengeAdmin,
-        isOpportunityAdmin,
         isCommunityAdmin: false,
         isOrganizationAdmin: false,
         roles,
