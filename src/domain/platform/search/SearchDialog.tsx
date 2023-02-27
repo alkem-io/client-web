@@ -36,7 +36,7 @@ const SearchDialog = () => {
         PaperComponent={DialogContainer}
         sx={{ '.MuiDialog-container': { alignItems: 'start' } }}
       >
-        <MultipleSelect onChange={handleSearch} selectedTerms={[]} suggestions={[]} minLength={2} disabled={false} />
+        <MultipleSelect onChange={handleSearch} value={[]} minLength={2} autoFocus />
       </Dialog>
     </GridProvider>
   );
