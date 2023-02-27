@@ -22,9 +22,7 @@ fragment CalendarEventInfo on CalendarEvent {
   wholeDay
   multipleDays
   profile {
-    id
-    displayName
-    description
+    ...EventProfile
   }
 }
 
@@ -81,9 +79,6 @@ fragment CalendarEventDetails on CalendarEvent {
     }
   }
   createdDate
-  profile {
-    ...EventProfile
-  }
   comments {
     ...CommentsWithMessages
   }
@@ -91,6 +86,7 @@ fragment CalendarEventDetails on CalendarEvent {
 
 fragment EventProfile on Profile {
   id
+  displayName
   description
   tagset {
     id

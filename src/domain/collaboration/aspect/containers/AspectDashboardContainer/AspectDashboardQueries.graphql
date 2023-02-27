@@ -76,9 +76,7 @@ fragment AspectDashboard on Aspect {
     }
   }
   createdDate
-  visual(type: BANNER) {
-    ...VisualUri
-  }
+
   profile {
     id
     displayName
@@ -93,6 +91,9 @@ fragment AspectDashboard on Aspect {
       name
       uri
       description
+    }
+    visual(type: BANNER) {
+      ...VisualUri
     }
   }
   comments {

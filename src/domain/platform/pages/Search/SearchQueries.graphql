@@ -48,6 +48,9 @@ fragment SearchResultCard on SearchResultCard {
     nameID
     profile {
       displayName
+      visual(type: CARD) {
+        ...VisualUri
+      }
       ...SearchResultCardProfile
     }
     createdBy {
@@ -61,9 +64,6 @@ fragment SearchResultCard on SearchResultCard {
     comments {
       id
       commentsCount
-    }
-    visual(type: CARD) {
-      ...VisualUri
     }
   }
   ...CardParent

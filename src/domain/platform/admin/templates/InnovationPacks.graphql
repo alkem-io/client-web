@@ -11,7 +11,7 @@ query InnovationPacks {
           nameID
           profile {
             id
-            profileName
+            displayName
             visual(type: AVATAR) {
               id
               uri

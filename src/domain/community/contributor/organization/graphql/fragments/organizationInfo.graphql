@@ -11,10 +11,10 @@ fragment OrganizationInfo on Organization {
   profile {
     id
     displayName
+    description
     visual(type: AVATAR) {
       ...VisualUri
     }
-    description
     tagsets {
       id
       name

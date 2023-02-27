@@ -12,9 +12,9 @@ mutation CreateAspect($aspectData: CreateAspectOnCalloutInput!) {
         name
         tags
       }
-    }
-    visuals {
-      ...VisualUri
+      visuals {
+        ...VisualUri
+      }
     }
   }
 }

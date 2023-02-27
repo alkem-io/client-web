@@ -53,20 +53,15 @@ query OpportunityAspectSettings(
 fragment AspectSettings on Aspect {
   id
   nameID
-  profile {
-      id
-      displayName
-  }
   type
   authorization {
     id
     myPrivileges
   }
-  visuals {
-    ...VisualFull
-  }
+
   profile {
     id
+    displayName
     description
     tagset {
       id
@@ -78,6 +73,9 @@ fragment AspectSettings on Aspect {
       name
       uri
       description
+    }
+    visuals {
+      ...VisualFull
     }
   }
 }
