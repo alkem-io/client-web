@@ -672,7 +672,7 @@ export const HubPageFragmentDoc = gql`
       name
       tags
     }
-    ... on Hub @include(if: $isAuthorized) {
+    ... on Hub {
       collaboration {
         ...DashboardTopCallouts
       }
@@ -772,6 +772,11 @@ export const OpportunityPageFragmentDoc = gql`
     id
     nameID
     displayName
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
     tagset {
       id
       name
@@ -1619,6 +1624,10 @@ export const OrganizationInfoFragmentDoc = gql`
     displayName
     contactEmail
     domain
+    authorization {
+      id
+      myPrivileges
+    }
     verification {
       id
       status
@@ -5158,7 +5167,7 @@ export function refetchHubTemplatesCanvasTemplateWithValueQuery(
 }
 
 export const HubPageDocument = gql`
-  query hubPage($hubId: UUID_NAMEID!, $isAuthorized: Boolean!) {
+  query hubPage($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       ...HubPage
     }
@@ -5179,7 +5188,6 @@ export const HubPageDocument = gql`
  * const { data, loading, error } = useHubPageQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
- *      isAuthorized: // value for 'isAuthorized'
  *   },
  * });
  */
