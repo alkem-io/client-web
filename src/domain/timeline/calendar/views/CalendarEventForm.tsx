@@ -139,6 +139,7 @@ const CalendarEventForm = ({
               <FormikMarkdownField
                 name="description"
                 title={t('common.description')}
+                placeholder={t('calendar.defaultEventDescription')}
                 maxLength={VERY_LONG_TEXT_LENGTH}
                 withCounter
                 sx={{ marginBottom: gutters(-1) }}
