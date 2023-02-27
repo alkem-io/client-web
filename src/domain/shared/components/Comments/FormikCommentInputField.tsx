@@ -121,33 +121,36 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
     const { t } = useTranslation();
     const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
     const [tooltipOpen, setTooltipOpen] = useState(false);
+    const emptyQueries = useRef<string[]>([]).current;
 
     const [queryUsers] = useMentionableUsersLazyQuery();
 
-    const findMentionableUsers = (search: string, callback: (users: MentionableUser[]) => void) => {
-      if (!search) {
+    const findMentionableUsers = async (search: string, callback: (users: MentionableUser[]) => void) => {
+      if (!search || emptyQueries.some(query => search.startsWith(query))) {
         callback([]);
         return;
       }
-      const filter = { email: search, firstName: search, lastName: search };
-      queryUsers({
+      const filter = { email: search, displayName: search };
+      const { data } = await queryUsers({
         variables: { filter, first: MAX_USERS_LISTED },
-        onCompleted: data => {
-          const users = data?.usersPaginated.users ?? [];
-          const mentionableUsers = users
-            // Only show users that are not already mentioned
-            .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
-            // Map users to MentionableUser
-            .map(user => ({
-              id: user.nameID,
-              display: user.displayName,
-              avatarUrl: user.profile?.avatar?.uri,
-              city: user.profile?.location?.city,
-              country: user.profile?.location?.country,
-            }));
-          callback(mentionableUsers);
-        },
       });
+
+      const users = data?.usersPaginated.users ?? [];
+      if (users.length === 0) {
+        emptyQueries.push(search);
+      }
+      const mentionableUsers = users
+        // Only show users that are not already mentioned
+        .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
+        // Map users to MentionableUser
+        .map(user => ({
+          id: user.nameID,
+          display: user.displayName,
+          avatarUrl: user.profile?.avatar?.uri,
+          city: user.profile?.location?.city,
+          country: user.profile?.location?.country,
+        }));
+      callback(mentionableUsers);
     };
 
     const { submitForm } = useFormikContext();
