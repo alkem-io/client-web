@@ -5,7 +5,6 @@ import { isSocialLink, SocialLinkItem } from '../../../../shared/components/Soci
 import { RoleType } from '../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
 import useUserCardRoleName from '../../user/hooks/useUserCardRoleName';
-import { useUserContext } from '../../user';
 import {
   useRolesOrganizationQuery,
   useSendMessageToOrganizationMutation,
@@ -20,7 +19,7 @@ import {
   toSocialNetworkEnum,
 } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import {
-  AuthorizationCredential,
+  AuthorizationPrivilege,
   OrganizationInfoFragment,
   User,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -54,6 +53,8 @@ export interface OrganizationPageContainerProps
     OrganizationContainerActions,
     OrganizationContainerState
   > {}
+
+const NO_PRIVILEGES = [];
 
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
   const { organizationId, organizationNameId, loading, organization } = useOrganization();
@@ -98,17 +99,10 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     [organization]
   );
 
-  const { user } = useUserContext();
+  const organizationPrivileges = organization?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
-    canEdit: useMemo(
-      () =>
-        user?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-        user?.hasCredentials(AuthorizationCredential.OrganizationOwner, organizationId) ||
-        user?.hasCredentials(AuthorizationCredential.OrganizationAdmin, organizationId) ||
-        false,
-      [user, organizationId]
-    ),
+    canEdit: organizationPrivileges.includes(AuthorizationPrivilege.Update),
   };
 
   const associates = useMemo<ContributorCardProps[]>(() => {

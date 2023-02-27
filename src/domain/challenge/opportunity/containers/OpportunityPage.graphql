@@ -11,6 +11,11 @@ fragment OpportunityPage on Opportunity {
   id
   nameID
   displayName
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
   tagset {
     id
     name
