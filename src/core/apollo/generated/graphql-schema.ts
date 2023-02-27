@@ -818,7 +818,7 @@ export type Challenge = {
   authorization?: Maybe<Authorization>;
   /** The set of child Challenges within this challenge. */
   challenges?: Maybe<Array<Challenge>>;
-  /** The collaboration for the challenge. */
+  /** Collaboration object for the base challenge */
   collaboration?: Maybe<Collaboration>;
   /** The community for the challenge. */
   community?: Maybe<Community>;
@@ -1819,7 +1819,7 @@ export type Hub = {
   challenge: Challenge;
   /** The challenges for the hub. */
   challenges?: Maybe<Array<Challenge>>;
-  /** The collaboration for the Hub. */
+  /** Collaboration object for the base challenge */
   collaboration?: Maybe<Collaboration>;
   /** Get a Community within the Hub. Defaults to the Community for the Hub itself. */
   community?: Maybe<Community>;
@@ -1851,7 +1851,7 @@ export type Hub = {
   project: Project;
   /** All projects within this hub */
   projects: Array<Project>;
-  /** The set of tags for the  hub. */
+  /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
   /** The templates in use by this Hub */
   templates?: Maybe<TemplatesSet>;
@@ -2928,7 +2928,7 @@ export type Opportunity = {
   __typename?: 'Opportunity';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The collaboration for the Opportunity. */
+  /** Collaboration object for the base challenge */
   collaboration?: Maybe<Collaboration>;
   /** The community for the Opportunity. */
   community?: Maybe<Community>;
@@ -2981,7 +2981,7 @@ export type Organization = Groupable & {
   agent?: Maybe<Agent>;
   /** All Users that are associated with this Organization. */
   associates?: Maybe<Array<User>>;
-  /** The Authorization for this Organization. */
+  /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** Organization contact email */
   contactEmail?: Maybe<Scalars['String']>;
@@ -3467,8 +3467,8 @@ export type RelayPaginatedUser = {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
-  /** The Authorization for this User. */
-  authorization: Authorization;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -4402,8 +4402,8 @@ export type User = {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
-  /** The Authorization for this User. */
-  authorization: Authorization;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -7177,7 +7177,6 @@ export type LifecycleTemplateFragment = {
 
 export type HubPageQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
-  isAuthorized: Scalars['Boolean'];
 }>;
 
 export type HubPageQuery = {
@@ -8412,6 +8411,14 @@ export type OpportunityPageQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            anonymousReadAccess: boolean;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          }
+        | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       lifecycle?:
@@ -8670,6 +8677,14 @@ export type OpportunityPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        anonymousReadAccess: boolean;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      }
+    | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   lifecycle?:
@@ -16473,6 +16488,9 @@ export type OrganizationInfoFragment = {
   contactEmail?: string | undefined;
   domain?: string | undefined;
   website?: string | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
@@ -16746,6 +16764,9 @@ export type OrganizationInfoQuery = {
     contactEmail?: string | undefined;
     domain?: string | undefined;
     website?: string | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
