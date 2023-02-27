@@ -27,10 +27,7 @@ fragment UserRolesDetails on ContributorRoles {
   organizations {
     id
     nameID
-    profile {
-      id
-      displayName
-    }
+    displayName
     userGroups {
       id
       nameID
