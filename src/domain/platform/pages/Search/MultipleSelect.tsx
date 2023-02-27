@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Caption } from '../../../../core/ui/typography';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { MAX_TERMS_SEARCH } from './SearchPage';
+import { MAX_TERMS_SEARCH } from '../../search/SearchView';
 
 interface MultipleSelectProps {
   selectedTerms: string[];
