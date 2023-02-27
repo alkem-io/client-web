@@ -60,18 +60,12 @@ fragment AspectDashboard on Aspect {
   id
   nameID
   type
-  profile {
-      id
-      displayName
-    }
+
   createdBy {
     id
     profile {
       id
       displayName
-    }
-    profile {
-      id
       visual(type: AVATAR) {
         id
         uri
@@ -87,6 +81,7 @@ fragment AspectDashboard on Aspect {
   }
   profile {
     id
+    displayName
     description
     tagset {
       id
