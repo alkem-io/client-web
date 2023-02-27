@@ -182,6 +182,7 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
   </Tooltip>
 );
 
+const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
 interface FullCalendarProps {
   events: Pick<CalendarEvent, 'startDate' | 'displayName'>[] | undefined;
   onClickEvents?: (events: Partial<CalendarEvent>[]) => void;
@@ -190,12 +191,13 @@ interface FullCalendarProps {
 
 const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickEvents, sx }) => {
   const highlightedDates = useMemo(() => {
-    // This object will look like { "yyyy-mm-dd": [events], "yyyy-mm-dd": [events], ...}
-    return groupBy(events, event => dayjs(event.startDate).format('YYYY-MM-DD'));
+    // This object will look like:
+    //  { "yyyy-mm-dd": [...events on this date], "yyyy-mm-dd": [...events], ...}
+    return groupBy(events, event => dayjs(event.startDate).format(INTERNAL_DATE_FORMAT));
   }, [events]);
 
   const isHighlighted = (date: Date) => {
-    return Boolean(highlightedDates[dayjs(date).format('YYYY-MM-DD')]);
+    return Boolean(highlightedDates[dayjs(date).format(INTERNAL_DATE_FORMAT)]);
   };
 
   const today = startOfDay();
@@ -206,7 +208,7 @@ const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickEvents, sx })
 
   const handleClickDay = (date: Date) => {
     if (onClickEvents) {
-      const events = highlightedDates[dayjs(date).format('YYYY-MM-DD')] || [];
+      const events = highlightedDates[dayjs(date).format(INTERNAL_DATE_FORMAT)] || [];
       if (events.length > 0) {
         onClickEvents(events);
       }
@@ -219,7 +221,7 @@ const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickEvents, sx })
         tileClassName={({ date }) => `${isHighlighted(date) ? 'highlight' : ''} ${isPastDate(date) ? 'past-date' : ''}`}
         tileContent={({ date }) => {
           if (isHighlighted(date)) {
-            const events = highlightedDates[dayjs(date).format('YYYY-MM-DD')] || [];
+            const events = highlightedDates[dayjs(date).format(INTERNAL_DATE_FORMAT)] || [];
             return <EventsTooltip events={events} />;
           }
           return null;

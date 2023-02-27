@@ -57,7 +57,6 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
   const onCalendarClickEvents = (events: Partial<CalendarEvent>[]) => {
     // Scroll to the first event on that day
     if (events.length > 0 && events[0].nameID) {
-      console.log('scrollTo', events[0].nameID);
       scrollTo(events[0].nameID);
     }
   };
