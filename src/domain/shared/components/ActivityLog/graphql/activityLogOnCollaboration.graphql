@@ -107,9 +107,10 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
   card {
     id
     nameID
-    displayName
     type
     profile {
+      id
+      displayName
       description
     }
   }
@@ -124,7 +125,10 @@ fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
   card {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
 

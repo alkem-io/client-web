@@ -4,7 +4,10 @@ mutation assignUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID
     userID: $memberId
   }) {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
 

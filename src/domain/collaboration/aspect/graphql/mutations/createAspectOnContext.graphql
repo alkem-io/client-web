@@ -2,21 +2,18 @@ mutation CreateAspect($aspectData: CreateAspectOnCalloutInput!) {
   createAspectOnCallout(aspectData: $aspectData) {
     id
     nameID
-    displayName
     type
     profile {
       id
       description
+      displayName
       tagset {
         id
         name
         tags
       }
     }
-    banner {
-      ...VisualUri
-    }
-    bannerNarrow {
+    visuals {
       ...VisualUri
     }
   }

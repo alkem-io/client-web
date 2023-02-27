@@ -1,11 +1,14 @@
-query hubMembers ($hubId: UUID_NAMEID!) {
+query hubMembers($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     community {
       id
       memberUsers {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
         firstName
         lastName
         email

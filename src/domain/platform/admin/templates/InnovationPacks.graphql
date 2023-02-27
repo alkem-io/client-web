@@ -9,9 +9,9 @@ query InnovationPacks {
         provider {
           id
           nameID
-          displayName
           profile {
             id
+            profileName
             visual(type: AVATAR) {
               id
               uri

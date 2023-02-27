@@ -16,14 +16,14 @@ query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
 fragment CalendarEventInfo on CalendarEvent {
   id
   nameID
-  displayName
   startDate
   durationDays
   durationMinutes
   wholeDay
   multipleDays
-  profile{
+  profile {
     id
+    displayName
     description
   }
 }
@@ -89,7 +89,7 @@ fragment CalendarEventDetails on CalendarEvent {
   }
 }
 
-fragment EventProfile on CardProfile {
+fragment EventProfile on Profile {
   id
   description
   tagset {

@@ -24,7 +24,10 @@ query organizationDetails($id: UUID_NAMEID!) {
       name
       members {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }

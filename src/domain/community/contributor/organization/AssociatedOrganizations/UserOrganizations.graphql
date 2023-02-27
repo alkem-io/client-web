@@ -9,7 +9,10 @@ fragment UserOrganizationsDetails on ContributorRoles {
   organizations {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
     userGroups {
       id
       nameID

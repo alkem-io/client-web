@@ -46,20 +46,23 @@ fragment SearchResultCard on SearchResultCard {
   card {
     id
     nameID
-    displayName
     profile {
+      displayName
       ...SearchResultCardProfile
     }
     createdBy {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     createdDate
     comments {
       id
       commentsCount
     }
-    bannerNarrow {
+    visual(type: CARD) {
       ...VisualUri
     }
   }
@@ -127,7 +130,7 @@ fragment SearchResultProfile on Profile {
   }
 }
 
-fragment SearchResultCardProfile on CardProfile {
+fragment SearchResultCardProfile on Profile {
   id
   description
   tagset {

@@ -53,16 +53,16 @@ query OpportunityAspectSettings(
 fragment AspectSettings on Aspect {
   id
   nameID
-  displayName
+  profile {
+      id
+      displayName
+  }
   type
   authorization {
     id
     myPrivileges
   }
-  banner {
-    ...VisualFull
-  }
-  bannerNarrow {
+  visuals {
     ...VisualFull
   }
   profile {
@@ -90,6 +90,9 @@ fragment AspectSettingsCallout on Callout {
   }
   aspectNames: aspects {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
