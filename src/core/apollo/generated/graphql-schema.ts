@@ -351,14 +351,12 @@ export type Aspect = {
   /** The user that created this Aspect */
   createdBy: User;
   createdDate: Scalars['DateTime'];
-  /** The display name. */
-  displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The CardProfile for this Card. */
-  profile?: Maybe<CardProfile>;
+  /** The Profile for this Card. */
+  profile?: Maybe<Profile>;
   /** The aspect type, e.g. knowledge, idea, stakeholder persona etc. */
   type: Scalars['String'];
 };
@@ -596,8 +594,6 @@ export type CalendarEvent = {
   /** The user that created this CalendarEvent */
   createdBy: User;
   createdDate: Scalars['DateTime'];
-  /** The display name. */
-  displayName: Scalars['String'];
   /** The length of the event in days. */
   durationDays?: Maybe<Scalars['Float']>;
   /** The length of the event in minutes. */
@@ -608,8 +604,8 @@ export type CalendarEvent = {
   multipleDays: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The CardProfile for this Card. */
-  profile?: Maybe<CardProfile>;
+  /** The Profile for this Card. */
+  profile?: Maybe<Profile>;
   /** The start time for this CalendarEvent. */
   startDate?: Maybe<Scalars['DateTime']>;
   /** The event type, e.g. webinar, meetup etc. */
@@ -784,22 +780,6 @@ export type CanvasTemplate = {
   info: TemplateInfo;
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
-};
-
-export type CardProfile = {
-  __typename?: 'CardProfile';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The description of this aspect */
-  description: Scalars['Markdown'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The location for this Profile. */
-  location?: Maybe<Location>;
-  /** The References for this Aspect. */
-  references?: Maybe<Array<Reference>>;
-  /** The set of tags for the Aspect */
-  tagset?: Maybe<Tagset>;
 };
 
 export type Challenge = {
@@ -1230,11 +1210,9 @@ export type CreateActorInput = {
 
 export type CreateAspectOnCalloutInput = {
   calloutID: Scalars['UUID'];
-  /** The display name for the entity. */
-  displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData?: InputMaybe<CreateCardProfileInput>;
+  profileData?: InputMaybe<CreateProfileInput>;
   type: Scalars['String'];
   visualUri?: InputMaybe<Scalars['String']>;
 };
@@ -1260,8 +1238,6 @@ export type CreateAspectTemplateOnTemplatesSetInput = {
 
 export type CreateCalendarEventOnCalendarInput = {
   calendarID: Scalars['UUID'];
-  /** The display name for the entity. */
-  displayName: Scalars['String'];
   /** The length of the event in days. */
   durationDays?: InputMaybe<Scalars['Float']>;
   /** The length of the event in minutes. */
@@ -1270,7 +1246,7 @@ export type CreateCalendarEventOnCalendarInput = {
   multipleDays: Scalars['Boolean'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData?: InputMaybe<CreateCardProfileInput>;
+  profileData?: InputMaybe<CreateProfileInput>;
   /** The start date for the event. */
   startDate: Scalars['DateTime'];
   type: CalendarEventType;
@@ -1320,13 +1296,6 @@ export type CreateCanvasTemplateOnTemplatesSetInput = {
   info: CreateTemplateInfoInput;
   templatesSetID: Scalars['UUID'];
   value?: InputMaybe<Scalars['JSON']>;
-};
-
-export type CreateCardProfileInput = {
-  description?: InputMaybe<Scalars['String']>;
-  location?: InputMaybe<CreateLocationInput>;
-  referencesData?: InputMaybe<Array<CreateReferenceInput>>;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -1450,7 +1419,6 @@ export type CreateProfileInput = {
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
   /** A memorable short description for this entity. */
   tagline?: InputMaybe<Scalars['String']>;
-  tagsetsData?: InputMaybe<Array<CreateTagsetInput>>;
 };
 
 export type CreateProjectInput = {
@@ -1463,13 +1431,6 @@ export type CreateProjectInput = {
 };
 
 export type CreateReferenceInput = {
-  description?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-  uri?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateReferenceOnCardProfileInput = {
-  cardProfileID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   uri?: InputMaybe<Scalars['String']>;
@@ -1496,11 +1457,6 @@ export type CreateRelationOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
   type: Scalars['String'];
-};
-
-export type CreateTagsetInput = {
-  name: Scalars['String'];
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateTagsetOnProfileInput = {
@@ -2137,8 +2093,6 @@ export type Mutation = {
   createOrganization: Organization;
   /** Create a new Project on the Opportunity */
   createProject: Project;
-  /** Creates a new Reference on the specified CardProfile. */
-  createReferenceOnCardProfile: Reference;
   /** Creates a new Reference on the specified Context. */
   createReferenceOnContext: Reference;
   /** Creates a new Reference on the specified Profile. */
@@ -2511,10 +2465,6 @@ export type MutationCreateOrganizationArgs = {
 
 export type MutationCreateProjectArgs = {
   projectData: CreateProjectInput;
-};
-
-export type MutationCreateReferenceOnCardProfileArgs = {
-  referenceData: CreateReferenceOnCardProfileInput;
 };
 
 export type MutationCreateReferenceOnContextArgs = {
@@ -2967,8 +2917,6 @@ export type Organization = Groupable & {
   authorization?: Maybe<Authorization>;
   /** Organization contact email */
   contactEmail?: Maybe<Scalars['String']>;
-  /** TODO: The displayName for this Org. */
-  displayName: Scalars['String'];
   /** Domain name; what is verified, eg. alkem.io */
   domain?: Maybe<Scalars['String']>;
   /** Group defined on this organization. */
@@ -3217,6 +3165,8 @@ export type Profile = {
   references?: Maybe<Array<Reference>>;
   /** The taglie for this entity. */
   tagline: Scalars['String'];
+  /** The default tagset. */
+  tagset?: Maybe<Tagset>;
   /** A list of named tagsets, each of which has a list of tags. */
   tagsets?: Maybe<Array<Tagset>>;
   /** A particular type of visual for this Profile. */
@@ -3465,8 +3415,6 @@ export type RelayPaginatedUser = {
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
   directRooms?: Maybe<Array<DirectRoom>>;
-  /** TODO: The displayName for this User. */
-  displayName: Scalars['String'];
   /** The email address for this User. */
   email: Scalars['String'];
   firstName: Scalars['String'];
@@ -4001,12 +3949,10 @@ export type UpdateActorInput = {
 
 export type UpdateAspectInput = {
   ID: Scalars['UUID'];
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the Profile of the Card. */
-  profileData?: InputMaybe<UpdateCardProfileInput>;
+  profileData?: InputMaybe<UpdateProfileInput>;
   type?: InputMaybe<Scalars['String']>;
 };
 
@@ -4022,8 +3968,6 @@ export type UpdateAspectTemplateInput = {
 
 export type UpdateCalendarEventInput = {
   ID: Scalars['UUID'];
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** The length of the event in days. */
   durationDays?: InputMaybe<Scalars['Float']>;
   /** The length of the event in minutes. */
@@ -4033,7 +3977,7 @@ export type UpdateCalendarEventInput = {
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the Profile of the Card. */
-  profileData?: InputMaybe<UpdateCardProfileInput>;
+  profileData?: InputMaybe<UpdateProfileInput>;
   /** The state date for the event. */
   startDate: Scalars['DateTime'];
   type?: InputMaybe<CalendarEventType>;
@@ -4106,14 +4050,6 @@ export type UpdateCanvasTemplateInput = {
   /** The meta information for this Template. */
   info?: InputMaybe<UpdateTemplateInfoInput>;
   value?: InputMaybe<Scalars['JSON']>;
-};
-
-export type UpdateCardProfileInput = {
-  description?: InputMaybe<Scalars['String']>;
-  location?: InputMaybe<UpdateLocationInput>;
-  references?: InputMaybe<Array<UpdateReferenceInput>>;
-  /** Update the tags on the Aspect. */
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateChallengeInnovationFlowInput = {
@@ -4400,8 +4336,6 @@ export type User = {
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
   directRooms?: Maybe<Array<DirectRoom>>;
-  /** TODO: The displayName for this User. */
-  displayName: Scalars['String'];
   /** The email address for this User. */
   email: Scalars['String'];
   firstName: Scalars['String'];
@@ -4578,7 +4512,11 @@ export type AssignUserAsChallengeAdminMutationVariables = Exact<{
 
 export type AssignUserAsChallengeAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsChallengeAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type AssignUserAsGlobalAdminMutationVariables = Exact<{
@@ -4587,7 +4525,11 @@ export type AssignUserAsGlobalAdminMutationVariables = Exact<{
 
 export type AssignUserAsGlobalAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsGlobalAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
@@ -4596,7 +4538,11 @@ export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
 
 export type AssignUserAsGlobalCommunityAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsGlobalCommunityAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type AssignUserAsGlobalHubsAdminMutationVariables = Exact<{
@@ -4605,7 +4551,11 @@ export type AssignUserAsGlobalHubsAdminMutationVariables = Exact<{
 
 export type AssignUserAsGlobalHubsAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsGlobalHubsAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type AssignUserAsHubAdminMutationVariables = Exact<{
@@ -4614,7 +4564,11 @@ export type AssignUserAsHubAdminMutationVariables = Exact<{
 
 export type AssignUserAsHubAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsHubAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type AssignUserAsOrganizationOwnerMutationVariables = Exact<{
@@ -4623,7 +4577,11 @@ export type AssignUserAsOrganizationOwnerMutationVariables = Exact<{
 
 export type AssignUserAsOrganizationOwnerMutation = {
   __typename?: 'Mutation';
-  assignUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsOrganizationOwner: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
@@ -4632,7 +4590,11 @@ export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
 
 export type RemoveUserAsChallengeAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsChallengeAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
@@ -4641,16 +4603,11 @@ export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
 
 export type RemoveUserAsGlobalAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsGlobalHubsAdminMutationVariables = Exact<{
-  input: RemoveGlobalHubsAdminInput;
-}>;
-
-export type RemoveUserAsGlobalHubsAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsGlobalAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
@@ -4659,7 +4616,24 @@ export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
 
 export type RemoveUserAsGlobalCommunityAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsGlobalCommunityAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
+};
+
+export type RemoveUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: RemoveGlobalHubsAdminInput;
+}>;
+
+export type RemoveUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalHubsAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsHubAdminMutationVariables = Exact<{
@@ -4668,7 +4642,11 @@ export type RemoveUserAsHubAdminMutationVariables = Exact<{
 
 export type RemoveUserAsHubAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsHubAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
@@ -4677,7 +4655,11 @@ export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
 
 export type RemoveUserAsOrganizationOwnerMutation = {
   __typename?: 'Mutation';
-  removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsOrganizationOwner: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type ChallengeCardFragment = {
@@ -4878,18 +4860,21 @@ export type ChallengePageQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         type: string;
                         createdDate: Date;
-                        createdBy: { __typename?: 'User'; displayName: string };
+                        createdBy: {
+                          __typename?: 'User';
+                          id: string;
+                          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                        };
                         comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -4958,11 +4943,11 @@ export type ChallengePageQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -5207,18 +5192,21 @@ export type ChallengeProfileFragment = {
                     __typename?: 'Aspect';
                     id: string;
                     nameID: string;
-                    displayName: string;
                     type: string;
                     createdDate: Date;
-                    createdBy: { __typename?: 'User'; displayName: string };
+                    createdBy: {
+                      __typename?: 'User';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    };
                     comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     profile?:
                       | {
-                          __typename?: 'CardProfile';
+                          __typename?: 'Profile';
                           id: string;
-                          description: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
                             | Array<{
@@ -5281,11 +5269,11 @@ export type ChallengeProfileFragment = {
                     createdBy: {
                       __typename?: 'User';
                       id: string;
-                      displayName: string;
                       profile?:
                         | {
                             __typename?: 'Profile';
                             id: string;
+                            displayName: string;
                             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           }
                         | undefined;
@@ -6773,7 +6761,14 @@ export type HubProviderQuery = {
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-    host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
   };
 };
 
@@ -6852,7 +6847,14 @@ export type HubInfoFragment = {
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+  host?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }
+    | undefined;
 };
 
 export type HubTemplatesQueryVariables = Exact<{
@@ -7203,18 +7205,21 @@ export type HubPageQuery = {
                       __typename?: 'Aspect';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       type: string;
                       createdDate: Date;
-                      createdBy: { __typename?: 'User'; displayName: string };
+                      createdBy: {
+                        __typename?: 'User';
+                        id: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                      };
                       comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       profile?:
                         | {
-                            __typename?: 'CardProfile';
+                            __typename?: 'Profile';
                             id: string;
-                            description: string;
+                            displayName: string;
+                            description?: string | undefined;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                               | undefined;
@@ -7279,11 +7284,11 @@ export type HubPageQuery = {
                       createdBy: {
                         __typename?: 'User';
                         id: string;
-                        displayName: string;
                         profile?:
                           | {
                               __typename?: 'Profile';
                               id: string;
+                              displayName: string;
                               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             }
                           | undefined;
@@ -7512,18 +7517,21 @@ export type HubPageFragment = {
                     __typename?: 'Aspect';
                     id: string;
                     nameID: string;
-                    displayName: string;
                     type: string;
                     createdDate: Date;
-                    createdBy: { __typename?: 'User'; displayName: string };
+                    createdBy: {
+                      __typename?: 'User';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    };
                     comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     profile?:
                       | {
-                          __typename?: 'CardProfile';
+                          __typename?: 'Profile';
                           id: string;
-                          description: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
                             | Array<{
@@ -7586,11 +7594,11 @@ export type HubPageFragment = {
                     createdBy: {
                       __typename?: 'User';
                       id: string;
-                      displayName: string;
                       profile?:
                         | {
                             __typename?: 'Profile';
                             id: string;
+                            displayName: string;
                             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           }
                         | undefined;
@@ -7801,7 +7809,14 @@ export type HubDetailsFragment = {
   displayName: string;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-  host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+  host?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }
+    | undefined;
   context?:
     | {
         __typename?: 'Context';
@@ -7894,7 +7909,14 @@ export type CreateHubMutation = {
     displayName: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
     context?:
       | {
           __typename?: 'Context';
@@ -7983,7 +8005,14 @@ export type UpdateHubMutation = {
     displayName: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | undefined;
     context?:
       | {
           __typename?: 'Context';
@@ -8264,10 +8293,10 @@ export type HubMembersQuery = {
             | Array<{
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 firstName: string;
                 lastName: string;
                 email: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
               }>
             | undefined;
         }
@@ -8382,7 +8411,11 @@ export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
 
 export type AssignUserAsOpportunityAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsOpportunityAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
@@ -8391,7 +8424,11 @@ export type RemoveUserAsOpportunityAdminMutationVariables = Exact<{
 
 export type RemoveUserAsOpportunityAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsOpportunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsOpportunityAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type OpportunityPageQueryVariables = Exact<{
@@ -8451,18 +8488,21 @@ export type OpportunityPageQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         type: string;
                         createdDate: Date;
-                        createdBy: { __typename?: 'User'; displayName: string };
+                        createdBy: {
+                          __typename?: 'User';
+                          id: string;
+                          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                        };
                         comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -8531,11 +8571,11 @@ export type OpportunityPageQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -8709,18 +8749,21 @@ export type OpportunityPageFragment = {
                     __typename?: 'Aspect';
                     id: string;
                     nameID: string;
-                    displayName: string;
                     type: string;
                     createdDate: Date;
-                    createdBy: { __typename?: 'User'; displayName: string };
+                    createdBy: {
+                      __typename?: 'User';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    };
                     comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     profile?:
                       | {
-                          __typename?: 'CardProfile';
+                          __typename?: 'Profile';
                           id: string;
-                          description: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
                             | Array<{
@@ -8783,11 +8826,11 @@ export type OpportunityPageFragment = {
                     createdBy: {
                       __typename?: 'User';
                       id: string;
-                      displayName: string;
                       profile?:
                         | {
                             __typename?: 'Profile';
                             id: string;
+                            displayName: string;
                             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                           }
                         | undefined;
@@ -9724,27 +9767,26 @@ export type HubAspectQuery = {
                       id: string;
                       nameID: string;
                       type: string;
-                      displayName: string;
                       createdDate: Date;
                       createdBy: {
                         __typename?: 'User';
                         id: string;
-                        displayName: string;
                         profile?:
                           | {
                               __typename?: 'Profile';
                               id: string;
+                              displayName: string;
                               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
                             }
                           | undefined;
                       };
-                      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       profile?:
                         | {
-                            __typename?: 'CardProfile';
+                            __typename?: 'Profile';
                             id: string;
-                            description: string;
+                            displayName: string;
+                            description?: string | undefined;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                               | undefined;
@@ -9757,6 +9799,7 @@ export type HubAspectQuery = {
                                   description?: string | undefined;
                                 }>
                               | undefined;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                           }
                         | undefined;
                       comments?:
@@ -9848,27 +9891,26 @@ export type ChallengeAspectQuery = {
                         id: string;
                         nameID: string;
                         type: string;
-                        displayName: string;
                         createdDate: Date;
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
                               }
                             | undefined;
                         };
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -9881,6 +9923,7 @@ export type ChallengeAspectQuery = {
                                     description?: string | undefined;
                                   }>
                                 | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                             }
                           | undefined;
                         comments?:
@@ -9973,27 +10016,26 @@ export type OpportunityAspectQuery = {
                         id: string;
                         nameID: string;
                         type: string;
-                        displayName: string;
                         createdDate: Date;
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                                 tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
                               }
                             | undefined;
                         };
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -10006,6 +10048,7 @@ export type OpportunityAspectQuery = {
                                     description?: string | undefined;
                                   }>
                                 | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                             }
                           | undefined;
                         comments?:
@@ -10082,27 +10125,26 @@ export type AspectDashboardDataFragment = {
               id: string;
               nameID: string;
               type: string;
-              displayName: string;
               createdDate: Date;
               createdBy: {
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 profile?:
                   | {
                       __typename?: 'Profile';
                       id: string;
+                      displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
                     }
                   | undefined;
               };
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               profile?:
                 | {
-                    __typename?: 'CardProfile';
+                    __typename?: 'Profile';
                     id: string;
-                    description: string;
+                    displayName: string;
+                    description?: string | undefined;
                     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                     references?:
                       | Array<{
@@ -10113,6 +10155,7 @@ export type AspectDashboardDataFragment = {
                           description?: string | undefined;
                         }>
                       | undefined;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   }
                 | undefined;
               comments?:
@@ -10168,31 +10211,31 @@ export type AspectDashboardFragment = {
   id: string;
   nameID: string;
   type: string;
-  displayName: string;
   createdDate: Date;
   createdBy: {
     __typename?: 'User';
     id: string;
-    displayName: string;
     profile?:
       | {
           __typename?: 'Profile';
           id: string;
+          displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
         }
       | undefined;
   };
-  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   profile?:
     | {
-        __typename?: 'CardProfile';
+        __typename?: 'Profile';
         id: string;
-        description: string;
+        displayName: string;
+        description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       }
     | undefined;
   comments?:
@@ -10242,13 +10285,13 @@ export type UpdateAspectMutation = {
   updateAspect: {
     __typename?: 'Aspect';
     id: string;
-    displayName: string;
     type: string;
     profile?:
       | {
-          __typename?: 'CardProfile';
+          __typename?: 'Profile';
           id: string;
-          description: string;
+          displayName: string;
+          description?: string | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
             | Array<{
@@ -10289,7 +10332,6 @@ export type HubAspectSettingsQuery = {
                       __typename?: 'Aspect';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       type: string;
                       authorization?:
                         | {
@@ -10298,39 +10340,12 @@ export type HubAspectSettingsQuery = {
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                           }
                         | undefined;
-                      banner?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                          }
-                        | undefined;
-                      bannerNarrow?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                          }
-                        | undefined;
                       profile?:
                         | {
-                            __typename?: 'CardProfile';
+                            __typename?: 'Profile';
                             id: string;
-                            description: string;
+                            displayName: string;
+                            description?: string | undefined;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                               | undefined;
@@ -10343,11 +10358,29 @@ export type HubAspectSettingsQuery = {
                                   description?: string | undefined;
                                 }>
                               | undefined;
+                            visuals: Array<{
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }>;
                           }
                         | undefined;
                     }>
                   | undefined;
-                aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
+                aspectNames?:
+                  | Array<{
+                      __typename?: 'Aspect';
+                      id: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                    }>
+                  | undefined;
               }>
             | undefined;
         }
@@ -10384,7 +10417,6 @@ export type ChallengeAspectSettingsQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         type: string;
                         authorization?:
                           | {
@@ -10393,39 +10425,12 @@ export type ChallengeAspectSettingsQuery = {
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                             }
                           | undefined;
-                        banner?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
-                        bannerNarrow?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -10438,11 +10443,29 @@ export type ChallengeAspectSettingsQuery = {
                                     description?: string | undefined;
                                   }>
                                 | undefined;
+                              visuals: Array<{
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }>;
                             }
                           | undefined;
                       }>
                     | undefined;
-                  aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
+                  aspectNames?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                      }>
+                    | undefined;
                 }>
               | undefined;
           }
@@ -10480,7 +10503,6 @@ export type OpportunityAspectSettingsQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         type: string;
                         authorization?:
                           | {
@@ -10489,39 +10511,12 @@ export type OpportunityAspectSettingsQuery = {
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                             }
                           | undefined;
-                        banner?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
-                        bannerNarrow?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
-                            }
-                          | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -10534,11 +10529,29 @@ export type OpportunityAspectSettingsQuery = {
                                     description?: string | undefined;
                                   }>
                                 | undefined;
+                              visuals: Array<{
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }>;
                             }
                           | undefined;
                       }>
                     | undefined;
-                  aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
+                  aspectNames?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                      }>
+                    | undefined;
                 }>
               | undefined;
           }
@@ -10551,48 +10564,32 @@ export type AspectSettingsFragment = {
   __typename?: 'Aspect';
   id: string;
   nameID: string;
-  displayName: string;
   type: string;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  banner?:
-    | {
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-      }
-    | undefined;
-  bannerNarrow?:
-    | {
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-      }
-    | undefined;
   profile?:
     | {
-        __typename?: 'CardProfile';
+        __typename?: 'Profile';
         id: string;
-        description: string;
+        displayName: string;
+        description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }>;
       }
     | undefined;
 };
@@ -10606,44 +10603,16 @@ export type AspectSettingsCalloutFragment = {
         __typename?: 'Aspect';
         id: string;
         nameID: string;
-        displayName: string;
         type: string;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        banner?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }
-          | undefined;
-        bannerNarrow?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }
-          | undefined;
         profile?:
           | {
-              __typename?: 'CardProfile';
+              __typename?: 'Profile';
               id: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
                 | Array<{
@@ -10654,11 +10623,29 @@ export type AspectSettingsCalloutFragment = {
                     description?: string | undefined;
                   }>
                 | undefined;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>;
             }
           | undefined;
       }>
     | undefined;
-  aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
+  aspectNames?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+      }>
+    | undefined;
 };
 
 export type HubAspectProviderQueryVariables = Exact<{
@@ -10686,7 +10673,7 @@ export type HubAspectProviderQuery = {
                       __typename?: 'Aspect';
                       id: string;
                       nameID: string;
-                      displayName: string;
+                      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -10732,7 +10719,7 @@ export type ChallengeAspectProviderQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10779,7 +10766,7 @@ export type OpportunityAspectProviderQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -10810,7 +10797,7 @@ export type AspectProviderDataFragment = {
               __typename?: 'Aspect';
               id: string;
               nameID: string;
-              displayName: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
@@ -10824,7 +10811,7 @@ export type AspectProvidedFragment = {
   __typename?: 'Aspect';
   id: string;
   nameID: string;
-  displayName: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -10848,18 +10835,21 @@ export type AspectCardFragment = {
   __typename?: 'Aspect';
   id: string;
   nameID: string;
-  displayName: string;
   type: string;
   createdDate: Date;
-  createdBy: { __typename?: 'User'; displayName: string };
+  createdBy: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
   comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   profile?:
     | {
-        __typename?: 'CardProfile';
+        __typename?: 'Profile';
         id: string;
-        description: string;
+        displayName: string;
+        description?: string | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
@@ -10872,21 +10862,24 @@ export type ContributeTabAspectFragment = {
   __typename?: 'Aspect';
   id: string;
   nameID: string;
-  displayName: string;
   type: string;
   createdDate: Date;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  createdBy: { __typename?: 'User'; displayName: string };
+  createdBy: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
   comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   profile?:
     | {
-        __typename?: 'CardProfile';
+        __typename?: 'Profile';
         id: string;
-        description: string;
+        displayName: string;
+        description?: string | undefined;
+        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
@@ -10905,33 +10898,17 @@ export type CreateAspectMutation = {
     __typename?: 'Aspect';
     id: string;
     nameID: string;
-    displayName: string;
     type: string;
     profile?:
       | {
-          __typename?: 'CardProfile';
+          __typename?: 'Profile';
           id: string;
-          description: string;
+          description?: string | undefined;
+          displayName: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
         }
       | undefined;
-    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-};
-
-export type CreateReferenceOnCardProfileMutationVariables = Exact<{
-  referenceInput: CreateReferenceOnCardProfileInput;
-}>;
-
-export type CreateReferenceOnCardProfileMutation = {
-  __typename?: 'Mutation';
-  createReferenceOnCardProfile: {
-    __typename?: 'Reference';
-    id: string;
-    name: string;
-    uri: string;
-    description?: string | undefined;
   };
 };
 
@@ -11008,18 +10985,21 @@ export type DashboardTopCalloutsFragment = {
               __typename?: 'Aspect';
               id: string;
               nameID: string;
-              displayName: string;
               type: string;
               createdDate: Date;
-              createdBy: { __typename?: 'User'; displayName: string };
+              createdBy: {
+                __typename?: 'User';
+                id: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              };
               comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               profile?:
                 | {
-                    __typename?: 'CardProfile';
+                    __typename?: 'Profile';
                     id: string;
-                    description: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                     references?:
                       | Array<{
@@ -11082,11 +11062,11 @@ export type DashboardTopCalloutsFragment = {
               createdBy: {
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 profile?:
                   | {
                       __typename?: 'Profile';
                       id: string;
+                      displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     }
                   | undefined;
@@ -11111,18 +11091,21 @@ export type DashboardTopCalloutFragment = {
         __typename?: 'Aspect';
         id: string;
         nameID: string;
-        displayName: string;
         type: string;
         createdDate: Date;
-        createdBy: { __typename?: 'User'; displayName: string };
+        createdBy: {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        };
         comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         profile?:
           | {
-              __typename?: 'CardProfile';
+              __typename?: 'Profile';
               id: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
                 | Array<{
@@ -11181,11 +11164,11 @@ export type DashboardTopCalloutFragment = {
         createdBy: {
           __typename?: 'User';
           id: string;
-          displayName: string;
           profile?:
             | {
                 __typename?: 'Profile';
                 id: string;
+                displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -11533,18 +11516,17 @@ export type CreateAspectFromContributeTabMutation = {
     __typename?: 'Aspect';
     id: string;
     nameID: string;
-    displayName: string;
     type: string;
     profile?:
       | {
-          __typename?: 'CardProfile';
+          __typename?: 'Profile';
           id: string;
-          description: string;
+          displayName: string;
+          description?: string | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         }
       | undefined;
-    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 
@@ -11635,11 +11617,11 @@ export type CalloutsQuery = {
                       createdBy: {
                         __typename?: 'User';
                         id: string;
-                        displayName: string;
                         profile?:
                           | {
                               __typename?: 'Profile';
                               id: string;
+                              displayName: string;
                               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             }
                           | undefined;
@@ -11802,11 +11784,11 @@ export type CalloutsQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -11975,11 +11957,11 @@ export type CalloutsQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -12100,7 +12082,6 @@ export type HubCalloutAspectsSubscriptionQuery = {
                       __typename?: 'Aspect';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       type: string;
                       createdDate: Date;
                       authorization?:
@@ -12110,15 +12091,19 @@ export type HubCalloutAspectsSubscriptionQuery = {
                             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                           }
                         | undefined;
-                      createdBy: { __typename?: 'User'; displayName: string };
+                      createdBy: {
+                        __typename?: 'User';
+                        id: string;
+                        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                      };
                       comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                       profile?:
                         | {
-                            __typename?: 'CardProfile';
+                            __typename?: 'Profile';
                             id: string;
-                            description: string;
+                            displayName: string;
+                            description?: string | undefined;
+                            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                             tagset?:
                               | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                               | undefined;
@@ -12169,7 +12154,6 @@ export type ChallengeCalloutAspectsSubscriptionQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         type: string;
                         createdDate: Date;
                         authorization?:
@@ -12179,15 +12163,19 @@ export type ChallengeCalloutAspectsSubscriptionQuery = {
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                             }
                           | undefined;
-                        createdBy: { __typename?: 'User'; displayName: string };
+                        createdBy: {
+                          __typename?: 'User';
+                          id: string;
+                          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                        };
                         comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -12239,7 +12227,6 @@ export type OpportunityCalloutAspectsSubscriptionQuery = {
                         __typename?: 'Aspect';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         type: string;
                         createdDate: Date;
                         authorization?:
@@ -12249,15 +12236,19 @@ export type OpportunityCalloutAspectsSubscriptionQuery = {
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                             }
                           | undefined;
-                        createdBy: { __typename?: 'User'; displayName: string };
+                        createdBy: {
+                          __typename?: 'User';
+                          id: string;
+                          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                        };
                         comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                         profile?:
                           | {
-                              __typename?: 'CardProfile';
+                              __typename?: 'Profile';
                               id: string;
-                              description: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                               tagset?:
                                 | { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }
                                 | undefined;
@@ -12428,11 +12419,11 @@ export type CollaborationWithCalloutsFragment = {
               createdBy: {
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 profile?:
                   | {
                       __typename?: 'Profile';
                       id: string;
+                      displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     }
                   | undefined;
@@ -12571,11 +12562,11 @@ export type CalloutFragment = {
         createdBy: {
           __typename?: 'User';
           id: string;
-          displayName: string;
           profile?:
             | {
                 __typename?: 'Profile';
                 id: string;
+                displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               }
             | undefined;
@@ -12769,9 +12760,13 @@ export type CanvasDetailsFragment = {
   createdBy: {
     __typename?: 'User';
     id: string;
-    displayName: string;
     profile?:
-      | { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined }
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        }
       | undefined;
   };
 };
@@ -12893,11 +12888,11 @@ export type CalloutWithCanvasFragment = {
               createdBy: {
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 profile?:
                   | {
                       __typename?: 'Profile';
                       id: string;
+                      displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     }
                   | undefined;
@@ -12973,11 +12968,11 @@ export type CollaborationWithCanvasDetailsFragment = {
               createdBy: {
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 profile?:
                   | {
                       __typename?: 'Profile';
                       id: string;
+                      displayName: string;
                       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     }
                   | undefined;
@@ -13065,11 +13060,11 @@ export type HubCanvasFromCalloutQuery = {
                       createdBy: {
                         __typename?: 'User';
                         id: string;
-                        displayName: string;
                         profile?:
                           | {
                               __typename?: 'Profile';
                               id: string;
+                              displayName: string;
                               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             }
                           | undefined;
@@ -13158,11 +13153,11 @@ export type HubCanvasesQuery = {
                       createdBy: {
                         __typename?: 'User';
                         id: string;
-                        displayName: string;
                         profile?:
                           | {
                               __typename?: 'Profile';
                               id: string;
+                              displayName: string;
                               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             }
                           | undefined;
@@ -13252,11 +13247,11 @@ export type HubCanvasValuesQuery = {
                       createdBy: {
                         __typename?: 'User';
                         id: string;
-                        displayName: string;
                         profile?:
                           | {
                               __typename?: 'Profile';
                               id: string;
+                              displayName: string;
                               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                             }
                           | undefined;
@@ -13355,11 +13350,11 @@ export type ChallengeCanvasFromCalloutQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -13458,11 +13453,11 @@ export type ChallengeCanvasValuesQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -13562,11 +13557,11 @@ export type OpportunityCanvasFromCalloutQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -13665,11 +13660,11 @@ export type OpportunityCanvasValuesQuery = {
                         createdBy: {
                           __typename?: 'User';
                           id: string;
-                          displayName: string;
                           profile?:
                             | {
                                 __typename?: 'Profile';
                                 id: string;
+                                displayName: string;
                                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                               }
                             | undefined;
@@ -13733,11 +13728,11 @@ export type CreateCanvasOnCalloutMutation = {
     createdBy: {
       __typename?: 'User';
       id: string;
-      displayName: string;
       profile?:
         | {
             __typename?: 'Profile';
             id: string;
+            displayName: string;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           }
         | undefined;
@@ -13797,10 +13792,11 @@ export type CanvasLockedByDetailsQuery = {
   usersById: Array<{
     __typename?: 'User';
     id: string;
-    displayName: string;
     profile?:
       | {
           __typename?: 'Profile';
+          id: string;
+          displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         }
       | undefined;
@@ -13810,9 +13806,13 @@ export type CanvasLockedByDetailsQuery = {
 export type LockedByDetailsFragment = {
   __typename?: 'User';
   id: string;
-  displayName: string;
   profile?:
-    | { __typename?: 'Profile'; visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined }
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      }
     | undefined;
 };
 
@@ -13824,21 +13824,24 @@ export type AspectsOnCalloutFragment = {
         __typename?: 'Aspect';
         id: string;
         nameID: string;
-        displayName: string;
         type: string;
         createdDate: Date;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        createdBy: { __typename?: 'User'; displayName: string };
+        createdBy: {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        };
         comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         profile?:
           | {
-              __typename?: 'CardProfile';
+              __typename?: 'Profile';
               id: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               references?:
                 | Array<{
@@ -13867,21 +13870,24 @@ export type CalloutAspectCreatedSubscription = {
       __typename?: 'Aspect';
       id: string;
       nameID: string;
-      displayName: string;
       type: string;
       createdDate: Date;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
-      createdBy: { __typename?: 'User'; displayName: string };
+      createdBy: {
+        __typename?: 'User';
+        id: string;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+      };
       comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       profile?:
         | {
-            __typename?: 'CardProfile';
+            __typename?: 'Profile';
             id: string;
-            description: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
             references?:
               | Array<{
@@ -14024,26 +14030,6 @@ export type CreateTagsetOnProfileMutationVariables = Exact<{
 export type CreateTagsetOnProfileMutation = {
   __typename?: 'Mutation';
   createTagsetOnProfile: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> };
-};
-
-export type TagsetsTemplateQueryVariables = Exact<{ [key: string]: never }>;
-
-export type TagsetsTemplateQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      users: Array<{
-        __typename?: 'UserTemplate';
-        tagsets?: Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: string | undefined }> | undefined;
-      }>;
-      organizations: Array<{
-        __typename?: 'OrganizationTemplate';
-        tagsets?: Array<{ __typename?: 'TagsetTemplate'; name: string; placeholder?: string | undefined }> | undefined;
-      }>;
-    };
-  };
 };
 
 export type UploadVisualMutationVariables = Exact<{
@@ -15685,7 +15671,13 @@ export type CommunityMembersQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          memberUsers?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+          memberUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              }>
+            | undefined;
         }
       | undefined;
   };
@@ -15761,7 +15753,11 @@ export type AvailableUsersQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
-    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+    }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
@@ -15781,10 +15777,10 @@ export type BasicOrganizationDetailsFragment = {
 export type CommunityMemberUserFragment = {
   __typename?: 'User';
   id: string;
-  displayName: string;
   firstName: string;
   lastName: string;
   email: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
@@ -15838,20 +15834,20 @@ export type ChallengeCommunityMembersQuery = {
               | Array<{
                   __typename?: 'User';
                   id: string;
-                  displayName: string;
                   firstName: string;
                   lastName: string;
                   email: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                 }>
               | undefined;
             leadUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
-                  displayName: string;
                   firstName: string;
                   lastName: string;
                   email: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                 }>
               | undefined;
             memberOrganizations?:
@@ -15909,20 +15905,20 @@ export type HubCommunityMembersQuery = {
             | Array<{
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 firstName: string;
                 lastName: string;
                 email: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
               }>
             | undefined;
           leadUsers?:
             | Array<{
                 __typename?: 'User';
                 id: string;
-                displayName: string;
                 firstName: string;
                 lastName: string;
                 email: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
               }>
             | undefined;
           memberOrganizations?:
@@ -16047,20 +16043,20 @@ export type OpportunityCommunityMembersQuery = {
               | Array<{
                   __typename?: 'User';
                   id: string;
-                  displayName: string;
                   firstName: string;
                   lastName: string;
                   email: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                 }>
               | undefined;
             leadUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
-                  displayName: string;
                   firstName: string;
                   lastName: string;
                   email: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                 }>
               | undefined;
             memberOrganizations?:
@@ -16353,7 +16349,11 @@ export type AssignUserToOrganizationMutationVariables = Exact<{
 
 export type AssignUserToOrganizationMutation = {
   __typename?: 'Mutation';
-  assignUserToOrganization: { __typename?: 'Organization'; id: string; displayName: string };
+  assignUserToOrganization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type RemoveUserFromOrganizationMutationVariables = Exact<{
@@ -16362,7 +16362,11 @@ export type RemoveUserFromOrganizationMutationVariables = Exact<{
 
 export type RemoveUserFromOrganizationMutation = {
   __typename?: 'Mutation';
-  removeUserFromOrganization: { __typename?: 'Organization'; id: string; displayName: string };
+  removeUserFromOrganization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type AssignUserAsOrganizationAdminMutationVariables = Exact<{
@@ -16371,7 +16375,11 @@ export type AssignUserAsOrganizationAdminMutationVariables = Exact<{
 
 export type AssignUserAsOrganizationAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsOrganizationAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsOrganizationAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type RemoveUserAsOrganizationAdminMutationVariables = Exact<{
@@ -16380,7 +16388,11 @@ export type RemoveUserAsOrganizationAdminMutationVariables = Exact<{
 
 export type RemoveUserAsOrganizationAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsOrganizationAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsOrganizationAdmin: {
+    __typename?: 'User';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type OrganizationAssociatesQueryVariables = Exact<{
@@ -16396,10 +16408,10 @@ export type OrganizationAssociatesQuery = {
       | Array<{
           __typename?: 'User';
           id: string;
-          displayName: string;
           firstName: string;
           lastName: string;
           email: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
         }>
       | undefined;
   };
@@ -16570,7 +16582,12 @@ export type CreateOrganizationMutationVariables = Exact<{
 
 export type CreateOrganizationMutation = {
   __typename?: 'Mutation';
-  createOrganization: { __typename?: 'Organization'; id: string; nameID: string; displayName: string };
+  createOrganization: {
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type DeleteOrganizationMutationVariables = Exact<{
@@ -16639,10 +16656,10 @@ export type OrganizationGroupQuery = {
       | Array<{
           __typename?: 'User';
           id: string;
-          displayName: string;
           firstName: string;
           lastName: string;
           email: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
         }>
       | undefined;
     group?:
@@ -16710,7 +16727,13 @@ export type OrganizationDetailsQuery = {
           __typename?: 'UserGroup';
           id: string;
           name: string;
-          members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+          members?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+              }>
+            | undefined;
         }>
       | undefined;
   };
@@ -16799,7 +16822,11 @@ export type OrganizationNameQueryVariables = Exact<{
 
 export type OrganizationNameQuery = {
   __typename?: 'Query';
-  organization: { __typename?: 'Organization'; id: string; displayName: string };
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type OrganizationProfileInfoQueryVariables = Exact<{
@@ -17156,10 +17183,10 @@ export type GroupInfoFragment = {
 export type GroupMembersFragment = {
   __typename?: 'User';
   id: string;
-  displayName: string;
   firstName: string;
   lastName: string;
   email: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
 };
 
 export type UserAgentFragment = {
@@ -17223,7 +17250,11 @@ export type UserDetailsFragment = {
     | undefined;
 };
 
-export type UserDisplayNameFragment = { __typename?: 'User'; id: string; displayName: string };
+export type UserDisplayNameFragment = {
+  __typename?: 'User';
+  id: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+};
 
 export type UserRolesDetailsFragment = {
   __typename?: 'ContributorRoles';
@@ -17286,10 +17317,10 @@ export type AssignUserToGroupMutation = {
       | Array<{
           __typename?: 'User';
           id: string;
-          displayName: string;
           firstName: string;
           lastName: string;
           email: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
         }>
       | undefined;
   };
@@ -17442,10 +17473,10 @@ export type RemoveUserFromGroupMutation = {
       | Array<{
           __typename?: 'User';
           id: string;
-          displayName: string;
           firstName: string;
           lastName: string;
           email: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
         }>
       | undefined;
   };
@@ -17912,10 +17943,10 @@ export type UsersWithCredentialsSimpleListQuery = {
   usersWithAuthorizationCredential: Array<{
     __typename?: 'User';
     id: string;
-    displayName: string;
     firstName: string;
     lastName: string;
     email: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
   }>;
 };
 
@@ -18000,7 +18031,13 @@ export type UserListQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
-    users: Array<{ __typename?: 'User'; id: string; nameID: string; displayName: string; email: string }>;
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      email: string;
+      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+    }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
@@ -18232,7 +18269,12 @@ export type HubAvailableLeadUsersQuery = {
           availableLeadUsers?:
             | {
                 __typename?: 'PaginatedUsers';
-                users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                users: Array<{
+                  __typename?: 'User';
+                  id: string;
+                  email: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }>;
                 pageInfo: {
                   __typename?: 'PageInfo';
                   startCursor?: string | undefined;
@@ -18264,7 +18306,12 @@ export type HubAvailableMemberUsersQuery = {
           availableMemberUsers?:
             | {
                 __typename?: 'PaginatedUsers';
-                users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                users: Array<{
+                  __typename?: 'User';
+                  id: string;
+                  email: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                }>;
                 pageInfo: {
                   __typename?: 'PageInfo';
                   startCursor?: string | undefined;
@@ -18299,7 +18346,12 @@ export type ChallengeAvailableLeadUsersQuery = {
             availableLeadUsers?:
               | {
                   __typename?: 'PaginatedUsers';
-                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  users: Array<{
+                    __typename?: 'User';
+                    id: string;
+                    email: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                  }>;
                   pageInfo: {
                     __typename?: 'PageInfo';
                     startCursor?: string | undefined;
@@ -18335,7 +18387,12 @@ export type ChallengeAvailableMemberUsersQuery = {
             availableMemberUsers?:
               | {
                   __typename?: 'PaginatedUsers';
-                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  users: Array<{
+                    __typename?: 'User';
+                    id: string;
+                    email: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                  }>;
                   pageInfo: {
                     __typename?: 'PageInfo';
                     startCursor?: string | undefined;
@@ -18371,7 +18428,12 @@ export type OpportunityAvailableLeadUsersQuery = {
             availableLeadUsers?:
               | {
                   __typename?: 'PaginatedUsers';
-                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  users: Array<{
+                    __typename?: 'User';
+                    id: string;
+                    email: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                  }>;
                   pageInfo: {
                     __typename?: 'PageInfo';
                     startCursor?: string | undefined;
@@ -18407,7 +18469,12 @@ export type OpportunityAvailableMemberUsersQuery = {
             availableMemberUsers?:
               | {
                   __typename?: 'PaginatedUsers';
-                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  users: Array<{
+                    __typename?: 'User';
+                    id: string;
+                    email: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                  }>;
                   pageInfo: {
                     __typename?: 'PageInfo';
                     startCursor?: string | undefined;
@@ -18428,7 +18495,12 @@ export type CommunityAvailableLeadUsersFragment = {
   availableLeadUsers?:
     | {
         __typename?: 'PaginatedUsers';
-        users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+        users: Array<{
+          __typename?: 'User';
+          id: string;
+          email: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>;
         pageInfo: {
           __typename?: 'PageInfo';
           startCursor?: string | undefined;
@@ -18445,7 +18517,12 @@ export type CommunityAvailableMemberUsersFragment = {
   availableMemberUsers?:
     | {
         __typename?: 'PaginatedUsers';
-        users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+        users: Array<{
+          __typename?: 'User';
+          id: string;
+          email: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }>;
         pageInfo: {
           __typename?: 'PageInfo';
           startCursor?: string | undefined;
@@ -18456,7 +18533,12 @@ export type CommunityAvailableMemberUsersFragment = {
     | undefined;
 };
 
-export type AvailableUserFragment = { __typename?: 'User'; id: string; displayName: string; email: string };
+export type AvailableUserFragment = {
+  __typename?: 'User';
+  id: string;
+  email: string;
+  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+};
 
 export type HubApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -18514,7 +18596,12 @@ export type AdminGlobalOrganizationsListQuery = {
   __typename?: 'Query';
   organizationsPaginated: {
     __typename?: 'PaginatedOrganization';
-    organization: Array<{ __typename?: 'Organization'; id: string; nameID: string; displayName: string }>;
+    organization: Array<{
+      __typename?: 'Organization';
+      id: string;
+      nameID: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    }>;
     pageInfo: {
       __typename?: 'PageInfo';
       startCursor?: string | undefined;
@@ -18834,10 +18921,10 @@ export type InnovationPacksQuery = {
               __typename?: 'Organization';
               id: string;
               nameID: string;
-              displayName: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
+                displayName: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
             }
@@ -19322,19 +19409,23 @@ export type SearchQuery = {
             __typename?: 'Aspect';
             id: string;
             nameID: string;
-            displayName: string;
             createdDate: Date;
             profile?:
               | {
-                  __typename?: 'CardProfile';
+                  __typename?: 'Profile';
+                  displayName: string;
                   id: string;
-                  description: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 }
               | undefined;
-            createdBy: { __typename?: 'User'; id: string; displayName: string };
+            createdBy: {
+              __typename?: 'User';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            };
             comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-            bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
           hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
           challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
@@ -19381,19 +19472,23 @@ export type SearchResultCardFragment = {
     __typename?: 'Aspect';
     id: string;
     nameID: string;
-    displayName: string;
     createdDate: Date;
     profile?:
       | {
-          __typename?: 'CardProfile';
+          __typename?: 'Profile';
+          displayName: string;
           id: string;
-          description: string;
+          description?: string | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         }
       | undefined;
-    createdBy: { __typename?: 'User'; id: string; displayName: string };
+    createdBy: {
+      __typename?: 'User';
+      id: string;
+      profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+    };
     comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
-    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
   challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
@@ -19454,9 +19549,9 @@ export type SearchResultProfileFragment = {
 };
 
 export type SearchResultCardProfileFragment = {
-  __typename?: 'CardProfile';
+  __typename?: 'Profile';
   id: string;
-  description: string;
+  description?: string | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
 };
 
@@ -19666,7 +19761,12 @@ export type ActivityCreatedSubscription = {
               | undefined;
           };
           callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-          card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+          card: {
+            __typename?: 'Aspect';
+            id: string;
+            nameID: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          };
         }
       | {
           __typename: 'ActivityLogEntryCalloutCardCreated';
@@ -19697,9 +19797,10 @@ export type ActivityCreatedSubscription = {
             __typename?: 'Aspect';
             id: string;
             nameID: string;
-            displayName: string;
             type: string;
-            profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+            profile?:
+              | { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined }
+              | undefined;
           };
         }
       | {
@@ -19943,7 +20044,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment = {
       | undefined;
   };
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
@@ -19975,9 +20081,8 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
     __typename?: 'Aspect';
     id: string;
     nameID: string;
-    displayName: string;
     type: string;
-    profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined } | undefined;
   };
 };
 
@@ -20242,7 +20347,12 @@ export type ActivityLogOnCollaborationQuery = {
             | undefined;
         };
         callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-        card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+        card: {
+          __typename?: 'Aspect';
+          id: string;
+          nameID: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutCardCreated';
@@ -20273,9 +20383,10 @@ export type ActivityLogOnCollaborationQuery = {
           __typename?: 'Aspect';
           id: string;
           nameID: string;
-          displayName: string;
           type: string;
-          profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+          profile?:
+            | { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined }
+            | undefined;
         };
       }
     | {
@@ -20503,16 +20614,20 @@ export type ActivityLogCalloutCardCreatedFragment = {
     __typename?: 'Aspect';
     id: string;
     nameID: string;
-    displayName: string;
     type: string;
-    profile?: { __typename?: 'CardProfile'; description: string } | undefined;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined } | undefined;
   };
 };
 
 export type ActivityLogCalloutCardCommentFragment = {
   __typename?: 'ActivityLogEntryCalloutCardComment';
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  card: { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
 };
 
 export type ActivityLogCalloutCanvasCreatedFragment = {
@@ -20675,13 +20790,29 @@ export type HubDashboardCalendarEventsQuery = {
                   __typename?: 'CalendarEvent';
                   id: string;
                   nameID: string;
-                  displayName: string;
                   startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
                   wholeDay: boolean;
                   multipleDays: boolean;
-                  profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
                 }>
               | undefined;
           };
@@ -20694,13 +20825,23 @@ export type CalendarEventInfoFragment = {
   __typename?: 'CalendarEvent';
   id: string;
   nameID: string;
-  displayName: string;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
   wholeDay: boolean;
   multipleDays: boolean;
-  profile?: { __typename?: 'CardProfile'; id: string; description: string } | undefined;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      }
+    | undefined;
 };
 
 export type HubCalendarEventsQueryVariables = Exact<{
@@ -20729,7 +20870,6 @@ export type HubCalendarEventsQuery = {
                   createdDate: Date;
                   id: string;
                   nameID: string;
-                  displayName: string;
                   startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
@@ -20748,23 +20888,6 @@ export type HubCalendarEventsQuery = {
                         }
                       | undefined;
                   };
-                  profile?:
-                    | {
-                        __typename?: 'CardProfile';
-                        id: string;
-                        description: string;
-                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                        references?:
-                          | Array<{
-                              __typename?: 'Reference';
-                              id: string;
-                              name: string;
-                              uri: string;
-                              description?: string | undefined;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -20810,6 +20933,24 @@ export type HubCalendarEventsQuery = {
                                     }
                                   | undefined;
                               };
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
                             }>
                           | undefined;
                       }
@@ -20846,7 +20987,6 @@ export type CalendarEventDetailsQuery = {
                   createdDate: Date;
                   id: string;
                   nameID: string;
-                  displayName: string;
                   startDate?: Date | undefined;
                   durationDays?: number | undefined;
                   durationMinutes: number;
@@ -20865,23 +21005,6 @@ export type CalendarEventDetailsQuery = {
                         }
                       | undefined;
                   };
-                  profile?:
-                    | {
-                        __typename?: 'CardProfile';
-                        id: string;
-                        description: string;
-                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                        references?:
-                          | Array<{
-                              __typename?: 'Reference';
-                              id: string;
-                              name: string;
-                              uri: string;
-                              description?: string | undefined;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -20931,6 +21054,24 @@ export type CalendarEventDetailsQuery = {
                           | undefined;
                       }
                     | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                        references?:
+                          | Array<{
+                              __typename?: 'Reference';
+                              id: string;
+                              name: string;
+                              uri: string;
+                              description?: string | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
                 }
               | undefined;
           };
@@ -20945,7 +21086,6 @@ export type CalendarEventDetailsFragment = {
   createdDate: Date;
   id: string;
   nameID: string;
-  displayName: string;
   startDate?: Date | undefined;
   durationDays?: number | undefined;
   durationMinutes: number;
@@ -20964,17 +21104,6 @@ export type CalendarEventDetailsFragment = {
         }
       | undefined;
   };
-  profile?:
-    | {
-        __typename?: 'CardProfile';
-        id: string;
-        description: string;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-          | undefined;
-      }
-    | undefined;
   comments?:
     | {
         __typename?: 'Comments';
@@ -21017,12 +21146,25 @@ export type CalendarEventDetailsFragment = {
           | undefined;
       }
     | undefined;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
+      }
+    | undefined;
 };
 
 export type EventProfileFragment = {
-  __typename?: 'CardProfile';
+  __typename?: 'Profile';
   id: string;
-  description: string;
+  displayName: string;
+  description?: string | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
@@ -21041,7 +21183,6 @@ export type CreateCalendarEventMutation = {
     createdDate: Date;
     id: string;
     nameID: string;
-    displayName: string;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
@@ -21060,23 +21201,6 @@ export type CreateCalendarEventMutation = {
           }
         | undefined;
     };
-    profile?:
-      | {
-          __typename?: 'CardProfile';
-          id: string;
-          description: string;
-          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
     comments?:
       | {
           __typename?: 'Comments';
@@ -21115,6 +21239,24 @@ export type CreateCalendarEventMutation = {
                       }
                     | undefined;
                 };
+              }>
+            | undefined;
+        }
+      | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
               }>
             | undefined;
         }
@@ -21134,7 +21276,6 @@ export type UpdateCalendarEventMutation = {
     createdDate: Date;
     id: string;
     nameID: string;
-    displayName: string;
     startDate?: Date | undefined;
     durationDays?: number | undefined;
     durationMinutes: number;
@@ -21153,23 +21294,6 @@ export type UpdateCalendarEventMutation = {
           }
         | undefined;
     };
-    profile?:
-      | {
-          __typename?: 'CardProfile';
-          id: string;
-          description: string;
-          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-          references?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
     comments?:
       | {
           __typename?: 'Comments';
@@ -21208,6 +21332,24 @@ export type UpdateCalendarEventMutation = {
                       }
                     | undefined;
                 };
+              }>
+            | undefined;
+        }
+      | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
               }>
             | undefined;
         }

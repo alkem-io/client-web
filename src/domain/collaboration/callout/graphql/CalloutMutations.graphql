@@ -12,9 +12,9 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
         name
         tags
       }
-    }
-    visual(type: CARD) {
-      ...VisualUri
+      visual(type: CARD) {
+        ...VisualUri
+      }
     }
   }
 }
