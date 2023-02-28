@@ -772,6 +772,11 @@ export const OpportunityPageFragmentDoc = gql`
     id
     nameID
     displayName
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
     tagset {
       id
       name
@@ -1619,6 +1624,10 @@ export const OrganizationInfoFragmentDoc = gql`
     displayName
     contactEmail
     domain
+    authorization {
+      id
+      myPrivileges
+    }
     verification {
       id
       status

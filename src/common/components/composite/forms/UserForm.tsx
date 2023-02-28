@@ -151,7 +151,7 @@ export const UserForm: FC<UserProps> = ({
     github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
-    bio: yup.string().max(400),
+    bio: yup.string().max(LONG_TEXT_LENGTH),
   });
 
   /**
