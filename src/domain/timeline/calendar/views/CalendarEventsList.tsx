@@ -71,7 +71,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
         <Gutters minHeight={0} flexGrow={1} sx={{ flex: 5 }}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
             <PageContentBlockGrid paddingBottom={gutters(4)}>
-              {sortedFutureEvents.length === 0 && <Caption>{t('calendar.no-upcoming-events')}</Caption>}
+              {sortedFutureEvents.length === 0 && <Caption width="100%">{t('calendar.no-upcoming-events')}</Caption>}
               {sortedFutureEvents.map(event => (
                 <CalendarEventCard
                   key={event.id}

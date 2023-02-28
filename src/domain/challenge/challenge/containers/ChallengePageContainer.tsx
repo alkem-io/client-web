@@ -91,7 +91,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
-    canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
+    canEdit: challengePrivileges.includes(AuthorizationPrivilege.Update),
     communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
