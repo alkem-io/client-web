@@ -7,14 +7,10 @@ interface CalloutBlockMarginalProps {
   variant: 'header' | 'footer';
 }
 
-const CalloutBlockMarginal = ({ variant, children }: PropsWithChildren<CalloutBlockMarginalProps>) => {
-  const textTransform = variant === 'footer' ? 'uppercase' : undefined;
-
+const CalloutBlockMarginal = ({ children }: PropsWithChildren<CalloutBlockMarginalProps>) => {
   return (
-    <Box paddingY={GUTTER_MUI / 2} sx={{ color: 'background.paper', backgroundColor: 'primary.main' }}>
-      <BlockTitle textAlign="center" textTransform={textTransform}>
-        {children}
-      </BlockTitle>
+    <Box paddingY={GUTTER_MUI / 2} sx={theme => ({ color: theme.palette.primary.main })}>
+      <BlockTitle textAlign="center">{children}</BlockTitle>
     </Box>
   );
 };
