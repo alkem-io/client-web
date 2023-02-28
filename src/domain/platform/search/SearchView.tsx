@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -22,8 +22,8 @@ import { SEARCH_TERMS_PARAM } from '../routes/constants';
 import {
   contributionFilterConfig,
   contributorFilterConfig,
+  FilterConfig,
   FilterDefinition,
-  journeyFilterConfig,
 } from '../pages/Search/Filter';
 import MultipleSelect from '../pages/Search/MultipleSelect';
 import SearchResultSection from '../pages/Search/SearchResultSection';
@@ -48,9 +48,11 @@ export type SearchResultMetaType = SearchResultT<
 interface SearchViewProps {
   searchRoute: string;
   hubId?: string;
+  journeyFilterConfig: FilterConfig;
+  journeyFilterTitle: ReactNode;
 }
 
-const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
+const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle, hubId }: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
@@ -83,6 +85,7 @@ const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
     if (termsFromUrl.length === 0) {
       resetFilters();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [termsFromUrl.length]);
 
   const handleTermsChange = (newValue: string[]) => {
@@ -153,7 +156,7 @@ const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
           </Box>
         )}
         <SearchResultSection
-          title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
+          title={journeyFilterTitle}
           filterTitle={t('pages.search.filter.type.journey')}
           filterConfig={journeyFilterConfig}
           results={journeyResults}
