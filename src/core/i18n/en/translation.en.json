@@ -255,11 +255,6 @@
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
       },
-      "callout-state": {
-        "ARCHIVED": "Archived",
-        "CLOSED": "Closed",
-        "OPEN": "Open"
-      },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
           "name": "Global Admin",
