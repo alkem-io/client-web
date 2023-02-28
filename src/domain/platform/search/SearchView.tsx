@@ -70,8 +70,9 @@ const SearchView = ({
   const termsFromUrl = useMemo(() => {
     const terms = queryParams.getAll('terms'); // TODO escape if needed
     if (terms.length > MAX_TERMS_SEARCH) {
-      // If too many terms come in the url, return an array with the first 4 elements + the 5th element containing the rest of the terms all together
-      // TODO figure out why
+      // All terms above 4th are joined into a single 5th term
+      // That is mainly coming from UX issues when having more than 5 tags in the Search input
+      // Please note that server also puts certain limits on the maximum number of terms (currently 10)
       return [...terms.slice(0, MAX_TERMS_SEARCH - 1), terms.slice(MAX_TERMS_SEARCH - 1).join(' ')];
     }
     return terms;
