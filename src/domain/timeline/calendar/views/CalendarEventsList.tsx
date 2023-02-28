@@ -14,8 +14,8 @@ import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGr
 import { startOfDay } from '../../../../core/utils/time/utils';
 import { groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
-import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import FullCalendar from '../components/FullCalendar';
+import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import FullCalendar, { FullCalendarProps } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 
 interface CalendarEventsListProps {
@@ -54,7 +54,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     return sortBy(pastEvents, event => -dayjs(event.startDate));
   }, [pastEvents]);
 
-  const onCalendarClickEvents = (events: Partial<CalendarEvent>[]) => {
+  const onCalendarClickEvents = (events: FullCalendarProps['events']) => {
     // Scroll to the first event on that day
     if (events.length > 0 && events[0].nameID) {
       scrollTo(events[0].nameID);

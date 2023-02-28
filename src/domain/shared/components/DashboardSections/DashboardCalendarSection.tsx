@@ -1,4 +1,4 @@
-import { Box, FormControlLabel, Skeleton, Switch, Theme, useTheme } from '@mui/material';
+import { Box, FormControlLabel, Skeleton, Switch, useTheme } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
@@ -13,21 +13,24 @@ import { Caption, Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
-import FullCalendar from '../../../timeline/calendar/components/FullCalendar';
-import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
+import FullCalendar, { FullCalendarProps } from '../../../timeline/calendar/components/FullCalendar';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
-const CalendarSkeleton = ({ theme }: { theme: Theme }) => (
-  <Box>
-    {times(3, index => (
-      <Box key={index} display="flex" gap={gutters()} marginBottom={gutters()}>
-        <Skeleton variant="circular" width={gutters(2)(theme)} height={gutters(2)(theme)} />
-        <Skeleton height={gutters(2)(theme)} sx={{ flexGrow: 1 }} />
-      </Box>
-    ))}
-  </Box>
-);
+const CalendarSkeleton = () => {
+  const theme = useTheme();
+
+  return (
+    <Box>
+      {times(3, index => (
+        <Box key={index} display="flex" gap={gutters()} marginBottom={gutters()}>
+          <Skeleton variant="circular" width={gutters(2)(theme)} height={gutters(2)(theme)} />
+          <Skeleton height={gutters(2)(theme)} sx={{ flexGrow: 1 }} />
+        </Box>
+      ))}
+    </Box>
+  );
+};
 
 export interface DashboardCalendarSectionProps {
   journeyLocation: JourneyLocation | undefined;
@@ -36,7 +39,6 @@ export interface DashboardCalendarSectionProps {
 const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLocation }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const theme = useTheme();
   const [isCalendarView, setCalendarView] = useState(false);
 
   const { data, loading } = useHubDashboardCalendarEventsQuery({
@@ -58,7 +60,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
-  const onClickEvents = (events: Partial<CalendarEvent>[]) => {
+  const onClickEvents = (events: FullCalendarProps['events']) => {
     if (events.length === 1 && events[0].nameID) {
       // If there is only one event in this day navigate directly to the event
       navigate(`${EntityPageSection.Dashboard}/calendar/${events[0].nameID}`);
@@ -72,7 +74,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
     <PageContentBlock disableGap={isCalendarView}>
       <PageContentBlockHeaderWithDialogAction title={t('common.events')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
-        {loading && <CalendarSkeleton theme={theme} />}
+        {loading && <CalendarSkeleton />}
         {!loading && isCalendarView && <FullCalendar events={allEvents} onClickEvents={onClickEvents} />}
         {!loading && !isCalendarView && (
           <>
