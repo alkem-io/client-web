@@ -12,21 +12,27 @@ import HomePageLayout from './HomePageLayout';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { useQueryParams } from '../../../../core/routing/useQueryParams';
 
 export const HomePage = () => {
   const user = useUserContext();
 
+  const params = useQueryParams();
+  const isFromLanding = params.get('from') === 'landing';
+
   return (
     <HomePageLayout>
       <WelcomeSection />
-      <PlatformUpdates />
+      {!isFromLanding && <PlatformUpdates />}
       <PageContent>
         <PageContentColumn columns={12}>
-          <Grow in={!user.loading} appear>
-            <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">
-              {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
-            </Box>
-          </Grow>
+          {!isFromLanding && (
+            <Grow in={!user.loading} appear>
+              <Box display="flex" flexDirection="column" gap={gutters()} flexGrow={1} maxWidth="100%">
+                {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
+              </Box>
+            </Grow>
+          )}
           <HubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
           <ContributorsSection />
           <HomePageFooter />

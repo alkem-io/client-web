@@ -115,7 +115,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
-    canEdit: user?.isHubAdmin(hubId) || false,
+    canEdit: hubPrivileges.includes(AuthorizationPrivilege.Update),
     communityReadAccess,
     timelineReadAccess,
     hubReadAccess: hubPrivileges.includes(AuthorizationPrivilege.Read),

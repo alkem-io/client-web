@@ -9,7 +9,6 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
-  AuthorizationCredential,
   AuthorizationPrivilege,
   DashboardTopCalloutFragment,
   OpportunityPageFragment,
@@ -91,13 +90,15 @@ export interface OpportunityContainerState {
 export interface OpportunityPageContainerProps
   extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
 
+const NO_PRIVILEGES = [];
+
 // todo: Do cleanup when the aspect are extended further
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
   // TODO don't use context, fetch all the data with a query
-  const { hubId, hubNameId, challengeId, challengeNameId, opportunityId, opportunityNameId } = useOpportunity();
+  const { hubId, hubNameId, challengeNameId, opportunityNameId } = useOpportunity();
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
@@ -115,23 +116,22 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const opportunity = query?.hub.opportunity;
   const collaborationID = opportunity?.collaboration?.id;
+  const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
 
   const permissions = useMemo(() => {
-    const isAdmin = user?.isOpportunityAdmin(hubId, challengeId, opportunityId) || false;
     return {
-      canEdit: isAdmin,
-      projectWrite: isAdmin,
-      editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      communityReadAccess: (opportunity?.community?.authorization?.myPrivileges ?? []).some(
-        x => x === AuthorizationPrivilege.Read
-      ),
+      canEdit: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
+      projectWrite: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
+      editAspect: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
+      editActorGroup: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
+      editActors: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
+      removeRelations: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
+      communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
     };
-  }, [user, opportunity, hubId, challengeId, opportunityId]);
+  }, [opportunityPrivileges, communityPrivileges]);
 
   const { context, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
