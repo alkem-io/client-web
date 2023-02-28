@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -22,13 +22,14 @@ import { SEARCH_TERMS_PARAM } from '../routes/constants';
 import {
   contributionFilterConfig,
   contributorFilterConfig,
+  FilterConfig,
   FilterDefinition,
-  journeyFilterConfig,
 } from '../pages/Search/Filter';
-import MultipleSelect from '../pages/Search/MultipleSelect';
+import MultipleSelect, { MultipleSelectProps } from '../pages/Search/MultipleSelect';
 import SearchResultSection from '../pages/Search/SearchResultSection';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import GridItem from '../../../core/ui/grid/GridItem';
+import SearchSuggestions from './SearchSuggestions';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -48,9 +49,18 @@ export type SearchResultMetaType = SearchResultT<
 interface SearchViewProps {
   searchRoute: string;
   hubId?: string;
+  journeyFilterConfig: FilterConfig;
+  journeyFilterTitle: ReactNode;
+  searchInputProps?: MultipleSelectProps['inputProps'];
 }
 
-const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
+const SearchView = ({
+  searchRoute,
+  journeyFilterConfig,
+  journeyFilterTitle,
+  hubId,
+  searchInputProps,
+}: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
@@ -60,8 +70,9 @@ const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
   const termsFromUrl = useMemo(() => {
     const terms = queryParams.getAll('terms'); // TODO escape if needed
     if (terms.length > MAX_TERMS_SEARCH) {
-      // If too many terms come in the url, return an array with the first 4 elements + the 5th element containing the rest of the terms all together
-      // TODO figure out why
+      // All terms above 4th are joined into a single 5th term
+      // That is mainly coming from UX issues when having more than 5 tags in the Search input
+      // Please note that server also puts certain limits on the maximum number of terms (currently 10)
       return [...terms.slice(0, MAX_TERMS_SEARCH - 1), terms.slice(MAX_TERMS_SEARCH - 1).join(' ')];
     }
     return terms;
@@ -83,6 +94,7 @@ const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
     if (termsFromUrl.length === 0) {
       resetFilters();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [termsFromUrl.length]);
 
   const handleTermsChange = (newValue: string[]) => {
@@ -131,17 +143,21 @@ const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
 
   const suggestions = t('pages.search.suggestions-array', { returnObjects: true });
 
+  const handleSelectSuggestion = (suggestion: string) => handleTermsChange([...searchTerms, suggestion]);
+
   return (
     <>
       <GridItem columns={6}>
         <Box marginX="auto">
           <MultipleSelect
+            inputProps={searchInputProps}
             onChange={handleTermsChange}
-            selectedTerms={searchTerms}
-            suggestions={suggestions}
+            value={searchTerms}
             minLength={2}
-            disabled={isSearching}
-          />
+            autoFocus
+          >
+            <SearchSuggestions value={searchTerms} options={suggestions} onSelect={handleSelectSuggestion} />
+          </MultipleSelect>
         </Box>
       </GridItem>
       <PageContentColumn columns={12}>
@@ -153,7 +169,7 @@ const SearchView = ({ searchRoute, hubId }: SearchViewProps) => {
           </Box>
         )}
         <SearchResultSection
-          title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
+          title={journeyFilterTitle}
           filterTitle={t('pages.search.filter.type.journey')}
           filterConfig={journeyFilterConfig}
           results={journeyResults}

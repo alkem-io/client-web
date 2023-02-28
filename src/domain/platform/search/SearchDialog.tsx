@@ -15,7 +15,11 @@ const DialogContainer = ({ className, ...props }: BoxProps) => {
   );
 };
 
-const SearchDialog = () => {
+interface SearchDialogProps {
+  searchRoute: string;
+}
+
+const SearchDialog = ({ searchRoute }: SearchDialogProps) => {
   const { isSearchOpen, closeSearch } = useSearchContext();
   const navigate = useNavigate();
 
@@ -25,7 +29,7 @@ const SearchDialog = () => {
     for (const term of terms) {
       params.append(SEARCH_TERMS_PARAM, term);
     }
-    navigate(`../search?${params}`);
+    navigate(`${searchRoute}?${params}`);
   };
 
   return (
@@ -36,7 +40,7 @@ const SearchDialog = () => {
         PaperComponent={DialogContainer}
         sx={{ '.MuiDialog-container': { alignItems: 'start' } }}
       >
-        <MultipleSelect onChange={handleSearch} selectedTerms={[]} suggestions={[]} minLength={2} disabled={false} />
+        <MultipleSelect onChange={handleSearch} value={[]} minLength={2} autoFocus />
       </Dialog>
     </GridProvider>
   );

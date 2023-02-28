@@ -1347,7 +1347,8 @@
           "whiteboard": "Whiteboards (available soon)",
           "callout": "Callouts (available soon)"
         }
-      }
+      },
+      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "search": {
@@ -1841,5 +1842,8 @@
         "tags": ["Digitalization of Society", "Digitalisering"]
       }
     ]
+  },
+  "hubSearch": {
+    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   }
 }
