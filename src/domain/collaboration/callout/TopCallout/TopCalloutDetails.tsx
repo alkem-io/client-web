@@ -7,6 +7,7 @@ import calloutIcons from '../utils/calloutIcons';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import RouterLink from '../../../../core/ui/link/RouterLink';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface TopCalloutProps {
   title: string;
@@ -46,7 +47,11 @@ const TopCalloutDetails = ({ title, description, activity, type, calloutUri }: T
       }
     >
       <BlockSectionTitle noWrap>{title}</BlockSectionTitle>
-      <CardText sx={webkitLineClamp(2)}>{description}</CardText>
+      <CardText sx={webkitLineClamp(2)}>
+        <WrapperMarkdown card flat multiline>
+          {description}
+        </WrapperMarkdown>
+      </CardText>
     </BadgeCardView>
   );
 };
