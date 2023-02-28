@@ -18,7 +18,6 @@ import HubDashboardPage from '../pages/HubDashboardPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import HubPageLayout from '../layout/HubPageLayout';
 import Redirect from '../../../../core/routing/Redirect';
-import { SearchContextProvider } from '../../../platform/search/SearchContext';
 import HubSearchPage from '../pages/HubSearchPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
@@ -31,14 +30,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <SearchContextProvider>
-            <EntityPageLayoutHolder />
-          </SearchContextProvider>
-        }
-      >
+      <Route path="/" element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />

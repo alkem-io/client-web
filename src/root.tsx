@@ -17,6 +17,7 @@ import { privateGraphQLEndpoint, publicGraphQLEndpoint } from './common/constant
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 import { ConfigProvider } from './domain/platform/config/ConfigProvider';
 import { fontFamilySourceSans, subHeading } from './core/ui/typography/themeTypographyOptions';
+import { SearchContextProvider } from './domain/platform/search/SearchContext';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -79,7 +80,9 @@ const Root: FC = () => {
                           <UserProvider>
                             <CookiesProvider>
                               <ScrollToTop />
-                              <TopLevelRoutes />
+                              <SearchContextProvider>
+                                <TopLevelRoutes />
+                              </SearchContextProvider>
                             </CookiesProvider>
                           </UserProvider>
                         </NavigationProvider>
