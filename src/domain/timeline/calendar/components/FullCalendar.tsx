@@ -37,89 +37,89 @@ const colors = (theme: Theme) => ({
 
 // Override some react-calendar styles:
 const Root = styled(Box)(({ theme }) => ({
-  '& .react-calendar': {
+  '.react-calendar': {
     width: 'auto',
     background: colors(theme).background,
     border: 'none',
     lineHeight: 'auto',
   },
-  '& .react-calendar *': {
+  '.react-calendar *': {
     fontFamily: theme.typography.caption.fontFamily,
   },
-  '& .react-calendar button:enabled:hover': {
+  '.react-calendar button:enabled:hover': {
     cursor: 'default',
   },
-  '& .react-calendar button.highlight:enabled:hover': {
+  '.react-calendar button.highlight:enabled:hover': {
     cursor: 'pointer',
   },
-  '& .react-calendar__navigation': {
+  '.react-calendar__navigation': {
     height: gutters(2)(theme),
     marginBottom: 0,
   },
-  '& .react-calendar__navigation button:enabled:hover, & .react-calendar__navigation button:enabled:focus': {
+  '.react-calendar__navigation button:enabled:hover, & .react-calendar__navigation button:enabled:focus': {
     cursor: 'pointer',
     background: 'transparent',
   },
-  '& .react-calendar__month-view__weekdays': {
+  '.react-calendar__month-view__weekdays': {
     textTransform: 'capitalize',
     fontWeight: 'normal',
   },
-  '& .react-calendar__month-view__weekdays__weekday': {
+  '.react-calendar__month-view__weekdays__weekday': {
     padding: 0,
   },
-  '& .react-calendar__month-view__weekdays__weekday > abbr[title]': {
+  '.react-calendar__month-view__weekdays__weekday > abbr[title]': {
     textDecoration: 'none',
   },
-  '& .react-calendar__month-view__days__day--weekend': {
+  '.react-calendar__month-view__days__day--weekend': {
     color: colors(theme).weekends,
   },
-  '& .react-calendar__month-view__days__day--neighboringMonth': {
+  '.react-calendar__month-view__days__day--neighboringMonth': {
     color: colors(theme).neighboringMonth,
   },
-  '& .react-calendar__tile': {
+  '.react-calendar__tile': {
     height: gutters(1.5)(theme),
     marginBottom: 1,
     padding: 0,
     position: 'relative',
   },
-  '& .react-calendar__tile abbr': {
+  '.react-calendar__tile abbr': {
     position: 'relative',
     zIndex: 2,
   },
-  '& .react-calendar__year-view .react-calendar__tile, & .react-calendar__decade-view .react-calendar__tile, & .react-calendar__century-view .react-calendar__tile':
+  '.react-calendar__year-view .react-calendar__tile, & .react-calendar__decade-view .react-calendar__tile, & .react-calendar__century-view .react-calendar__tile':
     {
       padding: 0,
       lineHeight: gutters(2)(theme),
     },
-  '& .react-calendar__tile:enabled:hover, & .react-calendar__tile:enabled:focus': {
+  '.react-calendar__tile:enabled:hover, & .react-calendar__tile:enabled:focus': {
     backgroundColor: colors(theme).background,
   },
   // Today's tile
-  '& .react-calendar__tile--now': {
+  '.react-calendar__tile--now': {
     backgroundColor: colors(theme).today.background,
     color: colors(theme).today.font,
     fontWeight: 'bold',
     textDecoration: 'underline',
   },
-  '& .react-calendar__tile--now:enabled:hover, & .react-calendar__tile--now:enabled:focus': {
+  '.react-calendar__tile--now:enabled:hover, & .react-calendar__tile--now:enabled:focus': {
     backgroundColor: colors(theme).today.background,
     color: colors(theme).today.font,
   },
   // Disabled tiles
-  '& .react-calendar__tile:disabled': {
+  '.react-calendar__tile:disabled': {
     backgroundColor: colors(theme).disabled.background,
     color: colors(theme).disabled.font,
   },
   // Highlighted tiles
-  '& .highlight': {
+  '.highlight': {
     backgroundColor: 'transparent',
     color: colors(theme).highlight.font,
   },
-  '& .highlight.past-date': {
+  '.highlight.past-date': {
     color: colors(theme).highlightPastDate.font,
   },
   // Circle centered in the middle of the tile of the higlighted days:
-  '& .highlight::before': {
+  '.highlight::before': {
     content: '""',
     position: 'absolute',
     width: '50%',
@@ -136,12 +136,12 @@ const Root = styled(Box)(({ theme }) => ({
     backgroundColor: colors(theme).highlight.background,
     color: colors(theme).highlight.font,
   },
-  '& .highlight.past-date::before': {
+  '.highlight.past-date::before': {
     backgroundColor: colors(theme).highlightPastDate.background,
     color: colors(theme).highlightPastDate.font,
   },
   // Transparent box over the tiles that have a Tooltip
-  '& .tooltip-anchor': {
+  '.tooltip-anchor': {
     position: 'absolute',
     left: 0,
     top: 0,
