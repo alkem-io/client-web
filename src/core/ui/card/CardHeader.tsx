@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
-import { SvgIconComponent } from '@mui/icons-material';
+import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import { SvgIconProps } from '@mui/material';
 import { BlockTitle } from '../typography';
 import { gutters } from '../grid/utils';
 import RoundedIcon from '../icon/RoundedIcon';
@@ -7,7 +7,7 @@ import BadgeCardView from '../list/BadgeCardView';
 
 interface CardTitleSectionProps {
   title?: ReactNode;
-  iconComponent?: SvgIconComponent;
+  iconComponent?: ComponentType<SvgIconProps>;
 }
 
 const CardHeader = ({ iconComponent, title = '', children }: PropsWithChildren<CardTitleSectionProps>) => {

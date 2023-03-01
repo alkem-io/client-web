@@ -3,6 +3,7 @@ import { createContext, PropsWithChildren, useContext } from 'react';
 export interface MarkdownOptions {
   card: boolean;
   flat: boolean;
+  multiline: boolean;
 }
 
 const MarkdownOptionsContext = createContext<MarkdownOptions | undefined>(undefined);

@@ -16,24 +16,34 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  TabProps,
   useTheme,
 } from '@mui/material';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import {
-  CampaignOutlined,
   DashboardOutlined,
   InfoOutlined,
   MoreVertOutlined,
   SettingsOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
+import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
+import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
-export interface SubEntityTabDefinition {
-  label: string;
-  icon: ReactNode;
+interface TabDefinition {
+  label: ReactNode;
+  icon: TabProps['icon'];
+  section?: EntityPageSection;
+}
+
+export interface ActionDefinition extends TabDefinition {
+  onClick: () => void;
+}
+
+export interface SubEntityTabDefinition extends TabDefinition {
   section: EntityPageSection;
   disabled?: boolean;
 }
@@ -48,6 +58,7 @@ export interface EntityPageTabsProps {
   rootUrl: string;
   shareUrl: string;
   mobile?: boolean;
+  actions?: ActionDefinition[];
 }
 
 enum NavigationActions {
@@ -69,6 +80,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   rootUrl,
   shareUrl,
   mobile,
+  actions,
 }) => {
   const { t } = useTranslation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -115,13 +127,10 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
                   share();
                   return;
                 }
-                case NavigationActions.More: {
-                  setIsDrawerOpen(true);
+                case NavigationActions.More:
+                case EntityPageSection.Settings:
+                case EntityPageSection.Search:
                   return;
-                }
-                case EntityPageSection.Settings: {
-                  return;
-                }
               }
               // TODO remove rootUrl after refactoring EntitySettingsLayout
               // navigate(nextValue);
@@ -145,7 +154,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             <BottomNavigationAction
               value={EntityPageSection.Contribute}
               label={t('common.contribute')}
-              icon={<CampaignOutlined />}
+              icon={<CalloutIcon />}
             />
             {subEntityTab && (
               <BottomNavigationAction
@@ -168,6 +177,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
                 value={NavigationActions.More}
                 label={t('common.more')}
                 icon={<MoreVertOutlined />}
+                onClick={() => setIsDrawerOpen(true)}
               />
             )}
             {showSettings && currentTab === EntityPageSection.Settings && (
@@ -183,6 +193,19 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
+              {actions?.map(action => (
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setIsDrawerOpen(false);
+                      action.onClick();
+                    }}
+                  >
+                    <ListItemIcon>{action.icon}</ListItemIcon>
+                    <ListItemText primary={action.label} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => {
@@ -207,7 +230,11 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
             </List>
           </Drawer>
         )}
-        <FloatingActionButtons bottom={theme => theme.spacing(10)} visibility={isDrawerOpen ? 'hidden' : 'visible'} />
+        <FloatingActionButtons
+          bottom={theme => theme.spacing(10)}
+          visible={!isDrawerOpen}
+          floatingActions={<HelpButton />}
+        />
       </>
     );
   }
@@ -244,6 +271,9 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           value={EntityPageSection.About}
           to={`${rootUrl}/${EntityPageSection.About}`}
         />
+        {actions?.map(action => (
+          <HeaderNavigationButton icon={action.icon} onClick={action.onClick} value={action.section} />
+        ))}
         {shareUrl && (
           <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
         )}

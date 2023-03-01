@@ -17,7 +17,7 @@ type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
 
 export type AspectCardAspect = Pick<Aspect, NeededFields> & {
   bannerNarrow?: VisualUriFragment;
-  createdBy: { displayName: string };
+  createdBy?: { displayName: string };
   comments?: { commentsCount?: number };
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
@@ -47,7 +47,7 @@ const AspectCard = ({ aspect, onClick }: AspectCardProps) => {
   return (
     <ContributeCard onClick={handleClick}>
       <CardHeader title={aspect.displayName} iconComponent={AspectIcon}>
-        <CardHeaderCaption noWrap>{aspect.createdBy.displayName}</CardHeaderCaption>
+        <CardHeaderCaption noWrap>{aspect.createdBy?.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
         <CardDescription>{aspect.profile?.description!}</CardDescription>

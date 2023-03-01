@@ -43,7 +43,9 @@
     },
     "no-data": "No events found",
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
-    "past-events": "Past Events"
+    "past-events": "Past Events",
+    "show-calendar": "Show calendar",
+    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
   },
   "buttons": {
     "leave": "Leave",
@@ -223,6 +225,7 @@
     "profile": "Profile",
     "social": "Social",
     "lifecycle": "Lifecycle",
+    "location": "Location",
     "home": "Home",
     "visuals": "Visuals",
     "authorization": "Authorization",
@@ -252,11 +255,6 @@
         "ACTIVE": "Active",
         "ARCHIVED": "Archived",
         "DEMO": "Demo"
-      },
-      "callout-state": {
-        "ARCHIVED": "Archived",
-        "CLOSED": "Closed",
-        "OPEN": "Open"
       },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
@@ -427,6 +425,7 @@
     "contributions": "{{count}} Contribution",
     "contributions_plural": "{{count}} Contributions",
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
+    "closed": "This Callout is closed. You can still comment on the individual cards.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
@@ -802,17 +801,6 @@
     "card-filter": {
       "title": "Filter"
     },
-    "tag-filter": {
-      "current-filter": "Current filter: ",
-      "energy-transition": "Energy Transition",
-      "inclusive-society": "Inclusive Society",
-      "public-services": "Public Services",
-      "innovation": "Innovation",
-      "supporting-vulnerable-groups": "Supporting Vulnerable Groups",
-      "digitalization-of-society": "Digitalization of Society",
-      "show-all": "Show All",
-      "other": "Other"
-    },
     "backdrop": {
       "private": "Interested in reading more? Please sign in or join if you are not yet a member of this {{blockName}}!",
       "authentication": "Please sign in to see details about the {{blockName}}.",
@@ -1111,7 +1099,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "About",
-    "copyright": "© 2022 Alkemio Foundation"
+    "copyright": "© 2023 Alkemio Foundation"
   },
   "pages": {
     "generic": {
@@ -1342,7 +1330,26 @@
         "SSI",
         "Privacy"
       ],
-      "user-not-logged": "Login or Register to include users in your search results"
+      "user-not-logged": "Login or Register to include users in your search results",
+      "filter": {
+        "type": {
+          "journey": "Journey type",
+          "contribution": "Contribution type",
+          "contributor": "Contributor type"
+        },
+        "key": {
+          "all": "All",
+          "hub": "Hubs",
+          "challenge": "Challenges",
+          "opportunity": "Opportunities",
+          "user": "Users",
+          "organization": "Organizations",
+          "card": "Cards",
+          "whiteboard": "Whiteboards (available soon)",
+          "callout": "Callouts (available soon)"
+        }
+      },
+      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "search": {
@@ -1804,5 +1811,40 @@
   "associates-view": {
     "less": "show less",
     "more": "...plus {{count}} more"
+  },
+  "hubs-filter": {
+    "current-filter": "Current filter: ",
+    "show-all": "Show All",
+    "other": "Other",
+    "config": [
+      {
+        "key": "energy-transition",
+        "name": "Energy Transition",
+        "tags": ["Energy Transition", "Energietransitie"]
+      },
+      {
+        "key": "inclusive-society",
+        "name": "Inclusive Society",
+        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+      },
+      {
+        "key": "public-services",
+        "name": "Public Services",
+        "tags": ["Public Services", "Publieke Diensten"]
+      },
+      {
+        "key": "innovation",
+        "name": "Innovation",
+        "tags": ["Innovation", "Innovatie"]
+      },
+      {
+        "key": "digitalization-of-society",
+        "name": "Digitalization of Society",
+        "tags": ["Digitalization of Society", "Digitalisering"]
+      }
+    ]
+  },
+  "hubSearch": {
+    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   }
 }

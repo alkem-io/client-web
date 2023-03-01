@@ -672,7 +672,7 @@ export const HubPageFragmentDoc = gql`
       name
       tags
     }
-    ... on Hub @include(if: $isAuthorized) {
+    ... on Hub {
       collaboration {
         ...DashboardTopCallouts
       }
@@ -772,6 +772,11 @@ export const OpportunityPageFragmentDoc = gql`
     id
     nameID
     displayName
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
     tagset {
       id
       name
@@ -1619,6 +1624,10 @@ export const OrganizationInfoFragmentDoc = gql`
     displayName
     contactEmail
     domain
+    authorization {
+      id
+      myPrivileges
+    }
     verification {
       id
       status
@@ -2056,14 +2065,67 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const SearchResultCardProfileFragmentDoc = gql`
+  fragment SearchResultCardProfile on CardProfile {
+    id
+    description
+    tagset {
+      id
+      tags
+    }
+  }
+`;
+export const CardParentFragmentDoc = gql`
+  fragment CardParent on SearchResultCard {
+    hub {
+      id
+      nameID
+      displayName
+    }
+    challenge {
+      id
+      nameID
+      displayName
+    }
+    opportunity {
+      id
+      nameID
+      displayName
+    }
+    callout {
+      id
+      nameID
+      displayName
+    }
+  }
+`;
 export const SearchResultCardFragmentDoc = gql`
   fragment SearchResultCard on SearchResultCard {
     card {
       id
       nameID
       displayName
+      profile {
+        ...SearchResultCardProfile
+      }
+      createdBy {
+        id
+        displayName
+      }
+      createdDate
+      comments {
+        id
+        commentsCount
+      }
+      bannerNarrow {
+        ...VisualUri
+      }
     }
+    ...CardParent
   }
+  ${SearchResultCardProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
+  ${CardParentFragmentDoc}
 `;
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
@@ -5105,7 +5167,7 @@ export function refetchHubTemplatesCanvasTemplateWithValueQuery(
 }
 
 export const HubPageDocument = gql`
-  query hubPage($hubId: UUID_NAMEID!, $isAuthorized: Boolean!) {
+  query hubPage($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       ...HubPage
     }
@@ -5126,7 +5188,6 @@ export const HubPageDocument = gql`
  * const { data, loading, error } = useHubPageQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
- *      isAuthorized: // value for 'isAuthorized'
  *   },
  * });
  */

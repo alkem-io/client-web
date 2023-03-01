@@ -5,26 +5,9 @@ import filterFn, { ValueType } from '../../../../common/components/core/card-fil
 import { FILTER_PARAM_NAME } from '../../../platform/routes/constants';
 import { useQueryParams } from '../../../../core/routing/useQueryParams';
 import { without } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 const otherKey = 'other';
-
-const filterConfig = {
-  'energy-transition': ['Energy Transition', 'Energietransitie'],
-  'inclusive-society': ['Inclusive Society', 'Inclusieve Samenleving'],
-  'public-services': ['Public Services', 'Publieke Diensten'],
-  innovation: ['Innovation', 'Innovatie'],
-  'supporting-vulnerable-groups': ['Supporting Vulnerable Groups', 'Kwetsbare Groepen'],
-  'digitalization-of-society': ['Digitalization of Society', 'Digitalisering'],
-} as const;
-
-export const filterKeys: (keyof typeof filterConfig)[] = [
-  'energy-transition',
-  'inclusive-society',
-  'public-services',
-  'innovation',
-  'supporting-vulnerable-groups',
-  'digitalization-of-society',
-];
 
 interface ChildProps<Item extends Identifiable> {
   items: Item[];
@@ -41,20 +24,22 @@ interface FilterByTagProps<Item extends Identifiable> {
 const FilterByTag = <Item extends Identifiable>({ items, valueGetter, children }: FilterByTagProps<Item>) => {
   const navigate = useNavigate();
   const queryParams = useQueryParams();
+  const { t } = useTranslation();
 
   const termsFromUrl = useMemo(() => queryParams.getAll(FILTER_PARAM_NAME), [queryParams]);
 
-  const categories = without(termsFromUrl, otherKey);
+  const tags = without(termsFromUrl, otherKey);
   const showOther = termsFromUrl.includes(otherKey);
 
-  const filterValues = Object.values(filterConfig)
-    .flat(1)
+  const filterValues = t('hubs-filter.config', { returnObjects: true })
+    .flatMap(category => category.tags)
     .map(x => x.toLocaleLowerCase());
 
-  const updateQueryString = (nextCategories: string[]) => {
-    const params = new URLSearchParams();
-    for (const category of nextCategories) {
-      params.append(FILTER_PARAM_NAME, category);
+  const updateQueryString = (nextTags: string[]) => {
+    const params = new URLSearchParams(window.location.search);
+    params.delete(FILTER_PARAM_NAME);
+    for (const tag of nextTags) {
+      params.append(FILTER_PARAM_NAME, tag);
     }
     navigate(`./?${params}`, { replace: true });
   };
@@ -69,25 +54,22 @@ const FilterByTag = <Item extends Identifiable>({ items, valueGetter, children }
     [filterValues, items, valueGetter]
   );
 
-  // all terms from the button selection
-  const categoryTerms = categories?.map<string[]>(x => filterConfig[x]).flat(1);
-
   const filteredItems = useMemo(() => {
-    if (categoryTerms.length === 0) {
+    if (tags.length === 0) {
       if (showOther) {
         return itemsOther; // Show only others:
       } else {
         return items; // Show all
       }
     } else {
-      const filtered = filterFn(items, categoryTerms, valueGetter); // filter the items
+      const filtered = filterFn(items, tags, valueGetter); // filter the items
       if (showOther) {
         return [...filtered, ...itemsOther];
       } else {
         return filtered;
       }
     }
-  }, [items, categoryTerms, valueGetter, showOther, itemsOther]);
+  }, [items, tags, valueGetter, showOther, itemsOther]);
 
   return <>{children({ items: filteredItems, value: termsFromUrl, handleChange: updateQueryString })}</>;
 };

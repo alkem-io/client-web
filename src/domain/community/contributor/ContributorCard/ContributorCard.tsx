@@ -1,0 +1,71 @@
+import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
+import { Box } from '@mui/material';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockTitle } from '../../../../core/ui/typography';
+import LocationCardSegment from '../../../../core/ui/location/LocationCardSegment';
+import React, { ReactNode, useState } from 'react';
+import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
+import CardTags from '../../../../core/ui/card/CardTags';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
+import CardBanner from '../../../../core/ui/card/CardImageHeader';
+
+export interface ContributorCardProps extends ContributeCardContainerProps {
+  displayName: string;
+  avatarUri?: string;
+  city?: string;
+  country?: string;
+  tags: string[];
+  matchedTerms?: boolean;
+  userUri: string;
+  actions?: ReactNode;
+  headerActions?: ReactNode;
+  bannerOverlay?: ReactNode;
+}
+
+const ContributorCard = ({
+  displayName,
+  avatarUri,
+  city,
+  country,
+  tags,
+  matchedTerms,
+  userUri,
+  actions,
+  headerActions,
+  bannerOverlay,
+  ...containerProps
+}: ContributorCardProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
+
+  const Tags = matchedTerms ? CardMatchedTerms : CardTags;
+
+  return (
+    <>
+      <ContributeCard {...containerProps}>
+        <Box component={RouterLink} to={userUri} display="flex" flexDirection="column" gap={gutters()}>
+          <CardBanner src={avatarUri} alt={displayName} overlay={bannerOverlay} />
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            paddingLeft={gutters()}
+            paddingRight={0.5}
+            height={gutters()}
+            gap={0.5}
+          >
+            <BlockTitle noWrap>{displayName}</BlockTitle>
+            {headerActions}
+          </Box>
+        </Box>
+        <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={gutters(0.5)}>
+          <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} marginBottom={gutters()} />
+          <ExpandableCardFooter tagsComponent={Tags} tags={tags} expanded={isExpanded} paddingLeft={gutters()} />
+        </Box>
+      </ContributeCard>
+    </>
+  );
+};
+
+export default ContributorCard;

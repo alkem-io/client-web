@@ -50,7 +50,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
       displayName: '',
       profile: {
         id: '',
-        description: '',
+        description: t('calendar.defaultEventDescription'),
         references: [],
         tagset: { id: '', name: '', tags: [] },
       },
@@ -59,13 +59,13 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
       wholeDay: false,
       type: undefined,
     }),
-    []
+    [t]
   );
 
   return (
     <Dialog
       open={open}
-      maxWidth="md"
+      maxWidth="xl"
       fullWidth
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}

@@ -15,8 +15,9 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { Caption } from '../../../../core/ui/typography';
 import useTranslationWithLineBreaks from '../../../../core/ui/typography/useTranslationWithLineBreaks';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import FilterByTag, { filterKeys } from '../FilterByTag/FilterByTag';
+import FilterByTag from '../FilterByTag/FilterByTag';
 import FilterButtons from '../FilterByTag/FilterButtons';
+import { useTranslation } from 'react-i18next';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;
@@ -24,7 +25,8 @@ interface HubsSectionProps {
 }
 
 const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
-  const { t } = useTranslationWithLineBreaks();
+  const { t: tLineBreaks } = useTranslationWithLineBreaks();
+  const { t: tRaw } = useTranslation();
   const { data: hubsData, loading: areHubsLoading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
 
   const hubRolesByHubId = useMemo(() => keyBy(userHubRoles, 'id'), [userHubRoles]);
@@ -50,21 +52,21 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
 
   const metricItems: MetricItem[] = useMemo(
     () => [
-      { name: t('pages.activity.hubs'), isLoading: isLoadingActivities, count: hubCount, color: 'primary' },
+      { name: tLineBreaks('pages.activity.hubs'), isLoading: isLoadingActivities, count: hubCount, color: 'primary' },
       {
-        name: t('common.challenges'),
+        name: tLineBreaks('common.challenges'),
         isLoading: isLoadingActivities,
         count: challengeCount,
         color: 'primary',
       },
       {
-        name: t('common.opportunities'),
+        name: tLineBreaks('common.opportunities'),
         isLoading: isLoadingActivities,
         count: opportunityCount,
         color: 'primary',
       },
     ],
-    [challengeCount, hubCount, isLoadingActivities, opportunityCount, t]
+    [challengeCount, hubCount, isLoadingActivities, opportunityCount, tLineBreaks]
   );
 
   const isLoading = loading || areHubsLoading;
@@ -73,16 +75,20 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     <FilterByTag items={hubs} valueGetter={hub => ({ id: hub.id, values: hub?.tagset?.tags ?? [] })}>
       {({ items: filteredHubs, value, handleChange }) => (
         <DashboardHubsSection
-          headerText={t('pages.home.sections.hub.header')}
+          headerText={tLineBreaks('pages.home.sections.hub.header')}
           primaryAction={<MetricTooltip metricsItems={metricItems} />}
           hubs={filteredHubs}
           getHubCardProps={getHubCardProps}
         >
           <Box>
-            <Caption>{t('pages.home.sections.hub.body')}</Caption>
-            <Caption>{t('pages.home.sections.hub.body1')}</Caption>
+            <Caption>{tLineBreaks('pages.home.sections.hub.body')}</Caption>
+            <Caption>{tLineBreaks('pages.home.sections.hub.body1')}</Caption>
           </Box>
-          <FilterButtons value={value} options={filterKeys} onChange={handleChange} />
+          <FilterButtons
+            value={value}
+            config={tRaw('hubs-filter.config', { returnObjects: true })}
+            onChange={handleChange}
+          />
           {isLoading && <Loading />}
         </DashboardHubsSection>
       )}
