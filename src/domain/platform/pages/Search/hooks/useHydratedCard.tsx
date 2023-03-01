@@ -227,7 +227,7 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
   return (
     <SearchContributionCardCard
       name={card.displayName}
-      author={card.createdBy.displayName}
+      author={card.createdBy?.displayName}
       description={card.profile?.description}
       tags={card.profile?.tagset?.tags}
       createdDate={card.createdDate}

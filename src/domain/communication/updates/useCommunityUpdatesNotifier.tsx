@@ -38,7 +38,7 @@ const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
       const subData = options.subscriptionData.data?.communicationUpdateMessageReceived;
       if (!subData) return;
 
-      const senderId = subData.message.sender.id;
+      const senderId = subData.message.sender?.id;
 
       if (senderId === userId) {
         return;

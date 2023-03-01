@@ -21,7 +21,7 @@ type NeededFields =
   | 'multipleDays';
 export type CalendarEventCardData = Pick<CalendarEvent, NeededFields> & {
   bannerNarrow?: VisualUriFragment;
-  createdBy: { displayName: string };
+  createdBy?: { displayName: string };
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 interface CalendarEventCardProps {

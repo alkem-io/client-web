@@ -57,7 +57,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         _messages?.map(x => ({
           id: x.id,
           body: x.message,
-          author: x?.sender.id ? buildAuthorFromUser(x.sender) : undefined,
+          author: x?.sender?.id ? buildAuthorFromUser(x.sender) : undefined,
           createdAt: new Date(x.timestamp),
         })),
       [_messages]
