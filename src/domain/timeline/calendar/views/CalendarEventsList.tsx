@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -14,7 +14,9 @@ import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGr
 import { startOfDay } from '../../../../core/utils/time/utils';
 import { groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
-import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import FullCalendar from '../components/FullCalendar';
+import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 
 interface CalendarEventsListProps {
   events: CalendarEventCardData[];
@@ -25,6 +27,9 @@ interface CalendarEventsListProps {
 const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [scrollToElement, scrollTo] = useState<string>();
+  const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
+
   const handleClickOnEvent = (nameId: string) => {
     navigate(`${EntityPageSection.Dashboard}/calendar/${nameId}`);
   };
@@ -37,6 +42,10 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     }) as Record<'pastEvents' | 'futureEvents', CalendarEventDetailsFragment[]>;
   }, [events]);
 
+  const sortedEvents = useMemo(() => {
+    return sortBy(events, event => dayjs(event.startDate).valueOf());
+  }, [events]);
+
   const sortedFutureEvents = useMemo(() => {
     return sortBy(futureEvents, event => dayjs(event.startDate).valueOf());
   }, [futureEvents]);
@@ -45,31 +54,51 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     return sortBy(pastEvents, event => -dayjs(event.startDate));
   }, [pastEvents]);
 
+  const onCalendarClickEvents = (events: Pick<CalendarEvent, 'nameID'>[]) => {
+    // Scroll to the first event on that day
+    if (events.length > 0 && events[0].nameID) {
+      scrollTo(events[0].nameID);
+    }
+  };
+
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
-      <Gutters minHeight={0} flexGrow={1}>
-        <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1}>
-          <PageContentBlockGrid paddingBottom={gutters(4)}>
-            {sortedFutureEvents.length === 0 && <Caption width="100%">{t('calendar.no-upcoming-events')}</Caption>}
-            {sortedFutureEvents.map(event => (
-              <CalendarEventCard key={event.id} event={event} onClick={() => handleClickOnEvent(event.nameID)} />
-            ))}
-            {sortedPastEvents.length > 0 && (
-              <>
-                <BlockSectionTitle>{t('calendar.past-events')}</BlockSectionTitle>
-                {sortedPastEvents.map(event => (
-                  <CalendarEventCard key={event.id} event={event} onClick={() => handleClickOnEvent(event.nameID)} />
-                ))}
-              </>
-            )}
-          </PageContentBlockGrid>
-        </ScrollerWithGradient>
-        <Actions justifyContent="space-between" sx={{ position: 'absolute', bottom: gutters(), right: gutters() }}>
-          {actions}
-        </Actions>
+      <Gutters row minHeight={0} flexGrow={1}>
+        <FullCalendar events={sortedEvents} sx={{ flexGrow: 2 }} onClickEvents={onCalendarClickEvents} />
+        <Gutters minHeight={0} flexGrow={5}>
+          <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
+            <PageContentBlockGrid paddingBottom={gutters(4)}>
+              {sortedFutureEvents.length === 0 && <Caption width="100%">{t('calendar.no-upcoming-events')}</Caption>}
+              {sortedFutureEvents.map(event => (
+                <CalendarEventCard
+                  key={event.id}
+                  ref={scrollable(event.nameID)}
+                  event={event}
+                  onClick={() => handleClickOnEvent(event.nameID)}
+                />
+              ))}
+              {sortedPastEvents.length > 0 && (
+                <>
+                  <BlockSectionTitle>{t('calendar.past-events')}</BlockSectionTitle>
+                  {sortedPastEvents.map(event => (
+                    <CalendarEventCard
+                      key={event.id}
+                      ref={scrollable(event.nameID)}
+                      event={event}
+                      onClick={() => handleClickOnEvent(event.nameID)}
+                    />
+                  ))}
+                </>
+              )}
+            </PageContentBlockGrid>
+          </ScrollerWithGradient>
+          <Actions justifyContent="space-between" sx={{ position: 'absolute', bottom: gutters(), right: gutters() }}>
+            {actions}
+          </Actions>
+        </Gutters>
       </Gutters>
     </GridProvider>
   );
