@@ -153,6 +153,10 @@ fragment SearchResultHub on SearchResultHub {
       id
       tags
     }
+    authorization {
+      id
+      anonymousReadAccess
+    }
   }
 }
 
@@ -174,6 +178,10 @@ fragment SearchResultChallenge on SearchResultChallenge {
       id
       tags
     }
+    authorization {
+      id
+      anonymousReadAccess
+    }
   }
   hub {
     id
@@ -181,6 +189,10 @@ fragment SearchResultChallenge on SearchResultChallenge {
     displayName
     context {
       tagline
+    }
+    authorization {
+      id
+      anonymousReadAccess
     }
   }
 }
@@ -202,11 +214,19 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
       id
       tags
     }
+    authorization {
+      id
+      anonymousReadAccess
+    }
   }
   challenge {
     id
     nameID
     displayName
+    authorization {
+      id
+      anonymousReadAccess
+    }
   }
   hub {
     id
