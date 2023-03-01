@@ -45,13 +45,13 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;
   community?: unknown;
-  communityReadAccess?: boolean;
+  communityReadAccess: boolean;
   timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
   childEntities?: ChildEntity[];
-  entityReadAccess?: boolean;
-  readUsersAccess?: boolean;
+  entityReadAccess: boolean;
+  readUsersAccess: boolean;
   childEntitiesCount?: number;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
@@ -71,8 +71,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   recommendations,
   communityReadAccess = false,
   timelineReadAccess = false,
-  entityReadAccess = false,
-  readUsersAccess = false,
+  entityReadAccess,
+  readUsersAccess,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
