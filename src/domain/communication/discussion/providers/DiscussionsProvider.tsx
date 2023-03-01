@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import { compact, uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
@@ -95,7 +95,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const discussions = data?.hub.community?.communication?.discussions || [];
 
-  const senders = uniq<string>([...discussions.map(d => d.createdBy).filter((x): x is string => !!x)]);
+  const senders = uniq(compact([...discussions.map(d => d.createdBy)]));
   const { getAuthor, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const discussionList = discussions.map<Discussion>(x => {

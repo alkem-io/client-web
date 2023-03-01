@@ -1,4 +1,4 @@
-import { sortBy, uniq } from 'lodash';
+import { compact, sortBy, uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useConfig } from '../../../platform/config/useConfig';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -85,13 +85,13 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const senders = useMemo(() => {
     if (!discussionData) return [];
 
-    const senders = [...(discussionData.messages?.map(m => m.sender?.id)?.filter((x): x is string => !!x) ?? [])];
+    const senders = [...(discussionData.messages?.map(m => m.sender?.id) ?? [])];
 
     if (discussionData.createdBy) {
       senders.push(discussionData.createdBy);
     }
 
-    return uniq(senders);
+    return uniq(compact(senders));
   }, [discussionData]);
 
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
