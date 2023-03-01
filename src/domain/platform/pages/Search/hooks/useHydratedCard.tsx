@@ -21,7 +21,6 @@ import {
   SearchHubCard,
   SearchOpportunityCard,
   SearchOrganizationCard,
-  SearchUserCard,
 } from '../../../../shared/components/search-cards';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import { getVisualBanner } from '../../../../common/visual/utils/visuals.utils';
@@ -32,26 +31,28 @@ import { SearchContributionCardCard } from '../../../../shared/components/search
 import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
 import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
+import ContributingUserCard from '../../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {
     return null;
   }
   const user = data.user;
-  // todo extract in func
   const profile = user.profile;
-  const image = profile?.avatar?.uri;
+  const avatarUri = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
 
   return (
-    <SearchUserCard
-      image={image}
-      name={user.displayName}
-      country={country}
+    <ContributingUserCard
+      id={user.id}
+      displayName={user.displayName}
+      avatarUri={avatarUri}
       city={city}
-      matchedTerms={data.terms}
-      url={url}
+      country={country}
+      tags={data.terms}
+      userUri={url}
+      matchedTerms
     />
   );
 };

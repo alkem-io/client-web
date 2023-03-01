@@ -1,6 +1,6 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import { Box, Collapse, SvgIconProps } from '@mui/material';
-import { BeenhereOutlined, ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
+import { Box, SvgIconProps } from '@mui/material';
+import { BeenhereOutlined, LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
 import CardImage from '../../../../core/ui/card/CardImage';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -11,6 +11,7 @@ import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import JourneyCardBannerPlaceholder from './JourneyCardBannerPlaceholder';
 import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
+import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -25,7 +26,7 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   member?: boolean;
   locked?: boolean;
   actions?: ReactNode;
-  matchedTerms?: boolean;
+  matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
 }
 
 const JourneyCard = ({
@@ -82,28 +83,15 @@ const JourneyCard = ({
       </Box>
       <Box onClick={canBeExpanded ? toggleExpanded : undefined} sx={{ cursor: 'pointer' }} paddingBottom={1}>
         <CardContent flexGrow={1}>{children}</CardContent>
-        <Box
-          flexGrow={1}
-          display="flex"
-          justifyContent="space-between"
-          paddingX={1.5}
-          flexWrap={actions ? 'wrap' : 'nowrap'}
-        >
-          <Tags tags={tags} visibility={isExpanded ? 'hidden' : 'visible'} flexBasis={actions ? '100%' : undefined} />
-          {actions}
-          {canBeExpanded && (
-            <Box display="flex" marginRight={-0.5} alignItems="end">
-              {isExpanded ? <ExpandLess /> : <ExpandMore />}
-            </Box>
-          )}
-        </Box>
-        <Collapse in={canBeExpanded && isExpanded}>
-          <CardContent>
-            {expansion}
-            <Tags tags={tags} rows={2} />
-            {expansionActions}
-          </CardContent>
-        </Collapse>
+        <ExpandableCardFooter
+          expanded={isExpanded}
+          expandable={canBeExpanded}
+          expansion={expansion}
+          actions={actions}
+          expansionActions={expansionActions}
+          tagsComponent={Tags}
+          tags={tags}
+        />
       </Box>
     </ContributeCard>
   );

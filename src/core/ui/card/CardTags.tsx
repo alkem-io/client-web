@@ -2,7 +2,7 @@ import React from 'react';
 import { gutters } from '../grid/utils';
 import TagsComponent, { TagsComponentProps } from '../../../domain/shared/components/TagsComponent/TagsComponent';
 
-interface CardTagsProps extends TagsComponentProps {
+export interface CardTagsProps extends TagsComponentProps {
   rows?: number;
 }
 
