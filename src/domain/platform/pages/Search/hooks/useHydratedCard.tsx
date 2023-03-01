@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import {
   buildAspectUrl,
+  buildCalloutUrl,
   buildChallengeUrl,
   buildHubUrl,
   buildOpportunityUrl,
@@ -233,6 +234,18 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
 
   const parentIcon = data.opportunity?.nameID ? OpportunityIcon : data.challenge?.nameID ? ChallengeIcon : HubIcon;
   const parentDisplayName = data.opportunity?.displayName ?? data.challenge?.displayName ?? data.hub.displayName;
+  const parentLocked = data.opportunity?.nameID
+    ? !data.opportunity?.authorization?.anonymousReadAccess
+    : data.challenge?.nameID
+    ? !data.challenge?.authorization?.anonymousReadAccess
+    : !data.hub?.authorization?.anonymousReadAccess;
+
+  const parentUrl =
+    data.opportunity?.nameID && data.challenge?.nameID
+      ? buildOpportunityUrl(data.hub.nameID, data.challenge?.nameID, data.opportunity?.nameID)
+      : data.challenge?.nameID
+      ? buildChallengeUrl(data.hub.nameID, data.challenge?.nameID)
+      : buildHubUrl(data.hub.nameID);
 
   return (
     <SearchContributionCardCard
@@ -242,11 +255,22 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
       tags={card.profile?.tagset?.tags}
       createdDate={card.createdDate}
       commentsCount={card.comments?.commentsCount}
-      calloutDisplayName={data.callout.displayName}
-      parentIcon={parentIcon}
-      parentDisplayName={parentDisplayName}
       matchedTerms={data.terms}
       url={url}
+      calloutInformation={{
+        displayName: data.callout.displayName,
+        url: buildCalloutUrl(data.callout.nameID, {
+          hubNameId: data.hub.nameID,
+          challengeNameId: data.challenge?.nameID,
+          opportunityNameId: data.opportunity?.nameID,
+        }),
+      }}
+      parentInformation={{
+        displayName: parentDisplayName,
+        iconComponent: parentIcon,
+        locked: parentLocked,
+        url: parentUrl,
+      }}
     />
   );
 };

@@ -1,6 +1,5 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
-import { Caption } from '../../../../core/ui/typography';
 import { SvgIconProps } from '@mui/material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { LockOutlined } from '@mui/icons-material';
@@ -28,7 +27,7 @@ const JourneyCardParentSegment = ({
       onClick={stopPropagation}
       disablePadding
     >
-      <Caption noWrap>{children}</Caption>
+      <>{children}</>
     </CardSegmentCaption>
   );
 };

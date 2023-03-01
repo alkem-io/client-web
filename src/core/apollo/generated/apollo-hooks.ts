@@ -2081,16 +2081,28 @@ export const CardParentFragmentDoc = gql`
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     challenge {
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     opportunity {
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     callout {
       id

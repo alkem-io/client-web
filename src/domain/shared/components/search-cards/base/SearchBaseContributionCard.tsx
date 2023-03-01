@@ -1,5 +1,5 @@
 import { Box, SvgIconProps } from '@mui/material';
-import { ComponentType, FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import CardFooter from '../../../../../core/ui/card/CardFooter';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
@@ -14,14 +14,17 @@ export interface SearchBaseContributionCardProps {
   name: string;
   author?: string | undefined;
   matchedTerms: string[];
-  parentDisplayName?: string;
-  parentIcon?: ComponentType<SvgIconProps>;
-  calloutDisplayName?: string;
   tags?: string[];
 }
 
-const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCardProps>> = props => {
-  const { icon, name, author: label, matchedTerms, url, children } = props;
+const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCardProps>> = ({
+  icon,
+  name,
+  author: label,
+  matchedTerms,
+  url,
+  children,
+}) => {
   return (
     <ContributeCard>
       <Box component={RouterLink} to={url}>

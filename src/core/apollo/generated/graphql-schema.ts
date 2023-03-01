@@ -19435,9 +19435,31 @@ export type SearchQuery = {
             comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
             bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
-          hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-          challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
-          opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+          hub: {
+            __typename?: 'Hub';
+            id: string;
+            nameID: string;
+            displayName: string;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+          };
+          challenge?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                nameID: string;
+                displayName: string;
+                authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+              }
+            | undefined;
+          opportunity?:
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                nameID: string;
+                displayName: string;
+                authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+              }
+            | undefined;
           callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
         }
       | {
@@ -19494,17 +19516,61 @@ export type SearchResultCardFragment = {
     comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
-  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  };
+  challenge?:
+    | {
+        __typename?: 'Challenge';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
+  opportunity?:
+    | {
+        __typename?: 'Opportunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 
 export type CardParentFragment = {
   __typename?: 'SearchResultCard';
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
-  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  };
+  challenge?:
+    | {
+        __typename?: 'Challenge';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
+  opportunity?:
+    | {
+        __typename?: 'Opportunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 

@@ -27,7 +27,7 @@ const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultCom
       display="flex"
       gap={1}
       height={gutters(2)}
-      paddingLeft={disablePadding ? undefined : 1.5}
+      paddingX={disablePadding ? undefined : 1.5}
       alignItems="center"
       justifyContent={align === 'right' ? 'end' : 'start'}
       flexDirection={align === 'right' ? 'row-reverse' : 'row'}
