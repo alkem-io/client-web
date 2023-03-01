@@ -28,11 +28,11 @@ const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCar
         <CardHeader title={name} iconComponent={icon}>
           <CardHeaderCaption noWrap>{label}</CardHeaderCaption>
         </CardHeader>
-        {children}
-        <CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
-          <CardMatchedTerms tags={matchedTerms} />
-        </CardFooter>
       </Box>
+      {children}
+      <CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
+        <CardMatchedTerms tags={matchedTerms} />
+      </CardFooter>
     </ContributeCard>
   );
 };
