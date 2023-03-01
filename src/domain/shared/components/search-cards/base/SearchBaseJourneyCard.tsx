@@ -10,6 +10,7 @@ import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardVision from '../../../../challenge/common/JourneyCard/JourneyCardVision';
 import JourneyCardParentSegment from '../../../../challenge/common/HubChildJourneyCard/JourneyCardParentSegment';
 import { SvgIconProps } from '@mui/material';
+import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
 
 export interface SearchBaseJourneyCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
@@ -51,7 +52,7 @@ const SearchBaseJourneyCard = ({
       {...props}
     >
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
-      {parentInformation && (
+      {parentInformation ? (
         <>
           <JourneyCardParentSegment
             iconComponent={parentInformation.iconComponent}
@@ -61,6 +62,8 @@ const SearchBaseJourneyCard = ({
             {parentInformation.displayName}
           </JourneyCardParentSegment>
         </>
+      ) : (
+        <JourneyCardSpacing height={2} />
       )}
     </JourneyCard>
   );
