@@ -13,7 +13,8 @@ import { Caption, Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
-import FullCalendar, { FullCalendarProps } from '../../../timeline/calendar/components/FullCalendar';
+import FullCalendar from '../../../timeline/calendar/components/FullCalendar';
+import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -60,7 +61,7 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
-  const onClickEvents = (events: FullCalendarProps['events']) => {
+  const onClickEvents = (events: Pick<CalendarEvent, 'nameID'>[]) => {
     if (events.length === 1 && events[0].nameID) {
       // If there is only one event in this day navigate directly to the event
       navigate(`${EntityPageSection.Dashboard}/calendar/${events[0].nameID}`);

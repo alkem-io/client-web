@@ -185,7 +185,7 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
 const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
 export interface FullCalendarProps {
   events: Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName'>[];
-  onClickEvents?: (events: FullCalendarProps['events']) => void;
+  onClickEvents?: (events: Pick<CalendarEvent, 'nameID'>[]) => void;
   sx?: BoxProps['sx'];
 }
 

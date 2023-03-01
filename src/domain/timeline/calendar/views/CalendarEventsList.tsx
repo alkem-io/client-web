@@ -14,8 +14,8 @@ import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGr
 import { startOfDay } from '../../../../core/utils/time/utils';
 import { groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
-import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import FullCalendar, { FullCalendarProps } from '../components/FullCalendar';
+import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
+import FullCalendar from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 
 interface CalendarEventsListProps {
@@ -54,7 +54,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     return sortBy(pastEvents, event => -dayjs(event.startDate));
   }, [pastEvents]);
 
-  const onCalendarClickEvents = (events: FullCalendarProps['events']) => {
+  const onCalendarClickEvents = (events: Pick<CalendarEvent, 'nameID'>[]) => {
     // Scroll to the first event on that day
     if (events.length > 0 && events[0].nameID) {
       scrollTo(events[0].nameID);
@@ -67,8 +67,8 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
       <Gutters row minHeight={0} flexGrow={1}>
-        <FullCalendar events={sortedEvents} sx={{ flex: 2 }} onClickEvents={onCalendarClickEvents} />
-        <Gutters minHeight={0} flexGrow={1} sx={{ flex: 5 }}>
+        <FullCalendar events={sortedEvents} sx={{ flexGrow: 2 }} onClickEvents={onCalendarClickEvents} />
+        <Gutters minHeight={0} flexGrow={5}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
             <PageContentBlockGrid paddingBottom={gutters(4)}>
               {sortedFutureEvents.length === 0 && <Caption width="100%">{t('calendar.no-upcoming-events')}</Caption>}
