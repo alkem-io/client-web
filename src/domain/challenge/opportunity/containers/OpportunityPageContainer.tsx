@@ -4,6 +4,7 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   useOpportunityPageQuery,
+  usePlatformLevelAuthorizationQuery,
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -48,6 +49,8 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     isNoRelations: boolean;
     isAuthenticated: boolean;
     communityReadAccess: boolean;
+    opportunityReadAccess: boolean;
+    readUsers: boolean;
   };
   hideMeme: boolean;
   showInterestModal: boolean;
@@ -119,7 +122,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const opportunityPrivileges = opportunity?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const communityPrivileges = opportunity?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID);
+  const { data: platformPrivilegesData } = usePlatformLevelAuthorizationQuery();
+  const platformPrivileges = platformPrivilegesData?.authorization.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = useMemo(() => {
     return {
@@ -130,8 +134,15 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       editActors: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
       removeRelations: opportunityPrivileges?.includes(AuthorizationPrivilege.Update),
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
+      opportunityReadAccess: opportunityPrivileges?.includes(AuthorizationPrivilege.Read),
+      readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
     };
-  }, [opportunityPrivileges, communityPrivileges]);
+  }, [opportunityPrivileges, communityPrivileges, platformPrivileges]);
+
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(
+    collaborationID,
+    !permissions.opportunityReadAccess || !permissions.readUsers
+  );
 
   const { context, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
