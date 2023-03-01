@@ -1,43 +1,16 @@
-import ContributeCard, { ContributeCardContainerProps } from '../../../../../core/ui/card/ContributeCard';
-import CardImage from '../../../../../core/ui/card/CardImage';
-import { Box, IconButton } from '@mui/material';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { BlockTitle } from '../../../../../core/ui/typography';
+import { IconButton } from '@mui/material';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import LocationCardSegment from '../../../../../core/ui/location/LocationCardSegment';
 import { DirectMessageDialog } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import React, { MouseEventHandler, ReactNode, useCallback, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useState } from 'react';
 import { useSendMessageToUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
-import CardMatchedTerms from '../../../../../core/ui/card/CardMatchedTerms';
-import CardTags from '../../../../../core/ui/card/CardTags';
-import RouterLink from '../../../../../core/ui/link/RouterLink';
-import ExpandableCardFooter from '../../../../../core/ui/card/ExpandableCardFooter';
+import ContributorCard, { ContributorCardProps } from '../../ContributorCard/ContributorCard';
 
-interface ContributingUserCardProps extends ContributeCardContainerProps {
+interface ContributingUserCardProps extends ContributorCardProps {
   id: string;
-  displayName: string;
-  avatarUri?: string;
-  city?: string;
-  country?: string;
-  tags: string[];
-  matchedTerms?: boolean;
-  userUri: string;
-  actions?: ReactNode;
 }
 
-const ContributingUserCard = ({
-  id,
-  displayName,
-  avatarUri,
-  city,
-  country,
-  tags,
-  matchedTerms,
-  userUri,
-  actions,
-  ...containerProps
-}: ContributingUserCardProps) => {
+const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserCardProps) => {
   const { t } = useTranslation();
 
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
@@ -47,7 +20,14 @@ const ContributingUserCard = ({
     setIsMessageUserDialogOpen(true);
   };
 
-  const messageReceivers = [{ title: displayName, avatarUri, city, country }];
+  const messageReceivers = [
+    {
+      title: contributorCardProps.displayName,
+      avatarUri: contributorCardProps.avatarUri,
+      city: contributorCardProps.city,
+      country: contributorCardProps.country,
+    },
+  ];
 
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
@@ -69,35 +49,16 @@ const ContributingUserCard = ({
     [sendMessageToUser, id]
   );
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
-
-  const Tags = matchedTerms ? CardMatchedTerms : CardTags;
-
   return (
     <>
-      <ContributeCard {...containerProps}>
-        <Box component={RouterLink} to={userUri}>
-          <CardImage src={avatarUri} alt={displayName} />
-        </Box>
-        <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingY={gutters()}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            paddingLeft={gutters()}
-            paddingRight={0.5}
-            height={gutters()}
-          >
-            <BlockTitle noWrap>{displayName}</BlockTitle>
-            <IconButton onClick={openMessageUserDialog}>
-              <EmailOutlinedIcon color="primary" />
-            </IconButton>
-          </Box>
-          <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} marginBottom={gutters()} />
-          <ExpandableCardFooter tagsComponent={Tags} tags={tags} expanded={isExpanded} />
-        </Box>
-      </ContributeCard>
+      <ContributorCard
+        headerActions={
+          <IconButton onClick={openMessageUserDialog}>
+            <EmailOutlinedIcon color="primary" />
+          </IconButton>
+        }
+        {...contributorCardProps}
+      />
       <DirectMessageDialog
         title={t('send-message-dialog.direct-message-title')}
         open={isMessageUserDialogOpen}

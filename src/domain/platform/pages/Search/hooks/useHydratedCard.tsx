@@ -16,12 +16,7 @@ import {
   buildOrganizationUrl,
   buildUserProfileUrl,
 } from '../../../../../common/utils/urlBuilders';
-import {
-  SearchChallengeCard,
-  SearchHubCard,
-  SearchOpportunityCard,
-  SearchOrganizationCard,
-} from '../../../../shared/components/search-cards';
+import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../../shared/components/search-cards';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import { getVisualBanner } from '../../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
@@ -32,6 +27,7 @@ import { OpportunityIcon } from '../../../../challenge/opportunity/icon/Opportun
 import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
 import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
 import ContributingUserCard from '../../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
+import ContributingOrganizationCard from '../../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {
@@ -65,24 +61,24 @@ const _hydrateOrganizationCard = (
     return null;
   }
   const organization = data.organization;
-  // todo extract in func
   const profile = data.organization.profile;
-  const image = profile?.avatar?.uri;
+  const avatarUri = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);
-  const label = organizationRoles?.roles.find(x => x === RoleType.Associate);
+  const isMember = organizationRoles?.roles.some(x => x === RoleType.Associate);
 
   return (
-    <SearchOrganizationCard
-      image={image}
-      label={label}
-      name={organization.displayName}
-      country={country}
+    <ContributingOrganizationCard
+      displayName={organization.displayName}
+      avatarUri={avatarUri}
       city={city}
-      matchedTerms={data.terms}
-      url={url}
+      country={country}
+      tags={data.terms}
+      userUri={url}
+      member={isMember}
+      matchedTerms
     />
   );
 };

@@ -1,17 +1,17 @@
 import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, SvgIconProps } from '@mui/material';
-import { BeenhereOutlined, LockOutlined } from '@mui/icons-material';
+import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardContainerProps } from '../../../../core/ui/card/ContributeCard';
-import CardImage from '../../../../core/ui/card/CardImage';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CardTags from '../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CardContent from '../../../../core/ui/card/CardContent';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import JourneyCardBannerPlaceholder from './JourneyCardBannerPlaceholder';
 import CardMatchedTerms from '../../../../core/ui/card/CardMatchedTerms';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
+import CardMemberIcon from '../../../community/membership/CardMemberIcon/CardMemberIcon';
+import CardBanner from '../../../../core/ui/card/CardImageHeader';
 
 export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
@@ -57,19 +57,16 @@ const JourneyCard = ({
   return (
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
-        <Box position="relative">
-          {ribbon}
-          {bannerUri ? <CardImage src={bannerUri} alt={tagline} /> : <JourneyCardBannerPlaceholder />}
-          {member && (
-            <RoundedIcon
-              size="small"
-              component={BeenhereOutlined}
-              position="absolute"
-              right={gutters(0.5)}
-              top={gutters(ribbon ? 2.0 : 0.5)}
-            />
-          )}
-        </Box>
+        <CardBanner
+          src={bannerUri}
+          alt={tagline}
+          overlay={
+            <>
+              {ribbon}
+              {member && <CardMemberIcon top={gutters(ribbon ? 2.0 : 0.5)} />}
+            </>
+          }
+        />
         <BadgeCardView
           visual={<RoundedIcon size="small" component={Icon} />}
           visualRight={locked ? <LockOutlined fontSize="small" color="primary" /> : undefined}
