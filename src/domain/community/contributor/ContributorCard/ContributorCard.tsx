@@ -44,7 +44,7 @@ const ContributorCard = ({
   return (
     <>
       <ContributeCard {...containerProps}>
-        <Box component={RouterLink} to={userUri}>
+        <Box component={RouterLink} to={userUri} display="flex" flexDirection="column" gap={gutters()}>
           <CardBanner src={avatarUri} alt={displayName} overlay={bannerOverlay} />
           <Box
             display="flex"
@@ -61,7 +61,7 @@ const ContributorCard = ({
         </Box>
         <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={gutters(0.5)}>
           <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} marginBottom={gutters()} />
-          <ExpandableCardFooter tagsComponent={Tags} tags={tags} expanded={isExpanded} />
+          <ExpandableCardFooter tagsComponent={Tags} tags={tags} expanded={isExpanded} paddingLeft={gutters()} />
         </Box>
       </ContributeCard>
     </>
