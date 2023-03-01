@@ -115,6 +115,7 @@ const _hydrateHubCard = (
       tags={tags}
       matchedTerms
       vision={vision}
+      locked={!hub.authorization?.anonymousReadAccess}
     />
   );
 };
@@ -153,11 +154,17 @@ const useHydrateChallengeCard = (
       member={!!isMember}
       displayName={name}
       tagline={tagline}
-      parentJourneyDisplayName={hubDisplayName}
       tags={matchedTerms}
       matchedTerms
       journeyUri={url}
       vision={vision}
+      locked={!challenge.authorization?.anonymousReadAccess}
+      parentInformation={{
+        displayName: hubDisplayName,
+        iconComponent: HubIcon,
+        locked: !containingHub.authorization?.anonymousReadAccess,
+        uri: buildHubUrl(hubNameId),
+      }}
     />
   );
 };
@@ -197,11 +204,17 @@ const useHydrateOpportunityCard = (
       member={!!isMember}
       displayName={name}
       tagline={tagline}
-      parentJourneyDisplayName={challengeDisplayName}
       tags={matchedTerms}
       matchedTerms
       journeyUri={url}
       vision={vision}
+      locked={!opportunity.authorization?.anonymousReadAccess}
+      parentInformation={{
+        displayName: challengeDisplayName,
+        iconComponent: ChallengeIcon,
+        locked: !containingChallenge.authorization?.anonymousReadAccess,
+        uri: buildChallengeUrl(hubNameID, challengeNameId),
+      }}
     />
   );
 };
