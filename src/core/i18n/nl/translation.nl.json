@@ -1820,50 +1820,32 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-diensten",
         "name": "Publieke Diensten",
-        "tags": [
-          "Publieke Diensten",
-          "Publieke Diensten"
-        ]
+        "tags": ["Publieke Diensten", "Publieke Diensten"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "kwetsbare-groepen",
         "name": "Kwetsbare Groepen",
-        "tags": [
-          "Kwetsbare Groepen",
-          "Kwetsbare Groepen"
-        ]
+        "tags": ["Kwetsbare Groepen", "Kwetsbare Groepen"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   }

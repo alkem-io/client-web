@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { forwardRef, PropsWithChildren } from 'react';
 import { Paper, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
@@ -14,29 +14,27 @@ export interface ContributeCardContainerProps {
 
 const CONTRIBUTE_CARD_COLUMNS = 3;
 
-const ContributeCard = ({
-  columns = CONTRIBUTE_CARD_COLUMNS,
-  onClick,
-  sx,
-  children,
-}: PropsWithChildren<ContributeCardContainerProps>) => {
-  return (
-    <GridItem columns={columns}>
-      <ElevatedPaper
-        sx={{
-          background: theme => theme.palette.background.paper,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          cursor: onClick ? 'pointer' : 'default',
-          ...sx,
-        }}
-        onClick={onClick}
-      >
-        {children}
-      </ElevatedPaper>
-    </GridItem>
-  );
-};
+const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardContainerProps>>(
+  ({ columns = CONTRIBUTE_CARD_COLUMNS, onClick, sx, children }, ref) => {
+    return (
+      <GridItem columns={columns}>
+        <ElevatedPaper
+          sx={{
+            background: theme => theme.palette.background.paper,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            cursor: onClick ? 'pointer' : 'default',
+            ...sx,
+          }}
+          onClick={onClick}
+          ref={ref}
+        >
+          {children}
+        </ElevatedPaper>
+      </GridItem>
+    );
+  }
+);
 
 export default ContributeCard;
