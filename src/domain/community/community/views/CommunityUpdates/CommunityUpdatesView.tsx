@@ -218,7 +218,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
           const removed = removedMessageId === m.id && state.removingMessage;
-          const member = memberMap[m.sender.id];
+          const member = m.sender?.id ? memberMap[m.sender.id] : undefined;
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
               <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>

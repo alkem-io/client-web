@@ -95,7 +95,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const discussions = data?.hub.community?.communication?.discussions || [];
 
-  const senders = uniq([...discussions.map(d => d.createdBy)]);
+  const senders = uniq<string>([...discussions.map(d => d.createdBy).filter((x): x is string => !!x)]);
   const { getAuthor, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const discussionList = discussions.map<Discussion>(x => {

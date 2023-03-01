@@ -84,7 +84,14 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const senders = useMemo(() => {
     if (!discussionData) return [];
-    return uniq([...(discussionData.messages?.map(m => m.sender.id) || []), discussionData.createdBy]);
+
+    const senders = [...(discussionData.messages?.map(m => m.sender?.id)?.filter((x): x is string => !!x) ?? [])];
+
+    if (discussionData.createdBy) {
+      senders.push(discussionData.createdBy);
+    }
+
+    return uniq(senders);
   }, [discussionData]);
 
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
@@ -106,7 +113,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       comments: sortedMessages.map<Comment>(m => ({
         id: m.id,
         body: m.message,
-        author: getAuthor(m.sender.id),
+        author: m.sender?.id ? getAuthor(m.sender.id) : undefined,
         createdAt: new Date(m.timestamp),
       })),
     } as Discussion);
