@@ -8,7 +8,6 @@ import CardDescription from '../../../../core/ui/card/CardDescription';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import CardTags from '../../../../core/ui/card/CardTags';
-import { gutters } from '../../../../core/ui/grid/utils';
 import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
 
 export type SearchContributionCardCardProps = Omit<SearchBaseContributionCardProps, 'icon'> & {
@@ -33,11 +32,11 @@ export const SearchContributionCardCard: FC<SearchContributionCardCardProps> = (
         <CardDescription>{description}</CardDescription>
         <CardTags tags={tags} paddingX={1.5} marginY={1} />
       </CardDetails>
-      <CardSegmentCaption align="left" icon={<CalloutIcon sx={{ marginLeft: gutters(0.5) }} />} noWrap>
+      <CardSegmentCaption icon={<CalloutIcon />} noWrap>
         {calloutDisplayName}
       </CardSegmentCaption>
-      {ParentIcon && parentDisplayName && (
-        <CardSegmentCaption align="left" icon={<ParentIcon sx={{ marginLeft: gutters(0.5) }} />} noWrap>
+      {parentDisplayName && (
+        <CardSegmentCaption icon={ParentIcon ? <ParentIcon /> : undefined} noWrap>
           {parentDisplayName}
         </CardSegmentCaption>
       )}
