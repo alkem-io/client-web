@@ -10,8 +10,6 @@ interface CardExpandableProps extends BoxProps {
   expansion?: ReactNode;
   actions?: ReactNode;
   expansionActions?: ReactNode;
-  // tagsComponent: ComponentType<CardTagsProps>;
-  // tags: string[];
   tags: ReactElement<CardTagsProps>;
 }
 
