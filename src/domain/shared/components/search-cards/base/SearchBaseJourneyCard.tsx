@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import React, { ReactNode } from 'react';
 import CardActions from '../../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../../../challenge/common/JourneyCard/JourneyCardGoToButton';
 import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
@@ -8,8 +8,6 @@ import JourneyCardTagline from '../../../../challenge/common/JourneyCard/Journey
 import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardVision from '../../../../challenge/common/JourneyCard/JourneyCardVision';
-import JourneyCardParentSegment from '../../../../challenge/common/HubChildJourneyCard/JourneyCardParentSegment';
-import { SvgIconProps } from '@mui/material';
 import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
 
 export interface SearchBaseJourneyCardProps
@@ -18,12 +16,7 @@ export interface SearchBaseJourneyCardProps
   journeyTypeName: JourneyTypeName;
   displayName: string;
   vision: string;
-  parentInformation?: {
-    displayName: string;
-    iconComponent?: ComponentType<SvgIconProps>;
-    uri: string;
-    locked: boolean;
-  };
+  parentSegment?: ReactNode;
 }
 
 const SearchBaseJourneyCard = ({
@@ -31,7 +24,7 @@ const SearchBaseJourneyCard = ({
   tagline,
   displayName,
   vision,
-  parentInformation,
+  parentSegment,
   ...props
 }: SearchBaseJourneyCardProps) => {
   return (
@@ -52,19 +45,7 @@ const SearchBaseJourneyCard = ({
       {...props}
     >
       <JourneyCardTagline>{tagline}</JourneyCardTagline>
-      {parentInformation ? (
-        <>
-          <JourneyCardParentSegment
-            iconComponent={parentInformation.iconComponent}
-            parentJourneyUri={parentInformation.uri}
-            locked={parentInformation.locked}
-          >
-            {parentInformation.displayName}
-          </JourneyCardParentSegment>
-        </>
-      ) : (
-        <JourneyCardSpacing height={2} />
-      )}
+      {parentSegment ?? <JourneyCardSpacing height={2} />}
     </JourneyCard>
   );
 };

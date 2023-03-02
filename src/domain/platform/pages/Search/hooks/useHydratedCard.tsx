@@ -29,6 +29,8 @@ import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIco
 import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
 import ContributingUserCard from '../../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
 import ContributingOrganizationCard from '../../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import JourneyCardParentSegment from '../../../../challenge/common/HubChildJourneyCard/JourneyCardParentSegment';
+import { SearchContributionParentSegment } from '../../../../shared/components/search-cards/SearchContributionParentSegment';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {
@@ -160,12 +162,15 @@ const useHydrateChallengeCard = (
       journeyUri={url}
       vision={vision}
       locked={!challenge.authorization?.anonymousReadAccess}
-      parentInformation={{
-        displayName: hubDisplayName,
-        iconComponent: HubIcon,
-        locked: !containingHub.authorization?.anonymousReadAccess,
-        uri: buildHubUrl(hubNameId),
-      }}
+      parentSegment={
+        <JourneyCardParentSegment
+          iconComponent={HubIcon}
+          parentJourneyUri={buildHubUrl(hubNameId)}
+          locked={!containingHub.authorization?.anonymousReadAccess}
+        >
+          {hubDisplayName}
+        </JourneyCardParentSegment>
+      }
     />
   );
 };
@@ -210,12 +215,15 @@ const useHydrateOpportunityCard = (
       journeyUri={url}
       vision={vision}
       locked={!opportunity.authorization?.anonymousReadAccess}
-      parentInformation={{
-        displayName: challengeDisplayName,
-        iconComponent: ChallengeIcon,
-        locked: !containingChallenge.authorization?.anonymousReadAccess,
-        uri: buildChallengeUrl(hubNameID, challengeNameId),
-      }}
+      parentSegment={
+        <JourneyCardParentSegment
+          iconComponent={ChallengeIcon}
+          parentJourneyUri={buildChallengeUrl(hubNameID, challengeNameId)}
+          locked={!containingChallenge.authorization?.anonymousReadAccess}
+        >
+          {challengeDisplayName}
+        </JourneyCardParentSegment>
+      }
     />
   );
 };
@@ -257,20 +265,20 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
       commentsCount={card.comments?.commentsCount}
       matchedTerms={data.terms}
       url={url}
-      calloutInformation={{
-        displayName: data.callout.displayName,
-        url: buildCalloutUrl(data.callout.nameID, {
-          hubNameId: data.hub.nameID,
-          challengeNameId: data.challenge?.nameID,
-          opportunityNameId: data.opportunity?.nameID,
-        }),
-      }}
-      parentInformation={{
-        displayName: parentDisplayName,
-        iconComponent: parentIcon,
-        locked: parentLocked,
-        url: parentUrl,
-      }}
+      parentSegment={
+        <SearchContributionParentSegment
+          calloutDisplayName={data.callout.displayName}
+          calloutUrl={buildCalloutUrl(data.callout.nameID, {
+            hubNameId: data.hub.nameID,
+            challengeNameId: data.challenge?.nameID,
+            opportunityNameId: data.opportunity?.nameID,
+          })}
+          displayName={parentDisplayName}
+          iconComponent={parentIcon}
+          locked={parentLocked}
+          url={parentUrl}
+        />
+      }
     />
   );
 };
