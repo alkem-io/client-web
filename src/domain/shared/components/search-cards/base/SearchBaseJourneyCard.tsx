@@ -8,7 +8,7 @@ import JourneyCard, { JourneyCardProps } from '../../../../challenge/common/Jour
 import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
 import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
-import JourneyCardVision from '../../../../challenge/common/JourneyCard/JourneyCardVision';
+import JourneyCardDescription from '../../../../challenge/common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
 import getParentJourneyType from '../../../../challenge/common/utils/getParentJourneyType';
 
@@ -47,7 +47,7 @@ const SearchBaseJourneyCard = ({
       }
       expansion={
         <>
-          <JourneyCardVision>{vision}</JourneyCardVision>
+          <JourneyCardDescription>{vision}</JourneyCardDescription>
           {parentJourneyUri && parentJourneyDisplayName && parentIcon ? (
             <JourneyCardParentSegment iconComponent={parentIcon} parentJourneyUri={parentJourneyUri}>
               {parentJourneyDisplayName}

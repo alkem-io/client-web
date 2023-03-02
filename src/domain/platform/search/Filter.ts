@@ -1,4 +1,4 @@
-import TranslationKey from '../../../../types/TranslationKey';
+import TranslationKey from '../../../types/TranslationKey';
 
 export interface FilterDefinition {
   title: TranslationKey;

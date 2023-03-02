@@ -86,8 +86,7 @@ const JourneyCard = ({
           expansion={expansion}
           actions={actions}
           expansionActions={expansionActions}
-          tagsComponent={Tags}
-          tags={tags}
+          tags={<Tags tags={tags} />}
         />
       </Box>
     </ContributeCard>
