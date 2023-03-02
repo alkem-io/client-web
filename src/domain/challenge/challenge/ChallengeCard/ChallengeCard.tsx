@@ -1,7 +1,7 @@
 import React from 'react';
 import HubChildJourneyCard, { HubChildJourneyCardProps } from '../../common/HubChildJourneyCard/HubChildJourneyCard';
 import { ChallengeIcon } from '../icon/ChallengeIcon';
-import JourneyCardParentSegment from '../../common/HubChildJourneyCard/JourneyCardParentSegment';
+import CardParentJourneySegment from '../../common/HubChildJourneyCard/CardParentJourneySegment';
 import { HubIcon } from '../../hub/icon/HubIcon';
 import { useUserContext } from '../../../community/contributor/user';
 import CardActions from '../../../../core/ui/card/CardActions';
@@ -39,9 +39,9 @@ const ChallengeCard = ({
       parentSegment={
         hubUri &&
         hubDisplayName && (
-          <JourneyCardParentSegment iconComponent={HubIcon} parentJourneyUri={hubUri}>
+          <CardParentJourneySegment iconComponent={HubIcon} parentJourneyUri={hubUri}>
             {hubDisplayName}
-          </JourneyCardParentSegment>
+          </CardParentJourneySegment>
         )
       }
       expansionActions={

@@ -4,18 +4,18 @@ import { SvgIconProps } from '@mui/material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { LockOutlined } from '@mui/icons-material';
 
-interface JourneyCardParentSegmentProps {
+interface CardParentJourneySegmentProps {
   iconComponent?: ComponentType<SvgIconProps>;
   parentJourneyUri: string;
   locked?: boolean;
 }
 
-const JourneyCardParentSegment = ({
+const CardParentJourneySegment = ({
   iconComponent: Icon,
   parentJourneyUri,
   locked,
   children,
-}: PropsWithChildren<JourneyCardParentSegmentProps>) => {
+}: PropsWithChildren<CardParentJourneySegmentProps>) => {
   const stopPropagation = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => event.stopPropagation();
 
   return (
@@ -32,4 +32,4 @@ const JourneyCardParentSegment = ({
   );
 };
 
-export default JourneyCardParentSegment;
+export default CardParentJourneySegment;
