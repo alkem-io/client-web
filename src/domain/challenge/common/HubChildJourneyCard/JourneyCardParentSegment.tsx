@@ -27,7 +27,7 @@ const JourneyCardParentSegment = ({
       onClick={stopPropagation}
       disablePadding
     >
-      <>{children}</>
+      {children}
     </CardSegmentCaption>
   );
 };

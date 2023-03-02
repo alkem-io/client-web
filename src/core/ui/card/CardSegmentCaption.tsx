@@ -10,7 +10,6 @@ interface CardSegmentCaptionProps {
   secondaryIcon?: ReactNode;
   noWrap?: boolean;
   disablePadding?: boolean;
-  children: Exclude<ReactNode, boolean | null | undefined>;
 }
 
 const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
@@ -37,11 +36,11 @@ const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultCom
       <Caption minWidth={0} noWrap={noWrap}>
         {children}
       </Caption>
-      {secondaryIcon ? (
+      {secondaryIcon && (
         <Box marginLeft={align === 'left' ? 'auto' : undefined} marginRight={align === 'right' ? 'auto' : undefined}>
           {secondaryIcon}
         </Box>
-      ) : undefined}
+      )}
     </Box>
   );
 };
