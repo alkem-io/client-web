@@ -6,7 +6,7 @@ import {
   SearchResultOrganizationFragment,
   SearchResultUserFragment,
   UserRolesSearchCardsQuery,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 import React from 'react';
 import {
   buildAspectUrl,
@@ -16,22 +16,22 @@ import {
   buildOpportunityUrl,
   buildOrganizationUrl,
   buildUserProfileUrl,
-} from '../../../../../common/utils/urlBuilders';
-import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../../shared/components/search-cards';
-import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
-import { getVisualBanner } from '../../../../common/visual/utils/visuals.utils';
-import { useUserRolesSearchCardsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../../community/contributor/user/hooks/useUserContext';
-import { SearchResultMetaType, SearchResultT } from '../../../search/SearchView';
-import { SearchContributionCardCard } from '../../../../shared/components/search-cards/SearchContributionCardCard';
-import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
-import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
-import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
-import CardContent from '../../../../../core/ui/card/CardContent';
-import ContributingUserCard from '../../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
-import ContributingOrganizationCard from '../../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '../../../../challenge/common/HubChildJourneyCard/CardParentJourneySegment';
-import { CalloutIcon } from '../../../../collaboration/callout/icon/CalloutIcon';
+} from '../../../../common/utils/urlBuilders';
+import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
+import { RoleType } from '../../../community/contributor/user/constants/RoleType';
+import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
+import { SearchResultMetaType, SearchResultT } from '../SearchView';
+import { SearchContributionCardCard } from '../../../shared/components/search-cards/SearchContributionCardCard';
+import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
+import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
+import { HubIcon } from '../../../challenge/hub/icon/HubIcon';
+import ContributingUserCard from '../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
+import CardContent from '../../../../core/ui/card/CardContent';
+import ContributingOrganizationCard from '../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import CardParentJourneySegment from '../../../challenge/common/HubChildJourneyCard/CardParentJourneySegment';
+import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {
@@ -42,17 +42,19 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   const avatarUri = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
+  const tags = profile?.tagsets?.[0].tags ?? [];
 
   return (
     <ContributingUserCard
       id={user.id}
       displayName={user.displayName}
+      description={profile?.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
-      tags={data.terms}
+      tags={tags}
       userUri={url}
-      matchedTerms
+      matchedTerms={data.terms}
     />
   );
 };
@@ -69,6 +71,7 @@ const _hydrateOrganizationCard = (
   const avatarUri = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
+  const tags = profile.tagsets?.[0].tags ?? [];
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);
   const isMember = organizationRoles?.roles.some(x => x === RoleType.Associate);
@@ -76,13 +79,14 @@ const _hydrateOrganizationCard = (
   return (
     <ContributingOrganizationCard
       displayName={organization.displayName}
+      description={profile.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
-      tags={data.terms}
+      tags={tags}
       userUri={url}
       member={isMember}
-      matchedTerms
+      matchedTerms={data.terms}
     />
   );
 };

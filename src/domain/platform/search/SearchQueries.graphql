@@ -125,6 +125,7 @@ fragment SearchResultOrganization on SearchResultOrganization {
 
 fragment SearchResultProfile on Profile {
   id
+  description
   location {
     id
     country

@@ -19457,6 +19457,7 @@ export type SearchQuery = {
             profile: {
               __typename?: 'Profile';
               id: string;
+              description?: string | undefined;
               location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19478,6 +19479,7 @@ export type SearchQuery = {
               | {
                   __typename?: 'Profile';
                   id: string;
+                  description?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19668,6 +19670,7 @@ export type SearchResultUserFragment = {
       | {
           __typename?: 'Profile';
           id: string;
+          description?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19686,6 +19689,7 @@ export type SearchResultOrganizationFragment = {
     profile: {
       __typename?: 'Profile';
       id: string;
+      description?: string | undefined;
       location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19696,6 +19700,7 @@ export type SearchResultOrganizationFragment = {
 export type SearchResultProfileFragment = {
   __typename?: 'Profile';
   id: string;
+  description?: string | undefined;
   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;

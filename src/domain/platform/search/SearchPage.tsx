@@ -1,6 +1,6 @@
-import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
-import SearchView from '../../search/SearchView';
-import { SEARCH_ROUTE } from '../../routes/constants';
+import TopLevelDesktopLayout from '../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
+import SearchView from './SearchView';
+import { SEARCH_ROUTE } from '../routes/constants';
 import { journeyFilterConfig } from './Filter';
 import { useTranslation } from 'react-i18next';
 

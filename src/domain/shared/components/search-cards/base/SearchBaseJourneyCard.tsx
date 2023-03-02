@@ -7,7 +7,7 @@ import JourneyCard, { JourneyCardProps } from '../../../../challenge/common/Jour
 import JourneyCardTagline from '../../../../challenge/common/JourneyCard/JourneyCardTagline';
 import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
-import JourneyCardVision from '../../../../challenge/common/JourneyCard/JourneyCardVision';
+import JourneyCardDescription from '../../../../challenge/common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
 
 export interface SearchBaseJourneyCardProps
@@ -36,7 +36,7 @@ const SearchBaseJourneyCard = ({
           {displayName}
         </BlockTitle>
       }
-      expansion={<JourneyCardVision>{vision}</JourneyCardVision>}
+      expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
       expansionActions={
         <CardActions>
           <JourneyCardGoToButton journeyUri={props.journeyUri} journeyTypeName={journeyTypeName} />
