@@ -110,7 +110,7 @@ const CalloutLayout = ({
       return undefined;
     }
 
-    return t(`common.enums.callout-state.${state}` as const);
+    return t('callout.closed');
   }, [callout?.state, t]);
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);

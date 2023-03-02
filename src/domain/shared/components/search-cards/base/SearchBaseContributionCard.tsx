@@ -1,5 +1,5 @@
 import { Box, SvgIconProps } from '@mui/material';
-import { ComponentType, FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import CardFooter from '../../../../../core/ui/card/CardFooter';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
@@ -14,25 +14,28 @@ export interface SearchBaseContributionCardProps {
   name: string;
   author?: string | undefined;
   matchedTerms: string[];
-  parentDisplayName?: string;
-  parentIcon?: ComponentType<SvgIconProps>;
-  calloutDisplayName?: string;
   tags?: string[];
 }
 
-const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCardProps>> = props => {
-  const { icon, name, author: label, matchedTerms, url, children } = props;
+const SearchBaseContributionCard: FC<PropsWithChildren<SearchBaseContributionCardProps>> = ({
+  icon,
+  name,
+  author: label,
+  matchedTerms,
+  url,
+  children,
+}) => {
   return (
     <ContributeCard>
       <Box component={RouterLink} to={url}>
         <CardHeader title={name} iconComponent={icon}>
           <CardHeaderCaption noWrap>{label}</CardHeaderCaption>
         </CardHeader>
-        {children}
-        <CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
-          <CardMatchedTerms tags={matchedTerms} />
-        </CardFooter>
       </Box>
+      {children}
+      <CardFooter paddingX={gutters(1)} marginBottom={gutters(1.5)}>
+        <CardMatchedTerms tags={matchedTerms} />
+      </CardFooter>
     </ContributeCard>
   );
 };

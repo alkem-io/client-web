@@ -21,6 +21,30 @@
     "bg": "Bulgaars",
     "ua": "Oekraïens"
   },
+  "fields": {
+    "displayName": "Titel",
+    "startTime": "Starttijd",
+    "endTime": "Eindtijd"
+  },
+  "calendar": {
+    "add-event": "Voeg evenement toe",
+    "edit-event": "Evenement wijzigen",
+    "delete-event": "Verwijder evenement",
+    "delete-confirmation": "Weet u zeker dat u de gebeurtenis '{{title}}' wilt verwijderen uit de hub?",
+    "event": {
+      "type": "Type evenement",
+      "multiple-days": "{days} dagen",
+      "whole-day": "Hele dag"
+    },
+    "validation": {
+      "durationMinutes": {
+        "positive": "Evenement eindtijd kan niet voor de starttijd van evenement zijn"
+      }
+    },
+    "no-data": "Geen evenementen gevonden",
+    "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
+    "past-events": "Afgelopen evenementen"
+  },
   "buttons": {
     "leave": "Verlaat",
     "learn-more": "Meer leren",
@@ -71,7 +95,12 @@
     "preview": "Voorbeeld",
     "import": "Importeer",
     "importing": "Importeren...",
-    "go-to-entity": "Ga naar {{entity}}"
+    "go-to-entity": "Ga naar {{entity}}",
+    "read-more": "Meer lezen",
+    "select": "Selecteer",
+    "change-field": "{{field}} wijzigen",
+    "send": "Verzenden",
+    "contact-leads": "Contacteer de {{contact}}(s)"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -102,6 +131,7 @@
     "permissions": "Rechten",
     "error-generic": "Fout bij het laden",
     "avatar": "Profielfoto",
+    "avatar-of": "Avatar van {{user}}",
     "inspiration": "Inspiratie",
     "name": "Naam",
     "username": "Gebruikersnaam",
@@ -111,8 +141,9 @@
     "remove": "Verwijder",
     "callout": "Oproep",
     "callouts": "Oproepen",
-    "canvas": "Canvas",
-    "canvases": "Canvassen",
+    "canvas": "Whiteboard",
+    "canvases": "Whiteboards",
+    "calendar": "Kalender",
     "comment": "Opmerking",
     "comments": "Opmerkingen",
     "contributions": "Bijdragen",
@@ -121,7 +152,9 @@
     "create": "Maak aan",
     "create-new": "Maak nieuwe aan",
     "create-new-entity": "Maak nieuwe {{entity}} aan",
+    "date": "Datum",
     "description": "Omschrijving",
+    "events": "Evenementen",
     "about": "Over",
     "explore": "Bijdragen",
     "edit-entity": "Pas {{entity}} aan",
@@ -149,6 +182,7 @@
     "project": "Project",
     "agreements": "Overeenkomsten",
     "templates": "Templates",
+    "template": "Template",
     "group": "Groep",
     "groups": "Groepen",
     "user-group": "Gebruikersgroep",
@@ -394,20 +428,54 @@
     "contributions_plural": "{{count}} Bijdragen",
     "draftNotice": "Voorlopige versie - Deze oproep is alleen zichtbaar voor beheerders.",
     "delete-confirm-title": "Oproep verwijderen?",
-    "delete-confirm-text": "Alle kaarten, canvasen en discussies onder deze oproep worden ook verwijderd.",
+    "delete-confirm-text": "Alle kaarten, whiteboards en discussies onder deze oproep worden ook verwijderd.",
     "state-permission": "Accepteer nieuwe reacties",
     "permission-helptext": "Gebruik de switch hieronder om deze oproep voor nieuwe bijdragen te sluiten."
   },
   "journey-creation": {
     "dialog-title": "Maak nieuwe {{entity}} aan"
   },
+  "messaging": {
+    "message": "Bericht",
+    "message-optional": "Bericht (optioneel)",
+    "successfully-sent": "Bericht succesvol verstuurd"
+  },
+  "send-message-dialog": {
+    "direct-message-title": "Verstuur een bericht",
+    "community-message-title": "Stuur een bericht naar {{contact}}(s)"
+  },
   "share-dialog": {
     "title": "Kopieer de onderstaande link om deze {{entity}} te delen",
     "share-this": "Deel deze {{entity}}",
+    "share-this-on": "Deel deze {{entity}} op {{platform}}",
+    "or": "of",
     "url": "URL",
-    "copy": "Kopieer",
-    "copied": "Gekopieerd!",
-    "canvas-checkedout": "Klik eerst op 'Opslaan & Bewerken'"
+    "warning": "Houd er rekening mee dat uw persoonlijke e-mailadres zichtbaar is voor de gebruiker wanneer u hen een bericht stuurt.",
+    "platforms": {
+      "clipboard": {
+        "title": "Link kopiëren",
+        "copy": "Kopieer",
+        "copied": "Gekopieerd!"
+      },
+      "alkemio": {
+        "name": "Alkemio",
+        "title": "Delen op Alkemio",
+        "description": "Deel deze {{entity}} rechtstreeks met andere Alkemio gebruikers. Je kunt hieronder zoeken naar Alkemio gebruikers en een persoonlijk bericht toevoegen.",
+        "default-template": "Hallo!\n\nIk wil deze {{entity}} met je delen.\n\nNeem een kijkje!"
+      },
+      "linkedin": {
+        "title": "Delen op LinkedIn"
+      },
+      "twitter": {
+        "title": "Delen op Twitter"
+      },
+      "whatsapp": {
+        "title": "Delen op Whatsapp"
+      },
+      "email": {
+        "title": "Delen via e-mail"
+      }
+    }
   },
   "context": {
     "hub": {
@@ -518,7 +586,8 @@
       "minLength": "{{field}} moet tenminste {{min}} karakters lang zijn",
       "maxLength": "Limiet van {{max}} karakters overschreden",
       "alphaNumeric": "{{field}} kan alleen bestaan uit kleine letters, nummers of koppeltekens",
-      "nonBlank": "{{field}} kan niet slechts uit spaties bestaan"
+      "nonBlank": "{{field}} kan niet slechts uit spaties bestaan",
+      "atLeastOne": "Selecteer ten minste één item."
     }
   },
   "aspect-templates": {
@@ -527,7 +596,7 @@
     "banner-narrow": "Smalle banner"
   },
   "canvas-templates": {
-    "canvas-template": "Canvas template"
+    "canvas-template": "Whiteboard template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation flow template",
@@ -563,7 +632,10 @@
       "matched-terms": "Gematchte Termen"
     },
     "activity-log-section": {
-      "title": "Recente bijdragen"
+      "title": "Recente bijdragen",
+      "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
+      "activity-join-error-message": "Om recente bijdragen te zien, kunt u zich aansluiten als u nog geen lid bent van deze {{journeyType}}.",
+      "activity-sign-in-and-join-error-message": "Log in of meld je aan om de recente bijdragen te zien als je nog geen lid bent van deze {{journeyType}}."
     },
     "activity-log-view": {
       "actions": {
@@ -581,7 +653,7 @@
         "callout-published": "{{displayName}}",
         "canvas-created": "{{displayName}}",
         "card-comment-created": "{{comment}}",
-        "card-created": "{{cardDescription}}",
+        "card-created": "{{cardDisplayName}}] - {{cardDescription}}",
         "discussion-comment-created": "{{comment}}",
         "member-joined": "{{userDisplayName}}",
         "challenge-created": "{{displayName}}",
@@ -610,15 +682,17 @@
         "type-comments-help": "Selecteer ‘Discussie’ als je wilt dat mensen antwoorden via een simpele reactie.",
         "type-cards": "Kaarten",
         "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
-        "type-canvases": "Canvasen",
-        "type-canvases-help": "Selecteer ‘Canvasen’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
+        "type-canvases": "Whiteboards",
+        "type-canvases-help": "Selecteer ‘Whiteboards’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven.",
         "unique-title-validation-text": "Deze titel wordt al gebruikt voor een andere $t(common.callout)"
       },
       "template-step": {
         "title": "Templates",
         "no-templates": "Geen templates beschikbaar",
         "card-template-label": "Kaart template",
-        "no-card-template-selected": "Kies een template"
+        "no-card-template-selected": "Kies een template",
+        "canvas-template-label": "Whiteboard template",
+        "no-canvas-template-selected": "Selecteer een whiteboard template"
       },
       "create-step": {
         "title": "Maak aan",
@@ -626,7 +700,8 @@
       }
     },
     "callout-edit": {
-      "type-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe items, eerder ingediende kaarten zullen niet worden gewijzigd"
+      "type-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe items, eerder ingediende kaarten zullen niet worden gewijzigd",
+      "canvas-template-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe kaarten, eerder ingediende kaarten zullen niet worden gewijzigd"
     },
     "aspect-creation": {
       "title": "Dien je antwoord in op {{calloutDisplayName}}",
@@ -792,6 +867,22 @@
         "city": {
           "name": "Stad",
           "placeholder": "Naam van de stad"
+        },
+        "addressLine1": {
+          "name": "Adresregel 1",
+          "placeholder": "Adresregel 1"
+        },
+        "addressLine2": {
+          "name": "Adresregel 2",
+          "placeholder": "Adresregel 2"
+        },
+        "stateOrProvince": {
+          "name": "Staat of Provincie",
+          "placeholder": "Staat of Provincie"
+        },
+        "postalCode": {
+          "name": "Postcode",
+          "placeholder": "Postcode"
         }
       }
     },
@@ -838,6 +929,9 @@
     },
     "filter": {
       "placeholder": "Zoek"
+    },
+    "user-selector": {
+      "tooltip": "Begin met typen om gebruikers te vinden"
     },
     "communityUpdates": {
       "title": "Laat de community weten wat eraan komt",
@@ -938,7 +1032,8 @@
         "post": "Plaats opmerking"
       },
       "tooltip": {
-        "markdown-help": "Je kunt een format toevoegen aan je reactie,\nbijvoorbeeld:\nDikgedrukte tekst: **dikgedrukt**\nCursieve tekst: *cursief*\nHeader: ##Titel\nLink: [tekst](url)"
+        "markdown-help": "Je kunt een format toevoegen aan je reactie,\nbijvoorbeeld:\nDikgedrukte tekst: **dikgedrukt**\nCursieve tekst: *cursief*\nHeader: ##Titel\nLink: [tekst](url)",
+        "mentions": "Typ enkele tekens om relevante gebruikers te vinden"
       }
     },
     "new-discussion": {
@@ -1005,7 +1100,7 @@
     "feedback": "Feedback",
     "support": "Support",
     "about": "Over",
-    "copyright": "© 2022 Stichting Alkemio"
+    "copyright": "© 2023 Stichting Alkemio"
   },
   "pages": {
     "generic": {
@@ -1029,7 +1124,7 @@
           "description": "Hier kun meer lezen over en bijdragen een de discussies van deze {{entity}}."
         },
         "canvases": {
-          "description": "Canvasen zijn digitale whiteboards. Je kunt hier een Canvas creëren voor deze {{entity}}, maar ook de Canvasen van anderen vinden."
+          "description": "Whiteboards kunnen worden gezien als digitaal doek. Hier kun je een whiteboard maken voor deze {{entity}} en whiteboards vinden die door de anderen zijn gemaakt."
         },
         "profile": {
           "description": ""
@@ -1064,18 +1159,22 @@
           "communications": {
             "description": "Hier kan je updates plaatsen die zichtbaar zullen zijn voor alle leden van deze {{entity}}."
           },
+          "calendar": {
+            "description": ""
+          },
           "authorization": {
             "description": "Hier kan je de authorisatie-instellingen aanpassen voor deze {{entity}}."
           },
           "templates": {
             "description": "Hier kun je Templates maken en aanpassen voor deze {{entity}}.",
             "aspect-templates": "Templates voor Kaarten",
-            "canvas-templates": "Templates voor Canvasen",
+            "canvas-templates": "Whiteboard templates",
             "innovation-templates": "Templates voor Innovation Flows",
             "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?",
             "import": {
               "title": "Sjabloon bibliotheek: {{templateType}}",
               "subtitle": "Vind templates voor gebruik in uw Hub, Challenge of Opportunity. Selecteer een template en klik op 'Importeren' om deze toe te voegen aan uw templateset.",
+              "callout-template-import-subtitle": "Vind een template die mensen kunnen gebruiken voor het bijdragen aan jouw $t(common.callout)",
               "no-templates": "Kon geen template vinden van dit type",
               "imported-successfully-notification": "Template succesvol geïmporteerd"
             }
@@ -1218,19 +1317,39 @@
       }
     },
     "search": {
-      "header": "Zoek",
-      "subheader": "Vind relevante gebruikers, organisaties, groepen en - niet onbelangrijk - Challenges!",
-      "alternativesubheader": "Hulp nodig? Need help? Vind relevante gebruikers, organisaties, groepen en - niet onbelangrijk - Challenges!",
-      "body": "",
-      "organization": {
-        "no-hosted": "Geen",
-        "no-leading": "Geen"
-      },
-      "no-results": "Geen resultaten",
-      "more-results": "Er zijn meer zoekresultaten. Gebruik specifiekere zoekcriteria om het aantal resultaten te reduceren",
+      "placeholder": "Zoek...",
+      "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
+      "search-suggestions": "Zoeksuggesties:",
+      "suggestions-array": [
+        "Innovatie",
+        "Energie",
+        "Inclusiviteit",
+        "Design",
+        "3D",
+        "Community",
+        "Transitie",
+        "SSI",
+        "Vertrouwelijkheid"
+      ],
       "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten",
-      "search-suggestions": "Zoeksuggesties",
-      "no-suggestions": "Geen suggesties"
+      "filter": {
+        "type": {
+          "journey": "Journey type",
+          "contribution": "Type bijdrage",
+          "contributor": "Type bijdrager"
+        },
+        "key": {
+          "all": "Alles",
+          "hub": "Hubs",
+          "challenge": "Challenges",
+          "opportunity": "Opportunities",
+          "user": "Gebruikers",
+          "organization": "Organisaties",
+          "card": "Kaarten",
+          "whiteboard": "Whiteboards (binnenkort beschikbaar)",
+          "callout": "Oproepen (binnenkort beschikbaar)"
+        }
+      }
     },
     "challenge-explorer": {
       "search": {
@@ -1425,14 +1544,13 @@
       }
     },
     "canvas": {
-      "header": "Canvassen in deze {{blockName}}",
+      "header": "Whiteboards in deze {{blockName}}",
       "subheader": "Maak een visualisatie en deel deze met anderen.",
-      "add-canvas": "Maak Canvas aan",
-      "no-canvases": "Er zijn nog geen Canvassen aangemaakt. Wees de eerste die er een toevoegt.",
+      "add-canvas": "Creëer een whiteboard",
+      "no-canvases": "Er zijn nog geen whiteboards aangemaakt. Wees de eerste die er een toevoegt.",
+      "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
       "state": {
-        "available": "Je kan nu vrijuit werken op het Canvas",
-        "checkedout": "Iemand anders is al aan het werk op het Canvas",
-        "unknown": "Er is een checkout conflict met dit Canvas"
+        "checkedout": "Iemand anders is momenteel dit Whiteboard aan het bewerken"
       },
       "state-actions": {
         "check-out": "Bewerk",
@@ -1444,21 +1562,21 @@
       },
       "delete": {
         "confirmation-title": "Verwijderen van <b>{{ blockName }}</b>",
-        "confirmation-text": "Weet je zeker dat je dit Canvas wilt verwijderen? Deze actie is onomkeerbaar."
+        "confirmation-text": "Weet je zeker dat je dit whiteboard wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden."
       },
       "create-dialog": {
-        "header": "Maak nieuw Canvas aan",
+        "header": "Maak een nieuw whiteboard aan",
         "steps": {
-          "naming": "Definieer een passende naam voor uw Canvas. Wat zal uw Canvas omvatten?",
-          "templating": "Kies uit de lijst met templates als je deze als blauwdruk wilt gebruiken voor uw Canvas.",
-          "completing": "Het Canvas zal gecreeërd worden met de volgende parameters"
+          "naming": "Kies een geschikte naam voor je whiteboard. Waar gaat je whiteboard over?",
+          "templating": "Kies uit de lijst van templates als je deze wilt gebruiken als blauwdruk voor je whiteboard.",
+          "completing": "Het whiteboard zal worden aangemaakt met de volgende parameters"
         },
         "no-template-selected": "Selecteer een template om een voorvertoning te zien."
       },
       "template": {
         "header": "Templates gedefinieerd in Alkemio",
         "no-templates": "Er zijn hier nog geen templates gedefinieerd. Wees de eerste die er een toevoegt.",
-        "how-to": "Om een template te creeëren moet je een nieuw Canvas aanmaken of een bestaande selecteren en die als template opslaan."
+        "how-to": "Om een whiteboard te creeëren moet je een nieuw whiteboard aanmaken of een bestaande selecteren en die als template opslaan."
       },
       "hub": {
         "templatesHeader": "Templates gedefinieerd in deze Hub",
@@ -1587,6 +1705,14 @@
       "community-administration": {
         "title": "Community administratie",
         "subtitle": "In deze sectie kunt je jouw voorkeur aangeven met betrekking tot de administratie van de community"
+      },
+      "user-communication": {
+        "title": "Vermeldingen en berichten",
+        "subtitle": "Hier kun je jouw voorkeur aangeven met betrekking tot het ontvangen van berichten of vermeldingen"
+      },
+      "organization-communication": {
+        "title": "Verwijzingen en berichten van organisatie",
+        "subtitle": "Hier kun je jouw voorkeur aangeven met betrekking tot het ontvangen van berichten of vermeldingen van organisaties die je beheert"
       }
     },
     "help-dialog": {
@@ -1624,6 +1750,12 @@
   },
   "apollo": {
     "errors": {
+      "generic": "Er is een fout opgetreden",
+      "generic-with-code": "Er is een fout opgetreden met code {{code}}",
+      "ENTITY_NOT_FOUND": "Entiteit niet gevonden",
+      "FORMAT_NOT_SUPPORTED": "Formaat niet ondersteund",
+      "BAD_USER_INPUT": "Onjuiste gebruikersinvoer",
+      "NOT_SUPPORTED": "Niet ondersteund",
       "bad-user-input": "Ongeldige waarde in het gestuurde formulier.",
       "bad-user-input-withfield": "De waarde van '{{field}}' is ongeldig."
     }
@@ -1679,5 +1811,42 @@
   "associates-view": {
     "less": "toon minder",
     "more": "...plus {{count}} meer"
+  },
+  "hubs-filter": {
+    "current-filter": "Huidige filter: ",
+    "show-all": "Alles weergeven",
+    "other": "Anders",
+    "config": [
+      {
+        "key": "energie-transitie",
+        "name": "Energie Transitie",
+        "tags": ["Energie Transitie", "Energietransitie"]
+      },
+      {
+        "key": "inclusieve-samenleving",
+        "name": "Inclusieve Samenleving",
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+      },
+      {
+        "key": "publieke-diensten",
+        "name": "Publieke Diensten",
+        "tags": ["Publieke Diensten", "Publieke Diensten"]
+      },
+      {
+        "key": "innovatie",
+        "name": "Innovatie",
+        "tags": ["Innovatie", "Innovatie"]
+      },
+      {
+        "key": "kwetsbare-groepen",
+        "name": "Kwetsbare Groepen",
+        "tags": ["Kwetsbare Groepen", "Kwetsbare Groepen"]
+      },
+      {
+        "key": "digitalisering",
+        "name": "Digitalisering",
+        "tags": ["Digitalisering", "Digitalisering"]
+      }
+    ]
   }
 }

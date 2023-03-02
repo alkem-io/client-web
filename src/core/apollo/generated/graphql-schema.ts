@@ -4749,6 +4749,7 @@ export type ChallengeExplorerSearchQuery = {
                 }
               | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
           hub: {
             __typename?: 'Hub';
@@ -4756,6 +4757,7 @@ export type ChallengeExplorerSearchQuery = {
             nameID: string;
             displayName: string;
             context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
         }
       | { __typename?: 'SearchResultHub'; id: string; type: SearchResultType; terms: Array<string> }
@@ -8481,6 +8483,14 @@ export type OpportunityPageQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            anonymousReadAccess: boolean;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          }
+        | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       lifecycle?:
@@ -8746,6 +8756,14 @@ export type OpportunityPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        anonymousReadAccess: boolean;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      }
+    | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   lifecycle?:
@@ -16671,6 +16689,9 @@ export type OrganizationInfoFragment = {
   contactEmail?: string | undefined;
   domain?: string | undefined;
   website?: string | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
@@ -16955,6 +16976,9 @@ export type OrganizationInfoQuery = {
     contactEmail?: string | undefined;
     domain?: string | undefined;
     website?: string | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
@@ -19448,6 +19472,7 @@ export type SearchQuery = {
                 }
               | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
           hub: {
             __typename?: 'Hub';
@@ -19455,6 +19480,7 @@ export type SearchQuery = {
             nameID: string;
             displayName: string;
             context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
         }
       | {
@@ -19478,6 +19504,7 @@ export type SearchQuery = {
                 }
               | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
         }
       | {
@@ -19501,8 +19528,15 @@ export type SearchQuery = {
                 }
               | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
-          challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+          challenge: {
+            __typename?: 'Challenge';
+            id: string;
+            nameID: string;
+            displayName: string;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+          };
           hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
         }
       | {
@@ -19552,6 +19586,7 @@ export type SearchQuery = {
               __typename?: 'Profile';
               displayName: string;
               id: string;
+              description?: string | undefined;
               location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
               tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19573,6 +19608,7 @@ export type SearchQuery = {
                   __typename?: 'Profile';
                   displayName: string;
                   id: string;
+                  description?: string | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19619,9 +19655,31 @@ export type SearchQuery = {
               | undefined;
             comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
           };
-          hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-          challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
-          opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+          hub: {
+            __typename?: 'Hub';
+            id: string;
+            nameID: string;
+            displayName: string;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+          };
+          challenge?:
+            | {
+                __typename?: 'Challenge';
+                id: string;
+                nameID: string;
+                displayName: string;
+                authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+              }
+            | undefined;
+          opportunity?:
+            | {
+                __typename?: 'Opportunity';
+                id: string;
+                nameID: string;
+                displayName: string;
+                authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+              }
+            | undefined;
           callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
         }
       | {
@@ -19684,17 +19742,61 @@ export type SearchResultCardFragment = {
       | undefined;
     comments?: { __typename?: 'Comments'; id: string; commentsCount: number } | undefined;
   };
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
-  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  };
+  challenge?:
+    | {
+        __typename?: 'Challenge';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
+  opportunity?:
+    | {
+        __typename?: 'Opportunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 
 export type CardParentFragment = {
   __typename?: 'SearchResultCard';
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string } | undefined;
-  opportunity?: { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string } | undefined;
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  };
+  challenge?:
+    | {
+        __typename?: 'Challenge';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
+  opportunity?:
+    | {
+        __typename?: 'Opportunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+      }
+    | undefined;
   callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
 };
 
@@ -19709,6 +19811,7 @@ export type SearchResultUserFragment = {
           __typename?: 'Profile';
           displayName: string;
           id: string;
+          description?: string | undefined;
           location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19727,6 +19830,7 @@ export type SearchResultOrganizationFragment = {
       __typename?: 'Profile';
       displayName: string;
       id: string;
+      description?: string | undefined;
       location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19737,6 +19841,7 @@ export type SearchResultOrganizationFragment = {
 export type SearchResultProfileFragment = {
   __typename?: 'Profile';
   id: string;
+  description?: string | undefined;
   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -19766,6 +19871,7 @@ export type SearchResultHubFragment = {
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
 };
 
@@ -19787,6 +19893,7 @@ export type SearchResultChallengeFragment = {
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
   hub: {
     __typename?: 'Hub';
@@ -19794,6 +19901,7 @@ export type SearchResultChallengeFragment = {
     nameID: string;
     displayName: string;
     context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
 };
 
@@ -19814,8 +19922,15 @@ export type SearchResultOpportunityFragment = {
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
-  challenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
+  challenge: {
+    __typename?: 'Challenge';
+    id: string;
+    nameID: string;
+    displayName: string;
+    authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+  };
   hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 

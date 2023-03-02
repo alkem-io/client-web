@@ -1,10 +1,9 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { escape } from 'lodash';
-import { useLocation, useNavigate } from 'react-router';
-import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { useSearchLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useNavigate } from 'react-router';
+import { RouterLink } from '../../../common/components/core/RouterLink';
+import { useSearchQuery } from '../../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
   SearchResult,
@@ -15,16 +14,17 @@ import {
   SearchResultOrganizationFragment,
   SearchResultType,
   SearchResultUserFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { AUTH_LOGIN_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import { gutters } from '../../../../core/ui/grid/utils';
-import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
-import { useUserContext } from '../../../community/contributor/user';
-import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../routes/constants';
-import { contributionFilterConfig, contributorFilterConfig, FilterDefinition, journeyFilterConfig } from './Filter';
-import MultipleSelect from './MultipleSelect';
+} from '../../../core/apollo/generated/graphql-schema';
+import { AUTH_LOGIN_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
+import PageContentColumn from '../../../core/ui/content/PageContentColumn';
+import { useUserContext } from '../../community/contributor/user';
+import { SEARCH_TERMS_PARAM } from '../routes/constants';
+import { contributionFilterConfig, contributorFilterConfig, FilterConfig, FilterDefinition } from './Filter';
+import MultipleSelect, { MultipleSelectProps } from './MultipleSelect';
 import SearchResultSection from './SearchResultSection';
+import { useQueryParams } from '../../../core/routing/useQueryParams';
+import GridItem from '../../../core/ui/grid/GridItem';
+import SearchSuggestions from './SearchSuggestions';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -41,102 +41,84 @@ export type SearchResultMetaType = SearchResultT<
   | SearchResultOpportunityFragment
 >;
 
-const SearchPage: FC = () => {
+interface SearchViewProps {
+  searchRoute: string;
+  hubId?: string;
+  journeyFilterConfig: FilterConfig;
+  journeyFilterTitle: ReactNode;
+  searchInputProps?: MultipleSelectProps['inputProps'];
+}
+
+const SearchView = ({
+  searchRoute,
+  journeyFilterConfig,
+  journeyFilterTitle,
+  hubId,
+  searchInputProps,
+}: SearchViewProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
 
-  const { search: params } = useLocation();
-  const queryParams = new URLSearchParams(params);
-  const queryParam = queryParams.get('terms');
+  const queryParams = useQueryParams();
 
   const termsFromUrl = useMemo(() => {
-    const terms = (queryParam?.split(',') ?? []).map(term => term.trim()).map(escape) || [];
+    const terms = queryParams.getAll('terms'); // TODO escape if needed
     if (terms.length > MAX_TERMS_SEARCH) {
-      // If too many terms come in the url, return an array with the first 4 elements + a fith element containing the rest of the terms all together
+      // All terms above 4th are joined into a single 5th term
+      // That is mainly coming from UX issues when having more than 5 tags in the Search input
+      // Please note that server also puts certain limits on the maximum number of terms (currently 10)
       return [...terms.slice(0, MAX_TERMS_SEARCH - 1), terms.slice(MAX_TERMS_SEARCH - 1).join(' ')];
     }
     return terms;
-  }, [queryParam]);
-  const [termsFromQuery, setTermsFromQuery] = useState<string[] | undefined>(undefined);
+  }, [queryParams]);
 
-  const [results, setResults] = useState<SearchResultMetaType[]>();
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
+  const searchTerms = termsFromUrl;
 
   const [journeyFilter, setJourneyFilter] = useState<FilterDefinition>(journeyFilterConfig.all);
   const [contributionFilter, setContributionFilter] = useState<FilterDefinition>(contributionFilterConfig.all);
   const [contributorFilter, setContributorFilter] = useState<FilterDefinition>(contributorFilterConfig.all);
 
-  useEffect(() => {
-    setTermsFromQuery(termsFromUrl);
-    setSearchTerms(termsFromUrl);
-  }, [termsFromUrl, setTermsFromQuery, setSearchTerms]);
-
-  const resetState = () => {
+  const resetFilters = () => {
     setJourneyFilter(journeyFilterConfig.all);
     setContributionFilter(contributionFilterConfig.all);
     setContributorFilter(contributorFilterConfig.all);
-    setSearchTerms([]);
-    setResults(undefined);
   };
+
+  useEffect(() => {
+    if (termsFromUrl.length === 0) {
+      resetFilters();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [termsFromUrl.length]);
 
   const handleTermsChange = (newValue: string[]) => {
-    const newTerms = newValue.filter(term => term) ?? [];
-    setSearchTerms(newTerms);
-
-    // avoid sending unnecessary query
-    if (!newValue.length) {
-      resetState();
-    } else {
-      const terms = newTerms.join(',');
-      const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
-      navigate(`${SEARCH_ROUTE}?${params}`);
-      searchQuery(newTerms, [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value]);
+    const params = new URLSearchParams();
+    for (const term of newValue) {
+      params.append(SEARCH_TERMS_PARAM, term);
     }
+    navigate(`${searchRoute}?${params}`);
   };
 
-  const [search, { loading: isSearching }] = useSearchLazyQuery({
-    fetchPolicy: 'no-cache',
-    onCompleted: data => {
-      const updatedResult = toResultType(data);
-      setResults(updatedResult);
-    },
-  });
-
-  const searchQuery = useCallback(
-    (terms: string[], filters: string[]) => {
-      search({
-        variables: {
-          searchData: {
-            terms,
-            tagsetNames,
-            typesFilter: filters,
-          },
-        },
-      });
-    },
-    [search]
+  const filters = useMemo(
+    () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value],
+    [journeyFilter, contributionFilter, contributorFilter]
   );
 
-  useEffect(() => {
-    if (!termsFromQuery || !termsFromQuery.length) {
-      return;
-    }
+  const { data, loading: isSearching } = useSearchQuery({
+    variables: {
+      searchData: {
+        terms: termsFromUrl,
+        tagsetNames,
+        typesFilter: filters,
+        searchInHubFilter: hubId,
+      },
+    },
+    fetchPolicy: 'no-cache',
+    skip: termsFromUrl.length === 0,
+  });
 
-    searchQuery(termsFromQuery ?? [], [
-      ...journeyFilter.value,
-      ...contributionFilter.value,
-      ...contributorFilter.value,
-    ]);
-  }, [searchQuery, termsFromQuery, journeyFilter, contributionFilter, contributorFilter]);
-
-  useEffect(() => {
-    if (!searchTerms.length) {
-      return;
-    }
-
-    searchQuery(searchTerms, [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value]);
-  }, [searchQuery, searchTerms, journeyFilter, contributionFilter, contributorFilter]);
+  const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
 
   const [journeyResults, contributionResults, contributorResults] = useMemo(
     () => [
@@ -156,17 +138,23 @@ const SearchPage: FC = () => {
 
   const suggestions = t('pages.search.suggestions-array', { returnObjects: true });
 
+  const handleSelectSuggestion = (suggestion: string) => handleTermsChange([...searchTerms, suggestion]);
+
   return (
-    <TopLevelDesktopLayout>
-      <Box marginTop={gutters(0.5)} marginX="auto" minWidth="75%">
-        <MultipleSelect
-          onChange={handleTermsChange}
-          selectedTerms={searchTerms}
-          suggestions={suggestions}
-          minLength={2}
-          disabled={isSearching}
-        />
-      </Box>
+    <>
+      <GridItem columns={6}>
+        <Box marginX="auto">
+          <MultipleSelect
+            inputProps={searchInputProps}
+            onChange={handleTermsChange}
+            value={searchTerms}
+            minLength={2}
+            autoFocus
+          >
+            <SearchSuggestions value={searchTerms} options={suggestions} onSelect={handleSelectSuggestion} />
+          </MultipleSelect>
+        </Box>
+      </GridItem>
       <PageContentColumn columns={12}>
         {!isAuthenticated && (
           <Box display="flex" justifyContent="center" paddingBottom={2}>
@@ -176,7 +164,7 @@ const SearchPage: FC = () => {
           </Box>
         )}
         <SearchResultSection
-          title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
+          title={journeyFilterTitle}
           filterTitle={t('pages.search.filter.type.journey')}
           filterConfig={journeyFilterConfig}
           results={journeyResults}
@@ -203,11 +191,11 @@ const SearchPage: FC = () => {
           loading={isSearching}
         />
       </PageContentColumn>
-    </TopLevelDesktopLayout>
+    </>
   );
 };
 
-export { SearchPage };
+export default SearchView;
 
 const toResultType = (query?: SearchQuery): SearchResultMetaType[] => {
   if (!query) {

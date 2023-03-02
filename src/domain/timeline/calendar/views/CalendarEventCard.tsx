@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import CardDetails from '../../../../core/ui/card/CardDetails';
 import CardDescription from '../../../../core/ui/card/CardDescription';
@@ -21,7 +21,7 @@ type NeededFields =
   | 'multipleDays';
 export type CalendarEventCardData = Pick<CalendarEvent, NeededFields> & {
   bannerNarrow?: VisualUriFragment;
-  createdBy: { displayName: string };
+  createdBy?: { displayName: string };
   createdDate: string | Date; // Apollo says Date while actually it's a string
 };
 interface CalendarEventCardProps {
@@ -29,12 +29,12 @@ interface CalendarEventCardProps {
   onClick: (event: CalendarEventCardData) => void;
 }
 
-const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
+const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ event, onClick }, ref) => {
   const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
   const { t } = useTranslation();
 
   return (
-    <ContributeCard onClick={handleClick} columns={0}>
+    <ContributeCard onClick={handleClick} columns={0} ref={ref}>
       <EventCardHeader event={event} />
       <CardDetails transparent>
         <CardDescription marginLeft={gutters(2.5)} paddingY={0} overflow="hidden" overflowGradientColor="paper">
@@ -46,6 +46,6 @@ const CalendarEventCard = ({ event, onClick }: CalendarEventCardProps) => {
       </CardFooter>
     </ContributeCard>
   );
-};
+});
 
 export default CalendarEventCard;

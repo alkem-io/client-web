@@ -4,7 +4,7 @@ import { HubOutlined } from '@mui/icons-material';
 import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
-import JourneyCardVision from '../../common/JourneyCard/JourneyCardVision';
+import JourneyCardDescription from '../../common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
 import { useUserContext } from '../../../community/contributor/user';
 import CardActions from '../../../../core/ui/card/CardActions';
@@ -47,7 +47,7 @@ const HubCard = ({ hubId, displayName, vision, membersCount, tagline, isDemoHub,
       }
       expansion={
         <>
-          <JourneyCardVision>{vision}</JourneyCardVision>
+          <JourneyCardDescription>{vision}</JourneyCardDescription>
           <JourneyCardSpacing />
         </>
       }

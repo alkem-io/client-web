@@ -7,6 +7,8 @@ import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlin
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
 import HubPageBanner from '../../../challenge/hub/layout/HubPageBanner';
 import HubTabs from '../../../challenge/hub/layout/HubTabs';
+import SearchDialog from '../../search/SearchDialog';
+import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 
 interface HubSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -30,15 +32,20 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const HubSettingsLayout: FC<HubSettingsLayoutProps> = props => {
   const entityAttrs = useHub();
 
+  const { hubNameId } = useHub();
+
   return (
-    <EntitySettingsLayout
-      entityTypeName="hub"
-      tabs={tabs}
-      pageBannerComponent={HubPageBanner}
-      tabsComponent={HubTabs}
-      {...entityAttrs}
-      {...props}
-    />
+    <>
+      <EntitySettingsLayout
+        entityTypeName="hub"
+        tabs={tabs}
+        pageBannerComponent={HubPageBanner}
+        tabsComponent={HubTabs}
+        {...entityAttrs}
+        {...props}
+      />
+      <SearchDialog searchRoute={`${buildHubUrl(hubNameId)}/search`} />
+    </>
   );
 };
 

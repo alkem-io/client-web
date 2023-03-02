@@ -3,6 +3,10 @@ fragment OrganizationInfo on Organization {
   nameID
   contactEmail
   domain
+  authorization {
+    id
+    myPrivileges
+  }
   verification {
     id
     status

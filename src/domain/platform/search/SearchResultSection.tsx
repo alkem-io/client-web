@@ -1,14 +1,14 @@
 import { FilterConfig, FilterDefinition } from './Filter';
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
+import CardsLayout from '../../../core/ui/card/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
-import { SearchResultMetaType } from './SearchPage';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { SearchResultMetaType } from './SearchView';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 
 interface ResultSectionProps {
-  title: string;
+  title: ReactNode;
   results: SearchResultMetaType[] | undefined;
   filterTitle?: string;
   filterConfig: FilterConfig;

@@ -10,7 +10,6 @@ import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
 import CardImage from '../../../../../core/ui/card/CardImage';
 import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
 import { Caption } from '../../../../../core/ui/typography';
-import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
@@ -27,7 +26,7 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
         alt={template.info.title}
         defaultImageSvg={<CanvasIcon />}
       />
-      <CardSegmentCaption icon={<Inventory2OutlinedIcon sx={{ marginLeft: gutters(0.5) }} />} align="left">
+      <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>
         <Caption noWrap>{template.innovationPackDisplayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
