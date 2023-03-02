@@ -27,10 +27,11 @@ import { SearchContributionCardCard } from '../../../../shared/components/search
 import { OpportunityIcon } from '../../../../challenge/opportunity/icon/OpportunityIcon';
 import { ChallengeIcon } from '../../../../challenge/challenge/icon/ChallengeIcon';
 import { HubIcon } from '../../../../challenge/hub/icon/HubIcon';
+import CardContent from '../../../../../core/ui/card/CardContent';
 import ContributingUserCard from '../../../../community/contributor/user/ContributingUserCard/ContributingUserCard';
 import ContributingOrganizationCard from '../../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentJourneySegment from '../../../../challenge/common/HubChildJourneyCard/CardParentJourneySegment';
-import { SearchContributionParentSegment } from '../../../../shared/components/search-cards/SearchContributionParentSegment';
+import { CalloutIcon } from '../../../../collaboration/callout/icon/CalloutIcon';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {
@@ -277,18 +278,21 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
       matchedTerms={data.terms}
       url={url}
       parentSegment={
-        <SearchContributionParentSegment
-          calloutDisplayName={data.callout.displayName}
-          calloutUrl={buildCalloutUrl(data.callout.nameID, {
-            hubNameId: data.hub.nameID,
-            challengeNameId: data.challenge?.nameID,
-            opportunityNameId: data.opportunity?.nameID,
-          })}
-          displayName={parent.displayName}
-          iconComponent={parent.icon}
-          locked={parent.locked}
-          url={parent.url}
-        />
+        <CardContent>
+          <CardParentJourneySegment
+            iconComponent={CalloutIcon}
+            parentJourneyUri={buildCalloutUrl(data.callout.nameID, {
+              hubNameId: data.hub.nameID,
+              challengeNameId: data.challenge?.nameID,
+              opportunityNameId: data.opportunity?.nameID,
+            })}
+          >
+            {data.callout.displayName}
+          </CardParentJourneySegment>
+          <CardParentJourneySegment iconComponent={parent.icon} parentJourneyUri={parent.url} locked={parent.locked}>
+            {parent.displayName}
+          </CardParentJourneySegment>
+        </CardContent>
       }
     />
   );
