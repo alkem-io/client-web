@@ -1,6 +1,6 @@
-import { Send } from '@mui/icons-material';
 import {
   Box,
+  ClickAwayListener,
   FormControl,
   FormGroup,
   FormHelperText,
@@ -16,9 +16,10 @@ import {
   styled,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, forwardRef, PropsWithChildren, useMemo, useRef, useState } from 'react';
+import React, { FC, forwardRef, PropsWithChildren, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionItem, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
+import EmojiPicker, { EmojiStyle, SkinTonePickerLocation } from 'emoji-picker-react';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -28,6 +29,10 @@ import { makeAbsoluteUrl } from '../../../../core/utils/links';
 import TranslationKey from '../../../../types/TranslationKey';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useValidationMessageTranslation } from '../../i18n/ValidationMessageTranslation';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import SendIcon from '@mui/icons-material/Send';
+import { useCombinedRefs } from '../../utils/useCombinedRefs';
 
 const MAX_USERS_LISTED = 30;
 const POPPER_Z_INDEX = 1400; // Dialogs are 1300
@@ -79,11 +84,13 @@ const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = (
  * Wrapper around MentionsInput to style it properly and to query for users on mentions
  */
 interface CommentsInputProps {
-  name: string;
+  value: string;
+  onValueChange?: (newValue: string) => void;
+  onBlur?: () => void;
   inactive?: boolean;
   readOnly?: boolean;
   maxLength?: number;
-  submitOnReturnKey?: boolean;
+  onReturnKey?: (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => void;
   popperAnchor: SuggestionsContainerProps['anchorElement'];
 }
 
@@ -109,16 +116,12 @@ const StyledCommentsInput = styled(Box)(({ theme }) => ({
 export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElement | null, InputBaseComponentProps>(
   (props, ref) => {
     // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentsInputProps>
-    const {
-      name,
-      inactive,
-      readOnly,
-      maxLength,
-      submitOnReturnKey = false,
-      popperAnchor,
-    } = props as CommentsInputProps;
+    const { value, onValueChange, onBlur, inactive, readOnly, maxLength, onReturnKey, popperAnchor } =
+      props as CommentsInputProps;
 
     const { t } = useTranslation();
+    const containerRef = useCombinedRefs(null, ref);
+
     const [currentMentionedUsers, setCurrentMentionedUsers] = useState<MentionItem[]>([]);
     const [tooltipOpen, setTooltipOpen] = useState(false);
     const emptyQueries = useRef<string[]>([]).current;
@@ -140,8 +143,9 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
         emptyQueries.push(search);
       }
       const mentionableUsers = users
+        //!! TODO:  Ask Product if we want to mention ourselves and to mention multiple times the same user
         // Only show users that are not already mentioned
-        .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
+        .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined) //!!
         // Map users to MentionableUser
         .map(user => ({
           id: user.nameID,
@@ -153,22 +157,26 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
       callback(mentionableUsers);
     };
 
-    const { submitForm } = useFormikContext();
-    const [field, , helper] = useField(name);
+    // Open a tooltip (which is the same Popper that contains the maching users) but with a helper message
+    // that says something like "Start typing to mention someone"
+    useEffect(() => {
+      const input = containerRef.current?.querySelector('textarea');
+      if (!input) return;
 
-    const onChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
-      if (newValue && (newValue === '@' || newValue.endsWith(' @') || newValue.endsWith('\n@'))) {
-        setTooltipOpen(true);
-      } else {
-        setTooltipOpen(false);
+      const cursorPosition = input.selectionEnd;
+      let isMentionOpen = input.value === '@';
+      if (!isMentionOpen && cursorPosition >= 2) {
+        const lastChars = input.value.slice(cursorPosition - 2, cursorPosition);
+        isMentionOpen = lastChars === ' @' || lastChars === '\n@';
       }
+      setTooltipOpen(isMentionOpen);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
 
-      if (readOnly) {
-        return;
-      }
+    const handleChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
       // TODO: newPlaintextValue should be the char counter
       setCurrentMentionedUsers(mentions);
-      helper.setValue(newValue);
+      onValueChange && onValueChange(newValue);
     };
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement> | React.KeyboardEvent<HTMLInputElement>) => {
@@ -177,27 +185,27 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
         return;
       }
       if (event.key === 'Enter' && event.shiftKey === false) {
-        if (submitOnReturnKey) {
+        if (onReturnKey) {
           event.preventDefault();
-          submitForm();
+          onReturnKey(event);
         }
       }
     };
 
     return (
       <StyledCommentsInput
-        ref={ref}
+        ref={containerRef}
         sx={theme => ({
           '& textarea': { color: inactive ? theme.palette.neutralMedium.main : theme.palette.common.black },
         })}
       >
         <MentionsInput
-          value={field.value}
-          onChange={onChange}
+          value={value}
+          onChange={handleChange}
           onKeyDown={onKeyDown}
           readOnly={readOnly}
           maxLength={maxLength}
-          onBlur={() => helper.setTouched(true)}
+          onBlur={onBlur}
           forceSuggestionsAboveCursor
           allowSpaceInQuery
           customSuggestionsContainer={children => (
@@ -240,6 +248,32 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
 );
 
 /**
+ * Emoji selector
+ */
+interface EmojiSelectorProps {
+  anchorElement: PopperProps['anchorEl'];
+  open: boolean;
+  onClose: () => void;
+  onEmojiClick: (emoji: string, event: MouseEvent) => void;
+}
+
+const EmojiSelector: FC<EmojiSelectorProps> = ({ anchorElement, open, onEmojiClick, onClose }) => {
+  return (
+    <Popper open={open} placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
+      <ClickAwayListener onClickAway={onClose}>
+        <Paper elevation={3}>
+          <EmojiPicker
+            emojiStyle={EmojiStyle.NATIVE}
+            skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
+            onEmojiClick={(emoji, event) => onEmojiClick(emoji.emoji, event)}
+          />
+        </Paper>
+      </ClickAwayListener>
+    </Popper>
+  );
+};
+
+/**
  * Material styles wrapper, with the border and the Send arrow IconButton and the char counter
  * @param param0
  * @returns
@@ -267,10 +301,14 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   submitOnReturnKey = false,
   size = 'medium',
 }) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement>(null);
+  const emojiButtonRef = useRef(null);
+  const [isEmojiSelectorOpen, setEmojiSelectorOpen] = useState(false);
+
   const tErr = useValidationMessageTranslation();
 
-  const [field, meta] = useField(name);
+  const [field, meta, helpers] = useField<string>(name);
+  const { submitForm } = useFormikContext();
 
   const isError = Boolean(meta.error);
   const helperText = useMemo(() => {
@@ -283,6 +321,28 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
 
   const inactive = disabled || submitting;
 
+  const cursorPositionRef = useRef<number | null>(null);
+
+  const mentionButtonClick = () => {
+    const input = ref.current?.querySelector('textarea');
+    const cursorPosition = input?.selectionEnd ?? field.value.length;
+
+    const newValue = field.value.slice(0, cursorPosition) + ' @' + field.value.slice(cursorPosition);
+
+    cursorPositionRef.current = cursorPosition;
+    helpers.setValue(newValue);
+  };
+
+  useLayoutEffect(() => {
+    const input = ref.current?.querySelector('textarea');
+    const cursorPosition = cursorPositionRef.current;
+    if (input && cursorPosition !== null) {
+      input.focus();
+      input.setSelectionRange(cursorPosition + 2, cursorPosition + 2);
+    }
+    cursorPositionRef.current = null;
+  }, [field.value]);
+
   return (
     <FormGroup>
       <FormControl>
@@ -292,19 +352,47 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
           size={size}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton aria-label="post comment" size={'small'} type="submit" disabled={inactive}>
-                <Send />
+              <IconButton
+                ref={emojiButtonRef}
+                aria-label="Insert emoji"
+                size="small"
+                onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
+                disabled={inactive || readOnly}
+              >
+                <EmojiEmotionsOutlinedIcon />
+              </IconButton>
+              <EmojiSelector
+                open={isEmojiSelectorOpen}
+                onClose={() => setEmojiSelectorOpen(false)}
+                anchorElement={emojiButtonRef.current}
+                onEmojiClick={emoji => {
+                  helpers.setValue(meta.value + emoji);
+                  setEmojiSelectorOpen(false);
+                }}
+              />
+              <IconButton
+                aria-label="Mention someone"
+                size="small"
+                onClick={mentionButtonClick}
+                disabled={inactive || readOnly}
+              >
+                <AlternateEmailIcon />
+              </IconButton>
+              <IconButton aria-label="post comment" size="small" type="submit" disabled={inactive}>
+                <SendIcon />
               </IconButton>
             </InputAdornment>
           }
           aria-describedby="filled-weight-helper-text"
           inputComponent={CommentsInput}
           inputProps={{
-            name,
+            value: field.value,
+            onValueChange: (newValue: string) => helpers.setValue(newValue),
+            onBlur: () => helpers.setTouched(true),
             inactive,
             readOnly,
             maxLength,
-            submitOnReturnKey,
+            onReturnkey: submitOnReturnKey ? submitForm : undefined,
             popperAnchor: ref.current,
           }}
         />
