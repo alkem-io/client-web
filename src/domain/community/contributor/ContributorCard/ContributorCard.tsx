@@ -9,14 +9,16 @@ import CardTags from '../../../../core/ui/card/CardTags';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
 import CardBanner from '../../../../core/ui/card/CardImageHeader';
+import JourneyCardDescription from '../../../challenge/common/JourneyCard/JourneyCardDescription';
 
 export interface ContributorCardProps extends ContributeCardContainerProps {
   displayName: string;
+  description?: string;
   avatarUri?: string;
   city?: string;
   country?: string;
   tags: string[];
-  matchedTerms?: boolean;
+  matchedTerms?: string[];
   userUri: string;
   actions?: ReactNode;
   headerActions?: ReactNode;
@@ -25,6 +27,7 @@ export interface ContributorCardProps extends ContributeCardContainerProps {
 
 const ContributorCard = ({
   displayName,
+  description,
   avatarUri,
   city,
   country,
@@ -40,6 +43,8 @@ const ContributorCard = ({
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   const Tags = matchedTerms ? CardMatchedTerms : CardTags;
+
+  const tagsElement = <Tags tags={matchedTerms ?? tags} marginTop={gutters()} />;
 
   return (
     <>
@@ -60,8 +65,18 @@ const ContributorCard = ({
           </Box>
         </Box>
         <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={gutters(0.5)}>
-          <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} marginBottom={gutters()} />
-          <ExpandableCardFooter tagsComponent={Tags} tags={tags} expanded={isExpanded} paddingLeft={gutters()} />
+          <LocationCardSegment city={city} countryCode={country} paddingX={gutters()} />
+          <ExpandableCardFooter
+            tags={tagsElement}
+            expanded={isExpanded}
+            paddingLeft={gutters()}
+            expansion={
+              <>
+                {description && <JourneyCardDescription rows={3}>{description}</JourneyCardDescription>}
+                {matchedTerms ? <CardTags tags={tags} rows={3} /> : undefined}
+              </>
+            }
+          />
         </Box>
       </ContributeCard>
     </>

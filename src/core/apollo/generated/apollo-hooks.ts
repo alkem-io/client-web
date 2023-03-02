@@ -2081,16 +2081,28 @@ export const CardParentFragmentDoc = gql`
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     challenge {
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     opportunity {
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     callout {
       id
@@ -2130,6 +2142,7 @@ export const SearchResultCardFragmentDoc = gql`
 export const SearchResultProfileFragmentDoc = gql`
   fragment SearchResultProfile on Profile {
     id
+    description
     location {
       id
       country
@@ -2189,6 +2202,10 @@ export const SearchResultHubFragmentDoc = gql`
         id
         tags
       }
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -2212,6 +2229,10 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         tags
       }
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     hub {
       id
@@ -2219,6 +2240,10 @@ export const SearchResultChallengeFragmentDoc = gql`
       displayName
       context {
         tagline
+      }
+      authorization {
+        id
+        anonymousReadAccess
       }
     }
   }
@@ -2242,11 +2267,19 @@ export const SearchResultOpportunityFragmentDoc = gql`
         id
         tags
       }
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     challenge {
       id
       nameID
       displayName
+      authorization {
+        id
+        anonymousReadAccess
+      }
     }
     hub {
       id

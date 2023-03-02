@@ -6,9 +6,9 @@ import React, { ChangeEventHandler, FC, KeyboardEventHandler, Ref, useState } fr
 import { Chip, TextField } from '@mui/material';
 import { uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { MAX_TERMS_SEARCH } from '../../search/SearchView';
+import { gutters } from '../../../core/ui/grid/utils';
+import useCurrentBreakpoint from '../../../core/ui/utils/useCurrentBreakpoint';
+import { MAX_TERMS_SEARCH } from './SearchView';
 import { InputBaseProps } from '@mui/material/InputBase';
 
 export interface MultipleSelectProps {

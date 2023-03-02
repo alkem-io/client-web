@@ -11,7 +11,6 @@ import CardTags from '../../../../../core/ui/card/CardTags';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
 import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
 import { Caption } from '../../../../../core/ui/typography';
-import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps<TemplateInnovationPackMetaInfo> {}
 
@@ -27,7 +26,7 @@ const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTem
         <CardDescription>{template.info.description}</CardDescription>
         <CardTags tags={template.info.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
-      <CardSegmentCaption icon={<Inventory2OutlinedIcon sx={{ marginLeft: gutters(0.5) }} />} align="left">
+      <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>
         <Caption noWrap>{template.innovationPackDisplayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>

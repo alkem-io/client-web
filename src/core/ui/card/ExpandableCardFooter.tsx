@@ -1,7 +1,7 @@
 import { Box, BoxProps, Collapse } from '@mui/material';
 import CardExpandButton from './CardExpandButton';
 import CardContent from './CardContent';
-import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import React, { cloneElement, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { CardTagsProps } from './CardTags';
 
 interface CardExpandableProps extends BoxProps {
@@ -10,8 +10,7 @@ interface CardExpandableProps extends BoxProps {
   expansion?: ReactNode;
   actions?: ReactNode;
   expansionActions?: ReactNode;
-  tagsComponent: ComponentType<CardTagsProps>;
-  tags: string[];
+  tags: ReactElement<CardTagsProps>;
 }
 
 const ExpandableCardFooter = ({
@@ -19,7 +18,6 @@ const ExpandableCardFooter = ({
   expansionActions,
   expansion,
   tags,
-  tagsComponent: Tags,
   expanded = false,
   expandable = true,
   ...containerProps
@@ -34,14 +32,14 @@ const ExpandableCardFooter = ({
         flexWrap={actions ? 'wrap' : 'nowrap'}
         {...containerProps}
       >
-        <Tags tags={tags} visibility={expanded ? 'hidden' : 'visible'} flexBasis={actions ? '100%' : undefined} />
+        {cloneElement(tags, { visibility: expanded ? 'hidden' : 'visible', flexBasis: actions ? '100%' : undefined })}
         {actions}
         {expandable && <CardExpandButton expanded={expanded} />}
       </Box>
       <Collapse in={expandable && expanded}>
         <CardContent {...containerProps}>
           {expansion}
-          <Tags tags={tags} rows={2} />
+          {cloneElement(tags, { rows: 2 })}
           {expansionActions}
         </CardContent>
       </Collapse>

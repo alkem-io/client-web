@@ -19,14 +19,9 @@ import { AUTH_LOGIN_PATH } from '../../../core/auth/authentication/constants/aut
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { useUserContext } from '../../community/contributor/user';
 import { SEARCH_TERMS_PARAM } from '../routes/constants';
-import {
-  contributionFilterConfig,
-  contributorFilterConfig,
-  FilterConfig,
-  FilterDefinition,
-} from '../pages/Search/Filter';
-import MultipleSelect, { MultipleSelectProps } from '../pages/Search/MultipleSelect';
-import SearchResultSection from '../pages/Search/SearchResultSection';
+import { contributionFilterConfig, contributorFilterConfig, FilterConfig, FilterDefinition } from './Filter';
+import MultipleSelect, { MultipleSelectProps } from './MultipleSelect';
+import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import GridItem from '../../../core/ui/grid/GridItem';
 import SearchSuggestions from './SearchSuggestions';

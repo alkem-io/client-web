@@ -5,16 +5,19 @@ import { gutters } from '../grid/utils';
 import { BoxTypeMap } from '@mui/material/Box/Box';
 
 interface CardSegmentCaptionProps {
-  align: 'left' | 'right';
+  align?: 'left' | 'right';
   icon?: ReactNode;
+  secondaryIcon?: ReactNode;
   noWrap?: boolean;
-  children: Exclude<ReactNode, boolean | null | undefined>;
+  disablePadding?: boolean;
 }
 
 const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
-  icon,
-  align,
+  icon: mainIcon,
+  secondaryIcon,
+  align = 'left',
   noWrap,
+  disablePadding,
   children,
   ...containerProps
 }: CardSegmentCaptionProps & BoxProps<D, P>) => {
@@ -23,15 +26,21 @@ const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultCom
       display="flex"
       gap={1}
       height={gutters(2)}
+      paddingX={disablePadding ? undefined : 1.5}
       alignItems="center"
       justifyContent={align === 'right' ? 'end' : 'start'}
-      flexDirection={align === 'right' ? 'row' : 'row-reverse'}
+      flexDirection={align === 'right' ? 'row-reverse' : 'row'}
       {...containerProps}
     >
+      {mainIcon}
       <Caption minWidth={0} noWrap={noWrap}>
         {children}
       </Caption>
-      {icon}
+      {secondaryIcon && (
+        <Box marginLeft={align === 'left' ? 'auto' : undefined} marginRight={align === 'right' ? 'auto' : undefined}>
+          {secondaryIcon}
+        </Box>
+      )}
     </Box>
   );
 };

@@ -4,16 +4,17 @@ import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import stopPropagationFromLinks from '../../../../core/ui/utils/stopPropagationFromLinks';
 
-interface JourneyCardVisionProps {
+interface JourneyCardDescriptionProps {
+  rows?: number;
   children: string;
 }
 
-const JourneyCardVision = ({ children }: JourneyCardVisionProps) => {
+const JourneyCardDescription = ({ rows = 6, children }: JourneyCardDescriptionProps) => {
   return (
-    <OverflowGradient maxHeight={gutters(6)} onClick={stopPropagationFromLinks}>
+    <OverflowGradient maxHeight={gutters(rows)} onClick={stopPropagationFromLinks}>
       <WrapperMarkdown card>{children}</WrapperMarkdown>
     </OverflowGradient>
   );
 };
 
-export default JourneyCardVision;
+export default JourneyCardDescription;

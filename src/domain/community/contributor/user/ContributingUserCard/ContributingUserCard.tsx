@@ -16,7 +16,9 @@ const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserC
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
   const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
   const openMessageUserDialog: MouseEventHandler<HTMLButtonElement> = event => {
-    event.stopPropagation();
+    // Since ContributorCard is an <a>, we need to call preventDefault instead of stopPropagation
+    // to suppress the default behavior of going to the parent "href"
+    event.preventDefault();
     setIsMessageUserDialogOpen(true);
   };
 

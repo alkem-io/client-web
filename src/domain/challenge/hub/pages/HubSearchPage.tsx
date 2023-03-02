@@ -5,7 +5,7 @@ import SearchView from '../../../platform/search/SearchView';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { useResolvedPath } from 'react-router-dom';
 import { useHub } from '../HubContext/useHub';
-import { FilterConfig } from '../../../platform/pages/Search/Filter';
+import { FilterConfig } from '../../../platform/search/Filter';
 import { useTranslation } from 'react-i18next';
 import { useSearchContext } from '../../../platform/search/SearchContext';
 
