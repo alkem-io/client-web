@@ -1,6 +1,7 @@
 import React, { ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
 import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
 import { Box, BoxProps } from '@mui/material';
+import { useResizeDetector } from 'react-resize-detector';
 
 enum Stage {
   MEASURING_EXPECTED_HEIGHT,
@@ -20,6 +21,7 @@ enum ActionTypes {
   AddChild,
   RemoveChild,
   Finish,
+  Reset,
 }
 
 interface Action<ActionType> {
@@ -33,8 +35,11 @@ interface ActionSetExpectedHeight extends Action<ActionTypes.SetExpectedHeight> 
 interface ActionAddChild extends Action<ActionTypes.AddChild> {}
 interface ActionRemoveChild extends Action<ActionTypes.RemoveChild> {}
 interface ActionFinish extends Action<ActionTypes.Finish> {}
+interface ActionReset extends Action<ActionTypes.Reset> {
+  payload: number | undefined;
+}
 
-type HandledAction = ActionSetExpectedHeight | ActionAddChild | ActionRemoveChild | ActionFinish;
+type HandledAction = ActionSetExpectedHeight | ActionAddChild | ActionRemoveChild | ActionFinish | ActionReset;
 
 const getNextState = (state: LinesFitterState, action: HandledAction): LinesFitterState => {
   switch (action.type) {
@@ -64,6 +69,9 @@ const getNextState = (state: LinesFitterState, action: HandledAction): LinesFitt
         ...state,
         stage: Stage.FINISHED,
       };
+    }
+    case ActionTypes.Reset: {
+      return getInitialState(action.payload);
     }
     default:
       return state as never;
@@ -106,6 +114,22 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
   const initialHeight = getInitialHeight(height);
 
   const [state, dispatch] = useReducer(getNextState, getInitialState(initialHeight));
+
+  const containerRef = useRef<HTMLElement | null>(null);
+  useLayoutEffect(() => {
+    containerRef.current = wrapperElementRef.current?.parentElement ?? null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wrapperElementRef.current]);
+
+  const { width } = useResizeDetector({ targetRef: containerRef });
+
+  useLayoutEffect(() => {
+    dispatch({
+      type: ActionTypes.Reset,
+      payload: getInitialHeight(height),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [width]);
 
   const measureWrapperHeight = () => {
     const element = wrapperElementRef.current!;
