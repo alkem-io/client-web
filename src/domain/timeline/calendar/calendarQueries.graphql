@@ -1,4 +1,4 @@
-query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
+query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
   hub(ID: $hubId) {
     id
     timeline {
@@ -26,14 +26,14 @@ fragment CalendarEventInfo on CalendarEvent {
   }
 }
 
-query hubCalendarEvents ($hubId: UUID_NAMEID!) {
+query hubCalendarEvents($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     timeline {
       id
       calendar {
         id
-        authorization{
+        authorization {
           id
           myPrivileges
         }
@@ -45,14 +45,14 @@ query hubCalendarEvents ($hubId: UUID_NAMEID!) {
   }
 }
 
-query calendarEventDetails  ($hubId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
+query calendarEventDetails($hubId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     timeline {
       id
       calendar {
         id
-        event (ID: $eventId) {
+        event(ID: $eventId) {
           ...CalendarEventDetails
         }
       }

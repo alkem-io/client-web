@@ -44,16 +44,16 @@ const UserPageBanner: FC = () => {
   }, [references]);
 
   if (!loading && userMetadata) {
-    const { displayName, profile, phone, isContactable } = userMetadata.user;
+    const { profile, phone, isContactable } = userMetadata.user;
 
     return (
       <ProfileBanner
-        title={displayName}
-        tagline={profile?.description}
-        location={profile?.location}
+        title={profile.displayName}
+        tagline={profile.description}
+        location={profile.location}
         phone={phone}
         socialLinks={socialLinks}
-        avatarUrl={profile?.avatar?.uri}
+        avatarUrl={profile.visual?.uri}
         loading={loading}
         onSendMessage={handleSendMessage}
         isContactable={isContactable && currentUser?.user.id !== userId}

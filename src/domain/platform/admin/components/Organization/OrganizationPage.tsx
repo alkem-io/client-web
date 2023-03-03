@@ -64,20 +64,19 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
 
   const handleSubmit = async (editedOrganization: CreateOrganizationInput | UpdateOrganizationInput) => {
     if (mode === EditMode.new) {
-      const { nameID, profileData, contactEmail, displayName, domain, legalEntityName, website } =
+      const { nameID, profileData, contactEmail, domain, legalEntityName, website } =
         editedOrganization as CreateOrganizationInput;
 
       const input: CreateOrganizationInput = {
         nameID,
         contactEmail: contactEmail,
-        displayName: displayName,
         domain: domain,
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          description: profileData?.description,
-          referencesData: profileData?.referencesData,
-          tagsetsData: profileData?.tagsetsData,
+          displayName: profileData.displayName,
+          description: profileData.description,
+          referencesData: profileData.referencesData,
         },
       };
 
@@ -94,7 +93,6 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
         nameID,
         profileData,
         contactEmail,
-        displayName,
         domain,
         legalEntityName,
         website,
@@ -120,12 +118,11 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
         ID: orgID,
         nameID,
         contactEmail: contactEmail,
-        displayName: displayName,
         domain: domain,
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          ID: profileId || '',
+          displayName: profileData?.displayName,
           description: profileData?.description,
           location: {
             city: profileData?.location?.city,

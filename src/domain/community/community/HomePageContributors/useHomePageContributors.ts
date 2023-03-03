@@ -42,8 +42,8 @@ const useHomePageContributors = () => {
     const users = usersData?.users ?? [];
     const usersCards = users.map<ContributorCardProps>(user => ({
       id: user.id,
-      avatar: user.profile?.avatar?.uri || '',
-      displayName: user.displayName,
+      avatar: user.profile.visual?.uri || '',
+      displayName: user.profile.displayName,
       url: buildUserProfileUrl(user.nameID),
       tooltip: {
         tags: user.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
@@ -56,8 +56,8 @@ const useHomePageContributors = () => {
     const organizations = organizationsData?.organizations ?? [];
     const organizationsCards = organizations.map<ContributorCardProps>(org => ({
       id: org.id,
-      avatar: getVisualAvatar(org?.profile?.avatar) || '',
-      displayName: org.displayName,
+      avatar: getVisualAvatar(org?.profile.visual) || '',
+      displayName: org.profile.displayName,
       url: buildOrganizationUrl(org.nameID),
     }));
 

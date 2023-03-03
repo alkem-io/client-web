@@ -3,10 +3,10 @@ import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildOpportunityUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntity } from '../../../types/NameableEntity';
+import { NameableEntityOld } from '../../../types/NameableEntity';
 
 export interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
-  opportunity: NameableEntity;
+  opportunity: NameableEntityOld;
 }
 
 export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewProps> = props => {

@@ -1790,10 +1790,12 @@ export const GroupInfoFragmentDoc = gql`
     name
     profile {
       id
+      displayName
       visual(type: AVATAR) {
         ...VisualFull
       }
       description
+      tagline
       references {
         id
         uri

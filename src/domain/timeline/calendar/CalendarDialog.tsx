@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DialogContent } from '../../../common/components/core/dialog';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
-import { CalendarEvent } from '../../../core/apollo/generated/graphql-schema';
+import { CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Actions } from '../../../core/ui/actions/Actions';
 import BackButton from '../../../core/ui/actions/BackButton';
@@ -34,7 +34,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
-  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEvent, 'id' | 'nameID' | 'displayName'>>();
+  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEventDetailsFragment, 'id' | 'nameID' | 'profile'>>();
 
   const handleClose = () => {
     setIsCreatingEvent(false);
@@ -47,9 +47,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
     () => ({
       startDate: dateRounded(),
       durationMinutes: 30,
-      displayName: '',
       profile: {
         id: '',
+        displayName: '',
         description: t('calendar.defaultEventDescription'),
         references: [],
         tagset: { id: '', name: '', tags: [] },
@@ -89,7 +89,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                 <>
                   <DialogHeader onClose={() => setDeletingEvent(undefined)}>{t('calendar.delete-event')}</DialogHeader>
                   <DialogContent>
-                    <BlockTitle>{t('calendar.delete-confirmation', { title: deletingEvent.displayName })}</BlockTitle>
+                    <BlockTitle>
+                      {t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName })}
+                    </BlockTitle>
                     <Actions justifyContent="space-around" marginTop={gutters()}>
                       <Button
                         color="error"

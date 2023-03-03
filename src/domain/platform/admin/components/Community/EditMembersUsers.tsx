@@ -61,7 +61,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             renderRow={(m, Cell) => (
               <>
                 <TableCell>
-                  <Cell>{m.displayName}</Cell>
+                  <Cell>{m.profile.displayName}</Cell>
                 </TableCell>
                 <TableCell>
                   <Cell>{m.firstName}</Cell>
@@ -89,7 +89,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             loading={loadingAvailableMembers}
             updating={updating}
             header={<TableCell>Full Name</TableCell>}
-            renderRow={m => <TableCell>{m.displayName}</TableCell>}
+            renderRow={m => <TableCell>{m.profile.displayName}</TableCell>}
           />
         </Grid>
       </Grid>

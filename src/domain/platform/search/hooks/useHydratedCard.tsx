@@ -39,7 +39,7 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   }
   const user = data.user;
   const profile = user.profile;
-  const avatarUri = profile?.avatar?.uri;
+  const avatarUri = profile?.visual?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
   const tags = profile?.tagsets?.[0].tags ?? [];
@@ -47,7 +47,7 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   return (
     <ContributingUserCard
       id={user.id}
-      displayName={user.displayName}
+      displayName={user.profile.displayName}
       description={profile?.description}
       avatarUri={avatarUri}
       city={city}
@@ -68,7 +68,7 @@ const _hydrateOrganizationCard = (
   }
   const organization = data.organization;
   const profile = data.organization.profile;
-  const avatarUri = profile?.avatar?.uri;
+  const avatarUri = profile?.visual?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
   const tags = profile.tagsets?.[0].tags ?? [];
@@ -78,7 +78,7 @@ const _hydrateOrganizationCard = (
 
   return (
     <ContributingOrganizationCard
-      displayName={organization.displayName}
+      displayName={organization.profile.displayName}
       description={profile.description}
       avatarUri={avatarUri}
       city={city}
@@ -273,8 +273,8 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
 
   return (
     <SearchContributionCardCard
-      name={card.displayName}
-      author={card.createdBy?.displayName}
+      name={card.profile.displayName}
+      author={card.createdBy?.profile.displayName}
       description={card.profile?.description}
       tags={card.profile?.tagset?.tags}
       createdDate={card.createdDate}

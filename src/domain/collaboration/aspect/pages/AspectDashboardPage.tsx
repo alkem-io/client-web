@@ -25,7 +25,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
           <AspectDashboardView
             mode="messages"
             banner={aspect?.banner?.uri}
-            displayName={aspect?.displayName}
+            displayName={aspect?.profile.displayName}
             description={aspect?.profile?.description}
             type={aspect?.type}
             tags={aspect?.profile?.tagset?.tags}

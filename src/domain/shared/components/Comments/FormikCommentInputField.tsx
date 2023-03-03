@@ -145,8 +145,8 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
         // Map users to MentionableUser
         .map(user => ({
           id: user.nameID,
-          display: user.displayName,
-          avatarUrl: user.profile?.avatar?.uri,
+          display: user.profile.displayName,
+          avatarUrl: user.profile.visual?.uri,
           city: user.profile?.location?.city,
           country: user.profile?.location?.country,
         }));

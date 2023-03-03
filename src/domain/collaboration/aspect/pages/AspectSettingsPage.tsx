@@ -40,10 +40,9 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       nameID: aspect.nameID,
       type: aspect.type,
       profileData: {
+        displayName: aspect.profile.displayName,
         description: aspect.profile?.description!,
-        tags: aspect?.profile?.tagset?.tags,
       },
-      displayName: aspect.displayName,
       references: aspect?.profile?.references,
     };
 

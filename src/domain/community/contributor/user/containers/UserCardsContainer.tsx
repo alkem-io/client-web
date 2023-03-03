@@ -29,8 +29,8 @@ export const UserCardsContainer: FC<UserCardsContainerProps> = ({ children, user
       u =>
         ({
           tags: u.profile?.tagsets?.flatMap(x => x.tags),
-          displayName: u.displayName,
-          avatarSrc: u.profile?.avatar?.uri,
+          displayName: u.profile.displayName,
+          avatarSrc: u.profile.visual?.uri,
           url: buildUserProfileUrl(u.nameID),
           city: u.profile?.location?.city || '',
           country: COUNTRIES_BY_CODE[u.profile?.location?.country || ''],
