@@ -17,9 +17,9 @@ export interface MentionMatch {
  * @param markdownString
  * @param plainTextPosition
  * @param getCursorPositionInMention - a callback that computes cursor position inside a mention based on
- * 1. RegExpExecArray of the match: `match.index` is the position of the mention in the Markdown string
- *                                  `match[0]` is the Markdown mention
- *                                  `match[1]` is its plaintext form
+ * 1. MentionMatch: `mention.offset` is the global position of the mention in the Markdown string
+ *                  `mention.markdown` is a string containing Markdown form of the mention
+ *                  `mention.plainText` is a string containing plain text form of the mention
  * 2. relativeOffset - cursor position relative to the start of the plaintext mention
  * 3. globalOffset - cursor position relative to the start of the string (plaintext)
  */
@@ -36,25 +36,25 @@ export const findCursorPositionInMarkdown = (
 
   // eslint-disable-next-line no-cond-assign
   while ((match = regexp.exec(markdownString))) {
-    if (markdownLength + searchOffset <= match.index) {
+    const mention: MentionMatch = {
+      offset: match.index,
+      markdown: match[0],
+      plainText: match[1],
+    };
+    if (markdownLength + searchOffset <= mention.offset) {
       const markdownPosition = markdownLength + searchOffset;
       return {
         markdown: markdownPosition,
         plainText: plainTextPosition,
       };
     }
-    searchOffset -= match.index - markdownLength;
-    markdownLength = match.index;
-    if (searchOffset <= match[1].length) {
-      const mention: MentionMatch = {
-        offset: match.index,
-        markdown: match[0],
-        plainText: match[1],
-      };
+    searchOffset -= mention.offset - markdownLength;
+    markdownLength = mention.offset;
+    if (searchOffset <= mention.plainText.length) {
       return getCursorPositionInMention(mention, searchOffset, plainTextPosition);
     }
-    searchOffset -= match[1].length;
-    markdownLength = match.index + match[0].length;
+    searchOffset -= mention.plainText.length;
+    markdownLength = mention.offset + mention.markdown.length;
   }
 
   return {
