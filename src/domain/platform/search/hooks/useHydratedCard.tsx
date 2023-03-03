@@ -42,7 +42,7 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   const avatarUri = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
-  const tags = profile?.tagsets?.[0].tags ?? [];
+  const tags = profile?.tagsets?.[0]?.tags ?? [];
 
   return (
     <ContributingUserCard
@@ -71,7 +71,7 @@ const _hydrateOrganizationCard = (
   const avatarUri = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
-  const tags = profile.tagsets?.[0].tags ?? [];
+  const tags = profile.tagsets?.[0]?.tags ?? [];
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);
   const isMember = organizationRoles?.roles.some(x => x === RoleType.Associate);
