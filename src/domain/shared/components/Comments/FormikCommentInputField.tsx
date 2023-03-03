@@ -338,12 +338,12 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
 
   const cursorPositionRef = useRef<number | null>(null);
 
-  const mentionButtonClick = () => {
+  const insertTextInCursor = (text: string) => {
     const input = ref.current?.querySelector('textarea');
     const cursorPosition = input?.selectionEnd;
 
     if (!cursorPosition) {
-      helpers.setValue(field.value + MENTION_WITH_SPACE);
+      helpers.setValue(field.value + text);
       return;
     }
 
@@ -355,11 +355,15 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
 
     const newValue =
       field.value.slice(0, cursorPositionInMarkdown.markdown) +
-      MENTION_WITH_SPACE +
+      text +
       field.value.slice(cursorPositionInMarkdown.markdown);
 
     cursorPositionRef.current = cursorPositionInMarkdown.plainText;
     helpers.setValue(newValue);
+  };
+
+  const mentionButtonClick = () => {
+    insertTextInCursor(MENTION_WITH_SPACE);
   };
 
   useLayoutEffect(() => {
@@ -372,6 +376,11 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
     cursorPositionRef.current = null;
   }, [field.value]);
 
+  const emojiClick = (emoji: string) => {
+    insertTextInCursor(emoji);
+    setEmojiSelectorOpen(false);
+  };
+
   return (
     <FormGroup>
       <FormControl>
@@ -379,14 +388,26 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
           ref={ref}
           multiline
           size={size}
-          endAdornment={
-            <InputAdornment position="end">
+          sx={theme => ({
+            '::before': {
+              content: '""',
+              position: 'absolute',
+              left: 0,
+              borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
+              backgroundColor: theme.palette.background.default,
+              width: theme.spacing(7.5),
+              height: '100%',
+            },
+          })}
+          startAdornment={
+            <InputAdornment position="start">
               <IconButton
                 ref={emojiButtonRef}
                 aria-label="Insert emoji"
                 size="small"
                 onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
                 disabled={inactive || readOnly}
+                sx={theme => ({ marginLeft: theme.spacing(-1) })}
               >
                 <EmojiEmotionsOutlinedIcon />
               </IconButton>
@@ -394,10 +415,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                 open={isEmojiSelectorOpen}
                 onClose={() => setEmojiSelectorOpen(false)}
                 anchorElement={emojiButtonRef.current}
-                onEmojiClick={emoji => {
-                  helpers.setValue(meta.value + emoji);
-                  setEmojiSelectorOpen(false);
-                }}
+                onEmojiClick={emojiClick}
               />
               <IconButton
                 aria-label="Mention someone"
@@ -407,6 +425,11 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               >
                 <AlternateEmailIcon />
               </IconButton>
+              <Box sx={{ borderRight: '1px solid #F1F4F5', height: '100%', width: 0 }} />
+            </InputAdornment>
+          }
+          endAdornment={
+            <InputAdornment position="end">
               <IconButton aria-label="post comment" size="small" type="submit" disabled={inactive}>
                 <SendIcon />
               </IconButton>
@@ -421,7 +444,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             inactive,
             readOnly,
             maxLength,
-            onReturnkey: submitOnReturnKey ? submitForm : undefined,
+            onReturnKey: submitOnReturnKey ? submitForm : undefined,
             popperAnchor: ref.current,
           }}
         />
