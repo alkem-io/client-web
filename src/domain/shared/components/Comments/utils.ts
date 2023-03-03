@@ -28,7 +28,7 @@ export const findCursorPositionInMarkdown = (
   plainTextPosition: number,
   getCursorPositionInMention = getCursorPositionInMentionDefault
 ): CursorPositionInMarkdown => {
-  const regexp = /\[([^\)]+)\]\([^\]]+\)/g;
+  const regexp = /\[([^\]]+)\]\([^)]+\)/g;
 
   let match: RegExpExecArray | null = null;
   let searchOffset = plainTextPosition;
