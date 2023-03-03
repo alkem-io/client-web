@@ -47,7 +47,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     variables: { hubId },
   });
 
-  const [loadInnovationPacks, { data: innovationPacks }] = useInnovationPacksLazyQuery();
+  const [loadInnovationPacks, { data: innovationPacks, loading: loadingInnovationPacks }] =
+    useInnovationPacksLazyQuery();
 
   const {
     aspectTemplates,
@@ -111,6 +112,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
         edit={edit}
         loadInnovationPacks={loadInnovationPacks}
+        loadingInnovationPacks={loadingInnovationPacks}
         innovationPacks={aspectInnovationPacks}
         canImportTemplates={canImportTemplates}
       />
@@ -127,6 +129,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         canvases={canvases}
         getParentCalloutId={findParentCalloutId}
         loadInnovationPacks={loadInnovationPacks}
+        loadingInnovationPacks={loadingInnovationPacks}
         innovationPacks={canvasInnovationPacks}
         canImportTemplates={canImportTemplates}
       />
@@ -140,6 +143,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
         edit={edit}
         loadInnovationPacks={loadInnovationPacks}
+        loadingInnovationPacks={loadingInnovationPacks}
         innovationPacks={lifecycleInnovationPacks}
         canImportTemplates={canImportTemplates}
       />

@@ -36,6 +36,7 @@ interface AdminCanvasTemplatesSectionProps {
   canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
   loadInnovationPacks: () => void;
+  loadingInnovationPacks?: boolean;
   innovationPacks: InnovationPack<AdminCanvasTemplateFragment>[];
   canImportTemplates: boolean;
 }
