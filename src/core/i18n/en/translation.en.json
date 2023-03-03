@@ -1,8 +1,7 @@
 {
   "notifications": {
     "release-updates": {
-      "text": "We've made some changes on our platform. Curious to read about it?",
-      "link": "Click here"
+      "text": "New release out! <clickhere>Click here</clickhere> to read all about the latest changes."
     }
   },
   "cookie": {
