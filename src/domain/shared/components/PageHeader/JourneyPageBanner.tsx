@@ -3,7 +3,7 @@ import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import getEntityColor from '../../utils/getEntityColor';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
 import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
@@ -55,26 +55,26 @@ const PageNotice = styled('div')(({ theme }) => ({
   padding: theme.spacing(0.5, 0),
 }));
 
-export interface EntityPageBannerProps {
+export interface JourneyPageBannerProps {
   title?: string;
   tagline?: string;
   bannerUrl?: string;
   showBreadcrumbs?: boolean;
   loading?: boolean;
   pageNotice?: ReactNode;
-  entityTypeName: EntityTypeName | 'admin';
+  journeyTypeName: JourneyTypeName | 'admin';
 }
 
 /**
  * This is the common top banner for Hubs/Challenges/Opportunities, and in general anything else except the home.
  * For Users/Organizations see ProfileBanner
  */
-const EntityPageBanner: FC<EntityPageBannerProps> = ({
+const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   title,
   tagline,
   bannerUrl,
   showBreadcrumbs,
-  entityTypeName,
+  journeyTypeName,
   pageNotice = undefined,
   loading: dataLoading = false,
 }) => {
@@ -89,8 +89,8 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
 
   const theme = useTheme();
 
-  const titleBackgroundColor = getEntityColor(theme, entityTypeName);
-  // const titleForegroundColor = entityTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
+  const titleBackgroundColor = getEntityColor(theme, journeyTypeName);
+  // const titleForegroundColor = journeyTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
 
   return (
     <Root ref={containerReference}>
@@ -130,4 +130,4 @@ const EntityPageBanner: FC<EntityPageBannerProps> = ({
   );
 };
 
-export default EntityPageBanner;
+export default JourneyPageBanner;

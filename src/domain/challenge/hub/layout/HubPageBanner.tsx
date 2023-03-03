@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useConfig } from '../../../platform/config/useConfig';
-import EntityPageBanner from '../../../shared/components/PageHeader/EntityPageBanner';
+import JourneyPageBanner from '../../../shared/components/PageHeader/JourneyPageBanner';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
@@ -42,12 +42,12 @@ const HubPageBanner: FC = () => {
   const pageNotice = pageNoticeLabel && tLinks(...pageNoticeLabel);
 
   return (
-    <EntityPageBanner
+    <JourneyPageBanner
       title={displayName}
       tagline={context?.tagline}
       loading={loading}
       bannerUrl={getVisualBanner(context?.visuals)}
-      entityTypeName="hub"
+      journeyTypeName="hub"
       pageNotice={pageNotice}
     />
   );
