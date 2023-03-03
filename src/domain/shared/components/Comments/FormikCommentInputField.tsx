@@ -144,9 +144,8 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
         emptyQueries.push(search);
       }
       const mentionableUsers = users
-        //!! TODO:  Ask Product if we want to mention ourselves and to mention multiple times the same user
         // Only show users that are not already mentioned
-        .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined) //!!
+        .filter(user => currentMentionedUsers.find(mention => mention.id === user.nameID) === undefined)
         // Map users to MentionableUser
         .map(user => ({
           id: user.nameID,
