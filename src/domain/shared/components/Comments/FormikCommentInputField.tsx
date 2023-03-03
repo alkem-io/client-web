@@ -33,6 +33,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import { useCombinedRefs } from '../../utils/useCombinedRefs';
+import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
 
 const MAX_USERS_LISTED = 30;
 const POPPER_Z_INDEX = 1400; // Dialogs are 1300
@@ -164,10 +165,10 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
       if (!input) return;
 
       const cursorPosition = input.selectionEnd;
-      let isMentionOpen = input.value === '@';
+      let isMentionOpen = input.value === MENTION_SYMBOL;
       if (!isMentionOpen && cursorPosition >= 2) {
         const lastChars = input.value.slice(cursorPosition - 2, cursorPosition);
-        isMentionOpen = lastChars === ' @' || lastChars === '\n@';
+        isMentionOpen = lastChars === ` ${MENTION_SYMBOL}` || lastChars === `\n${MENTION_SYMBOL}`;
       }
       setTooltipOpen(isMentionOpen);
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -213,10 +214,10 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
           )}
         >
           <Mention
-            trigger="@"
+            trigger={MENTION_SYMBOL}
             data={findMentionableUsers}
             appendSpaceOnAdd
-            displayTransform={(id, display) => `@${display}`}
+            displayTransform={(id, display) => `${MENTION_SYMBOL}${display}`}
             renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => {
               const user = suggestion as MentionableUser;
               return (
@@ -234,7 +235,7 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
             // Markdown link generated:
             // __id__ and __display__ are replaced by react-mentions,
             // they'll be nameId and displayName of the mentioned user
-            markup={`[@__display__](${makeAbsoluteUrl(buildUserProfileUrl('__id__'))})`}
+            markup={`[${MENTION_SYMBOL}__display__](${makeAbsoluteUrl(buildUserProfileUrl('__id__'))})`}
           />
         </MentionsInput>
         {tooltipOpen && (
@@ -246,6 +247,19 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
     );
   }
 );
+
+const getCursorPositionInMention = (
+  mention: MentionMatch,
+  mentionOffset: number,
+  globalOffset: number
+): CursorPositionInMarkdown => {
+  const afterMention = mention.offset + mention.markdown.length;
+  const plainTextPositionAfterMention = globalOffset + mention.plainText.length - mentionOffset;
+  return {
+    markdown: afterMention,
+    plainText: plainTextPositionAfterMention,
+  };
+};
 
 /**
  * Emoji selector
@@ -275,8 +289,6 @@ const EmojiSelector: FC<EmojiSelectorProps> = ({ anchorElement, open, onEmojiCli
 
 /**
  * Material styles wrapper, with the border and the Send arrow IconButton and the char counter
- * @param param0
- * @returns
  */
 interface FormikCommentInputFieldProps extends InputProps {
   name: string;
@@ -289,6 +301,9 @@ interface FormikCommentInputFieldProps extends InputProps {
   submitOnReturnKey?: boolean;
   size?: OutlinedInputProps['size'];
 }
+
+const MENTION_SYMBOL = '@';
+const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   name,
@@ -325,11 +340,25 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
 
   const mentionButtonClick = () => {
     const input = ref.current?.querySelector('textarea');
-    const cursorPosition = input?.selectionEnd ?? field.value.length;
+    const cursorPosition = input?.selectionEnd;
 
-    const newValue = field.value.slice(0, cursorPosition) + ' @' + field.value.slice(cursorPosition);
+    if (!cursorPosition) {
+      helpers.setValue(field.value + MENTION_WITH_SPACE);
+      return;
+    }
 
-    cursorPositionRef.current = cursorPosition;
+    const cursorPositionInMarkdown = findCursorPositionInMarkdown(
+      field.value,
+      cursorPosition,
+      getCursorPositionInMention
+    );
+
+    const newValue =
+      field.value.slice(0, cursorPositionInMarkdown.markdown) +
+      MENTION_WITH_SPACE +
+      field.value.slice(cursorPositionInMarkdown.markdown);
+
+    cursorPositionRef.current = cursorPositionInMarkdown.plainText;
     helpers.setValue(newValue);
   };
 
