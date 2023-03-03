@@ -424,7 +424,6 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               >
                 <AlternateEmailIcon />
               </IconButton>
-              <Box sx={{ borderRight: '1px solid #F1F4F5', height: '100%', width: 0 }} />
             </InputAdornment>
           }
           endAdornment={
