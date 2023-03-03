@@ -2,7 +2,6 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import {
-  Box,
   ClickAwayListener,
   FormControl,
   FormGroup,
