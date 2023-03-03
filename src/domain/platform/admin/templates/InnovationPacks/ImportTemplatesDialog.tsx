@@ -86,6 +86,7 @@ const ImportTemplatesDialog = <
               innovationPacks={innovationPacks}
               onPreviewTemplate={handlePreviewTemplate}
               templateImportCardComponent={templateImportCardComponent}
+              loading={loading}
             />
           ) : (
             <ImportTemplatesDialogPreviewStep
