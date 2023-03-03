@@ -97,7 +97,7 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
         legalEntityName,
         website,
       } = editedOrganization as UpdateOrganizationInput;
-      const profileId = organization?.profile?.id;
+      const profileId = organization?.profile.id;
       const references = profileData?.references;
       const tagsetsToAdd = profileData?.tagsets?.filter(x => !x.ID) || [];
 

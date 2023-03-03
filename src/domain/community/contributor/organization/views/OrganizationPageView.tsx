@@ -45,7 +45,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         tagsets,
         socialLinks,
         links,
-        location: organization?.profile?.location,
+        location: organization?.profile.location,
       } as OrganizationProfileViewEntity),
     [organization, tagsets, socialLinks, links, t]
   );

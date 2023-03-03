@@ -41,9 +41,9 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       type: aspect.type,
       profileData: {
         displayName: aspect.profile.displayName,
-        description: aspect.profile?.description!,
+        description: aspect.profile.description!,
       },
-      references: aspect?.profile?.references,
+      references: aspect?.profile.references,
     };
 
   const aspectIndex = resolved.pathname.indexOf('/aspects');
@@ -143,7 +143,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
         onChange={setAspect}
         onAddReference={actions.handleAddReference}
         onRemoveReference={actions.handleRemoveReference}
-        tags={entities.aspect?.profile?.tagset?.tags}
+        tags={entities.aspect?.profile.tagset?.tags}
       >
         {({ isValid, dirty }) => {
           const canSave = isAspectLoaded && dirty && isValid;

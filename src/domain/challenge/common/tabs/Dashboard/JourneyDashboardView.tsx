@@ -122,8 +122,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
         id: user.id,
         title: user.profile.displayName,
-        country: user.profile?.location?.country,
-        city: user.profile?.location?.city,
+        country: user.profile.location?.country,
+        city: user.profile.location?.city,
         avatarUri: user.profile.visual?.uri,
       })),
     [leadUsers]

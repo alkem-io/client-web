@@ -147,8 +147,8 @@ export const CommentsInput: FC<InputBaseComponentProps> = forwardRef<HTMLDivElem
           id: user.nameID,
           display: user.profile.displayName,
           avatarUrl: user.profile.visual?.uri,
-          city: user.profile?.location?.city,
-          country: user.profile?.location?.country,
+          city: user.profile.location?.city,
+          country: user.profile.location?.country,
         }));
       callback(mentionableUsers);
     };

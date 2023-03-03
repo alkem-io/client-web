@@ -46,9 +46,9 @@ const useHomePageContributors = () => {
       displayName: user.profile.displayName,
       url: buildUserProfileUrl(user.nameID),
       tooltip: {
-        tags: user.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
-        city: user.profile?.location?.city,
-        country: COUNTRIES_BY_CODE[user.profile?.location?.country || ''],
+        tags: user.profile.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
+        city: user.profile.location?.city,
+        country: COUNTRIES_BY_CODE[user.profile.location?.country || ''],
       },
       isContactable: user.isContactable,
     }));

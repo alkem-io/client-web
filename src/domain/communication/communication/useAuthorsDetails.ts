@@ -82,9 +82,9 @@ export const useAuthorsDetails = (authorIds: string[]) => {
           lastName: author.lastName,
           avatarUrl: author.profile.visual?.uri || '',
           url: buildUserProfileUrl(author.nameID),
-          tags: author.profile?.tagsets?.flatMap(x => x.tags),
-          city: author.profile?.location?.city,
-          country: COUNTRIES_BY_CODE[author.profile?.location?.country || ''],
+          tags: author.profile.tagsets?.flatMap(x => x.tags),
+          city: author.profile.location?.city,
+          country: COUNTRIES_BY_CODE[author.profile.location?.country || ''],
           roleName: roleName,
         };
       }),

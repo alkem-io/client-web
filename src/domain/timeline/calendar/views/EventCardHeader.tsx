@@ -26,7 +26,7 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
     >
-      <BlockSectionTitle noWrap>{event?.profile?.displayName}</BlockSectionTitle>
+      <BlockSectionTitle noWrap>{event?.profile.displayName}</BlockSectionTitle>
       <Box display="flex" gap={gutters()} flexDirection="row">
         {event && (
           <>

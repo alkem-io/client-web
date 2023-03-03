@@ -172,7 +172,7 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
       <EventsList>
         {events.map(event => (
           <li key={event.nameID}>
-            <Caption>{event.profile?.displayName}</Caption>
+            <Caption>{event.profile.displayName}</Caption>
           </li>
         ))}
       </EventsList>

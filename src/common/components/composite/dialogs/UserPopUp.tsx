@@ -108,11 +108,11 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
 
   const { user: userMetadata, loading } = useUserMetadata(id);
   const user = userMetadata?.user;
-  const refs = user?.profile?.references || [];
+  const refs = user?.profile.references || [];
 
   const getStringOfNames = arr => arr.join(', ');
 
-  const tags = (userMetadata?.user?.profile?.tagsets || []).flatMap(x => x.tags);
+  const tags = (userMetadata?.user?.profile.tagsets || []).flatMap(x => x.tags);
   const groups = userMetadata?.groups || [];
   const challenges = userMetadata?.challenges || [];
   const organizations = userMetadata?.organizations || [];
@@ -134,7 +134,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
               <WrapperTypography variant={'h3'}>{user?.profile.displayName}</WrapperTypography>
             </div>
           </div>
-          {user?.profile?.description && (
+          {user?.profile.description && (
             <div className={styles.description}>
               <WrapperTypography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
                 {user?.profile.description}

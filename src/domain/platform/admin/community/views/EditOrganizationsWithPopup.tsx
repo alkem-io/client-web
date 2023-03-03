@@ -19,7 +19,7 @@ const toOrganizationDetailsVm = (prop: OrganizationDetailsFragment[]) => {
         id: x.id,
         avatarSrc: x.profile.visual?.uri ?? '',
         name: x.profile.displayName,
-        tags: (x.profile?.tagsets || []).flatMap(y => y.tags).join(', '),
+        tags: (x.profile.tagsets || []).flatMap(y => y.tags).join(', '),
       } as OrganizationDetailsVm)
   );
 };

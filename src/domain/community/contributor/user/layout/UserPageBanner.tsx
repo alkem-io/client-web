@@ -33,7 +33,7 @@ const UserPageBanner: FC = () => {
     [sendMessageToUser, userId]
   );
 
-  const references = userMetadata?.user?.profile?.references;
+  const references = userMetadata?.user?.profile.references;
   const socialLinks = useMemo(() => {
     return references
       ?.map(s => ({

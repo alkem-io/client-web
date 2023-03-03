@@ -38,7 +38,7 @@ const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ 
       <EventCardHeader event={event} />
       <CardDetails transparent>
         <CardDescription marginLeft={gutters(2.5)} paddingY={0} overflow="hidden" overflowGradientColor="paper">
-          {event.profile?.description!}
+          {event.profile.description!}
         </CardDescription>
       </CardDetails>
       <CardFooter flexDirection="row-reverse">

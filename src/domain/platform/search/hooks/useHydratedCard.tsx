@@ -39,16 +39,16 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   }
   const user = data.user;
   const profile = user.profile;
-  const avatarUri = profile?.visual?.uri;
-  const { country, city } = profile?.location ?? {};
+  const avatarUri = profile.visual?.uri;
+  const { country, city } = profile.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
-  const tags = profile?.tagsets?.[0].tags ?? [];
+  const tags = profile.tagsets?.[0].tags ?? [];
 
   return (
     <ContributingUserCard
       id={user.id}
       displayName={user.profile.displayName}
-      description={profile?.description}
+      description={profile.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
@@ -68,8 +68,8 @@ const _hydrateOrganizationCard = (
   }
   const organization = data.organization;
   const profile = data.organization.profile;
-  const avatarUri = profile?.visual?.uri;
-  const { country, city } = profile?.location ?? {};
+  const avatarUri = profile.visual?.uri;
+  const { country, city } = profile.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
   const tags = profile.tagsets?.[0].tags ?? [];
 
@@ -275,8 +275,8 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
     <SearchContributionCardCard
       name={card.profile.displayName}
       author={card.createdBy?.profile.displayName}
-      description={card.profile?.description}
-      tags={card.profile?.tagset?.tags}
+      description={card.profile.description}
+      tags={card.profile.tagset?.tags}
       createdDate={card.createdDate}
       commentsCount={card.comments?.commentsCount}
       matchedTerms={data.terms}

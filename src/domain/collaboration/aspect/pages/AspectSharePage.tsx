@@ -26,10 +26,10 @@ const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
             mode="share"
             banner={aspect?.profile.visual?.uri}
             displayName={aspect?.profile.displayName}
-            description={aspect?.profile?.description}
+            description={aspect?.profile.description}
             type={aspect?.type}
-            tags={aspect?.profile?.tagset?.tags}
-            references={aspect?.profile?.references}
+            tags={aspect?.profile.tagset?.tags}
+            references={aspect?.profile.references}
             messages={messages}
             commentId={commentsId}
             {...rest}

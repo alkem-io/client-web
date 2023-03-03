@@ -8,8 +8,8 @@ const OrganizationPageBanner: FC = () => {
       {({ organization, permissions, socialLinks, handleSendMessage }, { loading }) => (
         <ProfileBanner
           title={organization?.profile.displayName}
-          tagline={organization?.profile?.description}
-          location={organization?.profile?.location}
+          tagline={organization?.profile.description}
+          location={organization?.profile.location}
           socialLinks={socialLinks}
           avatarUrl={organization?.profile.visual?.uri}
           avatarEditable={permissions.canEdit}

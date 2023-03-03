@@ -26,10 +26,10 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
             mode="messages"
             banner={aspect?.banner?.uri}
             displayName={aspect?.profile.displayName}
-            description={aspect?.profile?.description}
+            description={aspect?.profile.description}
             type={aspect?.type}
-            tags={aspect?.profile?.tagset?.tags}
-            references={aspect?.profile?.references}
+            tags={aspect?.profile.tagset?.tags}
+            references={aspect?.profile.references}
             messages={messages}
             commentId={commentsId}
             {...rest}
