@@ -38,7 +38,8 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
   const { t } = useTranslation();
 
   const [isImportTemplatesDialogOpen, setImportTemplatesDialogOpen] = useState(false);
-  const [loadInnovationPacks, { data: innovationPacks }] = useInnovationPacksLazyQuery();
+  const [loadInnovationPacks, { data: innovationPacks, loading: loadingInnovationPacks }] =
+    useInnovationPacksLazyQuery();
 
   const openImportTemplateDialog = useCallback(() => {
     loadInnovationPacks();
@@ -154,6 +155,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
         headerText={t('pages.admin.generic.sections.templates.import.title', {
           templateType: t('common.canvases'),
         })}
+        loading={loadingInnovationPacks}
         dialogSubtitle={t('pages.admin.generic.sections.templates.import.callout-template-import-subtitle')}
         templateImportCardComponent={CanvasImportTemplateCard}
         templatePreviewComponent={CanvasTemplatePreview}
