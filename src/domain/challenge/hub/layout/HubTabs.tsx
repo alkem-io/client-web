@@ -32,7 +32,6 @@ const HubTabs = (props: EntityTabsProps) => {
 
   useEffect(() => {
     closeSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.currentTab]);
 
   return (

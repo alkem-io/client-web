@@ -56,7 +56,6 @@ const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }:
     if (isStartTimeValid) {
       oldStartTimeRef.current = startTime;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startTimeField.value]);
 
   const date = addMinutes(startTimeField.value, field.value);

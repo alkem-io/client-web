@@ -56,7 +56,6 @@ const useScrollToElement = (
     if (element) {
       scrollToElement(element);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, elementAliasToScrollTo]);
 
   const scrollable =
