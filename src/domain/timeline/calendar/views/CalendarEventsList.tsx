@@ -35,7 +35,6 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
 
   const params = new URLSearchParams(window.location.search);
   const focusedDay: string | null = params.get(FOCUS_PARAM_NAME);
-  const [focusedEvents, setFocusedEvents] = useState<string | null>(null);
 
   const handleClickOnEvent = (nameId: string) => {
     navigate(`${EntityPageSection.Dashboard}/calendar/${nameId}`);
@@ -63,14 +62,10 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
 
   useEffect(() => {
     if (focusedDay) {
-      // On page load or on focusedDay change: Scroll to the first event on that day:
-      setFocusedEvents(focusedDay);
-      const event = first(
-        sortedEvents.filter(event => dayjs(event.startDate).format(INTERNAL_DATE_FORMAT) === focusedDay)
+      // Scroll to the first event on focusedDay:
+      scrollTo(
+        first(sortedEvents.filter(event => dayjs(event.startDate).format(INTERNAL_DATE_FORMAT) === focusedDay))?.nameID
       );
-      if (event) {
-        scrollTo(event.nameID);
-      }
     }
   }, [focusedDay, sortedEvents]);
 
@@ -81,6 +76,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
       navigate(`${EntityPageSection.Dashboard}/calendar?${params}`, { replace: true });
     }
     if (events.length > 0) {
+      // Scroll again in case url hasn't changed but user has scrolled out of the view
       scrollTo(events[0].nameID);
     }
   };
@@ -117,7 +113,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                     <CalendarEventCard
                       key={event.id}
                       ref={scrollable(event.nameID)}
-                      highlighted={focusedEvents === dayjs(event.startDate).format(INTERNAL_DATE_FORMAT)}
+                      highlighted={focusedDay === dayjs(event.startDate).format(INTERNAL_DATE_FORMAT)}
                       event={event}
                       onClick={() => handleClickOnEvent(event.nameID)}
                     />

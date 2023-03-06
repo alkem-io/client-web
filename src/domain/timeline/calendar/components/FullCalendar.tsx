@@ -30,7 +30,7 @@ const colors = (theme: Theme) => ({
   },
   selected: {
     background: theme.palette.highlight.main,
-    font: theme.palette.common.black,
+    font: `${theme.palette.common.black} !important`,
     border: theme.palette.primary.main,
   },
   disabled: {
@@ -128,11 +128,11 @@ const Root = styled(Box)(({ theme }) => ({
     backgroundColor: colors(theme).selected.background,
     color: colors(theme).selected.font,
   },
-  '.react-calendar__tile--active::before': {
+  '.react-calendar__tile.react-calendar__tile--active::before': {
     ...roundedTileCss(theme),
     backgroundColor: colors(theme).selected.background,
     color: colors(theme).selected.font,
-    border: `1px solid ${colors(theme).selected.border}`,
+    border: `3px solid ${colors(theme).selected.border}`,
   },
   // Disabled tiles
   '.react-calendar__tile:disabled': {
