@@ -271,8 +271,8 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           value={EntityPageSection.About}
           to={`${rootUrl}/${EntityPageSection.About}`}
         />
-        {actions?.map(action => (
-          <HeaderNavigationButton icon={action.icon} onClick={action.onClick} value={action.section} />
+        {actions?.map((action, index) => (
+          <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />
         ))}
         {shareUrl && (
           <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />

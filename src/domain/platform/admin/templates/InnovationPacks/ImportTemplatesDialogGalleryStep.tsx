@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { Text } from '../../../../../core/ui/typography';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
+import { Skeleton } from '@mui/material';
 
 export interface TemplateImportCardComponentProps<Q extends TemplateInnovationPackMetaInfo> {
   template: Q;
@@ -18,12 +19,14 @@ export interface ImportTemplatesDialogGalleryStepProps<
   innovationPacks: InnovationPack<T>[];
   onPreviewTemplate: (template: Q) => void;
   templateImportCardComponent: ComponentType<TemplateImportCardComponentProps<Q>>;
+  loading?: boolean;
 }
 
 const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & TemplateInnovationPackMetaInfo>({
   innovationPacks,
   onPreviewTemplate,
   templateImportCardComponent: TemplateCard,
+  loading,
 }: ImportTemplatesDialogGalleryStepProps<T, Q>) => {
   const { t } = useTranslation();
   // TODO: Pending Implement filters
@@ -64,10 +67,13 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
 */
   return (
     <GridProvider columns={12} force>
+      {loading && <Skeleton />}
       <CardsLayout items={templates} deps={[templates]} disablePadding cards={false}>
         {template => <TemplateCard key={template.id} template={template} onClick={() => onPreviewTemplate(template)} />}
       </CardsLayout>
-      {templates.length === 0 && <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>}
+      {!loading && templates.length === 0 && (
+        <Text>{t('pages.admin.generic.sections.templates.import.no-templates')}</Text>
+      )}
     </GridProvider>
   );
 };

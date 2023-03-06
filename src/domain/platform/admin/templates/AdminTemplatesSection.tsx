@@ -77,6 +77,7 @@ type AdminTemplatesSectionProps<
   buildTemplateLink: (aspect: T) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
+  loadingInnovationPacks?: boolean;
   canImportTemplates: boolean;
   innovationPacks: InnovationPack<T>[];
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
@@ -113,6 +114,7 @@ const AdminTemplatesSection = <
   refetchQueries,
   edit = false,
   loadInnovationPacks,
+  loadingInnovationPacks,
   innovationPacks,
   useCreateTemplateMutation,
   useUpdateTemplateMutation,
@@ -290,6 +292,7 @@ const AdminTemplatesSection = <
         onClose={closeImportTemplatesDialog}
         onImportTemplate={handleImportTemplate}
         innovationPacks={innovationPacks}
+        loading={loadingInnovationPacks}
         actionButton={
           <Button
             startIcon={<SystemUpdateAltIcon />}

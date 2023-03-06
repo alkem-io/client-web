@@ -13,7 +13,7 @@ const AVATAR_SIZE_LG = 9;
 export const theme: ThemeOptions = {
   palette: paletteOptions,
   typography: themeTypographyOptions,
-  shape: { borderRadius: '12px' },
+  shape: { borderRadius: 12 },
   spacing: SPACING,
   cards: {
     search: {
