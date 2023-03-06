@@ -82,7 +82,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
       }
       if (hubVisibility === HubVisibility.Demo) {
         message = tLinks('pages.generic.demo-notice.demo-hub', {
-          alkemio: { href: platform?.feedback, target: '_blank' },
+          alkemio: { href: '/', target: '_blank' },
         });
       }
       break;
@@ -101,7 +101,7 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
         message = tLinks(
           'pages.generic.demo-notice.demo-journey',
           {
-            alkemio: { href: platform?.feedback, target: '_blank' },
+            alkemio: { href: '/', target: '_blank' },
           },
           { journey: t(`common.${journeyTypeName}` as const) }
         );
