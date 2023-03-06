@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -12,10 +12,10 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import { startOfDay } from '../../../../core/utils/time/utils';
-import { groupBy, sortBy } from 'lodash';
+import { first, groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
 import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import FullCalendar from '../components/FullCalendar';
+import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 
 interface CalendarEventsListProps {
@@ -24,11 +24,18 @@ interface CalendarEventsListProps {
   actions?: ReactNode;
 }
 
+// If url params contain `highlight=YYYY-MM-DD` events in that date will be highlighted
+export const FOCUS_PARAM_NAME = 'highlight';
+
 const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
+
+  const params = new URLSearchParams(window.location.search);
+  const focusedDay: string | null = params.get(FOCUS_PARAM_NAME);
+  const [focusedEvents, setFocusedEvents] = useState<string | null>(null);
 
   const handleClickOnEvent = (nameId: string) => {
     navigate(`${EntityPageSection.Dashboard}/calendar/${nameId}`);
@@ -54,9 +61,26 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     return sortBy(pastEvents, event => -dayjs(event.startDate));
   }, [pastEvents]);
 
-  const onCalendarClickEvents = (events: Pick<CalendarEvent, 'nameID'>[]) => {
-    // Scroll to the first event on that day
-    if (events.length > 0 && events[0].nameID) {
+  useEffect(() => {
+    if (focusedDay) {
+      // On page load or on focusedDay change: Scroll to the first event on that day:
+      setFocusedEvents(focusedDay);
+      const event = first(
+        sortedEvents.filter(event => dayjs(event.startDate).format(INTERNAL_DATE_FORMAT) === focusedDay)
+      );
+      if (event) {
+        scrollTo(event.nameID);
+      }
+    }
+  }, [focusedDay, sortedEvents]);
+
+  const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID' | 'startDate'>[]) => {
+    params.delete(FOCUS_PARAM_NAME);
+    if (date) {
+      params.append(FOCUS_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+      navigate(`${EntityPageSection.Dashboard}/calendar?${params}`, { replace: true });
+    }
+    if (events.length > 0) {
       scrollTo(events[0].nameID);
     }
   };
@@ -67,7 +91,12 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
       <Gutters row minHeight={0} flexGrow={1}>
-        <FullCalendar events={sortedEvents} sx={{ flexGrow: 2 }} onClickEvents={onCalendarClickEvents} />
+        <FullCalendar
+          events={sortedEvents}
+          sx={{ flexGrow: 2 }}
+          onClickHighlightedDate={onClickHighlightedDate}
+          selectedDate={focusedDay ? dayjs(focusedDay).toDate() : null}
+        />
         <Gutters minHeight={0} flexGrow={5}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
             <PageContentBlockGrid paddingBottom={gutters(4)}>
@@ -76,6 +105,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                 <CalendarEventCard
                   key={event.id}
                   ref={scrollable(event.nameID)}
+                  highlighted={focusedDay === dayjs(event.startDate).format(INTERNAL_DATE_FORMAT)}
                   event={event}
                   onClick={() => handleClickOnEvent(event.nameID)}
                 />
@@ -87,6 +117,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                     <CalendarEventCard
                       key={event.id}
                       ref={scrollable(event.nameID)}
+                      highlighted={focusedEvents === dayjs(event.startDate).format(INTERNAL_DATE_FORMAT)}
                       event={event}
                       onClick={() => handleClickOnEvent(event.nameID)}
                     />

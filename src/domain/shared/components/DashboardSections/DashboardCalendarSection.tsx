@@ -13,8 +13,8 @@ import { Caption, Text } from '../../../../core/ui/typography';
 import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
-import FullCalendar from '../../../timeline/calendar/components/FullCalendar';
-import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
+import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
+import { FOCUS_PARAM_NAME } from '../../../timeline/calendar/views/CalendarEventsList';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -61,14 +61,8 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
-  const onClickEvents = (events: Pick<CalendarEvent, 'nameID'>[]) => {
-    if (events.length === 1 && events[0].nameID) {
-      // If there is only one event in this day navigate directly to the event
-      navigate(`${EntityPageSection.Dashboard}/calendar/${events[0].nameID}`);
-    } else {
-      // TODO: Implement scroll to first event, for now just show the list
-      navigate(`${EntityPageSection.Dashboard}/calendar`);
-    }
+  const onClickHighlightedDate = (date: Date) => {
+    navigate(`${EntityPageSection.Dashboard}/calendar?${FOCUS_PARAM_NAME}=${dayjs(date).format(INTERNAL_DATE_FORMAT)}`);
   };
 
   return (
@@ -76,7 +70,9 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
       <PageContentBlockHeaderWithDialogAction title={t('common.events')} onDialogOpen={openDialog} />
       <Box display="flex" flexDirection="column" gap={gutters()}>
         {loading && <CalendarSkeleton />}
-        {!loading && isCalendarView && <FullCalendar events={allEvents} onClickEvents={onClickEvents} />}
+        {!loading && isCalendarView && (
+          <FullCalendar events={allEvents} onClickHighlightedDate={onClickHighlightedDate} />
+        )}
         {!loading && !isCalendarView && (
           <>
             {events.length === 0 && <Text>{t('calendar.no-data')}</Text>}

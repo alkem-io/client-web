@@ -26,15 +26,16 @@ export type CalendarEventCardData = Pick<CalendarEvent, NeededFields> & {
 };
 interface CalendarEventCardProps {
   event: CalendarEventCardData;
+  highlighted?: boolean;
   onClick: (event: CalendarEventCardData) => void;
 }
 
-const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ event, onClick }, ref) => {
+const CalendarEventCard = forwardRef<HTMLDivElement, CalendarEventCardProps>(({ event, highlighted, onClick }, ref) => {
   const handleClick = useCallback(() => event && onClick(event), [onClick, event]);
   const { t } = useTranslation();
 
   return (
-    <ContributeCard onClick={handleClick} columns={0} ref={ref}>
+    <ContributeCard onClick={handleClick} columns={0} ref={ref} highlighted={highlighted}>
       <EventCardHeader event={event} />
       <CardDetails transparent>
         <CardDescription marginLeft={gutters(2.5)} paddingY={0} overflow="hidden" overflowGradientColor="paper">

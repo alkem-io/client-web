@@ -27,12 +27,32 @@ const colors = (theme: Theme) => ({
   },
   today: {
     background: 'transparent',
-    font: theme.palette.primary.dark,
+  },
+  selected: {
+    background: theme.palette.highlight.main,
+    font: theme.palette.common.black,
+    border: theme.palette.primary.main,
   },
   disabled: {
     background: theme.palette.grey[100],
     font: theme.palette.grey[400],
   },
+});
+
+const roundedTileCss = (theme: Theme) => ({
+  content: '""',
+  position: 'absolute',
+  width: '50%',
+  maxHeight: '100%',
+  maxWidth: gutters(1.5)(theme),
+  aspectRatio: '1/1',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  margin: 'auto',
+  borderRadius: '50%',
+  zIndex: 1,
 });
 
 // Override some react-calendar styles:
@@ -97,13 +117,22 @@ const Root = styled(Box)(({ theme }) => ({
   // Today's tile
   '.react-calendar__tile--now': {
     backgroundColor: colors(theme).today.background,
-    color: colors(theme).today.font,
     fontWeight: 'bold',
     textDecoration: 'underline',
   },
-  '.react-calendar__tile--now:enabled:hover, & .react-calendar__tile--now:enabled:focus': {
+  '.react-calendar__tile--now:enabled:hover, .react-calendar__tile--now:enabled:focus': {
     backgroundColor: colors(theme).today.background,
-    color: colors(theme).today.font,
+  },
+  // Selected date
+  '.react-calendar__tile--active': {
+    backgroundColor: colors(theme).selected.background,
+    color: colors(theme).selected.font,
+  },
+  '.react-calendar__tile--active::before': {
+    ...roundedTileCss(theme),
+    backgroundColor: colors(theme).selected.background,
+    color: colors(theme).selected.font,
+    border: `1px solid ${colors(theme).selected.border}`,
   },
   // Disabled tiles
   '.react-calendar__tile:disabled': {
@@ -120,19 +149,7 @@ const Root = styled(Box)(({ theme }) => ({
   },
   // Circle centered in the middle of the tile of the higlighted days:
   '.highlight::before': {
-    content: '""',
-    position: 'absolute',
-    width: '50%',
-    maxHeight: '100%',
-    maxWidth: gutters(1.5)(theme),
-    aspectRatio: '1/1',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    margin: 'auto',
-    borderRadius: '50%',
-    zIndex: 1,
+    ...roundedTileCss(theme),
     backgroundColor: colors(theme).highlight.background,
     color: colors(theme).highlight.font,
   },
@@ -182,14 +199,20 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
   </Tooltip>
 );
 
-const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
+export const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
 export interface FullCalendarProps {
   events: Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName'>[];
-  onClickEvents?: (events: Pick<CalendarEvent, 'nameID'>[]) => void;
+  onClickHighlightedDate: (date: Date, events: Pick<CalendarEvent, 'nameID' | 'startDate'>[]) => void;
+  selectedDate?: Date | null;
   sx?: BoxProps['sx'];
 }
 
-const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickEvents, sx }) => {
+const FullCalendar: FC<FullCalendarProps> = ({
+  events = [],
+  onClickHighlightedDate: onClickHighlightedDay,
+  selectedDate = null,
+  sx,
+}) => {
   const highlightedDates = useMemo(() => {
     // This object will look like:
     //  { "yyyy-mm-dd": [...events on this date], "yyyy-mm-dd": [...events], ...}
@@ -207,10 +230,10 @@ const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickEvents, sx })
   };
 
   const handleClickDay = (date: Date) => {
-    if (onClickEvents) {
+    if (onClickHighlightedDay) {
       const events = highlightedDates[dayjs(date).format(INTERNAL_DATE_FORMAT)] || [];
       if (events.length > 0) {
-        onClickEvents(events);
+        onClickHighlightedDay(date, events);
       }
     }
   };
@@ -228,7 +251,7 @@ const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickEvents, sx })
         }}
         onClickDay={handleClickDay}
         selectRange={false}
-        value={null}
+        value={selectedDate}
       />
     </Root>
   );
