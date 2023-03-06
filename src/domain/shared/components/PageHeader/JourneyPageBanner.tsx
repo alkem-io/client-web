@@ -1,14 +1,20 @@
-import { Box, Skeleton, styled, useTheme } from '@mui/material';
+import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
 import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import getEntityColor from '../../utils/getEntityColor';
-import { PageTitle, Tagline } from '../../../../core/ui/typography';
+import { Caption, PageTitle, Tagline } from '../../../../core/ui/typography';
 import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '../../../../core/ui/grid/constants';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useConfig } from '../../../platform/config/useConfig';
+import { TranslateWithElements } from '../../i18n/TranslateWithElements';
+import { BoxProps } from '@mui/system';
+import { useTranslation } from 'react-i18next';
 
 export const DEFAULT_BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 export const TITLE_HEIGHT = 6;
@@ -41,19 +47,85 @@ const Title = styled(Box)(({ theme }) => ({
   },
 }));
 
-const PageNotice = styled('div')(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  width: '100%',
-  zIndex: 30,
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.primary.contrastText,
-  '& a': {
-    color: theme.palette.primary.contrastText,
-  },
-  textAlign: 'center',
-  padding: theme.spacing(0.5, 0),
-}));
+interface PageNoticeProps extends BoxProps {
+  journeyTypeName: JourneyPageBannerProps['journeyTypeName'];
+}
+
+const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const tLinks = TranslateWithElements(
+    <Link underline="always" target="_blank" rel="noopener noreferrer" color={theme.palette.background.default} />
+  );
+  const { platform } = useConfig();
+  const { visibility: hubVisibility } = useHub();
+
+  if (hubVisibility === HubVisibility.Active) return null;
+  if (journeyTypeName === 'admin') return null;
+
+  let message: ReactNode = undefined;
+
+  switch (journeyTypeName) {
+    case 'hub': {
+      if (hubVisibility === HubVisibility.Archived) {
+        message = tLinks('pages.generic.archived-notice.archived-hub', {
+          contact: { href: platform?.feedback, target: '_blank' },
+        });
+      }
+      if (hubVisibility === HubVisibility.Demo) {
+        message = tLinks('pages.generic.demo-notice.demo-hub', {
+          alkemio: { href: platform?.feedback, target: '_blank' },
+        });
+      }
+      break;
+    }
+    default: {
+      if (hubVisibility === HubVisibility.Archived) {
+        message = tLinks(
+          'pages.generic.archived-notice.archived-journey',
+          {
+            contact: { href: platform?.feedback, target: '_blank' },
+          },
+          { journey: t(`common.${journeyTypeName}` as const) }
+        );
+      }
+      if (hubVisibility === HubVisibility.Demo) {
+        message = tLinks(
+          'pages.generic.demo-notice.demo-journey',
+          {
+            alkemio: { href: platform?.feedback, target: '_blank' },
+          },
+          { journey: t(`common.${journeyTypeName}` as const) }
+        );
+      }
+      break;
+    }
+  }
+
+  if (!message) return null;
+
+  return (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        zIndex: 30,
+        backgroundColor: theme.palette.primary.main,
+        color: theme.palette.primary.contrastText,
+        '& a::hover': {
+          color: theme.palette.primary.dark,
+        },
+        textAlign: 'center',
+        padding: theme.spacing(0.5, 0),
+        ...sx,
+      }}
+      {...boxProps}
+    >
+      <Caption>{message}</Caption>
+    </Box>
+  );
+};
 
 export interface JourneyPageBannerProps {
   title?: string;
@@ -61,7 +133,6 @@ export interface JourneyPageBannerProps {
   bannerUrl?: string;
   showBreadcrumbs?: boolean;
   loading?: boolean;
-  pageNotice?: ReactNode;
   journeyTypeName: JourneyTypeName | 'admin';
 }
 
@@ -75,7 +146,6 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   bannerUrl,
   showBreadcrumbs,
   journeyTypeName,
-  pageNotice = undefined,
   loading: dataLoading = false,
 }) => {
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
@@ -92,13 +162,16 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   const titleBackgroundColor = getEntityColor(theme, journeyTypeName);
   // const titleForegroundColor = journeyTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
 
+  const pageNotice = <PageNotice journeyTypeName={journeyTypeName} />;
+  const hasPageNotice = Boolean(pageNotice);
+
   return (
     <Root ref={containerReference}>
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
       {!dataLoading && (
         <>
-          {pageNotice ? <PageNotice>{pageNotice}</PageNotice> : undefined}
-          {showBreadcrumbs && <BreadcrumbsView />}
+          {pageNotice}
+          {showBreadcrumbs && <BreadcrumbsView marginTop={hasPageNotice ? theme.spacing(3) : undefined} />}
           <ImageBlurredSides
             src={bannerUrl}
             alt={`${title} - Banner image`}

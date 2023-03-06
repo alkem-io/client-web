@@ -67,6 +67,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                           journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
                           hubDisplayName={challenge.hubDisplayName}
                           hubUri={buildHubUrl(challenge.hubNameId)}
+                          hubVisibility={challenge.hubVisibility}
                           hideJoin
                         />
                       )
