@@ -13,6 +13,7 @@ import {
   AuthorizationPrivilege,
   CalloutType,
   Visual,
+  VisualType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../common/visual/views/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
@@ -81,7 +82,13 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
-  const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
+  const visuals = (
+    entities.aspect
+      ? entities.aspect.profile.visuals.filter(
+          visual => visual.name === VisualType.Banner || visual.name === VisualType.Card
+        )
+      : []
+  ) as Visual[];
   const isAspectLoaded = Boolean(aspect && entities.aspect && !state.updating && !state.deleting && !isMovingAspect);
 
   const handleDelete = async () => {

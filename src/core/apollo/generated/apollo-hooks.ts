@@ -937,7 +937,7 @@ export const AspectDashboardFragmentDoc = gql`
       profile {
         id
         displayName
-        visual(type: AVATAR) {
+        visual(type: BANNER) {
           id
           uri
         }
