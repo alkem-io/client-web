@@ -19,8 +19,8 @@ fragment AspectCard on Aspect {
     id
     displayName
     description
-    visual(type: CARD) {
-      ...VisualUri
+    visuals {
+      ...VisualFull
     }
     tagset {
       id

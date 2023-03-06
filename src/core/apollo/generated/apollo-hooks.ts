@@ -21,13 +21,6 @@ export const VisualFullFragmentDoc = gql`
     minWidth
   }
 `;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
-`;
 export const AspectCardFragmentDoc = gql`
   fragment AspectCard on Aspect {
     id
@@ -49,8 +42,8 @@ export const AspectCardFragmentDoc = gql`
       id
       displayName
       description
-      visual(type: CARD) {
-        ...VisualUri
+      visuals {
+        ...VisualFull
       }
       tagset {
         id
@@ -65,7 +58,7 @@ export const AspectCardFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
@@ -147,6 +140,13 @@ export const DashboardTopCalloutsFragmentDoc = gql`
     }
   }
   ${DashboardTopCalloutFragmentDoc}
+`;
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
+    id
+    uri
+    name
+  }
 `;
 export const DashboardLeadUserFragmentDoc = gql`
   fragment DashboardLeadUser on User {
