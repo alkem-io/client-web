@@ -47,6 +47,14 @@ const Title = styled(Box)(({ theme }) => ({
   },
 }));
 
+// Placeholder at the top of the image to put notices and breadcrumbs
+const TopNotices = styled(Box)(() => ({
+  position: 'absolute',
+  top: 0,
+  width: '100%',
+  zIndex: 30,
+}));
+
 interface PageNoticeProps extends BoxProps {
   journeyTypeName: JourneyPageBannerProps['journeyTypeName'];
 }
@@ -107,14 +115,10 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
   return (
     <Box
       sx={{
-        position: 'absolute',
-        top: 0,
-        width: '100%',
-        zIndex: 30,
         backgroundColor: theme.palette.primary.main,
         color: theme.palette.primary.contrastText,
-        '& a::hover': {
-          color: theme.palette.primary.dark,
+        'a:hover': {
+          color: theme.palette.common.white,
         },
         textAlign: 'center',
         padding: theme.spacing(0.5, 0),
@@ -162,16 +166,15 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   const titleBackgroundColor = getEntityColor(theme, journeyTypeName);
   // const titleForegroundColor = journeyTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
 
-  const pageNotice = <PageNotice journeyTypeName={journeyTypeName} />;
-  const hasPageNotice = Boolean(pageNotice);
-
   return (
     <Root ref={containerReference}>
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
       {!dataLoading && (
         <>
-          {pageNotice}
-          {showBreadcrumbs && <BreadcrumbsView marginTop={hasPageNotice ? theme.spacing(3) : undefined} />}
+          <TopNotices>
+            {<PageNotice journeyTypeName={journeyTypeName} />}
+            {showBreadcrumbs && <BreadcrumbsView />}
+          </TopNotices>
           <ImageBlurredSides
             src={bannerUrl}
             alt={`${title} - Banner image`}

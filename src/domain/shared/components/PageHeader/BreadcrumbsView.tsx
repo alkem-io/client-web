@@ -6,9 +6,6 @@ import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import getEntityColor from '../../utils/getEntityColor';
 
 const Root = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: 0,
-  left: 0,
   textAlign: 'left',
   zIndex: 20,
   maxWidth: '45%',
