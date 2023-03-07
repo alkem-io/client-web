@@ -18,13 +18,5 @@ query userCardsContainer($ids: [UUID!]!) {
         tags
       }
     }
-    agent {
-      id
-      credentials {
-        id
-        resourceID
-        type
-      }
-    }
   }
 }

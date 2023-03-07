@@ -336,14 +336,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1897,16 +1889,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -14218,15 +14200,6 @@ export type AuthorDetailsQuery = {
     nameID: string;
     displayName: string;
     isContactable: boolean;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -15050,20 +15023,6 @@ export type HubCommunityContributorsQuery = {
                 nameID: string;
                 displayName: string;
                 isContactable: boolean;
-                agent?:
-                  | {
-                      __typename?: 'Agent';
-                      id: string;
-                      credentials?:
-                        | Array<{
-                            __typename?: 'Credential';
-                            id: string;
-                            type: AuthorizationCredential;
-                            resourceID: string;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -15084,20 +15043,6 @@ export type HubCommunityContributorsQuery = {
                 nameID: string;
                 displayName: string;
                 isContactable: boolean;
-                agent?:
-                  | {
-                      __typename?: 'Agent';
-                      id: string;
-                      credentials?:
-                        | Array<{
-                            __typename?: 'Credential';
-                            id: string;
-                            type: AuthorizationCredential;
-                            resourceID: string;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
                 profile?:
                   | {
                       __typename?: 'Profile';
@@ -15160,20 +15105,6 @@ export type ChallengeCommunityContributorsQuery = {
                   nameID: string;
                   displayName: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -15194,20 +15125,6 @@ export type ChallengeCommunityContributorsQuery = {
                   nameID: string;
                   displayName: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -15291,20 +15208,6 @@ export type OpportunityCommunityContributorsQuery = {
                   nameID: string;
                   displayName: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -15325,20 +15228,6 @@ export type OpportunityCommunityContributorsQuery = {
                   nameID: string;
                   displayName: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile?:
                     | {
                         __typename?: 'Profile';
@@ -15407,15 +15296,6 @@ export type CommunityMembersFragment = {
         nameID: string;
         displayName: string;
         isContactable: boolean;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
         profile?:
           | {
               __typename?: 'Profile';
@@ -15434,15 +15314,6 @@ export type CommunityMembersFragment = {
         nameID: string;
         displayName: string;
         isContactable: boolean;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
         profile?:
           | {
               __typename?: 'Profile';
@@ -15732,15 +15603,6 @@ export type CommunityPageMembersFragment = {
   nameID: string;
   displayName: string;
   email: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
   profile?:
     | {
         __typename?: 'Profile';
@@ -16316,15 +16178,6 @@ export type ContributorsPageUsersQuery = {
       nameID: string;
       displayName: string;
       isContactable: boolean;
-      agent?:
-        | {
-            __typename?: 'Agent';
-            id: string;
-            credentials?:
-              | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-              | undefined;
-          }
-        | undefined;
       userProfile?:
         | {
             __typename?: 'Profile';
@@ -16391,15 +16244,6 @@ export type UserContributorPaginatedFragment = {
     nameID: string;
     displayName: string;
     isContactable: boolean;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     userProfile?:
       | {
           __typename?: 'Profile';
@@ -16424,15 +16268,6 @@ export type UserContributorFragment = {
   nameID: string;
   displayName: string;
   isContactable: boolean;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
   userProfile?:
     | {
         __typename?: 'Profile';
@@ -16666,15 +16501,6 @@ export type OrganizationInfoFragment = {
         id: string;
         nameID: string;
         displayName: string;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
         profile?:
           | {
               __typename?: 'Profile';
@@ -16942,15 +16768,6 @@ export type OrganizationInfoQuery = {
           id: string;
           nameID: string;
           displayName: string;
-          agent?:
-            | {
-                __typename?: 'Agent';
-                id: string;
-                credentials?:
-                  | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                  | undefined;
-              }
-            | undefined;
           profile?:
             | {
                 __typename?: 'Profile';
@@ -17159,9 +16976,6 @@ export type UserAgentSsiFragment = {
         __typename?: 'Agent';
         id: string;
         did?: string | undefined;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-          | undefined;
         verifiedCredentials?:
           | Array<{
               __typename?: 'VerifiedCredential';
@@ -17191,9 +17005,6 @@ export type UserSsiQuery = {
           __typename?: 'Agent';
           id: string;
           did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-            | undefined;
           verifiedCredentials?:
             | Array<{
                 __typename?: 'VerifiedCredential';
@@ -17254,15 +17065,6 @@ export type UserCardsContainerQuery = {
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-            | undefined;
-        }
-      | undefined;
   }>;
 };
 
@@ -17272,15 +17074,6 @@ export type UserCardFragment = {
   nameID: string;
   displayName: string;
   isContactable: boolean;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
   profile?:
     | {
         __typename?: 'Profile';
@@ -17336,16 +17129,7 @@ export type GroupMembersFragment = {
 
 export type UserAgentFragment = {
   __typename?: 'User';
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        did?: string | undefined;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-          | undefined;
-      }
-    | undefined;
+  agent?: { __typename?: 'Agent'; id: string; did?: string | undefined } | undefined;
 };
 
 export type UserDetailsFragment = {
@@ -17359,14 +17143,6 @@ export type UserDetailsFragment = {
   gender: string;
   phone: string;
   accountUpn: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        credentials?:
-          | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
   profile?:
     | {
         __typename?: 'Profile';
@@ -17484,14 +17260,6 @@ export type CreateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -17542,14 +17310,6 @@ export type CreateUserNewRegistrationMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -17665,14 +17425,6 @@ export type UpdateUserMutation = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -17790,16 +17542,6 @@ export type UserQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -17832,6 +17574,7 @@ export type UserQuery = {
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
+    agent?: { __typename?: 'Agent'; id: string; did?: string | undefined } | undefined;
   };
 };
 
@@ -17871,15 +17614,6 @@ export type UserCardQuery = {
     nameID: string;
     displayName: string;
     isContactable: boolean;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -17936,16 +17670,6 @@ export type UserProfileQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -17978,6 +17702,7 @@ export type UserProfileQuery = {
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
+    agent?: { __typename?: 'Agent'; id: string; did?: string | undefined } | undefined;
   };
   rolesUser: {
     __typename?: 'ContributorRoles';
@@ -18113,16 +17838,6 @@ export type MeQuery = {
     gender: string;
     phone: string;
     accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          did?: string | undefined;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-            | undefined;
-        }
-      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
@@ -18155,6 +17870,7 @@ export type MeQuery = {
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
+    agent?: { __typename?: 'Agent'; id: string; did?: string | undefined } | undefined;
   };
 };
 

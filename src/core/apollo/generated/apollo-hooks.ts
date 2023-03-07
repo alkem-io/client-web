@@ -1348,14 +1348,6 @@ export const UserCardFragmentDoc = gql`
     nameID
     displayName
     isContactable
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     profile {
       id
       location {
@@ -1437,14 +1429,6 @@ export const CommunityPageMembersFragmentDoc = gql`
     nameID
     displayName
     email
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     profile {
       id
       location {
@@ -1541,14 +1525,6 @@ export const UserContributorFragmentDoc = gql`
     nameID
     displayName
     isContactable
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     userProfile: profile {
       id
       location {
@@ -1657,14 +1633,6 @@ export const OrganizationInfoFragmentDoc = gql`
       id
       nameID
       displayName
-      agent {
-        id
-        credentials {
-          id
-          type
-          resourceID
-        }
-      }
       profile {
         id
         location {
@@ -1747,11 +1715,6 @@ export const UserAgentSsiFragmentDoc = gql`
     agent {
       id
       did
-      credentials {
-        id
-        resourceID
-        type
-      }
       verifiedCredentials {
         claims {
           name
@@ -1812,11 +1775,6 @@ export const UserAgentFragmentDoc = gql`
     agent {
       id
       did
-      credentials {
-        id
-        resourceID
-        type
-      }
     }
   }
 `;
@@ -1831,12 +1789,6 @@ export const UserDetailsFragmentDoc = gql`
     gender
     phone
     accountUpn
-    agent {
-      credentials {
-        type
-        resourceID
-      }
-    }
     profile {
       id
       location {
@@ -16658,14 +16610,6 @@ export const UserCardsContainerDocument = gql`
           id
           name
           tags
-        }
-      }
-      agent {
-        id
-        credentials {
-          id
-          resourceID
-          type
         }
       }
     }

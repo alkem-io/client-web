@@ -8,12 +8,6 @@ fragment UserDetails on User {
   gender
   phone
   accountUpn
-  agent {
-    credentials {
-      type
-      resourceID
-    }
-  }
   profile {
     id
     location {

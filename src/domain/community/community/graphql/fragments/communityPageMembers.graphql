@@ -2,16 +2,7 @@ fragment CommunityPageMembers on User {
   id
   nameID
   displayName
-
   email
-  agent {
-    id
-    credentials {
-      id
-      type
-      resourceID
-    }
-  }
   profile {
     id
     location {
