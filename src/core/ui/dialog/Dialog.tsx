@@ -1,4 +1,4 @@
-import { Dialog as MuiDialog, DialogProps, Paper, PaperProps, useMediaQuery, useTheme } from '@mui/material';
+import { Dialog as MuiDialog, DialogProps as MuiDialogProps, Paper, PaperProps } from '@mui/material';
 import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
 import GridContainer from '../grid/GridContainer';
 import { GRID_COLUMNS_DESKTOP, GRID_COLUMNS_MOBILE, MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '../grid/constants';
@@ -23,16 +23,12 @@ const DialogContainer = ({ columns, ...paperProps }: DialogContainerProps) => {
   );
 };
 
-const Dialog = ({ children, ...dialogProps }: DialogProps) => {
-  const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down('lg'));
-  const columns = isSmall ? 6 : 4;
+interface DialogProps extends MuiDialogProps {
+  columns?: GridItemProps['columns'];
+}
 
-  return (
-    <MuiDialog {...dialogProps} PaperComponent={DialogContainer} PaperProps={{ columns } as PaperProps}>
-      {children}
-    </MuiDialog>
-  );
+const Dialog = ({ columns = 4, ...dialogProps }: DialogProps) => {
+  return <MuiDialog PaperComponent={DialogContainer} PaperProps={{ columns } as PaperProps} {...dialogProps} />;
 };
 
 export default Dialog;
