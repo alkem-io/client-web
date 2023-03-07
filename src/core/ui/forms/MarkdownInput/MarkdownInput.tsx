@@ -4,7 +4,7 @@ import Turndown from 'turndown';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { unified } from 'unified';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -77,17 +77,11 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     const turndown = useRef(new Turndown()).current;
 
-    useEffect(() => {
-      if (!editor) {
-        return;
-      }
-
-      const editorInstance = editor;
-
+    const emitChangeOnEditorUpdate = (editor: Editor) => {
       const handleStateChange = () => {
-        const markdown = turndown.turndown(editorInstance.getHTML()) as string;
+        const markdown = turndown.turndown(editor.getHTML()) as string;
 
-        setCharacterCount(editorInstance.getText().length);
+        setCharacterCount(editor.getText().length);
 
         onChange?.({
           currentTarget: {
@@ -99,11 +93,46 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
         } as unknown as FormEvent<HTMLInputElement>);
       };
 
-      editorInstance.on('update', handleStateChange);
+      editor.on('update', handleStateChange);
 
       return () => {
-        editorInstance.off('update', handleStateChange);
+        editor.off('update', handleStateChange);
       };
+    };
+
+    useEffect(() => {
+      if (editor) {
+        return emitChangeOnEditorUpdate(editor);
+      }
+    }, [editor]);
+
+    const [prevEditorHeight, setPrevEditorHeight] = useState(0);
+
+    const keepScrollPositionOnEditorReset = (editor: Editor) => {
+      const handleCreate = () => {
+        console.log('handleCreate', 0);
+
+        setPrevEditorHeight(0);
+      };
+
+      const handleDestroy = () => {
+        console.log('handleDestroy', editor.view.dom.clientHeight);
+        setPrevEditorHeight(editor.view.dom.clientHeight);
+      };
+
+      editor.on('create', handleCreate);
+      editor.on('destroy', handleDestroy);
+
+      return () => {
+        editor.off('create', handleCreate);
+        editor.off('destroy', handleDestroy);
+      };
+    };
+
+    useEffect(() => {
+      if (editor) {
+        return keepScrollPositionOnEditorReset(editor);
+      }
     }, [editor]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -120,6 +149,10 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       setHasFocus(false);
       onBlur?.(event);
     };
+
+    console.log('render', { minHeight: prevEditorHeight });
+    console.log(editor?.view.dom.parentElement);
+    console.log(editor?.view.dom.cloneNode(true).childNodes);
 
     return (
       <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
@@ -138,6 +171,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
           }}
         >
           <EditorContent editor={editor} />
+          <Box style={{ height: prevEditorHeight }} />
         </Box>
       </Box>
     );
