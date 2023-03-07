@@ -23,17 +23,15 @@ const ImageExtension = Image.configure({
   inline: true,
 });
 
-const styles = {
+const proseMirrorStyles = {
   outline: 'none',
-  maxHeight: '50vh',
-  overflowY: 'auto',
   '& p:first-child': { marginTop: 0 },
   '& p:last-child': { marginBottom: 0 },
   '& img': { maxWidth: '100%' },
 } as const;
 
 export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-  ({ value, onChange, className, onFocus, onBlur }, ref) => {
+  ({ value, onChange, onFocus, onBlur }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [hasFocus, setHasFocus] = useState(false);
@@ -124,14 +122,23 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     };
 
     return (
-      <Box ref={containerRef} width="100%" sx={{ '.ProseMirror': styles }} onFocus={handleFocus} onBlur={handleBlur}>
+      <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
         <MarkdownInputControls
           editor={editor}
           focused={isInteractingWithInput}
           onDialogOpen={() => setIsControlsDialogOpen(true)}
           onDialogClose={() => setIsControlsDialogOpen(false)}
         />
-        <EditorContent editor={editor} className={className} />
+        <Box
+          width="100%"
+          maxHeight="50vh"
+          sx={{
+            overflowY: 'auto',
+            '.ProseMirror': proseMirrorStyles,
+          }}
+        >
+          <EditorContent editor={editor} />
+        </Box>
       </Box>
     );
   }

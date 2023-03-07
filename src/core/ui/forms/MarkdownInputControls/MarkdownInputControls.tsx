@@ -17,6 +17,7 @@ import { gutters } from '../../grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
+import InsertEmojiButton from './InsertEmojiButton';
 
 interface MarkdownInputControlsProps {
   editor: Editor | null;
@@ -108,6 +109,7 @@ const MarkdownInputControls = ({
         </ControlsButton>
         <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
         <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+        <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
       </Box>
     </Collapse>
   );
