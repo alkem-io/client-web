@@ -170,7 +170,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               left: 0,
               borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
               backgroundColor: theme.palette.background.default,
-              width: theme.spacing(7.5),
+              width: theme.spacing(6.5),
               height: '100%',
             },
           })}
@@ -184,7 +184,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                 disabled={inactive || readOnly}
                 sx={theme => ({ marginLeft: theme.spacing(-1) })}
               >
-                <EmojiEmotionsOutlinedIcon />
+                <EmojiEmotionsOutlinedIcon fontSize="small" />
               </IconButton>
               <EmojiSelector
                 open={isEmojiSelectorOpen}
@@ -198,7 +198,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                 onClick={mentionButtonClick}
                 disabled={inactive || readOnly}
               >
-                <AlternateEmailIcon />
+                <AlternateEmailIcon fontSize="small" />
               </IconButton>
             </InputAdornment>
           }
