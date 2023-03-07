@@ -14,7 +14,7 @@ import CalendarEventView from '../../../timeline/calendar/views/CalendarEventVie
 import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
-import { FOCUS_PARAM_NAME } from '../../../timeline/calendar/views/CalendarEventsList';
+import { HIGHLIGHT_PARAM_NAME } from '../../../timeline/calendar/views/CalendarEventsList';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -62,7 +62,10 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
   const openDialog = () => navigate(`${EntityPageSection.Dashboard}/calendar`);
 
   const onClickHighlightedDate = (date: Date) => {
-    navigate(`${EntityPageSection.Dashboard}/calendar?${FOCUS_PARAM_NAME}=${dayjs(date).format(INTERNAL_DATE_FORMAT)}`);
+    // Clicking on a marked date highlights events on the list
+    navigate(
+      `${EntityPageSection.Dashboard}/calendar?${HIGHLIGHT_PARAM_NAME}=${dayjs(date).format(INTERNAL_DATE_FORMAT)}`
+    );
   };
 
   return (
