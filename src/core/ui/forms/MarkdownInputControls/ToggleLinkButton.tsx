@@ -4,24 +4,24 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
-import { AddPhotoAlternateOutlined } from '@mui/icons-material';
+import { LinkOutlined } from '@mui/icons-material';
 import DialogHeader from '../../dialog/DialogHeader';
 import Gutters from '../../grid/Gutters';
 import { Actions } from '../../actions/Actions';
 import Dialog from '../../dialog/Dialog';
 import { useNotification } from '../../notifications/useNotification';
 
-interface InsertImageButtonProps extends IconButtonProps {
+interface ToggleLinkButtonProps extends IconButtonProps {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
 }
 
-interface ImageProps {
-  src: string;
+interface LinkProps {
+  href: string;
 }
 
-const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertImageButtonProps) => {
+const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: ToggleLinkButtonProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = () => {
@@ -37,9 +37,9 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
 
   const notify = useNotification();
 
-  const insertImage = (imageProps: ImageProps) => {
+  const markAsLink = (linkProps: LinkProps) => {
     try {
-      editor?.commands.setImage(imageProps);
+      editor?.commands.setLink(linkProps);
     } catch (error) {
       notify(error.message, 'error');
       throw error;
@@ -47,25 +47,36 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
     closeDialog();
   };
 
-  const initialValues: ImageProps = {
-    src: 'https://',
+  const unmarkAsLink = () => editor?.chain().focus().unsetLink().run();
+
+  const initialValues: LinkProps = {
+    href: 'https://',
   };
 
   const { t } = useTranslation();
 
-  const isDisabled = !editor || !editor.can().setImage(initialValues);
+  const isDisabled = !editor || !editor.can().toggleLink(initialValues);
+
+  const isActive = editor?.isActive('link');
+
+  const handleClick = isActive ? unmarkAsLink : openDialog;
 
   return (
     <>
-      <IconButton onClick={openDialog} disabled={isDisabled} {...buttonProps}>
-        <AddPhotoAlternateOutlined />
+      <IconButton
+        onClick={handleClick}
+        disabled={isDisabled}
+        color={isActive ? 'secondary' : undefined}
+        {...buttonProps}
+      >
+        <LinkOutlined />
       </IconButton>
       <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogHeader onClose={closeDialog}>{t('components.wysiwyg-editor.image.dialogHeader')}</DialogHeader>
-        <Formik initialValues={initialValues} onSubmit={insertImage}>
+        <DialogHeader onClose={closeDialog}>{t('components.wysiwyg-editor.link.dialogHeader')}</DialogHeader>
+        <Formik initialValues={initialValues} onSubmit={markAsLink}>
           <Form>
             <Gutters>
-              <FormikInputField title={t('common.url')} name="src" />
+              <FormikInputField title={t('common.url')} name="href" />
               <Actions justifyContent="space-between">
                 <Button onClick={closeDialog}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">
@@ -80,4 +91,4 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
   );
 };
 
-export default InsertImageButton;
+export default ToggleLinkButton;

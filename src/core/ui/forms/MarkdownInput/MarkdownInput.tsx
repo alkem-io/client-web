@@ -11,6 +11,7 @@ import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import { useSetCharacterCount } from './CharacterCountContext';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { Image } from '@tiptap/extension-image';
+import { Link } from '@tiptap/extension-link';
 
 interface MarkdownInputProps extends InputBaseComponentProps {}
 
@@ -36,6 +37,8 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [hasFocus, setHasFocus] = useState(false);
+    const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
+    const isInteractingWithInput = hasFocus || isControlsDialogOpen;
 
     const [htmlContent, setHtmlContent] = useState('');
 
@@ -48,14 +51,14 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     const editor = useEditor(
       {
-        extensions: [StarterKit, ImageExtension],
+        extensions: [StarterKit, ImageExtension, Link],
         content: htmlContent,
       },
       [htmlContent]
     );
 
     useLayoutEffect(() => {
-      if (!editor || !hasFocus || editor.getText() === '') {
+      if (!editor || !isInteractingWithInput || editor.getText() === '') {
         updateHtmlContent();
       }
     }, [value, hasFocus]);
@@ -122,7 +125,12 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     return (
       <Box ref={containerRef} width="100%" sx={{ '.ProseMirror': styles }} onFocus={handleFocus} onBlur={handleBlur}>
-        <MarkdownInputControls editor={editor} focused={hasFocus} />
+        <MarkdownInputControls
+          editor={editor}
+          focused={isInteractingWithInput}
+          onDialogOpen={() => setIsControlsDialogOpen(true)}
+          onDialogClose={() => setIsControlsDialogOpen(false)}
+        />
         <EditorContent editor={editor} className={className} />
       </Box>
     );

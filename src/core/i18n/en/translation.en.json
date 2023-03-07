@@ -608,7 +608,10 @@
         "remove.remove": "Remove"
       },
       "image": {
-        "insertImage": "Insert Image"
+        "dialogHeader": "Insert Image"
+      },
+      "link": {
+        "dialogHeader": "Convert selection to Hyperlink"
       }
     },
     "top-callouts": {

@@ -16,10 +16,13 @@ import { Box, Collapse, IconButton, IconButtonProps } from '@mui/material';
 import { gutters } from '../../grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
+import ToggleLinkButton from './ToggleLinkButton';
 
 interface MarkdownInputControlsProps {
   editor: Editor | null;
   focused?: boolean;
+  onDialogOpen?: () => void;
+  onDialogClose?: () => void;
 }
 
 interface ControlsButtonProps extends IconButtonProps {
@@ -45,7 +48,12 @@ const ControlsButton = ({ editor, command, specs, ...buttonProps }: ControlsButt
 
 const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
 
-const MarkdownInputControls = ({ editor, focused = false }: MarkdownInputControlsProps) => {
+const MarkdownInputControls = ({
+  editor,
+  focused = false,
+  onDialogOpen,
+  onDialogClose,
+}: MarkdownInputControlsProps) => {
   const [isVisible, setIsVisible] = useState(focused);
 
   useEffect(() => {
@@ -73,9 +81,6 @@ const MarkdownInputControls = ({ editor, focused = false }: MarkdownInputControl
         <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
           <FormatItalic />
         </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
-          <Code />
-        </ControlsButton>
         <ControlsButton
           editor={editor}
           command={e => e.toggleHeading({ level: 1 })}
@@ -99,10 +104,14 @@ const MarkdownInputControls = ({ editor, focused = false }: MarkdownInputControl
         <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
           <FormatQuoteOutlined />
         </ControlsButton>
+        <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
+          <Code />
+        </ControlsButton>
         <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
           <HorizontalRuleOutlined />
         </ControlsButton>
-        <InsertImageButton editor={editor} />
+        <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+        <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
       </Box>
     </Collapse>
   );
