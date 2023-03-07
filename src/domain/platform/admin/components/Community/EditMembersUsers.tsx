@@ -74,6 +74,22 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
                 </TableCell>
               </>
             )}
+            renderEmptyRow={Cell => (
+              <>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+                <TableCell>
+                  <Cell />
+                </TableCell>
+              </>
+            )}
             isRemoveDisabled={m => m.id === executorId}
           />
         </Grid>
@@ -90,6 +106,11 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             updating={updating}
             header={<TableCell>Full Name</TableCell>}
             renderRow={m => <TableCell>{m.profile.displayName}</TableCell>}
+            renderEmptyRow={Cell => (
+              <TableCell>
+                <Cell />
+              </TableCell>
+            )}
           />
         </Grid>
       </Grid>
