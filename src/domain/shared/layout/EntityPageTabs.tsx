@@ -193,8 +193,8 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         {showSettings && (
           <Drawer anchor="bottom" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
             <List>
-              {actions?.map(action => (
-                <ListItem disablePadding>
+              {actions?.map((action, index) => (
+                <ListItem key={`action_${index}`} disablePadding>
                   <ListItemButton
                     onClick={() => {
                       setIsDrawerOpen(false);
