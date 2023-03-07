@@ -86,10 +86,6 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       const handleStateChange = () => {
         const markdown = turndown.turndown(editorInstance.getHTML()) as string;
 
-        console.log('INITIAL HTML', editorInstance.getHTML());
-        console.log('MD', markdown);
-        markdownParser.process(markdown).then(r => console.log('BACK HTML', String(r)));
-
         setCharacterCount(editorInstance.getText().length);
 
         onChange?.({
@@ -98,9 +94,6 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
           },
           target: {
             value: markdown,
-          },
-          meta: {
-            plainText: editorInstance.getText(),
           },
         } as unknown as FormEvent<HTMLInputElement>);
       };
