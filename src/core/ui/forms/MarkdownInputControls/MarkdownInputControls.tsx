@@ -15,6 +15,7 @@ import {
 import { Box, Collapse, IconButton, IconButtonProps } from '@mui/material';
 import { gutters } from '../../grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
+import InsertImageButton from './InsertImageButton';
 
 interface MarkdownInputControlsProps {
   editor: Editor | null;
@@ -101,6 +102,7 @@ const MarkdownInputControls = ({ editor, focused = false }: MarkdownInputControl
         <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
           <HorizontalRuleOutlined />
         </ControlsButton>
+        <InsertImageButton editor={editor} />
       </Box>
     </Collapse>
   );

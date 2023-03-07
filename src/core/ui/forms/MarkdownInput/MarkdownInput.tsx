@@ -9,13 +9,27 @@ import StarterKit from '@tiptap/starter-kit';
 import { unified } from 'unified';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import { useSetCharacterCount } from './CharacterCountContext';
-import MarkdownInputControls from './MarkdownInputControls';
+import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
+import { Image } from '@tiptap/extension-image';
 
 interface MarkdownInputProps extends InputBaseComponentProps {}
 
 export interface MarkdownInputRefApi {
   focus: () => void;
 }
+
+const ImageExtension = Image.configure({
+  inline: true,
+});
+
+const styles = {
+  outline: 'none',
+  maxHeight: '50vh',
+  overflowY: 'auto',
+  '& p:first-child': { marginTop: 0 },
+  '& p:last-child': { marginBottom: 0 },
+  '& img': { maxWidth: '100%' },
+} as const;
 
 export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
   ({ value, onChange, className, onFocus, onBlur }, ref) => {
@@ -34,7 +48,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     const editor = useEditor(
       {
-        extensions: [StarterKit],
+        extensions: [StarterKit, ImageExtension],
         content: htmlContent,
       },
       [htmlContent]
@@ -71,6 +85,10 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
       const handleStateChange = () => {
         const markdown = turndown.turndown(editorInstance.getHTML()) as string;
+
+        console.log('INITIAL HTML', editorInstance.getHTML());
+        console.log('MD', markdown);
+        markdownParser.process(markdown).then(r => console.log('BACK HTML', String(r)));
 
         setCharacterCount(editorInstance.getText().length);
 
@@ -110,16 +128,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     };
 
     return (
-      <Box
-        ref={containerRef}
-        width="100%"
-        sx={{
-          '.ProseMirror': { outline: 'none' },
-          '.ProseMirror p': { margin: 0 },
-        }}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-      >
+      <Box ref={containerRef} width="100%" sx={{ '.ProseMirror': styles }} onFocus={handleFocus} onBlur={handleBlur}>
         <MarkdownInputControls editor={editor} focused={hasFocus} />
         <EditorContent editor={editor} className={className} />
       </Box>
