@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 
 interface CalendarEventsListProps {
   events: CalendarEventCardData[];
@@ -25,16 +26,18 @@ interface CalendarEventsListProps {
 }
 
 // If url params contain `highlight=YYYY-MM-DD` events in that date will be highlighted
-export const FOCUS_PARAM_NAME = 'highlight';
+export const HIGHLIGHT_PARAM_NAME = 'highlight';
 
 const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const breakpoint = useCurrentBreakpoint();
+
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
 
   const params = new URLSearchParams(window.location.search);
-  const focusedDay: string | null = params.get(FOCUS_PARAM_NAME);
+  const focusedDay: string | null = params.get(HIGHLIGHT_PARAM_NAME);
 
   const handleClickOnEvent = (nameId: string) => {
     navigate(`${EntityPageSection.Dashboard}/calendar/${nameId}`);
@@ -70,9 +73,9 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
   }, [focusedDay, sortedEvents]);
 
   const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID' | 'startDate'>[]) => {
-    params.delete(FOCUS_PARAM_NAME);
+    params.delete(HIGHLIGHT_PARAM_NAME);
     if (date) {
-      params.append(FOCUS_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+      params.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
       navigate(`${EntityPageSection.Dashboard}/calendar?${params}`, { replace: true });
     }
     if (events.length > 0) {
@@ -80,16 +83,15 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
       scrollTo(events[0].nameID);
     }
   };
-
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
-      <Gutters row minHeight={0} flexGrow={1}>
+      <Gutters row={!['xs', 'sm'].includes(breakpoint)} minHeight={0} flexGrow={1}>
         <FullCalendar
           events={sortedEvents}
-          sx={{ flexGrow: 2 }}
+          sx={{ flexGrow: 2, minWidth: gutters(15) }}
           onClickHighlightedDate={onClickHighlightedDate}
           selectedDate={focusedDay ? dayjs(focusedDay).toDate() : null}
         />
