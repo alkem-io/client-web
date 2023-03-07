@@ -170,8 +170,9 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
             '.ProseMirror': proseMirrorStyles,
           }}
         >
-          <EditorContent editor={editor} />
-          <Box style={{ height: prevEditorHeight }} />
+          <Box style={{ minHeight: prevEditorHeight }}>
+            <EditorContent editor={editor} />
+          </Box>
         </Box>
       </Box>
     );
