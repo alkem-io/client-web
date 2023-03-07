@@ -1,27 +1,13 @@
 fragment ContextDetails on Context {
   id
-  tagline
-  background
-  location {
-    ...fullLocation
-  }
   vision
   impact
   who
-  references {
-    id
-    name
-    uri
-    description
-  }
   recommendations {
     id
     name
     uri
     description
-  }
-  visuals {
-    ...VisualFull
   }
   authorization {
     id

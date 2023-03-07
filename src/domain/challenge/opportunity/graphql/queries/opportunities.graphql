@@ -6,7 +6,10 @@ query opportunities($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       opportunities {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }

@@ -1,7 +1,15 @@
 fragment OpportunityCard on Opportunity {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+  }
   metrics {
     id
     name
@@ -23,10 +31,5 @@ fragment OpportunityCard on Opportunity {
       id
       state
     }
-  }
-  tagset {
-    id
-    name
-    tags
   }
 }

@@ -1,7 +1,20 @@
 fragment ChallengeInfo on Challenge {
   id
-  displayName
   nameID
+  profile {
+    id
+    displayName
+    tagline
+    description
+    references {
+      id
+      name
+      uri
+    }
+    visuals {
+      ...VisualFull
+    }
+  }
   community {
     id
     authorization {
@@ -15,18 +28,9 @@ fragment ChallengeInfo on Challenge {
   }
   context {
     id
-    tagline
     authorization {
       id
       myPrivileges
-    }
-    references {
-      id
-      name
-      uri
-    }
-    visuals {
-      ...VisualFull
     }
   }
 }

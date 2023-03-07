@@ -10,11 +10,23 @@ query challengePage($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
 fragment ChallengeProfile on Challenge {
   id
   nameID
-  displayName
   metrics {
     id
     name
     value
+  }
+  profile {
+    id
+    tagline
+    displayName
+    visuals {
+      ...VisualFull
+    }
+    tagset {
+      id
+      name
+      tags
+    }
   }
   authorization {
     id
@@ -29,15 +41,11 @@ fragment ChallengeProfile on Challenge {
   }
   context {
     id
-    tagline
     vision
     authorization {
       id
       myPrivileges
       anonymousReadAccess
-    }
-    visuals {
-      ...VisualFull
     }
   }
   collaboration {
@@ -46,11 +54,7 @@ fragment ChallengeProfile on Challenge {
   community {
     ...EntityDashboardCommunity
   }
-  tagset {
-    id
-    name
-    tags
-  }
+
   opportunities {
     ...OpportunityCard
   }
@@ -61,7 +65,7 @@ query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $chal
     id
     challenge(ID: $challengeId) {
       id
-      context {
+      profile {
         id
         references {
           id
@@ -69,6 +73,9 @@ query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $chal
           uri
           description
         }
+      }
+      context {
+        id
         recommendations {
           id
           name

@@ -7,7 +7,7 @@ query hubPage($hubId: UUID_NAMEID!) {
 query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
-    context {
+    profile {
       id
       references {
         id
@@ -15,6 +15,9 @@ query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
         uri
         description
       }
+    }
+    context {
+      id
       recommendations {
         id
         name
@@ -28,7 +31,6 @@ query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
 fragment HubPage on Hub {
   id
   nameID
-  displayName
   metrics {
     id
     name
@@ -42,23 +44,28 @@ fragment HubPage on Hub {
   host {
     ...AssociatedOrganizationDetails
   }
-  context {
+  profile {
     id
+    displayName
+    description
     tagline
-    vision
     visuals {
       ...VisualUri
     }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  context {
+    id
+    vision
     authorization {
       id
       anonymousReadAccess
       myPrivileges
     }
-  }
-  tagset {
-    id
-    name
-    tags
   }
   ... on Hub {
     collaboration {

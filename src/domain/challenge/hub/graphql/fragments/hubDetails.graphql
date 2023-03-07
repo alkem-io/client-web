@@ -1,12 +1,19 @@
 fragment HubDetails on Hub {
   id
   nameID
-  displayName
-  tagset {
+  profile {
     id
-    name
-    tags
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    visuals {
+      ...VisualUri
+    }
   }
+
   authorization {
     id
     anonymousReadAccess
@@ -15,8 +22,8 @@ fragment HubDetails on Hub {
     id
     nameID
     profile {
-        id
-        displayName
+      id
+      displayName
     }
   }
   context {

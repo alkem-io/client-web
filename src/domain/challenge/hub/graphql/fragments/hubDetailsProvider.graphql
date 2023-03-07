@@ -1,7 +1,15 @@
 fragment HubDetailsProvider on Hub {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+  }
   authorization {
     id
     anonymousReadAccess
@@ -12,11 +20,6 @@ fragment HubDetailsProvider on Hub {
   }
   community {
     id
-  }
-  tagset {
-    id
-    name
-    tags
   }
   context {
     ...ContextDetailsProvider

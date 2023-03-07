@@ -4,20 +4,23 @@ query challengeProfileInfo($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       nameID
-      displayName
-      tagset {
+      profile {
         id
-        name
-        tags
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
       }
       lifecycle {
         state
       }
       context {
         ...ContextDetails
-        visuals {
-          ...VisualFull
-        }
       }
     }
   }

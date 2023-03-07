@@ -11,20 +11,11 @@ query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
 fragment OpportunityProvider on Opportunity {
   id
   nameID
-  displayName
-  authorization {
+  profile {
     id
-    myPrivileges
-  }
-  context {
-    id
+    displayName
     tagline
-    authorization {
-      id
-      myPrivileges
-      anonymousReadAccess
-    }
-    visuals {
+        visuals {
       ...VisualFull
     }
     location {
@@ -32,6 +23,19 @@ fragment OpportunityProvider on Opportunity {
       country
       city
     }
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  context {
+    id
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+
   }
   community {
     id

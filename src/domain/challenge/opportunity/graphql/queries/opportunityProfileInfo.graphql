@@ -4,11 +4,14 @@ query opportunityProfileInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!)
     opportunity(ID: $opportunityId) {
       id
       nameID
-      displayName
-      tagset {
+      profile {
         id
-        name
-        tags
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
       }
       context {
         ...ContextDetails

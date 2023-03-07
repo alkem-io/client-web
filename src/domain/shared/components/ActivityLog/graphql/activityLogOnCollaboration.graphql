@@ -149,9 +149,9 @@ fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
   challenge {
     id
     nameID
-    displayName
-    context {
+    profile {
       id
+      displayName
       tagline
     }
   }
@@ -161,9 +161,9 @@ fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
   opportunity {
     id
     nameID
-    displayName
-    context {
+    profile {
       id
+      displayName
       tagline
     }
   }
