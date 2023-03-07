@@ -41,6 +41,7 @@ const ControlsButton = ({ editor, command, specs, ...buttonProps }: ControlsButt
       onClick={() => editor && command(editor.chain().focus()).run()}
       disabled={!editor || !command(editor.can().chain().focus()).run()}
       color={isActive ? 'secondary' : undefined}
+      sx={{ width: gutters(2), height: gutters(2) }}
       {...buttonProps}
     />
   );
@@ -81,12 +82,7 @@ const MarkdownInputControls = ({
         <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
           <FormatItalic />
         </ControlsButton>
-        <ControlsButton
-          editor={editor}
-          command={e => e.toggleHeading({ level: 1 })}
-          sx={{ width: gutters(2), height: gutters(2) }}
-          specs={['heading', { level: 1 }]}
-        >
+        <ControlsButton editor={editor} command={e => e.toggleHeading({ level: 1 })} specs={['heading', { level: 1 }]}>
           <Title fontSize="large" />
         </ControlsButton>
         <ControlsButton editor={editor} command={e => e.toggleHeading({ level: 2 })} specs={['heading', { level: 2 }]}>
