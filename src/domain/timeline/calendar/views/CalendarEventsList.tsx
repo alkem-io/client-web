@@ -72,7 +72,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     }
   }, [focusedDay, sortedEvents]);
 
-  const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID' | 'startDate'>[]) => {
+  const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => {
     params.delete(HIGHLIGHT_PARAM_NAME);
     if (date) {
       params.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
