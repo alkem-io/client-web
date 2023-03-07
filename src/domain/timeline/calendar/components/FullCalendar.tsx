@@ -24,8 +24,8 @@ const colors = (theme: Theme) => ({
     font: theme.palette.primary.contrastText,
   },
   highlightPastDate: {
-    background: theme.palette.neutralLight.light,
-    font: theme.palette.neutralLight.contrastText,
+    background: theme.palette.divider,
+    font: theme.palette.neutral.light,
   },
   today: {
     background: 'transparent',
@@ -116,7 +116,6 @@ const Root = styled(Box)(({ theme }) => ({
   '.react-calendar__tile.react-calendar__tile--active::before': {
     backgroundColor: colors(theme).selected.background,
     color: colors(theme).selected.font,
-    //border: `3px solid ${colors(theme).selected.border}`,
   },
   // Disabled tiles
   '.react-calendar__tile:disabled': {
@@ -127,9 +126,6 @@ const Root = styled(Box)(({ theme }) => ({
   '.highlight': {
     backgroundColor: 'transparent',
     color: colors(theme).highlight.font,
-  },
-  '.highlight.past-date': {
-    color: colors(theme).highlightPastDate.font,
   },
   // Circle centered in the middle of the tile of the higlighted days:
   '.highlight::before': {
@@ -149,9 +145,19 @@ const Root = styled(Box)(({ theme }) => ({
     backgroundColor: colors(theme).highlight.background,
     color: colors(theme).highlight.font,
   },
+  // Past dates:
+  '.highlight.past-date': {
+    color: colors(theme).highlightPastDate.font,
+  },
   '.highlight.past-date::before': {
     backgroundColor: colors(theme).highlightPastDate.background,
-    color: colors(theme).highlightPastDate.font,
+  },
+  // Past dates selected:
+  '.react-calendar__tile.react-calendar__tile--active.past-date': {
+    color: colors(theme).selected.font,
+  },
+  '.react-calendar__tile.react-calendar__tile--active.past-date::before': {
+    backgroundColor: colors(theme).selected.background,
   },
   // Transparent box over the tiles that have a Tooltip
   '.tooltip-anchor': {
@@ -172,11 +178,10 @@ interface EventsTooltipProps {
  * Tooltip for the highlighted days with the list of events
  */
 const EventsList = styled('ul')(({ theme }) => ({
-  marginY: gutters(0.5)(theme),
-  marginX: 0,
   padding: 0,
-  paddingLeft: gutters(1)(theme),
-  listStyle: 'circle',
+  paddingLeft: gutters(0.5)(theme),
+  paddingRight: gutters(0.5)(theme),
+  listStyle: 'none',
 }));
 const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
   <Tooltip
@@ -185,7 +190,9 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
       <EventsList>
         {events.map(event => (
           <li key={event.nameID}>
-            <Caption>{event.displayName}</Caption>
+            <Caption>
+              {dayjs(event.startDate).format('HH:mm')} - {event.displayName}
+            </Caption>
           </li>
         ))}
       </EventsList>
@@ -197,17 +204,12 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
 
 export interface FullCalendarProps {
   events: Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName'>[];
-  onClickHighlightedDate: (date: Date, events: Pick<CalendarEvent, 'nameID' | 'startDate'>[]) => void;
+  onClickHighlightedDate: (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => void;
   selectedDate?: Date | null;
   sx?: BoxProps['sx'];
 }
 
-const FullCalendar: FC<FullCalendarProps> = ({
-  events = [],
-  onClickHighlightedDate: onClickHighlightedDay,
-  selectedDate = null,
-  sx,
-}) => {
+const FullCalendar: FC<FullCalendarProps> = ({ events = [], onClickHighlightedDate, selectedDate = null, sx }) => {
   const highlightedDates = useMemo(() => {
     // This object will look like:
     //  { "yyyy-mm-dd": [...events on this date], "yyyy-mm-dd": [...events], ...}
@@ -225,10 +227,10 @@ const FullCalendar: FC<FullCalendarProps> = ({
   };
 
   const handleClickDay = (date: Date) => {
-    if (onClickHighlightedDay) {
+    if (onClickHighlightedDate) {
       const events = highlightedDates[dayjs(date).format(INTERNAL_DATE_FORMAT)] || [];
       if (events.length > 0) {
-        onClickHighlightedDay(date, events);
+        onClickHighlightedDate(date, events);
       }
     }
   };
