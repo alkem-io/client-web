@@ -150,10 +150,6 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       onBlur?.(event);
     };
 
-    console.log('render', { minHeight: prevEditorHeight });
-    console.log(editor?.view.dom.parentElement);
-    console.log(editor?.view.dom.cloneNode(true).childNodes);
-
     return (
       <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
         <MarkdownInputControls
