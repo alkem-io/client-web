@@ -28,7 +28,6 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             cursor: onClick ? 'pointer' : 'default',
             ...sx,
           }}
-          //className={highlighted ? 'highlighted' : undefined}
           onClick={onClick}
           ref={ref}
         >
