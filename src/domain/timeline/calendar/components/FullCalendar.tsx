@@ -9,6 +9,8 @@ import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { startOfDay } from '../../../../core/utils/time/utils';
 
+export const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
+
 // Calendar colors:
 // TODO: Maybe move this into the template
 const colors = (theme: Theme) => ({
@@ -22,37 +24,21 @@ const colors = (theme: Theme) => ({
     font: theme.palette.primary.contrastText,
   },
   highlightPastDate: {
-    background: theme.palette.neutral.light,
+    background: theme.palette.neutralLight.light,
     font: theme.palette.neutralLight.contrastText,
   },
   today: {
     background: 'transparent',
   },
   selected: {
-    background: theme.palette.highlight.main,
-    font: `${theme.palette.common.black} !important`,
+    background: '#1D384A', //theme.palette.highlight.main,
+    font: theme.palette.common.white,
     border: theme.palette.primary.main,
   },
   disabled: {
     background: theme.palette.grey[100],
     font: theme.palette.grey[400],
   },
-});
-
-const roundedTileCss = (theme: Theme) => ({
-  content: '""',
-  position: 'absolute',
-  width: '50%',
-  maxHeight: '100%',
-  maxWidth: gutters(1.5)(theme),
-  aspectRatio: '1/1',
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
-  margin: 'auto',
-  borderRadius: '50%',
-  zIndex: 1,
 });
 
 // Override some react-calendar styles:
@@ -124,15 +110,13 @@ const Root = styled(Box)(({ theme }) => ({
     backgroundColor: colors(theme).today.background,
   },
   // Selected date
-  '.react-calendar__tile--active': {
-    backgroundColor: colors(theme).selected.background,
+  '.react-calendar__tile.react-calendar__tile--active': {
     color: colors(theme).selected.font,
   },
   '.react-calendar__tile.react-calendar__tile--active::before': {
-    ...roundedTileCss(theme),
     backgroundColor: colors(theme).selected.background,
     color: colors(theme).selected.font,
-    border: `3px solid ${colors(theme).selected.border}`,
+    //border: `3px solid ${colors(theme).selected.border}`,
   },
   // Disabled tiles
   '.react-calendar__tile:disabled': {
@@ -149,7 +133,19 @@ const Root = styled(Box)(({ theme }) => ({
   },
   // Circle centered in the middle of the tile of the higlighted days:
   '.highlight::before': {
-    ...roundedTileCss(theme),
+    content: '""',
+    position: 'absolute',
+    width: '50%',
+    maxHeight: '100%',
+    maxWidth: gutters(1.5)(theme),
+    aspectRatio: '1/1',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 'auto',
+    borderRadius: '50%',
+    zIndex: 1,
     backgroundColor: colors(theme).highlight.background,
     color: colors(theme).highlight.font,
   },
@@ -199,7 +195,6 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
   </Tooltip>
 );
 
-export const INTERNAL_DATE_FORMAT = 'YYYY-MM-DD';
 export interface FullCalendarProps {
   events: Pick<CalendarEvent, 'nameID' | 'startDate' | 'displayName'>[];
   onClickHighlightedDate: (date: Date, events: Pick<CalendarEvent, 'nameID' | 'startDate'>[]) => void;
