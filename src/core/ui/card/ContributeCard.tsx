@@ -21,13 +21,14 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
       <GridItem columns={columns}>
         <ElevatedPaper
           sx={{
-            background: theme => (highlighted ? theme.palette.highlight.main : theme.palette.background.paper),
+            background: theme => (highlighted ? theme.palette.background.default : theme.palette.background.paper),
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'stretch',
             cursor: onClick ? 'pointer' : 'default',
             ...sx,
           }}
+          //className={highlighted ? 'highlighted' : undefined}
           onClick={onClick}
           ref={ref}
         >
