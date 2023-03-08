@@ -1300,6 +1300,7 @@ export type MutationKeySpecifier = (
   | 'updatePreferenceOnHub'
   | 'updatePreferenceOnOrganization'
   | 'updatePreferenceOnUser'
+  | 'updateProfile'
   | 'updateProject'
   | 'updateUser'
   | 'updateUserGroup'
@@ -1445,6 +1446,7 @@ export type MutationFieldPolicy = {
   updatePreferenceOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;

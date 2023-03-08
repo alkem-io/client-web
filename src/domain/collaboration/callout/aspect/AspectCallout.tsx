@@ -100,6 +100,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
               displayName: aspect.profileData.displayName,
               description: aspect.profileData.description,
             },
+            tags: aspect.tags,
             type: aspect.type,
             visualUri: aspect.visualUri,
           },
