@@ -1,17 +1,14 @@
 import React, { FormEvent, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
-import Turndown from 'turndown';
-import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import rehypeStringify from 'rehype-stringify';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { unified } from 'unified';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 import { useSetCharacterCount } from './CharacterCountContext';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
+import usePersistentValue from '../../../utils/usePersistentValue';
+import UnifiedConverter from '../../markdown/html/DefaultConverter';
 
 interface MarkdownInputProps extends InputBaseComponentProps {}
 
@@ -40,10 +37,10 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     const [htmlContent, setHtmlContent] = useState('');
 
-    const markdownParser = useRef(unified().use(remarkParse).use(remarkRehype).use(rehypeStringify)).current;
+    const { markdownToHTML, HTMLToMarkdown } = usePersistentValue(UnifiedConverter());
 
     const updateHtmlContent = async () => {
-      const content = await markdownParser.process(value);
+      const content = await markdownToHTML(value);
       setHtmlContent(String(content));
     };
 
@@ -75,11 +72,9 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       setCharacterCount(editor?.getText().length ?? 0);
     }, [editor]);
 
-    const turndown = useRef(new Turndown()).current;
-
     const emitChangeOnEditorUpdate = (editor: Editor) => {
-      const handleStateChange = () => {
-        const markdown = turndown.turndown(editor.getHTML()) as string;
+      const handleStateChange = async () => {
+        const markdown = await HTMLToMarkdown(editor.getHTML());
 
         setCharacterCount(editor.getText().length);
 
