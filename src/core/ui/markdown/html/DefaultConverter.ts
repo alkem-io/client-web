@@ -1,17 +1,22 @@
 import { unified } from 'unified';
+import { Parent } from 'unist';
 // HTML to Markdown
 import rehypeParse from 'rehype-parse';
-import rehypeRemark, { defaultHandlers } from 'rehype-remark';
+import rehypeRemark, { defaultHandlers as defaultHTMLHandlers } from 'rehype-remark';
 import remarkStringify from 'remark-stringify';
 import { html } from 'mdast-builder';
 // Markdown to HTML
 import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
+import remarkRehype, { defaultHandlers as defaultMarkdownHandlers } from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeStringify from 'rehype-stringify';
+import { u } from 'unist-builder';
+import { HTML } from 'mdast-util-to-hast/lib/handlers/html';
 
 import { Converter } from './Converter';
+
+const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
 
 const UnifiedConverter = (): Converter => {
   const htmlToMarkdownPipeline = unified()
@@ -22,10 +27,10 @@ const UnifiedConverter = (): Converter => {
     .use(rehypeRemark, {
       handlers: {
         p: (state, element) => {
-          if (!element.children.length) {
-            return html('<p></p>');
+          if (element.children.length === 0) {
+            return html('<br>');
           }
-          return defaultHandlers.p(state, element);
+          return defaultHTMLHandlers.p(state, element);
         },
       },
     })
@@ -33,7 +38,18 @@ const UnifiedConverter = (): Converter => {
 
   const markdownToHTMLPipeline = unified()
     .use(remarkParse)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    // @ts-ignore
+    .use(remarkRehype, {
+      allowDangerousHtml: true,
+      handlers: {
+        html: (state, node, parent) => {
+          if (isEmptyLine(node, parent)) {
+            return u('element', { tagName: 'p' });
+          }
+          return defaultMarkdownHandlers.html(state, node);
+        },
+      },
+    })
     .use(rehypeRaw)
     .use(rehypeSanitize)
     .use(rehypeStringify);
