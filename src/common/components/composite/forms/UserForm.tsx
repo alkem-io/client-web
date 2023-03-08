@@ -70,6 +70,7 @@ export const UserForm: FC<UserProps> = ({
       description: bio,
       references,
       location: { city, country },
+      tagsets,
     },
   } = currentUser;
 
@@ -98,7 +99,7 @@ export const UserForm: FC<UserProps> = ({
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
-    tagsets: [],
+    tagsets: tagsets,
     references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
     bio: bio || '',
     profileId: profileId || '',
