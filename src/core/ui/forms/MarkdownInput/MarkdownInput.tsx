@@ -110,13 +110,10 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     const keepScrollPositionOnEditorReset = (editor: Editor) => {
       const handleCreate = () => {
-        console.log('handleCreate', 0);
-
         setPrevEditorHeight(0);
       };
 
       const handleDestroy = () => {
-        console.log('handleDestroy', editor.view.dom.clientHeight);
         setPrevEditorHeight(editor.view.dom.clientHeight);
       };
 
