@@ -45,6 +45,7 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
             membersCount={getMetricCount(hub.metrics, MetricType.Member)}
             tagline={hub.context?.tagline!}
             tags={hub.tagset?.tags!}
+            hubVisibility={hub.visibility}
             {...getHubCardProps?.(hub)}
           />
         )}

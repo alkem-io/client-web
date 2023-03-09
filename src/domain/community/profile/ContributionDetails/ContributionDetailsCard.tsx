@@ -12,6 +12,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../common/co
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   journeyTypeName: JourneyTypeName;
@@ -22,7 +23,7 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   onLeaveCommunityDialogOpen?: (isOpen: boolean) => void;
   handleLeaveCommunity?: () => void;
   loading?: boolean;
-  isDemoHub?: boolean;
+  hubVisibility?: HubVisibility;
 }
 
 const ContributionDetailsCard = ({
@@ -36,14 +37,15 @@ const ContributionDetailsCard = ({
   onLeaveCommunityDialogOpen,
   handleLeaveCommunity,
   loading,
-  isDemoHub,
+  hubVisibility,
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
 
-  const ribbon = isDemoHub ? (
-    <CardRibbon text={`${t('common.enums.hub-visibility.DEMO')} ${t('common.hub')}`} />
-  ) : undefined;
+  const ribbon =
+    hubVisibility && hubVisibility !== HubVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.hub-visibility.${hubVisibility}` as const)} />
+    ) : undefined;
 
   return (
     <>

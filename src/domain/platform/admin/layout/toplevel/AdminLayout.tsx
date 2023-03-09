@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { AdminSection, adminTabs } from './constants';
 import { useTranslation } from 'react-i18next';
-import EntityPageBanner from '../../../../shared/components/PageHeader/EntityPageBanner';
+import JourneyPageBanner from '../../../../shared/components/PageHeader/JourneyPageBanner';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
 import TopLevelDesktopLayout from '../../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
@@ -18,7 +18,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
     <TopLevelDesktopLayout
       heading={
         <>
-          <EntityPageBanner title={t('common.administration')} entityTypeName="admin" />
+          <JourneyPageBanner title={t('common.administration')} journeyTypeName="admin" />
           <HeaderNavigationTabs value={currentTab} defaultTab={AdminSection.Hub}>
             {adminTabs.map(tab => {
               return (

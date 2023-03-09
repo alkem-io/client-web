@@ -1,7 +1,7 @@
 import { Avatar, Box, Grid, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
-import { DEFAULT_BANNER_URL } from './EntityPageBanner';
+import { DEFAULT_BANNER_URL } from './JourneyPageBanner';
 import { Location } from '../../../../core/apollo/generated/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../common/location/LocationView';
