@@ -12,6 +12,7 @@ import { JourneyFormValues } from '../../../shared/components/JorneyCreationDial
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
 import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubentitiesView';
+import { useHub } from '../../hub/HubContext/useHub';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
@@ -24,7 +25,9 @@ export interface ChallengeOpportunityPageProps {}
 const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { hubNameId, challengeId, challengeNameId, permissions } = useChallenge();
+
+  const { hubNameId, visibility } = useHub();
+  const { challengeId, challengeNameId, permissions } = useChallenge();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -73,6 +76,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
                 tags={opportunity.tagset?.tags!}
                 bannerUri={getVisualBannerNarrow(opportunity.context?.visuals)!}
                 journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}
+                hubVisibility={visibility}
               />
             )}
             childEntityCreateAccess={permissions.canCreateOpportunity}

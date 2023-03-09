@@ -24,7 +24,7 @@ export interface HubChallengesPageProps {}
 const HubChallengesPage: FC<HubChallengesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { hubNameId, permissions } = useHub();
+  const { hubNameId, permissions, visibility } = useHub();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -75,6 +75,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 innovationFlowState={challenge.lifecycle?.state}
                 journeyUri={buildChallengeUrl(hubNameId, challenge.nameID)}
                 locked={!challenge.authorization?.anonymousReadAccess}
+                hubVisibility={visibility}
               />
             )}
             childEntityCreateAccess={permissions.canCreateChallenges}
