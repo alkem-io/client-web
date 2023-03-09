@@ -1,4 +1,4 @@
-import UnifiedConverter from './DefaultConverter';
+import UnifiedConverter from './UnifiedConverter';
 
 describe('HTML to Markdown', () => {
   const { HTMLToMarkdown } = UnifiedConverter();

@@ -8,7 +8,7 @@ import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControl
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
 import usePersistentValue from '../../../utils/usePersistentValue';
-import UnifiedConverter from '../../markdown/html/DefaultConverter';
+import UnifiedConverter from '../../markdown/html/UnifiedConverter';
 
 interface MarkdownInputProps extends InputBaseComponentProps {}
 
@@ -127,19 +127,17 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       }
     }, [editor]);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleFocus = (event: React.FocusEvent<any>) => {
+    const handleFocus = (event: React.FocusEvent<HTMLDivElement>) => {
       setHasFocus(true);
-      onFocus?.(event);
+      onFocus?.(event as React.FocusEvent<HTMLInputElement>);
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleBlur = (event: React.FocusEvent<any>) => {
+    const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
       if (containerRef.current?.contains(event.relatedTarget)) {
         return;
       }
       setHasFocus(false);
-      onBlur?.(event);
+      onBlur?.(event as React.FocusEvent<HTMLInputElement>);
     };
 
     return (
