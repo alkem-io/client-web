@@ -20,13 +20,13 @@ const PlatformFooter = () => {
   return (
     <>
       <PageFooter logo={<FooterLogo />} copyright={t('footer.copyright')}>
-        <FooterLink href={platform?.terms || ''}>{t('footer.terms')}</FooterLink>
-        <FooterLink href={platform?.privacy || ''}>{t('footer.privacy')}</FooterLink>
-        <FooterLink href={platform?.security || ''}>{t('footer.security')}</FooterLink>
+        <FooterLink href={platform?.terms}>{t('footer.terms')}</FooterLink>
+        <FooterLink href={platform?.privacy}>{t('footer.privacy')}</FooterLink>
+        <FooterLink href={platform?.security}>{t('footer.security')}</FooterLink>
         <FooterLink onClick={openHelpDialog} sx={{ cursor: 'pointer' }}>
           {t('footer.support')}
         </FooterLink>
-        <FooterLink href={platform?.about || ''}>{t('footer.about')}</FooterLink>
+        <FooterLink href={platform?.about}>{t('footer.about')}</FooterLink>
         <LanguageSelect />
       </PageFooter>
       <HelpDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
