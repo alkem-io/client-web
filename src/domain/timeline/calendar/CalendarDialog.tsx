@@ -20,6 +20,10 @@ import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEvents
 import CalendarEventDetail from './views/CalendarEventDetail';
 import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
+import dayjs from 'dayjs';
+
+// If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
+export const HIGHLIGHT_PARAM_NAME = 'highlight';
 
 export interface CalendarDialogProps {
   open: boolean;
@@ -31,6 +35,16 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
   const { t } = useTranslation();
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
+
+  const params = new URLSearchParams(window.location.search);
+  const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
+  const highlightedDay = useMemo(
+    () =>
+      highlightedDayParam && dayjs(highlightedDayParam).isValid()
+        ? dayjs(highlightedDayParam).startOf('day').toDate()
+        : null,
+    [highlightedDayParam]
+  );
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
@@ -160,6 +174,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                   <CalendarEventsList
                     events={events}
                     onClose={handleClose}
+                    highlightedDay={highlightedDay}
                     actions={
                       privileges.canCreateEvents && (
                         <IconButton onClick={() => setIsCreatingEvent(true)} size="large" sx={{ padding: 0 }}>

@@ -18,26 +18,22 @@ import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/ap
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 
 interface CalendarEventsListProps {
   events: CalendarEventCardData[];
-  onClose?: DialogHeaderProps['onClose'];
+  highlightedDay?: Date | null;
   actions?: ReactNode;
+  onClose?: DialogHeaderProps['onClose'];
 }
 
-// If url params contain `highlight=YYYY-MM-DD` events in that date will be highlighted
-export const HIGHLIGHT_PARAM_NAME = 'highlight';
-
-const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProps) => {
+const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const breakpoint = useCurrentBreakpoint();
 
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
-
-  const params = new URLSearchParams(window.location.search);
-  const focusedDay: string | null = params.get(HIGHLIGHT_PARAM_NAME);
 
   const handleClickOnEvent = (nameId: string) => {
     navigate(`${EntityPageSection.Dashboard}/calendar/${nameId}`);
@@ -64,15 +60,15 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
   }, [pastEvents]);
 
   useEffect(() => {
-    if (focusedDay) {
-      // Scroll to the first event on focusedDay:
-      scrollTo(
-        first(sortedEvents.filter(event => dayjs(event.startDate).format(INTERNAL_DATE_FORMAT) === focusedDay))?.nameID
-      );
+    if (highlightedDay) {
+      // Scroll to the first event on highlightedDay:
+      const event = first(sortedEvents.filter(event => dayjs(event.startDate).startOf('day').isSame(highlightedDay)));
+      scrollTo(event?.nameID);
     }
-  }, [focusedDay, sortedEvents]);
+  }, [highlightedDay, sortedEvents]);
 
   const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => {
+    const params = new URLSearchParams(window.location.search);
     params.delete(HIGHLIGHT_PARAM_NAME);
     if (date) {
       params.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
@@ -93,7 +89,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
           events={sortedEvents}
           sx={{ flexGrow: 2, minWidth: gutters(15) }}
           onClickHighlightedDate={onClickHighlightedDate}
-          selectedDate={focusedDay ? dayjs(focusedDay).toDate() : null}
+          selectedDate={highlightedDay}
         />
         <Gutters minHeight={0} flexGrow={5}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
@@ -103,7 +99,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                 <CalendarEventCard
                   key={event.id}
                   ref={scrollable(event.nameID)}
-                  highlighted={focusedDay === dayjs(event.startDate).format(INTERNAL_DATE_FORMAT)}
+                  highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                   event={event}
                   onClick={() => handleClickOnEvent(event.nameID)}
                 />
@@ -115,7 +111,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                     <CalendarEventCard
                       key={event.id}
                       ref={scrollable(event.nameID)}
-                      highlighted={focusedDay === dayjs(event.startDate).format(INTERNAL_DATE_FORMAT)}
+                      highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                       event={event}
                       onClick={() => handleClickOnEvent(event.nameID)}
                     />
