@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import EntityPageBanner from '../../../../shared/components/PageHeader/EntityPageBanner';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
-import TopLevelDesktopLayout from '../../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../ui/PageLayout/TopLevelDesktopLayout';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;
