@@ -14890,6 +14890,90 @@ export type OpportunityNameIdQuery = {
   };
 };
 
+export type CommunityApplicationFormQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  isHub?: InputMaybe<Scalars['Boolean']>;
+  isChallenge?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CommunityApplicationFormQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          applicationForm?:
+            | {
+                __typename?: 'Form';
+                id: string;
+                description?: string | undefined;
+                questions: Array<{
+                  __typename?: 'FormQuestion';
+                  question: string;
+                  explanation: string;
+                  maxLength: number;
+                  required: boolean;
+                  sortOrder: number;
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            applicationForm?:
+              | {
+                  __typename?: 'Form';
+                  id: string;
+                  description?: string | undefined;
+                  questions: Array<{
+                    __typename?: 'FormQuestion';
+                    question: string;
+                    explanation: string;
+                    maxLength: number;
+                    required: boolean;
+                    sortOrder: number;
+                  }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ApplicationFormFragment = {
+  __typename?: 'Form';
+  id: string;
+  description?: string | undefined;
+  questions: Array<{
+    __typename?: 'FormQuestion';
+    question: string;
+    explanation: string;
+    maxLength: number;
+    required: boolean;
+    sortOrder: number;
+  }>;
+};
+
+export type UpdateCommunityApplicationQuestionsMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  formData: UpdateFormInput;
+}>;
+
+export type UpdateCommunityApplicationQuestionsMutation = {
+  __typename?: 'Mutation';
+  updateCommunityApplicationForm: { __typename?: 'Community'; id: string };
+};
+
 export type ChallengeCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];

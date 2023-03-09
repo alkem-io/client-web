@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Loading } from '../../../../common/components/core';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import CommunityGroupListPage from '../community/CommunityListPage';
@@ -22,8 +21,14 @@ import useMemberOrganizationAssignment from '../../../community/community/useCom
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
+import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
+import { Trans, useTranslation } from 'react-i18next';
+import { Text } from '../../../../core/ui/typography';
 
 const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { t } = useTranslation();
   const { hubId, communityId } = useHub();
 
   const { applications, loading: isLoadingApplications } = useHubApplications();
@@ -78,17 +83,28 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) =
       <EditCommunityMembersSection memberType="leads">
         <EditMemberUsersWithPopup {...leadUsersProps} />
       </EditCommunityMembersSection>
-      <SectionSpacer />
+      <Gutters />
       <EditCommunityMembersSection memberType="members">
         <EditMemberUsersWithPopup {...memberUsersProps} />
         <EditOrganizationsWithPopup {...memberOrganizationsProps} />
       </EditCommunityMembersSection>
-      <SectionSpacer />
+      <Gutters />
       {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
-      <SectionSpacer />
+      <Gutters />
       {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
-      <SectionSpacer />
+      <Gutters />
       <HubCommunityAdminMembershipPreferencesSection />
+      <Gutters />
+      <DashboardGenericSection
+        headerText={t('community.application-form.title')}
+        subHeaderText={
+          <Text>
+            <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
+          </Text>
+        }
+      >
+        <CommunityApplicationForm hubId={hubId} />
+      </DashboardGenericSection>
     </HubSettingsLayout>
   );
 };
