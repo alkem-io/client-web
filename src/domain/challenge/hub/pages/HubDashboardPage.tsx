@@ -65,6 +65,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
                   hubDisplayName={entities.hub!.displayName}
                   hubUri={buildHubUrl(entities.hub!.nameID)}
+                  hubVisibility={entities.hub!.visibility}
                 />
               )}
               journeyTypeName="hub"

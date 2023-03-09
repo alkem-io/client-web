@@ -46,6 +46,7 @@ query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAME
         id
       }
     }
+    visibility
   }
 }
 
@@ -74,5 +75,6 @@ query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_
         id
       }
     }
+    visibility
   }
 }
