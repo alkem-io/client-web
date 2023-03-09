@@ -86,33 +86,31 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../
 
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
-      <EditCommunityMembersSection memberType="leads">
-        <EditMemberUsersWithPopup {...leadUsersProps} />
-        <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
-      </EditCommunityMembersSection>
-      <Gutters />
-      <EditCommunityMembersSection memberType="members">
-        <EditMemberUsersWithPopup {...memberUsersProps} />
-        <EditOrganizationsWithPopup {...memberOrganizationsProps} />
-      </EditCommunityMembersSection>
-      <Gutters />
-      {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
-      <Gutters />
-      {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
-      <Gutters />
-      <ChallengeCommunityAdminMembershipPreferencesSection hubId={hubId} challengeId={challengeId} />
-      <Gutters />
+      <Gutters>
+        <EditCommunityMembersSection memberType="leads">
+          <EditMemberUsersWithPopup {...leadUsersProps} />
+          <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
+        </EditCommunityMembersSection>
 
-      <DashboardGenericSection
-        headerText={t('community.application-form.title')}
-        subHeaderText={
-          <Text>
-            <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
-          </Text>
-        }
-      >
-        <CommunityApplicationForm hubId={hubId} challengeId={challengeId} />
-      </DashboardGenericSection>
+        <EditCommunityMembersSection memberType="members">
+          <EditMemberUsersWithPopup {...memberUsersProps} />
+          <EditOrganizationsWithPopup {...memberOrganizationsProps} />
+        </EditCommunityMembersSection>
+        {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
+        {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
+        <ChallengeCommunityAdminMembershipPreferencesSection hubId={hubId} challengeId={challengeId} />
+
+        <DashboardGenericSection
+          headerText={t('community.application-form.title')}
+          subHeaderText={
+            <Text>
+              <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
+            </Text>
+          }
+        >
+          <CommunityApplicationForm hubId={hubId} challengeId={challengeId} />
+        </DashboardGenericSection>
+      </Gutters>
     </ChallengeSettingsLayout>
   );
 };

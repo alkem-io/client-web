@@ -80,31 +80,28 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) =
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
-      <EditCommunityMembersSection memberType="leads">
-        <EditMemberUsersWithPopup {...leadUsersProps} />
-      </EditCommunityMembersSection>
-      <Gutters />
-      <EditCommunityMembersSection memberType="members">
-        <EditMemberUsersWithPopup {...memberUsersProps} />
-        <EditOrganizationsWithPopup {...memberOrganizationsProps} />
-      </EditCommunityMembersSection>
-      <Gutters />
-      {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
-      <Gutters />
-      {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
-      <Gutters />
-      <HubCommunityAdminMembershipPreferencesSection />
-      <Gutters />
-      <DashboardGenericSection
-        headerText={t('community.application-form.title')}
-        subHeaderText={
-          <Text>
-            <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
-          </Text>
-        }
-      >
-        <CommunityApplicationForm hubId={hubId} />
-      </DashboardGenericSection>
+      <Gutters>
+        <EditCommunityMembersSection memberType="leads">
+          <EditMemberUsersWithPopup {...leadUsersProps} />
+        </EditCommunityMembersSection>
+        <EditCommunityMembersSection memberType="members">
+          <EditMemberUsersWithPopup {...memberUsersProps} />
+          <EditOrganizationsWithPopup {...memberOrganizationsProps} />
+        </EditCommunityMembersSection>
+        {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
+        {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
+        <HubCommunityAdminMembershipPreferencesSection />
+        <DashboardGenericSection
+          headerText={t('community.application-form.title')}
+          subHeaderText={
+            <Text>
+              <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
+            </Text>
+          }
+        >
+          <CommunityApplicationForm hubId={hubId} />
+        </DashboardGenericSection>
+      </Gutters>
     </HubSettingsLayout>
   );
 };

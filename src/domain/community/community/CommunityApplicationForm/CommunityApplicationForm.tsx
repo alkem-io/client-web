@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { max, slice, sortBy } from 'lodash';
+import { max, pullAt, slice, sortBy } from 'lodash';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import {
   refetchCommunityApplicationFormQuery,
@@ -115,34 +115,29 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ hubId, ch
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      onSubmit={async values => {
-        onSubmit(values);
-      }}
-    >
+    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ values: { questions }, setFieldValue, handleSubmit }) => {
         const handleAdd = () => {
           const newArray = [...questions, newQuestion(questions)];
           setFieldValue('questions', newArray);
         };
         const handleDelete = (index: number) => {
-          const newArray = [...slice(questions, 0, index), ...slice(questions, index + 1)];
-          setFieldValue('questions', newArray);
+          const nextQuestions = [...questions];
+          pullAt(nextQuestions, index);
+          setFieldValue('questions', nextQuestions);
         };
         const handleMoveUp = (index: number) => {
-          if (!index) return;
+          if (index === 0) return;
+          // Change sorting in the array and swap sortOrder properties
           const previousElement = { ...questions[index - 1], sortOrder: questions[index].sortOrder };
           const element = { ...questions[index], sortOrder: questions[index - 1].sortOrder };
-          const newArray = [
+          const nextQuestions = [
             ...slice(questions, 0, index - 1),
             element,
             previousElement,
             ...slice(questions, index + 1),
           ];
-          setFieldValue('questions', newArray);
+          setFieldValue('questions', nextQuestions);
         };
 
         const handleMoveDown = (index: number) => {
