@@ -641,6 +641,7 @@ export const HubPageFragmentDoc = gql`
     id
     nameID
     displayName
+    visibility
     metrics {
       id
       name
@@ -2206,6 +2207,7 @@ export const SearchResultHubFragmentDoc = gql`
         id
         anonymousReadAccess
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -2245,6 +2247,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         anonymousReadAccess
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -2285,6 +2288,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
       id
       nameID
       displayName
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -3351,6 +3355,7 @@ export const ChallengeExplorerDataDocument = gql`
         id
         tagline
       }
+      visibility
       challenges(IDs: $challengeIDs) {
         id
         nameID
@@ -18051,6 +18056,7 @@ export const ChallengeContributionDetailsDocument = gql`
           id
         }
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -18139,6 +18145,7 @@ export const OpportunityContributionDetailsDocument = gql`
           id
         }
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}

@@ -16,6 +16,7 @@ import {
   AuthorizationPrivilege,
   ChallengeProfileFragment,
   DashboardTopCalloutFragment,
+  HubVisibility,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
@@ -36,6 +37,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
+  hubVisibility: HubVisibility;
   challenge?: ChallengeProfileFragment;
   opportunitiesCount: number | undefined;
   aspects: AspectFragmentWithCallout[];
@@ -161,6 +163,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           hubId,
           hubNameId,
           hubDisplayName: hub.displayName,
+          hubVisibility: hub.visibility,
           challenge: _challenge?.hub.challenge,
           opportunitiesCount,
           aspects,

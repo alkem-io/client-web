@@ -1143,6 +1143,14 @@
         "recommendations": {
           "title": "Recommended by the Host"
         }
+      },
+      "archived-notice": {
+        "archived-hub": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archived-journey": "This {{journey}} is under a currently archived Hub. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+      },
+      "demo-notice": {
+        "demo-hub": "This is a Demo Hub. <alkemio>Click here</alkemio> to collaborate in active Hubs.",
+        "demo-journey": "This {{journey}} is within a Demo Hub. <alkemio>Click here</alkemio> to collaborate in active Hubs."
       }
     },
     "contribute": {
@@ -1452,8 +1460,6 @@
     },
     "hub": {
       "title": "Hub",
-      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
-      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",

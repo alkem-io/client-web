@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import CardActions from '../../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../../../challenge/common/JourneyCard/JourneyCardGoToButton';
 import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
@@ -9,6 +10,8 @@ import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardDescription from '../../../../challenge/common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../../../challenge/common/JourneyCard/JourneyCardSpacing';
+import { HubVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 
 export interface SearchBaseJourneyCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
@@ -17,6 +20,7 @@ export interface SearchBaseJourneyCardProps
   displayName: string;
   vision: string;
   parentSegment?: ReactNode;
+  hubVisibility?: HubVisibility;
 }
 
 const SearchBaseJourneyCard = ({
@@ -25,8 +29,15 @@ const SearchBaseJourneyCard = ({
   displayName,
   vision,
   parentSegment,
+  hubVisibility,
   ...props
 }: SearchBaseJourneyCardProps) => {
+  const { t } = useTranslation();
+  const ribbon =
+    hubVisibility && hubVisibility !== HubVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.hub-visibility.${hubVisibility}` as const)} />
+    ) : undefined;
+
   return (
     <JourneyCard
       tagline={tagline}
@@ -36,6 +47,7 @@ const SearchBaseJourneyCard = ({
           {displayName}
         </BlockTitle>
       }
+      ribbon={ribbon}
       expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
       expansionActions={
         <CardActions>
