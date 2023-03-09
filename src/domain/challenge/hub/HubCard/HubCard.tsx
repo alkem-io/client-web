@@ -10,6 +10,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface HubCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {
@@ -17,18 +18,19 @@ export interface HubCardProps
   displayName: string;
   vision: string;
   membersCount: number;
-  isDemoHub?: boolean;
+  hubVisibility?: HubVisibility;
 }
 
-const HubCard = ({ hubId, displayName, vision, membersCount, tagline, isDemoHub, ...props }: HubCardProps) => {
+const HubCard = ({ hubId, displayName, vision, membersCount, tagline, hubVisibility, ...props }: HubCardProps) => {
   const { t } = useTranslation();
 
   const { user } = useUserContext();
 
   const isMember = hubId ? user?.ofHub(hubId) : undefined;
-  const ribbon = isDemoHub ? (
-    <CardRibbon text={`${t('common.enums.hub-visibility.DEMO')} ${t('common.hub')}`} />
-  ) : undefined;
+  const ribbon =
+    hubVisibility && hubVisibility !== HubVisibility.Active ? (
+      <CardRibbon text={t(`common.enums.hub-visibility.${hubVisibility}` as const)} />
+    ) : undefined;
 
   return (
     <JourneyCard

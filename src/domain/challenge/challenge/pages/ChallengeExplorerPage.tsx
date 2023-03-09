@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { ChallengeExplorerContainer } from '../containers/ChallengeExplorerContainer';
 import { ChallengeExplorerView } from '../views/ChallengeExplorerView';
-import TopLevelDesktopLayout from '../../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
 
 export interface ChallengeExplorerPageProps {}
 

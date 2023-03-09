@@ -29,6 +29,7 @@ fragment HubPage on Hub {
   id
   nameID
   displayName
+  visibility
   metrics {
     id
     name

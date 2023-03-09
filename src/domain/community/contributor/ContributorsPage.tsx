@@ -9,7 +9,7 @@ import { useUserContext } from './user';
 import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
-import TopLevelDesktopLayout from '../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../../platform/ui/PageLayout/TopLevelDesktopLayout';
 import { PageTitle, Text } from '../../../core/ui/typography';
 
 export interface ContributorsPageProps {}
