@@ -22,12 +22,12 @@ type ElementProps<Props extends {}> = Record<string, Partial<Props> | true>;
  */
 const TranslateWithElements =
   <Props extends {}>(element: ReactElement<Props>) =>
-  (key: TranslationKey, elementProps: ElementProps<Props> = {}) => {
+  (key: TranslationKey, elementProps: ElementProps<Props> = {}, translateValues: {} | undefined = undefined) => {
     const components = mapValues(elementProps, props => cloneElement(element, props === true ? undefined : props));
 
     // Typescript fails to handle the type
     // @ts-ignore
-    return <Trans i18nKey={key} components={components} />;
+    return <Trans i18nKey={key} components={components} values={translateValues} />;
   };
 
 export default TranslateWithElements;

@@ -16,7 +16,7 @@ import FormikAutocomplete, {
   FormikSelectValue,
 } from '../../../../common/components/composite/forms/FormikAutocomplete';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import GridProvider from '../../../../core/ui/grid/GridProvider';

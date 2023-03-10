@@ -4758,6 +4758,7 @@ export type ChallengeExplorerSearchQuery = {
             id: string;
             nameID: string;
             displayName: string;
+            visibility: HubVisibility;
             context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
@@ -4783,6 +4784,7 @@ export type ChallengeExplorerDataQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
     challenges?:
       | Array<{
@@ -7193,6 +7195,7 @@ export type HubPageQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     collaboration?:
       | {
           __typename?: 'Collaboration';
@@ -7504,6 +7507,7 @@ export type HubPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
+  visibility: HubVisibility;
   collaboration?:
     | {
         __typename?: 'Collaboration';
@@ -14890,6 +14894,90 @@ export type OpportunityNameIdQuery = {
   };
 };
 
+export type CommunityApplicationFormQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  isHub?: InputMaybe<Scalars['Boolean']>;
+  isChallenge?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CommunityApplicationFormQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          applicationForm?:
+            | {
+                __typename?: 'Form';
+                id: string;
+                description?: string | undefined;
+                questions: Array<{
+                  __typename?: 'FormQuestion';
+                  question: string;
+                  explanation: string;
+                  maxLength: number;
+                  required: boolean;
+                  sortOrder: number;
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            applicationForm?:
+              | {
+                  __typename?: 'Form';
+                  id: string;
+                  description?: string | undefined;
+                  questions: Array<{
+                    __typename?: 'FormQuestion';
+                    question: string;
+                    explanation: string;
+                    maxLength: number;
+                    required: boolean;
+                    sortOrder: number;
+                  }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ApplicationFormFragment = {
+  __typename?: 'Form';
+  id: string;
+  description?: string | undefined;
+  questions: Array<{
+    __typename?: 'FormQuestion';
+    question: string;
+    explanation: string;
+    maxLength: number;
+    required: boolean;
+    sortOrder: number;
+  }>;
+};
+
+export type UpdateCommunityApplicationQuestionsMutationVariables = Exact<{
+  communityId: Scalars['UUID'];
+  formData: UpdateFormInput;
+}>;
+
+export type UpdateCommunityApplicationQuestionsMutation = {
+  __typename?: 'Mutation';
+  updateCommunityApplicationForm: { __typename?: 'Community'; id: string };
+};
+
 export type ChallengeCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -18213,6 +18301,7 @@ export type ChallengeContributionDetailsQuery = {
     __typename?: 'Hub';
     id: string;
     nameID: string;
+    visibility: HubVisibility;
     challenge: {
       __typename?: 'Challenge';
       id: string;
@@ -18243,6 +18332,7 @@ export type OpportunityContributionDetailsQuery = {
     __typename?: 'Hub';
     id: string;
     nameID: string;
+    visibility: HubVisibility;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
@@ -19350,6 +19440,7 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             displayName: string;
+            visibility: HubVisibility;
             context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
@@ -19365,6 +19456,7 @@ export type SearchQuery = {
             id: string;
             nameID: string;
             displayName: string;
+            visibility: HubVisibility;
             context?:
               | {
                   __typename?: 'Context';
@@ -19408,7 +19500,7 @@ export type SearchQuery = {
             displayName: string;
             authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
           };
-          hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+          hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string; visibility: HubVisibility };
         }
       | {
           __typename?: 'SearchResultOrganization';
@@ -19720,6 +19812,7 @@ export type SearchResultHubFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     context?:
       | {
           __typename?: 'Context';
@@ -19759,6 +19852,7 @@ export type SearchResultChallengeFragment = {
     id: string;
     nameID: string;
     displayName: string;
+    visibility: HubVisibility;
     context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
@@ -19790,7 +19884,7 @@ export type SearchResultOpportunityFragment = {
     displayName: string;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   };
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string; visibility: HubVisibility };
 };
 
 export type UserRolesSearchCardsQueryVariables = Exact<{

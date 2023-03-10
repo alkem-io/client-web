@@ -63,6 +63,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                       journeyUri={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
                       hubDisplayName={challenge.hubDisplayName}
                       hubUri={buildHubUrl(challenge.hubNameId)}
+                      hubVisibility={challenge.hubVisibility}
                       hideJoin
                     />
                   )}

@@ -29,6 +29,7 @@ interface AdminInnovationTemplatesSectionProps {
   buildTemplateLink: (aspect: AdminLifecycleTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
+  loadingInnovationPacks?: boolean;
   innovationPacks: InnovationPack<AdminLifecycleTemplateFragment>[];
   canImportTemplates: boolean;
 }

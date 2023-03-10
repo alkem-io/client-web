@@ -61,7 +61,6 @@ const CommunityFeedbackView: FC<CommunityFeedbackViewProps> = ({ entities, actio
           }),
         yup.object()
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [depsForObjectQuestions, t]
   );
 

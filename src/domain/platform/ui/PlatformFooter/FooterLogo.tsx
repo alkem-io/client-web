@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import Image from '../../../../domain/shared/components/Image';
-import { gutters } from '../../grid/utils';
+import Image from '../../../shared/components/Image';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 const FooterLogo = (props: BoxProps) => {
   return (
