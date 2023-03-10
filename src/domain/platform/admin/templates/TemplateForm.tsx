@@ -10,7 +10,7 @@ import { CreateTemplateInfoInput, Visual } from '../../../../core/apollo/generat
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
-import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 export interface TemplateInfoValues {
