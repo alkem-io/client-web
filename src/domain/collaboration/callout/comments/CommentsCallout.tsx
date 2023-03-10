@@ -157,9 +157,11 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
             onCalloutEdit={onCalloutEdit}
             onCalloutDelete={onCalloutDelete}
             actions={
-              <IconButton onClick={() => setIsFullViewDialogOpen(true)}>
-                <ExpandContentIcon />
-              </IconButton>
+              lastMessageOnly && (
+                <IconButton onClick={() => setIsFullViewDialogOpen(true)}>
+                  <ExpandContentIcon />
+                </IconButton>
+              )
             }
           >
             <CommentsComponent
