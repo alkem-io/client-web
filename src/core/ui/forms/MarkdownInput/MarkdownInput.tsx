@@ -1,5 +1,5 @@
 import React, { FormEvent, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -9,11 +9,21 @@ import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
 import usePersistentValue from '../../../utils/usePersistentValue';
 import UnifiedConverter from '../../markdown/html/UnifiedConverter';
+import { gutters } from '../../grid/utils';
 
-interface MarkdownInputProps extends InputBaseComponentProps {}
+interface MarkdownInputProps extends InputBaseComponentProps {
+  controlsVisible: 'always' | 'focused';
+}
+
+interface Offset {
+  x: string;
+  y: string;
+}
 
 export interface MarkdownInputRefApi {
   focus: () => void;
+  value: string | undefined;
+  getLabelOffset: () => Offset;
 }
 
 const ImageExtension = Image.configure({
@@ -22,13 +32,15 @@ const ImageExtension = Image.configure({
 
 const proseMirrorStyles = {
   outline: 'none',
+  minHeight: gutters(4),
+  padding: gutters(0.5),
   '& p:first-child': { marginTop: 0 },
   '& p:last-child': { marginBottom: 0 },
   '& img': { maxWidth: '100%' },
 } as const;
 
 export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-  ({ value, onChange, onFocus, onBlur }, ref) => {
+  ({ value, onChange, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [hasFocus, setHasFocus] = useState(false);
@@ -58,12 +70,36 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       }
     }, [value, hasFocus]);
 
+    const theme = useTheme();
+
+    const areControlsVisible = () => {
+      if (controlsVisible === 'always') {
+        return true;
+      }
+      if (controlsVisible === 'focused') {
+        return isInteractingWithInput;
+      }
+    };
+
+    const getLabelOffset = () => {
+      const guttersY = areControlsVisible() ? 3 : 1;
+
+      return {
+        x: gutters()(theme),
+        y: gutters(guttersY)(theme),
+      };
+    };
+
     useImperativeHandle(
       ref,
       () => ({
+        getLabelOffset,
         focus: () => editor?.commands.focus(),
+        get value() {
+          return editor?.getText();
+        },
       }),
-      [editor]
+      [editor, areControlsVisible()]
     );
 
     const setCharacterCount = useSetCharacterCount();
@@ -144,7 +180,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
         <MarkdownInputControls
           editor={editor}
-          focused={isInteractingWithInput}
+          visible={areControlsVisible()}
           onDialogOpen={() => setIsControlsDialogOpen(true)}
           onDialogClose={() => setIsControlsDialogOpen(false)}
         />
