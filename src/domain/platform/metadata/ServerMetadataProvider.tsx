@@ -36,7 +36,6 @@ const ServerMetadataProvider: FC<ServerMetadataProviderProps> = ({ url, children
 
   useEffect(() => {
     requestMetadata(url);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   return (

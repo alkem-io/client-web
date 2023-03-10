@@ -35,7 +35,6 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
         const key = item ? item.id : `__loading_${index}`;
         return cloneElement(card, { key });
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [items, depsValueFromObjectDeps, children]
   );
 

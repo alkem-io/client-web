@@ -97,7 +97,6 @@ const CalloutForm: FC<CalloutFormProps> = ({
         origin: 'Hub',
       },
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [callout?.id]
   );
 
