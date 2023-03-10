@@ -26,7 +26,7 @@ const MarkdownMedia = ({ node, ...props }: ReactMarkdownProps) => {
     <Box
       component={node.tagName as ElementType}
       maxWidth={maxWidth}
-      maxHeight={multiline ? 'auto' : '1em'}
+      maxHeight={multiline ? undefined : '1em'}
       {...props}
     />
   );
