@@ -3,6 +3,7 @@ import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 import { Box } from '@mui/material';
 import GridContext from '../../grid/GridContext';
 import { getColumnsWidth } from '../../grid/utils';
+import { useMarkdownOptions } from '../MarkdownOptionsContext';
 
 const getColumns = (gridColumns: number) => {
   if (gridColumns >= 12) {
@@ -19,7 +20,16 @@ const MarkdownMedia = ({ node, ...props }: ReactMarkdownProps) => {
   const itemColumns = getColumns(columnsAvailable);
   const maxWidth = getColumnsWidth(itemColumns, columnsAvailable);
 
-  return <Box component={node.tagName as ElementType} maxWidth={maxWidth} {...props} />;
+  const { multiline } = useMarkdownOptions();
+
+  return (
+    <Box
+      component={node.tagName as ElementType}
+      maxWidth={maxWidth}
+      maxHeight={multiline ? 'auto' : '1em'}
+      {...props}
+    />
+  );
 };
 
 export default MarkdownMedia;
