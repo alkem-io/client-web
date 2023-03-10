@@ -100,6 +100,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
               displayName: aspect.profileData.displayName,
               description: aspect.profileData.description,
             },
+            tags: aspect.tags,
             type: aspect.type,
             visualUri: aspect.visualUri,
           },
@@ -175,7 +176,9 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
             >
               {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
             </ScrollableCardsLayout>
-            {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
+            {isMobile && canCreate && callout.state !== CalloutState.Closed && (
+              <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
+            )}
           </CalloutLayout>
         </PageContentBlock>
         <AspectCreationDialog

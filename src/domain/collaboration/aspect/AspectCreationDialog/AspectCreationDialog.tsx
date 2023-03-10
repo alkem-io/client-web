@@ -60,6 +60,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
       },
       type: cardTemplate?.type ?? '',
       visualUri: cardTemplate?.info?.visual?.uri,
+      tags: aspect.tags,
     });
     handleClose();
   };

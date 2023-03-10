@@ -35,7 +35,11 @@ export interface CalendarEventsContainerProps {
 export interface CalendarEventsActions {
   // loadMore: () => void; // TODO: pagination?
   createEvent: (event: CalendarEventFormData) => Promise<string | undefined>;
-  updateEvent: (eventId: string, event: CalendarEventFormData) => Promise<string | undefined>;
+  updateEvent: (
+    eventId: string,
+    tagsetid: string | undefined,
+    event: CalendarEventFormData
+  ) => Promise<string | undefined>;
   deleteEvent: (eventId: string) => Promise<string | undefined>;
 }
 
@@ -93,6 +97,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
           eventData: {
             calendarID: calendarId!,
             startDate: parsedStartDate,
+            tags: tags,
             ...rest,
             profileData: {
               description: description,
@@ -108,7 +113,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   );
 
   const updateEvent = useCallback(
-    (eventId: string, event: CalendarEventFormData) => {
+    (eventId: string, tagsetId: string | undefined, event: CalendarEventFormData) => {
       const { startDate, description, tags, references, displayName, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
@@ -122,6 +127,12 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
               displayName: displayName,
               description: description,
               // references: ...references  // TODO...
+              tagsets: [
+                {
+                  ID: tagsetId ?? '',
+                  tags: tags,
+                },
+              ],
             },
           },
         },

@@ -1201,6 +1201,7 @@ export type CreateAspectOnCalloutInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
   visualUri?: InputMaybe<Scalars['String']>;
 };
@@ -1237,6 +1238,7 @@ export type CreateCalendarEventOnCalendarInput = {
   profileData?: InputMaybe<CreateProfileInput>;
   /** The start date for the event. */
   startDate: Scalars['DateTime'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
   type: CalendarEventType;
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
@@ -2235,6 +2237,8 @@ export type Mutation = {
   updatePreferenceOnOrganization: Preference;
   /** Updates one of the Preferences on a Hub */
   updatePreferenceOnUser: Preference;
+  /** Updates the specified Profile. */
+  updateProfile: Profile;
   /** Updates the specified Project. */
   updateProject: Project;
   /** Updates the User. */
@@ -2775,6 +2779,10 @@ export type MutationUpdatePreferenceOnOrganizationArgs = {
 
 export type MutationUpdatePreferenceOnUserArgs = {
   preferenceData: UpdateUserPreferenceInput;
+};
+
+export type MutationUpdateProfileArgs = {
+  profileData: UpdateProfileDirectInput;
 };
 
 export type MutationUpdateProjectArgs = {
@@ -4171,6 +4179,18 @@ export type UpdateOrganizationPreferenceInput = {
   /** Type of the organization preference */
   type: OrganizationPreferenceType;
   value: Scalars['String'];
+};
+
+export type UpdateProfileDirectInput = {
+  description?: InputMaybe<Scalars['Markdown']>;
+  /** The display name for the entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  location?: InputMaybe<UpdateLocationInput>;
+  profileID: Scalars['UUID'];
+  references?: InputMaybe<Array<UpdateReferenceInput>>;
+  /** A memorable short description for this entity. */
+  tagline?: InputMaybe<Scalars['String']>;
+  tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
 };
 
 export type UpdateProfileInput = {

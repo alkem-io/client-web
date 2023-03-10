@@ -125,6 +125,12 @@ const useAspectSettings: ContainerHook<
                 description: x.description,
                 uri: x.uri,
               })),
+              tagsets: [
+                {
+                  ID: aspect.profile.tagset?.id ?? '',
+                  tags: newAspect.tags,
+                },
+              ],
             },
             type: newAspect.type,
           },
