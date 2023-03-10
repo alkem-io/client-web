@@ -148,7 +148,6 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
       isMentionOpen = lastChars === ` ${MENTION_SYMBOL}` || lastChars === `\n${MENTION_SYMBOL}`;
     }
     setTooltipOpen(isMentionOpen);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const handleChange: OnChangeHandlerFunc = (_event, newValue, _newPlaintextValue, mentions) => {
