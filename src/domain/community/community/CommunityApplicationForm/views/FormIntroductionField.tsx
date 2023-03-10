@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 
 interface FormIntroductionFieldProps {
   disabled?: boolean;
