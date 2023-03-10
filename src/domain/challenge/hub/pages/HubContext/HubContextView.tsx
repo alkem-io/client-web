@@ -38,7 +38,9 @@ export const HubContextView: FC = () => {
       variables: {
         input: {
           context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-          displayName: name,
+          profileData: {
+            displayName: name,
+          },
           ID: hubNameId,
           hostID: host,
           tags: tagsets.flatMap(x => x.tags),
@@ -53,10 +55,10 @@ export const HubContextView: FC = () => {
       <Grid container spacing={2}>
         <HubContextForm
           isEdit
-          name={hub.displayName}
+          name={hub.profile.displayName}
           nameID={hubNameId}
           hostID={hub.hostId}
-          tagset={hub.tagset}
+          tagset={hub.profile.tagset}
           context={hub.context}
           organizations={organizations}
           onSubmit={onSubmit}

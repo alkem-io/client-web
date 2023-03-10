@@ -67,7 +67,9 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
             input: {
               nameID: nameID,
               context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              displayName: name,
+              profileData: {
+                displayName: name,
+              },
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
@@ -81,8 +83,10 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
             input: {
               nameID: nameID,
               context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              displayName: name,
               ID: opportunityId,
+              profileData: {
+                displayName: name,
+              },
               tags: tagsets.flatMap(x => x.tags),
             },
           },
@@ -98,10 +102,10 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     <Grid container spacing={2}>
       <ProfileForm
         isEdit={mode === FormMode.update}
-        name={opportunity?.displayName}
+        name={opportunity?.profile.displayName}
         nameID={opportunity?.nameID}
         journeyType="opportunity"
-        tagset={opportunity?.tagset}
+        tagset={opportunity?.profile.tagset}
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
@@ -115,7 +119,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         <Typography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </Typography>
-        <EditVisualsView visuals={opportunity?.context?.visuals} />
+        <EditVisualsView visuals={opportunity?.profile.visuals} />
       </Grid>
     </Grid>
   );

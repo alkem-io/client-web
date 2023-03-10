@@ -23,12 +23,14 @@ export const HubList: FC = () => {
   const hubList = useMemo(() => {
     return (
       hubsData?.hubs
-        .filter(x => (x.authorization?.myPrivileges ?? []).find(y => y === AuthorizationPrivilege.Update))
-        .map(x => {
-          if (x.visibility !== HubVisibility.Active) {
-            return { ...x, displayName: `${x.displayName} [${x.visibility.toUpperCase()}]` };
+        .filter(hub =>
+          (hub.authorization?.myPrivileges ?? []).find(privilege => privilege === AuthorizationPrivilege.Update)
+        )
+        .map(hub => {
+          if (hub.visibility !== HubVisibility.Active) {
+            return { ...hub, displayName: `${hub.profile.displayName} [${hub.visibility.toUpperCase()}]` };
           }
-          return x;
+          return hub;
         })
         .map(hub => ({
           ...hub,
@@ -42,7 +44,7 @@ export const HubList: FC = () => {
     refetchQueries: [refetchAdminHubsListQuery()],
     awaitRefetchQueries: true,
     onCompleted: data =>
-      notify(t('pages.admin.hub.notifications.hub-removed', { name: data.deleteHub.displayName }), 'success'),
+      notify(t('pages.admin.hub.notifications.hub-removed', { name: data.deleteHub.profile.displayName }), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) => {

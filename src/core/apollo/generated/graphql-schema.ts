@@ -336,6 +336,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1298,6 +1306,7 @@ export type CreateChallengeOnChallengeInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData?: InputMaybe<CreateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateChallengeOnHubInput = {
@@ -1310,6 +1319,7 @@ export type CreateChallengeOnHubInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData?: InputMaybe<CreateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateContextInput = {
@@ -1330,6 +1340,7 @@ export type CreateHubInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData?: InputMaybe<CreateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateInnovationPackOnLibraryInput = {
@@ -1374,6 +1385,7 @@ export type CreateOpportunityInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData?: InputMaybe<CreateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateOrganizationInput = {
@@ -1813,6 +1825,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -4023,12 +4045,11 @@ export type UpdateChallengeInput = {
   ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the contained Profile entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateChallengePreferenceInput = {
@@ -4089,14 +4110,13 @@ export type UpdateHubInput = {
   ID: Scalars['UUID_NAMEID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** Update the host Organization for the Hub. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the contained Profile entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateHubPreferenceInput = {
@@ -4153,12 +4173,11 @@ export type UpdateOpportunityInput = {
   ID: Scalars['UUID'];
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the contained Profile entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateOrganizationInput = {
@@ -5015,7 +5034,20 @@ export type ChallengePageQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -5317,7 +5349,20 @@ export type ChallengeProfileFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          tagline: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          visuals: Array<{
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+          }>;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -5466,7 +5511,20 @@ export type OpportunitiesOnChallengeFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          tagline: string;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          visuals: Array<{
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+          }>;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -5878,7 +5936,20 @@ export type OpportunityCreatedSubscription = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        tagline: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }>;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -6436,8 +6507,20 @@ export type HubProviderQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>;
     };
     host?:
       | {
@@ -6496,8 +6579,20 @@ export type HubInfoFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
+    }>;
   };
   host?:
     | {
@@ -7479,8 +7574,20 @@ export type HubDetailsFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
+    }>;
   };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   host?:
@@ -7559,8 +7666,20 @@ export type CreateHubMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     host?:
@@ -7628,8 +7747,20 @@ export type UpdateHubMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     host?:
@@ -8723,7 +8854,20 @@ export type OpportunityCardFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    visuals: Array<{
+      __typename?: 'Visual';
+      id: string;
+      uri: string;
+      name: string;
+      allowedTypes: Array<string>;
+      aspectRatio: number;
+      maxHeight: number;
+      maxWidth: number;
+      minHeight: number;
+      minWidth: number;
+    }>;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -8773,7 +8917,20 @@ export type CreateOpportunityMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -8976,7 +9133,20 @@ export type OpportunityCardsQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              tagline: string;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
@@ -9153,7 +9323,20 @@ export type OpportunityProfileInfoQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        tagline: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }>;
       };
       context?:
         | {
@@ -20264,7 +20447,7 @@ export type HubCalendarEventsQuery = {
                           id: string;
                           displayName: string;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                       }
                     | undefined;
@@ -20379,7 +20562,7 @@ export type CalendarEventDetailsQuery = {
                           id: string;
                           displayName: string;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                       }
                     | undefined;
@@ -20476,7 +20659,7 @@ export type CalendarEventDetailsFragment = {
           id: string;
           displayName: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
       }
     | undefined;
@@ -20571,7 +20754,7 @@ export type CreateCalendarEventMutation = {
             id: string;
             displayName: string;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           };
         }
       | undefined;
@@ -20656,7 +20839,7 @@ export type UpdateCalendarEventMutation = {
             id: string;
             displayName: string;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           };
         }
       | undefined;

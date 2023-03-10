@@ -109,11 +109,13 @@ export const useJourneyCreation = () => {
         variables: {
           input: {
             hubID: value.hubID,
-            displayName: value.displayName,
             context: {
-              tagline: value.tagline,
-              background: value.background,
               vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
+              description: value.background,
             },
             tags: value.tags,
           },
@@ -123,7 +125,6 @@ export const useJourneyCreation = () => {
             __typename: 'Challenge',
             id: '',
             nameID: '',
-            displayName: value.displayName ?? '',
             metrics: [
               {
                 id: '',
@@ -131,8 +132,9 @@ export const useJourneyCreation = () => {
                 value: '',
               },
             ],
-            context: {
+            profile: {
               id: '',
+              displayName: value.displayName ?? '',
               tagline: value.tagline,
               visuals: [
                 {
@@ -141,11 +143,11 @@ export const useJourneyCreation = () => {
                   name: '',
                 },
               ],
-            },
-            tagset: {
-              id: '-1',
-              name: 'default',
-              tags: value.tags ?? [],
+              tagset: {
+                id: '-1',
+                name: 'default',
+                tags: value.tags ?? [],
+              },
             },
           },
         },
@@ -162,10 +164,12 @@ export const useJourneyCreation = () => {
         variables: {
           input: {
             challengeID: value.challengeID,
-            displayName: value.displayName,
             context: {
-              tagline: value.tagline,
               vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
             },
             tags: value.tags,
           },
@@ -175,7 +179,6 @@ export const useJourneyCreation = () => {
             __typename: 'Opportunity',
             id: '',
             nameID: '',
-            displayName: value.displayName ?? '',
             metrics: [
               {
                 id: '',
@@ -185,6 +188,10 @@ export const useJourneyCreation = () => {
             ],
             context: {
               id: '',
+            },
+            profile: {
+              id: '',
+              displayName: value.displayName ?? '',
               tagline: value.tagline,
               visuals: [
                 {
@@ -199,11 +206,11 @@ export const useJourneyCreation = () => {
                   minWidth: 1,
                 },
               ],
-            },
-            tagset: {
-              id: '-1',
-              name: 'default',
-              tags: value.tags ?? [],
+              tagset: {
+                id: '-1',
+                name: 'default',
+                tags: value.tags ?? [],
+              },
             },
           },
         },

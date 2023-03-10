@@ -55,7 +55,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const communityId = opportunity?.community?.id ?? '';
   // using the challenge provider
   const { challengeId } = useChallenge();
-  const displayName = opportunity?.displayName || '';
+  const displayName = opportunity?.profile.displayName || '';
 
   const permissions = useMemo<OpportunityViewerPermissions>(
     () => ({

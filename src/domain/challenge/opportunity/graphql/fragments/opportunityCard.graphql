@@ -4,10 +4,14 @@ fragment OpportunityCard on Opportunity {
   profile {
     id
     displayName
+    tagline
     tagset {
       id
       name
       tags
+    }
+    visuals {
+      ...VisualFull
     }
   }
   metrics {

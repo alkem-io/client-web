@@ -284,10 +284,14 @@ export const OpportunityCardFragmentDoc = gql`
     profile {
       id
       displayName
+      tagline
       tagset {
         id
         name
         tags
+      }
+      visuals {
+        ...VisualFull
       }
     }
     metrics {
@@ -313,6 +317,7 @@ export const OpportunityCardFragmentDoc = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const ChallengeProfileFragmentDoc = gql`
@@ -463,13 +468,14 @@ export const HubDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      tagline
       tagset {
         id
         name
         tags
       }
       visuals {
-        ...VisualUri
+        ...VisualFull
       }
     }
     authorization {
@@ -488,7 +494,7 @@ export const HubDetailsFragmentDoc = gql`
       ...ContextDetails
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const HubInfoFragmentDoc = gql`
@@ -2609,7 +2615,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
           id
           uri
         }
-        tagsets {
+        tagset {
           id
           tags
         }
@@ -7515,10 +7521,14 @@ export const OpportunityProfileInfoDocument = gql`
         profile {
           id
           displayName
+          tagline
           tagset {
             id
             name
             tags
+          }
+          visuals {
+            ...VisualFull
           }
         }
         context {
@@ -7527,6 +7537,7 @@ export const OpportunityProfileInfoDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 

@@ -7,10 +7,14 @@ query opportunityProfileInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!)
       profile {
         id
         displayName
+        tagline
         tagset {
           id
           name
           tags
+        }
+        visuals {
+          ...VisualFull
         }
       }
       context {

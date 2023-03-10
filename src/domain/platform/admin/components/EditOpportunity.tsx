@@ -88,7 +88,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              displayName: name,
+              profileData: {
+                displayName: name,
+              },
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: innovationFlowTemplateID,
@@ -102,7 +104,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              displayName: name,
+              profileData: {
+                displayName: name,
+              },
               ID: opportunityId,
               tags: tagsets.flatMap(x => x.tags),
             },
@@ -124,9 +128,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         contextSegment={OpportunityContextSegment}
         journeyType="opportunity"
         isEdit={mode === FormMode.update}
-        name={opportunity?.displayName}
+        name={opportunity?.profile.displayName}
         nameID={opportunity?.nameID}
-        tagset={opportunity?.tagset}
+        tagset={opportunity?.profile.tagset}
         innovationFlowTemplates={filteredInnovationFlowTemplates}
         context={opportunity?.context as Context}
         onSubmit={onSubmit}

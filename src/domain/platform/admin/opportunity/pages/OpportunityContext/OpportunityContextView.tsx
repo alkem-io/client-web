@@ -10,7 +10,6 @@ import {
   refetchOpportunityProfileInfoQuery,
   useOpportunityProfileInfoQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
-import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import { OpportunityContextSegment } from '../../OpportunityContextSegment';
 
 const OpportunityContextView: FC = () => {
@@ -53,7 +52,8 @@ const OpportunityContextView: FC = () => {
     <Grid container spacing={2}>
       <ContextForm
         contextSegment={OpportunityContextSegment}
-        context={opportunity?.context as Context}
+        context={opportunity?.context}
+        profile={opportunity?.profile}
         loading={loading || isUpdating}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

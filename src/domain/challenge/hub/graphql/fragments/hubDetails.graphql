@@ -4,13 +4,14 @@ fragment HubDetails on Hub {
   profile {
     id
     displayName
+    tagline
     tagset {
       id
       name
       tags
     }
     visuals {
-      ...VisualUri
+      ...VisualFull
     }
   }
 

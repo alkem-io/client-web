@@ -74,7 +74,9 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
           nameID,
           hostID: host,
           context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-          displayName: name,
+          profileData: {
+            displayName: name,
+          },
           tags: tagsets.flatMap(x => x.tags),
         },
       },

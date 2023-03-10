@@ -7,7 +7,6 @@ import {
   AuthorizationPrivilege,
   HubInfoFragment,
   HubVisibility,
-  Visual,
 } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface HubPermissions {
@@ -23,9 +22,7 @@ export interface HubPermissions {
 interface HubContextProps {
   hubId: string;
   hubNameId: string;
-  displayName: string;
   communityId: string;
-  visuals: Visual[];
   isPrivate?: boolean;
   loading: boolean;
   permissions: HubPermissions;
@@ -34,8 +31,8 @@ interface HubContextProps {
   // TODO Some components just randomly access HubContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
   hostId?: string;
-  tagset?: HubInfoFragment['tagset'];
   context?: HubInfoFragment['context'];
+  profile: HubInfoFragment['profile'];
   visibility: HubVisibility;
 }
 
@@ -44,9 +41,7 @@ const HubContext = React.createContext<HubContextProps>({
   isPrivate: undefined,
   hubId: '',
   hubNameId: '',
-  displayName: '',
   communityId: '',
-  visuals: [],
   permissions: {
     viewerCanUpdate: false,
     canCreate: false,
@@ -55,6 +50,11 @@ const HubContext = React.createContext<HubContextProps>({
     canReadChallenges: false,
     communityReadAccess: false,
     contextPrivileges: [],
+  },
+  profile: {
+    id: '',
+    displayName: '',
+    visuals: [],
   },
   visibility: HubVisibility.Active,
   refetchHub: () => {},
@@ -83,9 +83,9 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const visibility = hub?.visibility || HubVisibility.Active;
-  const displayName = hub?.displayName || '';
+  const displayName = hub?.profile.displayName || '';
   const communityId = hub?.community?.id ?? '';
-  const visuals = hub?.context?.visuals ?? [];
+  const visuals = hub?.profile.visuals ?? [];
   const isPrivate = hub && !hub.authorization?.anonymousReadAccess;
   const error = configError || hubError;
 
@@ -116,14 +116,17 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         hubId,
         hubNameId,
         communityId,
-        visuals,
         permissions,
-        displayName,
         isPrivate,
         loading,
         error,
         refetchHub,
-        tagset: hub?.tagset,
+        profile: {
+          id: hub?.profile.id ?? '',
+          displayName,
+          tagset: hub?.profile.tagset,
+          visuals,
+        },
         hostId: hub?.host?.id,
         context: hub?.context,
         visibility,

@@ -14,11 +14,11 @@ const OpportunityAboutPage: FC = () => {
         {({ context, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
             name={displayName}
-            tagline={context?.tagline}
+            tagline={profile?.tagline}
             tags={tagset?.tags}
             who={context?.who}
             impact={context?.impact}
-            background={context?.background}
+            background={profile?.description}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
             hubNameId={hubNameId}

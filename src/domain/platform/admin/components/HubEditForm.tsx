@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
@@ -20,6 +20,7 @@ import RecommendationsSegment from './Common/RecommendationsSegment';
 
 interface Props {
   context?: Context;
+  profile?: Profile;
   name?: string;
   nameID?: string;
   hostID?: string;
@@ -27,7 +28,6 @@ interface Props {
   organizations?: { id: string; name: string }[];
   onSubmit: (formData: HubEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
-  contextOnly?: boolean;
   isEdit: boolean;
 }
 
@@ -50,6 +50,7 @@ export interface HubEditFormValuesType {
 
 const HubEditForm: FC<Props> = ({
   context,
+  profile,
   name,
   nameID,
   hostID,
@@ -77,13 +78,13 @@ const HubEditForm: FC<Props> = ({
   const initialValues: HubEditFormValuesType = {
     name: name || '',
     nameID: nameID || '',
-    background: context?.background || '',
+    background: profile?.description || '',
     impact: context?.impact || '',
-    tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || EmptyLocation,
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
     vision: context?.vision || '',
     who: context?.who || '',
-    references: context?.references || [],
+    references: profile?.references || [],
     recommendations: context?.recommendations || [],
     tagsets: tagsets,
     host: hostID || '',
