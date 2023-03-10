@@ -1,13 +1,8 @@
 import { Plugin } from 'unified';
-import { link, paragraph, root, text } from 'mdast-builder';
+import { paragraph, root, text } from 'mdast-builder';
 import { Literal, Node, Parent } from 'unist';
 
 type HandledNode = Parent | Literal;
-
-interface ImageNode {
-  url: string;
-  alt?: string;
-}
 
 const pad = (...nodes: Node[]) => [text(' '), ...nodes, text(' ')];
 
@@ -28,13 +23,6 @@ const collect = (node: HandledNode): Node[] => {
   if (node.type === 'code') {
     const { value } = node as Literal<string>;
     return pad(text(value));
-  }
-  if (node.type === 'link') {
-    return [node];
-  }
-  if (node.type === 'image') {
-    const imageNode = node as unknown as ImageNode;
-    return pad(link(imageNode.url, imageNode.alt, text(imageNode.alt || imageNode.url)));
   }
   if ('children' in node) {
     return pad(...(node.children as HandledNode[]).flatMap(collect));
