@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import useProfileStyles from './useProfileStyles';
 
 interface MarkdownInputFieldProps {

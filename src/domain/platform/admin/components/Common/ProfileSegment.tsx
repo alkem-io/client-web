@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormRow from '../../../../shared/layout/FormLayout';
 
 export const profileSegmentSchema = yup.object().shape({

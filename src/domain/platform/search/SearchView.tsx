@@ -89,7 +89,6 @@ const SearchView = ({
     if (termsFromUrl.length === 0) {
       resetFilters();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [termsFromUrl.length]);
 
   const handleTermsChange = (newValue: string[]) => {
