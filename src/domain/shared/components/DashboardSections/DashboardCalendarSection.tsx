@@ -66,9 +66,9 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const onClickHighlightedDate = (date: Date) => {
     // Clicking on a marked date highlights events on the list
-    urlQueryParams.delete(HIGHLIGHT_PARAM_NAME);
-    urlQueryParams.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-    navigate(`${EntityPageSection.Dashboard}/calendar?${urlQueryParams}`);
+    const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
+    nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+    navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`);
   };
 
   return (

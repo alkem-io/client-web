@@ -71,9 +71,9 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
 
   const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => {
     if (date) {
-      urlQueryParams.delete(HIGHLIGHT_PARAM_NAME);
-      urlQueryParams.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-      navigate(`${EntityPageSection.Dashboard}/calendar?${urlQueryParams}`, { replace: true });
+      const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
+      nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+      navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`, { replace: true });
     }
     if (events.length > 0) {
       // Scroll again in case url hasn't changed but user has scrolled out of the view
