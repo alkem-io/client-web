@@ -8,6 +8,7 @@ import { DialogContent } from '../../../common/components/core/dialog';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import { CalendarEvent } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
+import { useQueryParams } from '../../../core/routing/useQueryParams';
 import { Actions } from '../../../core/ui/actions/Actions';
 import BackButton from '../../../core/ui/actions/BackButton';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
@@ -36,7 +37,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
   const { calendarEventNameId } = useUrlParams();
   const navigate = useNavigate();
 
-  const params = new URLSearchParams(window.location.search);
+  const params = useQueryParams();
   const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
   const highlightedDay = useMemo(
     () =>

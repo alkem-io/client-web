@@ -15,6 +15,7 @@ import { EntityPageSection } from '../../layout/EntityPageSection';
 import PageContentBlockFooter from '../../../../core/ui/content/PageContentBlockFooter';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
 import { HIGHLIGHT_PARAM_NAME } from '../../../timeline/calendar/CalendarDialog';
+import { useQueryParams } from '../../../../core/routing/useQueryParams';
 
 const MAX_NUMBER_OF_EVENTS = 3;
 
@@ -40,6 +41,8 @@ export interface DashboardCalendarSectionProps {
 const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLocation }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const urlQueryParams = useQueryParams();
+
   const [isCalendarView, setCalendarView] = useState(false);
 
   const { data, loading } = useHubDashboardCalendarEventsQuery({
@@ -63,10 +66,9 @@ const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyLo
 
   const onClickHighlightedDate = (date: Date) => {
     // Clicking on a marked date highlights events on the list
-    const params = new URLSearchParams({
-      [HIGHLIGHT_PARAM_NAME]: dayjs(date).format(INTERNAL_DATE_FORMAT),
-    });
-    navigate(`${EntityPageSection.Dashboard}/calendar?${params}`);
+    urlQueryParams.delete(HIGHLIGHT_PARAM_NAME);
+    urlQueryParams.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+    navigate(`${EntityPageSection.Dashboard}/calendar?${urlQueryParams}`);
   };
 
   return (

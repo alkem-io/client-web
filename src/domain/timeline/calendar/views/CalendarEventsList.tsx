@@ -19,6 +19,7 @@ import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
+import { useQueryParams } from '../../../../core/routing/useQueryParams';
 
 interface CalendarEventsListProps {
   events: CalendarEventCardData[];
@@ -30,6 +31,7 @@ interface CalendarEventsListProps {
 const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const urlQueryParams = useQueryParams();
   const breakpoint = useCurrentBreakpoint();
 
   const [scrollToElement, scrollTo] = useState<string>();
@@ -68,11 +70,10 @@ const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: Calend
   }, [highlightedDay, sortedEvents]);
 
   const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => {
-    const params = new URLSearchParams(window.location.search);
-    params.delete(HIGHLIGHT_PARAM_NAME);
     if (date) {
-      params.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
-      navigate(`${EntityPageSection.Dashboard}/calendar?${params}`, { replace: true });
+      urlQueryParams.delete(HIGHLIGHT_PARAM_NAME);
+      urlQueryParams.append(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+      navigate(`${EntityPageSection.Dashboard}/calendar?${urlQueryParams}`, { replace: true });
     }
     if (events.length > 0) {
       // Scroll again in case url hasn't changed but user has scrolled out of the view
