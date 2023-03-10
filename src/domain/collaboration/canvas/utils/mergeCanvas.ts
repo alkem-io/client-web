@@ -22,14 +22,17 @@ const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string | u
   if (parsedCanvas.type !== 'excalidraw' || parsedCanvas.version !== 2) {
     throw new Error('Unable to load canvas');
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   for (const fileId in parsedCanvas.files) {
+    // TODO: maybe there is a way to check if file is already in...
+    // TODO: Confirm: because file ids look like hashes, it would be nice to have each file only once, per file content
     canvasApi.addFiles([parsedCanvas.files[fileId]]);
   }
 
   const currentElements = canvasApi.getSceneElements();
   const insertedElements = parsedCanvas.elements?.map(el => ({
     ...el,
+    // Changing id is required // TODO: generate a better ID, see inside excalidraw how their IDs are being generated
     id: uniqueId(Math.random().toString()),
   }));
 
