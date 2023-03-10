@@ -1,6 +1,6 @@
 import { Button, IconButton, IconButtonProps } from '@mui/material';
 import { Editor } from '@tiptap/react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
@@ -10,6 +10,7 @@ import Gutters from '../../grid/Gutters';
 import { Actions } from '../../actions/Actions';
 import Dialog from '../../dialog/Dialog';
 import { useNotification } from '../../notifications/useNotification';
+import { Selection } from 'prosemirror-state';
 
 interface ToggleLinkButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -22,6 +23,26 @@ interface LinkProps {
 }
 
 const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: ToggleLinkButtonProps) => {
+  const wasFocusedRef = useRef<boolean>(false);
+
+  const subscribeToFocus = (editor: Editor) => {
+    const markAsFocused = () => {
+      wasFocusedRef.current = true;
+    };
+
+    editor.on('focus', markAsFocused);
+
+    return () => {
+      editor.off('focus', markAsFocused);
+    };
+  };
+
+  useEffect(() => {
+    if (editor) {
+      subscribeToFocus(editor);
+    }
+  }, [editor]);
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const openDialog = () => {
@@ -38,12 +59,34 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
   const notify = useNotification();
 
   const markAsLink = (linkProps: LinkProps) => {
+    if (!editor) {
+      return;
+    }
+
+    const { selection } = editor.state;
+
     try {
-      editor?.commands.setLink(linkProps);
+      if (!selection.empty) {
+        editor.commands.setLink(linkProps);
+      } else {
+        // If the input hasn't been focused once, the link is inserted at the end.
+        const from = wasFocusedRef.current ? selection.from : Selection.atEnd(editor.state.doc).from;
+        const to = from + linkProps.href.length;
+
+        editor
+          .chain()
+          .setTextSelection(from)
+          .insertContent(linkProps.href)
+          .setTextSelection({ from, to })
+          .setLink(linkProps)
+          .setTextSelection(to)
+          .run();
+      }
     } catch (error) {
       notify(error.message, 'error');
       throw error;
     }
+
     closeDialog();
   };
 
