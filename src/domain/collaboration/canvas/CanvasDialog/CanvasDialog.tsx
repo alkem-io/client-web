@@ -30,6 +30,9 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import canvasSchema from '../validation/canvasSchema';
 import isCanvasValueEqual from '../utils/isCanvasValueEqual';
+import { useGetCanvasTemplateLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import mergeCanvas from '../utils/mergeCanvas';
 
 interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -99,6 +102,9 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
   const { t } = useTranslation();
   const { canvas, lockedBy } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+
+  const { hubId } = useHub();
+  const [getCanvasTemplate] = useGetCanvasTemplateLazyQuery({ variables: { hubId } });
 
   const styles = useStyles();
 
@@ -216,6 +222,20 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     },
   };
 
+  const onMergeCanvas = async () => {
+    const canvasApi = await excalidrawApiRef.current?.readyPromise;
+
+    if (canvasApi && options.canEdit) {
+      const { data } = await getCanvasTemplate();
+      const canvasTemplate = data?.hub.templates?.canvasTemplates?.[0];
+      // .find(
+      //   t => t.id === 'bd133964-fa49-4301-b627-a769fcc74a48'
+      // );
+
+      mergeCanvas(canvasApi, canvasTemplate?.value);
+    }
+  };
+
   return (
     <Dialog
       open={options.show}
@@ -247,6 +267,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
                   <PageTitle>{canvas?.displayName}</PageTitle>
                 </>
               )}
+              <Button onClick={onMergeCanvas}>Merge canvas</Button>
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingCanvasValue && canvas && (

@@ -1,0 +1,11 @@
+query getCanvasTemplate($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    nameID
+    templates {
+      canvasTemplates {
+        id
+        value
+      }
+    }
+  }
+}

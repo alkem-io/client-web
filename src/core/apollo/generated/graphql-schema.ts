@@ -12837,6 +12837,24 @@ export type CalloutMessageReceivedSubscription = {
   };
 };
 
+export type GetCanvasTemplateQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type GetCanvasTemplateQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    nameID: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          canvasTemplates: Array<{ __typename?: 'CanvasTemplate'; id: string; value: string }>;
+        }
+      | undefined;
+  };
+};
+
 export type CanvasDetailsFragment = {
   __typename?: 'Canvas';
   id: string;
