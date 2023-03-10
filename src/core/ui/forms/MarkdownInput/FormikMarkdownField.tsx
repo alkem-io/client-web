@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { ChangeEvent, FC, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
@@ -6,6 +6,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
+import { gutters } from '../../grid/utils';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -68,26 +69,51 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     helper.setValue(event.target.value);
   };
 
-  const inputRef = useRef<MarkdownInputRefApi>(null);
+  // Usually store a reference to the child in a Ref, but in this case we need state
+  // cause label's presence/position depends on the presence of this ref.
+  const [inputElement, setInputElement] = useState<MarkdownInputRefApi | null>(null);
+
+  const inputRef = useCallback((nextInputElement: MarkdownInputRefApi | null) => {
+    setInputElement(nextInputElement);
+  }, []);
 
   const focusInput = () => {
-    inputRef.current?.focus();
+    inputElement?.focus();
   };
+
+  const labelOffset = inputElement?.getLabelOffset();
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
-        <FilledDetector value={field.value} />
-        <InputLabel onClick={focusInput}>{title}</InputLabel>
+        <FilledDetector value={inputElement?.value} />
+        {labelOffset && (
+          <InputLabel
+            onClick={focusInput}
+            sx={{
+              ':not(.MuiInputLabel-shrink)': {
+                transform: `translate(${labelOffset.x}, ${labelOffset.y}) scale(1)`,
+              },
+            }}
+          >
+            {title}
+          </InputLabel>
+        )}
         <OutlinedInput
           value={field.value}
           onChange={handleChange}
           label={title}
           inputComponent={MarkdownInput}
           inputRef={inputRef}
+          inputProps={{ controlsVisible: 'always' }}
           readOnly={readOnly}
           placeholder={placeholder}
           multiline
+          sx={{
+            '&.MuiOutlinedInput-root': {
+              padding: gutters(0.5),
+            },
+          }}
         />
         <CharacterCountContainer>
           {({ characterCount }) => (

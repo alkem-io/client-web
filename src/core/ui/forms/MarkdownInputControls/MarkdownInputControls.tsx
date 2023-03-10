@@ -21,7 +21,7 @@ import InsertEmojiButton from './InsertEmojiButton';
 
 interface MarkdownInputControlsProps {
   editor: Editor | null;
-  focused?: boolean;
+  visible?: boolean;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
 }
@@ -52,25 +52,25 @@ const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-
 
 const MarkdownInputControls = ({
   editor,
-  focused = false,
+  visible = false,
   onDialogOpen,
   onDialogClose,
 }: MarkdownInputControlsProps) => {
-  const [isVisible, setIsVisible] = useState(focused);
+  const [isVisible, setIsVisible] = useState(visible);
 
   useEffect(() => {
-    if (focused) {
+    if (visible) {
       setTimeout(() => {
-        setIsVisible(() => focused);
+        setIsVisible(() => visible);
       }, CONTROLS_SHOW_DELAY_MS);
     } else {
       setIsVisible(false);
     }
-  }, [focused]);
+  }, [visible]);
 
   return (
     <Collapse in={isVisible}>
-      <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} marginBottom={gutters(0.5)}>
+      <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} paddingX={0.5}>
         <ControlsButton editor={editor} command={e => e.undo()}>
           <Undo />
         </ControlsButton>
