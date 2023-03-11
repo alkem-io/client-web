@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import useServerMetadata from '../metadata/useServerMetadata';
-import TopLevelDesktopLayout from '../../../core/ui/layout/TopLevel/TopLevelDesktopLayout';
+import TopLevelDesktopLayout from '../ui/PageLayout/TopLevelDesktopLayout';
 import HelpDialog from '../../../core/help/dialog/HelpDialog';
 
 const useAboutStyles = makeStyles(theme => ({

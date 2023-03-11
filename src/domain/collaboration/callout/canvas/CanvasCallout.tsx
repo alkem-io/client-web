@@ -98,7 +98,9 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
                 }
               </ScrollableCardsLayout>
             )}
-            {isMobile && <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />}
+            {isMobile && canCreate && callout.state !== CalloutState.Closed && (
+              <CalloutBlockFooter contributionsCount={contributionsCount} onCreate={openCreateDialog} />
+            )}
           </CalloutLayout>
         </PageContentBlock>
         <CanvasActionsContainer>

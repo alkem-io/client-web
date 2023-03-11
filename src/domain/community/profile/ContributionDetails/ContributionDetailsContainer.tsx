@@ -12,7 +12,6 @@ import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../..
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
-import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -86,7 +85,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         journeyUri: buildHubUrl(hubData.hub.nameID),
         communityId: hubData.hub.community?.id,
         tagline: hubData.hub.context?.tagline ?? '',
-        isDemoHub: hubData.hub.visibility === HubVisibility.Demo,
+        hubVisibility: hubData.hub.visibility,
       };
     }
 
@@ -99,6 +98,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         journeyUri: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
         communityId: challengeData.hub.challenge.community?.id,
         tagline: challengeData.hub.challenge.context?.tagline ?? '',
+        hubVisibility: challengeData.hub.visibility,
       };
     }
 
@@ -115,6 +115,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         ),
         communityId: opportunityData.hub.opportunity.community?.id,
         tagline: opportunityData.hub.opportunity.context?.tagline ?? '',
+        hubVisibility: opportunityData.hub.visibility,
       };
     }
   }, [hubData, challengeData, opportunityData]);

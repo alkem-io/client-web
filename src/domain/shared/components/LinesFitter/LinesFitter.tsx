@@ -118,7 +118,6 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
   const containerRef = useRef<HTMLElement | null>(null);
   useLayoutEffect(() => {
     containerRef.current = wrapperElementRef.current?.parentElement ?? null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wrapperElementRef.current]);
 
   const { width } = useResizeDetector({ targetRef: containerRef });
@@ -128,7 +127,6 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
       type: ActionTypes.Reset,
       payload: getInitialHeight(height),
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width]);
 
   const measureWrapperHeight = () => {

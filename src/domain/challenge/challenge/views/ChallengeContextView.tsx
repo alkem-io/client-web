@@ -80,7 +80,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
         color: 'neutralMedium',
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [depsValueFromObjectActivity, i18n.language, t]);
 
   return (

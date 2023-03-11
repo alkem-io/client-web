@@ -26,6 +26,7 @@ const FormikDatePicker = ({ name, ...datePickerProps }: FormikDatePickerProps) =
         renderInput={params => <TextField {...params} fullWidth />}
         onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}
+        inputFormat="dd/MM/yyyy"
         {...datePickerProps}
       />
     </LocalizationProvider>
