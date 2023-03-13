@@ -16,6 +16,7 @@ import FormQuestionField, { questionSchema } from './views/FormQuestionField';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
   hubId: string;
@@ -33,7 +34,7 @@ interface FormValues {
 }
 
 const validationSchema = yup.object().shape({
-  description: yup.string().required(),
+  description: yup.string().required().max(LONG_TEXT_LENGTH),
   questions: yup.array().of(questionSchema),
 });
 

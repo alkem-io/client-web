@@ -8120,6 +8120,7 @@ export type HubApplicationTemplateQuery = {
                   question: string;
                   explanation: string;
                   sortOrder: number;
+                  maxLength: number;
                 }>;
               }
             | undefined;

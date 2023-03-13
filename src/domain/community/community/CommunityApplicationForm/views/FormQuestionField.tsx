@@ -9,6 +9,7 @@ import RoundedBadge from '../../../../../core/ui/icon/RoundedBadge';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/KeyboardArrowUp';
 import ArrowDownwardIcon from '@mui/icons-material/KeyboardArrowDown';
+import { MID_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 
 interface FormQuestionFieldProps {
   index: number;
@@ -22,7 +23,7 @@ interface FormQuestionFieldProps {
 }
 
 export const questionSchema = yup.object().shape({
-  question: yup.string().required('Required field'),
+  question: yup.string().required('Required field').max(MID_TEXT_LENGTH),
   explanation: yup.string(),
   required: yup.boolean().required(),
 });
@@ -49,6 +50,8 @@ const FormQuestionField: FC<FormQuestionFieldProps> = ({
           title={t('common.question')}
           readOnly={readOnly}
           disabled={disabled}
+          maxLength={MID_TEXT_LENGTH}
+          withCounter
         />
       </Box>
       <Tooltip title={t('community.application-form.move-up')} placement={'bottom'}>

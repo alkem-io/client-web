@@ -5610,6 +5610,7 @@ export const HubApplicationTemplateDocument = gql`
             question
             explanation
             sortOrder
+            maxLength
           }
         }
       }

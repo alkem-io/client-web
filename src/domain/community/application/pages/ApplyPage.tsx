@@ -10,7 +10,6 @@ import WrapperButton from '../../../../common/components/core/WrapperButton';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import Image from '../../../shared/components/Image';
 import { Loading } from '../../../../common/components/core/Loading/Loading';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import { useUserContext } from '../../contributor/user';
@@ -22,6 +21,8 @@ import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import getApplicationTypeKey from '../../../../common/utils/translation/getApplicationTypeKey';
 import { PageProps } from '../../../shared/types/PageProps';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { PageTitle, BlockTitle } from '../../../../core/ui/typography';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {
@@ -61,7 +62,15 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
   const { data, loading, error } = useApplicationCommunityQuery(type);
 
-  const { questions = [], communityId = '', displayName: communityName, avatar, tagline, backUrl = '' } = data || {};
+  const {
+    description,
+    questions = [],
+    communityId = '',
+    displayName: communityName,
+    avatar,
+    tagline,
+    backUrl = '',
+  } = data || {};
 
   const [hasApplied, setHasApplied] = useState(false);
 
@@ -120,9 +129,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
       {loading && <Loading text={t('pages.hub.application.loading')} />}
       {!loading && !hasApplied && (
         <Box marginY={4}>
-          <WrapperTypography variant={'h2'}>
-            {t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}
-          </WrapperTypography>
+          <PageTitle>{t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
         </Box>
       )}
       {!loading && (
@@ -133,15 +140,19 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
       )}
       {!loading && !hasApplied && (
         <Box marginY={5}>
-          <WrapperTypography variant={'h3'}>{t('pages.hub.application.subheader')}</WrapperTypography>
+          {description ? (
+            <WrapperMarkdown>{description}</WrapperMarkdown>
+          ) : (
+            <BlockTitle> {t('pages.hub.application.subheader')}</BlockTitle>
+          )}
         </Box>
       )}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
-          <WrapperTypography variant={'h3'}>
+          <BlockTitle>
             {t('pages.hub.application.finish')}
             {communityName}
-          </WrapperTypography>
+          </BlockTitle>
           <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
         </div>
       ) : (
@@ -168,6 +179,8 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
                           autoComplete="on"
                           autoCapitalize="sentences"
                           autoCorrect="on"
+                          maxLength={x.maxLength}
+                          withCounter
                         />
                       </Grid>
                     ))}
