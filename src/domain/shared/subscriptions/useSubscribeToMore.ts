@@ -43,7 +43,6 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables =
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       ...subscribeToMoreOptions,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEnabled, getDepsValueFromObjectOptions, handleError, subscribeToMore]);
 
   return {

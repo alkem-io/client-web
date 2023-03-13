@@ -31,7 +31,6 @@ const useSearchAcrossMultipleLists = <Items extends {}>(
       const valueGetter = valueGetters[listName];
       return filterFn(list ?? [], contributorsSearchTerms, valueGetter);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contributorsSearchTerms, depsValueFromObjectBundle, valueGetters]);
 
   return {

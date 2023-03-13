@@ -173,6 +173,7 @@ fragment SearchResultHub on SearchResultHub {
       id
       anonymousReadAccess
     }
+    visibility
   }
 }
 
@@ -210,6 +211,7 @@ fragment SearchResultChallenge on SearchResultChallenge {
       id
       anonymousReadAccess
     }
+    visibility
   }
 }
 
@@ -248,6 +250,7 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
     id
     nameID
     displayName
+    visibility
   }
 }
 

@@ -25,7 +25,6 @@ const RootRedirect = () => {
     } else {
       window.location.replace('/landing');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, loadingAuthentication, isFeatureEnabled]);
 
   return null;

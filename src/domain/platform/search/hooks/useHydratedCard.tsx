@@ -124,6 +124,7 @@ const _hydrateHubCard = (
       matchedTerms
       vision={vision}
       locked={!hub.authorization?.anonymousReadAccess}
+      hubVisibility={hub.visibility}
     />
   );
 };
@@ -176,6 +177,7 @@ const useHydrateChallengeCard = (
           {hubDisplayName}
         </CardParentJourneySegment>
       }
+      hubVisibility={containingHub.visibility}
     />
   );
 };
@@ -229,6 +231,7 @@ const useHydrateOpportunityCard = (
           {challengeDisplayName}
         </CardParentJourneySegment>
       }
+      hubVisibility={containingHub.visibility}
     />
   );
 };

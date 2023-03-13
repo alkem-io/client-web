@@ -131,9 +131,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCheckin = useCallback(LifecycleEventHandler('CHECKIN'), [checkoutCanvas]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCheckout = useCallback(LifecycleEventHandler('CHECKOUT'), [checkoutCanvas]);
 
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({});

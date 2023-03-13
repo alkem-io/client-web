@@ -39,7 +39,6 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
 
   useEffect(() => {
     requestConfig(url);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   if (loading) {

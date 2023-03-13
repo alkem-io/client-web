@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -12,21 +12,28 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import { startOfDay } from '../../../../core/utils/time/utils';
-import { groupBy, sortBy } from 'lodash';
+import { first, groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
 import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import FullCalendar from '../components/FullCalendar';
+import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
+import { useQueryParams } from '../../../../core/routing/useQueryParams';
 
 interface CalendarEventsListProps {
   events: CalendarEventCardData[];
-  onClose?: DialogHeaderProps['onClose'];
+  highlightedDay?: Date | null;
   actions?: ReactNode;
+  onClose?: DialogHeaderProps['onClose'];
 }
 
-const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProps) => {
+const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const urlQueryParams = useQueryParams();
+  const breakpoint = useCurrentBreakpoint();
+
   const [scrollToElement, scrollTo] = useState<string>();
   const { scrollable } = useScrollToElement(scrollToElement, { enabled: Boolean(scrollToElement), method: 'element' });
 
@@ -54,20 +61,37 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
     return sortBy(pastEvents, event => -dayjs(event.startDate));
   }, [pastEvents]);
 
-  const onCalendarClickEvents = (events: Pick<CalendarEvent, 'nameID'>[]) => {
-    // Scroll to the first event on that day
-    if (events.length > 0 && events[0].nameID) {
+  useEffect(() => {
+    if (highlightedDay) {
+      // Scroll to the first event on highlightedDay:
+      const event = first(sortedEvents.filter(event => dayjs(event.startDate).startOf('day').isSame(highlightedDay)));
+      scrollTo(event?.nameID);
+    }
+  }, [highlightedDay, sortedEvents]);
+
+  const onClickHighlightedDate = (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => {
+    if (date) {
+      const nextUrlParams = new URLSearchParams(urlQueryParams.toString());
+      nextUrlParams.set(HIGHLIGHT_PARAM_NAME, dayjs(date).format(INTERNAL_DATE_FORMAT));
+      navigate(`${EntityPageSection.Dashboard}/calendar?${nextUrlParams}`, { replace: true });
+    }
+    if (events.length > 0) {
+      // Scroll again in case url hasn't changed but user has scrolled out of the view
       scrollTo(events[0].nameID);
     }
   };
-
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>{t('common.events')}</BlockTitle>
       </DialogHeader>
-      <Gutters row minHeight={0} flexGrow={1}>
-        <FullCalendar events={sortedEvents} sx={{ flexGrow: 2 }} onClickEvents={onCalendarClickEvents} />
+      <Gutters row={!['xs', 'sm'].includes(breakpoint)} minHeight={0} flexGrow={1}>
+        <FullCalendar
+          events={sortedEvents}
+          sx={{ flexGrow: 2, minWidth: gutters(15) }}
+          onClickHighlightedDate={onClickHighlightedDate}
+          selectedDate={highlightedDay}
+        />
         <Gutters minHeight={0} flexGrow={5}>
           <ScrollerWithGradient orientation="vertical" minHeight={0} flexGrow={1} onScroll={() => scrollTo(undefined)}>
             <PageContentBlockGrid paddingBottom={gutters(4)}>
@@ -76,6 +100,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                 <CalendarEventCard
                   key={event.id}
                   ref={scrollable(event.nameID)}
+                  highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                   event={event}
                   onClick={() => handleClickOnEvent(event.nameID)}
                 />
@@ -87,6 +112,7 @@ const CalendarEventsList = ({ events, actions, onClose }: CalendarEventsListProp
                     <CalendarEventCard
                       key={event.id}
                       ref={scrollable(event.nameID)}
+                      highlighted={dayjs(event.startDate).startOf('day').isSame(highlightedDay)}
                       event={event}
                       onClick={() => handleClickOnEvent(event.nameID)}
                     />

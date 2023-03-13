@@ -645,6 +645,7 @@ export const HubPageFragmentDoc = gql`
     id
     nameID
     displayName
+    visibility
     metrics {
       id
       name
@@ -1336,6 +1337,19 @@ export const ApplicationInfoFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const ApplicationFormFragmentDoc = gql`
+  fragment ApplicationForm on Form {
+    id
+    description
+    questions {
+      question
+      explanation
+      maxLength
+      required
+      sortOrder
+    }
+  }
 `;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
@@ -2231,6 +2245,7 @@ export const SearchResultHubFragmentDoc = gql`
         id
         anonymousReadAccess
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -2270,6 +2285,7 @@ export const SearchResultChallengeFragmentDoc = gql`
         id
         anonymousReadAccess
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -2310,6 +2326,7 @@ export const SearchResultOpportunityFragmentDoc = gql`
       id
       nameID
       displayName
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -3410,6 +3427,7 @@ export const ChallengeExplorerDataDocument = gql`
         id
         tagline
       }
+      visibility
       challenges(IDs: $challengeIDs) {
         id
         nameID
@@ -5651,6 +5669,7 @@ export const HubApplicationTemplateDocument = gql`
             question
             explanation
             sortOrder
+            maxLength
           }
         }
       }
@@ -13141,6 +13160,145 @@ export function refetchOpportunityNameIdQuery(variables: SchemaTypes.Opportunity
   return { query: OpportunityNameIdDocument, variables: variables };
 }
 
+export const CommunityApplicationFormDocument = gql`
+  query CommunityApplicationForm(
+    $hubId: UUID_NAMEID!
+    $challengeId: UUID_NAMEID = "mockid"
+    $isHub: Boolean = false
+    $isChallenge: Boolean = false
+  ) {
+    hub(ID: $hubId) {
+      id
+      ... on Hub @include(if: $isHub) {
+        community {
+          id
+          applicationForm {
+            ...ApplicationForm
+          }
+        }
+      }
+      ... on Hub @include(if: $isChallenge) {
+        challenge(ID: $challengeId) {
+          community {
+            id
+            applicationForm {
+              ...ApplicationForm
+            }
+          }
+        }
+      }
+    }
+  }
+  ${ApplicationFormFragmentDoc}
+`;
+
+/**
+ * __useCommunityApplicationFormQuery__
+ *
+ * To run a query within a React component, call `useCommunityApplicationFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityApplicationFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityApplicationFormQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *      isHub: // value for 'isHub'
+ *      isChallenge: // value for 'isChallenge'
+ *   },
+ * });
+ */
+export function useCommunityApplicationFormQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityApplicationFormQuery,
+    SchemaTypes.CommunityApplicationFormQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityApplicationFormQuery, SchemaTypes.CommunityApplicationFormQueryVariables>(
+    CommunityApplicationFormDocument,
+    options
+  );
+}
+
+export function useCommunityApplicationFormLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityApplicationFormQuery,
+    SchemaTypes.CommunityApplicationFormQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityApplicationFormQuery,
+    SchemaTypes.CommunityApplicationFormQueryVariables
+  >(CommunityApplicationFormDocument, options);
+}
+
+export type CommunityApplicationFormQueryHookResult = ReturnType<typeof useCommunityApplicationFormQuery>;
+export type CommunityApplicationFormLazyQueryHookResult = ReturnType<typeof useCommunityApplicationFormLazyQuery>;
+export type CommunityApplicationFormQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityApplicationFormQuery,
+  SchemaTypes.CommunityApplicationFormQueryVariables
+>;
+export function refetchCommunityApplicationFormQuery(variables: SchemaTypes.CommunityApplicationFormQueryVariables) {
+  return { query: CommunityApplicationFormDocument, variables: variables };
+}
+
+export const UpdateCommunityApplicationQuestionsDocument = gql`
+  mutation updateCommunityApplicationQuestions($communityId: UUID!, $formData: UpdateFormInput!) {
+    updateCommunityApplicationForm(applicationFormData: { communityID: $communityId, formData: $formData }) {
+      id
+    }
+  }
+`;
+export type UpdateCommunityApplicationQuestionsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
+  SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+>;
+
+/**
+ * __useUpdateCommunityApplicationQuestionsMutation__
+ *
+ * To run a mutation, you first call `useUpdateCommunityApplicationQuestionsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCommunityApplicationQuestionsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCommunityApplicationQuestionsMutation, { data, loading, error }] = useUpdateCommunityApplicationQuestionsMutation({
+ *   variables: {
+ *      communityId: // value for 'communityId'
+ *      formData: // value for 'formData'
+ *   },
+ * });
+ */
+export function useUpdateCommunityApplicationQuestionsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
+    SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
+    SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+  >(UpdateCommunityApplicationQuestionsDocument, options);
+}
+
+export type UpdateCommunityApplicationQuestionsMutationHookResult = ReturnType<
+  typeof useUpdateCommunityApplicationQuestionsMutation
+>;
+export type UpdateCommunityApplicationQuestionsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateCommunityApplicationQuestionsMutation>;
+export type UpdateCommunityApplicationQuestionsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
+  SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+>;
 export const ChallengeCommunityDocument = gql`
   query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $includeDetails: Boolean = false) {
     hub(ID: $hubId) {
@@ -18024,6 +18182,7 @@ export const ChallengeContributionDetailsDocument = gql`
           id
         }
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}
@@ -18112,6 +18271,7 @@ export const OpportunityContributionDetailsDocument = gql`
           id
         }
       }
+      visibility
     }
   }
   ${VisualUriFragmentDoc}

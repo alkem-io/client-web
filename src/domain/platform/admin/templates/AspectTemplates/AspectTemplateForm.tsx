@@ -5,7 +5,7 @@ import { FormikProps } from 'formik';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
 import { CreateTemplateInfoInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
-import FormikMarkdownField from '../../../../../common/components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import TemplateForm from '../TemplateForm';
 

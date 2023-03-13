@@ -11,7 +11,7 @@ export interface DialogHeaderProps {
 const DialogHeader = ({ actions, onClose, children }: PropsWithChildren<DialogHeaderProps>) => {
   return (
     <Box display="flex" alignItems="start" padding={1}>
-      <Box flexGrow={1} display="flex" flexDirection="column" gap={1} padding={1}>
+      <Box flexGrow={1} flexShrink={1} minWidth={0} display="flex" flexDirection="column" gap={1} padding={1}>
         {children}
       </Box>
       <ActionsBar>
