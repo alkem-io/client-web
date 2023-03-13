@@ -3,7 +3,7 @@ import { Box, BoxProps, styled, Theme, Tooltip } from '@mui/material';
 import dayjs from 'dayjs';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { CalendarEvent } from '../../../../core/apollo/generated/graphql-schema';
+import { CalendarEvent, CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { groupBy } from 'lodash';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -202,7 +202,7 @@ const EventsTooltip: FC<EventsTooltipProps> = ({ events = [] }) => (
 );
 
 export interface FullCalendarProps {
-  events: Pick<CalendarEvent, 'nameID' | 'startDate' | 'profile'>[];
+  events: Pick<CalendarEventDetailsFragment, 'nameID' | 'startDate' | 'profile'>[];
   onClickHighlightedDate: (date: Date, events: Pick<CalendarEvent, 'nameID'>[]) => void;
   selectedDate?: Date | null;
   sx?: BoxProps['sx'];
