@@ -19,9 +19,9 @@ export interface OpportunityContextProps {
   challengeNameId: string;
   hubId: string;
   hubNameId: string;
-  displayName: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
+  profile: OpportunityProviderFragment['profile'];
 }
 
 const OpportunityContext = React.createContext<OpportunityContextProps>({
@@ -33,11 +33,17 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   challengeNameId: '',
   hubId: '',
   hubNameId: '',
-  displayName: '',
   permissions: {
     viewerCanUpdate: false,
     communityReadAccess: false,
     contextPrivileges: [],
+  },
+  profile: {
+    id: '',
+    displayName: '',
+    visuals: [],
+    tagline: '',
+    description: '',
   },
 });
 
@@ -68,10 +74,20 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     [opportunity]
   );
 
+  const profileId = opportunity?.profile.id ?? '';
+  const tagline = opportunity?.profile.tagline ?? '';
+  const visuals = opportunity?.profile.visuals ?? [];
+
   return (
     <OpportunityContext.Provider
       value={{
         opportunity,
+        profile: {
+          id: profileId,
+          displayName,
+          visuals,
+          tagline,
+        },
         hubId,
         hubNameId,
         challengeId,
@@ -79,7 +95,6 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         opportunityId,
         opportunityNameId,
         communityId,
-        displayName,
         permissions,
         loading,
       }}

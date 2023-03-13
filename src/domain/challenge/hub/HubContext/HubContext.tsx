@@ -55,6 +55,7 @@ const HubContext = React.createContext<HubContextProps>({
     id: '',
     displayName: '',
     visuals: [],
+    tagline: '',
   },
   visibility: HubVisibility.Active,
   refetchHub: () => {},
@@ -84,6 +85,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const hubId = hub?.id || '';
   const visibility = hub?.visibility || HubVisibility.Active;
   const displayName = hub?.profile.displayName || '';
+  const tagline = hub?.profile.tagline || '';
   const communityId = hub?.community?.id ?? '';
   const visuals = hub?.profile.visuals ?? [];
   const isPrivate = hub && !hub.authorization?.anonymousReadAccess;
@@ -126,6 +128,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
           displayName,
           tagset: hub?.profile.tagset,
           visuals,
+          tagline,
         },
         hostId: hub?.host?.id,
         context: hub?.context,

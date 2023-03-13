@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
@@ -30,6 +30,7 @@ export interface ProfileFormValues {
 
 interface Props {
   context?: Context;
+  profile?: Profile;
   journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
@@ -42,6 +43,7 @@ interface Props {
 
 const ProfileForm: FC<Props> = ({
   context,
+  profile,
   journeyType,
   name,
   nameID,
@@ -66,10 +68,10 @@ const ProfileForm: FC<Props> = ({
   const initialValues: ProfileFormValues = {
     name: name || '',
     nameID: nameID || '',
-    tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || EmptyLocation,
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
     who: context?.who || '',
-    references: context?.references || [],
+    references: profile?.references || [],
     recommendations: context?.recommendations || [],
     tagsets,
   };

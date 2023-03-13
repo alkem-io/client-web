@@ -35,7 +35,7 @@ const getPageNoticeLabel = (
 
 const HubPageBanner: FC = () => {
   const tLinks = TranslateWithElements(<Link />);
-  const { displayName, context, loading, visibility } = useHub();
+  const { profile, loading, visibility } = useHub();
   const { platform } = useConfig();
 
   const pageNoticeLabel = platform && getPageNoticeLabel(visibility, platform);
@@ -43,10 +43,10 @@ const HubPageBanner: FC = () => {
 
   return (
     <EntityPageBanner
-      title={displayName}
-      tagline={context?.tagline}
+      title={profile.displayName}
+      tagline={profile.tagline}
       loading={loading}
-      bannerUrl={getVisualBanner(context?.visuals)}
+      bannerUrl={getVisualBanner(profile.visuals)}
       entityTypeName="hub"
       pageNotice={pageNotice}
     />

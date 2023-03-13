@@ -108,15 +108,15 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     skip: nonMembersDataLoading,
   });
 
-  const memberContext =
-    membersData?.hub?.opportunity?.context ?? membersData?.hub?.challenge?.context ?? membersData?.hub?.context;
+  const memberProfile =
+    membersData?.hub?.opportunity?.profile ?? membersData?.hub?.challenge?.profile ?? membersData?.hub?.profile;
 
   const context = nonMemberContext;
 
   const nonMemberJourney = nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge ?? nonMembersData?.hub;
   const memberJourney = membersData?.hub?.opportunity ?? membersData?.hub?.challenge ?? membersData?.hub;
 
-  const tagset = nonMemberJourney?.tagset;
+  const tagset = nonMemberJourney?.profile?.tagset;
   const lifecycle = (nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge)?.lifecycle;
   const hostOrganization = nonMembersData?.hub?.host;
   const community = {
@@ -125,7 +125,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   } as Community;
   const leadUsers = memberJourney?.community?.leadUsers;
   const leadOrganizations = memberJourney?.community?.leadOrganizations;
-  const references = memberContext?.references;
+  const references = memberProfile?.references;
 
   const metrics = nonMemberJourney?.metrics;
 

@@ -36,7 +36,7 @@ export const ChallengeListView: FC = () => {
   const challengeList =
     challengesListQuery?.hub?.challenges?.map(c => ({
       id: c.id,
-      value: c.displayName,
+      value: c.profile.displayName,
       url: `${c.nameID}`,
     })) || [];
 
@@ -74,9 +74,11 @@ export const ChallengeListView: FC = () => {
         variables: {
           input: {
             hubID: hubNameId,
-            displayName: value.displayName,
-            context: {
+            profileData: {
+              displayName: value.displayName,
               tagline: value.tagline,
+            },
+            context: {
               vision: value.vision,
             },
             tags: value.tags,

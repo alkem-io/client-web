@@ -14,9 +14,15 @@ fragment OpportunityProvider on Opportunity {
   profile {
     id
     displayName
+    description
     tagline
-        visuals {
+    visuals {
       ...VisualFull
+    }
+    tagset {
+      id
+      name
+      tags
     }
     location {
       id
@@ -35,7 +41,6 @@ fragment OpportunityProvider on Opportunity {
       myPrivileges
       anonymousReadAccess
     }
-
   }
   community {
     id

@@ -5875,6 +5875,7 @@ export type ChallengeProfileInfoQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        tagline: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         visuals: Array<{
           __typename?: 'Visual';
@@ -6507,6 +6508,7 @@ export type HubProviderQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      description?: string | undefined;
       tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       visuals: Array<{
@@ -6579,6 +6581,7 @@ export type HubInfoFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    description?: string | undefined;
     tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     visuals: Array<{
@@ -7574,6 +7577,7 @@ export type HubDetailsFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    description?: string | undefined;
     tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     visuals: Array<{
@@ -7666,6 +7670,7 @@ export type CreateHubMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      description?: string | undefined;
       tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       visuals: Array<{
@@ -7747,6 +7752,7 @@ export type UpdateHubMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      description?: string | undefined;
       tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       visuals: Array<{
@@ -8743,6 +8749,7 @@ export type OpportunityProviderQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        description?: string | undefined;
         tagline: string;
         visuals: Array<{
           __typename?: 'Visual';
@@ -8756,6 +8763,7 @@ export type OpportunityProviderQuery = {
           minHeight: number;
           minWidth: number;
         }>;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
       };
       authorization?:
@@ -8796,6 +8804,7 @@ export type OpportunityProviderFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    description?: string | undefined;
     tagline: string;
     visuals: Array<{
       __typename?: 'Visual';
@@ -8809,6 +8818,7 @@ export type OpportunityProviderFragment = {
       minHeight: number;
       minWidth: number;
     }>;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   };
   authorization?:

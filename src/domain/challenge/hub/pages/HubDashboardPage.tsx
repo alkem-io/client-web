@@ -56,14 +56,14 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 <ChallengeCard
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
-                  bannerUri={getVisualBannerNarrow(challenge.context?.visuals)}
-                  displayName={challenge.displayName}
-                  tags={challenge.tagset?.tags!}
-                  tagline={challenge.context?.tagline!}
+                  bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
+                  displayName={challenge.profile.displayName}
+                  tags={challenge.profile.tagset?.tags!}
+                  tagline={challenge.profile.tagline!}
                   vision={challenge.context?.vision!}
                   innovationFlowState={challenge.lifecycle?.state}
                   journeyUri={buildChallengeUrl(entities.hub!.nameID, challenge.nameID)}
-                  hubDisplayName={entities.hub!.displayName}
+                  hubDisplayName={entities.hub!.profile.displayName}
                   hubUri={buildHubUrl(entities.hub!.nameID)}
                 />
               )}

@@ -4,6 +4,7 @@ fragment HubDetails on Hub {
   profile {
     id
     displayName
+    description
     tagline
     tagset {
       id

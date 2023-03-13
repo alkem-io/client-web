@@ -468,6 +468,7 @@ export const HubDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      description
       tagline
       tagset {
         id
@@ -862,9 +863,15 @@ export const OpportunityProviderFragmentDoc = gql`
     profile {
       id
       displayName
+      description
       tagline
       visuals {
         ...VisualFull
+      }
+      tagset {
+        id
+        name
+        tags
       }
       location {
         id
@@ -4359,6 +4366,7 @@ export const ChallengeProfileInfoDocument = gql`
         profile {
           id
           displayName
+          tagline
           tagset {
             id
             name

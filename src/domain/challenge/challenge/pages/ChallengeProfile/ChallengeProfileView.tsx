@@ -64,7 +64,9 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              displayName: name,
+              profileData: {
+                displayName: name,
+              },
               hubID: hubNameId,
               context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
@@ -79,7 +81,9 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
             input: {
               ID: challengeId,
               nameID: nameID,
-              displayName: name,
+              profileData: {
+                displayName: name,
+              },
               context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
             },
@@ -96,11 +100,12 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
     <Grid container spacing={2}>
       <ProfileForm
         isEdit={mode === FormMode.update}
-        name={challenge?.displayName}
+        name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
         journeyType="challenge"
-        tagset={challenge?.tagset}
+        tagset={challenge?.profile.tagset}
         context={challenge?.context}
+        profile={challenge?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
@@ -116,7 +121,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         <WrapperTypography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </WrapperTypography>
-        <EditVisualsView visuals={challenge?.context?.visuals} />
+        <EditVisualsView visuals={challenge?.profile.visuals} />
       </Grid>
     </Grid>
   );
