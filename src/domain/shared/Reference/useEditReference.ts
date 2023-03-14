@@ -9,7 +9,6 @@ export type PushFunc = (success: boolean) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
-  contextId?: string;
   profileId?: string;
   name: string;
   uri?: string;

@@ -11,6 +11,12 @@ fragment HubDetails on Hub {
       name
       tags
     }
+    references {
+      id
+      name
+      description
+      uri
+    }
     visuals {
       ...VisualFull
     }

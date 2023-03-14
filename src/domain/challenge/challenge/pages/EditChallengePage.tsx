@@ -85,9 +85,12 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              displayName: name,
+              profileData: {
+                displayName: name,
+                location: formatDatabaseLocation(values.location),
+              },
               hubID: hubNameId,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: createContextInput({ ...values }),
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: innovationFlowTemplateID,
             },
@@ -100,8 +103,11 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
             input: {
               ID: challengeId,
               nameID: nameID,
-              displayName: name,
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              profileData: {
+                displayName: name,
+                location: formatDatabaseLocation(values.location),
+              },
+              context: updateContextInput({ ...values }),
               tags: tagsets.flatMap(x => x.tags),
             },
           },
@@ -122,10 +128,11 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         contextSegment={ChallengeContextSegment}
         journeyType="challenge"
         isEdit={mode === FormMode.update}
-        name={challenge?.displayName}
+        name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
-        tagset={challenge?.tagset}
+        tagset={challenge?.profile.tagset}
         context={challenge?.context}
+        profile={challenge?.profile}
         innovationFlowTemplates={filteredInnovationFlowTemplates}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

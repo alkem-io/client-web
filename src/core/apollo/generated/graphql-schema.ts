@@ -5455,6 +5455,7 @@ export type ChallengeInfoFragment = {
     displayName: string;
     tagline: string;
     description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
     visuals: Array<{
       __typename?: 'Visual';
@@ -5770,6 +5771,7 @@ export type ChallengeInfoQuery = {
         displayName: string;
         tagline: string;
         description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
         visuals: Array<{
           __typename?: 'Visual';
@@ -6033,7 +6035,20 @@ export type AboutPageNonMembersQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>;
     };
     host?:
       | {
@@ -6081,7 +6096,20 @@ export type AboutPageNonMembersQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        tagline: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }>;
       };
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -6118,7 +6146,20 @@ export type AboutPageNonMembersQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        tagline: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        visuals: Array<{
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }>;
       };
       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string } | undefined;
       context?:
@@ -6511,6 +6552,9 @@ export type HubProviderQuery = {
       description?: string | undefined;
       tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+        | undefined;
       visuals: Array<{
         __typename?: 'Visual';
         id: string;
@@ -6584,6 +6628,9 @@ export type HubInfoFragment = {
     description?: string | undefined;
     tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+      | undefined;
     visuals: Array<{
       __typename?: 'Visual';
       id: string;
@@ -7580,6 +7627,9 @@ export type HubDetailsFragment = {
     description?: string | undefined;
     tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+      | undefined;
     visuals: Array<{
       __typename?: 'Visual';
       id: string;
@@ -7633,6 +7683,7 @@ export type HubDetailsProviderFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    tagline: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
@@ -7673,6 +7724,9 @@ export type CreateHubMutation = {
       description?: string | undefined;
       tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+        | undefined;
       visuals: Array<{
         __typename?: 'Visual';
         id: string;
@@ -7755,6 +7809,9 @@ export type UpdateHubMutation = {
       description?: string | undefined;
       tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+        | undefined;
       visuals: Array<{
         __typename?: 'Visual';
         id: string;
@@ -7882,6 +7939,7 @@ export type HubCardQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
@@ -8092,6 +8150,7 @@ export type HubsQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      tagline: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;

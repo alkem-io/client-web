@@ -54,13 +54,13 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               renderChildEntityCard={opportunity => (
                 <OpportunityCard
                   opportunityId={opportunity.id}
-                  displayName={opportunity.displayName}
-                  tagline={opportunity.context?.tagline!}
+                  displayName={opportunity.profile.displayName}
+                  tagline={opportunity.profile.tagline!}
                   vision={opportunity.context?.vision!}
-                  tags={opportunity.tagset?.tags!}
-                  bannerUri={getVisualBannerNarrow(opportunity.context?.visuals)}
+                  tags={opportunity.profile.tagset?.tags!}
+                  bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)}
                   journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
-                  challengeDisplayName={entities.challenge?.displayName!}
+                  challengeDisplayName={entities.challenge?.profile.displayName!}
                   challengeUri={buildChallengeUrl(entities.hubNameId, entities.challenge!.nameID)}
                 />
               )}

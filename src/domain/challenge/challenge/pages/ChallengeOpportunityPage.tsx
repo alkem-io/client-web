@@ -67,11 +67,11 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={opportunity => (
               <OpportunityCard
-                displayName={opportunity.displayName}
-                tagline={opportunity.context?.tagline!}
+                displayName={opportunity.profile.displayName}
+                tagline={opportunity.profile.tagline!}
                 vision={opportunity.context?.vision!}
-                tags={opportunity.tagset?.tags!}
-                bannerUri={getVisualBannerNarrow(opportunity.context?.visuals)!}
+                tags={opportunity.profile.tagset?.tags!}
+                bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)!}
                 journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}
               />
             )}

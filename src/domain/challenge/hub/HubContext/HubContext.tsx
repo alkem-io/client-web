@@ -84,10 +84,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const visibility = hub?.visibility || HubVisibility.Active;
-  const displayName = hub?.profile.displayName || '';
-  const tagline = hub?.profile.tagline || '';
   const communityId = hub?.community?.id ?? '';
-  const visuals = hub?.profile.visuals ?? [];
   const isPrivate = hub && !hub.authorization?.anonymousReadAccess;
   const error = configError || hubError;
 
@@ -112,6 +109,17 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
     };
   }, [hubPrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateChallenges]);
 
+  const profile = useMemo(() => {
+    return {
+      id: hub?.profile.id ?? '',
+      displayName: hub?.profile.displayName || '',
+      tagset: hub?.profile.tagset,
+      visuals: hub?.profile.visuals ?? [],
+      tagline: hub?.profile.tagline || '',
+      references: hub?.profile.references ?? [],
+    };
+  }, [hub?.profile]);
+
   return (
     <HubContext.Provider
       value={{
@@ -123,13 +131,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         loading,
         error,
         refetchHub,
-        profile: {
-          id: hub?.profile.id ?? '',
-          displayName,
-          tagset: hub?.profile.tagset,
-          visuals,
-          tagline,
-        },
+        profile,
         hostId: hub?.host?.id,
         context: hub?.context,
         visibility,

@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { ElementType, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, LifecycleType, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, LifecycleType, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import {
   ContextSegmentProps,
@@ -49,6 +49,7 @@ interface LifecycleTemplate {
 
 interface ProfileFormWithContextProps {
   context?: Context;
+  profile?: Profile;
   journeyType: JourneyTypeName;
   contextSegment: ElementType<ContextSegmentProps>;
   name?: string;
@@ -64,6 +65,7 @@ interface ProfileFormWithContextProps {
 // TODO: Should be renamed. Maybe 'ContextForm'
 const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
   context,
+  profile,
   journeyType,
   contextSegment: ContextSegment,
   name,
@@ -100,13 +102,13 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
   const initialValues: ProfileFormValuesType = {
     name: name || '',
     nameID: nameID || '',
-    background: context?.background || '',
+    background: profile?.description || '',
     impact: context?.impact || '',
-    tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || EmptyLocation,
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
     vision: context?.vision || '',
     who: context?.who || '',
-    references: context?.references || [],
+    references: profile?.references || [],
     tagsets: tagsets,
     innovationFlowTemplateID: '',
   };
@@ -187,7 +189,7 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
             </Grid>
             <VisualSegment />*/}
 
-            {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
+            {isEdit && <ContextReferenceSegment references={references || []} profileId={context?.id} />}
           </>
         );
       }}

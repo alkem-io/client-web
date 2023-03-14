@@ -1,16 +1,13 @@
 # context tab fragments
 fragment ContextTab on Context {
   id
-
   authorization {
     id
     myPrivileges
   }
-
   vision
   impact
   who
-
 }
 #
 fragment LifecycleContextTab on Lifecycle {
@@ -39,10 +36,14 @@ query AboutPageNonMembers(
       profile {
         id
         displayName
+        tagline
         tagset {
           id
           name
           tags
+        }
+        visuals {
+          ...VisualFull
         }
       }
       host {
@@ -68,10 +69,14 @@ query AboutPageNonMembers(
       profile {
         id
         displayName
+        tagline
         tagset {
           id
           name
           tags
+        }
+        visuals {
+          ...VisualFull
         }
       }
       authorization {
@@ -102,10 +107,14 @@ query AboutPageNonMembers(
       profile {
         id
         displayName
+        tagline
         tagset {
           id
           name
           tags
+        }
+        visuals {
+          ...VisualFull
         }
       }
       lifecycle {

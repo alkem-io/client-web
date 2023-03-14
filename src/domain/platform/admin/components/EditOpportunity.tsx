@@ -22,9 +22,8 @@ import ProfileFormWithContext, {
   ProfileFormValuesType,
 } from '../../../../common/components/composite/forms/ProfileFormWithContext';
 import FormMode from './FormMode';
-import { Context, LifecycleType } from '../../../../core/apollo/generated/graphql-schema';
-import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
 import { OpportunityContextSegment } from '../opportunity/OpportunityContextSegment';
+import { LifecycleType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface Props {
   mode: FormMode;
@@ -87,7 +86,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: createContextInput({ ...values }),
               profileData: {
                 displayName: name,
               },
@@ -103,7 +102,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: updateContextInput({ ...values }),
               profileData: {
                 displayName: name,
               },
@@ -132,7 +131,8 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         nameID={opportunity?.nameID}
         tagset={opportunity?.profile.tagset}
         innovationFlowTemplates={filteredInnovationFlowTemplates}
-        context={opportunity?.context as Context}
+        context={opportunity?.context}
+        profile={opportunity?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
         loading={isLoading}

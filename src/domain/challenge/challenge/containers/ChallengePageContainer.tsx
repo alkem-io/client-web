@@ -132,7 +132,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const memberUsersCount = membersCount - (_challenge?.hub.challenge.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community, { memberUsersCount });
 
-  const references = referenceData?.hub?.challenge?.context?.references;
+  const references = referenceData?.hub?.challenge?.profile.references;
   const recommendations = referenceData?.hub?.challenge?.context?.recommendations;
 
   const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
@@ -160,7 +160,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
         {
           hubId,
           hubNameId,
-          hubDisplayName: hub.displayName,
+          hubDisplayName: hub.profile.displayName,
           challenge: _challenge?.hub.challenge,
           opportunitiesCount,
           aspects,

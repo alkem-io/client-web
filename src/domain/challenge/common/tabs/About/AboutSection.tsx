@@ -111,7 +111,11 @@ export const AboutSection: FC<AboutSectionProps> = ({
   const organizationsHeader = isHub ? 'pages.hub.sections.dashboard.organization' : 'community.leading-organizations';
   const usersHeader = isHub ? 'community.host' : 'community.leads';
 
-  const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
+  const {
+    challengeId,
+    challengeNameId,
+    profile: { displayName: challengeName },
+  } = useChallenge();
 
   const { scrollable } = useScrollToElement(dialogSectionName, { method: 'element', defer: true });
 

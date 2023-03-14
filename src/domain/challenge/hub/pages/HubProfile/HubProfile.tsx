@@ -34,16 +34,24 @@ export const HubProfile: FC = () => {
 
   const onSubmit = async (values: HubEditFormValuesType) => {
     const { name, host, tagsets } = values;
+    console.log(values.references);
     updateHub({
       variables: {
         input: {
-          context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+          context: updateContextInput({ ...values }),
           profileData: {
             displayName: name,
+            location: formatDatabaseLocation(values.location),
+            references: values.references?.map(reference => ({
+              ID: reference.id ?? '',
+              name: reference.name,
+              description: reference.description,
+              uri: reference.uri,
+            })),
           },
           ID: hubNameId,
           hostID: host,
-          tags: tagsets.flatMap(x => x.tags),
+          tags: tagsets.flatMap(tagset => tagset.tags),
         },
       },
     });

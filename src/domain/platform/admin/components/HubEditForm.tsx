@@ -73,7 +73,7 @@ const HubEditForm: FC<Props> = ({
     ] as Tagset[];
   }, [tagset]);
 
-  const contextId = context?.id;
+  const profileId = profile?.id;
 
   const initialValues: HubEditFormValuesType = {
     name: name || '',
@@ -154,7 +154,7 @@ const HubEditForm: FC<Props> = ({
               </WrapperTypography>
             </Grid>
             <VisualSegment />*/}
-            {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
+            {isEdit && <ContextReferenceSegment references={references || []} profileId={profileId} />}
             {isEdit && <RecommendationsSegment recommendations={recommendations || []} />}
           </Grid>
         );

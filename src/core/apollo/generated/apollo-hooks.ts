@@ -386,6 +386,11 @@ export const ChallengeInfoFragmentDoc = gql`
       displayName
       tagline
       description
+      tagset {
+        id
+        name
+        tags
+      }
       references {
         id
         name
@@ -474,6 +479,12 @@ export const HubDetailsFragmentDoc = gql`
         id
         name
         tags
+      }
+      references {
+        id
+        name
+        description
+        uri
       }
       visuals {
         ...VisualFull
@@ -738,6 +749,7 @@ export const HubDetailsProviderFragmentDoc = gql`
     profile {
       id
       displayName
+      tagline
       tagset {
         id
         name
@@ -4501,10 +4513,14 @@ export const AboutPageNonMembersDocument = gql`
         profile {
           id
           displayName
+          tagline
           tagset {
             id
             name
             tags
+          }
+          visuals {
+            ...VisualFull
           }
         }
         host {
@@ -4530,10 +4546,14 @@ export const AboutPageNonMembersDocument = gql`
         profile {
           id
           displayName
+          tagline
           tagset {
             id
             name
             tags
+          }
+          visuals {
+            ...VisualFull
           }
         }
         authorization {
@@ -4563,10 +4583,14 @@ export const AboutPageNonMembersDocument = gql`
         profile {
           id
           displayName
+          tagline
           tagset {
             id
             name
             tags
+          }
+          visuals {
+            ...VisualFull
           }
         }
         lifecycle {
@@ -4588,6 +4612,7 @@ export const AboutPageNonMembersDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContextTabFragmentDoc}

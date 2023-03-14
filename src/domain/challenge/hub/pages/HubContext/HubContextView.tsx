@@ -37,9 +37,10 @@ export const HubContextView: FC = () => {
     updateHub({
       variables: {
         input: {
-          context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+          context: updateContextInput({ ...values }),
           profileData: {
             displayName: name,
+            location: formatDatabaseLocation(values.location),
           },
           ID: hubNameId,
           hostID: host,

@@ -66,9 +66,10 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               nameID: nameID,
               profileData: {
                 displayName: name,
+                location: formatDatabaseLocation(values.location),
               },
               hubID: hubNameId,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: createContextInput({ ...values }),
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
             },
@@ -83,8 +84,9 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               nameID: nameID,
               profileData: {
                 displayName: name,
+                location: formatDatabaseLocation(values.location),
               },
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: updateContextInput({ ...values }),
               tags: tagsets.flatMap(x => x.tags),
             },
           },

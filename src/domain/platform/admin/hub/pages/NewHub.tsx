@@ -6,7 +6,6 @@ import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
-import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
@@ -73,7 +72,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
         input: {
           nameID,
           hostID: host,
-          context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+          context: createContextInput({ ...values }),
           profileData: {
             displayName: name,
           },

@@ -6,6 +6,11 @@ fragment ChallengeInfo on Challenge {
     displayName
     tagline
     description
+    tagset {
+      id
+      name
+      tags
+    }
     references {
       id
       name

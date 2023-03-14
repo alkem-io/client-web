@@ -28,12 +28,16 @@ export const HubList: FC = () => {
         )
         .map(hub => {
           if (hub.visibility !== HubVisibility.Active) {
-            return { ...hub, displayName: `${hub.profile.displayName} [${hub.visibility.toUpperCase()}]` };
+            return {
+              ...hub,
+              profile: { ...hub.profile, displayName: `${hub.profile.displayName} [${hub.visibility.toUpperCase()}]` },
+            };
           }
           return hub;
         })
         .map(hub => ({
           ...hub,
+          displayName: hub.profile.displayName,
           url: buildAdminHubUrl(hub.nameID),
         }))
         .map(searchableListItemMapper()) ?? []

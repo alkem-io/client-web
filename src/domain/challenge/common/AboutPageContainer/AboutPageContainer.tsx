@@ -8,6 +8,7 @@ import {
   DashboardLeadUserFragment,
   LifecycleContextTabFragment,
   MetricsItemFragment,
+  Profile,
   ReferenceDetailsFragment,
   Tagset,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -27,6 +28,7 @@ interface AboutPagePermissions {
 
 export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
+  profile?: Profile;
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
   permissions: AboutPagePermissions;
@@ -80,6 +82,10 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     nonMembersData?.hub?.opportunity?.context ??
     nonMembersData?.hub?.challenge?.context ??
     nonMembersData?.hub?.context;
+  const nonMemberProfile =
+    nonMembersData?.hub?.opportunity?.profile ??
+    nonMembersData?.hub?.challenge?.profile ??
+    nonMembersData?.hub?.profile;
   const nonMemberCommunity =
     nonMembersData?.hub?.opportunity?.community ??
     nonMembersData?.hub?.challenge?.community ??
@@ -112,6 +118,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     membersData?.hub?.opportunity?.profile ?? membersData?.hub?.challenge?.profile ?? membersData?.hub?.profile;
 
   const context = nonMemberContext;
+  const profile = nonMemberProfile;
 
   const nonMemberJourney = nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge ?? nonMembersData?.hub;
   const memberJourney = membersData?.hub?.opportunity ?? membersData?.hub?.challenge ?? membersData?.hub;
@@ -151,6 +158,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
       {children(
         {
           context,
+          profile,
           tagset,
           lifecycle,
           permissions,

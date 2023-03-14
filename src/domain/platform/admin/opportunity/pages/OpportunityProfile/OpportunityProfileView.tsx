@@ -66,9 +66,10 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: createContextInput({ ...values }),
               profileData: {
                 displayName: name,
+                location: formatDatabaseLocation(values.location),
               },
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
@@ -82,10 +83,11 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
+              context: updateContextInput({ ...values }),
               ID: opportunityId,
               profileData: {
                 displayName: name,
+                location: formatDatabaseLocation(values.location),
               },
               tags: tagsets.flatMap(x => x.tags),
             },
