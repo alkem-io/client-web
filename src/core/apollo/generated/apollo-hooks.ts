@@ -466,6 +466,17 @@ export const MetricsItemFragmentDoc = gql`
     value
   }
 `;
+export const FullLocationFragmentDoc = gql`
+  fragment fullLocation on Location {
+    id
+    country
+    city
+    addressLine1
+    addressLine2
+    stateOrProvince
+    postalCode
+  }
+`;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -489,6 +500,9 @@ export const HubDetailsFragmentDoc = gql`
       visuals {
         ...VisualFull
       }
+      location {
+        ...fullLocation
+      }
     }
     authorization {
       id
@@ -507,6 +521,7 @@ export const HubDetailsFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const HubInfoFragmentDoc = gql`
@@ -1654,17 +1669,6 @@ export const OrganizationDetailsFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
-`;
-export const FullLocationFragmentDoc = gql`
-  fragment fullLocation on Location {
-    id
-    country
-    city
-    addressLine1
-    addressLine2
-    stateOrProvince
-    postalCode
-  }
 `;
 export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {

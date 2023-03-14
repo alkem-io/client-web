@@ -33,8 +33,7 @@ export const HubProfile: FC = () => {
   };
 
   const onSubmit = async (values: HubEditFormValuesType) => {
-    const { name, host, tagsets } = values;
-    console.log(values.references);
+    const { name, host, tagsets, references } = values;
     updateHub({
       variables: {
         input: {
@@ -42,16 +41,16 @@ export const HubProfile: FC = () => {
           profileData: {
             displayName: name,
             location: formatDatabaseLocation(values.location),
-            references: values.references?.map(reference => ({
+            references: references?.map(reference => ({
               ID: reference.id ?? '',
               name: reference.name,
               description: reference.description,
               uri: reference.uri,
             })),
+            tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
           },
           ID: hubNameId,
           hostID: host,
-          tags: tagsets.flatMap(tagset => tagset.tags),
         },
       },
     });
@@ -60,7 +59,6 @@ export const HubProfile: FC = () => {
   const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
   const visuals = hub.profile.visuals ?? [];
-
   let submitWired;
   return (
     <Container maxWidth="xl">

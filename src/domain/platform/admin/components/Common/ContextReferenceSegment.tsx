@@ -14,7 +14,6 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ prof
   const handleAdd = async (push: PushFunc) => {
     setPush(push);
     if (profileId) {
-      console.log('adding ref');
       addReference({
         profileId,
         name: newReferenceName(rest.references.length),

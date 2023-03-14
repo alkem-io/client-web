@@ -4049,7 +4049,6 @@ export type UpdateChallengeInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the contained Profile entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateChallengePreferenceInput = {
@@ -4116,7 +4115,6 @@ export type UpdateHubInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the contained Profile entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateHubPreferenceInput = {
@@ -4177,7 +4175,6 @@ export type UpdateOpportunityInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the contained Profile entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateOrganizationInput = {
@@ -6567,6 +6564,18 @@ export type HubProviderQuery = {
         minHeight: number;
         minWidth: number;
       }>;
+      location?:
+        | {
+            __typename?: 'Location';
+            id: string;
+            country: string;
+            city: string;
+            addressLine1: string;
+            addressLine2: string;
+            stateOrProvince: string;
+            postalCode: string;
+          }
+        | undefined;
     };
     host?:
       | {
@@ -6643,6 +6652,18 @@ export type HubInfoFragment = {
       minHeight: number;
       minWidth: number;
     }>;
+    location?:
+      | {
+          __typename?: 'Location';
+          id: string;
+          country: string;
+          city: string;
+          addressLine1: string;
+          addressLine2: string;
+          stateOrProvince: string;
+          postalCode: string;
+        }
+      | undefined;
   };
   host?:
     | {
@@ -7642,6 +7663,18 @@ export type HubDetailsFragment = {
       minHeight: number;
       minWidth: number;
     }>;
+    location?:
+      | {
+          __typename?: 'Location';
+          id: string;
+          country: string;
+          city: string;
+          addressLine1: string;
+          addressLine2: string;
+          stateOrProvince: string;
+          postalCode: string;
+        }
+      | undefined;
   };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
   host?:
@@ -7739,6 +7772,18 @@ export type CreateHubMutation = {
         minHeight: number;
         minWidth: number;
       }>;
+      location?:
+        | {
+            __typename?: 'Location';
+            id: string;
+            country: string;
+            city: string;
+            addressLine1: string;
+            addressLine2: string;
+            stateOrProvince: string;
+            postalCode: string;
+          }
+        | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     host?:
@@ -7824,6 +7869,18 @@ export type UpdateHubMutation = {
         minHeight: number;
         minWidth: number;
       }>;
+      location?:
+        | {
+            __typename?: 'Location';
+            id: string;
+            country: string;
+            city: string;
+            addressLine1: string;
+            addressLine2: string;
+            stateOrProvince: string;
+            postalCode: string;
+          }
+        | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
     host?:

@@ -88,8 +88,8 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
               profileData: {
                 displayName: name,
                 location: formatDatabaseLocation(values.location),
+                tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
               },
-              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });

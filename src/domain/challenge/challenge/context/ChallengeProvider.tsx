@@ -82,9 +82,11 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
     return {
       id: challenge?.profile.id ?? '',
       displayName: challenge?.profile.displayName || '',
+      description: challenge?.profile.description,
       tagset: challenge?.profile.tagset,
       visuals: challenge?.profile.visuals ?? [],
       tagline: challenge?.profile.tagline || '',
+      references: challenge?.profile.references ?? [],
     };
   }, [challenge?.profile]);
 

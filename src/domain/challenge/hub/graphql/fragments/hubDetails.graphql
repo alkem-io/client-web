@@ -20,6 +20,9 @@ fragment HubDetails on Hub {
     visuals {
       ...VisualFull
     }
+    location {
+      ...fullLocation
+    }
   }
 
   authorization {

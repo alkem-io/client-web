@@ -113,10 +113,12 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
     return {
       id: hub?.profile.id ?? '',
       displayName: hub?.profile.displayName || '',
+      description: hub?.profile.description,
       tagset: hub?.profile.tagset,
       visuals: hub?.profile.visuals ?? [],
       tagline: hub?.profile.tagline || '',
       references: hub?.profile.references ?? [],
+      location: hub?.profile.location,
     };
   }, [hub?.profile]);
 

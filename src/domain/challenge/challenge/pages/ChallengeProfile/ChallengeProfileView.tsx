@@ -85,9 +85,9 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               profileData: {
                 displayName: name,
                 location: formatDatabaseLocation(values.location),
+                tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
               },
               context: updateContextInput({ ...values }),
-              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });
