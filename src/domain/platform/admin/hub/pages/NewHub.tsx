@@ -16,6 +16,7 @@ import {
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { createContextInput } from '../../../../../common/utils/buildContext';
 import { PageProps } from '../../../../shared/types/PageProps';
+import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 interface NewHubProps extends PageProps {}
 
@@ -75,6 +76,8 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
           context: createContextInput({ ...values }),
           profileData: {
             displayName: name,
+            tagline: values.tagline,
+            location: formatDatabaseLocation(values.location),
           },
           tags: tagsets.flatMap(x => x.tags),
         },
