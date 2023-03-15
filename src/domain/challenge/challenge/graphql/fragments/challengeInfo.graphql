@@ -19,6 +19,9 @@ fragment ChallengeInfo on Challenge {
     visuals {
       ...VisualFull
     }
+    location {
+      ...fullLocation
+    }
   }
   community {
     id

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
@@ -28,7 +28,7 @@ interface AboutPagePermissions {
 
 export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
-  profile?: Profile;
+  profile: Profile;
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
   permissions: AboutPagePermissions;
@@ -118,7 +118,6 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     membersData?.hub?.opportunity?.profile ?? membersData?.hub?.challenge?.profile ?? membersData?.hub?.profile;
 
   const context = nonMemberContext;
-  const profile = nonMemberProfile;
 
   const nonMemberJourney = nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge ?? nonMembersData?.hub;
   const memberJourney = membersData?.hub?.opportunity ?? membersData?.hub?.challenge ?? membersData?.hub;
@@ -152,6 +151,19 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
 
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
+
+  const profile = useMemo(() => {
+    return {
+      id: nonMemberProfile?.id ?? '',
+      displayName: nonMemberProfile?.displayName || '',
+      // description: nonMemberProfile?.description,
+      tagset: nonMemberProfile?.tagset,
+      visuals: nonMemberProfile?.visuals ?? [],
+      tagline: nonMemberProfile?.tagline || '',
+      // references: nonMemberProfile?.references ?? [],
+      // location: nonMemberProfile?.location,
+    };
+  }, [nonMemberProfile]);
 
   return (
     <>

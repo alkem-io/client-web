@@ -15,7 +15,6 @@ import {
   useOpportunityProfileInfoQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
-import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 
@@ -108,7 +107,8 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         nameID={opportunity?.nameID}
         journeyType="opportunity"
         tagset={opportunity?.profile.tagset}
-        context={opportunity?.context as Context}
+        context={opportunity?.context}
+        profile={opportunity?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

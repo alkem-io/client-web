@@ -11,7 +11,6 @@ import FormikAutocomplete from '../../../../common/components/composite/forms/Fo
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
-import { visualSegmentSchema } from './Common/VisualSegment';
 import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
@@ -35,16 +34,10 @@ export interface HubEditFormValuesType {
   name: string;
   nameID: string;
   host: string;
-  background: string;
-  impact: string;
   tagline: string;
   location: Partial<Location>;
-  vision: string;
-  who: string;
   references: Reference[];
   recommendations: Reference[];
-  // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
-  // visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
   tagsets: Tagset[];
 }
 
@@ -78,36 +71,21 @@ const HubEditForm: FC<Props> = ({
   const initialValues: HubEditFormValuesType = {
     name: name || '',
     nameID: nameID || '',
-    background: profile?.description || '',
-    impact: context?.impact || '',
     tagline: profile?.tagline || '',
     location: formatLocation(profile?.location) || EmptyLocation,
-    vision: context?.vision || '',
-    who: context?.who || '',
     references: profile?.references || [],
     recommendations: context?.recommendations || [],
     tagsets: tagsets,
     host: hostID || '',
-    // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
-    /*visual: {
-      avatar: context?.visual?.avatar || '',
-      background: context?.visual?.background || '',
-      banner: context?.visual?.banner || '',
-    },*/
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name || yup.string(),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     host: yup.string().required(t('forms.validations.required')),
-    background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
     recommendations: referenceSegmentSchema,
-    visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
 

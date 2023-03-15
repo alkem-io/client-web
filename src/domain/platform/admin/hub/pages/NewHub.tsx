@@ -14,7 +14,6 @@ import {
   useOrganizationsListQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
-import { createContextInput } from '../../../../../common/utils/buildContext';
 import { PageProps } from '../../../../shared/types/PageProps';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
@@ -73,7 +72,6 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
         input: {
           nameID,
           hostID: host,
-          context: createContextInput({ ...values }),
           profileData: {
             displayName: name,
             tagline: values.tagline,

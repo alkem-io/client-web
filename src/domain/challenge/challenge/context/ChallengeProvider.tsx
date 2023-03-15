@@ -87,6 +87,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
       visuals: challenge?.profile.visuals ?? [],
       tagline: challenge?.profile.tagline || '',
       references: challenge?.profile.references ?? [],
+      location: challenge?.profile.location,
     };
   }, [challenge?.profile]);
 

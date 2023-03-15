@@ -18,11 +18,7 @@ import Redirect from '../../../../core/routing/Redirect';
 interface OpportunityRootProps extends PageProps {}
 
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
-  const {
-    profile: { displayName },
-    opportunityNameId,
-    loading,
-  } = useOpportunity();
+  const { displayName, opportunityNameId, loading } = useOpportunity();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),

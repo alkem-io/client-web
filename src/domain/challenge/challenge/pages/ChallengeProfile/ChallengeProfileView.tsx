@@ -11,7 +11,7 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../../../common/utils/buildContext';
+import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
@@ -56,7 +56,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { name, nameID, tagsets } = values;
+    const { name, nameID, tagsets, tagline } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -66,10 +66,10 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               nameID: nameID,
               profileData: {
                 displayName: name,
+                tagline: tagline,
                 location: formatDatabaseLocation(values.location),
               },
               hubID: hubNameId,
-              context: createContextInput({ ...values }),
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
             },

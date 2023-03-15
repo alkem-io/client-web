@@ -22,7 +22,6 @@ export interface ProfileFormValues {
   nameID: string;
   tagline: string;
   location: Partial<Location>;
-  who: string;
   references: Reference[];
   recommendations: Reference[];
   tagsets: Tagset[];
@@ -70,7 +69,6 @@ const ProfileForm: FC<Props> = ({
     nameID: nameID || '',
     tagline: profile?.tagline || '',
     location: formatLocation(profile?.location) || EmptyLocation,
-    who: context?.who || '',
     references: profile?.references || [],
     recommendations: context?.recommendations || [],
     tagsets,

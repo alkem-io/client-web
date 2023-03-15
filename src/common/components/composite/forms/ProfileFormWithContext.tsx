@@ -25,13 +25,10 @@ export interface ProfileFormValuesType {
   name: string;
   nameID: string;
   background: string;
-  impact: string;
   tagline: string;
   location: Partial<Location>;
   vision: string;
-  who: string;
   references: Reference[];
-  // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
   innovationFlowTemplateID: string;
 }
@@ -103,11 +100,9 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
     name: name || '',
     nameID: nameID || '',
     background: profile?.description || '',
-    impact: context?.impact || '',
     tagline: profile?.tagline || '',
     location: formatLocation(profile?.location) || EmptyLocation,
     vision: context?.vision || '',
-    who: context?.who || '',
     references: profile?.references || [],
     tagsets: tagsets,
     innovationFlowTemplateID: '',
@@ -117,12 +112,8 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
     name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
     nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    // visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
     innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
   });

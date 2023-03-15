@@ -7,6 +7,7 @@ query opportunityProfileInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!)
       profile {
         id
         displayName
+        description
         tagline
         tagset {
           id
@@ -15,6 +16,9 @@ query opportunityProfileInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!)
         }
         visuals {
           ...VisualFull
+        }
+        location {
+          ...fullLocation
         }
       }
       context {

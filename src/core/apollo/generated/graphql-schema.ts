@@ -5466,6 +5466,18 @@ export type ChallengeInfoFragment = {
       minHeight: number;
       minWidth: number;
     }>;
+    location?:
+      | {
+          __typename?: 'Location';
+          id: string;
+          country: string;
+          city: string;
+          addressLine1: string;
+          addressLine2: string;
+          stateOrProvince: string;
+          postalCode: string;
+        }
+      | undefined;
   };
   community?:
     | {
@@ -5782,6 +5794,18 @@ export type ChallengeInfoQuery = {
           minHeight: number;
           minWidth: number;
         }>;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
       };
       community?:
         | {
@@ -9449,6 +9473,7 @@ export type OpportunityProfileInfoQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        description?: string | undefined;
         tagline: string;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         visuals: Array<{
@@ -9463,6 +9488,18 @@ export type OpportunityProfileInfoQuery = {
           minHeight: number;
           minWidth: number;
         }>;
+        location?:
+          | {
+              __typename?: 'Location';
+              id: string;
+              country: string;
+              city: string;
+              addressLine1: string;
+              addressLine2: string;
+              stateOrProvince: string;
+              postalCode: string;
+            }
+          | undefined;
       };
       context?:
         | {

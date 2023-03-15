@@ -76,6 +76,7 @@ export const ChallengeListView: FC = () => {
             hubID: hubNameId,
             profileData: {
               displayName: value.displayName,
+              description: value.background,
               tagline: value.tagline,
             },
             context: {

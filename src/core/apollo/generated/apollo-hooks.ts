@@ -377,6 +377,17 @@ export const ChallengeProfileFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${OpportunityCardFragmentDoc}
 `;
+export const FullLocationFragmentDoc = gql`
+  fragment fullLocation on Location {
+    id
+    country
+    city
+    addressLine1
+    addressLine2
+    stateOrProvince
+    postalCode
+  }
+`;
 export const ChallengeInfoFragmentDoc = gql`
   fragment ChallengeInfo on Challenge {
     id
@@ -399,6 +410,9 @@ export const ChallengeInfoFragmentDoc = gql`
       visuals {
         ...VisualFull
       }
+      location {
+        ...fullLocation
+      }
     }
     community {
       id
@@ -420,6 +434,7 @@ export const ChallengeInfoFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
 `;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
@@ -464,17 +479,6 @@ export const MetricsItemFragmentDoc = gql`
     id
     name
     value
-  }
-`;
-export const FullLocationFragmentDoc = gql`
-  fragment fullLocation on Location {
-    id
-    country
-    city
-    addressLine1
-    addressLine2
-    stateOrProvince
-    postalCode
   }
 `;
 export const HubDetailsFragmentDoc = gql`
@@ -7558,6 +7562,7 @@ export const OpportunityProfileInfoDocument = gql`
         profile {
           id
           displayName
+          description
           tagline
           tagset {
             id
@@ -7567,6 +7572,9 @@ export const OpportunityProfileInfoDocument = gql`
           visuals {
             ...VisualFull
           }
+          location {
+            ...fullLocation
+          }
         }
         context {
           ...ContextDetails
@@ -7575,6 +7583,7 @@ export const OpportunityProfileInfoDocument = gql`
     }
   }
   ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 

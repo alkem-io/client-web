@@ -41,6 +41,9 @@ const OpportunityContextView: FC = () => {
       variables: {
         input: {
           context: updateContextInput(values),
+          profileData: {
+            description: values.background,
+          },
           ID: opportunityId,
         },
       },
