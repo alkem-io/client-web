@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useOrganizationInfoQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import useHasPlatformLevelPrivilege from '../../user/PlatformLevelAuthorization/useHasPlatformLevelPrivilege';
 
 interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;
@@ -20,9 +21,14 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 
 const OrganizationProvider: FC = ({ children }) => {
   const { organizationNameId: organizationId = '' } = useUrlParams();
+  const canReadUsers = useHasPlatformLevelPrivilege(AuthorizationPrivilege.ReadUsers);
   const { data, loading } = useOrganizationInfoQuery({
-    variables: { organizationId },
+    variables: {
+      organizationId,
+      includeAssociates: canReadUsers,
+    },
     errorPolicy: 'all',
+    skip: typeof canReadUsers === 'undefined',
   });
   const organization = data?.organization;
   const displayName = data?.organization.displayName || '';
