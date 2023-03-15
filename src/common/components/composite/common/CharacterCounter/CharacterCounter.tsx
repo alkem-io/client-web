@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { DistributiveOmit } from '@mui/types';
+import { compact } from 'lodash';
 import { Box, Typography, TypographyProps } from '@mui/material';
 import { Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
@@ -12,13 +13,11 @@ type CharacterCounterProps = DistributiveOmit<TypographyProps, 'variant'> & {
 };
 
 const getText = (count: number, separator: string, maxLength?: number) => {
-  if (maxLength && count > maxLength) {
-    return (
-      <Typography color="negative">{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>
-    );
-  } else {
-    return <Typography>{`${count}${maxLength !== undefined ? separator + maxLength : ''}`}</Typography>;
-  }
+  const color = maxLength && count > maxLength ? 'negative.main' : undefined;
+
+  const content = compact([count, maxLength]).join(separator);
+
+  return <Typography color={color}>{content}</Typography>;
 };
 
 export const CharacterCounter = ({

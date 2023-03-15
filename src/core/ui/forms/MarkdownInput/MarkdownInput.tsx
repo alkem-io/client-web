@@ -1,18 +1,23 @@
 import React, { FormEvent, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, lighten, useTheme } from '@mui/material';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
-import { useSetCharacterCount } from './CharacterCountContext';
+import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountContext';
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
 import usePersistentValue from '../../../utils/usePersistentValue';
 import UnifiedConverter from '../../markdown/html/UnifiedConverter';
 import { gutters } from '../../grid/utils';
+import { EditorState } from '@tiptap/pm/state';
+import { Highlight } from '@tiptap/extension-highlight';
+import { Selection } from 'prosemirror-state';
+import { EditorOptions } from '@tiptap/core';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
-  controlsVisible: 'always' | 'focused';
+  controlsVisible?: 'always' | 'focused';
+  maxLength?: number;
 }
 
 interface Offset {
@@ -39,8 +44,12 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
+const editorSettings: Partial<EditorOptions> = {
+  extensions: [StarterKit, ImageExtension, Link, Highlight],
+};
+
 export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-  ({ value, onChange, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
+  ({ value, onChange, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [hasFocus, setHasFocus] = useState(false);
@@ -58,11 +67,18 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
 
     const editor = useEditor(
       {
-        extensions: [StarterKit, ImageExtension, Link],
+        ...editorSettings,
         content: htmlContent,
       },
       [htmlContent]
     );
+
+    // Currently used to highlight overflow but can be reused for other similar features as well
+    const shadowEditor = useEditor({
+      ...editorSettings,
+      content: '',
+      editable: false,
+    });
 
     useLayoutEffect(() => {
       if (!editor || !isInteractingWithInput || editor.getText() === '') {
@@ -137,6 +153,52 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
       }
     }, [editor]);
 
+    const updateShadowEditor = (editor: Editor, maxLength: number) => {
+      const highlightOverflow = () => {
+        if (!shadowEditor) {
+          return;
+        }
+
+        const contentLength = editor.getText().length;
+
+        if (contentLength <= maxLength) {
+          return;
+        }
+
+        try {
+          shadowEditor.view.updateState(EditorState.create({ doc: editor.state.doc }));
+        } catch (error) {
+          // In some states the "shadow" editor fails to update, but this doesn't break the highlight
+        }
+
+        const end = Selection.atEnd(shadowEditor.state.doc).from;
+        const overflow = contentLength - maxLength;
+
+        shadowEditor
+          .chain()
+          .setTextSelection({
+            from: end - overflow,
+            to: end,
+          })
+          .setHighlight()
+          .run();
+      };
+
+      highlightOverflow();
+
+      editor.on('update', highlightOverflow);
+
+      return () => {
+        editor.off('update', highlightOverflow);
+      };
+    };
+
+    useEffect(() => {
+      if (editor && typeof maxLength === 'number') {
+        return updateShadowEditor(editor, maxLength);
+      }
+    }, [editor, maxLength]);
+
     const [prevEditorHeight, setPrevEditorHeight] = useState(0);
 
     const keepScrollPositionOnEditorReset = (editor: Editor) => {
@@ -192,8 +254,31 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
             '.ProseMirror': proseMirrorStyles,
           }}
         >
-          <Box style={{ minHeight: prevEditorHeight }}>
+          <Box position="relative" style={{ minHeight: prevEditorHeight }}>
             <EditorContent editor={editor} />
+            <CharacterCountContainer>
+              {({ characterCount }) =>
+                typeof maxLength === 'number' && characterCount <= maxLength ? null : (
+                  <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    bottom={0}
+                    right={0}
+                    sx={{
+                      pointerEvents: 'none',
+                      color: 'transparent',
+                      mark: {
+                        color: theme.palette.background.paper,
+                        backgroundColor: lighten(theme.palette.negative.main, 0.2),
+                      },
+                    }}
+                  >
+                    <EditorContent editor={shadowEditor} />
+                  </Box>
+                )
+              }
+            </CharacterCountContainer>
           </Box>
         </Box>
       </Box>

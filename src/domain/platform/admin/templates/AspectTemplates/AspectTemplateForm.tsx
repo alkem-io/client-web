@@ -8,6 +8,7 @@ import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import TemplateForm from '../TemplateForm';
+import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface AspectTemplateFormValues {
   title: string;
@@ -32,7 +33,7 @@ interface AspectTemplateFormProps {
 }
 
 const validator = {
-  defaultDescription: yup.string().required(),
+  defaultDescription: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
   type: yup.string().required(),
 };
 

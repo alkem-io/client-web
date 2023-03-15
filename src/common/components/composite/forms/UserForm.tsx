@@ -23,6 +23,7 @@ import FormRow from '../../../../domain/shared/layout/FormLayout';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -151,7 +152,7 @@ export const UserForm: FC<UserProps> = ({
     github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
-    bio: yup.string().max(LONG_TEXT_LENGTH),
+    bio: MarkdownValidator(LONG_TEXT_LENGTH),
   });
 
   /**

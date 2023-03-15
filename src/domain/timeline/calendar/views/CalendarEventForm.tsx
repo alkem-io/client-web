@@ -25,6 +25,7 @@ import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
 import { LoadingButton } from '@mui/lab';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
@@ -90,11 +91,9 @@ const CalendarEventForm = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator,
-    description: yup
-      .string()
+    description: MarkdownValidator(VERY_LONG_TEXT_LENGTH)
       .required(t('common.field-required'))
-      .min(3, ({ min }) => t('common.field-min-length', { min }))
-      .max(VERY_LONG_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
+      .min(3, ({ min }) => t('common.field-min-length', { min })),
     type: yup.string().required(t('common.field-required')),
     durationMinutes: yup.number().positive(t('calendar.validation.durationMinutes.positive')),
   });
