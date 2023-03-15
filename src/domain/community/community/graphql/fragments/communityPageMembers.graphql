@@ -1,8 +1,6 @@
 fragment CommunityPageMembers on User {
   id
   nameID
-  displayName
-
   email
   agent {
     id
@@ -14,11 +12,12 @@ fragment CommunityPageMembers on User {
   }
   profile {
     id
+    displayName
     location {
       country
       city
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     description

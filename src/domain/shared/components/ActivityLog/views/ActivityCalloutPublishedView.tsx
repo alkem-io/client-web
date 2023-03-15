@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntity } from '../../../types/NameableEntity';
+import { NameableEntityOld } from '../../../types/NameableEntity';
 import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 
 export interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
+  callout: NameableEntityOld;
   calloutType: string;
 }
 

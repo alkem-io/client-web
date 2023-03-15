@@ -241,8 +241,8 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
                 />
               ) : (
                 <>
-                  <Authorship authorAvatarUri={canvas?.createdBy?.profile?.avatar?.uri} date={canvas?.createdDate}>
-                    {canvas?.createdBy?.displayName}
+                  <Authorship authorAvatarUri={canvas?.createdBy?.profile.visual?.uri} date={canvas?.createdDate}>
+                    {canvas?.createdBy?.profile.displayName}
                   </Authorship>
                   <PageTitle>{canvas?.displayName}</PageTitle>
                 </>
@@ -282,8 +282,8 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
               )}
               <FlexSpacer />
               {lockedBy && (
-                <Authorship authorAvatarUri={lockedBy.profile?.avatar?.uri}>
-                  {t('pages.canvas.locked-by', { user: lockedBy.displayName })}
+                <Authorship authorAvatarUri={lockedBy.profile.visual?.uri}>
+                  {t('pages.canvas.locked-by', { user: lockedBy.profile.displayName })}
                 </Authorship>
               )}
               <LoadingButton

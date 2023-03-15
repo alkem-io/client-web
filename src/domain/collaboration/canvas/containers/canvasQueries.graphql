@@ -13,10 +13,10 @@ fragment CanvasDetails on Canvas {
   }
   createdBy {
     id
-    displayName
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         id
         uri
       }

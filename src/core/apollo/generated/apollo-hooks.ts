@@ -21,36 +21,30 @@ export const VisualFullFragmentDoc = gql`
     minWidth
   }
 `;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
-`;
 export const AspectCardFragmentDoc = gql`
   fragment AspectCard on Aspect {
     id
     nameID
-    displayName
     type
     createdBy {
-      displayName
+      id
+      profile {
+        id
+        displayName
+      }
     }
     createdDate
     comments {
       id
       commentsCount
     }
-    banner {
-      ...VisualUri
-    }
-    bannerNarrow {
-      ...VisualUri
-    }
     profile {
       id
+      displayName
       description
+      visuals {
+        ...VisualFull
+      }
       tagset {
         id
         name
@@ -64,7 +58,7 @@ export const AspectCardFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
@@ -105,10 +99,10 @@ export const CanvasDetailsFragmentDoc = gql`
     }
     createdBy {
       id
-      displayName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -147,14 +141,21 @@ export const DashboardTopCalloutsFragmentDoc = gql`
   }
   ${DashboardTopCalloutFragmentDoc}
 `;
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
+    id
+    uri
+    name
+  }
+`;
 export const DashboardLeadUserFragmentDoc = gql`
   fragment DashboardLeadUser on User {
     id
-    displayName
     nameID
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
       location {
@@ -173,16 +174,16 @@ export const DashboardLeadUserFragmentDoc = gql`
 export const DashboardContributingUserFragmentDoc = gql`
   fragment DashboardContributingUser on User {
     id
-    displayName
     isContactable
     nameID
     profile {
       id
+      displayName
       location {
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }
@@ -196,12 +197,12 @@ export const DashboardContributingUserFragmentDoc = gql`
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
     id
-    displayName
     nameID
     profile {
       id
+      displayName
       description
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -220,11 +221,11 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
 export const DashboardContributingOrganizationFragmentDoc = gql`
   fragment DashboardContributingOrganization on Organization {
     id
-    displayName
     nameID
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         id
         uri
         name
@@ -495,8 +496,11 @@ export const HubDetailsFragmentDoc = gql`
     }
     host {
       id
-      displayName
       nameID
+      profile {
+        id
+        displayName
+      }
     }
     context {
       ...ContextDetails
@@ -902,11 +906,11 @@ export const MessageDetailsFragmentDoc = gql`
       id
       nameID
       firstName
-      displayName
       lastName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -929,13 +933,12 @@ export const AspectDashboardFragmentDoc = gql`
     id
     nameID
     type
-    displayName
     createdBy {
       id
-      displayName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: BANNER) {
           id
           uri
         }
@@ -945,11 +948,9 @@ export const AspectDashboardFragmentDoc = gql`
       }
     }
     createdDate
-    banner {
-      ...VisualUri
-    }
     profile {
       id
+      displayName
       description
       tagset {
         id
@@ -961,6 +962,9 @@ export const AspectDashboardFragmentDoc = gql`
         name
         uri
         description
+      }
+      visual(type: BANNER) {
+        ...VisualUri
       }
     }
     comments {
@@ -998,20 +1002,14 @@ export const AspectSettingsFragmentDoc = gql`
   fragment AspectSettings on Aspect {
     id
     nameID
-    displayName
     type
     authorization {
       id
       myPrivileges
     }
-    banner {
-      ...VisualFull
-    }
-    bannerNarrow {
-      ...VisualFull
-    }
     profile {
       id
+      displayName
       description
       tagset {
         id
@@ -1023,6 +1021,9 @@ export const AspectSettingsFragmentDoc = gql`
         name
         uri
         description
+      }
+      visuals {
+        ...VisualFull
       }
     }
   }
@@ -1037,7 +1038,10 @@ export const AspectSettingsCalloutFragmentDoc = gql`
     }
     aspectNames: aspects {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
   ${AspectSettingsFragmentDoc}
@@ -1046,7 +1050,10 @@ export const AspectProvidedFragmentDoc = gql`
   fragment AspectProvided on Aspect {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
     authorization {
       id
       myPrivileges
@@ -1248,9 +1255,10 @@ export const CollaborationWithCanvasDetailsFragmentDoc = gql`
 export const LockedByDetailsFragmentDoc = gql`
   fragment LockedByDetails on User {
     id
-    displayName
     profile {
-      avatar {
+      id
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -1313,11 +1321,11 @@ export const ApplicationInfoFragmentDoc = gql`
     }
     user {
       id
-      displayName
       email
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -1360,7 +1368,6 @@ export const UserCardFragmentDoc = gql`
   fragment UserCard on User {
     id
     nameID
-    displayName
     isContactable
     agent {
       id
@@ -1372,11 +1379,12 @@ export const UserCardFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       location {
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {
@@ -1392,7 +1400,6 @@ export const OrganizationCardFragmentDoc = gql`
   fragment OrganizationCard on Organization {
     id
     nameID
-    displayName
     metrics {
       id
       name
@@ -1400,7 +1407,8 @@ export const OrganizationCardFragmentDoc = gql`
     }
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1449,7 +1457,6 @@ export const CommunityPageMembersFragmentDoc = gql`
   fragment CommunityPageMembers on User {
     id
     nameID
-    displayName
     email
     agent {
       id
@@ -1461,11 +1468,12 @@ export const CommunityPageMembersFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       location {
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1486,11 +1494,11 @@ export const AllCommunityDetailsFragmentDoc = gql`
 export const BasicOrganizationDetailsFragmentDoc = gql`
   fragment BasicOrganizationDetails on Organization {
     id
-    displayName
     nameID
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -1500,7 +1508,10 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
 export const CommunityMemberUserFragmentDoc = gql`
   fragment CommunityMemberUser on User {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
     firstName
     lastName
     email
@@ -1509,7 +1520,6 @@ export const CommunityMemberUserFragmentDoc = gql`
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
-    displayName
     nameID
     metrics {
       id
@@ -1518,7 +1528,8 @@ export const OrganizationContributorFragmentDoc = gql`
     }
     orgProfile: profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1553,7 +1564,6 @@ export const UserContributorFragmentDoc = gql`
   fragment UserContributor on User {
     id
     nameID
-    displayName
     isContactable
     agent {
       id
@@ -1565,11 +1575,12 @@ export const UserContributorFragmentDoc = gql`
     }
     userProfile: profile {
       id
+      displayName
       location {
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {
@@ -1611,11 +1622,11 @@ export const UserOrganizationsDetailsFragmentDoc = gql`
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
     id
-    displayName
     nameID
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -1635,7 +1646,6 @@ export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {
     id
     nameID
-    displayName
     contactEmail
     domain
     authorization {
@@ -1649,10 +1659,11 @@ export const OrganizationInfoFragmentDoc = gql`
     website
     profile {
       id
-      avatar {
+      displayName
+      description
+      visual(type: AVATAR) {
         ...VisualUri
       }
-      description
       tagsets {
         id
         name
@@ -1670,7 +1681,6 @@ export const OrganizationInfoFragmentDoc = gql`
     associates {
       id
       nameID
-      displayName
       agent {
         id
         credentials {
@@ -1681,11 +1691,12 @@ export const OrganizationInfoFragmentDoc = gql`
       }
       profile {
         id
+        displayName
         location {
           country
           city
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         tagsets {
@@ -1702,7 +1713,6 @@ export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
     nameID
-    displayName
     contactEmail
     domain
     legalEntityName
@@ -1713,7 +1723,8 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualFull
       }
       description
@@ -1739,15 +1750,15 @@ export const OrganizationProfileInfoFragmentDoc = gql`
 export const MessagingUserInformationFragmentDoc = gql`
   fragment MessagingUserInformation on User {
     id
-    displayName
     profile {
       id
+      displayName
       location {
         id
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -1793,10 +1804,12 @@ export const GroupInfoFragmentDoc = gql`
     name
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualFull
       }
       description
+      tagline
       references {
         id
         uri
@@ -1815,7 +1828,10 @@ export const GroupInfoFragmentDoc = gql`
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
     firstName
     lastName
     email
@@ -1838,7 +1854,6 @@ export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
     nameID
-    displayName
     firstName
     lastName
     email
@@ -1853,12 +1868,13 @@ export const UserDetailsFragmentDoc = gql`
     }
     profile {
       id
+      displayName
       location {
         country
         city
       }
       description
-      avatar {
+      visual(type: AVATAR) {
         ...VisualFull
       }
       references {
@@ -1879,7 +1895,10 @@ export const UserDetailsFragmentDoc = gql`
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const UserRolesDetailsFragmentDoc = gql`
@@ -1934,7 +1953,10 @@ export const UserRolesDetailsFragmentDoc = gql`
 export const AvailableUserFragmentDoc = gql`
   fragment AvailableUser on User {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
     email
   }
 `;
@@ -2080,7 +2102,7 @@ export const ConfigurationFragmentDoc = gql`
   }
 `;
 export const SearchResultCardProfileFragmentDoc = gql`
-  fragment SearchResultCardProfile on CardProfile {
+  fragment SearchResultCardProfile on Profile {
     id
     description
     tagset {
@@ -2130,27 +2152,30 @@ export const SearchResultCardFragmentDoc = gql`
     card {
       id
       nameID
-      displayName
       profile {
+        displayName
+        visual(type: CARD) {
+          ...VisualUri
+        }
         ...SearchResultCardProfile
       }
       createdBy {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
       createdDate
       comments {
         id
         commentsCount
       }
-      bannerNarrow {
-        ...VisualUri
-      }
     }
     ...CardParent
   }
-  ${SearchResultCardProfileFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${SearchResultCardProfileFragmentDoc}
   ${CardParentFragmentDoc}
 `;
 export const SearchResultProfileFragmentDoc = gql`
@@ -2166,7 +2191,7 @@ export const SearchResultProfileFragmentDoc = gql`
       id
       tags
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
   }
@@ -2177,8 +2202,8 @@ export const SearchResultUserFragmentDoc = gql`
     user {
       id
       nameID
-      displayName
       profile {
+        displayName
         ...SearchResultProfile
       }
     }
@@ -2190,8 +2215,8 @@ export const SearchResultOrganizationFragmentDoc = gql`
     organization {
       id
       nameID
-      displayName
       profile {
+        displayName
         ...SearchResultProfile
       }
     }
@@ -2324,14 +2349,12 @@ export const ActivityLogMemberJoinedFragmentDoc = gql`
     user {
       id
       nameID
-      displayName
-      nameID
-      displayName
       firstName
       lastName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -2368,9 +2391,10 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
     card {
       id
       nameID
-      displayName
       type
       profile {
+        id
+        displayName
         description
       }
     }
@@ -2386,7 +2410,10 @@ export const ActivityLogCalloutCardCommentFragmentDoc = gql`
     card {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2450,12 +2477,12 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     triggeredBy {
       id
       nameID
-      displayName
       firstName
       lastName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -2512,25 +2539,10 @@ export const ActivityLogUpdateSentFragmentDoc = gql`
     message
   }
 `;
-export const CalendarEventInfoFragmentDoc = gql`
-  fragment CalendarEventInfo on CalendarEvent {
-    id
-    nameID
-    displayName
-    startDate
-    durationDays
-    durationMinutes
-    wholeDay
-    multipleDays
-    profile {
-      id
-      description
-    }
-  }
-`;
 export const EventProfileFragmentDoc = gql`
-  fragment EventProfile on CardProfile {
+  fragment EventProfile on Profile {
     id
+    displayName
     description
     tagset {
       id
@@ -2545,16 +2557,31 @@ export const EventProfileFragmentDoc = gql`
     }
   }
 `;
+export const CalendarEventInfoFragmentDoc = gql`
+  fragment CalendarEventInfo on CalendarEvent {
+    id
+    nameID
+    startDate
+    durationDays
+    durationMinutes
+    wholeDay
+    multipleDays
+    profile {
+      ...EventProfile
+    }
+  }
+  ${EventProfileFragmentDoc}
+`;
 export const CalendarEventDetailsFragmentDoc = gql`
   fragment CalendarEventDetails on CalendarEvent {
     ...CalendarEventInfo
     type
     createdBy {
       id
-      displayName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -2565,15 +2592,11 @@ export const CalendarEventDetailsFragmentDoc = gql`
       }
     }
     createdDate
-    profile {
-      ...EventProfile
-    }
     comments {
       ...CommentsWithMessages
     }
   }
   ${CalendarEventInfoFragmentDoc}
-  ${EventProfileFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const UploadFileDocument = gql`
@@ -2623,7 +2646,10 @@ export const AssignUserAsChallengeAdminDocument = gql`
   mutation assignUserAsChallengeAdmin($input: AssignChallengeAdminInput!) {
     assignUserAsChallengeAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2673,7 +2699,10 @@ export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
     assignUserAsGlobalAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2722,7 +2751,10 @@ export const AssignUserAsGlobalCommunityAdminDocument = gql`
   mutation assignUserAsGlobalCommunityAdmin($input: AssignGlobalCommunityAdminInput!) {
     assignUserAsGlobalCommunityAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2774,7 +2806,10 @@ export const AssignUserAsGlobalHubsAdminDocument = gql`
   mutation assignUserAsGlobalHubsAdmin($input: AssignGlobalHubsAdminInput!) {
     assignUserAsGlobalHubsAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2824,7 +2859,10 @@ export const AssignUserAsHubAdminDocument = gql`
   mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
     assignUserAsHubAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2873,7 +2911,10 @@ export const AssignUserAsOrganizationOwnerDocument = gql`
   mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
     assignUserAsOrganizationOwner(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2925,7 +2966,10 @@ export const RemoveUserAsChallengeAdminDocument = gql`
   mutation removeUserAsChallengeAdmin($input: RemoveChallengeAdminInput!) {
     removeUserAsChallengeAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2975,7 +3019,10 @@ export const RemoveUserAsGlobalAdminDocument = gql`
   mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
     removeUserAsGlobalAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -3020,61 +3067,14 @@ export type RemoveUserAsGlobalAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalAdminMutation,
   SchemaTypes.RemoveUserAsGlobalAdminMutationVariables
 >;
-export const RemoveUserAsGlobalHubsAdminDocument = gql`
-  mutation removeUserAsGlobalHubsAdmin($input: RemoveGlobalHubsAdminInput!) {
-    removeUserAsGlobalHubsAdmin(membershipData: $input) {
-      id
-      displayName
-    }
-  }
-`;
-export type RemoveUserAsGlobalHubsAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsGlobalHubsAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsGlobalHubsAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsGlobalHubsAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsGlobalHubsAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalHubsAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsGlobalHubsAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
-    SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
-  >(RemoveUserAsGlobalHubsAdminDocument, options);
-}
-
-export type RemoveUserAsGlobalHubsAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalHubsAdminMutation>;
-export type RemoveUserAsGlobalHubsAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalHubsAdminMutation>;
-export type RemoveUserAsGlobalHubsAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
-  SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
->;
 export const RemoveUserAsGlobalCommunityAdminDocument = gql`
   mutation removeUserAsGlobalCommunityAdmin($input: RemoveGlobalCommunityAdminInput!) {
     removeUserAsGlobalCommunityAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -3122,11 +3122,67 @@ export type RemoveUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
 >;
+export const RemoveUserAsGlobalHubsAdminDocument = gql`
+  mutation removeUserAsGlobalHubsAdmin($input: RemoveGlobalHubsAdminInput!) {
+    removeUserAsGlobalHubsAdmin(membershipData: $input) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type RemoveUserAsGlobalHubsAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
+  SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsGlobalHubsAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsGlobalHubsAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsGlobalHubsAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsGlobalHubsAdminMutation, { data, loading, error }] = useRemoveUserAsGlobalHubsAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsGlobalHubsAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
+    SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
+    SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
+  >(RemoveUserAsGlobalHubsAdminDocument, options);
+}
+
+export type RemoveUserAsGlobalHubsAdminMutationHookResult = ReturnType<typeof useRemoveUserAsGlobalHubsAdminMutation>;
+export type RemoveUserAsGlobalHubsAdminMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserAsGlobalHubsAdminMutation>;
+export type RemoveUserAsGlobalHubsAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsGlobalHubsAdminMutation,
+  SchemaTypes.RemoveUserAsGlobalHubsAdminMutationVariables
+>;
 export const RemoveUserAsHubAdminDocument = gql`
   mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
     removeUserAsHubAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -3175,7 +3231,10 @@ export const RemoveUserAsOrganizationOwnerDocument = gql`
   mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
     removeUserAsOrganizationOwner(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -5970,7 +6029,10 @@ export const HubMembersDocument = gql`
         id
         memberUsers {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
           firstName
           lastName
           email
@@ -6277,7 +6339,10 @@ export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
     assignUserAsOpportunityAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -6327,7 +6392,10 @@ export const RemoveUserAsOpportunityAdminDocument = gql`
   mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
     removeUserAsOpportunityAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -7865,10 +7933,10 @@ export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
     updateAspect(aspectData: $input) {
       id
-      displayName
       type
       profile {
         id
+        displayName
         description
         tagset {
           id
@@ -7879,7 +7947,6 @@ export const UpdateAspectDocument = gql`
           id
           name
           description
-          name
           uri
         }
       }
@@ -8364,22 +8431,19 @@ export const CreateAspectDocument = gql`
     createAspectOnCallout(aspectData: $aspectData) {
       id
       nameID
-      displayName
       type
       profile {
         id
         description
+        displayName
         tagset {
           id
           name
           tags
         }
-      }
-      banner {
-        ...VisualUri
-      }
-      bannerNarrow {
-        ...VisualUri
+        visuals {
+          ...VisualUri
+        }
       }
     }
   }
@@ -8422,58 +8486,6 @@ export type CreateAspectMutationResult = Apollo.MutationResult<SchemaTypes.Creat
 export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectMutation,
   SchemaTypes.CreateAspectMutationVariables
->;
-export const CreateReferenceOnCardProfileDocument = gql`
-  mutation createReferenceOnCardProfile($referenceInput: CreateReferenceOnCardProfileInput!) {
-    createReferenceOnCardProfile(referenceData: $referenceInput) {
-      id
-      name
-      uri
-      description
-    }
-  }
-`;
-export type CreateReferenceOnCardProfileMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateReferenceOnCardProfileMutation,
-  SchemaTypes.CreateReferenceOnCardProfileMutationVariables
->;
-
-/**
- * __useCreateReferenceOnCardProfileMutation__
- *
- * To run a mutation, you first call `useCreateReferenceOnCardProfileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateReferenceOnCardProfileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createReferenceOnCardProfileMutation, { data, loading, error }] = useCreateReferenceOnCardProfileMutation({
- *   variables: {
- *      referenceInput: // value for 'referenceInput'
- *   },
- * });
- */
-export function useCreateReferenceOnCardProfileMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateReferenceOnCardProfileMutation,
-    SchemaTypes.CreateReferenceOnCardProfileMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateReferenceOnCardProfileMutation,
-    SchemaTypes.CreateReferenceOnCardProfileMutationVariables
-  >(CreateReferenceOnCardProfileDocument, options);
-}
-
-export type CreateReferenceOnCardProfileMutationHookResult = ReturnType<typeof useCreateReferenceOnCardProfileMutation>;
-export type CreateReferenceOnCardProfileMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreateReferenceOnCardProfileMutation>;
-export type CreateReferenceOnCardProfileMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateReferenceOnCardProfileMutation,
-  SchemaTypes.CreateReferenceOnCardProfileMutationVariables
 >;
 export const DeleteAspectDocument = gql`
   mutation deleteAspect($input: DeleteAspectInput!) {
@@ -9469,22 +9481,19 @@ export const CreateAspectFromContributeTabDocument = gql`
     createAspectOnCallout(aspectData: $aspectData) {
       id
       nameID
-      displayName
       type
       profile {
         id
+        displayName
         description
         tagset {
           id
           name
           tags
         }
-      }
-      banner {
-        ...VisualUri
-      }
-      bannerNarrow {
-        ...VisualUri
+        visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
   }
@@ -11547,72 +11556,6 @@ export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
   SchemaTypes.CreateTagsetOnProfileMutationVariables
 >;
-export const TagsetsTemplateDocument = gql`
-  query tagsetsTemplate {
-    configuration {
-      template {
-        users {
-          tagsets {
-            name
-            placeholder
-          }
-        }
-        organizations {
-          tagsets {
-            name
-            placeholder
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useTagsetsTemplateQuery__
- *
- * To run a query within a React component, call `useTagsetsTemplateQuery` and pass it any options that fit your needs.
- * When your component renders, `useTagsetsTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTagsetsTemplateQuery({
- *   variables: {
- *   },
- * });
- */
-export function useTagsetsTemplateQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>(
-    TagsetsTemplateDocument,
-    options
-  );
-}
-
-export function useTagsetsTemplateLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.TagsetsTemplateQuery, SchemaTypes.TagsetsTemplateQueryVariables>(
-    TagsetsTemplateDocument,
-    options
-  );
-}
-
-export type TagsetsTemplateQueryHookResult = ReturnType<typeof useTagsetsTemplateQuery>;
-export type TagsetsTemplateLazyQueryHookResult = ReturnType<typeof useTagsetsTemplateLazyQuery>;
-export type TagsetsTemplateQueryResult = Apollo.QueryResult<
-  SchemaTypes.TagsetsTemplateQuery,
-  SchemaTypes.TagsetsTemplateQueryVariables
->;
-export function refetchTagsetsTemplateQuery(variables?: SchemaTypes.TagsetsTemplateQueryVariables) {
-  return { query: TagsetsTemplateDocument, variables: variables };
-}
-
 export const UploadVisualDocument = gql`
   mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
     uploadImageOnVisual(file: $file, uploadData: $uploadData) {
@@ -13786,16 +13729,16 @@ export const ContributingUsersDocument = gql`
     users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
-      displayName
       isContactable
       profile {
         id
+        displayName
         location {
           id
           city
           country
         }
-        avatar {
+        visual(type: AVATAR) {
           id
           uri
         }
@@ -13864,10 +13807,10 @@ export const ContributingOrganizationsDocument = gql`
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
-      displayName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -14310,7 +14253,10 @@ export const AvailableUsersDocument = gql`
     usersPaginated(first: $first, after: $after, filter: $filter) {
       users {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
       pageInfo {
         endCursor
@@ -15335,7 +15281,10 @@ export const AssignUserToOrganizationDocument = gql`
   mutation assignUserToOrganization($input: AssignOrganizationAssociateInput!) {
     assignUserToOrganization(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -15385,7 +15334,10 @@ export const RemoveUserFromOrganizationDocument = gql`
   mutation removeUserFromOrganization($input: RemoveOrganizationAssociateInput!) {
     removeUserFromOrganization(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -15435,7 +15387,10 @@ export const AssignUserAsOrganizationAdminDocument = gql`
   mutation assignUserAsOrganizationAdmin($input: AssignOrganizationAdminInput!) {
     assignUserAsOrganizationAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -15487,7 +15442,10 @@ export const RemoveUserAsOrganizationAdminDocument = gql`
   mutation removeUserAsOrganizationAdmin($input: RemoveOrganizationAdminInput!) {
     removeUserAsOrganizationAdmin(membershipData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -15724,7 +15682,10 @@ export const CreateOrganizationDocument = gql`
     createOrganization(organizationData: $input) {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -15936,11 +15897,11 @@ export const OrganizationDetailsDocument = gql`
   query organizationDetails($id: UUID_NAMEID!) {
     organization(ID: $id) {
       id
-      displayName
       nameID
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           ...VisualUri
         }
         description
@@ -15959,7 +15920,10 @@ export const OrganizationDetailsDocument = gql`
         name
         members {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
@@ -16145,7 +16109,10 @@ export const OrganizationNameDocument = gql`
   query organizationName($id: UUID_NAMEID!) {
     organization(ID: $id) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -16265,10 +16232,10 @@ export const OrganizationsListDocument = gql`
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
-      displayName
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -16730,14 +16697,14 @@ export const UserAvatarsDocument = gql`
     usersById(IDs: $ids) {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         location {
           country
           city
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         tagsets {
@@ -16802,14 +16769,14 @@ export const UserCardsContainerDocument = gql`
     usersById(IDs: $ids) {
       id
       nameID
-      displayName
       profile {
         id
+        displayName
         location {
           city
           country
         }
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         tagsets {
@@ -17181,7 +17148,7 @@ export const UpdateGroupDocument = gql`
       name
       profile {
         id
-        avatar {
+        visual(type: AVATAR) {
           ...VisualUri
         }
         description
@@ -17756,13 +17723,13 @@ export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
       id
-      displayName
       firstName
       lastName
       email
       profile {
         id
-        avatar {
+        displayName
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -17827,7 +17794,10 @@ export const UsersWithCredentialsSimpleListDocument = gql`
   query usersWithCredentialsSimpleList($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
       firstName
       lastName
       email
@@ -18055,7 +18025,10 @@ export const UserListDocument = gql`
       users {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+        }
         email
       }
       pageInfo {
@@ -18945,7 +18918,10 @@ export const AdminGlobalOrganizationsListDocument = gql`
       organization {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
       pageInfo {
         ...PageInfo
@@ -19492,10 +19468,10 @@ export const InnovationPacksDocument = gql`
           provider {
             id
             nameID
-            displayName
             profile {
               id
-              avatar {
+              displayName
+              visual(type: AVATAR) {
                 id
                 uri
               }
@@ -20419,12 +20395,12 @@ export const ActivityLogOnCollaborationDocument = gql`
       triggeredBy {
         id
         nameID
-        displayName
         firstName
         lastName
         profile {
           id
-          avatar {
+          displayName
+          visual(type: AVATAR) {
             id
             uri
           }
@@ -20635,15 +20611,15 @@ export const MentionableUsersDocument = gql`
       users {
         id
         nameID
-        displayName
         profile {
           id
+          displayName
           location {
             id
             city
             country
           }
-          avatar {
+          visual(type: AVATAR) {
             ...VisualUri
           }
         }

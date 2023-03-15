@@ -2,16 +2,16 @@ query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [A
   users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
     id
     nameID
-    displayName
     isContactable
     profile {
       id
+      displayName
       location {
         id
         city
         country
       }
-      avatar {
+      visual(type: AVATAR) {
         id
         uri
       }
@@ -27,10 +27,10 @@ query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredent
   organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
     id
     nameID
-    displayName
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
