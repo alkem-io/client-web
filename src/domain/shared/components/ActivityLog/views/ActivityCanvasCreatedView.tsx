@@ -3,11 +3,11 @@ import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildCanvasUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntity } from '../../../types/NameableEntity';
+import { NameableEntityOld } from '../../../types/NameableEntity';
 
 export interface ActivityCanvasCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntity;
-  canvas: NameableEntity;
+  callout: NameableEntityOld;
+  canvas: NameableEntityOld;
 }
 
 export const ActivityCanvasCreatedView: FC<ActivityCanvasCreatedViewProps> = props => {

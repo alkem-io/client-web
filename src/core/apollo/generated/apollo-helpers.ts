@@ -331,7 +331,6 @@ export type AspectKeySpecifier = (
   | 'comments'
   | 'createdBy'
   | 'createdDate'
-  | 'displayName'
   | 'id'
   | 'nameID'
   | 'profile'
@@ -346,7 +345,6 @@ export type AspectFieldPolicy = {
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -459,7 +457,6 @@ export type CalendarEventKeySpecifier = (
   | 'comments'
   | 'createdBy'
   | 'createdDate'
-  | 'displayName'
   | 'durationDays'
   | 'durationMinutes'
   | 'id'
@@ -476,7 +473,6 @@ export type CalendarEventFieldPolicy = {
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   durationDays?: FieldPolicy<any> | FieldReadFunction<any>;
   durationMinutes?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -602,23 +598,6 @@ export type CanvasTemplateFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   info?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CardProfileKeySpecifier = (
-  | 'authorization'
-  | 'description'
-  | 'id'
-  | 'location'
-  | 'references'
-  | 'tagset'
-  | CardProfileKeySpecifier
-)[];
-export type CardProfileFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  location?: FieldPolicy<any> | FieldReadFunction<any>;
-  references?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
   | 'agent'
@@ -1232,7 +1211,6 @@ export type MutationKeySpecifier = (
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
-  | 'createReferenceOnCardProfile'
   | 'createReferenceOnContext'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
@@ -1379,7 +1357,6 @@ export type MutationFieldPolicy = {
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
-  createReferenceOnCardProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1533,7 +1510,6 @@ export type OrganizationKeySpecifier = (
   | 'associates'
   | 'authorization'
   | 'contactEmail'
-  | 'displayName'
   | 'domain'
   | 'group'
   | 'groups'
@@ -1552,7 +1528,6 @@ export type OrganizationFieldPolicy = {
   associates?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1683,22 +1658,30 @@ export type PreferenceDefinitionFieldPolicy = {
 };
 export type ProfileKeySpecifier = (
   | 'authorization'
-  | 'avatar'
   | 'description'
+  | 'displayName'
   | 'id'
   | 'location'
   | 'references'
+  | 'tagline'
+  | 'tagset'
   | 'tagsets'
+  | 'visual'
+  | 'visuals'
   | ProfileKeySpecifier
 )[];
 export type ProfileFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  avatar?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagline?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+  visual?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | ProfileCredentialVerifiedKeySpecifier)[];
 export type ProfileCredentialVerifiedFieldPolicy = {
@@ -1828,7 +1811,6 @@ export type RelayPaginatedUserKeySpecifier = (
   | 'authorization'
   | 'communityRooms'
   | 'directRooms'
-  | 'displayName'
   | 'email'
   | 'firstName'
   | 'gender'
@@ -1847,7 +1829,6 @@ export type RelayPaginatedUserFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   gender?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2190,7 +2171,6 @@ export type UserKeySpecifier = (
   | 'authorization'
   | 'communityRooms'
   | 'directRooms'
-  | 'displayName'
   | 'email'
   | 'firstName'
   | 'gender'
@@ -2209,7 +2189,6 @@ export type UserFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   gender?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2502,10 +2481,6 @@ export type StrictTypedTypePolicies = {
   CanvasTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasTemplateKeySpecifier | (() => undefined | CanvasTemplateKeySpecifier);
     fields?: CanvasTemplateFieldPolicy;
-  };
-  CardProfile?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CardProfileKeySpecifier | (() => undefined | CardProfileKeySpecifier);
-    fields?: CardProfileFieldPolicy;
   };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);

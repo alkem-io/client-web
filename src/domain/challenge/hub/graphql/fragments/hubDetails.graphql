@@ -13,8 +13,11 @@ fragment HubDetails on Hub {
   }
   host {
     id
-    displayName
     nameID
+    profile {
+        id
+        displayName
+    }
   }
   context {
     ...ContextDetails

@@ -1,6 +1,9 @@
 mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
   removeUserAsHubAdmin(membershipData: $input) {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }

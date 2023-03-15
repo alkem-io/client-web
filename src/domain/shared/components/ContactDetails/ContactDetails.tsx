@@ -79,13 +79,13 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email
           </Box>
           <div className={styles.data}>
             <ContactDetail title={t('common.email')} value={email} />
-            <ContactDetail title={t('components.profile.fields.bio.title')} value={profile?.description || ''} />
+            <ContactDetail title={t('components.profile.fields.bio.title')} value={profile.description || ''} />
             <ContactDetail title={t('components.profile.fields.phone.title')} value={phone} />
             <ContactDetail
               title={t('components.profileSegment.location.country.name')}
-              value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name}
+              value={COUNTRIES.find(x => x.code === profile.location?.country)?.name}
             />
-            <ContactDetail title={t('components.profileSegment.location.city.name')} value={profile?.location?.city} />
+            <ContactDetail title={t('components.profileSegment.location.city.name')} value={profile.location?.city} />
           </div>
         </div>
       </Card>

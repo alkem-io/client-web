@@ -95,7 +95,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
       <UserForm
         title={'Profile'}
         user={{ ...user } as UserModel}
-        avatar={user?.profile?.avatar}
+        avatar={user?.profile.visual}
         editMode={editMode}
         onSave={handleSave}
       />

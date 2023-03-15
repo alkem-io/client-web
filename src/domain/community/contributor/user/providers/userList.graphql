@@ -3,7 +3,10 @@ query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
     users {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       email
     }
     pageInfo {
