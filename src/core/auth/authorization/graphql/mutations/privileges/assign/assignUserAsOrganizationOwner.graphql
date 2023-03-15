@@ -1,9 +1,6 @@
 mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
   assignUserAsOrganizationOwner(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }

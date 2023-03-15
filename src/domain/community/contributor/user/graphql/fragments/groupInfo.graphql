@@ -3,12 +3,10 @@ fragment GroupInfo on UserGroup {
   name
   profile {
     id
-    displayName
-    visual(type: AVATAR) {
+    avatar {
       ...VisualFull
     }
     description
-    tagline
     references {
       id
       uri

@@ -31,7 +31,7 @@ const UserSettingsLayout: FC<UserSettingsLayoutProps> = props => {
   }
 
   const entityAttrs = {
-    displayName: user?.user.profile.displayName || '',
+    displayName: user?.user.displayName || '',
     userNameId: user?.user.nameID || '',
   };
 

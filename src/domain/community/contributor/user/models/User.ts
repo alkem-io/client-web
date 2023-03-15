@@ -4,6 +4,7 @@ import { Reference, Tagset } from '../../../../common/profile/Profile';
 
 export interface UserModel {
   id: string;
+  displayName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -12,7 +13,6 @@ export interface UserModel {
   agent?: {};
   profile: {
     id?: string;
-    displayName: string;
     description: string;
     location: {
       city: string;
@@ -39,6 +39,7 @@ interface Group {
 }
 export const defaultUser: UserModel = {
   id: '',
+  displayName: '',
   firstName: '',
   lastName: '',
   email: '',
@@ -46,7 +47,6 @@ export const defaultUser: UserModel = {
   gender: '',
   profile: {
     id: '',
-    displayName: '',
     description: '',
     location: {
       city: '',
@@ -84,7 +84,7 @@ export interface UserFormGenerated {
 
 export interface Member {
   id: string;
-  profile: { id: string; displayName: string };
+  displayName: string;
   firstName: string;
   lastName: string;
   email: string;

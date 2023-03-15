@@ -8,12 +8,7 @@ import {
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationCredential,
-  GroupInfoFragment,
-  User,
-  UserGroup,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential, User, UserGroup } from '../../../../../core/apollo/generated/graphql-schema';
 import { logger } from '../../../../../services/logging/winston/logger';
 import GroupForm from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '../../../../../common/utils/getUpdateUserInput';
@@ -21,7 +16,7 @@ import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout'
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 
 interface GroupPageProps {
-  group?: GroupInfoFragment;
+  group?: UserGroup;
 }
 
 export const GroupPage: FC<GroupPageProps> = ({ group }) => {

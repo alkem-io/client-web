@@ -11,14 +11,16 @@ import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventDetailsFragment,
-  Profile,
+  CardProfile,
 } from '../../../core/apollo/generated/graphql-schema';
 
 export interface CalendarEventFormData
-  extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
-  displayName: Profile['displayName'];
-  description: Profile['description'];
-  references: Profile['references'];
+  extends Pick<
+    CalendarEvent,
+    'displayName' | 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'
+  > {
+  description: CardProfile['description'];
+  references: CardProfile['references'];
   tags: string[];
 }
 
@@ -35,11 +37,7 @@ export interface CalendarEventsContainerProps {
 export interface CalendarEventsActions {
   // loadMore: () => void; // TODO: pagination?
   createEvent: (event: CalendarEventFormData) => Promise<string | undefined>;
-  updateEvent: (
-    eventId: string,
-    tagsetid: string | undefined,
-    event: CalendarEventFormData
-  ) => Promise<string | undefined>;
+  updateEvent: (eventId: string, event: CalendarEventFormData) => Promise<string | undefined>;
   deleteEvent: (eventId: string) => Promise<string | undefined>;
 }
 
@@ -89,7 +87,7 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {
-      const { startDate, description, tags, references, displayName, ...rest } = event;
+      const { startDate, description, tags, references, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
       return createCalendarEvent({
@@ -97,11 +95,11 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
           eventData: {
             calendarID: calendarId!,
             startDate: parsedStartDate,
-            tags: tags,
             ...rest,
             profileData: {
               description: description,
-              displayName: displayName,
+              // referencesData: ... references
+              tags: tags,
             },
           },
         },
@@ -113,8 +111,8 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
   );
 
   const updateEvent = useCallback(
-    (eventId: string, tagsetId: string | undefined, event: CalendarEventFormData) => {
-      const { startDate, description, tags, references, displayName, ...rest } = event;
+    (eventId: string, event: CalendarEventFormData) => {
+      const { startDate, description, tags, references, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
       return updateCalendarEvent({
@@ -124,15 +122,9 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ hubI
             startDate: parsedStartDate,
             ...rest,
             profileData: {
-              displayName: displayName,
               description: description,
               // references: ...references  // TODO...
-              tagsets: [
-                {
-                  ID: tagsetId ?? '',
-                  tags: tags,
-                },
-              ],
+              tags: tags,
             },
           },
         },

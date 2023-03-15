@@ -57,7 +57,7 @@ const UserSegment = <El extends ElementType>({
     <>
       <UserAvatar
         name={user.firstName}
-        src={user.profile.visual?.uri}
+        src={user.profile?.avatar?.uri}
         ref={popoverAnchor}
         className={buttonClassName}
         onClick={() => setDropdownOpen(true)}
@@ -79,9 +79,9 @@ const UserSegment = <El extends ElementType>({
         <PopoverRoot>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
-              <Avatar size={'lg'} src={user.profile.visual?.uri} />
+              <Avatar size={'lg'} src={user.profile?.avatar?.uri} />
               <Box textAlign={'center'}>
-                <WrapperTypography variant="h3">{user.profile.displayName}</WrapperTypography>
+                <WrapperTypography variant="h3">{user.displayName}</WrapperTypography>
               </Box>
               <WrapperTypography variant="h5" color="neutralMedium">
                 {role}

@@ -9,11 +9,11 @@ fragment ApplicationInfo on Application {
   }
   user {
     id
+    displayName
     email
     profile {
       id
-      displayName
-      visual(type: AVATAR) {
+      avatar {
         ...VisualUri
       }
     }

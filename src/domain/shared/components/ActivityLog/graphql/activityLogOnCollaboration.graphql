@@ -9,12 +9,12 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     triggeredBy {
       id
       nameID
+      displayName
       firstName
       lastName
       profile {
         id
-        displayName
-        visual(type: AVATAR) {
+        avatar {
           id
           uri
         }
@@ -68,12 +68,14 @@ fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
   user {
     id
     nameID
+    displayName
+    nameID
+    displayName
     firstName
     lastName
     profile {
       id
-      displayName
-      visual(type: AVATAR) {
+      avatar {
         id
         uri
       }
@@ -107,10 +109,9 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
   card {
     id
     nameID
+    displayName
     type
     profile {
-      id
-      displayName
       description
     }
   }
@@ -125,10 +126,7 @@ fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
   card {
     id
     nameID
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }
 

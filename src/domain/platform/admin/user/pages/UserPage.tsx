@@ -98,8 +98,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         nameID: createUserNameID(rest.firstName, rest.lastName),
         profileData: {
           description: profile.description,
-          displayName: profile.displayName,
           referencesData: [...profile.references],
+          tagsetsData: [...profile.tagsets],
         },
       };
 
@@ -157,14 +157,14 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         onSave={handleSave}
         title={title}
         user={user}
-        avatar={data?.user?.profile.visual}
+        avatar={data?.user?.profile?.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveUser}
-        name={user?.profile.displayName}
+        name={user?.displayName}
         loading={userRemoveLoading}
       />
     </>

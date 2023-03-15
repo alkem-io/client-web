@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import { NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntityOld;
+  callout: NameableEntity;
 }
 
 export const ActivityDiscussionCommentCreatedView: FC<ActivityDiscussionCommentCreatedViewProps> = ({

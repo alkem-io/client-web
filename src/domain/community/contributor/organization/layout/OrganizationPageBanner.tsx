@@ -7,11 +7,11 @@ const OrganizationPageBanner: FC = () => {
     <OrganizationPageContainer>
       {({ organization, permissions, socialLinks, handleSendMessage }, { loading }) => (
         <ProfileBanner
-          title={organization?.profile.displayName}
-          tagline={organization?.profile.description}
-          location={organization?.profile.location}
+          title={organization?.displayName}
+          tagline={organization?.profile?.description}
+          location={organization?.profile?.location}
           socialLinks={socialLinks}
-          avatarUrl={organization?.profile.visual?.uri}
+          avatarUrl={organization?.profile?.avatar?.uri}
           avatarEditable={permissions.canEdit}
           loading={loading}
           onSendMessage={handleSendMessage}

@@ -59,7 +59,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
   });
 
   const organizations = useMemo(
-    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
+    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
     [organizationList]
   );
 

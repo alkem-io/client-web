@@ -106,7 +106,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
 
-  const userName = user?.user.profile.displayName;
+  const userName = user?.user.displayName;
 
   const {
     data: query,
@@ -161,7 +161,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
-  const existingAspectNames = aspects?.map(aspect => replaceAll('_', ' ', aspect.profile.displayName)) || [];
+  const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.displayName)) || [];
   // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 

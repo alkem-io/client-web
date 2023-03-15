@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
 import replaceQuotesInOldDescription from '../../../utils/replaceQuotesInOldDescription';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
-import { NameableEntity, NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityCardCommentCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntityOld;
+  callout: NameableEntity;
   card: NameableEntity;
 }
 
@@ -21,7 +21,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
 }) => {
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.card-comment-created', {
-    cardDisplayName: card.profile.displayName,
+    cardDisplayName: card.displayName,
     interpolation: {
       escapeValue: false,
     },
@@ -29,7 +29,7 @@ export const ActivityCardCommentCreatedView: FC<ActivityCardCommentCreatedViewPr
   const url = buildAspectUrl(callout.nameID, card.nameID, journeyLocation);
   const comment = replaceQuotesInOldDescription(description);
   const translatedDescription = t('components.activity-log-view.activity-description.card-comment-created', {
-    cardDisplayName: card.profile.displayName,
+    cardDisplayName: card.displayName,
     comment,
     interpolation: {
       escapeValue: false,

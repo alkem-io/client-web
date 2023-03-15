@@ -71,8 +71,8 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ h
   const isSubscribedToComments = eventCommentsSubscription.enabled;
 
   const creator = event?.createdBy;
-  const creatorAvatar = creator?.profile.visual?.uri;
-  const creatorName = creator?.profile.displayName;
+  const creatorAvatar = creator?.profile?.avatar?.uri;
+  const creatorName = creator?.displayName;
   const createdDate = event?.createdDate.toString();
 
   const commentsId = event?.comments?.id;

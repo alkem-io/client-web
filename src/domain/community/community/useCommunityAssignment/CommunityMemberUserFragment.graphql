@@ -1,9 +1,6 @@
 fragment CommunityMemberUser on User {
   id
-  profile {
-    id
-    displayName
-  }
+  displayName
   firstName
   lastName
   email

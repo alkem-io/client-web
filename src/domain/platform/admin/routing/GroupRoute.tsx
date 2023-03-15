@@ -4,11 +4,11 @@ import { GroupPage } from '../components';
 import { WithCommunity } from '../components/Community/CommunityTypes';
 import EditMembersPage from '../components/Group/EditMembersPage';
 import { Loading } from '../../../../common/components/core';
-import { GroupInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { UserGroup } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 
 interface Props extends WithCommunity {
-  group?: GroupInfoFragment;
+  group?: UserGroup;
   loading?: boolean;
 }
 

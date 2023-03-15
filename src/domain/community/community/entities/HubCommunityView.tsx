@@ -52,11 +52,11 @@ const HubCommunityView: FC = () => {
     return leadUsers?.map(user => ({
       id: user.id,
       userUrl: buildUserProfileUrl(user.nameID),
-      fullName: user.profile.displayName,
-      city: user.profile.location?.city,
-      country: user.profile.location?.country,
-      avatarUrl: user.profile.visual?.uri,
-      tags: user.profile.tagsets?.flatMap(({ tags }) => tags),
+      fullName: user.displayName,
+      city: user.profile?.location?.city,
+      country: user.profile?.location?.country,
+      avatarUrl: user.profile?.avatar?.uri,
+      tags: user.profile?.tagsets?.flatMap(({ tags }) => tags),
     }));
   }, [leadUsers]);
 

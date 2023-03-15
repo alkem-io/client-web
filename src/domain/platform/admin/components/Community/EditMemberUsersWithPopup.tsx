@@ -62,7 +62,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
         renderRow={(m, Cell) => (
           <>
             <TableCell>
-              <Cell>{m.profile.displayName}</Cell>
+              <Cell>{m.displayName}</Cell>
             </TableCell>
             <TableCell>
               <Cell>{m.firstName}</Cell>
@@ -101,7 +101,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
             }
             renderRow={m => (
               <>
-                <TableCell>{m.profile.displayName}</TableCell>
+                <TableCell>{m.displayName}</TableCell>
                 <TableCell>{m.email}</TableCell>
               </>
             )}

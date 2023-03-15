@@ -24,8 +24,8 @@ const TagsWithOffset = styled(TagsComponent)({
 export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata } }) => {
   const { t } = useTranslation();
   const { user, keywords, skills } = userMetadata;
-  const references = user.profile.references;
-  const bio = user.profile.description;
+  const references = user.profile?.references;
+  const bio = user.profile?.description;
 
   const nonSocialReferences = useMemo(() => {
     return references?.filter(x => !isSocialNetworkSupported(x.name));

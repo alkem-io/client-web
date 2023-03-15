@@ -2,10 +2,10 @@ query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [A
   organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials}) {
     id
     nameID
+    displayName
     profile {
       id
-      displayName
-      visual(type: AVATAR) {
+      avatar {
         ...VisualUri
       }
     }

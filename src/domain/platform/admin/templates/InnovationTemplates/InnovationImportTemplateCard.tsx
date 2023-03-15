@@ -18,8 +18,8 @@ const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTem
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template.info.title} iconComponent={AutoGraphIcon}>
-        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.visual?.uri}>
-          {template.provider?.profile.displayName}
+        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.avatar?.uri}>
+          {template.provider?.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>

@@ -93,7 +93,7 @@ const AspectProvider: FC = ({ children }) => {
         error,
         id: aspect?.id,
         nameId: aspect?.nameID,
-        displayName: aspect?.profile.displayName,
+        displayName: aspect?.displayName,
         permissions,
       }}
     >

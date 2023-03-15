@@ -22,7 +22,7 @@ const InfoSection: FC<Props> = ({ organization }) => {
   }
 
   const { contactEmail, website, verification, profile } = organization;
-  const tags = profile.tagsets?.flatMap(x => x.tags) || [];
+  const tags = profile?.tagsets?.flatMap(x => x.tags) || [];
 
   return (
     <Grid container spacing={1}>

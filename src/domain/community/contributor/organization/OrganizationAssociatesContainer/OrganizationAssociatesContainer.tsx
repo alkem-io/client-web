@@ -221,13 +221,10 @@ export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = 
     if (user)
       return {
         id: user.user.id,
+        displayName: user.user.displayName,
         firstName: user.user.firstName,
         lastName: user.user.lastName,
         email: user.user.email,
-        profile: {
-          id: user.user.profile.id,
-          displayName: user.user.profile.displayName,
-        },
       };
   }, [user]);
 

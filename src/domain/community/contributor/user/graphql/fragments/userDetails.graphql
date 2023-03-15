@@ -1,6 +1,7 @@
 fragment UserDetails on User {
   id
   nameID
+  displayName
   firstName
   lastName
   email
@@ -15,13 +16,12 @@ fragment UserDetails on User {
   }
   profile {
     id
-    displayName
     location {
       country
       city
     }
     description
-    visual(type: AVATAR) {
+    avatar {
       ...VisualFull
     }
     references {

@@ -84,7 +84,7 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const initialValues: FormValueType = useMemo(
     () => ({
-      name: aspect?.profileData?.displayName ?? '',
+      name: aspect?.displayName ?? '',
       description: getDescriptionValue(),
       tagsets,
       aspectNames: aspectNames ?? [],
@@ -99,7 +99,7 @@ const AspectForm: FC<AspectFormProps> = ({
     .required(t('common.field-required'))
     .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
       if (edit) {
-        return Boolean(value && (!aspectNames?.includes(value) || value === aspect?.profileData?.displayName));
+        return Boolean(value && (!aspectNames?.includes(value) || value === aspect?.displayName));
       } else {
         return Boolean(value && !aspectNames?.includes(value));
       }

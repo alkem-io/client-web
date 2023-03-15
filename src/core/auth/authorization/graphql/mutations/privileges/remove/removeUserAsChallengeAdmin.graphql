@@ -1,9 +1,6 @@
 mutation removeUserAsChallengeAdmin($input: RemoveChallengeAdminInput!) {
   removeUserAsChallengeAdmin(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }

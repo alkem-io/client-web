@@ -1,19 +1,13 @@
 mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
   assignUserAsOpportunityAdmin(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }
 
 mutation removeUserAsOpportunityAdmin($input: RemoveOpportunityAdminInput!) {
   removeUserAsOpportunityAdmin(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }

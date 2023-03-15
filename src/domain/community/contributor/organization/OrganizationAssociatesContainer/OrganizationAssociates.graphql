@@ -1,40 +1,28 @@
 mutation assignUserToOrganization($input: AssignOrganizationAssociateInput!) {
   assignUserToOrganization(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }
 
 mutation removeUserFromOrganization($input: RemoveOrganizationAssociateInput!) {
   removeUserFromOrganization(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }
 
 mutation assignUserAsOrganizationAdmin($input: AssignOrganizationAdminInput!) {
   assignUserAsOrganizationAdmin(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }
 
 mutation removeUserAsOrganizationAdmin($input: RemoveOrganizationAdminInput!) {
   removeUserAsOrganizationAdmin(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }
 

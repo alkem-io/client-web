@@ -92,8 +92,8 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onS
 
   const nextEvents = app?.lifecycle?.nextEvents || [];
 
-  const username = user?.profile.displayName || '';
-  const avatarSrc = user?.profile.visual?.uri || '';
+  const username = user?.displayName || '';
+  const avatarSrc = user?.profile?.avatar?.uri || '';
 
   const createdDate = app?.createdDate ? new Date(app?.createdDate).toLocaleString() : '';
   const updatedDate = app?.updatedDate ? new Date(app?.updatedDate).toLocaleString() : '';

@@ -1,6 +1,7 @@
 fragment OrganizationCard on Organization {
   id
   nameID
+  displayName
   metrics {
     id
     name
@@ -8,8 +9,7 @@ fragment OrganizationCard on Organization {
   }
   profile {
     id
-    displayName
-    visual(type: AVATAR) {
+    avatar {
       ...VisualUri
     }
     description

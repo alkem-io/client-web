@@ -24,12 +24,12 @@ const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
         {({ aspect, messages, commentsId, ...rest }) => (
           <AspectDashboardView
             mode="share"
-            banner={aspect?.profile.visual?.uri}
-            displayName={aspect?.profile.displayName}
-            description={aspect?.profile.description}
+            banner={aspect?.banner?.uri}
+            displayName={aspect?.displayName}
+            description={aspect?.profile?.description}
             type={aspect?.type}
-            tags={aspect?.profile.tagset?.tags}
-            references={aspect?.profile.references}
+            tags={aspect?.profile?.tagset?.tags}
+            references={aspect?.profile?.references}
             messages={messages}
             commentId={commentsId}
             {...rest}

@@ -1,9 +1,6 @@
 mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
   removeUserAsOrganizationOwner(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }

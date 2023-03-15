@@ -3,10 +3,10 @@ import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
-  challenge: NameableEntityOld;
+  challenge: NameableEntity;
 }
 
 export const ActivityChallengeCreatedView: FC<ActivityChallengeCreatedViewProps> = props => {

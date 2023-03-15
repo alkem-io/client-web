@@ -45,7 +45,7 @@ export const useAdminGlobalOrganizationsList = () => {
     () =>
       data?.organizationsPaginated.organization.map(org => ({
         id: org.id,
-        value: org.profile.displayName,
+        value: org.displayName,
         url: `${org.nameID}`,
       })) || [],
     [data]

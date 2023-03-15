@@ -46,24 +46,21 @@ fragment SearchResultCard on SearchResultCard {
   card {
     id
     nameID
+    displayName
     profile {
-      displayName
-      visual(type: CARD) {
-        ...VisualUri
-      }
       ...SearchResultCardProfile
     }
     createdBy {
       id
-      profile {
-        id
-        displayName
-      }
+      displayName
     }
     createdDate
     comments {
       id
       commentsCount
+    }
+    bannerNarrow {
+      ...VisualUri
     }
   }
   ...CardParent
@@ -108,8 +105,8 @@ fragment SearchResultUser on SearchResultUser {
   user {
     id
     nameID
+    displayName
     profile {
-      displayName
       ...SearchResultProfile
     }
   }
@@ -119,8 +116,8 @@ fragment SearchResultOrganization on SearchResultOrganization {
   organization {
     id
     nameID
+    displayName
     profile {
-      displayName
       ...SearchResultProfile
     }
   }
@@ -138,12 +135,12 @@ fragment SearchResultProfile on Profile {
     id
     tags
   }
-  visual(type: AVATAR) {
+  avatar {
     ...VisualUri
   }
 }
 
-fragment SearchResultCardProfile on Profile {
+fragment SearchResultCardProfile on CardProfile {
   id
   description
   tagset {

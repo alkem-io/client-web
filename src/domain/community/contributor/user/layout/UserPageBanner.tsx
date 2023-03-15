@@ -33,7 +33,7 @@ const UserPageBanner: FC = () => {
     [sendMessageToUser, userId]
   );
 
-  const references = userMetadata?.user?.profile.references;
+  const references = userMetadata?.user?.profile?.references;
   const socialLinks = useMemo(() => {
     return references
       ?.map(s => ({
@@ -44,16 +44,16 @@ const UserPageBanner: FC = () => {
   }, [references]);
 
   if (!loading && userMetadata) {
-    const { profile, phone, isContactable } = userMetadata.user;
+    const { displayName, profile, phone, isContactable } = userMetadata.user;
 
     return (
       <ProfileBanner
-        title={profile.displayName}
-        tagline={profile.description}
-        location={profile.location}
+        title={displayName}
+        tagline={profile?.description}
+        location={profile?.location}
         phone={phone}
         socialLinks={socialLinks}
-        avatarUrl={profile.visual?.uri}
+        avatarUrl={profile?.avatar?.uri}
         loading={loading}
         onSendMessage={handleSendMessage}
         isContactable={isContactable && currentUser?.user.id !== userId}

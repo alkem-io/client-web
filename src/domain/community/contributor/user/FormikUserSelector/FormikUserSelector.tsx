@@ -106,7 +106,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             inputValue={inputValue}
             onInputChange={(event, value) => setInputValue(value)}
             autoHighlight
-            getOptionLabel={option => option.profile.displayName}
+            getOptionLabel={option => option.displayName}
             noOptionsText={t('components.user-selector.tooltip')}
             popupIcon={<SearchIcon />}
             sx={{
@@ -119,10 +119,10 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
             renderOption={(props, user) => (
               <li {...props}>
                 <ProfileChipView
-                  displayName={user.profile.displayName}
-                  avatarUrl={user.profile.visual?.uri}
-                  city={user.profile.location?.city}
-                  country={user.profile.location?.country}
+                  displayName={user.displayName}
+                  avatarUrl={user.profile?.avatar?.uri}
+                  city={user.profile?.location?.city}
+                  country={user.profile?.location?.country}
                 />
               </li>
             )}

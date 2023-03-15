@@ -40,10 +40,11 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
       nameID: aspect.nameID,
       type: aspect.type,
       profileData: {
-        displayName: aspect.profile.displayName,
-        description: aspect.profile.description!,
+        description: aspect.profile?.description!,
+        tags: aspect?.profile?.tagset?.tags,
       },
-      references: aspect?.profile.references,
+      displayName: aspect.displayName,
+      references: aspect?.profile?.references,
     };
 
   const aspectIndex = resolved.pathname.indexOf('/aspects');
@@ -81,7 +82,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
-  const visuals = (entities.aspect ? entities.aspect.profile.visuals : []) as Visual[];
+  const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
   const isAspectLoaded = Boolean(aspect && entities.aspect && !state.updating && !state.deleting && !isMovingAspect);
 
   const handleDelete = async () => {
@@ -143,7 +144,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
         onChange={setAspect}
         onAddReference={actions.handleAddReference}
         onRemoveReference={actions.handleRemoveReference}
-        tags={entities.aspect?.profile.tagset?.tags}
+        tags={entities.aspect?.profile?.tagset?.tags}
       >
         {({ isValid, dirty }) => {
           const canSave = isAspectLoaded && dirty && isValid;

@@ -146,8 +146,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   ].some(subscription => subscription.enabled);
 
   const creator = aspect?.createdBy;
-  const creatorAvatar = creator?.profile.visual?.uri;
-  const creatorName = creator?.profile.displayName;
+  const creatorAvatar = creator?.profile?.avatar?.uri;
+  const creatorName = creator?.displayName;
   const createdDate = aspect?.createdDate.toString();
 
   const commentsId = aspect?.comments?.id;

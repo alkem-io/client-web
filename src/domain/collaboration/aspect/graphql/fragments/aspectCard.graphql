@@ -1,27 +1,25 @@
 fragment AspectCard on Aspect {
   id
   nameID
+  displayName
   type
   createdBy {
-    id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
   createdDate
   comments {
     id
     commentsCount
   }
-
+  banner {
+    ...VisualUri
+  }
+  bannerNarrow {
+    ...VisualUri
+  }
   profile {
     id
-    displayName
     description
-    visuals {
-      ...VisualFull
-    }
     tagset {
       id
       name

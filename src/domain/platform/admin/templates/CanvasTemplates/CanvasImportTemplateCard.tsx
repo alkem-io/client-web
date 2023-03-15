@@ -17,8 +17,8 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
   return (
     <ContributeCard onClick={onClick}>
       <CardHeader title={template.info.title} iconComponent={CanvasIcon}>
-        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.visual?.uri}>
-          {template.provider?.profile.displayName}
+        <CardHeaderCaption noWrap logoUrl={template.provider?.profile.avatar?.uri}>
+          {template.provider?.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardImage

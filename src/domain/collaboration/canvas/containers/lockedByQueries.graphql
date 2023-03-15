@@ -6,10 +6,9 @@ query CanvasLockedByDetails($ids: [UUID!]!) {
 
 fragment LockedByDetails on User {
   id
+  displayName
   profile {
-    id
-    displayName
-    visual(type: AVATAR) {
+    avatar {
       ...VisualUri
     }
   }

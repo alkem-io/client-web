@@ -25,7 +25,7 @@ const OrganizationProvider: FC = ({ children }) => {
     errorPolicy: 'all',
   });
   const organization = data?.organization;
-  const displayName = organization?.profile.displayName || '';
+  const displayName = data?.organization.displayName || '';
 
   return (
     <OrganizationContext.Provider

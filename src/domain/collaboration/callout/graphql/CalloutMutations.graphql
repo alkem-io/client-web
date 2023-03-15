@@ -2,19 +2,22 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
   createAspectOnCallout(aspectData: $aspectData) {
     id
     nameID
+    displayName
     type
     profile {
       id
-      displayName
       description
       tagset {
         id
         name
         tags
       }
-      visual(type: CARD) {
-        ...VisualUri
-      }
+    }
+    banner {
+      ...VisualUri
+    }
+    bannerNarrow {
+      ...VisualUri
     }
   }
 }

@@ -13,15 +13,13 @@ import {
   Aspect,
   AspectSettingsCalloutFragment,
   AspectSettingsFragment,
-  Profile,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { Reference } from '../../../../common/profile/Profile';
 import { newReferenceName } from '../../../../../common/utils/newReferenceName';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'type'> & {
-  displayName: Profile['displayName'];
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'type'> & {
   description: string;
   tags: string[];
   references?: Reference[];
@@ -100,7 +98,7 @@ const useAspectSettings: ContainerHook<
 
   // TODO fetch calloutID for the Aspect for building a reliable link between entities
   const parentCallout = getCardCallout(collaborationCallouts, aspectNameId);
-  const parentCalloutAspectNames = parentCallout?.aspectNames?.map(x => x.profile.displayName);
+  const parentCalloutAspectNames = parentCallout?.aspectNames?.map(x => x.displayName);
 
   const aspect = parentCallout?.aspects?.find(x => x.nameID === aspectNameId);
   const loading = hubLoading || challengeLoading || opportunityLoading;
@@ -110,33 +108,26 @@ const useAspectSettings: ContainerHook<
     onCompleted: () => notify('Aspect updated successfully', 'success'),
   });
 
-  const handleUpdate = async (newAspect: AspectUpdateData) => {
-    if (aspect) {
-      await updateAspect({
-        variables: {
-          input: {
-            ID: newAspect.id,
-            profileData: {
-              displayName: newAspect.displayName,
-              description: newAspect.description,
-              references: newAspect.references?.map(x => ({
-                ID: x.id ?? '',
-                name: x.name,
-                description: x.description,
-                uri: x.uri,
-              })),
-              tagsets: [
-                {
-                  ID: aspect.profile.tagset?.id ?? '',
-                  tags: newAspect.tags,
-                },
-              ],
-            },
-            type: newAspect.type,
+  const handleUpdate = async (aspect: AspectUpdateData) => {
+    await updateAspect({
+      variables: {
+        input: {
+          ID: aspect.id,
+          displayName: aspect.displayName,
+          profileData: {
+            description: aspect?.description || '',
+            references: aspect.references?.map(x => ({
+              ID: x.id ?? '',
+              name: x.name,
+              description: x.description,
+              uri: x.uri,
+            })),
+            tags: aspect.tags,
           },
+          type: aspect.type,
         },
-      });
-    }
+      },
+    });
   };
 
   const [deleteAspect, { loading: deleting }] = useDeleteAspectMutation({
@@ -155,10 +146,10 @@ const useAspectSettings: ContainerHook<
 
   const handleAddReference = (push: PushFunc) => {
     setPush(push);
-    if (aspect) {
+    if (aspect?.id) {
       addReference({
-        profileId: aspect.profile.id,
-        name: newReferenceName(aspect.profile.references?.length ?? 0),
+        cardProfileId: aspect.profile?.id,
+        name: newReferenceName(aspect?.profile?.references?.length ?? 0),
       });
     }
   };

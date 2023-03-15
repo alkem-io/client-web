@@ -39,10 +39,10 @@ export const mapToAssociatedOrganization = (
 
   return {
     nameID, // to be used as React key
-    name: organization?.profile.displayName,
+    name: organization?.displayName,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     description: organization?.profile.description,
-    avatar: organization?.profile.visual?.uri,
+    avatar: organization?.profile.avatar?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     role: userRole && t(userRole),
     url: organization && buildOrganizationUrl(organization.nameID),

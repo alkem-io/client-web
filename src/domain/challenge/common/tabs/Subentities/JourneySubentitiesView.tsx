@@ -14,7 +14,7 @@ import { Caption } from '../../../../../core/ui/typography';
 import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
 import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
-import { NameableEntityOld } from '../../../../shared/types/NameableEntity';
+import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import JourneySubentityCreate from './JourneySubentityCreate';
 import { Loading } from '../../../../../common/components/core';
@@ -25,7 +25,7 @@ export interface JourneySubentitiesState {
   error?: ApolloError;
 }
 
-export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntityOld> extends Partial<CoreEntityIdTypes> {
+export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntity> extends Partial<CoreEntityIdTypes> {
   journeyTypeName: JourneyTypeName;
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
@@ -40,7 +40,7 @@ export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntityO
   state: JourneySubentitiesState;
 }
 
-const JourneySubentitiesView = <ChildEntity extends NameableEntityOld>({
+const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
   hubNameId,
   journeyTypeName,
   childEntities = [],

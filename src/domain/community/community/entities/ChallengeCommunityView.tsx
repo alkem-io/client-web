@@ -11,9 +11,12 @@ import { Identifiable } from '../../../shared/types/Identifiable';
 import { OrganizationCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useSearchAcrossMultipleLists from '../../../shared/utils/useSearchAcrossMultipleLists';
 
-export const organizationCardValueGetter = ({ id, profile }: OrganizationCardFragment & Identifiable): ValueType => ({
+export const organizationCardValueGetter = ({
+  id,
+  displayName,
+}: OrganizationCardFragment & Identifiable): ValueType => ({
   id: id,
-  values: [profile.displayName],
+  values: [displayName],
 });
 
 const ChallengeCommunityView: FC = () => {

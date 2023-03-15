@@ -96,11 +96,11 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
         variables: {
           aspectData: {
             calloutID: callout.id,
+            displayName: aspect.displayName,
             profileData: {
-              displayName: aspect.profileData.displayName,
-              description: aspect.profileData.description,
+              description: aspect.profileData?.description,
+              tags: aspect.profileData?.tags,
             },
-            tags: aspect.tags,
             type: aspect.type,
             visualUri: aspect.visualUri,
           },
@@ -110,22 +110,27 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
             __typename: 'Aspect',
             id: '',
             nameID: '',
+            displayName: aspect.displayName ?? '',
             profile: {
               id: '',
-              displayName: aspect.profileData.displayName,
-              description: aspect.profileData?.description,
-              visual: {
-                id: '-1',
-                name: '',
-                uri: aspect.visualUri ?? '',
-              },
+              description: aspect.profileData?.description || '',
               tagset: {
                 id: '-1',
                 name: 'default',
-                tags: [],
+                tags: aspect.profileData?.tags ?? [],
               },
             },
             type: aspect.type,
+            banner: {
+              id: '-1',
+              name: '',
+              uri: aspect.visualUri ?? '',
+            },
+            bannerNarrow: {
+              id: '-1',
+              name: '',
+              uri: aspect.visualUri ?? '',
+            },
           },
         },
       });
@@ -135,7 +140,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
       return nameID ? { nameID } : undefined;
     };
 
-    const aspectNames = useMemo(() => aspects?.map(x => x.profile.displayName) ?? [], [aspects]);
+    const aspectNames = useMemo(() => aspects?.map(x => x.displayName) ?? [], [aspects]);
 
     const createButton = canCreate && callout.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />

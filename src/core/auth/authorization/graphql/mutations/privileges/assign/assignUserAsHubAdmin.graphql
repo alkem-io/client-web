@@ -1,9 +1,6 @@
 mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
   assignUserAsHubAdmin(membershipData: $input) {
     id
-    profile {
-      id
-      displayName
-    }
+    displayName
   }
 }

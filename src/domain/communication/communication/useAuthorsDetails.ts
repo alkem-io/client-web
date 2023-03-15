@@ -77,14 +77,14 @@ export const useAuthorsDetails = (authorIds: string[]) => {
         const roleName = roleNameKey ? t(roleNameKey) : '';
         return {
           id: author.id,
-          displayName: author.profile.displayName,
+          displayName: author.displayName,
           firstName: author.firstName,
           lastName: author.lastName,
-          avatarUrl: author.profile.visual?.uri || '',
+          avatarUrl: author.profile?.avatar?.uri || '',
           url: buildUserProfileUrl(author.nameID),
-          tags: author.profile.tagsets?.flatMap(x => x.tags),
-          city: author.profile.location?.city,
-          country: COUNTRIES_BY_CODE[author.profile.location?.country || ''],
+          tags: author.profile?.tagsets?.flatMap(x => x.tags),
+          city: author.profile?.location?.city,
+          country: COUNTRIES_BY_CODE[author.profile?.location?.country || ''],
           roleName: roleName,
         };
       }),

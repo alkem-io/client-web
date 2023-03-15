@@ -67,7 +67,7 @@ const useAllPossibleMemberUsers = (
 
   const { data: filteredParentCommunityMembers, setSearchTerm: setParentCommunityMembersSearchTerm } = useLocalSearch({
     data: _parentCommunityMembers?.hub.community?.memberUsers,
-    isMatch: (user, searchTerm) => user.profile.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
+    isMatch: (user, searchTerm) => user.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
   });
 
   const isLoading = loadingUsers || loadingHub || loadingParentCommunityMembers;

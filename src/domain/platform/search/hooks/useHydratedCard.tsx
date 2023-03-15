@@ -39,16 +39,16 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   }
   const user = data.user;
   const profile = user.profile;
-  const avatarUri = profile.visual?.uri;
-  const { country, city } = profile.location ?? {};
+  const avatarUri = profile?.avatar?.uri;
+  const { country, city } = profile?.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
-  const tags = profile.tagsets?.[0].tags ?? [];
+  const tags = profile?.tagsets?.[0]?.tags ?? [];
 
   return (
     <ContributingUserCard
       id={user.id}
-      displayName={user.profile.displayName}
-      description={profile.description}
+      displayName={user.displayName}
+      description={profile?.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
@@ -68,8 +68,8 @@ const _hydrateOrganizationCard = (
   }
   const organization = data.organization;
   const profile = data.organization.profile;
-  const avatarUri = profile.visual?.uri;
-  const { country, city } = profile.location ?? {};
+  const avatarUri = profile?.avatar?.uri;
+  const { country, city } = profile?.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
   const tags = profile.tagsets?.[0]?.tags ?? [];
 
@@ -78,7 +78,7 @@ const _hydrateOrganizationCard = (
 
   return (
     <ContributingOrganizationCard
-      displayName={organization.profile.displayName}
+      displayName={organization.displayName}
       description={profile.description}
       avatarUri={avatarUri}
       city={city}
@@ -276,10 +276,10 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
 
   return (
     <SearchContributionCardCard
-      name={card.profile.displayName}
-      author={card.createdBy?.profile.displayName}
-      description={card.profile.description}
-      tags={card.profile.tagset?.tags}
+      name={card.displayName}
+      author={card.createdBy?.displayName}
+      description={card.profile?.description}
+      tags={card.profile?.tagset?.tags}
       createdDate={card.createdDate}
       commentsCount={card.comments?.commentsCount}
       matchedTerms={data.terms}

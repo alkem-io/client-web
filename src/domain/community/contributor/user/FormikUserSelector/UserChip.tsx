@@ -17,10 +17,10 @@ export const UserChip: FC<UserChipProps> = ({ userId, ...props }) => {
 
   return (
     <ProfileChip
-      displayName={user?.profile.displayName}
-      avatarUrl={user?.profile.visual?.uri}
-      city={user?.profile.location?.city}
-      country={user?.profile.location?.country}
+      displayName={user?.displayName}
+      avatarUrl={user?.profile?.avatar?.uri}
+      city={user?.profile?.location?.city}
+      country={user?.profile?.location?.country}
       loading={loading || !user}
       {...props}
     />

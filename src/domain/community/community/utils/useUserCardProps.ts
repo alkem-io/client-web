@@ -21,11 +21,11 @@ const useUserCardProps = (
     return users.map(({ roleNameKey, ...user }) => ({
       id: user.id,
       roleName: t(roleNameKey) as string,
-      tags: user?.profile.tagsets?.flatMap(x => x.tags),
-      displayName: user.profile.displayName,
-      avatarSrc: user?.profile.visual?.uri,
-      city: user.profile.location?.city,
-      country: user.profile.location?.country,
+      tags: user?.profile?.tagsets?.flatMap(x => x.tags),
+      displayName: user.displayName,
+      avatarSrc: user?.profile?.avatar?.uri,
+      city: user.profile?.location?.city,
+      country: user.profile?.location?.country,
       url: buildUserProfileUrl(user.nameID),
       isContactable: user.isContactable,
     }));
