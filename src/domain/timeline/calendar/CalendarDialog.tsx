@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { DialogContent } from '../../../common/components/core/dialog';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
-import { CalendarEvent } from '../../../core/apollo/generated/graphql-schema';
+import { CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import { Actions } from '../../../core/ui/actions/Actions';
@@ -49,7 +49,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
-  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEvent, 'id' | 'nameID' | 'displayName'>>();
+  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEventDetailsFragment, 'id' | 'nameID' | 'profile'>>();
 
   const handleClose = () => {
     setIsCreatingEvent(false);
@@ -62,9 +62,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
     () => ({
       startDate: dateRounded(),
       durationMinutes: 30,
-      displayName: '',
       profile: {
         id: '',
+        displayName: '',
         description: t('calendar.defaultEventDescription'),
         references: [],
         tagset: { id: '', name: '', tags: [] },
@@ -104,7 +104,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                 <>
                   <DialogHeader onClose={() => setDeletingEvent(undefined)}>{t('calendar.delete-event')}</DialogHeader>
                   <DialogContent>
-                    <BlockTitle>{t('calendar.delete-confirmation', { title: deletingEvent.displayName })}</BlockTitle>
+                    <BlockTitle>
+                      {t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName })}
+                    </BlockTitle>
                     <Actions justifyContent="space-around" marginTop={gutters()}>
                       <Button
                         color="error"
@@ -147,8 +149,12 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                 return;
               }
 
-              const handleEditEventSubmit = async (eventId: string, calendarEvent: CalendarEventFormData) => {
-                await updateEvent(eventId, calendarEvent);
+              const handleEditEventSubmit = async (
+                eventId: string,
+                tagsetId: string | undefined,
+                calendarEvent: CalendarEventFormData
+              ) => {
+                await updateEvent(eventId, tagsetId, calendarEvent);
                 setEditingEventId(undefined);
               };
 
@@ -159,7 +165,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, hubNameId, onClose }) =
                       dialogTitle={t('calendar.edit-event')}
                       event={eventDetail}
                       onSubmit={(calendarEvent: CalendarEventFormData) =>
-                        handleEditEventSubmit(event.id, calendarEvent)
+                        handleEditEventSubmit(event.id, event.profile.tagset?.id, calendarEvent)
                       }
                       onClose={handleClose}
                       isSubmitting={updatingCalendarEvent}

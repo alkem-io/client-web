@@ -1,6 +1,9 @@
 mutation assignUserAsGlobalHubsAdmin($input: AssignGlobalHubsAdminInput!) {
   assignUserAsGlobalHubsAdmin(membershipData: $input) {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }

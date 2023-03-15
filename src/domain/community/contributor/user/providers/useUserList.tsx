@@ -48,9 +48,9 @@ const useUserList = (): Provided => {
 
   const userList = useMemo(
     () =>
-      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, nameID, displayName, email }) => ({
+      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, nameID, profile, email }) => ({
         id,
-        value: `${displayName} (${email})`,
+        value: `${profile.displayName} (${email})`,
         url: `${nameID}/edit`,
       })),
     [data]

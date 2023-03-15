@@ -22,7 +22,7 @@ export const HubProfile: FC = () => {
   });
 
   const organizations = useMemo(
-    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
+    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
     [organizationList]
   );
 

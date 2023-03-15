@@ -1,19 +1,17 @@
 import { Grid } from '@mui/material';
 import { Form, Formik } from 'formik';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import {} from 'react-router-dom';
 import * as yup from 'yup';
-import { useTagsetsTemplateQuery } from '../../../../../../core/apollo/generated/apollo-hooks';
 import {
+  GroupInfoFragment,
   Reference,
   Tagset,
-  TagsetTemplate,
   User,
   UserGroup,
 } from '../../../../../../core/apollo/generated/graphql-schema';
 import { GroupFormInput } from './GroupFormInput';
-import { Tagset as TagsetModel } from '../../../../../common/profile/Profile';
 import FormikInputField from '../../../../../../common/components/composite/forms/FormikInputField';
 import WrapperButton from '../../../../../../common/components/core/WrapperButton';
 import Section, { Header } from '../../../../../../common/components/core/Section';
@@ -26,7 +24,7 @@ import GroupMembersDetails from '../GroupMembersDetails';
 interface GroupFormProps {
   title?: string;
   members?: User[];
-  group: UserGroup;
+  group: GroupInfoFragment;
   onSave?: (group: UserGroup) => Promise<void>;
   onCancel?: () => void;
   onDelete?: (groupId: string) => void;
@@ -39,29 +37,10 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   const groupId = group.id;
   const profileId = group.profile?.id || '';
   const groupName = group.name || '';
-  const { data: config } = useTagsetsTemplateQuery();
-
-  const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
-    if (config) return config.configuration.template.users[0].tagsets || [];
-    return [];
-  }, [config]);
-
-  const tagsets = useMemo(() => {
-    let tagsets = group.profile?.tagsets || [];
-    return tagsetsTemplate.reduce(
-      (acc, cur) => {
-        if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
-          acc.push({ name: cur.name, tags: [] });
-        }
-        return acc;
-      },
-      [...(tagsets as TagsetModel[])]
-    );
-  }, [group, tagsetsTemplate]);
 
   const initialValues: GroupFormInput = {
     name: groupName || '',
-    tagsets: tagsets,
+    tagsets: [],
     references: group.profile?.references || [],
     description: group.profile?.description || '',
     profileId: group.profile?.id || '',
@@ -76,15 +55,18 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   });
 
   const handleSubmit = async (formData: GroupFormInput) => {
-    const { tagsets, references, description, profileId, ...otherData } = formData;
+    const { tagsets, references, description, profileId, name } = formData;
     const group: UserGroup = {
-      ...otherData,
       id: groupId,
+      name,
       profile: {
         id: profileId,
+        displayName: name,
         description,
         references: references as Reference[],
         tagsets: tagsets as Tagset[],
+        tagline: '',
+        visuals: [],
       },
     };
     onSave && (await onSave(group));
@@ -101,7 +83,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={<VisualUpload visual={group?.profile?.avatar} />}
+              avatar={<VisualUpload visual={group?.profile?.visual} />}
               details={<GroupMembersDetails members={members || []} editLink />}
             >
               <Header text={title} />
@@ -129,12 +111,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                   />
                 </Grid>
 
-                <TagsetSegment
-                  tagsets={tagsets}
-                  template={tagsetsTemplate}
-                  readOnly={isReadOnlyMode}
-                  disabled={isSubmitting}
-                />
+                <TagsetSegment tagsets={tagsets} template={[]} readOnly={isReadOnlyMode} disabled={isSubmitting} />
                 {isEditMode && (
                   <ProfileReferenceSegment
                     references={references}
