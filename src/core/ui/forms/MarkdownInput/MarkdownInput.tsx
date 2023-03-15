@@ -258,7 +258,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
             <EditorContent editor={editor} />
             <CharacterCountContainer>
               {({ characterCount }) =>
-                typeof maxLength === 'number' && characterCount <= maxLength ? null : (
+                typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
                   <Box
                     position="absolute"
                     top={0}
