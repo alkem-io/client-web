@@ -1,4 +1,4 @@
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateContextInput } from '../../../../../../common/utils/buildContext';
@@ -12,6 +12,7 @@ import {
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import { OpportunityContextSegment } from '../../OpportunityContextSegment';
+import { LoadingButton } from '@mui/lab';
 
 const OpportunityContextView: FC = () => {
   const { t } = useTranslation();
@@ -59,9 +60,9 @@ const OpportunityContextView: FC = () => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button disabled={isUpdating} color="primary" onClick={() => submitWired()}>
+        <LoadingButton loading={isUpdating} variant="contained" onClick={() => submitWired()}>
           {t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
-        </Button>
+        </LoadingButton>
       </Grid>
     </Grid>
   );

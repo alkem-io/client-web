@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createContextInput, updateContextInput } from '../../../../../../common/utils/buildContext';
@@ -18,6 +18,7 @@ import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToE
 import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
+import { LoadingButton } from '@mui/lab';
 
 interface Props {
   mode: FormMode;
@@ -107,9 +108,9 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button disabled={isLoading} color="primary" onClick={() => submitWired()}>
+        <LoadingButton loading={isLoading} variant="contained" onClick={() => submitWired()}>
           {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        </Button>
+        </LoadingButton>
       </Grid>
       <Grid item marginTop={2}>
         <Typography variant={'h4'} color={'primary'}>

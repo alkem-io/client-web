@@ -9,7 +9,7 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import { LoadingButton } from '@mui/lab';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
 import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
 
@@ -55,12 +55,9 @@ const ChallengeContextView: FC = () => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isUpdating}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
-        />
+        <LoadingButton loading={isUpdating} variant="contained" onClick={() => submitWired()}>
+          {t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
+        </LoadingButton>
       </Grid>
     </Grid>
   );

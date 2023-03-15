@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import { LoadingButton } from '@mui/lab';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -65,12 +65,9 @@ export const HubContextView: FC = () => {
         />
       </Grid>
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        />
+        <LoadingButton loading={isLoading} variant="contained" onClick={() => submitWired()}>
+          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
+        </LoadingButton>
       </Box>
     </Container>
   );

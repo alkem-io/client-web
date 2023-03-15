@@ -2,7 +2,7 @@ import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../components/HubEditForm';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import { LoadingButton } from '@mui/lab';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
@@ -95,12 +95,9 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
           organizations={organizations}
         />
         <Box display="flex" marginY={4} justifyContent="flex-end">
-          <WrapperButton
-            disabled={isLoading}
-            variant="primary"
-            onClick={() => submitWired()}
-            text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-          />
+          <LoadingButton loading={isLoading} variant="contained" onClick={() => submitWired()}>
+            {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
+          </LoadingButton>
         </Box>
       </Container>
     </AdminLayout>

@@ -31,7 +31,7 @@ import * as yup from 'yup';
 import MarkdownInput from '../../../../platform/admin/components/Common/MarkdownInput';
 import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import { LoadingButton } from '@mui/lab';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -129,13 +129,6 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
 
   return (
     <>
-      {!hideHeaders && (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h4">{t('components.communityUpdates.title')}</Typography>
-          </Grid>
-        </Grid>
-      )}
       {canEdit && (
         <Formik
           initialValues={initialValues}
@@ -162,19 +155,22 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     <MarkdownInput
                       name="community-update"
                       rows={30}
-                      label=""
+                      label={hideHeaders ? '' : t('components.communityUpdates.title')}
                       required
                       maxLength={MARKDOWN_TEXT_LENGTH}
                       withCounter
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
-                    <WrapperButton
-                      text={t('components.communityUpdates.actions.add.buttonTitle')}
-                      type={'submit'}
-                      disabled={isSubmitting || removingMessage || !isValid || !dirty}
-                      startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
-                    />
+                    <LoadingButton
+                      type="submit"
+                      loading={isSubmitting || removingMessage}
+                      disabled={!isValid || !dirty}
+                      variant="contained"
+                      startIcon={<PlayArrowIcon />}
+                    >
+                      {t('components.communityUpdates.actions.add.buttonTitle')}
+                    </LoadingButton>
                   </Grid>
                 </Grid>
               </Form>
