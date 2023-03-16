@@ -13,7 +13,6 @@ const convertIdAttrToUppercase = <Id extends string, Entity extends { id: Id }>(
 export const getUpdateProfileInput = (profile?: Partial<UserModel['profile']>): Maybe<UpdateProfileInput> => {
   return (
     profile && {
-      ID: profile.id || '',
       description: profile.description,
       references: profile.references?.filter(doesHaveId).map(convertIdAttrToUppercase),
       tagsets: profile.tagsets?.filter(doesHaveId).map(convertIdAttrToUppercase),

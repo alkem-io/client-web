@@ -78,7 +78,7 @@ const CalendarEventForm = ({
     return {
       startDate,
       durationMinutes: event?.durationMinutes ?? 30,
-      displayName: event?.displayName ?? '',
+      displayName: event?.profile?.displayName ?? '',
       description: event?.profile?.description ?? '',
       type: event?.type,
       multipleDays: event?.multipleDays ?? false,

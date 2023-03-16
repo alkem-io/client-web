@@ -23,8 +23,8 @@ export const toOrganizationCardProps = (
 
   return {
     id: org.id,
-    name: org.displayName,
-    avatar: org.profile.avatar?.uri,
+    name: org.profile.displayName,
+    avatar: org.profile.visual?.uri,
     description: org.profile.description,
     role: roleName && t(roleName),
     associatesCount: getMetricCount(org.metrics ?? [], MetricType.Associate),

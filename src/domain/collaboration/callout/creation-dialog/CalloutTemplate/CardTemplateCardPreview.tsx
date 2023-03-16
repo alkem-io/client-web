@@ -12,7 +12,7 @@ import MessageCounter from '../../../../../core/ui/card/MessageCounter';
 import CardFooterDate from '../../../../../core/ui/card/CardFooterDate';
 import { AspectIcon } from '../../../aspect/icon/AspectIcon';
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'profile' | 'type';
+type NeededFields = 'id' | 'nameID' | 'profile' | 'type';
 export type CardTemplatePreview = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
   calloutNameId: string;
 };
