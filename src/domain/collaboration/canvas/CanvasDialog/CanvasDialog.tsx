@@ -20,16 +20,15 @@ import CanvasWhiteboard from '../../../../common/components/composite/entities/C
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
 import Authorship from '../../../../core/ui/authorship/Authorship';
-import { PageTitle } from '../../../../core/ui/typography';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Box, Button, ButtonProps } from '@mui/material';
+import { Button, ButtonProps } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import canvasSchema from '../validation/canvasSchema';
 import isCanvasValueEqual from '../utils/isCanvasValueEqual';
+import CanvasDialogHeader from './CanvasDialogHeader';
 
 interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -231,22 +230,14 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
         {({ isValid }) => (
           <>
             <DialogHeader actions={options.headerActions} onClose={onClose}>
-              {options.checkedOutByMe ? (
-                <Box
-                  component={FormikInputField}
-                  title={t('fields.displayName')}
-                  name="displayName"
-                  size="small"
-                  maxWidth={gutters(50)}
-                />
-              ) : (
-                <>
-                  <Authorship authorAvatarUri={canvas?.createdBy?.profile.visual?.uri} date={canvas?.createdDate}>
-                    {canvas?.createdBy?.profile.displayName}
-                  </Authorship>
-                  <PageTitle>{canvas?.displayName}</PageTitle>
-                </>
-              )}
+              <CanvasDialogHeader
+                editMode={options.checkedOutByMe}
+                canvasDisplayName={canvas?.displayName}
+                authorAvatarUri={canvas?.createdBy?.profile.visual?.uri}
+                editDate={canvas?.createdDate}
+                authorDisplayName={canvas?.createdBy?.profile.displayName}
+                onLibraryButtonClick={() => {}}
+              />
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingCanvasValue && canvas && (
