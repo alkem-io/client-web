@@ -19,7 +19,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/contributor/user/constants/RoleType';
-import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
 import { SearchResultMetaType, SearchResultT } from '../SearchView';
@@ -100,7 +100,7 @@ const _hydrateHubCard = (
   }
   const hub = data.hub;
   const tagline = hub.profile?.tagline || '';
-  const image = getVisualBanner(hub.profile.visuals);
+  const image = getVisualBannerNarrow(hub.profile.visuals);
   const name = hub.profile.displayName;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
@@ -123,6 +123,7 @@ const _hydrateHubCard = (
       matchedTerms
       vision={vision}
       locked={!hub.authorization?.anonymousReadAccess}
+      hubVisibility={hub.visibility}
     />
   );
 };
@@ -137,7 +138,7 @@ const useHydrateChallengeCard = (
   const challenge = data.challenge;
   const containingHub = data.hub;
   const tagline = challenge.profile.tagline || '';
-  const image = getVisualBanner(challenge.profile.visuals);
+  const image = getVisualBannerNarrow(challenge.profile.visuals);
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
@@ -174,6 +175,7 @@ const useHydrateChallengeCard = (
           {hubDisplayName}
         </CardParentJourneySegment>
       }
+      hubVisibility={containingHub.visibility}
     />
   );
 };
@@ -189,7 +191,7 @@ const useHydrateOpportunityCard = (
   const containingChallenge = data.challenge;
   const containingHub = data.hub;
   const tagline = opportunity.profile.tagline || '';
-  const image = getVisualBanner(opportunity.profile.visuals);
+  const image = getVisualBannerNarrow(opportunity.profile.visuals);
   const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
@@ -226,6 +228,7 @@ const useHydrateOpportunityCard = (
           {challengeDisplayName}
         </CardParentJourneySegment>
       }
+      hubVisibility={containingHub.visibility}
     />
   );
 };

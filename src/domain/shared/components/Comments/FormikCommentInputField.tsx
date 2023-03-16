@@ -2,7 +2,6 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import {
-  ClickAwayListener,
   FormControl,
   FormGroup,
   FormHelperText,
@@ -11,18 +10,15 @@ import {
   InputProps,
   OutlinedInput,
   OutlinedInputProps,
-  Paper,
-  Popper,
-  PopperProps,
 } from '@mui/material';
-import EmojiPicker, { EmojiStyle, SkinTonePickerLocation } from 'emoji-picker-react';
 import { useField, useFormikContext } from 'formik';
 import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
 import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../i18n/ValidationMessageTranslation';
-import { CommentInputField, MENTION_SYMBOL, POPPER_Z_INDEX } from './CommentInputField';
+import { CommentInputField, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
+import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
 
@@ -37,32 +33,6 @@ const getCursorPositionInMention = (
     markdown: afterMention,
     plainText: plainTextPositionAfterMention,
   };
-};
-
-/**
- * Emoji selector
- */
-interface EmojiSelectorProps {
-  anchorElement: PopperProps['anchorEl'];
-  open: boolean;
-  onClose: () => void;
-  onEmojiClick: (emoji: string, event: MouseEvent) => void;
-}
-
-const EmojiSelector: FC<EmojiSelectorProps> = ({ anchorElement, open, onEmojiClick, onClose }) => {
-  return (
-    <Popper open={open} placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
-      <ClickAwayListener onClickAway={onClose}>
-        <Paper elevation={3}>
-          <EmojiPicker
-            emojiStyle={EmojiStyle.NATIVE}
-            skinTonePickerLocation={SkinTonePickerLocation.PREVIEW}
-            onEmojiClick={(emoji, event) => onEmojiClick(emoji.emoji, event)}
-          />
-        </Paper>
-      </ClickAwayListener>
-    </Popper>
-  );
 };
 
 /**
@@ -170,7 +140,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               left: 0,
               borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
               backgroundColor: theme.palette.background.default,
-              width: theme.spacing(7.5),
+              width: theme.spacing(6.5),
               height: '100%',
             },
           })}
@@ -184,7 +154,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                 disabled={inactive || readOnly}
                 sx={theme => ({ marginLeft: theme.spacing(-1) })}
               >
-                <EmojiEmotionsOutlinedIcon />
+                <EmojiEmotionsOutlinedIcon fontSize="small" />
               </IconButton>
               <EmojiSelector
                 open={isEmojiSelectorOpen}
@@ -198,7 +168,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                 onClick={mentionButtonClick}
                 disabled={inactive || readOnly}
               >
-                <AlternateEmailIcon />
+                <AlternateEmailIcon fontSize="small" />
               </IconButton>
             </InputAdornment>
           }

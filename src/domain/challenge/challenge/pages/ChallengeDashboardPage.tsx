@@ -62,6 +62,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                   journeyUri={buildOpportunityUrl(entities.hubNameId, entities.challenge!.nameID, opportunity.nameID)}
                   challengeDisplayName={entities.challenge?.profile.displayName!}
                   challengeUri={buildChallengeUrl(entities.hubNameId, entities.challenge!.nameID)}
+                  hubVisibility={entities.hubVisibility}
                 />
               )}
               journeyTypeName="challenge"

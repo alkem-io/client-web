@@ -9,7 +9,7 @@ import {
 import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
-import { SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { HubVisibility, SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchResultT } from '../../../platform/search/SearchView';
 
 export type SimpleChallenge = {
@@ -19,6 +19,7 @@ export type SimpleChallenge = {
   hubNameId: string;
   hubDisplayName: string;
   hubTagline: string;
+  hubVisibility: HubVisibility;
   displayName: string;
   tagline: string;
   imageUrl: string | undefined;
@@ -106,6 +107,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubId: hub.id,
         hubNameId: hub.nameID,
         hubDisplayName: hub.profile.displayName,
+        hubVisibility: hub.visibility,
         hubTagline: hub.profile.tagline || '',
         displayName: ch.profile.displayName,
         imageUrl: getVisualBannerNarrow(ch.profile.visuals),
@@ -144,6 +146,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubNameId: hub.nameID,
         hubDisplayName: hub.profile.displayName,
         hubTagline: hub.profile.tagline || '',
+        hubVisibility: hub.visibility,
         displayName: ch.profile.displayName,
         imageUrl: getVisualBannerNarrow(ch.profile.visuals),
         tagline: ch.profile.tagline || '',

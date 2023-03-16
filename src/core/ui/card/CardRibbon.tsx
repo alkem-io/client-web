@@ -8,7 +8,7 @@ interface CardRibbonProps extends RibbonProps {
 
 const CardRibbon: FC<CardRibbonProps> = ({ text, sx, ...rest }) => {
   return (
-    <Ribbon padding={0.5} sx={{ position: 'absolute', width: '100%', ...sx }} {...rest}>
+    <Ribbon padding={0.5} sx={{ position: 'absolute', bottom: 0, width: '100%', ...sx }} {...rest}>
       <RibbonText>{text}</RibbonText>
     </Ribbon>
   );

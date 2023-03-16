@@ -8,6 +8,7 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export interface ContributeCardContainerProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  highlighted?: boolean;
   sx?: SxProps<Theme>;
   columns?: number;
 }
@@ -15,12 +16,12 @@ export interface ContributeCardContainerProps {
 const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardContainerProps>>(
-  ({ columns = CONTRIBUTE_CARD_COLUMNS, onClick, sx, children }, ref) => {
+  ({ columns = CONTRIBUTE_CARD_COLUMNS, onClick, sx, highlighted, children }, ref) => {
     return (
       <GridItem columns={columns}>
         <ElevatedPaper
           sx={{
-            background: theme => theme.palette.background.paper,
+            background: theme => (highlighted ? theme.palette.background.default : theme.palette.background.paper),
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'stretch',

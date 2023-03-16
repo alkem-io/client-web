@@ -33,6 +33,7 @@ query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
         tagline
         displayName
     }
+    visibility
     challenges(IDs: $challengeIDs) {
       id
       nameID

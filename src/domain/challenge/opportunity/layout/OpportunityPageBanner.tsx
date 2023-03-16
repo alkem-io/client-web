@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import EntityPageBanner from '../../../shared/components/PageHeader/EntityPageBanner';
+import JourneyPageBanner from '../../../shared/components/PageHeader/JourneyPageBanner';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 
@@ -7,12 +7,12 @@ const OpportunityPageBanner: FC = () => {
   const { opportunity, loading } = useOpportunity();
 
   return (
-    <EntityPageBanner
+    <JourneyPageBanner
       title={opportunity?.profile.displayName}
-      tagline={opportunity?.profile.tagline}
+      tagline={opportunity?.profile?.tagline}
       loading={loading}
-      bannerUrl={getVisualBanner(opportunity?.profile.visuals)}
-      entityTypeName="opportunity"
+      bannerUrl={getVisualBanner(opportunity?.profile?.visuals)}
+      journeyTypeName="opportunity"
       showBreadcrumbs
     />
   );

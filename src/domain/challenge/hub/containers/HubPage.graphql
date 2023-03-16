@@ -31,6 +31,7 @@ query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
 fragment HubPage on Hub {
   id
   nameID
+  visibility
   metrics {
     id
     name

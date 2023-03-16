@@ -42,7 +42,6 @@ const CanvasFormikSelectInput = ({ label, name, canvases, getParentCalloutId }: 
     },
     // TODO: Looks like Formik is generating a new set of [field, meta, helpers] every time we get here.
     // It may require a rearchitecturing of the CanvasValueContainer. For now we just disable linting
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

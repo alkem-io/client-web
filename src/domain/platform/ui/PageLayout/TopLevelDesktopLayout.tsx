@@ -1,8 +1,8 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import TopBar, { TopBarSpacer } from '../../../../common/components/composite/layout/TopBar/TopBar';
-import Footer from '../Footer/Footer';
+import Footer from '../PlatformFooter/PlatformFooter';
 import { FloatingActionButtons } from '../../../../common/components/core';
-import PageContent from '../../content/PageContent';
+import PageContent from '../../../../core/ui/content/PageContent';
 import HelpButton from '../../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
 interface TopLevelDesktopLayoutProps {

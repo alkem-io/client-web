@@ -68,6 +68,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: hubData?.hub.profile.displayName || '',
         avatar: getVisualAvatar(hubData?.hub.profile.visuals),
         tagline: hubData?.hub.profile.tagline || '',
+        description: hubTemplateData?.hub.community?.applicationForm?.description,
         questions: hubTemplateData?.hub.community?.applicationForm?.questions || [],
         backUrl: buildHubUrl(hubNameId),
       };
@@ -78,6 +79,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         displayName: challengeData?.hub.challenge.profile.displayName || '',
         avatar: getVisualAvatar(challengeData?.hub.challenge.profile.visuals),
         tagline: challengeData?.hub.challenge.profile.tagline || '',
+        description: challengeTemplateData?.hub.challenge.community?.applicationForm?.description,
         questions: challengeTemplateData?.hub.challenge.community?.applicationForm?.questions || [],
         backUrl: buildChallengeUrl(hubNameId, challengeNameId),
       };
