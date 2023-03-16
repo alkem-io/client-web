@@ -5,6 +5,9 @@ fragment HubDetailsProvider on Hub {
     id
     displayName
     tagline
+    visuals {
+      ...VisualUri
+    }
     tagset {
       id
       name

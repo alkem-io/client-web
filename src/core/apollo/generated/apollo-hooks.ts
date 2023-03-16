@@ -770,6 +770,9 @@ export const HubDetailsProviderFragmentDoc = gql`
       id
       displayName
       tagline
+      visuals {
+        ...VisualUri
+      }
       tagset {
         id
         name
@@ -792,6 +795,7 @@ export const HubDetailsProviderFragmentDoc = gql`
     }
     visibility
   }
+  ${VisualUriFragmentDoc}
   ${ContextDetailsProviderFragmentDoc}
 `;
 export const HubNameFragmentDoc = gql`

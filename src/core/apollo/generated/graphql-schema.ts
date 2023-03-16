@@ -7753,6 +7753,7 @@ export type HubDetailsProviderFragment = {
     id: string;
     displayName: string;
     tagline: string;
+    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
@@ -8029,6 +8030,7 @@ export type HubCardQuery = {
       id: string;
       displayName: string;
       tagline: string;
+      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
@@ -8240,6 +8242,7 @@ export type HubsQuery = {
       id: string;
       displayName: string;
       tagline: string;
+      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     };
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
