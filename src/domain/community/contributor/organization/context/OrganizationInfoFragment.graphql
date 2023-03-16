@@ -1,7 +1,6 @@
 fragment OrganizationInfo on Organization {
   id
   nameID
-  displayName
   contactEmail
   domain
   authorization {
@@ -15,10 +14,11 @@ fragment OrganizationInfo on Organization {
   website
   profile {
     id
-    avatar {
+    displayName
+    description
+    visual(type: AVATAR) {
       ...VisualUri
     }
-    description
     tagsets {
       id
       name
@@ -36,7 +36,6 @@ fragment OrganizationInfo on Organization {
   associates @include(if: $includeAssociates) {
     id
     nameID
-    displayName
     agent {
       id
       credentials {
@@ -47,11 +46,12 @@ fragment OrganizationInfo on Organization {
     }
     profile {
       id
+      displayName
       location {
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {

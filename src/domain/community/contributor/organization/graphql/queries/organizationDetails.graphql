@@ -1,11 +1,11 @@
 query organizationDetails($id: UUID_NAMEID!) {
   organization(ID: $id) {
     id
-    displayName
     nameID
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         ...VisualUri
       }
       description
@@ -24,7 +24,10 @@ query organizationDetails($id: UUID_NAMEID!) {
       name
       members {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }

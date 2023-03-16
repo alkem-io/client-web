@@ -19,7 +19,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/contributor/user/constants/RoleType';
-import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
 import { SearchResultMetaType, SearchResultT } from '../SearchView';
@@ -39,16 +39,16 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   }
   const user = data.user;
   const profile = user.profile;
-  const avatarUri = profile?.avatar?.uri;
-  const { country, city } = profile?.location ?? {};
+  const avatarUri = profile.visual?.uri;
+  const { country, city } = profile.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
-  const tags = profile?.tagsets?.[0]?.tags ?? [];
+  const tags = profile.tagsets?.[0].tags ?? [];
 
   return (
     <ContributingUserCard
       id={user.id}
-      displayName={user.displayName}
-      description={profile?.description}
+      displayName={user.profile.displayName}
+      description={profile.description}
       avatarUri={avatarUri}
       city={city}
       country={country}
@@ -68,8 +68,8 @@ const _hydrateOrganizationCard = (
   }
   const organization = data.organization;
   const profile = data.organization.profile;
-  const avatarUri = profile?.avatar?.uri;
-  const { country, city } = profile?.location ?? {};
+  const avatarUri = profile.visual?.uri;
+  const { country, city } = profile.location ?? {};
   const url = buildOrganizationUrl(organization.nameID);
   const tags = profile.tagsets?.[0]?.tags ?? [];
 
@@ -78,7 +78,7 @@ const _hydrateOrganizationCard = (
 
   return (
     <ContributingOrganizationCard
-      displayName={organization.displayName}
+      displayName={organization.profile.displayName}
       description={profile.description}
       avatarUri={avatarUri}
       city={city}
@@ -101,7 +101,7 @@ const _hydrateHubCard = (
   const hub = data.hub;
   const context = hub.context;
   const tagline = context?.tagline || '';
-  const image = getVisualBanner(context?.visuals);
+  const image = getVisualBannerNarrow(context?.visuals);
   const name = hub.displayName;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
@@ -140,7 +140,7 @@ const useHydrateChallengeCard = (
   const containingHub = data.hub;
   const context = challenge.context;
   const tagline = context?.tagline || '';
-  const image = getVisualBanner(context?.visuals);
+  const image = getVisualBannerNarrow(context?.visuals);
   const name = challenge.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
@@ -194,7 +194,7 @@ const useHydrateOpportunityCard = (
   const containingHub = data.hub;
   const context = opportunity.context;
   const tagline = context?.tagline || '';
-  const image = getVisualBanner(context?.visuals);
+  const image = getVisualBannerNarrow(context?.visuals);
   const name = opportunity.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
@@ -276,10 +276,10 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
 
   return (
     <SearchContributionCardCard
-      name={card.displayName}
-      author={card.createdBy?.displayName}
-      description={card.profile?.description}
-      tags={card.profile?.tagset?.tags}
+      name={card.profile.displayName}
+      author={card.createdBy?.profile.displayName}
+      description={card.profile.description}
+      tags={card.profile.tagset?.tags}
       createdDate={card.createdDate}
       commentsCount={card.comments?.commentsCount}
       matchedTerms={data.terms}

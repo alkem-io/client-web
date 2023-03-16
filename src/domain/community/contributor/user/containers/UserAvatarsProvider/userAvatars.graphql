@@ -2,14 +2,14 @@ query userAvatars($ids: [UUID!]!) {
   usersById(IDs: $ids) {
     id
     nameID
-    displayName
     profile {
       id
+      displayName
       location {
         country
         city
       }
-      avatar {
+      visual(type: AVATAR) {
         ...VisualUri
       }
       tagsets {

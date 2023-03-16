@@ -1,23 +1,13 @@
-query HubAvailableLeadUsers(
-  $hubId: UUID_NAMEID!
-  $first: Int!,
-  $after: UUID,
-  $filter: UserFilterInput
-) {
-	hub(ID: $hubId) {
+query HubAvailableLeadUsers($hubId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  hub(ID: $hubId) {
     community {
       ...CommunityAvailableLeadUsers
     }
   }
 }
 
-query HubAvailableMemberUsers(
-  $hubId: UUID_NAMEID!
-  $first: Int!,
-  $after: UUID,
-  $filter: UserFilterInput
-) {
-	hub(ID: $hubId) {
+query HubAvailableMemberUsers($hubId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  hub(ID: $hubId) {
     community {
       ...CommunityAvailableMemberUsers
     }
@@ -26,12 +16,12 @@ query HubAvailableMemberUsers(
 
 query ChallengeAvailableLeadUsers(
   $hubId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID!,
-  $first: Int!,
-  $after: UUID,
+  $challengeId: UUID_NAMEID!
+  $first: Int!
+  $after: UUID
   $filter: UserFilterInput
 ) {
-	hub(ID: $hubId) {
+  hub(ID: $hubId) {
     challenge(ID: $challengeId) {
       community {
         ...CommunityAvailableLeadUsers
@@ -42,12 +32,12 @@ query ChallengeAvailableLeadUsers(
 
 query ChallengeAvailableMemberUsers(
   $hubId: UUID_NAMEID!
-  $challengeId: UUID_NAMEID!,
-  $first: Int!,
-  $after: UUID,
+  $challengeId: UUID_NAMEID!
+  $first: Int!
+  $after: UUID
   $filter: UserFilterInput
 ) {
-	hub(ID: $hubId) {
+  hub(ID: $hubId) {
     challenge(ID: $challengeId) {
       community {
         ...CommunityAvailableMemberUsers
@@ -58,12 +48,12 @@ query ChallengeAvailableMemberUsers(
 
 query OpportunityAvailableLeadUsers(
   $hubId: UUID_NAMEID!
-  $opportunityId: UUID_NAMEID!,
-  $first: Int!,
-  $after: UUID,
+  $opportunityId: UUID_NAMEID!
+  $first: Int!
+  $after: UUID
   $filter: UserFilterInput
 ) {
-	hub(ID: $hubId) {
+  hub(ID: $hubId) {
     opportunity(ID: $opportunityId) {
       community {
         ...CommunityAvailableLeadUsers
@@ -74,12 +64,12 @@ query OpportunityAvailableLeadUsers(
 
 query OpportunityAvailableMemberUsers(
   $hubId: UUID_NAMEID!
-  $opportunityId: UUID_NAMEID!,
-  $first: Int!,
-  $after: UUID,
+  $opportunityId: UUID_NAMEID!
+  $first: Int!
+  $after: UUID
   $filter: UserFilterInput
 ) {
-	hub(ID: $hubId) {
+  hub(ID: $hubId) {
     opportunity(ID: $opportunityId) {
       community {
         ...CommunityAvailableMemberUsers
@@ -114,6 +104,9 @@ fragment CommunityAvailableMemberUsers on Community {
 
 fragment AvailableUser on User {
   id
-  displayName
+  profile {
+    id
+    displayName
+  }
   email
 }

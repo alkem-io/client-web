@@ -1,6 +1,9 @@
 mutation assignUserAsGlobalCommunityAdmin($input: AssignGlobalCommunityAdminInput!) {
   assignUserAsGlobalCommunityAdmin(membershipData: $input) {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }

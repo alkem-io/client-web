@@ -36,8 +36,6 @@ const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
   color: theme.palette.negative.main,
 }));
 
-const initEmptyMembers = <T extends Identifiable>() => times(3, i => ({ id: `__loading_${i}` } as T));
-
 const FILTER_DEBOUNCE = 500;
 
 const ScrollableTable = (props: TableProps) => (
@@ -49,6 +47,7 @@ const ScrollableTable = (props: TableProps) => (
 interface CustomizedTable<Item> {
   header: ReactNode | (() => ReactNode);
   renderRow: (member: Item, Cell: ComponentType) => ReactNode;
+  renderEmptyRow?: (Cell: ComponentType) => ReactNode;
 }
 
 export interface EditMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
@@ -66,15 +65,14 @@ export const EditMembers = <Member extends Identifiable>({
   onRemove,
   header,
   renderRow,
+  renderEmptyRow,
   isRemoveDisabled = () => false,
 }: EditMembersProps<Member>) => {
-  const membersData = useMemo<Member[]>(() => (loading ? initEmptyMembers() : members), [loading, members]);
   const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
 
   const renderHeader = typeof header === 'function' ? header : () => header;
-
   return (
-    <Filter data={membersData}>
+    <Filter data={members}>
       {filteredMembers => (
         <>
           <hr />
@@ -82,15 +80,18 @@ export const EditMembers = <Member extends Identifiable>({
             <StyledTableHead>
               <TableRow>
                 {renderHeader()}
-                {onRemove && <TableCell />}
+                {<TableCell />}
               </TableRow>
             </StyledTableHead>
             <TableBody>
+              {loading &&
+                renderEmptyRow &&
+                times(3, i => <StyledTableRow key={i}>{renderEmptyRow(Cell)}</StyledTableRow>)}
               {filteredMembers.map(m => {
                 return (
                   <StyledTableRow key={m.id}>
                     {renderRow(m, Cell)}
-                    {onRemove && (
+                    {
                       <TableCell align="right">
                         <Cell>
                           <StyledButtonRemove
@@ -103,7 +104,7 @@ export const EditMembers = <Member extends Identifiable>({
                           </StyledButtonRemove>
                         </Cell>
                       </TableCell>
-                    )}
+                    }
                   </StyledTableRow>
                 );
               })}
@@ -135,6 +136,7 @@ export const AvailableMembers = <Member extends Identifiable>({
   updating,
   header,
   renderRow,
+  renderEmptyRow,
 }: AvailableMembersProps<Member>) => {
   const { t } = useTranslation();
 
@@ -192,7 +194,7 @@ export const AvailableMembers = <Member extends Identifiable>({
           </TableRow>
         </StyledTableHead>
         <TableBody>
-          {filteredMembers.length === 0 && (
+          {!loading && filteredMembers.length === 0 && (
             <StyledTableRow>
               <TableCell colSpan={3}>
                 <Typography>
@@ -205,6 +207,7 @@ export const AvailableMembers = <Member extends Identifiable>({
               </TableCell>
             </StyledTableRow>
           )}
+          {loading && renderEmptyRow && times(3, i => <StyledTableRow key={i}>{renderEmptyRow(Cell)}</StyledTableRow>)}
           {filteredMembers.map(m => (
             <StyledTableRow key={m.id}>
               {onAdd && (

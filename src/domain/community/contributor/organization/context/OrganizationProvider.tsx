@@ -31,7 +31,7 @@ const OrganizationProvider: FC = ({ children }) => {
     skip: typeof canReadUsers === 'undefined',
   });
   const organization = data?.organization;
-  const displayName = data?.organization.displayName || '';
+  const displayName = organization?.profile.displayName || '';
 
   return (
     <OrganizationContext.Provider
