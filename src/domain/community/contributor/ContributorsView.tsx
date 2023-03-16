@@ -32,8 +32,8 @@ const ScrollerBox = styled(Box)(({ theme }) => ({
 const userToContributorCard = (user: UserContributorFragment): ContributorCardProps => {
   return {
     id: user.id,
-    displayName: user.displayName,
-    avatar: user.userProfile?.avatar?.uri ?? '',
+    displayName: user.userProfile.displayName,
+    avatar: user.userProfile.visual?.uri ?? '',
     url: buildUserProfileUrl(user.nameID),
     tooltip: {
       tags: (user.userProfile?.tagsets || []).flatMap(y => y.tags),
@@ -47,8 +47,8 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardPr
 const organizationToContributorCard = (org: OrganizationContributorFragment): ContributorCardProps => {
   return {
     id: org.id,
-    displayName: org.displayName,
-    avatar: org.orgProfile.avatar?.uri ?? '',
+    displayName: org.orgProfile.displayName,
+    avatar: org.orgProfile.visual?.uri ?? '',
     url: buildOrganizationUrl(org.nameID),
     isContactable: true,
   };

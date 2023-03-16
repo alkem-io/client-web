@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import {
-  useCreateReferenceOnCardProfileMutation,
   useCreateReferenceOnContextMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
@@ -11,7 +10,6 @@ export type PushFunc = (success: boolean) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
-  cardProfileId?: string;
   contextId?: string;
   profileId?: string;
   name: string;
@@ -51,18 +49,6 @@ export const useEditReference = () => {
     },
   });
 
-  const [addReferenceOnCardProfile] = useCreateReferenceOnCardProfileMutation({
-    onCompleted: data => {
-      if (push.current) {
-        push.current({
-          id: data?.createReferenceOnCardProfile.id,
-          name: data?.createReferenceOnCardProfile.name,
-          uri: data?.createReferenceOnCardProfile.uri,
-        });
-      }
-    },
-  });
-
   const [deleteReferenceInt] = useDeleteReferenceMutation({
     onError: () => {
       remove.current && remove.current(false);
@@ -80,14 +66,7 @@ export const useEditReference = () => {
     remove.current = removeFn;
   };
 
-  const addReference: AddReferenceFunc = ({
-    cardProfileId,
-    contextId,
-    profileId,
-    name,
-    uri = '',
-    description = '',
-  }) => {
+  const addReference: AddReferenceFunc = ({ contextId, profileId, name, uri = '', description = '' }) => {
     if (contextId) {
       addReferenceOnContext({
         variables: {
@@ -106,19 +85,6 @@ export const useEditReference = () => {
         variables: {
           input: {
             profileID: profileId,
-            name: name,
-            description: description,
-            uri: uri,
-          },
-        },
-      });
-    }
-
-    if (cardProfileId) {
-      addReferenceOnCardProfile({
-        variables: {
-          referenceInput: {
-            cardProfileID: cardProfileId,
             name: name,
             description: description,
             uri: uri,

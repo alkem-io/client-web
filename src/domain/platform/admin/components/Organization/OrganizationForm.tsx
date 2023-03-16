@@ -1,15 +1,13 @@
 import { Form, Formik } from 'formik';
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
-import { useTagsetsTemplateQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Tagset, UpdateTagset } from '../../../../common/profile/Profile';
 import {
   Organization,
   OrganizationVerificationEnum,
-  TagsetTemplate,
   UpdateOrganizationInput,
   CreateOrganizationInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -31,7 +29,6 @@ import { EmptyLocation } from '../../../../common/location/Location';
 const EmptyOrganization: Omit<Organization, 'authorization'> = {
   id: '',
   nameID: '',
-  displayName: '',
   contactEmail: undefined,
   domain: '',
   legalEntityName: '',
@@ -47,6 +44,9 @@ const EmptyOrganization: Omit<Organization, 'authorization'> = {
   },
   profile: {
     id: '',
+    displayName: '',
+    tagline: '',
+    visuals: [],
     description: '',
     tagsets: undefined,
     references: [],
@@ -78,33 +78,20 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { data: config } = useTagsetsTemplateQuery();
-
-  useEffect(() => {}, [config]);
 
   const isCreateMode = editMode === EditMode.new;
   const isEditMode = editMode === EditMode.edit;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
-    displayName,
     nameID,
     contactEmail,
     domain,
     legalEntityName,
     website,
     verification: { status: verificationStatus },
-    profile: { id: profileId, description, references, tagsets, avatar, location },
+    profile: { id: profileId, displayName, description, references, tagsets, visual, location },
   } = currentOrganization;
-
-  const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
-    if (config) return config.configuration.template.organizations[0].tagsets || [];
-    return [];
-  }, [config]);
-
-  const defaultEmptyTagsets = useMemo(() => {
-    return tagsetsTemplate.map(cur => ({ name: cur.name, tags: [] }));
-  }, [tagsetsTemplate]);
 
   const getUpdatedTagsets = useCallback(
     (updatedTagsets: Tagset[]) => {
@@ -120,14 +107,14 @@ export const OrganizationForm: FC<Props> = ({
   );
 
   const initialValues: OrganizationInput = {
-    name: displayName || EmptyOrganization.displayName,
+    name: displayName || EmptyOrganization.profile.displayName,
     nameID: nameID || EmptyOrganization.nameID,
     description: description || EmptyOrganization.profile.description || '',
     location: {
       ...EmptyLocation,
       ...formatLocation(location),
     },
-    tagsets: tagsets || defaultEmptyTagsets,
+    tagsets: tagsets ?? [],
     contactEmail: contactEmail || EmptyOrganization.contactEmail,
     domain: domain || EmptyOrganization.domain || '',
     legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
@@ -162,11 +149,10 @@ export const OrganizationForm: FC<Props> = ({
       if (isCreateMode) {
         const organization: CreateOrganizationInput = {
           ...otherData,
-          displayName: otherData.name!, // ensured by yup
           profileData: {
             description,
+            displayName: otherData.name!, // ensured by yup
             referencesData: references,
-            tagsetsData: tagsets,
             location: {
               city: location.city,
               country: location.country?.code,
@@ -182,9 +168,8 @@ export const OrganizationForm: FC<Props> = ({
         const organization: UpdateOrganizationInput = {
           ID: currentOrganization.id,
           ...otherData,
-          displayName: otherData.name,
           profileData: {
-            ID: currentOrganization.profile.id,
+            displayName: otherData.name,
             description,
             references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
             tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
@@ -198,7 +183,7 @@ export const OrganizationForm: FC<Props> = ({
         onSave?.(organization);
       }
     },
-    [isCreateMode, isEditMode, onSave, currentOrganization.id, currentOrganization.profile.id, getUpdatedTagsets]
+    [isCreateMode, isEditMode, onSave, currentOrganization.id, getUpdatedTagsets]
   );
 
   const handleBack = () => navigate(-1);
@@ -232,7 +217,7 @@ export const OrganizationForm: FC<Props> = ({
           {({ values: { references, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section avatar={<VisualUpload visual={avatar} />}>
+                <Section avatar={<VisualUpload visual={visual} />}>
                   <Header text={title} />
                   <Grid container spacing={2}>
                     <NameSegment disabled={isEditMode} required={!isEditMode} />

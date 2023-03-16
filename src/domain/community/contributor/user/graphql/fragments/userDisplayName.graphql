@@ -1,4 +1,7 @@
 fragment UserDisplayName on User {
   id
-  displayName
+  profile {
+    id
+    displayName
+  }
 }

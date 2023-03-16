@@ -1,4 +1,4 @@
-query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
+query hubDashboardCalendarEvents($hubId: UUID_NAMEID!, $limit: Float) {
   hub(ID: $hubId) {
     id
     timeline {
@@ -16,26 +16,24 @@ query hubDashboardCalendarEvents ($hubId: UUID_NAMEID!, $limit: Float) {
 fragment CalendarEventInfo on CalendarEvent {
   id
   nameID
-  displayName
   startDate
   durationDays
   durationMinutes
   wholeDay
   multipleDays
-  profile{
-    id
-    description
+  profile {
+    ...EventProfile
   }
 }
 
-query hubCalendarEvents ($hubId: UUID_NAMEID!) {
+query hubCalendarEvents($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     timeline {
       id
       calendar {
         id
-        authorization{
+        authorization {
           id
           myPrivileges
         }
@@ -47,14 +45,14 @@ query hubCalendarEvents ($hubId: UUID_NAMEID!) {
   }
 }
 
-query calendarEventDetails  ($hubId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
+query calendarEventDetails($hubId: UUID_NAMEID!, $eventId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     timeline {
       id
       calendar {
         id
-        event (ID: $eventId) {
+        event(ID: $eventId) {
           ...CalendarEventDetails
         }
       }
@@ -67,30 +65,28 @@ fragment CalendarEventDetails on CalendarEvent {
   type
   createdBy {
     id
-    displayName
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         id
         uri
       }
-      tagsets {
+      tagset {
         id
         tags
       }
     }
   }
   createdDate
-  profile {
-    ...EventProfile
-  }
   comments {
     ...CommentsWithMessages
   }
 }
 
-fragment EventProfile on CardProfile {
+fragment EventProfile on Profile {
   id
+  displayName
   description
   tagset {
     id
