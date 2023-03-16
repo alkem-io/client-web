@@ -1619,29 +1619,6 @@ export const UserOrganizationsDetailsFragmentDoc = gql`
     }
   }
 `;
-export const OrganizationDetailsFragmentDoc = gql`
-  fragment OrganizationDetails on Organization {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        id
-        tags
-      }
-      location {
-        country
-        city
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {
     id
@@ -1678,7 +1655,7 @@ export const OrganizationInfoFragmentDoc = gql`
         ...fullLocation
       }
     }
-    associates {
+    associates @include(if: $includeAssociates) {
       id
       nameID
       agent {
@@ -1708,6 +1685,29 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${FullLocationFragmentDoc}
+`;
+export const OrganizationDetailsFragmentDoc = gql`
+  fragment OrganizationDetails on Organization {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        id
+        tags
+      }
+      location {
+        country
+        city
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
 `;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
@@ -2585,7 +2585,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
           id
           uri
         }
-        tagsets {
+        tagset {
           id
           tags
         }
@@ -15627,6 +15627,65 @@ export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrgani
   return { query: RolesOrganizationDocument, variables: variables };
 }
 
+export const OrganizationInfoDocument = gql`
+  query organizationInfo($organizationId: UUID_NAMEID!, $includeAssociates: Boolean = false) {
+    organization(ID: $organizationId) {
+      ...OrganizationInfo
+    }
+  }
+  ${OrganizationInfoFragmentDoc}
+`;
+
+/**
+ * __useOrganizationInfoQuery__
+ *
+ * To run a query within a React component, call `useOrganizationInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationInfoQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *      includeAssociates: // value for 'includeAssociates'
+ *   },
+ * });
+ */
+export function useOrganizationInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
+    OrganizationInfoDocument,
+    options
+  );
+}
+
+export function useOrganizationInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationInfoQuery,
+    SchemaTypes.OrganizationInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
+    OrganizationInfoDocument,
+    options
+  );
+}
+
+export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
+export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
+export type OrganizationInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationInfoQuery,
+  SchemaTypes.OrganizationInfoQueryVariables
+>;
+export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
+  return { query: OrganizationInfoDocument, variables: variables };
+}
+
 export const CreateGroupOnOrganizationDocument = gql`
   mutation createGroupOnOrganization($input: CreateUserGroupInput!) {
     createGroupOnOrganization(groupData: $input) {
@@ -16047,64 +16106,6 @@ export function refetchOrganizationGroupsQuery(variables: SchemaTypes.Organizati
   return { query: OrganizationGroupsDocument, variables: variables };
 }
 
-export const OrganizationInfoDocument = gql`
-  query organizationInfo($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      ...OrganizationInfo
-    }
-  }
-  ${OrganizationInfoFragmentDoc}
-`;
-
-/**
- * __useOrganizationInfoQuery__
- *
- * To run a query within a React component, call `useOrganizationInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationInfoQuery({
- *   variables: {
- *      organizationId: // value for 'organizationId'
- *   },
- * });
- */
-export function useOrganizationInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
-    OrganizationInfoDocument,
-    options
-  );
-}
-
-export function useOrganizationInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationInfoQuery,
-    SchemaTypes.OrganizationInfoQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationInfoQuery, SchemaTypes.OrganizationInfoQueryVariables>(
-    OrganizationInfoDocument,
-    options
-  );
-}
-
-export type OrganizationInfoQueryHookResult = ReturnType<typeof useOrganizationInfoQuery>;
-export type OrganizationInfoLazyQueryHookResult = ReturnType<typeof useOrganizationInfoLazyQuery>;
-export type OrganizationInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationInfoQuery,
-  SchemaTypes.OrganizationInfoQueryVariables
->;
-export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
-  return { query: OrganizationInfoDocument, variables: variables };
-}
-
 export const OrganizationNameDocument = gql`
   query organizationName($id: UUID_NAMEID!) {
     organization(ID: $id) {
@@ -16422,6 +16423,68 @@ export type MessagingUserDetailsQueryResult = Apollo.QueryResult<
 >;
 export function refetchMessagingUserDetailsQuery(variables: SchemaTypes.MessagingUserDetailsQueryVariables) {
   return { query: MessagingUserDetailsDocument, variables: variables };
+}
+
+export const PlatformLevelAuthorizationDocument = gql`
+  query PlatformLevelAuthorization {
+    authorization {
+      ...MyPrivileges
+    }
+  }
+  ${MyPrivilegesFragmentDoc}
+`;
+
+/**
+ * __usePlatformLevelAuthorizationQuery__
+ *
+ * To run a query within a React component, call `usePlatformLevelAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformLevelAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformLevelAuthorizationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformLevelAuthorizationQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >(PlatformLevelAuthorizationDocument, options);
+}
+
+export function usePlatformLevelAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >(PlatformLevelAuthorizationDocument, options);
+}
+
+export type PlatformLevelAuthorizationQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationQuery>;
+export type PlatformLevelAuthorizationLazyQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationLazyQuery>;
+export type PlatformLevelAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformLevelAuthorizationQuery,
+  SchemaTypes.PlatformLevelAuthorizationQueryVariables
+>;
+export function refetchPlatformLevelAuthorizationQuery(
+  variables?: SchemaTypes.PlatformLevelAuthorizationQueryVariables
+) {
+  return { query: PlatformLevelAuthorizationDocument, variables: variables };
 }
 
 export const GetSupportedCredentialMetadataDocument = gql`
@@ -17859,68 +17922,6 @@ export function refetchUsersWithCredentialsSimpleListQuery(
   variables: SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
-}
-
-export const PlatformLevelAuthorizationDocument = gql`
-  query PlatformLevelAuthorization {
-    authorization {
-      ...MyPrivileges
-    }
-  }
-  ${MyPrivilegesFragmentDoc}
-`;
-
-/**
- * __usePlatformLevelAuthorizationQuery__
- *
- * To run a query within a React component, call `usePlatformLevelAuthorizationQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformLevelAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePlatformLevelAuthorizationQuery({
- *   variables: {
- *   },
- * });
- */
-export function usePlatformLevelAuthorizationQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformLevelAuthorizationQuery,
-    SchemaTypes.PlatformLevelAuthorizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.PlatformLevelAuthorizationQuery,
-    SchemaTypes.PlatformLevelAuthorizationQueryVariables
-  >(PlatformLevelAuthorizationDocument, options);
-}
-
-export function usePlatformLevelAuthorizationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformLevelAuthorizationQuery,
-    SchemaTypes.PlatformLevelAuthorizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.PlatformLevelAuthorizationQuery,
-    SchemaTypes.PlatformLevelAuthorizationQueryVariables
-  >(PlatformLevelAuthorizationDocument, options);
-}
-
-export type PlatformLevelAuthorizationQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationQuery>;
-export type PlatformLevelAuthorizationLazyQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationLazyQuery>;
-export type PlatformLevelAuthorizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformLevelAuthorizationQuery,
-  SchemaTypes.PlatformLevelAuthorizationQueryVariables
->;
-export function refetchPlatformLevelAuthorizationQuery(
-  variables?: SchemaTypes.PlatformLevelAuthorizationQueryVariables
-) {
-  return { query: PlatformLevelAuthorizationDocument, variables: variables };
 }
 
 export const MeDocument = gql`
