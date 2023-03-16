@@ -765,6 +765,7 @@ export type CommunityKeySpecifier = (
   | 'leadUsers'
   | 'memberOrganizations'
   | 'memberUsers'
+  | 'myMembershipStatus'
   | 'policy'
   | CommunityKeySpecifier
 )[];
@@ -782,6 +783,7 @@ export type CommunityFieldPolicy = {
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityPolicyKeySpecifier = ('id' | 'lead' | 'member' | CommunityPolicyKeySpecifier)[];

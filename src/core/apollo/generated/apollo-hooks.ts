@@ -5555,10 +5555,6 @@ export const DeleteHubDocument = gql`
     deleteHub(deleteData: $input) {
       id
       nameID
-      profile {
-        id
-        displayName
-      }
     }
   }
 `;

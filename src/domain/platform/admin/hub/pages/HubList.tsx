@@ -48,7 +48,7 @@ export const HubList: FC = () => {
     refetchQueries: [refetchAdminHubsListQuery()],
     awaitRefetchQueries: true,
     onCompleted: data =>
-      notify(t('pages.admin.hub.notifications.hub-removed', { name: data.deleteHub.profile.displayName }), 'success'),
+      notify(t('pages.admin.hub.notifications.hub-removed', { name: data.deleteHub.nameID }), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) => {

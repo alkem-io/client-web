@@ -1069,6 +1069,8 @@ export type Community = Groupable & {
   memberOrganizations?: Maybe<Array<Organization>>;
   /** All users that are contributing to this Community. */
   memberUsers?: Maybe<Array<User>>;
+  /** The membership status of the currently logged in user. */
+  myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The policy that defines the roles for this Community. */
   policy?: Maybe<CommunityPolicy>;
 };
@@ -1101,6 +1103,12 @@ export type CommunityApplyInput = {
 export type CommunityJoinInput = {
   communityID: Scalars['UUID'];
 };
+
+export enum CommunityMembershipStatus {
+  ApplicationPending = 'APPLICATION_PENDING',
+  Member = 'MEMBER',
+  NotMember = 'NOT_MEMBER',
+}
 
 export type CommunityPolicy = {
   __typename?: 'CommunityPolicy';
@@ -1243,7 +1251,7 @@ export type CreateCalendarEventOnCalendarInput = {
   multipleDays: Scalars['Boolean'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData?: InputMaybe<CreateProfileInput>;
+  profileData: CreateProfileInput;
   /** The start date for the event. */
   startDate: Scalars['DateTime'];
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -1305,7 +1313,7 @@ export type CreateChallengeOnChallengeInput = {
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData?: InputMaybe<CreateProfileInput>;
+  profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -1318,7 +1326,7 @@ export type CreateChallengeOnHubInput = {
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData?: InputMaybe<CreateProfileInput>;
+  profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -1339,7 +1347,7 @@ export type CreateHubInput = {
   hostID: Scalars['UUID_NAMEID'];
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
-  profileData?: InputMaybe<CreateProfileInput>;
+  profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -1384,7 +1392,7 @@ export type CreateOpportunityInput = {
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData?: InputMaybe<CreateProfileInput>;
+  profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -7853,12 +7861,7 @@ export type DeleteHubMutationVariables = Exact<{
 
 export type DeleteHubMutation = {
   __typename?: 'Mutation';
-  deleteHub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
+  deleteHub: { __typename?: 'Hub'; id: string; nameID: string };
 };
 
 export type UpdateHubMutationVariables = Exact<{
