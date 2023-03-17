@@ -606,7 +606,6 @@ export type ChallengeKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
-  | 'displayName'
   | 'hubID'
   | 'id'
   | 'lifecycle'
@@ -614,7 +613,7 @@ export type ChallengeKeySpecifier = (
   | 'nameID'
   | 'opportunities'
   | 'preferences'
-  | 'tagset'
+  | 'profile'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
@@ -624,7 +623,6 @@ export type ChallengeFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -632,7 +630,7 @@ export type ChallengeFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'hubID' | ChallengeCreatedKeySpecifier)[];
 export type ChallengeCreatedFieldPolicy = {
@@ -832,31 +830,21 @@ export type ConfigFieldPolicy = {
 };
 export type ContextKeySpecifier = (
   | 'authorization'
-  | 'background'
   | 'ecosystemModel'
   | 'id'
   | 'impact'
-  | 'location'
   | 'recommendations'
-  | 'references'
-  | 'tagline'
   | 'vision'
-  | 'visuals'
   | 'who'
   | ContextKeySpecifier
 )[];
 export type ContextFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  background?: FieldPolicy<any> | FieldReadFunction<any>;
   ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
-  location?: FieldPolicy<any> | FieldReadFunction<any>;
   recommendations?: FieldPolicy<any> | FieldReadFunction<any>;
-  references?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
-  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContributorRolesKeySpecifier = (
@@ -996,7 +984,6 @@ export type HubKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
-  | 'displayName'
   | 'group'
   | 'groups'
   | 'groupsWithTag'
@@ -1007,9 +994,9 @@ export type HubKeySpecifier = (
   | 'opportunities'
   | 'opportunity'
   | 'preferences'
+  | 'profile'
   | 'project'
   | 'projects'
-  | 'tagset'
   | 'templates'
   | 'timeline'
   | 'visibility'
@@ -1024,7 +1011,6 @@ export type HubFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   groupsWithTag?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1035,9 +1021,9 @@ export type HubFieldPolicy = {
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1213,7 +1199,6 @@ export type MutationKeySpecifier = (
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
-  | 'createReferenceOnContext'
   | 'createReferenceOnProfile'
   | 'createRelationOnCollaboration'
   | 'createTagsetOnProfile'
@@ -1359,7 +1344,6 @@ export type MutationFieldPolicy = {
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
-  createReferenceOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1467,14 +1451,13 @@ export type OpportunityKeySpecifier = (
   | 'collaboration'
   | 'community'
   | 'context'
-  | 'displayName'
   | 'id'
   | 'lifecycle'
   | 'metrics'
   | 'nameID'
   | 'parentNameID'
+  | 'profile'
   | 'projects'
-  | 'tagset'
   | OpportunityKeySpecifier
 )[];
 export type OpportunityFieldPolicy = {
@@ -1482,14 +1465,13 @@ export type OpportunityFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityCreatedKeySpecifier = ('challengeID' | 'opportunity' | OpportunityCreatedKeySpecifier)[];
 export type OpportunityCreatedFieldPolicy = {

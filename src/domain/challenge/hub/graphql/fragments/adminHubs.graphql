@@ -1,7 +1,10 @@
 fragment AdminHub on Hub {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+  }
   authorization {
     id
     myPrivileges

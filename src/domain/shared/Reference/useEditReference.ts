@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import {
-  useCreateReferenceOnContextMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -10,7 +9,6 @@ export type PushFunc = (success: boolean) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
-  contextId?: string;
   profileId?: string;
   name: string;
   uri?: string;
@@ -24,18 +22,6 @@ export const useEditReference = () => {
   const handleError = () => {
     push.current && push.current();
   };
-
-  const [addReferenceOnContext] = useCreateReferenceOnContextMutation({
-    onCompleted: data => {
-      if (push.current) {
-        push.current({
-          id: data?.createReferenceOnContext.id,
-          name: data?.createReferenceOnContext.name,
-          uri: data?.createReferenceOnContext.uri,
-        });
-      }
-    },
-  });
 
   const [addReferenceOnProfile] = useCreateReferenceOnProfileMutation({
     onCompleted: data => {
@@ -66,20 +52,7 @@ export const useEditReference = () => {
     remove.current = removeFn;
   };
 
-  const addReference: AddReferenceFunc = ({ contextId, profileId, name, uri = '', description = '' }) => {
-    if (contextId) {
-      addReferenceOnContext({
-        variables: {
-          input: {
-            contextID: contextId,
-            name: name,
-            description: description,
-            uri: uri,
-          },
-        },
-      });
-    }
-
+  const addReference: AddReferenceFunc = ({ profileId, name, uri = '', description = '' }) => {
     if (profileId) {
       addReferenceOnProfile({
         variables: {

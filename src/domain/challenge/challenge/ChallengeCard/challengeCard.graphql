@@ -1,6 +1,5 @@
 fragment ChallengeCard on Challenge {
   id
-  displayName
   nameID
   authorization {
     id
@@ -11,18 +10,23 @@ fragment ChallengeCard on Challenge {
     name
     value
   }
-  context {
+  profile {
     id
     tagline
-    vision
+    displayName
+    description
     visuals {
       ...VisualUri
     }
+    tagset {
+      id
+      name
+      tags
+    }
   }
-  tagset {
+  context {
     id
-    name
-    tags
+    vision
   }
   lifecycle {
     id

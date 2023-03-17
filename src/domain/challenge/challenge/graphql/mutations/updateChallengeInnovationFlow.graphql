@@ -1,6 +1,9 @@
 mutation updateChallengeInnovationFlow($input: UpdateChallengeInnovationFlowInput!) {
   updateChallengeInnovationFlow(challengeData: $input) {
     id
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }

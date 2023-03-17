@@ -6,19 +6,19 @@ import HubPageLayout from '../layout/HubPageLayout';
 import { HubAboutView } from '../views/HubAboutView';
 
 const HubAboutPage: FC = () => {
-  const { hubNameId, displayName, communityId } = useHub();
+  const { hubNameId, profile, communityId } = useHub();
 
   return (
     <HubPageLayout currentSection={EntityPageSection.About}>
       <AboutPageContainer hubNameId={hubNameId}>
         {({ tagset, context, permissions, ...rest }, state) => (
           <HubAboutView
-            name={displayName}
-            tagline={context?.tagline}
+            name={profile.displayName}
+            tagline={profile.tagline}
             tags={tagset?.tags}
             who={context?.who}
             impact={context?.impact}
-            background={context?.background}
+            background={profile.description}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
             hubNameId={hubNameId}

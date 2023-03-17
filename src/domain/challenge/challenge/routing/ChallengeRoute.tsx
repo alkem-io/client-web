@@ -25,7 +25,11 @@ import Redirect from '../../../../core/routing/Redirect';
 interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
-  const { challengeId, displayName, loading } = useChallenge();
+  const {
+    challengeId,
+    profile: { displayName },
+    loading,
+  } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),

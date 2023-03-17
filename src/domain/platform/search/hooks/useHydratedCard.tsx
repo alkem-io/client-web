@@ -99,10 +99,9 @@ const _hydrateHubCard = (
     return null;
   }
   const hub = data.hub;
-  const context = hub.context;
-  const tagline = context?.tagline || '';
-  const image = getVisualBannerNarrow(context?.visuals);
-  const name = hub.displayName;
+  const tagline = hub.profile?.tagline || '';
+  const image = getVisualBannerNarrow(hub.profile.visuals);
+  const name = hub.profile.displayName;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = hub.context?.vision || '';
@@ -138,14 +137,13 @@ const useHydrateChallengeCard = (
   }
   const challenge = data.challenge;
   const containingHub = data.hub;
-  const context = challenge.context;
-  const tagline = context?.tagline || '';
-  const image = getVisualBannerNarrow(context?.visuals);
-  const name = challenge.displayName;
+  const tagline = challenge.profile.tagline || '';
+  const image = getVisualBannerNarrow(challenge.profile.visuals);
+  const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
   const hubNameId = containingHub.nameID;
-  const hubDisplayName = containingHub.displayName;
+  const hubDisplayName = containingHub.profile.displayName;
   const vision = challenge.context?.vision || '';
 
   const nameID = challenge.nameID;
@@ -192,13 +190,12 @@ const useHydrateOpportunityCard = (
   const opportunity = data.opportunity;
   const containingChallenge = data.challenge;
   const containingHub = data.hub;
-  const context = opportunity.context;
-  const tagline = context?.tagline || '';
-  const image = getVisualBannerNarrow(context?.visuals);
-  const name = opportunity.displayName;
+  const tagline = opportunity.profile.tagline || '';
+  const image = getVisualBannerNarrow(opportunity.profile.visuals);
+  const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
-  const challengeDisplayName = containingChallenge.displayName;
+  const challengeDisplayName = containingChallenge.profile.displayName;
   const hubId = containingHub.id;
   const hubNameID = containingHub.nameID;
   const nameID = opportunity.nameID;
@@ -240,21 +237,21 @@ const getContributionParentInformation = (data: SearchResultT<SearchResultCardFr
   if (data.opportunity?.nameID && data.challenge?.nameID) {
     return {
       icon: OpportunityIcon,
-      displayName: data.opportunity?.displayName,
+      displayName: data.opportunity?.profile.displayName,
       locked: !data.opportunity?.authorization?.anonymousReadAccess,
       url: buildOpportunityUrl(data.hub.nameID, data.challenge?.nameID, data.opportunity?.nameID),
     };
   } else if (data.challenge?.nameID) {
     return {
       icon: ChallengeIcon,
-      displayName: data.challenge?.displayName,
+      displayName: data.challenge?.profile.displayName,
       locked: !data.challenge?.authorization?.anonymousReadAccess,
       url: buildChallengeUrl(data.hub.nameID, data.challenge?.nameID),
     };
   } else {
     return {
       icon: HubIcon,
-      displayName: data.hub.displayName,
+      displayName: data.hub.profile.displayName,
       locked: !data.hub?.authorization?.anonymousReadAccess,
       url: buildHubUrl(data.hub.nameID),
     };

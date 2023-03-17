@@ -1,7 +1,19 @@
 fragment OpportunityCard on Opportunity {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+    tagline
+    tagset {
+      id
+      name
+      tags
+    }
+    visuals {
+      ...VisualFull
+    }
+  }
   metrics {
     id
     name
@@ -23,10 +35,5 @@ fragment OpportunityCard on Opportunity {
       id
       state
     }
-  }
-  tagset {
-    id
-    name
-    tags
   }
 }

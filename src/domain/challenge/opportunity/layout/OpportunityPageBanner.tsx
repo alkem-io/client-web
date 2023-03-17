@@ -8,10 +8,10 @@ const OpportunityPageBanner: FC = () => {
 
   return (
     <JourneyPageBanner
-      title={opportunity?.displayName}
-      tagline={opportunity?.context?.tagline}
+      title={opportunity?.profile.displayName}
+      tagline={opportunity?.profile?.tagline}
       loading={loading}
-      bannerUrl={getVisualBanner(opportunity?.context?.visuals)}
+      bannerUrl={getVisualBanner(opportunity?.profile?.visuals)}
       journeyTypeName="opportunity"
       showBreadcrumbs
     />

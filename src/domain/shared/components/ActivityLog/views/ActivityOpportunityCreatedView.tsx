@@ -3,10 +3,10 @@ import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildOpportunityUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityOpportunityCreatedViewProps extends ActivityViewProps {
-  opportunity: NameableEntityOld;
+  opportunity: NameableEntity;
 }
 
 export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewProps> = props => {
@@ -18,7 +18,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
     props.opportunity.nameID!
   );
   const description = t('components.activity-log-view.activity-description.opportunity-created', {
-    displayName: props.opportunity.displayName,
+    displayName: props.opportunity.profile.displayName,
     interpolation: {
       escapeValue: false,
     },

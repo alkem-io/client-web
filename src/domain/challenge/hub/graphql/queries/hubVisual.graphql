@@ -1,7 +1,7 @@
 query hubVisual($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
-    context {
+    profile {
       visuals {
         ...VisualUri
       }

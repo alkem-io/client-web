@@ -1,5 +1,8 @@
 fragment NewOpportunity on Opportunity {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+  }
 }

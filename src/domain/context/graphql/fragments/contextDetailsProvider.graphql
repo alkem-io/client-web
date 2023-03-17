@@ -1,11 +1,6 @@
 fragment ContextDetailsProvider on Context {
   id
-  tagline
-  background
   vision
   impact
   who
-  visuals {
-    ...VisualUri
-  }
 }

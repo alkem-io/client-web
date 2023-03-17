@@ -4,14 +4,14 @@ import { useHub } from '../HubContext/useHub';
 import { getVisualBanner } from '../../../common/visual/utils/visuals.utils';
 
 const HubPageBanner: FC = () => {
-  const { displayName, context, loading } = useHub();
+  const { profile, loading } = useHub();
 
   return (
     <JourneyPageBanner
-      title={displayName}
-      tagline={context?.tagline}
+      title={profile.displayName}
+      tagline={profile?.tagline}
       loading={loading}
-      bannerUrl={getVisualBanner(context?.visuals)}
+      bannerUrl={getVisualBanner(profile?.visuals)}
       journeyTypeName="hub"
     />
   );
