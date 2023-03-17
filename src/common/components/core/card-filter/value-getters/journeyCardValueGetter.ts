@@ -7,9 +7,9 @@ import {
 
 type JourneyCard = HubCardQuery['hub'] | ChallengeCardFragment | OpportunityCardFragment;
 
-export const journeyCardValueGetter = ({ id, displayName, tagset, context }: JourneyCard): ValueType => ({
+export const journeyCardValueGetter = ({ id, profile }: JourneyCard): ValueType => ({
   id,
-  values: [displayName, context?.tagline || '', (tagset?.tags || []).join(' ')],
+  values: [profile.displayName, profile.tagline || '', (profile.tagset?.tags || []).join(' ')],
 });
 
-export const journeyCardTagsGetter = ({ tagset }: JourneyCard): string[] => tagset?.tags || [];
+export const journeyCardTagsGetter = ({ profile }: JourneyCard): string[] => profile.tagset?.tags || [];

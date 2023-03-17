@@ -1,21 +1,13 @@
 # context tab fragments
 fragment ContextTab on Context {
   id
-  tagline
-  background
   authorization {
     id
     myPrivileges
   }
-  location {
-    ...fullLocation
-  }
   vision
   impact
   who
-  visuals {
-    ...VisualFull
-  }
 }
 #
 fragment LifecycleContextTab on Lifecycle {
@@ -41,11 +33,18 @@ query AboutPageNonMembers(
     id
     ... on Hub @include(if: $includeHub) {
       nameID
-      displayName
-      tagset {
+      profile {
         id
-        name
-        tags
+        displayName
+        tagline
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
       }
       host {
         ...AssociatedOrganizationDetails
@@ -67,16 +66,24 @@ query AboutPageNonMembers(
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+        tagline
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
+      }
       authorization {
         id
         myPrivileges
       }
-      tagset {
-        id
-        name
-        tags
-      }
+
       lifecycle {
         ...LifecycleContextTab
       }
@@ -97,11 +104,18 @@ query AboutPageNonMembers(
     opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
       id
       nameID
-      displayName
-      tagset {
+      profile {
         id
-        name
-        tags
+        displayName
+        tagline
+        tagset {
+          id
+          name
+          tags
+        }
+        visuals {
+          ...VisualFull
+        }
       }
       lifecycle {
         ...LifecycleContextTab
@@ -139,7 +153,7 @@ query AboutPageMembers(
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity
       }
-      context {
+      profile {
         id
         references @include(if: $referencesReadAccess) {
           ...ReferenceDetails
@@ -151,7 +165,7 @@ query AboutPageMembers(
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity
       }
-      context {
+      profile {
         id
         references @include(if: $referencesReadAccess) {
           ...ReferenceDetails
@@ -163,7 +177,7 @@ query AboutPageMembers(
       community @include(if: $communityReadAccess) {
         ...EntityDashboardCommunity
       }
-      context {
+      profile {
         id
         references @include(if: $referencesReadAccess) {
           ...ReferenceDetails

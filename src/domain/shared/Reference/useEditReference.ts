@@ -1,7 +1,5 @@
 import { useRef } from 'react';
 import {
-  useCreateReferenceOnCardProfileMutation,
-  useCreateReferenceOnContextMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -11,8 +9,6 @@ export type PushFunc = (success: boolean) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
-  cardProfileId?: string;
-  contextId?: string;
   profileId?: string;
   name: string;
   uri?: string;
@@ -27,18 +23,6 @@ export const useEditReference = () => {
     push.current && push.current();
   };
 
-  const [addReferenceOnContext] = useCreateReferenceOnContextMutation({
-    onCompleted: data => {
-      if (push.current) {
-        push.current({
-          id: data?.createReferenceOnContext.id,
-          name: data?.createReferenceOnContext.name,
-          uri: data?.createReferenceOnContext.uri,
-        });
-      }
-    },
-  });
-
   const [addReferenceOnProfile] = useCreateReferenceOnProfileMutation({
     onCompleted: data => {
       if (push.current) {
@@ -46,18 +30,6 @@ export const useEditReference = () => {
           id: data?.createReferenceOnProfile.id,
           name: data?.createReferenceOnProfile.name,
           uri: data?.createReferenceOnProfile.uri,
-        });
-      }
-    },
-  });
-
-  const [addReferenceOnCardProfile] = useCreateReferenceOnCardProfileMutation({
-    onCompleted: data => {
-      if (push.current) {
-        push.current({
-          id: data?.createReferenceOnCardProfile.id,
-          name: data?.createReferenceOnCardProfile.name,
-          uri: data?.createReferenceOnCardProfile.uri,
         });
       }
     },
@@ -80,45 +52,12 @@ export const useEditReference = () => {
     remove.current = removeFn;
   };
 
-  const addReference: AddReferenceFunc = ({
-    cardProfileId,
-    contextId,
-    profileId,
-    name,
-    uri = '',
-    description = '',
-  }) => {
-    if (contextId) {
-      addReferenceOnContext({
-        variables: {
-          input: {
-            contextID: contextId,
-            name: name,
-            description: description,
-            uri: uri,
-          },
-        },
-      });
-    }
-
+  const addReference: AddReferenceFunc = ({ profileId, name, uri = '', description = '' }) => {
     if (profileId) {
       addReferenceOnProfile({
         variables: {
           input: {
             profileID: profileId,
-            name: name,
-            description: description,
-            uri: uri,
-          },
-        },
-      });
-    }
-
-    if (cardProfileId) {
-      addReferenceOnCardProfile({
-        variables: {
-          referenceInput: {
-            cardProfileID: cardProfileId,
             name: name,
             description: description,
             uri: uri,

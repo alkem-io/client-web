@@ -10,17 +10,30 @@ query opportunityPage($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
 fragment OpportunityPage on Opportunity {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+    visuals {
+      ...VisualUri
+    }
+  }
   authorization {
     id
     anonymousReadAccess
     myPrivileges
   }
-  tagset {
-    id
-    name
-    tags
-  }
+
   metrics {
     id
     name
@@ -47,27 +60,18 @@ fragment OpportunityPage on Opportunity {
   }
   context {
     id
-    tagline
     vision
     authorization {
       id
       anonymousReadAccess
       myPrivileges
     }
-    references {
-      id
-      name
-      description
-      uri
-    }
+
     recommendations {
       id
       name
       description
       uri
-    }
-    visuals {
-      ...VisualUri
     }
   }
   community {

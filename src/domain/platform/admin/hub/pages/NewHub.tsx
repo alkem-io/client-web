@@ -6,7 +6,6 @@ import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import AdminLayout from '../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../layout/toplevel/constants';
-import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 import { useUpdateNavigation } from '../../../../../core/routing/useNavigation';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import {
@@ -15,8 +14,8 @@ import {
   useOrganizationsListQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
-import { createContextInput } from '../../../../../common/utils/buildContext';
 import { PageProps } from '../../../../shared/types/PageProps';
+import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 interface NewHubProps extends PageProps {}
 
@@ -59,7 +58,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
   });
 
   const organizations = useMemo(
-    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
+    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
     [organizationList]
   );
 
@@ -73,8 +72,11 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
         input: {
           nameID,
           hostID: host,
-          context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-          displayName: name,
+          profileData: {
+            displayName: name,
+            tagline: values.tagline,
+            location: formatDatabaseLocation(values.location),
+          },
           tags: tagsets.flatMap(x => x.tags),
         },
       },

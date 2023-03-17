@@ -76,7 +76,7 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
             <LinksList
               items={childEntities.map(entity => ({
                 id: entity.id,
-                title: entity.displayName,
+                title: entity.profile.displayName,
                 icon: childEntitiesIcon,
                 uri: getChildEntityUrl(entity),
               }))}

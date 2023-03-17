@@ -6,19 +6,19 @@ import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import { OpportunityAboutView } from '../views/OpportunityAboutView';
 
 const OpportunityAboutPage: FC = () => {
-  const { hubNameId, opportunityNameId, displayName, communityId } = useOpportunity();
+  const { hubNameId, opportunityNameId, communityId } = useOpportunity();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
       <AboutPageContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
-        {({ context, tagset, permissions, ...rest }, state) => (
+        {({ context, profile, tagset, permissions, ...rest }, state) => (
           <OpportunityAboutView
-            name={displayName}
-            tagline={context?.tagline}
+            name={profile?.displayName ?? ''}
+            tagline={profile?.tagline}
             tags={tagset?.tags}
             who={context?.who}
             impact={context?.impact}
-            background={context?.background}
+            background={profile?.description}
             vision={context?.vision}
             communityReadAccess={permissions.communityReadAccess}
             hubNameId={hubNameId}

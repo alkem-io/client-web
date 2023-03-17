@@ -1,5 +1,8 @@
 fragment HubName on Hub {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+  }
 }

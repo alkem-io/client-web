@@ -68,7 +68,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId, collaborationId }) 
         input: {
           collaborationID: collaborationId,
           type: 'incoming',
-          actorName: userData?.me.displayName || '',
+          actorName: userData?.me.profile.displayName || '',
           actorType: 'user',
           actorRole: customRole || role,
           description: description,

@@ -21,7 +21,9 @@ import Redirect from '../../../../core/routing/Redirect';
 import HubSearchPage from '../pages/HubSearchPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
-  const { displayName } = useHub();
+  const {
+    profile: { displayName },
+  } = useHub();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),

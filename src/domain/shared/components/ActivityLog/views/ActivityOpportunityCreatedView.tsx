@@ -18,7 +18,7 @@ export const ActivityOpportunityCreatedView: FC<ActivityOpportunityCreatedViewPr
     props.opportunity.nameID!
   );
   const description = t('components.activity-log-view.activity-description.opportunity-created', {
-    displayName: props.opportunity.displayName,
+    displayName: props.opportunity.profile.displayName,
     interpolation: {
       escapeValue: false,
     },

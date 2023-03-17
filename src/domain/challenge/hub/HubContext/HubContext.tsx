@@ -7,7 +7,6 @@ import {
   AuthorizationPrivilege,
   HubInfoFragment,
   HubVisibility,
-  Visual,
 } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface HubPermissions {
@@ -23,9 +22,7 @@ export interface HubPermissions {
 interface HubContextProps {
   hubId: string;
   hubNameId: string;
-  displayName: string;
   communityId: string;
-  visuals: Visual[];
   isPrivate?: boolean;
   loading: boolean;
   permissions: HubPermissions;
@@ -34,8 +31,8 @@ interface HubContextProps {
   // TODO Some components just randomly access HubContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
   hostId?: string;
-  tagset?: HubInfoFragment['tagset'];
   context?: HubInfoFragment['context'];
+  profile: HubInfoFragment['profile'];
   visibility: HubVisibility;
 }
 
@@ -44,9 +41,7 @@ const HubContext = React.createContext<HubContextProps>({
   isPrivate: undefined,
   hubId: '',
   hubNameId: '',
-  displayName: '',
   communityId: '',
-  visuals: [],
   permissions: {
     viewerCanUpdate: false,
     canCreate: false,
@@ -55,6 +50,12 @@ const HubContext = React.createContext<HubContextProps>({
     canReadChallenges: false,
     communityReadAccess: false,
     contextPrivileges: [],
+  },
+  profile: {
+    id: '',
+    displayName: '',
+    visuals: [],
+    tagline: '',
   },
   visibility: HubVisibility.Active,
   refetchHub: () => {},
@@ -83,9 +84,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const visibility = hub?.visibility || HubVisibility.Active;
-  const displayName = hub?.displayName || '';
   const communityId = hub?.community?.id ?? '';
-  const visuals = hub?.context?.visuals ?? [];
   const isPrivate = hub && !hub.authorization?.anonymousReadAccess;
   const error = configError || hubError;
 
@@ -110,20 +109,31 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
     };
   }, [hubPrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateChallenges]);
 
+  const profile = useMemo(() => {
+    return {
+      id: hub?.profile.id ?? '',
+      displayName: hub?.profile.displayName || '',
+      description: hub?.profile.description,
+      tagset: hub?.profile.tagset,
+      visuals: hub?.profile.visuals ?? [],
+      tagline: hub?.profile.tagline || '',
+      references: hub?.profile.references ?? [],
+      location: hub?.profile.location,
+    };
+  }, [hub?.profile]);
+
   return (
     <HubContext.Provider
       value={{
         hubId,
         hubNameId,
         communityId,
-        visuals,
         permissions,
-        displayName,
         isPrivate,
         loading,
         error,
         refetchHub,
-        tagset: hub?.tagset,
+        profile,
         hostId: hub?.host?.id,
         context: hub?.context,
         visibility,
