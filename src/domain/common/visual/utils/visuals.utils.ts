@@ -34,21 +34,16 @@ export function getVisualByType(type: VisualName, profileOrVisual?: unknown): Vi
 
 const _getVisualByType = (type: VisualName, profileOrVisual?: unknown): Visual | undefined => {
   if (!profileOrVisual) {
-    console.log('0');
     return undefined;
   }
 
   if (isProfile(profileOrVisual)) {
-    console.log('1');
     return (profileOrVisual as Profile).visuals?.find(x => x.name === type);
   } else if (isVisualArray(profileOrVisual)) {
-    console.log('2');
     return (profileOrVisual as Visual[]).find(x => x.name === type);
   } else if (isVisual(profileOrVisual)) {
-    console.log('3');
     return (profileOrVisual as Visual).name === type ? (profileOrVisual as Visual) : undefined;
   } else {
-    console.log('4');
     return undefined;
   }
 };
