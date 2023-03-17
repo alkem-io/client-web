@@ -3,7 +3,10 @@ query opportunityName($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     id
     opportunity(ID: $opportunityId) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

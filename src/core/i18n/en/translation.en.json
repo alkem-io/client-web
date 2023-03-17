@@ -629,6 +629,9 @@
       },
       "link": {
         "dialogHeader": "Convert selection to Hyperlink"
+      },
+      "validation": {
+        "maxLength": "The resulting text goes beyond the size accepted by the server."
       }
     },
     "top-callouts": {

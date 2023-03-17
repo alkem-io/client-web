@@ -18,9 +18,9 @@ interface ChallengeContextProps {
   communityId: string;
   hubId: string;
   hubNameId: string;
-  displayName: string;
   loading: boolean;
   permissions: ChallengePermissions;
+  profile: ChallengeInfoFragment['profile'];
 }
 
 const ChallengeContext = React.createContext<ChallengeContextProps>({
@@ -30,13 +30,18 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   communityId: '',
   hubId: '',
   hubNameId: '',
-  displayName: '',
   permissions: {
     canUpdate: false,
     canCreate: false,
     canCreateOpportunity: false,
     canReadCommunity: false,
     contextPrivileges: [],
+  },
+  profile: {
+    id: '',
+    displayName: '',
+    visuals: [],
+    tagline: '',
   },
 });
 
@@ -52,7 +57,6 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
   const hubId = data?.hub?.id || '';
   const challenge = data?.hub?.challenge;
   const challengeId = challenge?.id || '';
-  const displayName = challenge?.displayName || '';
   const communityId = challenge?.community?.id ?? '';
 
   const myPrivileges = useMemo(
@@ -74,6 +78,19 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
     [myPrivileges, challenge, canReadCommunity]
   );
 
+  const profile = useMemo(() => {
+    return {
+      id: challenge?.profile.id ?? '',
+      displayName: challenge?.profile.displayName || '',
+      description: challenge?.profile.description,
+      tagset: challenge?.profile.tagset,
+      visuals: challenge?.profile.visuals ?? [],
+      tagline: challenge?.profile.tagline || '',
+      references: challenge?.profile.references ?? [],
+      location: challenge?.profile.location,
+    };
+  }, [challenge?.profile]);
+
   return (
     <ChallengeContext.Provider
       value={{
@@ -84,7 +101,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         hubId,
         hubNameId,
         permissions,
-        displayName,
+        profile,
         loading,
       }}
     >

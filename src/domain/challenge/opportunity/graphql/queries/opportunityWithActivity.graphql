@@ -3,21 +3,22 @@ query opportunityWithActivity($hubId: UUID_NAMEID!) {
     id
     opportunities {
       id
-      displayName
-      nameID
-      metrics {
-        name
-        value
-      }
-      context {
+      profile {
+        id
+        displayName
         tagline
         visuals {
           ...VisualUri
         }
+        tagset {
+          name
+          tags
+        }
       }
-      tagset {
+      nameID
+      metrics {
         name
-        tags
+        value
       }
     }
   }

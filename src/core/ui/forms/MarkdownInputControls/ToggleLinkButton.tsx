@@ -11,6 +11,7 @@ import { Actions } from '../../actions/Actions';
 import Dialog from '../../dialog/Dialog';
 import { useNotification } from '../../notifications/useNotification';
 import { Selection } from 'prosemirror-state';
+import { BlockTitle } from '../../typography';
 
 interface ToggleLinkButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -115,7 +116,9 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
         <LinkOutlined />
       </IconButton>
       <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogHeader onClose={closeDialog}>{t('components.wysiwyg-editor.link.dialogHeader')}</DialogHeader>
+        <DialogHeader onClose={closeDialog}>
+          <BlockTitle>{t('components.wysiwyg-editor.link.dialogHeader')}</BlockTitle>
+        </DialogHeader>
         <Formik initialValues={initialValues} onSubmit={markAsLink}>
           <Form>
             <Gutters>

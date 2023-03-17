@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
@@ -22,7 +22,6 @@ export interface ProfileFormValues {
   nameID: string;
   tagline: string;
   location: Partial<Location>;
-  who: string;
   references: Reference[];
   recommendations: Reference[];
   tagsets: Tagset[];
@@ -30,6 +29,7 @@ export interface ProfileFormValues {
 
 interface Props {
   context?: Context;
+  profile?: Profile;
   journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
@@ -42,6 +42,7 @@ interface Props {
 
 const ProfileForm: FC<Props> = ({
   context,
+  profile,
   journeyType,
   name,
   nameID,
@@ -66,10 +67,9 @@ const ProfileForm: FC<Props> = ({
   const initialValues: ProfileFormValues = {
     name: name || '',
     nameID: nameID || '',
-    tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || EmptyLocation,
-    who: context?.who || '',
-    references: context?.references || [],
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
+    references: profile?.references || [],
     recommendations: context?.recommendations || [],
     tagsets,
   };
@@ -117,7 +117,7 @@ const ProfileForm: FC<Props> = ({
               </WrapperTypography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
-            <ContextReferenceSegment references={references || []} contextId={context?.id} />
+            <ContextReferenceSegment references={references || []} profileId={context?.id} />
             <RecommendationsSegment recommendations={recommendations || []} />
           </>
         );

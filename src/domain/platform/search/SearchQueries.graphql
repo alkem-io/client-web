@@ -73,7 +73,10 @@ fragment CardParent on SearchResultCard {
   hub {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
     authorization {
       id
       anonymousReadAccess
@@ -82,7 +85,11 @@ fragment CardParent on SearchResultCard {
   challenge {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
+
     authorization {
       id
       anonymousReadAccess
@@ -91,7 +98,11 @@ fragment CardParent on SearchResultCard {
   opportunity {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
+
     authorization {
       id
       anonymousReadAccess
@@ -156,18 +167,22 @@ fragment SearchResultHub on SearchResultHub {
   hub {
     id
     nameID
-    displayName
-    context {
+    profile {
       id
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
       tagline
       visuals {
         ...VisualUri
       }
-      vision
     }
-    tagset {
+    context {
       id
-      tags
+      vision
     }
     authorization {
       id
@@ -181,19 +196,24 @@ fragment SearchResultChallenge on SearchResultChallenge {
   challenge {
     id
     nameID
-    displayName
-    hubID
-    context {
+    profile {
       id
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
       tagline
       visuals {
         ...VisualUri
       }
-      vision
     }
-    tagset {
+    hubID
+    context {
       id
-      tags
+
+      vision
     }
     authorization {
       id
@@ -203,10 +223,12 @@ fragment SearchResultChallenge on SearchResultChallenge {
   hub {
     id
     nameID
-    displayName
-    context {
+    profile {
+      id
+      displayName
       tagline
     }
+
     authorization {
       id
       anonymousReadAccess
@@ -219,18 +241,22 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
   opportunity {
     id
     nameID
-    displayName
-    context {
+    profile {
       id
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
       tagline
       visuals {
         ...VisualUri
       }
-      vision
     }
-    tagset {
+    context {
       id
-      tags
+      vision
     }
     authorization {
       id
@@ -240,7 +266,10 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
   challenge {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
     authorization {
       id
       anonymousReadAccess
@@ -249,7 +278,10 @@ fragment SearchResultOpportunity on SearchResultOpportunity {
   hub {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
     visibility
   }
 }

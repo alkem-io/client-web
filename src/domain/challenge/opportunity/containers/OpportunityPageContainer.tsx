@@ -144,11 +144,12 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     !permissions.opportunityReadAccess || !permissions.readUsers
   );
 
-  const { context, collaboration, metrics = [] } = opportunity ?? {};
+  const { context, profile, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references, recommendations } = context ?? {};
+  const { recommendations } = context ?? {};
+  const { references } = profile ?? {};
   const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];

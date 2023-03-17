@@ -13,7 +13,7 @@ import { sortBy } from 'lodash';
 
 export const HubProfile: FC = () => {
   const { t } = useTranslation();
-  const { hubNameId, visuals, ...hub } = useHub();
+  const { hubNameId, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
 
@@ -33,15 +33,24 @@ export const HubProfile: FC = () => {
   };
 
   const onSubmit = async (values: HubEditFormValuesType) => {
-    const { name, host, tagsets } = values;
+    const { name, host, tagsets, references } = values;
     updateHub({
       variables: {
         input: {
-          context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-          displayName: name,
+          context: updateContextInput({ ...values }),
+          profileData: {
+            displayName: name,
+            location: formatDatabaseLocation(values.location),
+            references: references?.map(reference => ({
+              ID: reference.id ?? '',
+              name: reference.name,
+              description: reference.description,
+              uri: reference.uri,
+            })),
+            tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+          },
           ID: hubNameId,
           hostID: host,
-          tags: tagsets.flatMap(x => x.tags),
         },
       },
     });
@@ -49,16 +58,18 @@ export const HubProfile: FC = () => {
 
   const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
 
+  const visuals = hub.profile.visuals ?? [];
   let submitWired;
   return (
     <Container maxWidth="xl">
       <HubEditForm
         isEdit
-        name={hub.displayName}
+        name={hub.profile.displayName}
         nameID={hubNameId}
         hostID={hub.hostId}
-        tagset={hub.tagset}
+        tagset={hub.profile.tagset}
         context={hub.context}
+        profile={hub.profile}
         organizations={organizationsSorted}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

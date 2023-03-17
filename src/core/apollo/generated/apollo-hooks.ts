@@ -258,42 +258,17 @@ export const EntityDashboardCommunityFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
 `;
-export const FullLocationFragmentDoc = gql`
-  fragment fullLocation on Location {
-    id
-    country
-    city
-    addressLine1
-    addressLine2
-    stateOrProvince
-    postalCode
-  }
-`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
-    tagline
-    background
-    location {
-      ...fullLocation
-    }
     vision
     impact
     who
-    references {
-      id
-      name
-      uri
-      description
-    }
     recommendations {
       id
       name
       uri
       description
-    }
-    visuals {
-      ...VisualFull
     }
     authorization {
       id
@@ -301,14 +276,24 @@ export const ContextDetailsFragmentDoc = gql`
       anonymousReadAccess
     }
   }
-  ${FullLocationFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const OpportunityCardFragmentDoc = gql`
   fragment OpportunityCard on Opportunity {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+      tagline
+      tagset {
+        id
+        name
+        tags
+      }
+      visuals {
+        ...VisualFull
+      }
+    }
     metrics {
       id
       name
@@ -331,23 +316,31 @@ export const OpportunityCardFragmentDoc = gql`
         state
       }
     }
-    tagset {
-      id
-      name
-      tags
-    }
   }
+  ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
     nameID
-    displayName
     metrics {
       id
       name
       value
+    }
+    profile {
+      id
+      tagline
+      displayName
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        id
+        name
+        tags
+      }
     }
     authorization {
       id
@@ -362,15 +355,11 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     context {
       id
-      tagline
       vision
       authorization {
         id
         myPrivileges
         anonymousReadAccess
-      }
-      visuals {
-        ...VisualFull
       }
     }
     collaboration {
@@ -378,11 +367,6 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     community {
       ...EntityDashboardCommunity
-    }
-    tagset {
-      id
-      name
-      tags
     }
     opportunities {
       ...OpportunityCard
@@ -393,11 +377,43 @@ export const ChallengeProfileFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${OpportunityCardFragmentDoc}
 `;
+export const FullLocationFragmentDoc = gql`
+  fragment fullLocation on Location {
+    id
+    country
+    city
+    addressLine1
+    addressLine2
+    stateOrProvince
+    postalCode
+  }
+`;
 export const ChallengeInfoFragmentDoc = gql`
   fragment ChallengeInfo on Challenge {
     id
-    displayName
     nameID
+    profile {
+      id
+      displayName
+      tagline
+      description
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        uri
+      }
+      visuals {
+        ...VisualFull
+      }
+      location {
+        ...fullLocation
+      }
+    }
     community {
       id
       authorization {
@@ -411,28 +427,23 @@ export const ChallengeInfoFragmentDoc = gql`
     }
     context {
       id
-      tagline
       authorization {
         id
         myPrivileges
       }
-      references {
-        id
-        name
-        uri
-      }
-      visuals {
-        ...VisualFull
-      }
     }
   }
   ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
 `;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const OpportunitiesOnChallengeFragmentDoc = gql`
@@ -447,24 +458,14 @@ export const OpportunitiesOnChallengeFragmentDoc = gql`
 export const ContextTabFragmentDoc = gql`
   fragment ContextTab on Context {
     id
-    tagline
-    background
     authorization {
       id
       myPrivileges
     }
-    location {
-      ...fullLocation
-    }
     vision
     impact
     who
-    visuals {
-      ...VisualFull
-    }
   }
-  ${FullLocationFragmentDoc}
-  ${VisualFullFragmentDoc}
 `;
 export const LifecycleContextTabFragmentDoc = gql`
   fragment LifecycleContextTab on Lifecycle {
@@ -484,11 +485,28 @@ export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
     nameID
-    displayName
-    tagset {
+    profile {
       id
-      name
-      tags
+      displayName
+      description
+      tagline
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        description
+        uri
+      }
+      visuals {
+        ...VisualFull
+      }
+      location {
+        ...fullLocation
+      }
     }
     authorization {
       id
@@ -506,6 +524,8 @@ export const HubDetailsFragmentDoc = gql`
       ...ContextDetails
     }
   }
+  ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const HubInfoFragmentDoc = gql`
@@ -609,7 +629,6 @@ export const CanvasTemplateWithValueFragmentDoc = gql`
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
-    displayName
     nameID
     authorization {
       id
@@ -620,18 +639,23 @@ export const ChallengeCardFragmentDoc = gql`
       name
       value
     }
-    context {
+    profile {
       id
       tagline
-      vision
+      displayName
+      description
       visuals {
         ...VisualUri
       }
+      tagset {
+        id
+        name
+        tags
+      }
     }
-    tagset {
+    context {
       id
-      name
-      tags
+      vision
     }
     lifecycle {
       id
@@ -644,7 +668,6 @@ export const HubPageFragmentDoc = gql`
   fragment HubPage on Hub {
     id
     nameID
-    displayName
     visibility
     metrics {
       id
@@ -659,23 +682,28 @@ export const HubPageFragmentDoc = gql`
     host {
       ...AssociatedOrganizationDetails
     }
-    context {
+    profile {
       id
+      displayName
+      description
       tagline
-      vision
       visuals {
         ...VisualUri
       }
+      tagset {
+        id
+        name
+        tags
+      }
+    }
+    context {
+      id
+      vision
       authorization {
         id
         anonymousReadAccess
         myPrivileges
       }
-    }
-    tagset {
-      id
-      name
-      tags
     }
     ... on Hub {
       collaboration {
@@ -707,7 +735,10 @@ export const AdminHubFragmentDoc = gql`
   fragment AdminHub on Hub {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
     authorization {
       id
       myPrivileges
@@ -726,22 +757,28 @@ export const ChallengesOnHubFragmentDoc = gql`
 export const ContextDetailsProviderFragmentDoc = gql`
   fragment ContextDetailsProvider on Context {
     id
-    tagline
-    background
     vision
     impact
     who
-    visuals {
-      ...VisualUri
-    }
   }
-  ${VisualUriFragmentDoc}
 `;
 export const HubDetailsProviderFragmentDoc = gql`
   fragment HubDetailsProvider on Hub {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+      tagline
+      visuals {
+        ...VisualUri
+      }
+      tagset {
+        id
+        name
+        tags
+      }
+    }
     authorization {
       id
       anonymousReadAccess
@@ -753,39 +790,50 @@ export const HubDetailsProviderFragmentDoc = gql`
     community {
       id
     }
-    tagset {
-      id
-      name
-      tags
-    }
     context {
       ...ContextDetailsProvider
     }
     visibility
   }
+  ${VisualUriFragmentDoc}
   ${ContextDetailsProviderFragmentDoc}
 `;
 export const HubNameFragmentDoc = gql`
   fragment HubName on Hub {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const OpportunityPageFragmentDoc = gql`
   fragment OpportunityPage on Opportunity {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        description
+        uri
+      }
+      visuals {
+        ...VisualUri
+      }
+    }
     authorization {
       id
       anonymousReadAccess
       myPrivileges
-    }
-    tagset {
-      id
-      name
-      tags
     }
     metrics {
       id
@@ -813,18 +861,11 @@ export const OpportunityPageFragmentDoc = gql`
     }
     context {
       id
-      tagline
       vision
       authorization {
         id
         anonymousReadAccess
         myPrivileges
-      }
-      references {
-        id
-        name
-        description
-        uri
       }
       recommendations {
         id
@@ -832,16 +873,13 @@ export const OpportunityPageFragmentDoc = gql`
         description
         uri
       }
-      visuals {
-        ...VisualUri
-      }
     }
     community {
       ...EntityDashboardCommunity
     }
   }
-  ${DashboardTopCalloutsFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
 `;
 export const OpportunityPageRelationsFragmentDoc = gql`
@@ -858,26 +896,35 @@ export const OpportunityProviderFragmentDoc = gql`
   fragment OpportunityProvider on Opportunity {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+      description
+      tagline
+      visuals {
+        ...VisualFull
+      }
+      tagset {
+        id
+        name
+        tags
+      }
+      location {
+        id
+        country
+        city
+      }
+    }
     authorization {
       id
       myPrivileges
     }
     context {
       id
-      tagline
       authorization {
         id
         myPrivileges
         anonymousReadAccess
-      }
-      visuals {
-        ...VisualFull
-      }
-      location {
-        id
-        country
-        city
       }
     }
     community {
@@ -894,7 +941,10 @@ export const NewOpportunityFragmentDoc = gql`
   fragment NewOpportunity on Opportunity {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -2126,7 +2176,10 @@ export const CardParentFragmentDoc = gql`
     hub {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       authorization {
         id
         anonymousReadAccess
@@ -2135,7 +2188,10 @@ export const CardParentFragmentDoc = gql`
     challenge {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       authorization {
         id
         anonymousReadAccess
@@ -2144,7 +2200,10 @@ export const CardParentFragmentDoc = gql`
     opportunity {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       authorization {
         id
         anonymousReadAccess
@@ -2238,18 +2297,22 @@ export const SearchResultHubFragmentDoc = gql`
     hub {
       id
       nameID
-      displayName
-      context {
+      profile {
         id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
         tagline
         visuals {
           ...VisualUri
         }
-        vision
       }
-      tagset {
+      context {
         id
-        tags
+        vision
       }
       authorization {
         id
@@ -2265,19 +2328,23 @@ export const SearchResultChallengeFragmentDoc = gql`
     challenge {
       id
       nameID
-      displayName
-      hubID
-      context {
+      profile {
         id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
         tagline
         visuals {
           ...VisualUri
         }
-        vision
       }
-      tagset {
+      hubID
+      context {
         id
-        tags
+        vision
       }
       authorization {
         id
@@ -2287,8 +2354,9 @@ export const SearchResultChallengeFragmentDoc = gql`
     hub {
       id
       nameID
-      displayName
-      context {
+      profile {
+        id
+        displayName
         tagline
       }
       authorization {
@@ -2305,18 +2373,22 @@ export const SearchResultOpportunityFragmentDoc = gql`
     opportunity {
       id
       nameID
-      displayName
-      context {
+      profile {
         id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
         tagline
         visuals {
           ...VisualUri
         }
-        vision
       }
-      tagset {
+      context {
         id
-        tags
+        vision
       }
       authorization {
         id
@@ -2326,7 +2398,10 @@ export const SearchResultOpportunityFragmentDoc = gql`
     challenge {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       authorization {
         id
         anonymousReadAccess
@@ -2335,7 +2410,10 @@ export const SearchResultOpportunityFragmentDoc = gql`
     hub {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       visibility
     }
   }
@@ -2455,9 +2533,9 @@ export const ActivityLogChallengeCreatedFragmentDoc = gql`
     challenge {
       id
       nameID
-      displayName
-      context {
+      profile {
         id
+        displayName
         tagline
       }
     }
@@ -2468,9 +2546,9 @@ export const ActivityLogOpportunityCreatedFragmentDoc = gql`
     opportunity {
       id
       nameID
-      displayName
-      context {
+      profile {
         id
+        displayName
         tagline
       }
     }
@@ -2595,7 +2673,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
           id
           uri
         }
-        tagset {
+        tagsets {
           id
           tags
         }
@@ -3432,27 +3510,31 @@ export const ChallengeExplorerDataDocument = gql`
     hubs(IDs: $hubIDs) {
       id
       nameID
-      displayName
-      context {
+      profile {
         id
         tagline
+        displayName
       }
       visibility
       challenges(IDs: $challengeIDs) {
         id
         nameID
-        displayName
-        context {
+        profile {
           id
           tagline
+          displayName
+          description
           visuals {
             ...VisualUri
           }
-          vision
+          tagset {
+            id
+            tags
+          }
         }
-        tagset {
+        context {
           id
-          tags
+          vision
         }
       }
     }
@@ -3578,7 +3660,7 @@ export const ChallengeDashboardReferencesAndRecommendationsDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        context {
+        profile {
           id
           references {
             id
@@ -3586,6 +3668,9 @@ export const ChallengeDashboardReferencesAndRecommendationsDocument = gql`
             uri
             description
           }
+        }
+        context {
+          id
           recommendations {
             id
             name
@@ -3760,7 +3845,10 @@ export const UpdateChallengeDocument = gql`
     updateChallenge(challengeData: $input) {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -3809,7 +3897,10 @@ export const UpdateChallengeInnovationFlowDocument = gql`
   mutation updateChallengeInnovationFlow($input: UpdateChallengeInnovationFlowInput!) {
     updateChallengeInnovationFlow(challengeData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -4261,7 +4352,10 @@ export const ChallengeNameDocument = gql`
       challenge(ID: $challengeId) {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -4321,26 +4415,30 @@ export const ChallengeProfileInfoDocument = gql`
       challenge(ID: $challengeId) {
         id
         nameID
-        displayName
-        tagset {
+        profile {
           id
-          name
-          tags
+          displayName
+          tagline
+          tagset {
+            id
+            name
+            tags
+          }
+          visuals {
+            ...VisualFull
+          }
         }
         lifecycle {
           state
         }
         context {
           ...ContextDetails
-          visuals {
-            ...VisualFull
-          }
         }
       }
     }
   }
-  ${ContextDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${ContextDetailsFragmentDoc}
 `;
 
 /**
@@ -4452,11 +4550,18 @@ export const AboutPageNonMembersDocument = gql`
       id
       ... on Hub @include(if: $includeHub) {
         nameID
-        displayName
-        tagset {
+        profile {
           id
-          name
-          tags
+          displayName
+          tagline
+          tagset {
+            id
+            name
+            tags
+          }
+          visuals {
+            ...VisualFull
+          }
         }
         host {
           ...AssociatedOrganizationDetails
@@ -4478,15 +4583,22 @@ export const AboutPageNonMembersDocument = gql`
       challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+          tagline
+          tagset {
+            id
+            name
+            tags
+          }
+          visuals {
+            ...VisualFull
+          }
+        }
         authorization {
           id
           myPrivileges
-        }
-        tagset {
-          id
-          name
-          tags
         }
         lifecycle {
           ...LifecycleContextTab
@@ -4508,11 +4620,18 @@ export const AboutPageNonMembersDocument = gql`
       opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
         id
         nameID
-        displayName
-        tagset {
+        profile {
           id
-          name
-          tags
+          displayName
+          tagline
+          tagset {
+            id
+            name
+            tags
+          }
+          visuals {
+            ...VisualFull
+          }
         }
         lifecycle {
           ...LifecycleContextTab
@@ -4533,6 +4652,7 @@ export const AboutPageNonMembersDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
   ${ContextTabFragmentDoc}
@@ -4613,7 +4733,7 @@ export const AboutPageMembersDocument = gql`
         community @include(if: $communityReadAccess) {
           ...EntityDashboardCommunity
         }
-        context {
+        profile {
           id
           references @include(if: $referencesReadAccess) {
             ...ReferenceDetails
@@ -4625,7 +4745,7 @@ export const AboutPageMembersDocument = gql`
         community @include(if: $communityReadAccess) {
           ...EntityDashboardCommunity
         }
-        context {
+        profile {
           id
           references @include(if: $referencesReadAccess) {
             ...ReferenceDetails
@@ -4637,7 +4757,7 @@ export const AboutPageMembersDocument = gql`
         community @include(if: $communityReadAccess) {
           ...EntityDashboardCommunity
         }
-        context {
+        profile {
           id
           references @include(if: $referencesReadAccess) {
             ...ReferenceDetails
@@ -5336,7 +5456,7 @@ export const HubDashboardReferencesAndRecommendationsDocument = gql`
   query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
-      context {
+      profile {
         id
         references {
           id
@@ -5344,6 +5464,9 @@ export const HubDashboardReferencesAndRecommendationsDocument = gql`
           uri
           description
         }
+      }
+      context {
+        id
         recommendations {
           id
           name
@@ -5464,7 +5587,6 @@ export const DeleteHubDocument = gql`
     deleteHub(deleteData: $input) {
       id
       nameID
-      displayName
     }
   }
 `;
@@ -6208,7 +6330,7 @@ export const HubVisualDocument = gql`
   query hubVisual($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
-      context {
+      profile {
         visuals {
           ...VisualUri
         }
@@ -6732,7 +6854,10 @@ export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($input: UpdateOpportunityInput!) {
     updateOpportunity(opportunityData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -6781,7 +6906,10 @@ export const UpdateOpportunityInnovationFlowDocument = gql`
   mutation updateOpportunityInnovationFlow($input: UpdateOpportunityInnovationFlowInput!) {
     updateOpportunityInnovationFlow(opportunityData: $input) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -6899,7 +7027,10 @@ export const OpportunitiesDocument = gql`
         opportunities {
           id
           nameID
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
@@ -7394,7 +7525,10 @@ export const OpportunityNameDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -7454,11 +7588,22 @@ export const OpportunityProfileInfoDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         nameID
-        displayName
-        tagset {
+        profile {
           id
-          name
-          tags
+          displayName
+          description
+          tagline
+          tagset {
+            id
+            name
+            tags
+          }
+          visuals {
+            ...VisualFull
+          }
+          location {
+            ...fullLocation
+          }
         }
         context {
           ...ContextDetails
@@ -7466,6 +7611,8 @@ export const OpportunityProfileInfoDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
+  ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 
@@ -7670,21 +7817,22 @@ export const OpportunityWithActivityDocument = gql`
       id
       opportunities {
         id
-        displayName
-        nameID
-        metrics {
-          name
-          value
-        }
-        context {
+        profile {
+          id
+          displayName
           tagline
           visuals {
             ...VisualUri
           }
+          tagset {
+            name
+            tags
+          }
         }
-        tagset {
+        nameID
+        metrics {
           name
-          tags
+          value
         }
       }
     }
@@ -13175,9 +13323,9 @@ export const ChallengeApplicationDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        displayName
-        context {
+        profile {
           id
+          displayName
           tagline
           visuals {
             id
@@ -13250,8 +13398,9 @@ export const HubApplicationDocument = gql`
   query hubApplication($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
-      displayName
-      context {
+      profile {
+        id
+        displayName
         tagline
         visuals {
           ...VisualUri
@@ -14321,7 +14470,10 @@ export const ChallengesWithCommunityDocument = gql`
       challenges {
         id
         nameID
-        displayName
+        profile {
+          id
+          displayName
+        }
         community {
           id
           displayName
@@ -18409,19 +18561,22 @@ export const HubContributionDetailsDocument = gql`
     hub(ID: $hubId) {
       id
       nameID
-      displayName
       visibility
-      tagset {
+      profile {
         id
-        name
-        tags
-      }
-      context {
-        id
+        displayName
         tagline
         visuals {
           ...VisualUri
         }
+        tagset {
+          id
+          name
+          tags
+        }
+      }
+      context {
+        id
       }
       community {
         id
@@ -18491,18 +18646,21 @@ export const ChallengeContributionDetailsDocument = gql`
       challenge(ID: $challengeId) {
         id
         nameID
-        displayName
-        tagset {
+        profile {
           id
-          name
-          tags
-        }
-        context {
-          id
+          displayName
+          tagset {
+            id
+            name
+            tags
+          }
           tagline
           visuals {
             ...VisualUri
           }
+        }
+        context {
+          id
         }
         community {
           id
@@ -18579,19 +18737,22 @@ export const OpportunityContributionDetailsDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         nameID
-        displayName
-        parentNameID
-        tagset {
+        profile {
           id
-          name
-          tags
-        }
-        context {
-          id
+          displayName
+          tagset {
+            id
+            name
+            tags
+          }
           tagline
           visuals {
             ...VisualUri
           }
+        }
+        parentNameID
+        context {
+          id
         }
         community {
           id
@@ -20471,56 +20632,6 @@ export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRole
   return { query: UserRolesSearchCardsDocument, variables: variables };
 }
 
-export const CreateReferenceOnContextDocument = gql`
-  mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
-    createReferenceOnContext(referenceInput: $input) {
-      ...ReferenceDetails
-    }
-  }
-  ${ReferenceDetailsFragmentDoc}
-`;
-export type CreateReferenceOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateReferenceOnContextMutation,
-  SchemaTypes.CreateReferenceOnContextMutationVariables
->;
-
-/**
- * __useCreateReferenceOnContextMutation__
- *
- * To run a mutation, you first call `useCreateReferenceOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateReferenceOnContextMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createReferenceOnContextMutation, { data, loading, error }] = useCreateReferenceOnContextMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateReferenceOnContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateReferenceOnContextMutation,
-    SchemaTypes.CreateReferenceOnContextMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateReferenceOnContextMutation,
-    SchemaTypes.CreateReferenceOnContextMutationVariables
-  >(CreateReferenceOnContextDocument, options);
-}
-
-export type CreateReferenceOnContextMutationHookResult = ReturnType<typeof useCreateReferenceOnContextMutation>;
-export type CreateReferenceOnContextMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreateReferenceOnContextMutation>;
-export type CreateReferenceOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateReferenceOnContextMutation,
-  SchemaTypes.CreateReferenceOnContextMutationVariables
->;
 export const CreateReferenceOnProfileDocument = gql`
   mutation createReferenceOnProfile($input: CreateReferenceOnProfileInput!) {
     createReferenceOnProfile(referenceInput: $input) {

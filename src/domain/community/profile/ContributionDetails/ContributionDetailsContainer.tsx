@@ -78,43 +78,43 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
   const details = useMemo<ContributionDetails | undefined>(() => {
     if (hubData) {
       return {
-        displayName: hubData.hub.displayName,
+        displayName: hubData.hub.profile.displayName,
         journeyTypeName: 'hub',
-        bannerUri: getVisualBannerNarrow(hubData.hub.context?.visuals),
-        tags: hubData.hub.tagset?.tags ?? [],
+        bannerUri: getVisualBannerNarrow(hubData.hub.profile.visuals),
+        tags: hubData.hub.profile.tagset?.tags ?? [],
         journeyUri: buildHubUrl(hubData.hub.nameID),
         communityId: hubData.hub.community?.id,
-        tagline: hubData.hub.context?.tagline ?? '',
+        tagline: hubData.hub.profile.tagline ?? '',
         hubVisibility: hubData.hub.visibility,
       };
     }
 
     if (challengeData) {
       return {
-        displayName: challengeData.hub.challenge.displayName,
+        displayName: challengeData.hub.challenge.profile.displayName,
         journeyTypeName: 'challenge',
-        bannerUri: getVisualBannerNarrow(challengeData.hub.challenge.context?.visuals),
-        tags: challengeData.hub.challenge.tagset?.tags ?? [],
+        bannerUri: getVisualBannerNarrow(challengeData.hub.challenge.profile.visuals),
+        tags: challengeData.hub.challenge.profile.tagset?.tags ?? [],
         journeyUri: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
         communityId: challengeData.hub.challenge.community?.id,
-        tagline: challengeData.hub.challenge.context?.tagline ?? '',
+        tagline: challengeData.hub.challenge.profile.tagline ?? '',
         hubVisibility: challengeData.hub.visibility,
       };
     }
 
     if (opportunityData) {
       return {
-        displayName: opportunityData.hub.opportunity.displayName,
+        displayName: opportunityData.hub.opportunity.profile.displayName,
         journeyTypeName: 'opportunity',
-        bannerUri: getVisualBannerNarrow(opportunityData.hub.opportunity.context?.visuals),
-        tags: opportunityData.hub.opportunity.tagset?.tags ?? [],
+        bannerUri: getVisualBannerNarrow(opportunityData.hub.opportunity.profile.visuals),
+        tags: opportunityData.hub.opportunity.profile.tagset?.tags ?? [],
         journeyUri: buildOpportunityUrl(
           opportunityData.hub.nameID,
           opportunityData.hub.opportunity.parentNameID || '',
           opportunityData.hub.opportunity.nameID
         ),
         communityId: opportunityData.hub.opportunity.community?.id,
-        tagline: opportunityData.hub.opportunity.context?.tagline ?? '',
+        tagline: opportunityData.hub.opportunity.profile.tagline ?? '',
         hubVisibility: opportunityData.hub.visibility,
       };
     }

@@ -1,5 +1,0 @@
-mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
-  createReferenceOnContext(referenceInput: $input) {
-    ...ReferenceDetails
-  }
-}

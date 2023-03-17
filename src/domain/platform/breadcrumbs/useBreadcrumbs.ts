@@ -54,7 +54,7 @@ export const useBreadcrumbs = () => {
       // Hub breadcrumb - if we are watching a challenge or an aspect
       if (hubNameId && (challengeNameId || aspectNameId)) {
         items.push({
-          title: _hub?.hub.displayName || '',
+          title: _hub?.hub.profile.displayName || '',
           icon: HubIcon,
           url: buildHubUrl(hubNameId),
           entity: 'hub',
@@ -63,7 +63,7 @@ export const useBreadcrumbs = () => {
       // Challenge breadcrumb - if we are watching an opportunity or an aspect in a challenge
       if (hubNameId && challengeNameId && (opportunityNameId || aspectNameId)) {
         items.push({
-          title: _challenge?.hub.challenge.displayName || '',
+          title: _challenge?.hub.challenge.profile.displayName || '',
           icon: ChallengeIcon,
           url: buildChallengeUrl(hubNameId, challengeNameId),
           entity: 'challenge',
@@ -72,7 +72,7 @@ export const useBreadcrumbs = () => {
       // Opportunity breadcrumb - if we are inside an opportunity and showOpportunity is true
       if (hubNameId && challengeNameId && opportunityNameId && showOpportunity) {
         items.push({
-          title: _opportunity?.hub.opportunity.displayName || '',
+          title: _opportunity?.hub.opportunity.profile.displayName || '',
           icon: ChallengeIcon, // TODO: We'll need an opportunity Icon if we want to show opportunity breadcrumb
           url: buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId),
           entity: 'opportunity',
@@ -87,9 +87,9 @@ export const useBreadcrumbs = () => {
     opportunityNameId,
     showOpportunity,
     aspectNameId,
-    _challenge?.hub.challenge.displayName,
-    _hub?.hub.displayName,
-    _opportunity?.hub.opportunity.displayName,
+    _challenge?.hub.challenge.profile.displayName,
+    _hub?.hub.profile.displayName,
+    _opportunity?.hub.opportunity.profile.displayName,
   ]);
 
   return {

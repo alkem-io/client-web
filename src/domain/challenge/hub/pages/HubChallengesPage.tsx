@@ -67,10 +67,10 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={challenge => (
               <ChallengeCard
-                bannerUri={getVisualBannerNarrow(challenge.context?.visuals)!}
-                displayName={challenge.displayName}
-                tags={challenge.tagset?.tags!}
-                tagline={challenge.context?.tagline!}
+                bannerUri={getVisualBannerNarrow(challenge.profile.visuals)!}
+                displayName={challenge.profile.displayName}
+                tags={challenge.profile.tagset?.tags!}
+                tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}
                 innovationFlowState={challenge.lifecycle?.state}
                 journeyUri={buildChallengeUrl(hubNameId, challenge.nameID)}

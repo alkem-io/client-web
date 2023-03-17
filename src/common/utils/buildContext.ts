@@ -8,40 +8,28 @@ import {
 } from '../../core/apollo/generated/graphql-schema';
 
 interface ContextObject {
-  background?: string;
   impact?: string;
-  references?: Reference[];
   recommendations?: Reference[];
-  tagline?: string;
-  location?: Pick<Location, 'city' | 'country'>;
   vision?: string;
   who?: string;
 }
 
 export const createContextInput = (obj: ContextObject): CreateContextInput => {
-  const { background, impact, tagline, vision, who, references = [], location } = obj;
+  const { impact, vision, who } = obj;
 
   return {
-    background: background,
     impact: impact,
-    references: references.map(toCreateReferenceInput),
-    tagline: tagline,
-    location: location,
     vision: vision,
     who: who,
   };
 };
 
 export const updateContextInput = (obj: ContextObject): UpdateContextInput => {
-  const { background, impact, tagline, vision, who, references = [], recommendations = [], location } = obj;
+  const { impact, vision, who, recommendations = [] } = obj;
 
   return {
-    background: background,
     impact: impact,
-    references: references.map(toUpdateReferenceInput),
     recommendations: recommendations.map(toUpdateReferenceInput),
-    tagline: tagline,
-    location: location,
     vision: vision,
     who: who,
   };
