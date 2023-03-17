@@ -103,7 +103,8 @@
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
-    "contact-leads": "Contact the {{contact}}(s)"
+    "contact-leads": "Contact the {{contact}}(s)",
+    "use": "Use"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -565,7 +566,12 @@
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "canvas-template": "Whiteboard template"
+    "template-library": "Template Library",
+    "filter-placeholder": "Search Templates...",
+    "canvas-template": "Whiteboard template",
+    "hub-templates": "Templates selected by the host of this community",
+    "load-platform-templates": "Or click here to browse through all platform templates",
+    "platform-templates": "Platform Templates"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",

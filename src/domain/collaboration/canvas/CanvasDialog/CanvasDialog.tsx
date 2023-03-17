@@ -21,14 +21,18 @@ import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Button, ButtonProps } from '@mui/material';
+import { Box, Button, ButtonProps } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import canvasSchema from '../validation/canvasSchema';
 import isCanvasValueEqual from '../utils/isCanvasValueEqual';
-import CanvasDialogHeader from './CanvasDialogHeader';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { PageTitle } from '../../../../core/ui/typography';
+import CanvasTemplatesLibrary from '../CanvasTemplatesLibrary/CanvasTemplatesLibrary';
+import { CanvasTemplateWithValue } from '../CanvasTemplatesLibrary/CanvasTemplate';
+import mergeCanvas from '../utils/mergeCanvas';
 
 interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -190,6 +194,14 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     actions.onCancel(canvas!);
   };
 
+  const handleImportTemplate = async (template: CanvasTemplateWithValue) => {
+    console.log('handleImportTemplate...');
+    const canvasApi = await excalidrawApiRef.current?.readyPromise;
+    if (canvasApi && options.canEdit && options.checkedOutByMe) {
+      mergeCanvas(canvasApi, template.value);
+    }
+  };
+
   const currentAction: CanvasAction = options.checkedOutByMe ? 'save-and-checkin' : 'checkout';
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
@@ -229,15 +241,30 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={() => {}} validationSchema={canvasSchema}>
         {({ isValid }) => (
           <>
-            <DialogHeader actions={options.headerActions} onClose={onClose}>
-              <CanvasDialogHeader
-                editMode={options.checkedOutByMe}
-                canvasDisplayName={canvas?.displayName}
-                authorAvatarUri={canvas?.createdBy?.profile.visual?.uri}
-                editDate={canvas?.createdDate}
-                authorDisplayName={canvas?.createdBy?.profile.displayName}
-                onLibraryButtonClick={() => {}}
-              />
+            <DialogHeader
+              actions={options.headerActions}
+              onClose={onClose}
+              titleContainerProps={{ flexDirection: options.checkedOutByMe ? 'row' : 'column' }}
+            >
+              {options.checkedOutByMe ? (
+                <>
+                  <Box
+                    component={FormikInputField}
+                    title={t('fields.displayName')}
+                    name="displayName"
+                    size="small"
+                    maxWidth={gutters(30)}
+                  />
+                  <CanvasTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+                </>
+              ) : (
+                <>
+                  <Authorship authorAvatarUri={canvas?.createdBy?.profile.visual?.uri} date={canvas?.createdDate}>
+                    {canvas?.createdBy?.profile.displayName}
+                  </Authorship>
+                  <PageTitle>{canvas?.displayName}</PageTitle>
+                </>
+              )}
             </DialogHeader>
             <DialogContent classes={{ root: styles.dialogContent }}>
               {!state?.loadingCanvasValue && canvas && (
