@@ -10,6 +10,7 @@ import Gutters from '../../grid/Gutters';
 import { Actions } from '../../actions/Actions';
 import Dialog from '../../dialog/Dialog';
 import { useNotification } from '../../notifications/useNotification';
+import { BlockTitle } from '../../typography';
 
 interface InsertImageButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -61,7 +62,9 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
         <AddPhotoAlternateOutlined />
       </IconButton>
       <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogHeader onClose={closeDialog}>{t('components.wysiwyg-editor.image.dialogHeader')}</DialogHeader>
+        <DialogHeader onClose={closeDialog}>
+          <BlockTitle>{t('components.wysiwyg-editor.image.dialogHeader')}</BlockTitle>
+        </DialogHeader>
         <Formik initialValues={initialValues} onSubmit={insertImage}>
           <Form>
             <Gutters>

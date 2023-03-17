@@ -1,17 +1,22 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { VERY_LONG_TEXT_LENGTH, LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import {
+  LONG_TEXT_LENGTH,
+  MID_TEXT_LENGTH,
+  VERY_LONG_TEXT_LENGTH,
+} from '../../../../../core/ui/forms/field-length.constants';
 import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import MarkdownInput from './MarkdownInput';
+import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export const contextSegmentSchema = yup.object().shape({
-  background: yup.string().max(VERY_LONG_TEXT_LENGTH),
-  impact: yup.string().max(LONG_TEXT_LENGTH),
-  tagline: yup.string(),
-  vision: yup.string().max(VERY_LONG_TEXT_LENGTH),
-  who: yup.string().max(LONG_TEXT_LENGTH),
+  background: MarkdownValidator(VERY_LONG_TEXT_LENGTH),
+  impact: MarkdownValidator(LONG_TEXT_LENGTH),
+  vision: MarkdownValidator(VERY_LONG_TEXT_LENGTH),
+  who: MarkdownValidator(LONG_TEXT_LENGTH),
+  tagline: yup.string().max(MID_TEXT_LENGTH),
 });
 
 export interface ContextSegmentProps {
