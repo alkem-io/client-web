@@ -146,6 +146,7 @@ const CalloutLayout = ({
             <ShareButton url={callout.url} entityTypeName="callout" />
           </>
         }
+        titleContainerProps={{ flexDirection: 'column' }}
       >
         {hasCalloutDetails && (
           <Authorship authorAvatarUri={callout.authorAvatarUri} date={callout.publishedAt}>
