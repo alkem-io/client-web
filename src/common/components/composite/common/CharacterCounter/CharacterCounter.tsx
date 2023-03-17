@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { DistributiveOmit } from '@mui/types';
-import { compact } from 'lodash';
-import { Box, Typography, TypographyProps } from '@mui/material';
+import { Box, TypographyProps } from '@mui/material';
 import { Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
@@ -12,13 +11,8 @@ type CharacterCounterProps = DistributiveOmit<TypographyProps, 'variant'> & {
   disabled?: boolean;
 };
 
-const getText = (count: number, separator: string, maxLength?: number) => {
-  const color = maxLength && count > maxLength ? 'negative.main' : undefined;
-
-  const content = compact([count, maxLength]).join(separator);
-
-  return <Typography color={color}>{content}</Typography>;
-};
+const getText = (count: number, separator: string, maxLength?: number) =>
+  [count, maxLength].filter(num => typeof num !== 'undefined').join(separator);
 
 export const CharacterCounter = ({
   count = 0,
@@ -28,10 +22,16 @@ export const CharacterCounter = ({
   children,
   ...rest
 }: PropsWithChildren<CharacterCounterProps>) => {
+  const color = maxLength && count > maxLength ? 'negative.main' : undefined;
+
   return (
     <Box display="flex" justifyContent={children ? 'space-between' : 'end'} gap={gutters()}>
       {children}
-      {!disabled && <Caption {...rest}>{getText(count, separator, maxLength)}</Caption>}
+      {!disabled && (
+        <Caption color={color} {...rest}>
+          {getText(count, separator, maxLength)}
+        </Caption>
+      )}
     </Box>
   );
 };
