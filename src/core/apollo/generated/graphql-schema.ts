@@ -12817,6 +12817,198 @@ export type CalloutMessageReceivedSubscription = {
   };
 };
 
+export type HubCanvasTemplatesLibraryQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCanvasTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title: string;
+              description: string;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type HubCanvasTemplateValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type HubCanvasTemplateValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplate?:
+            | {
+                __typename?: 'CanvasTemplate';
+                value: string;
+                id: string;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type PlatformCanvasTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformCanvasTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovatonPack';
+        id: string;
+        nameID: string;
+        displayName: string;
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              canvasTemplates: Array<{
+                __typename?: 'CanvasTemplate';
+                id: string;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  title: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }>;
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type PlatformCanvasTemplateValueQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID'];
+  canvasTemplateId: Scalars['UUID'];
+}>;
+
+export type PlatformCanvasTemplateValueQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            nameID: string;
+            displayName: string;
+            provider?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }
+              | undefined;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        value: string;
+                        id: string;
+                        info: {
+                          __typename?: 'TemplateInfo';
+                          id: string;
+                          title: string;
+                          description: string;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CanvasTemplateProviderProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type CanvasDetailsFragment = {
   __typename?: 'Canvas';
   id: string;
