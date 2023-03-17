@@ -72,7 +72,7 @@ fragment CalendarEventDetails on CalendarEvent {
         id
         uri
       }
-      tagset {
+      tagsets {
         id
         tags
       }
