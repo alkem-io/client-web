@@ -65,9 +65,9 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     if (type === ApplicationTypeEnum.hub) {
       return {
         communityId: hubData?.hub.community?.id || '',
-        displayName: hubData?.hub.displayName || '',
-        avatar: getVisualAvatar(hubData?.hub.context?.visuals),
-        tagline: hubData?.hub.context?.tagline || '',
+        displayName: hubData?.hub.profile.displayName || '',
+        avatar: getVisualAvatar(hubData?.hub.profile.visuals),
+        tagline: hubData?.hub.profile.tagline || '',
         description: hubTemplateData?.hub.community?.applicationForm?.description,
         questions: hubTemplateData?.hub.community?.applicationForm?.questions || [],
         backUrl: buildHubUrl(hubNameId),
@@ -76,9 +76,9 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     if (type === ApplicationTypeEnum.challenge) {
       return {
         communityId: challengeData?.hub.challenge.community?.id || '',
-        displayName: challengeData?.hub.challenge.displayName || '',
-        avatar: getVisualAvatar(challengeData?.hub.challenge.context?.visuals),
-        tagline: challengeData?.hub.challenge.context?.tagline || '',
+        displayName: challengeData?.hub.challenge.profile.displayName || '',
+        avatar: getVisualAvatar(challengeData?.hub.challenge.profile.visuals),
+        tagline: challengeData?.hub.challenge.profile.tagline || '',
         description: challengeTemplateData?.hub.challenge.community?.applicationForm?.description,
         questions: challengeTemplateData?.hub.challenge.community?.applicationForm?.questions || [],
         backUrl: buildChallengeUrl(hubNameId, challengeNameId),

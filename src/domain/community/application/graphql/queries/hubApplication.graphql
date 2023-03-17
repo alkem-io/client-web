@@ -1,8 +1,9 @@
 query hubApplication($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
-    displayName
-    context{
+    profile {
+      id
+      displayName
       tagline
       visuals {
         ...VisualUri

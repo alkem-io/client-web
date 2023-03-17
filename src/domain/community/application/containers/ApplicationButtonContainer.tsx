@@ -42,7 +42,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
-  const { hubId, hubNameId, displayName: hubName, refetchHub } = useHub();
+  const { hubId, hubNameId, profile: hubProfile, refetchHub } = useHub();
 
   const { communityId } = useCommunityContext();
   const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({
@@ -105,7 +105,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
     joinParentUrl,
     applicationState: userApplication?.state,
     parentApplicationState: parentApplication?.state,
-    hubName,
+    hubName: hubProfile.displayName,
     challengeName,
     canJoinCommunity,
     canApplyToCommunity,

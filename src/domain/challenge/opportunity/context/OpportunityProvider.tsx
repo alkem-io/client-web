@@ -19,9 +19,9 @@ export interface OpportunityContextProps {
   challengeNameId: string;
   hubId: string;
   hubNameId: string;
-  displayName: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
+  displayName: string;
 }
 
 const OpportunityContext = React.createContext<OpportunityContextProps>({
@@ -33,12 +33,12 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   challengeNameId: '',
   hubId: '',
   hubNameId: '',
-  displayName: '',
   permissions: {
     viewerCanUpdate: false,
     communityReadAccess: false,
     contextPrivileges: [],
   },
+  displayName: '',
 });
 
 interface OpportunityProviderProps {}
@@ -55,7 +55,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const communityId = opportunity?.community?.id ?? '';
   // using the challenge provider
   const { challengeId } = useChallenge();
-  const displayName = opportunity?.displayName || '';
+  const displayName = opportunity?.profile.displayName || '';
 
   const permissions = useMemo<OpportunityViewerPermissions>(
     () => ({
@@ -72,6 +72,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     <OpportunityContext.Provider
       value={{
         opportunity,
+        displayName,
         hubId,
         hubNameId,
         challengeId,
@@ -79,7 +80,6 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         opportunityId,
         opportunityNameId,
         communityId,
-        displayName,
         permissions,
         loading,
       }}

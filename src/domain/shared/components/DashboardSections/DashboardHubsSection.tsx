@@ -9,10 +9,20 @@ import { MetricType } from '../../../platform/metrics/MetricType';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 
-type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id' | 'visibility';
+type NeededFields = 'nameID' | 'authorization' | 'id' | 'visibility';
 
 type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
-  context?: { tagline?: string; vision?: string; visuals?: VisualUriFragment[] };
+  context?: { vision?: string };
+  profile: {
+    displayName: string;
+    tagline: string;
+    tagset?: {
+      id: string;
+      name: string;
+      tags?: string[];
+    };
+    visuals?: VisualUriFragment[];
+  };
 };
 
 export interface DashboardHubSectionProps {
@@ -37,14 +47,14 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
       <CardsLayout items={hubs} disablePadding cards={false}>
         {hub => (
           <HubCard
-            bannerUri={getVisualBannerNarrow(hub.context?.visuals)}
+            bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
             hubId={hub.id}
-            displayName={hub.displayName}
+            displayName={hub.profile.displayName}
             journeyUri={buildHubUrl(hub.nameID)}
             vision={hub.context?.vision!}
             membersCount={getMetricCount(hub.metrics, MetricType.Member)}
-            tagline={hub.context?.tagline!}
-            tags={hub.tagset?.tags!}
+            tagline={hub.profile.tagline!}
+            tags={hub.profile.tagset?.tags!}
             hubVisibility={hub.visibility}
             {...getHubCardProps?.(hub)}
           />

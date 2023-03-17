@@ -139,7 +139,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const memberUsersCount = membersCount - (_hub?.hub.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community, { memberUsersCount });
 
-  const references = referencesData?.hub?.context?.references;
+  const references = referencesData?.hub?.profile.references;
   const recommendations = referencesData?.hub?.context?.recommendations;
 
   const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
