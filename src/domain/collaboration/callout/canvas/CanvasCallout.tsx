@@ -13,14 +13,14 @@ import { Skeleton } from '@mui/material';
 import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCardCanvas } from './types';
-import { BaseCalloutImpl } from '../Types';
+import { BaseCalloutProps } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import CanvasDialog from '../../canvas/CanvasDialog/CanvasDialog';
 
-interface CanvasCalloutProps extends BaseCalloutImpl {
+interface CanvasCalloutProps extends BaseCalloutProps {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCardCanvas[];
     canvasTemplate: CanvasTemplate;
@@ -31,16 +31,13 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
   (
     {
       callout,
-      calloutNames,
       hubNameId,
       loading,
       challengeNameId,
       opportunityNameId,
       canCreate = false,
-      onCalloutEdit,
-      onVisibilityChange,
-      onCalloutDelete,
       contributionsCount,
+      ...calloutLayoutProps
     },
     ref
   ) => {
@@ -78,14 +75,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     return (
       <>
         <PageContentBlock ref={ref} disablePadding disableGap>
-          <CalloutLayout
-            callout={callout}
-            calloutNames={calloutNames}
-            contributionsCount={contributionsCount}
-            onVisibilityChange={onVisibilityChange}
-            onCalloutEdit={onCalloutEdit}
-            onCalloutDelete={onCalloutDelete}
-          >
+          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             {showCards && (
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : callout.canvases}

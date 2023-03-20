@@ -57,7 +57,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { name, nameID, tagsets } = values;
+    const { name, nameID, tagsets, references } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -88,6 +88,12 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
                 displayName: name,
                 location: formatDatabaseLocation(values.location),
                 tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+                references: references.map(reference => ({
+                  ID: reference.id,
+                  name: reference.name,
+                  description: reference.description,
+                  uri: reference.uri,
+                })),
               },
             },
           },

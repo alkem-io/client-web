@@ -1214,6 +1214,7 @@ export const CalloutFragmentDoc = gql`
     displayName
     description
     state
+    sortOrder
     activity
     canvases {
       ...CanvasDetails
@@ -7600,6 +7601,12 @@ export const OpportunityProfileInfoDocument = gql`
           location {
             ...fullLocation
           }
+          references {
+            id
+            name
+            description
+            uri
+          }
         }
         context {
           ...ContextDetails
@@ -8785,6 +8792,56 @@ export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
 >;
 export type AspectCommentsMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
+export const UpdateCalloutsSortOrderDocument = gql`
+  mutation UpdateCalloutsSortOrder($collaborationId: UUID!, $calloutIds: [UUID_NAMEID!]!) {
+    updateCalloutsSortOrder(sortOrderData: { collaborationID: $collaborationId, calloutIDs: $calloutIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateCalloutsSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutsSortOrderMutation,
+  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutsSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutsSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutsSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutsSortOrderMutation, { data, loading, error }] = useUpdateCalloutsSortOrderMutation({
+ *   variables: {
+ *      collaborationId: // value for 'collaborationId'
+ *      calloutIds: // value for 'calloutIds'
+ *   },
+ * });
+ */
+export function useUpdateCalloutsSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutsSortOrderMutation,
+    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutsSortOrderMutation,
+    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+  >(UpdateCalloutsSortOrderDocument, options);
+}
+
+export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
+export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
+export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutsSortOrderMutation,
+  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+>;
 export const PostCommentInCalloutDocument = gql`
   mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
     sendMessageOnCallout(data: $data) {

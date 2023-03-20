@@ -20,6 +20,12 @@ query opportunityProfileInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!)
         location {
           ...fullLocation
         }
+        references {
+          id
+          name
+          description
+          uri
+        }
       }
       context {
         ...ContextDetails

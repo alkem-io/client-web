@@ -12,7 +12,7 @@ import { Message } from '../../../shared/components/Comments/models/message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
-import { BaseCalloutImpl } from '../Types';
+import { BaseCalloutProps } from '../Types';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import { Dialog, IconButton, useMediaQuery } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -22,7 +22,7 @@ import { ExpandContentIcon } from '../../../../core/ui/content/ExpandContent';
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
-interface CommentsCalloutProps extends BaseCalloutImpl {
+interface CommentsCalloutProps extends BaseCalloutProps {
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData;
   };
@@ -34,19 +34,7 @@ interface CommentsCalloutProps extends BaseCalloutImpl {
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
-  (
-    {
-      callout,
-      calloutNames,
-      loading,
-      onCalloutEdit,
-      onVisibilityChange,
-      onCalloutDelete,
-      isSubscribedToComments,
-      contributionsCount,
-    },
-    ref
-  ) => {
+  ({ callout, loading, isSubscribedToComments, contributionsCount, ...calloutLayoutProps }, ref) => {
     const { user: userMetadata, isAuthenticated } = useUserContext();
     const user = userMetadata?.user;
 
@@ -151,11 +139,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         <PageContentBlock ref={ref} disablePadding disableGap>
           <CalloutLayout
             callout={callout}
-            calloutNames={calloutNames}
             contributionsCount={contributionsCount}
-            onVisibilityChange={onVisibilityChange}
-            onCalloutEdit={onCalloutEdit}
-            onCalloutDelete={onCalloutDelete}
+            {...calloutLayoutProps}
             actions={
               lastMessageOnly && (
                 <IconButton onClick={() => setIsFullViewDialogOpen(true)}>
@@ -186,11 +171,8 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
         >
           <CalloutLayout
             callout={callout}
-            calloutNames={calloutNames}
             contributionsCount={contributionsCount}
-            onVisibilityChange={onVisibilityChange}
-            onCalloutEdit={onCalloutEdit}
-            onCalloutDelete={onCalloutDelete}
+            {...calloutLayoutProps}
             actions={
               <IconButton onClick={() => setIsFullViewDialogOpen(false)}>
                 <Close />

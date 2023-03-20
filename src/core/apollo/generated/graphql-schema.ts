@@ -9526,6 +9526,9 @@ export type OpportunityProfileInfoQuery = {
               postalCode: string;
             }
           | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+          | undefined;
       };
       context?:
         | {
@@ -10834,6 +10837,16 @@ export type AspectCommentsMessageReceivedSubscription = {
   };
 };
 
+export type UpdateCalloutsSortOrderMutationVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type UpdateCalloutsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+};
+
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
   id: string;
@@ -11450,6 +11463,7 @@ export type CalloutsQuery = {
                 displayName: string;
                 description: string;
                 state: CalloutState;
+                sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
                 canvases?:
@@ -11613,6 +11627,7 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
                   canvases?:
@@ -11786,6 +11801,7 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
                   canvases?:
@@ -12279,6 +12295,7 @@ export type CollaborationWithCalloutsFragment = {
         displayName: string;
         description: string;
         state: CalloutState;
+        sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
         canvases?:
@@ -12426,6 +12443,7 @@ export type CalloutFragment = {
   displayName: string;
   description: string;
   state: CalloutState;
+  sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
   canvases?:
