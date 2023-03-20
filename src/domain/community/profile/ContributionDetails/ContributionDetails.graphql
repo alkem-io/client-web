@@ -2,19 +2,23 @@ query hubContributionDetails($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     nameID
-    displayName
+
     visibility
-    tagset {
+    profile {
       id
-      name
-      tags
-    }
-    context {
-      id
+      displayName
       tagline
       visuals {
         ...VisualUri
       }
+      tagset {
+        id
+        name
+        tags
+      }
+    }
+    context {
+      id
     }
     community {
       id
@@ -29,18 +33,21 @@ query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAME
     challenge(ID: $challengeId) {
       id
       nameID
-      displayName
-      tagset {
+      profile {
         id
-        name
-        tags
-      }
-      context {
-        id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
         tagline
         visuals {
           ...VisualUri
         }
+      }
+      context {
+        id
       }
       community {
         id
@@ -57,19 +64,22 @@ query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_
     opportunity(ID: $opportunityId) {
       id
       nameID
-      displayName
-      parentNameID
-      tagset {
+      profile {
         id
-        name
-        tags
-      }
-      context {
-        id
+        displayName
+        tagset {
+          id
+          name
+          tags
+        }
         tagline
         visuals {
           ...VisualUri
         }
+      }
+      parentNameID
+      context {
+        id
       }
       community {
         id

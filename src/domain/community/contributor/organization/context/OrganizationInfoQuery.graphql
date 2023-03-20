@@ -1,0 +1,5 @@
+query organizationInfo($organizationId: UUID_NAMEID!, $includeAssociates: Boolean = false) {
+  organization(ID: $organizationId) {
+    ...OrganizationInfo
+  }
+}

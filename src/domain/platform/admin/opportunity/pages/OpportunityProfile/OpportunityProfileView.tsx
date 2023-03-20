@@ -15,7 +15,6 @@ import {
   useOpportunityProfileInfoQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
-import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
@@ -59,7 +58,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { name, nameID, tagsets } = values;
+    const { name, nameID, tagsets, references } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -67,8 +66,11 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              displayName: name,
+              context: createContextInput({ ...values }),
+              profileData: {
+                displayName: name,
+                location: formatDatabaseLocation(values.location),
+              },
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
@@ -81,10 +83,19 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              displayName: name,
+              context: updateContextInput({ ...values }),
               ID: opportunityId,
-              tags: tagsets.flatMap(x => x.tags),
+              profileData: {
+                displayName: name,
+                location: formatDatabaseLocation(values.location),
+                tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+                references: references.map(reference => ({
+                  ID: reference.id,
+                  name: reference.name,
+                  description: reference.description,
+                  uri: reference.uri,
+                })),
+              },
             },
           },
         });
@@ -99,11 +110,12 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     <Grid container spacing={2}>
       <ProfileForm
         isEdit={mode === FormMode.update}
-        name={opportunity?.displayName}
+        name={opportunity?.profile.displayName}
         nameID={opportunity?.nameID}
         journeyType="opportunity"
-        tagset={opportunity?.tagset}
-        context={opportunity?.context as Context}
+        tagset={opportunity?.profile.tagset}
+        context={opportunity?.context}
+        profile={opportunity?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
@@ -114,7 +126,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         <Typography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </Typography>
-        <EditVisualsView visuals={opportunity?.context?.visuals} />
+        <EditVisualsView visuals={opportunity?.profile.visuals} />
       </Grid>
     </Grid>
   );

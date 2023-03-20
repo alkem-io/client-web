@@ -4,7 +4,10 @@ query challengesWithCommunity($hubId: UUID_NAMEID!) {
     challenges {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
       community {
         id
         displayName

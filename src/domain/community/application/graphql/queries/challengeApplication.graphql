@@ -3,9 +3,9 @@ query challengeApplication($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     id
     challenge(ID: $challengeId) {
       id
-      displayName
-      context {
+      profile {
         id
+        displayName
         tagline
         visuals {
           id

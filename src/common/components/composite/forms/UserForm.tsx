@@ -3,18 +3,16 @@ import { Formik } from 'formik';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useTagsetsTemplateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { EditMode } from '../../../../core/ui/forms/editMode';
 import { SocialNetworkEnum } from '../../../../domain/shared/components/SocialLinks/models/SocialNetworks';
-import { TagsetTemplate, Visual } from '../../../../core/apollo/generated/graphql-schema';
-import { Reference, Tagset } from '../../../../domain/common/profile/Profile';
+import { Visual } from '../../../../core/apollo/generated/graphql-schema';
+import { Reference } from '../../../../domain/common/profile/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../../domain/community/contributor/user/models/User';
 import { logger } from '../../../../services/logging/winston/logger';
 import ProfileReferenceSegment from '../../../../domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import SocialSegment from '../../../../domain/platform/admin/components/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
-import { Loading } from '../../core';
 import VisualUpload from '../common/VisualUpload/VisualUpload';
 import { FormikInputField } from './FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
@@ -23,6 +21,7 @@ import FormRow from '../../../../domain/shared/layout/FormLayout';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -57,25 +56,10 @@ export const UserForm: FC<UserProps> = ({
   onVerify,
 }) => {
   const { t } = useTranslation();
-
-  // const genders = [
-  //   { id: '', name: t('common.genders.notSpecified') },
-  //   { id: 'male', name: t('common.genders.male') },
-  //   { id: 'female', name: t('common.genders.female') },
-  // ];
-
-  const { data: config, loading } = useTagsetsTemplateQuery();
-
-  const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
-    if (config) return config.configuration.template.users[0].tagsets || [];
-    return [];
-  }, [config]);
-
   const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
   const isReadOnlyMode = editMode === EditMode.readOnly;
 
   const {
-    displayName,
     firstName,
     lastName,
     email,
@@ -83,26 +67,13 @@ export const UserForm: FC<UserProps> = ({
     phone,
     profile: {
       id: profileId,
+      displayName,
       description: bio,
       references,
       location: { city, country },
+      tagsets,
     },
   } = currentUser;
-
-  const tagsets = useMemo(() => {
-    let {
-      profile: { tagsets },
-    } = currentUser;
-    return tagsetsTemplate.reduce(
-      (acc, cur) => {
-        if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
-          acc.push({ name: cur.name, tags: [] });
-        }
-        return acc;
-      },
-      [...(tagsets as Tagset[])]
-    );
-  }, [currentUser, tagsetsTemplate]);
 
   const twitterRef = useMemo(
     () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.twitter),
@@ -151,7 +122,7 @@ export const UserForm: FC<UserProps> = ({
     github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
-    bio: yup.string().max(LONG_TEXT_LENGTH),
+    bio: MarkdownValidator(LONG_TEXT_LENGTH),
   });
 
   /**
@@ -172,6 +143,7 @@ export const UserForm: FC<UserProps> = ({
         linkedin,
         twitter,
         github,
+        displayName,
         ...otherData
       } = userData;
       const finalReferences = [
@@ -185,6 +157,7 @@ export const UserForm: FC<UserProps> = ({
         ...otherData,
         profile: {
           id: profileId,
+          displayName: displayName,
           description: bio,
           references: finalReferences,
           location: {
@@ -198,8 +171,6 @@ export const UserForm: FC<UserProps> = ({
     },
     [linkedinRef, twitterRef, githubRef, currentUser, onSave]
   );
-
-  if (loading) return <Loading text={'Loading'} />;
 
   return (
     <Formik
@@ -294,7 +265,7 @@ export const UserForm: FC<UserProps> = ({
 
                       <TagsetSegment
                         tagsets={tagsets}
-                        template={tagsetsTemplate}
+                        template={[]}
                         readOnly={isReadOnlyMode}
                         disabled={isSubmitting}
                       />

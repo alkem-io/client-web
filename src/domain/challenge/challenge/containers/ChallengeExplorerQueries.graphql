@@ -28,28 +28,33 @@ query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
   hubs(IDs: $hubIDs) {
     id
     nameID
-    displayName
-    context {
-      id
-      tagline
+    profile {
+        id
+        tagline
+        displayName
     }
     visibility
     challenges(IDs: $challengeIDs) {
       id
       nameID
-      displayName
-      context {
+      profile {
         id
         tagline
+        displayName
+        description
         visuals {
           ...VisualUri
         }
+        tagset {
+          id
+          tags
+        }
+      }
+      context {
+        id
         vision
       }
-      tagset {
-        id
-        tags
-      }
+
     }
   }
 }

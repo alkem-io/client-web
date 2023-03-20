@@ -45,7 +45,10 @@ fragment AspectProviderData on Collaboration {
 fragment AspectProvided on Aspect {
   id
   nameID
-  displayName
+  profile {
+    id
+    displayName
+  }
   authorization {
     id
     myPrivileges

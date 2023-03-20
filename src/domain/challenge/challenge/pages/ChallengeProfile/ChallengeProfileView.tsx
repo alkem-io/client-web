@@ -11,7 +11,7 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../../../common/utils/buildContext';
+import { updateContextInput } from '../../../../../common/utils/buildContext';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
@@ -56,7 +56,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { name, nameID, tagsets } = values;
+    const { name, nameID, tagsets, tagline, references } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -64,9 +64,12 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              displayName: name,
+              profileData: {
+                displayName: name,
+                tagline: tagline,
+                location: formatDatabaseLocation(values.location),
+              },
               hubID: hubNameId,
-              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
               innovationFlowTemplateID: '',
             },
@@ -79,9 +82,18 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
             input: {
               ID: challengeId,
               nameID: nameID,
-              displayName: name,
-              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-              tags: tagsets.flatMap(x => x.tags),
+              profileData: {
+                displayName: name,
+                location: formatDatabaseLocation(values.location),
+                tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+                references: references.map(reference => ({
+                  ID: reference.id,
+                  name: reference.name,
+                  description: reference.description,
+                  uri: reference.uri,
+                })),
+              },
+              context: updateContextInput({ ...values }),
             },
           },
         });
@@ -96,11 +108,12 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
     <Grid container spacing={2}>
       <ProfileForm
         isEdit={mode === FormMode.update}
-        name={challenge?.displayName}
+        name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
         journeyType="challenge"
-        tagset={challenge?.tagset}
+        tagset={challenge?.profile.tagset}
         context={challenge?.context}
+        profile={challenge?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />
@@ -111,7 +124,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         <WrapperTypography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
         </WrapperTypography>
-        <EditVisualsView visuals={challenge?.context?.visuals} />
+        <EditVisualsView visuals={challenge?.profile.visuals} />
       </Grid>
     </Grid>
   );

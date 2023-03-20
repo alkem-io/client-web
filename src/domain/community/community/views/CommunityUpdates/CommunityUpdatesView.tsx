@@ -11,6 +11,7 @@ import {
   Grid,
   GridProps,
   IconButton,
+  Skeleton,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -19,7 +20,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Skeleton } from '@mui/material';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
@@ -28,18 +28,19 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import MarkdownInput from '../../../../platform/admin/components/Common/MarkdownInput';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { Message } from '../../../../../core/apollo/generated/graphql-schema';
 import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import hexToRGBA from '../../../../../common/utils/hexToRGBA';
-import SaveButton from '../../../../../core/ui/actions/SaveButton';
+import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -106,7 +107,9 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     'community-update': '',
   };
   const validationSchema = yup.object().shape({
-    'community-update': yup.string().trim().required(t('components.communityUpdates.msg-not-empty')),
+    'community-update': MarkdownValidator(LONG_TEXT_LENGTH)
+      .trim()
+      .required(t('components.communityUpdates.msg-not-empty')),
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
@@ -152,12 +155,12 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <MarkdownInput
+                    <FormikMarkdownField
                       name="community-update"
                       rows={30}
-                      label={hideHeaders ? '' : t('components.communityUpdates.title')}
+                      title={t('components.communityUpdates.title')}
                       required
-                      maxLength={MARKDOWN_TEXT_LENGTH}
+                      maxLength={LONG_TEXT_LENGTH}
                       withCounter
                     />
                   </Grid>
