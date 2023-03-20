@@ -102,7 +102,11 @@
     "select": "Select",
     "change-field": "Change {{field}}",
     "send": "Send",
-    "contact-leads": "Contact the {{contact}}(s)"
+    "contact-leads": "Contact the {{contact}}(s)",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveToTop": "Move to top",
+    "moveToBottom": "Move to bottom"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
