@@ -5934,6 +5934,9 @@ export type ChallengeProfileInfoQuery = {
           minHeight: number;
           minWidth: number;
         }>;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+          | undefined;
       };
       lifecycle?: { __typename?: 'Lifecycle'; state?: string | undefined } | undefined;
       context?:

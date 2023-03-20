@@ -4418,6 +4418,12 @@ export const ChallengeProfileInfoDocument = gql`
           visuals {
             ...VisualFull
           }
+          references {
+            id
+            name
+            uri
+            description
+          }
         }
         lifecycle {
           state
