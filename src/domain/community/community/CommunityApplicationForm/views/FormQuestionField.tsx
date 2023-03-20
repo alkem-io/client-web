@@ -23,7 +23,7 @@ interface FormQuestionFieldProps {
 }
 
 export const questionSchema = yup.object().shape({
-  question: yup.string().required('Required field').max(MID_TEXT_LENGTH),
+  question: yup.string().required().max(MID_TEXT_LENGTH),
   explanation: yup.string(),
   required: yup.boolean().required(),
 });

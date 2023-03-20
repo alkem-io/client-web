@@ -7,6 +7,7 @@ import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
+import { MarkdownFieldMaxLength, TextFieldMaxLength } from '../field-length.constants';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -15,7 +16,7 @@ interface MarkdownFieldProps extends InputProps {
   readOnly?: boolean;
   disabled?: boolean;
   placeholder?: string;
-  maxLength?: number;
+  maxLength?: TextFieldMaxLength;
   withCounter?: boolean;
   helperText?: string;
   loading?: boolean; // TODO make use of
@@ -83,6 +84,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
+  const estimatedVisibleMaxLength = maxLength && MarkdownFieldMaxLength[maxLength];
+
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
@@ -105,7 +108,10 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           label={title}
           inputComponent={MarkdownInput}
           inputRef={inputRef}
-          inputProps={{ controlsVisible: 'always' }}
+          inputProps={{
+            controlsVisible: 'always',
+            maxLength: estimatedVisibleMaxLength,
+          }}
           readOnly={readOnly}
           placeholder={placeholder}
           multiline
@@ -117,7 +123,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         />
         <CharacterCountContainer>
           {({ characterCount }) => (
-            <CharacterCounter count={characterCount} maxLength={maxLength} disabled={!withCounter}>
+            <CharacterCounter count={characterCount} maxLength={estimatedVisibleMaxLength} disabled={!withCounter}>
               <FormHelperText error={isError}>{helperText}</FormHelperText>
             </CharacterCounter>
           )}

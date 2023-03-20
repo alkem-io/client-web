@@ -11,12 +11,13 @@ import {
   useCommunityApplicationFormQuery,
   useUpdateCommunityApplicationQuestionsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import FormIntroductionField from './views/FormIntroductionField';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormQuestionField, { questionSchema } from './views/FormQuestionField';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
   hubId: string;
@@ -34,7 +35,7 @@ interface FormValues {
 }
 
 const validationSchema = yup.object().shape({
-  description: yup.string().required().max(LONG_TEXT_LENGTH),
+  description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
   questions: yup.array().of(questionSchema),
 });
 
@@ -148,7 +149,12 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ hubId, ch
 
         return (
           <>
-            <FormIntroductionField disabled={disabled || loading} />
+            <FormikMarkdownField
+              title={t('common.introduction')}
+              name="description"
+              disabled={disabled || loading}
+              maxLength={VERY_LONG_TEXT_LENGTH}
+            />
             <Gutters />
             <BlockSectionTitle>
               {t('common.questions')}

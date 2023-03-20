@@ -4,10 +4,11 @@ import * as yup from 'yup';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormRow from '../../../../shared/layout/FormLayout';
+import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export const profileSegmentSchema = yup.object().shape({
   avatar: yup.string().max(MID_TEXT_LENGTH),
-  description: yup.string().max(LONG_TEXT_LENGTH),
+  description: MarkdownValidator(LONG_TEXT_LENGTH),
 });
 
 interface ProfileSegmentProps {

@@ -11,7 +11,8 @@ import VisualUpload from '../../../../common/components/composite/common/VisualU
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface TemplateInfoValues {
   title: string;
@@ -61,7 +62,7 @@ const TemplateForm = <Values extends TemplateInfoValues>({
 
   const validationSchema = yup.object().shape({
     title: displayNameValidator,
-    description: yup.string().required(),
+    description: MarkdownValidator(LONG_TEXT_LENGTH).required(),
     tags: yup.array().of(yup.string().min(2)),
     ...validator,
   });
@@ -83,7 +84,7 @@ const TemplateForm = <Values extends TemplateInfoValues>({
                 <FormikMarkdownField
                   name="description"
                   title={t('common.description')}
-                  maxLength={MARKDOWN_TEXT_LENGTH}
+                  maxLength={LONG_TEXT_LENGTH}
                   withCounter
                 />
                 <TagsetField
