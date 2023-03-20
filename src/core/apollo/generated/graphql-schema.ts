@@ -336,6 +336,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1827,6 +1835,16 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
+};
+
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -2213,6 +2231,8 @@ export type Mutation = {
   updateCalloutPublishInfo: Callout;
   /** Update the visibility of the specified Callout. */
   updateCalloutVisibility: Callout;
+  /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
+  updateCalloutsSortOrder: Array<Callout>;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
   /** Updates the specified CanvasTemplate. */
@@ -2719,6 +2739,10 @@ export type MutationUpdateCalloutPublishInfoArgs = {
 
 export type MutationUpdateCalloutVisibilityArgs = {
   calloutData: UpdateCalloutVisibilityInput;
+};
+
+export type MutationUpdateCalloutsSortOrderArgs = {
+  sortOrderData: UpdateCollaborationCalloutsSortOrderInput;
 };
 
 export type MutationUpdateCanvasArgs = {
@@ -4047,6 +4071,12 @@ export type UpdateChallengePreferenceInput = {
   /** Type of the challenge preference */
   type: ChallengePreferenceType;
   value: Scalars['String'];
+};
+
+export type UpdateCollaborationCalloutsSortOrderInput = {
+  /** The IDs of the callouts to update the sort order on */
+  calloutIDs: Array<Scalars['UUID_NAMEID']>;
+  collaborationID: Scalars['UUID'];
 };
 
 export type UpdateCommunityApplicationFormInput = {
@@ -10801,6 +10831,16 @@ export type AspectCommentsMessageReceivedSubscription = {
   };
 };
 
+export type UpdateCalloutsSortOrderMutationVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type UpdateCalloutsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+};
+
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
   id: string;
@@ -11417,6 +11457,7 @@ export type CalloutsQuery = {
                 displayName: string;
                 description: string;
                 state: CalloutState;
+                sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
                 canvases?:
@@ -11580,6 +11621,7 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
                   canvases?:
@@ -11753,6 +11795,7 @@ export type CalloutsQuery = {
                   displayName: string;
                   description: string;
                   state: CalloutState;
+                  sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
                   canvases?:
@@ -12246,6 +12289,7 @@ export type CollaborationWithCalloutsFragment = {
         displayName: string;
         description: string;
         state: CalloutState;
+        sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
         canvases?:
@@ -12393,6 +12437,7 @@ export type CalloutFragment = {
   displayName: string;
   description: string;
   state: CalloutState;
+  sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
   canvases?:

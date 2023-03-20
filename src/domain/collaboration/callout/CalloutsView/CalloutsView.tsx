@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -25,6 +25,9 @@ import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
+import { sortBy } from 'lodash';
+import { CalloutSortEvents, CalloutSortProps } from '../Types';
+import UpdateOrder from '../../../../core/utils/UpdateOrder';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -34,7 +37,7 @@ interface CalloutsPageProps {
 const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
-  const { callouts, canCreateCallout, getItemsCount, loading } = useCallouts({
+  const { callouts, canCreateCallout, getItemsCount, loading, updateCalloutsSortOrder } = useCallouts({
     hubNameId,
     challengeNameId,
     opportunityNameId,
@@ -73,6 +76,19 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   const handleCreate = () => {
     getTemplates();
     handleCreateCalloutOpened();
+  };
+
+  const [sortedCalloutIds, setSortedCalloutIds] = useState(sortBy(callouts, c => c.sortOrder).map(c => c.id));
+
+  const sortedCallouts = useMemo(() => sortedCalloutIds.map(id => callouts!.find(c => c.id === id)!), [callouts]);
+
+  const updateOrder = UpdateOrder(setSortedCalloutIds, updateCalloutsSortOrder);
+
+  const sortEvents: CalloutSortEvents = {
+    onMoveToTop: updateOrder((ids, id) => ids.unshift(id)),
+    onMoveToBottom: updateOrder((ids, id) => ids.push(id)),
+    onMoveUp: updateOrder((ids, id, index) => ids.splice(index - 1, 0, id)),
+    onMoveDown: updateOrder((ids, id, index) => ids.splice(index + 1, 0, id)),
   };
 
   return (
@@ -116,7 +132,12 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
             </PageContentBlockSeamless>
           )}
           {!loading &&
-            callouts?.map(callout => {
+            sortedCallouts?.map((callout, index) => {
+              const sortProps: CalloutSortProps = {
+                topCallout: index === 0,
+                bottomCallout: index === sortedCallouts.length - 1,
+              };
+
               return (callout => {
                 switch (callout.type) {
                   case CalloutType.Card:
@@ -134,6 +155,8 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
                         onCalloutEdit={handleEdit}
                         onVisibilityChange={handleVisibilityChange}
                         onCalloutDelete={handleDelete}
+                        {...sortEvents}
+                        {...sortProps}
                       />
                     );
                   case CalloutType.Canvas:
@@ -151,6 +174,8 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
                         onCalloutEdit={handleEdit}
                         onVisibilityChange={handleVisibilityChange}
                         onCalloutDelete={handleDelete}
+                        {...sortEvents}
+                        {...sortProps}
                       />
                     );
                   case CalloutType.Comments:
@@ -168,6 +193,8 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
                         onVisibilityChange={handleVisibilityChange}
                         onCalloutDelete={handleDelete}
                         isSubscribedToComments={callout.isSubscribedToComments}
+                        {...sortEvents}
+                        {...sortProps}
                       />
                     );
                   default:

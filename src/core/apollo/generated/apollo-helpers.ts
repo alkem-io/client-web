@@ -318,6 +318,11 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
+export type ApplicationTemplateFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AspectKeySpecifier = (
   | 'authorization'
   | 'banner'
@@ -1023,6 +1028,17 @@ export type HubFieldPolicy = {
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type HubAspectTemplateKeySpecifier = (
+  | 'defaultDescription'
+  | 'type'
+  | 'typeDescription'
+  | HubAspectTemplateKeySpecifier
+)[];
+export type HubAspectTemplateFieldPolicy = {
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
   | 'contributionResultsCount'
@@ -1253,6 +1269,7 @@ export type MutationKeySpecifier = (
   | 'updateCallout'
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
+  | 'updateCalloutsSortOrder'
   | 'updateCanvas'
   | 'updateCanvasTemplate'
   | 'updateChallenge'
@@ -1398,6 +1415,7 @@ export type MutationFieldPolicy = {
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2352,6 +2370,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
+  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
+    fields?: ApplicationTemplateFieldPolicy;
+  };
   Aspect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AspectKeySpecifier | (() => undefined | AspectKeySpecifier);
     fields?: AspectFieldPolicy;
@@ -2595,6 +2617,10 @@ export type StrictTypedTypePolicies = {
   Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
+  };
+  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
+    fields?: HubAspectTemplateFieldPolicy;
   };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
