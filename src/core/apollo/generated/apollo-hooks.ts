@@ -7601,6 +7601,12 @@ export const OpportunityProfileInfoDocument = gql`
           location {
             ...fullLocation
           }
+          references {
+            id
+            name
+            description
+            uri
+          }
         }
         context {
           ...ContextDetails
