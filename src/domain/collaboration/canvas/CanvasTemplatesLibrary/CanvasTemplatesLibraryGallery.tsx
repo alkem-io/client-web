@@ -37,12 +37,10 @@ const CanvasTemplatesLibraryGallery = ({
   const templates = useMemo(() => {
     return canvases?.filter(canvas => {
       if (!filter || filter.length === 0) return true;
+      const canvasString =
+        `${canvas.displayName} ${canvas.provider.displayName} ${canvas.innovationPack.displayName}`.toLowerCase();
       for (const term of filter) {
-        if (
-          canvas.displayName.includes(term) ||
-          canvas.provider?.displayName?.includes(term) ||
-          canvas.innovationPack.displayName?.includes(term)
-        ) {
+        if (canvasString.includes(term.toLowerCase())) {
           return true;
         }
       }
