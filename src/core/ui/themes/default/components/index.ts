@@ -7,6 +7,7 @@ import MuiDialog from './MuiDialog';
 import MuiDialogContent from './MuiDialogContent';
 import MuiIcon from './MuiIcon';
 import MuiLink from './MuiLink';
+import MuiMenuItem from './MuiMenuItem';
 import MuiPaper from './MuiPaper';
 import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
@@ -24,6 +25,7 @@ const componentsOverride: Components<Theme> = {
   MuiDialogContent,
   MuiIcon,
   MuiLink,
+  MuiMenuItem,
   MuiPaper,
   MuiTab,
   MuiSkeleton,

@@ -1,5 +1,9 @@
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
-import { useCalloutsLazyQuery, useCalloutsQuery } from '../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutsLazyQuery,
+  useCalloutsQuery,
+  useUpdateCalloutsSortOrderMutation,
+} from '../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   Callout,
@@ -49,7 +53,7 @@ type CalloutTypesWithChildTypes = {
 
 export type TypedCallout = Pick<
   Callout,
-  'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'activity' | 'authorization'
+  'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'activity' | 'authorization' | 'sortOrder'
 > &
   (
     | CalloutTypesWithChildTypes[CalloutType.Card]
@@ -131,12 +135,27 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     } as TypedCallout;
   });
 
+  const [runUpdateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
+
+  const updateCalloutsSortOrder = (calloutIds: string[]) => {
+    if (!collaboration) {
+      throw new Error('Collaboration is not loaded yet.');
+    }
+    return runUpdateCalloutsSortOrderMutation({
+      variables: {
+        collaborationId: collaboration.id,
+        calloutIds,
+      },
+    });
+  };
+
   return {
     callouts,
     canCreateCallout,
     getItemsCount,
     loading: calloutsLoading,
     reloadCallouts,
+    updateCalloutsSortOrder,
   };
 };
 

@@ -13,7 +13,7 @@ import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apoll
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard, { AspectCardAspect } from './AspectCard';
-import { BaseCalloutImpl } from '../Types';
+import { BaseCalloutProps } from '../Types';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
@@ -22,7 +22,7 @@ import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends BaseCalloutImpl {
+interface AspectCalloutProps extends BaseCalloutProps {
   callout: CalloutLayoutProps['callout'];
 }
 
@@ -30,15 +30,12 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
   (
     {
       callout,
-      calloutNames,
       canCreate = false,
       hubNameId,
       challengeNameId,
       opportunityNameId,
-      onCalloutEdit,
-      onVisibilityChange,
-      onCalloutDelete,
       contributionsCount,
+      ...calloutLayoutProps
     },
     ref
   ) => {
@@ -160,14 +157,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     return (
       <>
         <PageContentBlock ref={containerRef} disablePadding disableGap>
-          <CalloutLayout
-            callout={callout}
-            calloutNames={calloutNames}
-            onVisibilityChange={onVisibilityChange}
-            onCalloutEdit={onCalloutEdit}
-            onCalloutDelete={onCalloutDelete}
-            contributionsCount={contributionsCount}
-          >
+          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             <ScrollableCardsLayout
               items={loading || !inView ? [undefined, undefined] : aspects ?? []}
               deps={[hubNameId, challengeNameId, opportunityNameId]}
