@@ -56,12 +56,12 @@ const getBoundingBox = (canvasElements?: readonly ExcalidrawElement[]): Bounding
 
 const optimizeInsertionPoint = (canvasA: BoundingBox, canvasB: BoundingBox): { x: number; y: number } => {
   // Center the canvasB vertically in reference to canvasA
-  const aY = (canvasA.minY - canvasA.maxY) / 2;
-  const bY = (canvasB.minY - canvasB.maxY) / 2;
-  const y = aY - bY + bY / 2;
+  const aY = canvasA.minY + (canvasA.maxY - canvasA.minY) / 2; // middle of canvasA
+  const bY = canvasB.minY + (canvasB.maxY - canvasB.minY) / 2; // middle of canvasB
+  const y = aY - bY;
 
-  // Put the canvasB a 10% of the width of canvasA to the right
-  const x = ((canvasA.maxX - canvasA.minX) * 10) / 100 + canvasA.maxX;
+  // A 10% of the width of the canvasA to the right of the last element of the canvasA
+  const x = -canvasB.minX + canvasA.maxX + ((canvasA.maxX - canvasA.minX) * 10) / 100;
 
   return { x, y };
 };
