@@ -150,7 +150,8 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             }
           }}
         >
-          {({ isValid, handleSubmit, isSubmitting, dirty }) => {
+          {({ isValid, handleSubmit, isSubmitting }) => {
+            console.log(isValid);
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -167,7 +168,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                   <Grid container item xs={12} justifyContent="flex-end">
                     <SaveButton
                       type="submit"
-                      disabled={!isValid || !dirty}
+                      disabled={!isValid}
                       loading={isSubmitting || removingMessage}
                       startIcon={<PlayArrowIcon />}
                     >
