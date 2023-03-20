@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useEffect, useRef } from 'react';
+import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError, FetchResult } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
@@ -20,6 +20,7 @@ import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDialog';
+import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -70,6 +71,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
+  const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
   const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
   const { creatorName, creatorAvatar, createdDate } = props;
@@ -77,7 +79,8 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { handlePostComment, handleDeleteComment } = props;
 
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
-  const onDeleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
+  const deleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
+  const onDeleteComment = useCallback((id: string) => setCommentToBeDeleted(id), [setCommentToBeDeleted]);
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,
@@ -180,6 +183,25 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
             </Box>
             <SectionSpacer />
           </DashboardGenericSection>
+          <ConfirmationDialog
+            actions={{
+              onCancel: () => setCommentToBeDeleted(undefined),
+              onConfirm: async () => {
+                if (commentToBeDeleted) {
+                  await deleteComment(commentToBeDeleted);
+                }
+                setCommentToBeDeleted(undefined);
+              },
+            }}
+            entities={{
+              confirmButtonTextId: 'buttons.delete',
+              contentId: 'components.confirmation-dialog.delete-comment.confirmation-text',
+              titleId: 'components.confirmation-dialog.delete-comment.confirmation-title',
+            }}
+            options={{
+              show: Boolean(commentToBeDeleted),
+            }}
+          />
         </DashboardColumn>
       )}
       {mode === 'share' && (
