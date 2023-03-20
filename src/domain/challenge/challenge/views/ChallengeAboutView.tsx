@@ -4,14 +4,12 @@ import { AboutSection } from '../../common/tabs/About/AboutSection';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-import { useChallenge } from '../hooks/useChallenge';
 import { JourneyAboutWithLead } from '../../common/tabs/About/Types';
 
 interface ChallengeAboutViewProps extends JourneyAboutWithLead {}
 
 export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({ metrics, ...rest }) => {
   const { t } = useTranslation();
-  const { hubNameId, communityId } = useChallenge();
 
   const metricsItems: MetricItem[] = useMemo(() => {
     return [
@@ -29,13 +27,5 @@ export const ChallengeAboutView: FC<ChallengeAboutViewProps> = ({ metrics, ...re
     ];
   }, [metrics, t]);
 
-  return (
-    <AboutSection
-      journeyTypeName="challenge"
-      hubNameId={hubNameId}
-      communityId={communityId}
-      metricsItems={metricsItems}
-      {...rest}
-    />
-  );
+  return <AboutSection journeyTypeName="challenge" metricsItems={metricsItems} {...rest} />;
 };

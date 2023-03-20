@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.34.0",
+  "version": "0.35.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -42,6 +42,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@tiptap/extension-highlight": "^2.0.0-beta.220",
     "@tiptap/extension-image": "^2.0.0-beta.220",
     "@tiptap/extension-link": "^2.0.0-beta.220",
     "@tiptap/pm": "^2.0.0-beta.220",

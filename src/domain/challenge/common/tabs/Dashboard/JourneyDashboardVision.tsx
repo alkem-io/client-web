@@ -22,7 +22,11 @@ interface JourneyDashboardVisionProps {
 const JourneyDashboardVision = ({ vision, journeyTypeName }: JourneyDashboardVisionProps) => {
   const { t } = useTranslation();
 
-  const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
+  const {
+    challengeId,
+    challengeNameId,
+    profile: { displayName: challengeName },
+  } = useChallenge();
 
   return (
     <PageContentBlock accent>

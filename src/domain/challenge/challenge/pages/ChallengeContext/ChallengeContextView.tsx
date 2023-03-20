@@ -39,6 +39,9 @@ const ChallengeContextView: FC = () => {
         input: {
           ID: challengeId,
           context: updateContextInput(values),
+          profileData: {
+            description: values.background,
+          },
         },
       },
     });
@@ -50,6 +53,7 @@ const ChallengeContextView: FC = () => {
       <ContextForm
         contextSegment={ChallengeContextSegment}
         context={challenge?.context}
+        profile={challenge?.profile}
         loading={loading || isUpdating}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

@@ -1,15 +1,15 @@
 fragment CommunityPageMembers on User {
   id
   nameID
-  displayName
   email
   profile {
     id
+    displayName
     location {
       country
       city
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     description

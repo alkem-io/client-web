@@ -5,7 +5,10 @@ query challengeName($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

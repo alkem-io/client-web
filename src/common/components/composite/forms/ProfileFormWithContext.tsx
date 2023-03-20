@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { ElementType, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, LifecycleType, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, LifecycleType, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import {
   ContextSegmentProps,
@@ -25,13 +25,10 @@ export interface ProfileFormValuesType {
   name: string;
   nameID: string;
   background: string;
-  impact: string;
   tagline: string;
   location: Partial<Location>;
   vision: string;
-  who: string;
   references: Reference[];
-  // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
   innovationFlowTemplateID: string;
 }
@@ -49,6 +46,7 @@ interface LifecycleTemplate {
 
 interface ProfileFormWithContextProps {
   context?: Context;
+  profile?: Profile;
   journeyType: JourneyTypeName;
   contextSegment: ElementType<ContextSegmentProps>;
   name?: string;
@@ -64,6 +62,7 @@ interface ProfileFormWithContextProps {
 // TODO: Should be renamed. Maybe 'ContextForm'
 const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
   context,
+  profile,
   journeyType,
   contextSegment: ContextSegment,
   name,
@@ -100,13 +99,11 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
   const initialValues: ProfileFormValuesType = {
     name: name || '',
     nameID: nameID || '',
-    background: context?.background || '',
-    impact: context?.impact || '',
-    tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || EmptyLocation,
+    background: profile?.description || '',
+    tagline: profile?.tagline || '',
+    location: formatLocation(profile?.location) || EmptyLocation,
     vision: context?.vision || '',
-    who: context?.who || '',
-    references: context?.references || [],
+    references: profile?.references || [],
     tagsets: tagsets,
     innovationFlowTemplateID: '',
   };
@@ -115,12 +112,8 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
     name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
     nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    // visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
     innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
   });
@@ -187,7 +180,7 @@ const ProfileFormWithContext: FC<ProfileFormWithContextProps> = ({
             </Grid>
             <VisualSegment />*/}
 
-            {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
+            {isEdit && <ContextReferenceSegment references={references || []} profileId={context?.id} />}
           </>
         );
       }}

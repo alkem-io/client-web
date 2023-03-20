@@ -8,10 +8,10 @@ const ChallengePageBanner: FC = () => {
 
   return (
     <JourneyPageBanner
-      title={challenge?.displayName}
-      tagline={challenge?.context?.tagline}
+      title={challenge?.profile.displayName}
+      tagline={challenge?.profile.tagline}
       loading={loading}
-      bannerUrl={getVisualBanner(challenge?.context?.visuals)}
+      bannerUrl={getVisualBanner(challenge?.profile.visuals)}
       journeyTypeName="challenge"
       showBreadcrumbs
     />

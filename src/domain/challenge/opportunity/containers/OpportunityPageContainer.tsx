@@ -106,7 +106,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
 
-  const userName = user?.user.displayName;
+  const userName = user?.user.profile.displayName;
 
   const {
     data: query,
@@ -144,11 +144,12 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     !permissions.opportunityReadAccess || !permissions.readUsers
   );
 
-  const { context, collaboration, metrics = [] } = opportunity ?? {};
+  const { context, profile, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references, recommendations } = context ?? {};
+  const { recommendations } = context ?? {};
+  const { references } = profile ?? {};
   const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
@@ -161,7 +162,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
-  const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.displayName)) || [];
+  const existingAspectNames = aspects?.map(aspect => replaceAll('_', ' ', aspect.profile.displayName)) || [];
   // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 

@@ -18,7 +18,7 @@ interface ApplicationViewmodel {
 const toApplicationViewmodel = (applications: ApplicationInfoFragment[]): ApplicationViewmodel[] =>
   applications.map(x => ({
     id: x.id,
-    username: x.user.displayName,
+    username: x.user.profile.displayName,
     email: x.user.email,
     state: x.lifecycle?.state || '',
   }));

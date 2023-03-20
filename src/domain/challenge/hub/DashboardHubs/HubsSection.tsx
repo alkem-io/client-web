@@ -72,7 +72,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const isLoading = loading || areHubsLoading;
 
   return (
-    <FilterByTag items={hubs} valueGetter={hub => ({ id: hub.id, values: hub?.tagset?.tags ?? [] })}>
+    <FilterByTag items={hubs} valueGetter={hub => ({ id: hub.id, values: hub?.profile.tagset?.tags ?? [] })}>
       {({ items: filteredHubs, value, handleChange }) => (
         <DashboardHubsSection
           headerText={tLineBreaks('pages.home.sections.hub.header')}

@@ -59,10 +59,10 @@ const CalendarEventDetail = ({
               <AspectDashboardView
                 mode="messages"
                 displayName="&nbsp;"
-                description={event?.profile?.description}
+                description={event?.profile.description}
                 type={event?.type}
-                tags={event?.profile?.tagset?.tags}
-                references={event?.profile?.references}
+                tags={event?.profile.tagset?.tags}
+                references={event?.profile.references}
                 messages={messages}
                 commentId={event?.comments?.id}
                 aspectUrl=""

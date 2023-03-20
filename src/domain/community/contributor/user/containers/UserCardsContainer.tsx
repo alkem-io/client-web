@@ -28,12 +28,12 @@ export const UserCardsContainer: FC<UserCardsContainerProps> = ({ children, user
     data?.usersById.map(
       u =>
         ({
-          tags: u.profile?.tagsets?.flatMap(x => x.tags),
-          displayName: u.displayName,
-          avatarSrc: u.profile?.avatar?.uri,
+          tags: u.profile.tagsets?.flatMap(x => x.tags),
+          displayName: u.profile.displayName,
+          avatarSrc: u.profile.visual?.uri,
           url: buildUserProfileUrl(u.nameID),
-          city: u.profile?.location?.city || '',
-          country: COUNTRIES_BY_CODE[u.profile?.location?.country || ''],
+          city: u.profile.location?.city || '',
+          country: COUNTRIES_BY_CODE[u.profile.location?.country || ''],
           roleName: usersWithRoles.find(x => x.id === u.id)?.roleName,
         } as UserCardProps)
     ) || [];

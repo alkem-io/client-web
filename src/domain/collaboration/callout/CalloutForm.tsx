@@ -24,6 +24,7 @@ import CanvasTemplatesChooser, {
   LibraryCanvasTemplate,
   TemplateOrigin,
 } from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
+import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export type CanvasTemplateData = {
   id?: string;
@@ -113,11 +114,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator.concat(uniqueNameValidator),
-    description: yup
-      .string()
+    description: MarkdownValidator(MID_TEXT_LENGTH)
       .required(t('common.field-required'))
-      .min(3, ({ min }) => t('common.field-min-length', { min }))
-      .max(500, ({ max }) => t('common.field-max-length', { max })),
+      .min(3, ({ min }) => t('common.field-min-length', { min })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     cardTemplateType: yup

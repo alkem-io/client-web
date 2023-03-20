@@ -21,7 +21,6 @@ fragment OrganizationContributorPaginated on PaginatedOrganization {
 
 fragment OrganizationContributor on Organization {
   id
-  displayName
   nameID
   metrics {
     id
@@ -30,7 +29,8 @@ fragment OrganizationContributor on Organization {
   }
   orgProfile: profile {
     id
-    avatar {
+    displayName
+    visual(type: AVATAR) {
       ...VisualUri
     }
     description
@@ -53,15 +53,15 @@ fragment UserContributorPaginated on PaginatedUsers {
 fragment UserContributor on User {
   id
   nameID
-  displayName
   isContactable
   userProfile: profile {
     id
+    displayName
     location {
       city
       country
     }
-    avatar {
+    visual(type: AVATAR) {
       ...VisualUri
     }
     tagsets {

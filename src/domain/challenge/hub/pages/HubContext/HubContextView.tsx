@@ -1,47 +1,38 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
-import HubContextForm from '../../../../platform/admin/components/HubContextForm';
-import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import HubContextForm, { HubEditFormValuesType } from '../../../../platform/admin/components/HubContextForm';
 
 export const HubContextView: FC = () => {
   const { t } = useTranslation();
 
   const { hubNameId, ...hub } = useHub();
-  const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
 
-  const [updateHub, { loading: loading1 }] = useUpdateHubMutation({
+  const [updateHub, { loading: isUpdatingHub }] = useUpdateHubMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
 
-  const organizations = useMemo(
-    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
-    [organizationList]
-  );
-
-  const isLoading = loading1 || loadingOrganizations;
+  const isLoading = isUpdatingHub;
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
   };
 
   const onSubmit = async (values: HubEditFormValuesType) => {
-    const { name, host, tagsets } = values;
     updateHub({
       variables: {
         input: {
-          context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
-          displayName: name,
+          context: updateContextInput({ ...values }),
+          profileData: {
+            description: values.background,
+          },
           ID: hubNameId,
-          hostID: host,
-          tags: tagsets.flatMap(x => x.tags),
         },
       },
     });
@@ -53,12 +44,8 @@ export const HubContextView: FC = () => {
       <Grid container spacing={2}>
         <HubContextForm
           isEdit
-          name={hub.displayName}
-          nameID={hubNameId}
-          hostID={hub.hostId}
-          tagset={hub.tagset}
           context={hub.context}
-          organizations={organizations}
+          profile={hub.profile}
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}
           loading={isLoading}

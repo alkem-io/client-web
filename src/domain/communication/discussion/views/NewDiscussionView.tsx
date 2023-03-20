@@ -10,6 +10,7 @@ import FormikSelect from '../../../../common/components/composite/forms/FormikSe
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../../../../common/components/composite/entities/Communication/DiscussionIcon';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 const discussionCategories = [
   {
@@ -56,7 +57,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
   const validationSchema = yup.object().shape({
     title: yup.string().trim().required(t('forms.validations.required')),
     category: yup.string().required(t('forms.validations.required')),
-    description: yup.string().trim().required(t('forms.validations.required')),
+    description: MarkdownValidator(MID_TEXT_LENGTH).trim().required(t('forms.validations.required')),
   });
 
   const handleSubmit = async (values: formValues, _helpers: FormikHelpers<formValues>) => {

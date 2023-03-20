@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
@@ -8,6 +8,7 @@ import {
   DashboardLeadUserFragment,
   LifecycleContextTabFragment,
   MetricsItemFragment,
+  Profile,
   ReferenceDetailsFragment,
   Tagset,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -27,6 +28,7 @@ interface AboutPagePermissions {
 
 export interface AboutPageContainerEntities {
   context?: ContextTabFragment;
+  profile: Profile;
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
   permissions: AboutPagePermissions;
@@ -80,6 +82,10 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     nonMembersData?.hub?.opportunity?.context ??
     nonMembersData?.hub?.challenge?.context ??
     nonMembersData?.hub?.context;
+  const nonMemberProfile =
+    nonMembersData?.hub?.opportunity?.profile ??
+    nonMembersData?.hub?.challenge?.profile ??
+    nonMembersData?.hub?.profile;
   const nonMemberCommunity =
     nonMembersData?.hub?.opportunity?.community ??
     nonMembersData?.hub?.challenge?.community ??
@@ -108,15 +114,15 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     skip: nonMembersDataLoading,
   });
 
-  const memberContext =
-    membersData?.hub?.opportunity?.context ?? membersData?.hub?.challenge?.context ?? membersData?.hub?.context;
+  const memberProfile =
+    membersData?.hub?.opportunity?.profile ?? membersData?.hub?.challenge?.profile ?? membersData?.hub?.profile;
 
   const context = nonMemberContext;
 
   const nonMemberJourney = nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge ?? nonMembersData?.hub;
   const memberJourney = membersData?.hub?.opportunity ?? membersData?.hub?.challenge ?? membersData?.hub;
 
-  const tagset = nonMemberJourney?.tagset;
+  const tagset = nonMemberJourney?.profile?.tagset;
   const lifecycle = (nonMembersData?.hub?.opportunity ?? nonMembersData?.hub?.challenge)?.lifecycle;
   const hostOrganization = nonMembersData?.hub?.host;
   const community = {
@@ -125,7 +131,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   } as Community;
   const leadUsers = memberJourney?.community?.leadUsers;
   const leadOrganizations = memberJourney?.community?.leadOrganizations;
-  const references = memberContext?.references;
+  const references = memberProfile?.references;
 
   const metrics = nonMemberJourney?.metrics;
 
@@ -146,11 +152,25 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
   const loading = nonMembersDataLoading ?? membersDataLoading ?? false;
   const error = nonMembersDataError ?? membersDataError;
 
+  const profile = useMemo(() => {
+    return {
+      id: nonMemberProfile?.id ?? '',
+      displayName: nonMemberProfile?.displayName || '',
+      // description: nonMemberProfile?.description,
+      tagset: nonMemberProfile?.tagset,
+      visuals: nonMemberProfile?.visuals ?? [],
+      tagline: nonMemberProfile?.tagline || '',
+      // references: nonMemberProfile?.references ?? [],
+      // location: nonMemberProfile?.location,
+    };
+  }, [nonMemberProfile]);
+
   return (
     <>
       {children(
         {
           context,
+          profile,
           tagset,
           lifecycle,
           permissions,

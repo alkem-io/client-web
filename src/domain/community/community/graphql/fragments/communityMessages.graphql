@@ -19,11 +19,11 @@ fragment MessageDetails on Message {
     id
     nameID
     firstName
-    displayName
     lastName
     profile {
       id
-      avatar {
+      displayName
+      visual(type: AVATAR) {
         id
         uri
       }

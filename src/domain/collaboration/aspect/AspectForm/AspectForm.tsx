@@ -16,6 +16,7 @@ import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInp
 import FormRow from '../../../shared/layout/FormLayout';
 import { displayNameValidator } from '../../../../common/utils/validator';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 type FormValueType = {
   name: string;
@@ -84,7 +85,7 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const initialValues: FormValueType = useMemo(
     () => ({
-      name: aspect?.displayName ?? '',
+      name: aspect?.profileData?.displayName ?? '',
       description: getDescriptionValue(),
       tagsets,
       aspectNames: aspectNames ?? [],
@@ -99,7 +100,7 @@ const AspectForm: FC<AspectFormProps> = ({
     .required(t('common.field-required'))
     .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
       if (edit) {
-        return Boolean(value && (!aspectNames?.includes(value) || value === aspect?.displayName));
+        return Boolean(value && (!aspectNames?.includes(value) || value === aspect?.profileData?.displayName));
       } else {
         return Boolean(value && !aspectNames?.includes(value));
       }
@@ -107,7 +108,7 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const validationSchema = yup.object().shape({
     name: displayNameValidator.concat(uniqueNameValidator),
-    description: yup.string().required(),
+    description: MarkdownValidator(VERY_LONG_TEXT_LENGTH).required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });

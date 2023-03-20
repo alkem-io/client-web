@@ -38,7 +38,7 @@ export const OpportunityList: FC = () => {
   const opportunityList =
     challengesListQuery?.hub?.challenge?.opportunities?.map(o => ({
       id: o.id,
-      value: o.displayName,
+      value: o.profile.displayName,
       url: `${o.nameID}`,
     })) || [];
 
@@ -77,10 +77,12 @@ export const OpportunityList: FC = () => {
         variables: {
           input: {
             challengeID: challengeId,
-            displayName: value.displayName,
             context: {
-              tagline: value.tagline,
               vision: value.vision,
+            },
+            profileData: {
+              displayName: value.displayName,
+              tagline: value.tagline,
             },
             tags: value.tags,
           },

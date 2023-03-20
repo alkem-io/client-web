@@ -127,10 +127,10 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
       // Map users to MentionableUser
       .map(user => ({
         id: user.nameID,
-        display: user.displayName,
-        avatarUrl: user.profile?.avatar?.uri,
-        city: user.profile?.location?.city,
-        country: user.profile?.location?.country,
+        display: user.profile.displayName,
+        avatarUrl: user.profile.visual?.uri,
+        city: user.profile.location?.city,
+        country: user.profile.location?.country,
       }));
     callback(mentionableUsers);
   };
