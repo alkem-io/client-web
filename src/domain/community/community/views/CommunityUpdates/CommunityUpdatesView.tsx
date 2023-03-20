@@ -31,7 +31,6 @@ import * as yup from 'yup';
 import MarkdownInput from '../../../../platform/admin/components/Common/MarkdownInput';
 import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
-import { LoadingButton } from '@mui/lab';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -40,6 +39,7 @@ import { Author } from '../../../../shared/components/AuthorAvatar/models/author
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import hexToRGBA from '../../../../../common/utils/hexToRGBA';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -162,15 +162,14 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
-                    <LoadingButton
+                    <SaveButton
                       type="submit"
-                      loading={isSubmitting || removingMessage}
                       disabled={!isValid || !dirty}
-                      variant="contained"
+                      loading={isSubmitting || removingMessage}
                       startIcon={<PlayArrowIcon />}
                     >
                       {t('components.communityUpdates.actions.add.buttonTitle')}
-                    </LoadingButton>
+                    </SaveButton>
                   </Grid>
                 </Grid>
               </Form>

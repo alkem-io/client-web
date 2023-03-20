@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
-import { LoadingButton } from '@mui/lab';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -11,8 +10,6 @@ import HubContextForm from '../../../../platform/admin/components/HubContextForm
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 export const HubContextView: FC = () => {
-  const { t } = useTranslation();
-
   const { hubNameId, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
@@ -65,9 +62,7 @@ export const HubContextView: FC = () => {
         />
       </Grid>
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <LoadingButton loading={isLoading} variant="contained" onClick={() => submitWired()}>
-          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        </LoadingButton>
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Box>
     </Container>
   );

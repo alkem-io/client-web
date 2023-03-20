@@ -15,7 +15,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../core/routing/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
-import { LoadingButton } from '@mui/lab';
+import SaveButton from '../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import ProfileFormWithContext, {
   ProfileFormValuesType,
@@ -132,9 +132,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         loading={isLoading}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <LoadingButton loading={isLoading} variant="contained" onClick={() => submitWired()}>
-          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        </LoadingButton>
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Grid>
     </Grid>
   );

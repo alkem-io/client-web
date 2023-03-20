@@ -1,6 +1,5 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
@@ -9,12 +8,11 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
-import { LoadingButton } from '@mui/lab';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
 import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
 
 const ChallengeContextView: FC = () => {
-  const { t } = useTranslation();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
@@ -55,9 +53,7 @@ const ChallengeContextView: FC = () => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <LoadingButton loading={isUpdating} variant="contained" onClick={() => submitWired()}>
-          {t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
-        </LoadingButton>
+        <SaveButton loading={isUpdating} onClick={() => submitWired()} />
       </Grid>
     </Grid>
   );

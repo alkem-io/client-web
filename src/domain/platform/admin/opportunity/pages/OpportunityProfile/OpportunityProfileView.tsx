@@ -18,7 +18,7 @@ import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToE
 import { Context } from '../../../../../../core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
-import { LoadingButton } from '@mui/lab';
+import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 
 interface Props {
   mode: FormMode;
@@ -108,9 +108,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <LoadingButton loading={isLoading} variant="contained" onClick={() => submitWired()}>
-          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        </LoadingButton>
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Grid>
       <Grid item marginTop={2}>
         <Typography variant={'h4'} color={'primary'}>
