@@ -21,7 +21,7 @@ const GallerySkeleton: FC<BoxProps> = props => {
 
 export interface CanvasTemplatesLibraryGalleryProps {
   canvases: CanvasTemplate[] | undefined;
-  filter?: string;
+  filter?: string[];
   onPreviewTemplate: (template: CanvasTemplate) => void;
   loading?: boolean;
 }
@@ -36,13 +36,15 @@ const CanvasTemplatesLibraryGallery = ({
 
   const templates = useMemo(() => {
     return canvases?.filter(canvas => {
-      if (!filter) return true;
-      if (
-        canvas.displayName.includes(filter) ||
-        canvas.provider?.displayName?.includes(filter) ||
-        canvas.innovationPack.displayName?.includes(filter)
-      ) {
-        return true;
+      if (!filter || filter.length === 0) return true;
+      for (const term of filter) {
+        if (
+          canvas.displayName.includes(term) ||
+          canvas.provider?.displayName?.includes(term) ||
+          canvas.innovationPack.displayName?.includes(term)
+        ) {
+          return true;
+        }
       }
       return false;
     });

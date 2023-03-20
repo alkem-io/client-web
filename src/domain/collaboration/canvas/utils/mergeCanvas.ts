@@ -5,9 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 interface CanvasLike {
   type: string;
   version: number;
-  // source: string;
-  // appState: unknown;
-
   elements: ExcalidrawElement[];
   files?: Record<BinaryFileData['id'], BinaryFileData>;
 }
@@ -33,8 +30,9 @@ interface BoundingBox {
   maxY: number;
 }
 const getBoundingBox = (canvasElements?: readonly ExcalidrawElement[]): BoundingBox => {
-  const defaultBox = { minX: 0, minY: 0, maxX: 0, maxY: 0 };
-  if (!canvasElements || canvasElements.length === 0) return defaultBox;
+  if (!canvasElements || canvasElements.length === 0) {
+    return { minX: 0, minY: 0, maxX: 0, maxY: 0 };
+  }
 
   const [firstElement, ...elements] = canvasElements;
 
@@ -49,19 +47,21 @@ const getBoundingBox = (canvasElements?: readonly ExcalidrawElement[]): Bounding
     box.minX = Math.min(element.x, box.minX);
     box.minY = Math.min(element.y, box.minY);
     box.maxX = Math.max(element.x + element.width, box.maxX);
-    box.maxY = Math.max(element.x + element.height, box.maxY);
+    box.maxY = Math.max(element.y + element.height, box.maxY);
   });
   return box;
 };
 
-const optimizeInsertionPoint = (canvasA: BoundingBox, canvasB: BoundingBox): { x: number; y: number } => {
+const calculateInsertionPoint = (canvasA: BoundingBox, canvasB: BoundingBox): { x: number; y: number } => {
   // Center the canvasB vertically in reference to canvasA
-  const aY = canvasA.minY + (canvasA.maxY - canvasA.minY) / 2; // middle of canvasA
-  const bY = canvasB.minY + (canvasB.maxY - canvasB.minY) / 2; // middle of canvasB
+  // minY - height / 2
+  const aY = canvasA.minY + (canvasA.maxY - canvasA.minY) / 2;
+  const bY = canvasB.minY + (canvasB.maxY - canvasB.minY) / 2;
+  // Displace middle of canvasB to middle of canvasA
   const y = aY - bY;
 
-  // A 10% of the width of the canvasA to the right of the last element of the canvasA
-  const x = -canvasB.minX + canvasA.maxX + ((canvasA.maxX - canvasA.minX) * 10) / 100;
+  // Displace all elements of canvasB to the right of canvasA + 10% of the width of canvasA
+  const x = -canvasB.minX + canvasA.maxX + 0.1 * (canvasA.maxX - canvasA.minX);
 
   return { x, y };
 };
@@ -72,7 +72,7 @@ const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string) =>
     parsedCanvas = JSON.parse(canvasValue);
     if (!verifyCanvas(parsedCanvas)) return false;
   } catch (err) {
-    //!! TODO: Log this somewhere else
+    // TODO: Log this somewhere else
     console.error('Unable to parse canvas value', canvasValue);
     return false;
   }
@@ -87,10 +87,10 @@ const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string) =>
     }
 
     const currentElements = canvasApi.getSceneElements();
+
     const currentElementsBBox = getBoundingBox(currentElements);
     const insertedCanvasBBox = getBoundingBox(parsedCanvas.elements);
-
-    const displacement = optimizeInsertionPoint(currentElementsBBox, insertedCanvasBBox);
+    const displacement = calculateInsertionPoint(currentElementsBBox, insertedCanvasBBox);
 
     const insertedElements = parsedCanvas.elements?.map(el => ({
       ...el,
@@ -101,13 +101,13 @@ const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string) =>
 
     const newElements = [...currentElements, ...insertedElements];
     canvasApi.updateScene({
-      //appState: canvasApi.getAppState(),
       elements: newElements,
       commitToHistory: true, // TODO: WARNING maybe this needs to be false when collaborative editing
     });
+    canvasApi.zoomToFit();
     return true;
   } catch (err) {
-    //!! TODO: Log this somewhere else
+    // TODO: Log this somewhere else
     console.error('Error merging canvas', canvasValue);
     return false;
   }

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, InputAdornment, Link, TextField } from '@mui/material';
+import { Button, Dialog, DialogContent, Link } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
@@ -18,8 +18,8 @@ import { compact } from 'lodash';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
-import SearchIcon from '@mui/icons-material/Search';
 import { ImageSearch as ImageSearchIcon } from '@mui/icons-material';
+import MultipleSelect from '../../../platform/search/MultipleSelect';
 
 export interface CanvasTemplatesLibraryProps {
   onSelectTemplate: (template: CanvasTemplateWithValue) => void;
@@ -34,7 +34,7 @@ const CanvasTemplatesLibrary: FC<CanvasTemplatesLibraryProps> = ({ onSelectTempl
     setDialogOpen(false);
     handleClosePreview();
   };
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState<string[]>([]);
 
   // Show gallery or show preview of this template:
   const [previewTemplate, setPreviewTemplate] = useState<CanvasTemplateWithValue>();
@@ -145,22 +145,14 @@ const CanvasTemplatesLibrary: FC<CanvasTemplatesLibraryProps> = ({ onSelectTempl
             <LibraryIcon />
           </DialogIcon>
           {t('canvas-templates.template-library')}
-          {/* //!! */}
-          <TextField
+          <MultipleSelect
+            onChange={terms => setFilter(terms)}
             value={filter}
-            onChange={event => setFilter(event.target.value)}
-            size="small"
-            sx={{ marginLeft: 'auto ' }}
-            placeholder={t('canvas-templates.filter-placeholder')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Button size="small" sx={{ padding: 0, minWidth: 0 }} onClick={() => setFilter('')}>
-                    {filter ? <SearchIcon /> : <SearchIcon />}
-                  </Button>
-                </InputAdornment>
-              ),
+            minLength={2}
+            containerProps={{
+              marginLeft: 'auto',
             }}
+            inputProps={{ size: 'small' }}
           />
         </DialogHeader>
         <DialogContent>
