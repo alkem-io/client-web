@@ -9526,6 +9526,9 @@ export type OpportunityProfileInfoQuery = {
               postalCode: string;
             }
           | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
+          | undefined;
       };
       context?:
         | {
