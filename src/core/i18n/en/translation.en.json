@@ -104,6 +104,10 @@
     "change-field": "Change {{field}}",
     "send": "Send",
     "contact-leads": "Contact the {{contact}}(s)",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveToTop": "Move to top",
+    "moveToBottom": "Move to bottom",
     "use": "Use"
   },
   "tooltips": {

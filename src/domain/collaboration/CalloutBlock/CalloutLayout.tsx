@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import { IconButton, Menu } from '@mui/material';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -18,15 +18,25 @@ import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 import { CalloutCanvasTemplate, CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
-import { CalloutLayoutEvents } from '../callout/Types';
+import { CalloutLayoutEvents, CalloutSortProps } from '../callout/Types';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import { Ribbon } from '../../../core/ui/card/Ribbon';
 import Authorship from '../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import MenuItemWithIcon from '../../../core/ui/menu/MenuItemWithIcon';
+import {
+  ArrowDownwardOutlined,
+  ArrowUpwardOutlined,
+  CheckCircleOutlined,
+  EditOutlined,
+  UnpublishedOutlined,
+  VerticalAlignBottomOutlined,
+  VerticalAlignTopOutlined,
+} from '@mui/icons-material';
 
-export interface CalloutLayoutProps extends CalloutLayoutEvents {
+export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
     id: string;
     nameID: string;
@@ -58,6 +68,12 @@ const CalloutLayout = ({
   onCalloutDelete,
   calloutNames,
   contributionsCount,
+  topCallout,
+  bottomCallout,
+  onMoveUp,
+  onMoveDown,
+  onMoveToTop,
+  onMoveToBottom,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -74,19 +90,18 @@ const CalloutLayout = ({
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
   const handleSettingsClose = () => setSettingsAnchorEl(null);
 
-  const [visDialogOpen, setVisDialogOpen] = useState(false);
-  const handleVisDialogOpen = () => {
-    setVisDialogOpen(true);
+  const [visibilityDialogOpen, setVisibilityDialogOpen] = useState(false);
+  const handleVisibilityDialogOpen = () => {
+    setVisibilityDialogOpen(true);
     setSettingsAnchorEl(null);
   };
-  const handleVisDialogClose = () => setVisDialogOpen(false);
   const visDialogTitle = useMemo(
     () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
     [callout.draft, t]
   );
   const handleVisibilityChange = async (visibility: CalloutVisibility) => {
     await onVisibilityChange(callout.id, visibility);
-    setVisDialogOpen(false);
+    setVisibilityDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
   const handleEditDialogOpen = () => {
@@ -120,6 +135,11 @@ const CalloutLayout = ({
   }
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
+
+  const handleMove = (callback?: (id: string) => void) => () => {
+    handleSettingsClose();
+    callback?.(callout.id);
+  };
 
   return (
     <>
@@ -175,19 +195,44 @@ const CalloutLayout = ({
           vertical: 'bottom',
           horizontal: 'right',
         }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'left',
-        }}
       >
-        <MenuItem onClick={handleEditDialogOpen}>{t('buttons.edit').toLocaleUpperCase()}</MenuItem>
-        <MenuItem onClick={handleVisDialogOpen}>
-          {t(`buttons.${callout.draft ? '' : 'un'}publish` as const).toLocaleUpperCase()}
-        </MenuItem>
+        <MenuItemWithIcon iconComponent={EditOutlined} onClick={handleEditDialogOpen}>
+          {t('buttons.edit')}
+        </MenuItemWithIcon>
+        <MenuItemWithIcon
+          iconComponent={callout.draft ? CheckCircleOutlined : UnpublishedOutlined}
+          onClick={handleVisibilityDialogOpen}
+        >
+          {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
+        </MenuItemWithIcon>
+        <MenuItemWithIcon iconComponent={ArrowUpwardOutlined} onClick={handleMove(onMoveUp)} disabled={topCallout}>
+          {t('buttons.moveUp')}
+        </MenuItemWithIcon>
+        <MenuItemWithIcon
+          iconComponent={ArrowDownwardOutlined}
+          onClick={handleMove(onMoveDown)}
+          disabled={bottomCallout}
+        >
+          {t('buttons.moveDown')}
+        </MenuItemWithIcon>
+        <MenuItemWithIcon
+          iconComponent={VerticalAlignTopOutlined}
+          onClick={handleMove(onMoveToTop)}
+          disabled={topCallout}
+        >
+          {t('buttons.moveToTop')}
+        </MenuItemWithIcon>
+        <MenuItemWithIcon
+          iconComponent={VerticalAlignBottomOutlined}
+          onClick={handleMove(onMoveToBottom)}
+          disabled={bottomCallout}
+        >
+          {t('buttons.moveToBottom')}
+        </MenuItemWithIcon>
       </Menu>
       <CalloutVisibilityChangeDialog
-        open={visDialogOpen}
-        onClose={handleVisDialogClose}
+        open={visibilityDialogOpen}
+        onClose={() => setVisibilityDialogOpen(false)}
         title={visDialogTitle}
         draft={callout.draft}
         onVisibilityChanged={handleVisibilityChange}
