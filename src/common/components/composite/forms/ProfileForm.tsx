@@ -117,7 +117,7 @@ const ProfileForm: FC<Props> = ({
               </WrapperTypography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
-            <ContextReferenceSegment references={references || []} profileId={context?.id} />
+            <ContextReferenceSegment references={references || []} profileId={profile?.id} />
             <RecommendationsSegment recommendations={recommendations || []} />
           </>
         );
