@@ -2,6 +2,8 @@ import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { v4 as uuidv4 } from 'uuid';
 
+class CanvasMergeError extends Error {}
+
 interface CanvasLike {
   type: string;
   version: number;
@@ -70,11 +72,9 @@ const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string) =>
   let parsedCanvas: CanvasLike;
   try {
     parsedCanvas = JSON.parse(canvasValue);
-    if (!verifyCanvas(parsedCanvas)) return false;
+    if (!verifyCanvas(parsedCanvas)) throw new Error('Canvas verification failed');
   } catch (err) {
-    // TODO: Log this somewhere else
-    console.error('Unable to parse canvas value', canvasValue);
-    return false;
+    throw new CanvasMergeError(`Unable to parse canvas value: ${err}`);
   }
 
   try {
@@ -107,9 +107,7 @@ const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string) =>
     canvasApi.zoomToFit();
     return true;
   } catch (err) {
-    // TODO: Log this somewhere else
-    console.error('Error merging canvas', canvasValue);
-    return false;
+    throw new CanvasMergeError(`Unable to merge canvases: ${err}`);
   }
 };
 

@@ -575,7 +575,8 @@
     "canvas-template": "Whiteboard template",
     "hub-templates": "Templates selected by the host of this community",
     "load-platform-templates": "Or click here to browse through all platform templates",
-    "platform-templates": "Platform Templates"
+    "platform-templates": "Platform Templates",
+    "error-importing": "Error importing Canvas Template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",

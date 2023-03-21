@@ -33,6 +33,8 @@ import { PageTitle } from '../../../../core/ui/typography';
 import CanvasTemplatesLibrary from '../CanvasTemplatesLibrary/CanvasTemplatesLibrary';
 import { CanvasTemplateWithValue } from '../CanvasTemplatesLibrary/CanvasTemplate';
 import mergeCanvas from '../utils/mergeCanvas';
+import { error as logError } from '../../../../services/logging/sentry/log';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -100,6 +102,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
   state,
 }: CanvasDialogProps<Canvas>) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const { canvas, lockedBy } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
 
@@ -197,7 +200,12 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
   const handleImportTemplate = async (template: CanvasTemplateWithValue) => {
     const canvasApi = await excalidrawApiRef.current?.readyPromise;
     if (canvasApi && options.canEdit && options.checkedOutByMe) {
-      mergeCanvas(canvasApi, template.value);
+      try {
+        mergeCanvas(canvasApi, template.value);
+      } catch (err) {
+        notify(t('canvas-templates.error-importing'), 'error');
+        logError(new Error(`Error importing canvas template ${template.id}: '${err}'`));
+      }
     }
   };
 

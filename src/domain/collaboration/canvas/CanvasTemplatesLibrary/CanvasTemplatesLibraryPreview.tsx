@@ -48,7 +48,7 @@ const CanvasTemplatesLibraryPreview: FC<CanvasTemplatesLibraryPreviewProps> = ({
         </Box>
         <Box>
           <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-          <TagsComponent tags={template?.tags || []} />
+          <TagsComponent tags={template?.tags ?? []} />
           {loading && <Skeleton />}
         </Box>
         <Box height={theme.spacing(40)}>

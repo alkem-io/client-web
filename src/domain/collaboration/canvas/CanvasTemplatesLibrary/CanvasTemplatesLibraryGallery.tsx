@@ -39,12 +39,7 @@ const CanvasTemplatesLibraryGallery = ({
       if (!filter || filter.length === 0) return true;
       const canvasString =
         `${canvas.displayName} ${canvas.provider.displayName} ${canvas.innovationPack.displayName}`.toLowerCase();
-      for (const term of filter) {
-        if (canvasString.includes(term.toLowerCase())) {
-          return true;
-        }
-      }
-      return false;
+      return filter.some(term => canvasString.includes(term.toLowerCase()));
     });
   }, [canvases, filter]);
 
