@@ -47,11 +47,9 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
   const url = `${EntityPageSection.Dashboard}/calendar/${event.nameID}`;
 
   return (
-    <BadgeCardView visual={<CalendarEventBadge eventStartDate={event.startDate} />}>
-      <BlockSectionTitle component={RouterLink} to={url}>
-        {event.profile?.displayName}
-      </BlockSectionTitle>
-      <EventDescription>{event.profile?.description}</EventDescription>
+    <BadgeCardView component={RouterLink} to={url} visual={<CalendarEventBadge eventStartDate={event.startDate} />}>
+      <BlockSectionTitle>{event.profile.displayName}</BlockSectionTitle>
+      <EventDescription>{event.profile.description}</EventDescription>
     </BadgeCardView>
   );
 };
