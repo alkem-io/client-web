@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createContextInput, updateContextInput } from '../../../../../../common/utils/buildContext';
@@ -17,6 +17,7 @@ import {
 import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToEdit';
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
+import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 
 interface Props {
   mode: FormMode;
@@ -119,9 +120,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button disabled={isLoading} color="primary" onClick={() => submitWired()}>
-          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        </Button>
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Grid>
       <Grid item marginTop={2}>
         <Typography variant={'h4'} color={'primary'}>
