@@ -42,7 +42,7 @@ const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   const avatarUri = profile.visual?.uri;
   const { country, city } = profile.location ?? {};
   const url = buildUserProfileUrl(user.nameID);
-  const tags = profile.tagsets?.[0].tags ?? [];
+  const tags = profile.tagsets?.[0]?.tags ?? [];
 
   return (
     <ContributingUserCard
