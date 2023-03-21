@@ -31,7 +31,7 @@ import * as yup from 'yup';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../../../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -150,7 +150,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             }
           }}
         >
-          {({ isValid, handleSubmit, isSubmitting, dirty }) => {
+          {({ isValid, handleSubmit, isSubmitting }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -165,12 +165,14 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
-                    <WrapperButton
-                      text={t('components.communityUpdates.actions.add.buttonTitle')}
-                      type={'submit'}
-                      disabled={isSubmitting || removingMessage || !isValid || !dirty}
-                      startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
-                    />
+                    <SaveButton
+                      type="submit"
+                      disabled={!isValid}
+                      loading={isSubmitting || removingMessage}
+                      startIcon={<PlayArrowIcon />}
+                    >
+                      {t('components.communityUpdates.actions.add.buttonTitle')}
+                    </SaveButton>
                   </Grid>
                 </Grid>
               </Form>

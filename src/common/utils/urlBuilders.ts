@@ -75,7 +75,7 @@ export const buildNewOrganizationUrl = () => {
 
 export type JourneyLocation = CoreEntityIdTypes;
 
-const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
+export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
   if (isHubId(journeyLocation)) {
     return buildHubUrl(journeyLocation.hubNameId);
   }
