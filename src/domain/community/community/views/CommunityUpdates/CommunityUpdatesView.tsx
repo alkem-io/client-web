@@ -151,7 +151,6 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           }}
         >
           {({ isValid, handleSubmit, isSubmitting }) => {
-            console.log(isValid);
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
