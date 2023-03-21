@@ -1852,7 +1852,8 @@
   },
   "associates-view": {
     "less": "show less",
-    "more": "...plus {{count}} more"
+    "more": "...plus {{count}} more",
+    "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "hubs-filter": {
     "current-filter": "Current filter: ",

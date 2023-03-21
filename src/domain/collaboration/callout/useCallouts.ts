@@ -17,6 +17,7 @@ import {
 import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
+import { useMemo } from 'react';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
@@ -112,28 +113,32 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     return callout.activity;
   };
 
-  const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
-    const draft = callout?.visibility === CalloutVisibility.Draft;
-    const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-    const isSubscribedToComments = commentCalloutIds.includes(callout.id) && subscribedToComments;
-    return {
-      ...callout,
-      // Add calloutNameId to all canvases
-      canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
-      comments: { ...callout.comments, calloutNameId: callout.nameID },
-      authorization,
-      draft,
-      editable,
-      isSubscribedToComments,
-      url:
-        params.hubNameId &&
-        buildCalloutUrl(callout.nameID, {
-          hubNameId: params.hubNameId,
-          challengeNameId: params.challengeNameId,
-          opportunityNameId: params.opportunityNameId,
-        }),
-    } as TypedCallout;
-  });
+  const callouts = useMemo(
+    () =>
+      collaboration?.callouts?.map(({ authorization, ...callout }) => {
+        const draft = callout?.visibility === CalloutVisibility.Draft;
+        const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const isSubscribedToComments = commentCalloutIds.includes(callout.id) && subscribedToComments;
+        return {
+          ...callout,
+          // Add calloutNameId to all canvases
+          canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
+          comments: { ...callout.comments, calloutNameId: callout.nameID },
+          authorization,
+          draft,
+          editable,
+          isSubscribedToComments,
+          url:
+            params.hubNameId &&
+            buildCalloutUrl(callout.nameID, {
+              hubNameId: params.hubNameId,
+              challengeNameId: params.challengeNameId,
+              opportunityNameId: params.opportunityNameId,
+            }),
+        } as TypedCallout;
+      }),
+    [collaboration]
+  );
 
   const [runUpdateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
 
