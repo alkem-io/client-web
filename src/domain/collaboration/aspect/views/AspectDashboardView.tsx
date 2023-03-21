@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError, FetchResult } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
@@ -80,7 +80,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
 
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
   const deleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
-  const onDeleteComment = useCallback((id: string) => setCommentToBeDeleted(id), [setCommentToBeDeleted]);
+  const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,

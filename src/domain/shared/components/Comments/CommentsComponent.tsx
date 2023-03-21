@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
@@ -66,7 +66,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
 
   const onPostComment = (message: string) => (commentsId ? handlePostMessage(commentsId, message) : undefined);
   const handleDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
-  const onDeleteComment = useCallback((id: string) => setCommentToBeDeleted(id), [setCommentToBeDeleted]);
+  const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,
