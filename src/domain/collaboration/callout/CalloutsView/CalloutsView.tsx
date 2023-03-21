@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -80,7 +80,14 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
 
   const [sortedCalloutIds, setSortedCalloutIds] = useState(sortBy(callouts, c => c.sortOrder).map(c => c.id));
 
-  const sortedCallouts = useMemo(() => sortedCalloutIds.map(id => callouts!.find(c => c.id === id)!), [callouts]);
+  useLayoutEffect(() => {
+    setSortedCalloutIds(sortBy(callouts, c => c.sortOrder).map(c => c.id));
+  }, [callouts]);
+
+  const sortedCallouts = useMemo(
+    () => sortedCalloutIds.map(id => callouts?.find(c => c.id === id)!),
+    [sortedCalloutIds, callouts]
+  );
 
   const updateOrder = UpdateOrder(setSortedCalloutIds, updateCalloutsSortOrder);
 
@@ -101,7 +108,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
               title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
             />
             <LinksList
-              items={callouts?.map(callout => {
+              items={sortedCallouts?.map(callout => {
                 const CalloutIcon = calloutIcons[callout.type];
                 return {
                   id: callout.id,
