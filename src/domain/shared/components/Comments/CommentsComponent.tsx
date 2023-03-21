@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
@@ -12,6 +12,7 @@ import PostMessageToCommentsForm from './PostMessageToCommentsForm';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CaptionSmall } from '../../../../core/ui/typography';
+import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
@@ -61,9 +62,11 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
+  const [commentToBeDeleted, setCommentToBeDeleted] = useState<string | undefined>(undefined);
 
   const onPostComment = (message: string) => (commentsId ? handlePostMessage(commentsId, message) : undefined);
-  const onDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
+  const handleDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
+  const onDeleteComment = (id: string) => setCommentToBeDeleted(id);
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,
@@ -141,6 +144,25 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
           <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
         </Box>
       )}
+      <ConfirmationDialog
+        actions={{
+          onCancel: () => setCommentToBeDeleted(undefined),
+          onConfirm: async () => {
+            if (commentToBeDeleted) {
+              await handleDeleteComment(commentToBeDeleted);
+            }
+            setCommentToBeDeleted(undefined);
+          },
+        }}
+        entities={{
+          confirmButtonTextId: 'buttons.delete',
+          contentId: 'components.confirmation-dialog.delete-comment.confirmation-text',
+          titleId: 'components.confirmation-dialog.delete-comment.confirmation-title',
+        }}
+        options={{
+          show: Boolean(commentToBeDeleted),
+        }}
+      />
     </>
   );
 };
