@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -9,8 +8,6 @@ import { Box, Container, Grid } from '@mui/material';
 import HubContextForm, { HubEditFormValuesType } from '../../../../platform/admin/components/HubContextForm';
 
 export const HubContextView: FC = () => {
-  const { t } = useTranslation();
-
   const { hubNameId, ...hub } = useHub();
   const notify = useNotification();
 
@@ -52,12 +49,7 @@ export const HubContextView: FC = () => {
         />
       </Grid>
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        />
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Box>
     </Container>
   );

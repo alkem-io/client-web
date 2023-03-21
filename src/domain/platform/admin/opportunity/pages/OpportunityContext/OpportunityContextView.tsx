@@ -1,6 +1,5 @@
-import { Button, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { updateContextInput } from '../../../../../../common/utils/buildContext';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
@@ -11,9 +10,9 @@ import {
   useOpportunityProfileInfoQuery,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { OpportunityContextSegment } from '../../OpportunityContextSegment';
+import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 
 const OpportunityContextView: FC = () => {
-  const { t } = useTranslation();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
@@ -62,9 +61,7 @@ const OpportunityContextView: FC = () => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button disabled={isUpdating} color="primary" onClick={() => submitWired()}>
-          {t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
-        </Button>
+        <SaveButton loading={isUpdating} onClick={() => submitWired()} />
       </Grid>
     </Grid>
   );
