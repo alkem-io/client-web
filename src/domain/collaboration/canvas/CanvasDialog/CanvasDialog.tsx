@@ -195,7 +195,6 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
   };
 
   const handleImportTemplate = async (template: CanvasTemplateWithValue) => {
-    console.log('handleImportTemplate...');
     const canvasApi = await excalidrawApiRef.current?.readyPromise;
     if (canvasApi && options.canEdit && options.checkedOutByMe) {
       mergeCanvas(canvasApi, template.value);
