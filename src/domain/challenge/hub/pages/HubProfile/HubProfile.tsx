@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
@@ -12,7 +11,6 @@ import { formatDatabaseLocation } from '../../../../common/location/LocationUtil
 import { sortBy } from 'lodash';
 
 export const HubProfile: FC = () => {
-  const { t } = useTranslation();
   const { hubNameId, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
@@ -75,12 +73,7 @@ export const HubProfile: FC = () => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        />
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Box>
       <Box paddingY={2}>
         <EditVisualsView visuals={visuals} />

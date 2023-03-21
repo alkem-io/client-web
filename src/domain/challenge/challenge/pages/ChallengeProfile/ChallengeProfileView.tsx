@@ -12,7 +12,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
-import WrapperButton from '../../../../../common/components/core/WrapperButton';
+import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
@@ -118,12 +118,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <WrapperButton
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        />
+        <SaveButton loading={isLoading} onClick={() => submitWired()} />
       </Grid>
       <Grid item marginTop={2}>
         <WrapperTypography variant={'h4'} color={'primary'}>
