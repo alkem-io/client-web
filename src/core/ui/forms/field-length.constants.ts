@@ -13,7 +13,7 @@ export const LIFECYCLE_DEFINITION_LENGTH = 8388608;
 export type TextFieldMaxLength = typeof MID_TEXT_LENGTH | typeof LONG_TEXT_LENGTH | typeof VERY_LONG_TEXT_LENGTH;
 
 export const MarkdownFieldMaxLength: Record<TextFieldMaxLength, number> = {
-  [MID_TEXT_LENGTH]: 200,
-  [LONG_TEXT_LENGTH]: 500,
-  [VERY_LONG_TEXT_LENGTH]: 2000,
+  [MID_TEXT_LENGTH]: 500,
+  [LONG_TEXT_LENGTH]: 2000,
+  [VERY_LONG_TEXT_LENGTH]: 8000,
 };
