@@ -104,7 +104,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const permissions = {
     canEdit: organizationPrivileges.includes(AuthorizationPrivilege.Update),
-    canReadUsers: canReadUsers,
+    canReadUsers,
   };
 
   const associates = useMemo<ContributorCardProps[]>(() => {
