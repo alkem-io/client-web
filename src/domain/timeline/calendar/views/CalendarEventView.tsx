@@ -48,8 +48,8 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
 
   return (
     <BadgeCardView component={RouterLink} to={url} visual={<CalendarEventBadge eventStartDate={event.startDate} />}>
-      <BlockSectionTitle>{event.profile?.displayName}</BlockSectionTitle>
-      <EventDescription>{event.profile?.description}</EventDescription>
+      <BlockSectionTitle>{event.profile.displayName}</BlockSectionTitle>
+      <EventDescription>{event.profile.description}</EventDescription>
     </BadgeCardView>
   );
 };
