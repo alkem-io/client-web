@@ -2,7 +2,7 @@ import React, { ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../../shared/components/References/References';
 import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
-import { buildCalloutUrl, buildHubUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
+import { buildCalloutUrl, buildJourneyUrl, JourneyLocation } from '../../../../../common/utils/urlBuilders';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
@@ -135,8 +135,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
         <JourneyDashboardVision vision={vision} journeyTypeName={journeyTypeName} />
         <ShareButton
           title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
-          url={hubNameId && buildHubUrl(hubNameId)}
-          entityTypeName="hub"
+          url={journeyLocation && buildJourneyUrl(journeyLocation)}
+          entityTypeName={journeyTypeName}
         />
         {communityReadAccess && (
           <EntityDashboardLeadsSection
