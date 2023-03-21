@@ -1706,6 +1706,11 @@ export const OrganizationInfoFragmentDoc = gql`
         ...fullLocation
       }
     }
+    metrics {
+      id
+      name
+      value
+    }
     associates @include(if: $includeAssociates) {
       id
       nameID

@@ -14,6 +14,8 @@ import {
 } from '../../../profile/views/ProfileView';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
+import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
+import { MetricType } from '../../../../platform/metrics/MetricType';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -50,13 +52,15 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
     [organization, tagsets, socialLinks, links, t]
   );
 
+  const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <AssociatesView associates={associates} />
+        <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
         <ContributionsView
           title={t('components.contributions.title')}
           helpText={t('components.contributions.help')}
