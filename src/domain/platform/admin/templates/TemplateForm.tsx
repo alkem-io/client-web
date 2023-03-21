@@ -6,22 +6,22 @@ import { Form, Formik, FormikProps } from 'formik';
 import { DialogActions, DialogContent, Typography } from '@mui/material';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { TagsetField } from '../components/Common/TagsetSegment';
-import { CreateTemplateInfoInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface TemplateInfoValues {
-  title: string;
+  displayName: string;
   description: string;
   tags: string[];
 }
 
 export interface TemplateInfoSubmittedValues {
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
 }
 
 interface TemplateFormProps<Values extends TemplateInfoValues> {
@@ -47,11 +47,11 @@ const TemplateForm = <Values extends TemplateInfoValues>({
 
   const handleSubmit = useCallback(
     (values: Partial<Values & TemplateInfoValues>) => {
-      const { title, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
+      const { displayName, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
       onSubmit({
         ...validValues,
-        info: {
-          title,
+        profile: {
+          displayName,
           tags,
           description,
         },

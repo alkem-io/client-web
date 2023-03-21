@@ -34,9 +34,9 @@ const EditInnovationTemplateDialog = ({
   const values: Partial<InnovationTemplateFormValues> = {
     type: template.type,
     definition: template.definition,
-    title: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
   };
 
   return (
@@ -49,7 +49,7 @@ const EditInnovationTemplateDialog = ({
       <InnovationTemplateForm
         title={t('common.edit-entity', { entity: t('innovation-templates.innovation-template') })}
         initialValues={values}
-        visual={template.info.visual}
+        visual={template.profile.visual}
         onSubmit={onSubmit}
         actions={
           <>

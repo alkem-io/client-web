@@ -54,7 +54,7 @@ type CalloutTypesWithChildTypes = {
 
 export type TypedCallout = Pick<
   Callout,
-  'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'activity' | 'authorization' | 'sortOrder'
+  'id' | 'profile' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder'
 > &
   (
     | CalloutTypesWithChildTypes[CalloutType.Card]

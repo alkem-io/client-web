@@ -145,7 +145,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           variables: {
             input: {
               ID: canvas.id,
-              displayName: canvas.displayName,
+              displayName: canvas.profile.displayName,
               value: canvas.value,
             },
           },

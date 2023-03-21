@@ -25,9 +25,9 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
   const values: Partial<AspectTemplateFormValues> = {
     type: template.type,
     defaultDescription: template.defaultDescription,
-    title: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
   };
 
   return (

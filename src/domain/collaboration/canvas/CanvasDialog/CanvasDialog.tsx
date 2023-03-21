@@ -195,7 +195,10 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
-  const initialValues = useMemo(() => ({ displayName: canvas?.displayName ?? '' }), [canvas?.displayName]);
+  const initialValues = useMemo(
+    () => ({ displayName: canvas?.profile.displayName ?? '' }),
+    [canvas?.profile.displayName]
+  );
 
   useEffect(() => {
     formikRef.current?.resetForm({
@@ -244,7 +247,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
                   <Authorship authorAvatarUri={canvas?.createdBy?.profile.visual?.uri} date={canvas?.createdDate}>
                     {canvas?.createdBy?.profile.displayName}
                   </Authorship>
-                  <PageTitle>{canvas?.displayName}</PageTitle>
+                  <PageTitle>{canvas?.profile.displayName}</PageTitle>
                 </>
               )}
             </DialogHeader>

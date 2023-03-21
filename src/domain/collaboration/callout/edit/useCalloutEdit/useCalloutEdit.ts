@@ -32,18 +32,20 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
         variables: {
           calloutData: {
             ID: callout.id,
-            description: callout.description,
-            displayName: callout.displayName,
+            profileData: {
+              description: callout.description,
+              displayName: callout.displayName,
+            },
             state: callout.state,
             cardTemplate: callout.cardTemplate
               ? {
                   type: callout.cardTemplate.type,
                   defaultDescription: callout.cardTemplate.defaultDescription,
-                  info: callout.cardTemplate.info,
+                  profileData: callout.cardTemplate.info,
                 }
               : undefined,
             canvasTemplate: callout.canvasTemplate
-              ? { value: callout.canvasTemplate.value, info: callout.canvasTemplate.info }
+              ? { value: callout.canvasTemplate.value, profileData: callout.canvasTemplate.info }
               : undefined,
           },
         },
