@@ -34,6 +34,8 @@ interface CalloutsPageProps {
   scrollToCallout?: boolean;
 }
 
+const getSortedCalloutIds = (callouts?: TypedCallout[]) => sortBy(callouts, c => c.sortOrder).map(c => c.id);
+
 const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
@@ -78,10 +80,10 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
     handleCreateCalloutOpened();
   };
 
-  const [sortedCalloutIds, setSortedCalloutIds] = useState(sortBy(callouts, c => c.sortOrder).map(c => c.id));
+  const [sortedCalloutIds, setSortedCalloutIds] = useState(getSortedCalloutIds(callouts));
 
   useLayoutEffect(() => {
-    setSortedCalloutIds(sortBy(callouts, c => c.sortOrder).map(c => c.id));
+    setSortedCalloutIds(getSortedCalloutIds(callouts));
   }, [callouts]);
 
   const sortedCallouts = useMemo(
