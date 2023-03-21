@@ -16447,6 +16447,7 @@ export type OrganizationInfoFragment = {
         }
       | undefined;
   };
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   associates?:
     | Array<{
         __typename?: 'User';
@@ -16512,6 +16513,7 @@ export type OrganizationInfoQuery = {
           }
         | undefined;
     };
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     associates?:
       | Array<{
           __typename?: 'User';

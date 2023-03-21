@@ -35,6 +35,7 @@ export interface OrganizationContainerEntities {
   contributions: ContributionItem[];
   permissions: {
     canEdit: boolean;
+    canReadUsers: boolean;
   };
   website?: string;
   handleSendMessage: (text: string) => Promise<void>;
@@ -57,7 +58,7 @@ export interface OrganizationPageContainerProps
 const NO_PRIVILEGES = [];
 
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
-  const { organizationId, organizationNameId, loading, organization } = useOrganization();
+  const { organizationId, organizationNameId, loading, organization, canReadUsers } = useOrganization();
 
   const usersWithRoles = useUserCardRoleName((organization?.associates || []) as User[], organizationId);
 
@@ -103,6 +104,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const permissions = {
     canEdit: organizationPrivileges.includes(AuthorizationPrivilege.Update),
+    canReadUsers: canReadUsers,
   };
 
   const associates = useMemo<ContributorCardProps[]>(() => {
