@@ -1,18 +1,18 @@
-mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $info: UpdateTemplateInfoInput) {
+mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput) {
   updateCanvasTemplate(canvasTemplateInput: {
     ID: $templateId
     value: $value
-    info: $info
+    profile: $profile
   }) {
     id
   }
 }
 
-mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $info: CreateTemplateInfoInput!) {
+mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $profile: CreateProfileInput!) {
   createCanvasTemplate(canvasTemplateInput: {
     templatesSetID: $templatesSetId
     value: $value
-    info: $info
+    profile: $profile
   }) {
     id
   }

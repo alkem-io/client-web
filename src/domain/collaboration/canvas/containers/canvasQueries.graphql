@@ -1,5 +1,14 @@
 fragment CanvasDetails on Canvas {
-  ...CanvasSummary
+  id
+  nameID
+  createdDate
+  profile {
+    id
+    displayName
+    visual(type: CARD) {
+      ...VisualFull
+    }
+  }
   authorization {
     id
     myPrivileges
@@ -7,9 +16,6 @@ fragment CanvasDetails on Canvas {
   }
   checkout {
     ...CheckoutDetails
-  }
-  preview {
-    ...VisualFull
   }
   createdBy {
     id
@@ -27,8 +33,11 @@ fragment CanvasDetails on Canvas {
 fragment CanvasSummary on Canvas {
   id
   nameID
-  displayName
   createdDate
+  profile {
+    id
+    displayName
+  }
 }
 
 fragment CanvasValue on Canvas {
@@ -64,9 +73,9 @@ query canvasTemplates($hubId: UUID_NAMEID!) {
 
 fragment CreateCanvasCanvasTemplate on CanvasTemplate {
   id
-  info {
+  profile {
     id
-    title
+    displayName
     description
   }
   value
@@ -253,7 +262,10 @@ mutation updateCanvas($input: UpdateCanvasDirectInput!) {
   updateCanvas(canvasData: $input) {
     id
     value
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
 

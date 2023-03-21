@@ -87,28 +87,28 @@ fragment AspectTemplate on AspectTemplate {
   id
   defaultDescription
   type
-  info {
-    ...TemplateInfo
+  profile {
+    ...ProfileInfo
   }
 }
 
-fragment TemplateInfo on TemplateInfo {
+fragment ProfileInfo on Profile {
   id
-  title
+  displayName
   description
   tagset {
     id
     tags
   }
-  visual {
+  visual(type: CARD) {
     id
     uri
   }
 }
 fragment CanvasTemplate on CanvasTemplate {
   id
-  info {
-    ...TemplateInfo
+  profile {
+    ...ProfileInfo
   }
 }
 fragment CanvasTemplateWithValue on CanvasTemplate {
@@ -120,9 +120,9 @@ fragment LifecycleTemplate on LifecycleTemplate {
   id
   definition
   type
-  info {
+  profile {
     id
-    title
+    displayName
     description
   }
 }

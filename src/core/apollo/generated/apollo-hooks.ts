@@ -60,14 +60,6 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const CanvasSummaryFragmentDoc = gql`
-  fragment CanvasSummary on Canvas {
-    id
-    nameID
-    displayName
-    createdDate
-  }
-`;
 export const CheckoutDetailsFragmentDoc = gql`
   fragment CheckoutDetails on CanvasCheckout {
     id
@@ -85,7 +77,16 @@ export const CheckoutDetailsFragmentDoc = gql`
 `;
 export const CanvasDetailsFragmentDoc = gql`
   fragment CanvasDetails on Canvas {
-    ...CanvasSummary
+    id
+    nameID
+    createdDate
+    profile {
+      id
+      displayName
+      visual(type: CARD) {
+        ...VisualFull
+      }
+    }
     authorization {
       id
       myPrivileges
@@ -93,9 +94,6 @@ export const CanvasDetailsFragmentDoc = gql`
     }
     checkout {
       ...CheckoutDetails
-    }
-    preview {
-      ...VisualFull
     }
     createdBy {
       id
@@ -109,16 +107,18 @@ export const CanvasDetailsFragmentDoc = gql`
       }
     }
   }
-  ${CanvasSummaryFragmentDoc}
-  ${CheckoutDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${CheckoutDetailsFragmentDoc}
 `;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
     nameID
-    displayName
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     type
     visibility
     aspects(limit: 2, shuffle: true) {
@@ -309,8 +309,11 @@ export const OpportunityCardFragmentDoc = gql`
     projects {
       id
       nameID
-      displayName
-      description
+      profile {
+        id
+        displayName
+        description
+      }
       lifecycle {
         id
         state
@@ -553,16 +556,16 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-export const TemplateInfoFragmentDoc = gql`
-  fragment TemplateInfo on TemplateInfo {
+export const ProfileInfoFragmentDoc = gql`
+  fragment ProfileInfo on Profile {
     id
-    title
+    displayName
     description
     tagset {
       id
       tags
     }
-    visual {
+    visual(type: CARD) {
       id
       uri
     }
@@ -573,29 +576,29 @@ export const AspectTemplateFragmentDoc = gql`
     id
     defaultDescription
     type
-    info {
-      ...TemplateInfo
+    profile {
+      ...ProfileInfo
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${ProfileInfoFragmentDoc}
 `;
 export const CanvasTemplateFragmentDoc = gql`
   fragment CanvasTemplate on CanvasTemplate {
     id
-    info {
-      ...TemplateInfo
+    profile {
+      ...ProfileInfo
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${ProfileInfoFragmentDoc}
 `;
 export const LifecycleTemplateFragmentDoc = gql`
   fragment LifecycleTemplate on LifecycleTemplate {
     id
     definition
     type
-    info {
+    profile {
       id
-      title
+      displayName
       description
     }
   }
@@ -1137,10 +1140,10 @@ export const CalloutAspectInfoFragmentDoc = gql`
     }
   }
 `;
-export const TemplateTitleFragmentDoc = gql`
-  fragment TemplateTitle on TemplateInfo {
+export const ProfileDisplayNameFragmentDoc = gql`
+  fragment ProfileDisplayName on Profile {
     id
-    title
+    displayName
   }
 `;
 export const PrivilegesOnCollaborationFragmentDoc = gql`
@@ -1173,12 +1176,12 @@ export const CalloutCardTemplateFragmentDoc = gql`
       id
       type
       defaultDescription
-      info {
+      profile {
         tagset {
           id
           tags
         }
-        visual {
+        visual(type: CARD) {
           id
           uri
         }
@@ -1191,14 +1194,15 @@ export const CalloutCanvasTemplateFragmentDoc = gql`
     canvasTemplate {
       id
       value
-      info {
-        title
+      profile {
+        id
+        displayName
         description
         tagset {
           id
           tags
         }
-        visual {
+        visual(type: CARD) {
           id
           uri
         }
@@ -1211,8 +1215,11 @@ export const CalloutFragmentDoc = gql`
     id
     nameID
     type
-    displayName
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     state
     sortOrder
     activity
@@ -1248,6 +1255,17 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
   }
   ${CalloutFragmentDoc}
 `;
+export const CanvasSummaryFragmentDoc = gql`
+  fragment CanvasSummary on Canvas {
+    id
+    nameID
+    createdDate
+    profile {
+      id
+      displayName
+    }
+  }
+`;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
     id
@@ -1257,9 +1275,9 @@ export const CanvasValueFragmentDoc = gql`
 export const CreateCanvasCanvasTemplateFragmentDoc = gql`
   fragment CreateCanvasCanvasTemplate on CanvasTemplate {
     id
-    info {
+    profile {
       id
-      title
+      displayName
       description
     }
     value
@@ -2046,16 +2064,16 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const TemplateInfoWithFullVisualFragmentDoc = gql`
-  fragment TemplateInfoWithFullVisual on TemplateInfo {
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
     id
-    title
+    displayName
     description
     tagset {
       id
       tags
     }
-    visual {
+    visual(type: CARD) {
       ...VisualFull
     }
   }
@@ -2066,31 +2084,31 @@ export const AdminLifecycleTemplateFragmentDoc = gql`
     id
     definition
     type
-    info {
-      ...TemplateInfoWithFullVisual
+    profile {
+      ...ProfileInfoWithVisual
     }
   }
-  ${TemplateInfoWithFullVisualFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const AdminAspectTemplateFragmentDoc = gql`
   fragment AdminAspectTemplate on AspectTemplate {
     id
     defaultDescription
     type
-    info {
-      ...TemplateInfoWithFullVisual
+    profile {
+      ...ProfileInfoWithVisual
     }
   }
-  ${TemplateInfoWithFullVisualFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateFragmentDoc = gql`
   fragment AdminCanvasTemplate on CanvasTemplate {
     id
-    info {
-      ...TemplateInfoWithFullVisual
+    profile {
+      ...ProfileInfoWithVisual
     }
   }
-  ${TemplateInfoWithFullVisualFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateValueFragmentDoc = gql`
   fragment AdminCanvasTemplateValue on CanvasTemplate {
@@ -2208,7 +2226,10 @@ export const CardParentFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2460,8 +2481,11 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
       type
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2470,7 +2494,10 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     card {
       id
@@ -2489,7 +2516,10 @@ export const ActivityLogCalloutCardCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     card {
       id
@@ -2506,12 +2536,18 @@ export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     canvas {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2520,7 +2556,10 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -6093,9 +6132,9 @@ export const HubLifecycleTemplatesDocument = gql`
           definition
           id
           type
-          info {
+          profile {
             id
-            title
+            displayName
           }
         }
       }
@@ -8904,20 +8943,20 @@ export const TemplatesForCalloutCreationDocument = gql`
         id
         aspectTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
         canvasTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
       }
     }
   }
-  ${TemplateTitleFragmentDoc}
+  ${ProfileDisplayNameFragmentDoc}
 `;
 
 /**
@@ -8982,14 +9021,14 @@ export const AspectTemplatesOnCalloutCreationDocument = gql`
         id
         aspectTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
       }
     }
   }
-  ${TemplateTitleFragmentDoc}
+  ${ProfileDisplayNameFragmentDoc}
 `;
 
 /**
@@ -9058,14 +9097,14 @@ export const CanvasTemplatesOnCalloutCreationDocument = gql`
         id
         canvasTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
       }
     }
   }
-  ${TemplateTitleFragmentDoc}
+  ${ProfileDisplayNameFragmentDoc}
 `;
 
 /**
@@ -9136,7 +9175,7 @@ export const AspectTemplateValueDocument = gql`
           id
           type
           defaultDescription
-          info {
+          profile {
             id
             description
             tagset {
@@ -9277,8 +9316,11 @@ export const CreateCalloutDocument = gql`
       id
       nameID
       type
-      displayName
-      description
+      profile {
+        id
+        displayName
+        description
+      }
       state
       visibility
       authorization {
@@ -9542,8 +9584,11 @@ export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
     updateCallout(calloutData: $calloutData) {
       id
-      description
-      displayName
+      profile {
+        id
+        description
+        displayName
+      }
       state
       type
       visibility
@@ -11081,7 +11126,10 @@ export const UpdateCanvasDocument = gql`
     updateCanvas(canvasData: $input) {
       id
       value
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -19373,11 +19421,11 @@ export const UpdateAspectTemplateDocument = gql`
   mutation updateAspectTemplate(
     $templateId: UUID!
     $defaultDescription: Markdown
-    $info: UpdateTemplateInfoInput
+    $profile: UpdateProfileInput
     $type: String
   ) {
     updateAspectTemplate(
-      aspectTemplateInput: { ID: $templateId, defaultDescription: $defaultDescription, info: $info, type: $type }
+      aspectTemplateInput: { ID: $templateId, defaultDescription: $defaultDescription, profile: $profile, type: $type }
     ) {
       id
     }
@@ -19403,7 +19451,7 @@ export type UpdateAspectTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templateId: // value for 'templateId'
  *      defaultDescription: // value for 'defaultDescription'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      type: // value for 'type'
  *   },
  * });
@@ -19431,14 +19479,14 @@ export const CreateAspectTemplateDocument = gql`
   mutation createAspectTemplate(
     $templatesSetId: UUID!
     $defaultDescription: Markdown!
-    $info: CreateTemplateInfoInput!
+    $profile: CreateProfileInput!
     $type: String!
   ) {
     createAspectTemplate(
       aspectTemplateInput: {
         templatesSetID: $templatesSetId
         defaultDescription: $defaultDescription
-        info: $info
+        profile: $profile
         type: $type
       }
     ) {
@@ -19466,7 +19514,7 @@ export type CreateAspectTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
  *      defaultDescription: // value for 'defaultDescription'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      type: // value for 'type'
  *   },
  * });
@@ -19539,8 +19587,8 @@ export type DeleteAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectTemplateMutationVariables
 >;
 export const UpdateCanvasTemplateDocument = gql`
-  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $info: UpdateTemplateInfoInput) {
-    updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, info: $info }) {
+  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput) {
+    updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
       id
     }
   }
@@ -19565,7 +19613,7 @@ export type UpdateCanvasTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templateId: // value for 'templateId'
  *      value: // value for 'value'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *   },
  * });
  */
@@ -19589,8 +19637,8 @@ export type UpdateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCanvasTemplateMutationVariables
 >;
 export const CreateCanvasTemplateDocument = gql`
-  mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $info: CreateTemplateInfoInput!) {
-    createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, info: $info }) {
+  mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $profile: CreateProfileInput!) {
+    createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile }) {
       id
     }
   }
@@ -19615,7 +19663,7 @@ export type CreateCanvasTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
  *      value: // value for 'value'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *   },
  * });
  */
@@ -19707,7 +19755,10 @@ export const InnovationPacksDocument = gql`
               }
             }
           }
-          displayName
+          profile {
+            id
+            displayName
+          }
           templates {
             id
             aspectTemplates {
@@ -19935,10 +19986,10 @@ export function refetchInnovationPackFullCanvasTemplateWithValueQuery(
 export const UpdateInnovationTemplateDocument = gql`
   mutation updateInnovationTemplate(
     $templateId: UUID!
-    $info: UpdateTemplateInfoInput
+    $profile: UpdateProfileInput!
     $definition: LifecycleDefinition!
   ) {
-    updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, info: $info, definition: $definition }) {
+    updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
       id
     }
   }
@@ -19962,7 +20013,7 @@ export type UpdateInnovationTemplateMutationFn = Apollo.MutationFunction<
  * const [updateInnovationTemplateMutation, { data, loading, error }] = useUpdateInnovationTemplateMutation({
  *   variables: {
  *      templateId: // value for 'templateId'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      definition: // value for 'definition'
  *   },
  * });
@@ -19990,12 +20041,17 @@ export type UpdateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
 export const CreateInnovationTemplateDocument = gql`
   mutation createInnovationTemplate(
     $templatesSetId: UUID!
-    $info: CreateTemplateInfoInput!
+    $profile: CreateProfileInput!
     $definition: LifecycleDefinition!
     $type: LifecycleType!
   ) {
     createLifecycleTemplate(
-      lifecycleTemplateInput: { templatesSetID: $templatesSetId, info: $info, type: $type, definition: $definition }
+      lifecycleTemplateInput: {
+        templatesSetID: $templatesSetId
+        profile: $profile
+        type: $type
+        definition: $definition
+      }
     ) {
       id
     }
@@ -20020,7 +20076,7 @@ export type CreateInnovationTemplateMutationFn = Apollo.MutationFunction<
  * const [createInnovationTemplateMutation, { data, loading, error }] = useCreateInnovationTemplateMutation({
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      definition: // value for 'definition'
  *      type: // value for 'type'
  *   },

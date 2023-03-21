@@ -1,21 +1,21 @@
 mutation updateInnovationTemplate(
   $templateId: UUID!
-  $info: UpdateTemplateInfoInput
+  $profile: UpdateProfileInput!
   $definition: LifecycleDefinition!
 ) {
-  updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, info: $info, definition: $definition }) {
+  updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
     id
   }
 }
 
 mutation createInnovationTemplate(
   $templatesSetId: UUID!
-  $info: CreateTemplateInfoInput!
+  $profile: CreateProfileInput!
   $definition: LifecycleDefinition!
   $type: LifecycleType!
 ) {
   createLifecycleTemplate(
-    lifecycleTemplateInput: { templatesSetID: $templatesSetId, info: $info, type: $type, definition: $definition }
+    lifecycleTemplateInput: { templatesSetID: $templatesSetId, profile: $profile, type: $type, definition: $definition }
   ) {
     id
   }
