@@ -57,21 +57,19 @@ const CanvasTemplatesLibrary: FC<CanvasTemplatesLibraryProps> = ({ onSelectTempl
   );
 
   const handlePreviewTemplateHub = async (template: CanvasTemplate) => {
-    fetchCanvasTemplateValueHub({
+    const { data } = await fetchCanvasTemplateValueHub({
       variables: {
         hubId,
         canvasTemplateId: template.id,
       },
-      onCompleted: data => {
-        const templateValue = data?.hub.templates?.canvasTemplate;
-        if (templateValue) {
-          setPreviewTemplate({
-            ...CanvasTemplateMapper(templateValue, hubData?.hub.host?.profile),
-            value: templateValue.value,
-          });
-        }
-      },
     });
+    const templateValue = data?.hub.templates?.canvasTemplate;
+    if (templateValue) {
+      setPreviewTemplate({
+        ...CanvasTemplateMapper(templateValue, hubData?.hub.host?.profile),
+        value: templateValue.value,
+      });
+    }
   };
 
   // Platform Templates:
@@ -94,22 +92,21 @@ const CanvasTemplatesLibrary: FC<CanvasTemplatesLibraryProps> = ({ onSelectTempl
   );
 
   const handlePreviewTemplatePlatform = async (template: CanvasTemplate) => {
-    fetchCanvasTemplateValuePlatform({
+    const { data } = await fetchCanvasTemplateValuePlatform({
       variables: {
         innovationPackId: template.innovationPack.id!,
         canvasTemplateId: template.id,
       },
-      onCompleted: data => {
-        const ip = data?.platform.library.innovationPack;
-        const templateValue = ip?.templates?.canvasTemplate;
-        if (templateValue) {
-          setPreviewTemplate({
-            ...CanvasTemplateMapper(templateValue, ip?.provider?.profile, ip),
-            value: templateValue.value,
-          });
-        }
-      },
     });
+
+    const ip = data?.platform.library.innovationPack;
+    const templateValue = ip?.templates?.canvasTemplate;
+    if (templateValue) {
+      setPreviewTemplate({
+        ...CanvasTemplateMapper(templateValue, ip?.provider?.profile, ip),
+        value: templateValue.value,
+      });
+    }
   };
 
   const handleClosePreview = () => {
