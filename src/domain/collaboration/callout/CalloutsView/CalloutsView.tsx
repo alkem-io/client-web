@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -33,6 +33,8 @@ interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
   scrollToCallout?: boolean;
 }
+
+const getSortedCalloutIds = (callouts?: TypedCallout[]) => sortBy(callouts, c => c.sortOrder).map(c => c.id);
 
 const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
@@ -78,9 +80,16 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
     handleCreateCalloutOpened();
   };
 
-  const [sortedCalloutIds, setSortedCalloutIds] = useState(sortBy(callouts, c => c.sortOrder).map(c => c.id));
+  const [sortedCalloutIds, setSortedCalloutIds] = useState(getSortedCalloutIds(callouts));
 
-  const sortedCallouts = useMemo(() => sortedCalloutIds.map(id => callouts!.find(c => c.id === id)!), [callouts]);
+  useLayoutEffect(() => {
+    setSortedCalloutIds(getSortedCalloutIds(callouts));
+  }, [callouts]);
+
+  const sortedCallouts = useMemo(
+    () => sortedCalloutIds.map(id => callouts?.find(c => c.id === id)!),
+    [sortedCalloutIds, callouts]
+  );
 
   const updateOrder = UpdateOrder(setSortedCalloutIds, updateCalloutsSortOrder);
 
@@ -101,7 +110,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
               title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
             />
             <LinksList
-              items={callouts?.map(callout => {
+              items={sortedCallouts?.map(callout => {
                 const CalloutIcon = calloutIcons[callout.type];
                 return {
                   id: callout.id,
