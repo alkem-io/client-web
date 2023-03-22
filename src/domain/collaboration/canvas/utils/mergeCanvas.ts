@@ -11,14 +11,16 @@ interface CanvasLike {
   files?: Record<BinaryFileData['id'], BinaryFileData>;
 }
 
-const verifyCanvas = (canvas: CanvasLike) => {
-  if (!canvas) {
+const isCanvasLike = (parsedObject: unknown): parsedObject is CanvasLike => {
+  if (!parsedObject) {
     return false;
   }
-  if (canvas.type !== 'excalidraw' || canvas.version !== 2) {
+
+  const canvas = parsedObject as Record<string, unknown>;
+  if (canvas['type'] !== 'excalidraw' || canvas['version'] !== 2) {
     return false;
   }
-  if (!canvas.elements) {
+  if (!canvas['elements'] || !Array.isArray(canvas['elements'])) {
     return false;
   }
   // At least we have something that looks like a canvas
@@ -69,13 +71,14 @@ const calculateInsertionPoint = (canvasA: BoundingBox, canvasB: BoundingBox): { 
 };
 
 const mergeCanvas = (canvasApi: ExcalidrawImperativeAPI, canvasValue: string) => {
-  let parsedCanvas: CanvasLike;
+  let parsedCanvas: unknown;
   try {
     parsedCanvas = JSON.parse(canvasValue);
-    if (!verifyCanvas(parsedCanvas)) throw new Error('Canvas verification failed');
   } catch (err) {
     throw new CanvasMergeError(`Unable to parse canvas value: ${err}`);
   }
+
+  if (!isCanvasLike(parsedCanvas)) throw new CanvasMergeError('Canvas verification failed');
 
   try {
     // Insert missing files into current canvas:
