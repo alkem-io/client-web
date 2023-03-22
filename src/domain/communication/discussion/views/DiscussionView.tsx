@@ -54,7 +54,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
               isRootComment
             />
           </Grid>
-
           <Grid item>
             {comments && comments.length > 0 && (
               <>
@@ -89,7 +88,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
               </>
             )}
           </Grid>
-
           <Grid item container spacing={2}>
             <Grid item xs={12}>
               <Box paddingY={2}>
