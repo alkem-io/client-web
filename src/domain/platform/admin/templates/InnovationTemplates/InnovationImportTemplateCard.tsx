@@ -17,17 +17,17 @@ interface InnovationImportTemplateCardProps extends TemplateImportCardComponentP
 const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTemplateCardProps) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template.info.title} iconComponent={AutoGraphIcon}>
+      <CardHeader title={template.profile.displayName} iconComponent={AutoGraphIcon}>
         <CardHeaderCaption noWrap logoUrl={template.provider?.profile.visual?.uri}>
           {template.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{template.info.description}</CardDescription>
-        <CardTags tags={template.info.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescription>{template.profile.description}</CardDescription>
+        <CardTags tags={template.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>
-        <Caption noWrap>{template.innovationPackDisplayName}</Caption>
+        <Caption noWrap>{template.innovationPackProfile}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
   );

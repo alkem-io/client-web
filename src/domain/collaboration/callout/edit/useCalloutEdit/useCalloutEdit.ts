@@ -41,11 +41,11 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               ? {
                   type: callout.cardTemplate.type,
                   defaultDescription: callout.cardTemplate.defaultDescription,
-                  profileData: callout.cardTemplate.info,
+                  profileData: callout.cardTemplate.profile,
                 }
               : undefined,
             canvasTemplate: callout.canvasTemplate
-              ? { value: callout.canvasTemplate.value, profileData: callout.canvasTemplate.info }
+              ? { value: callout.canvasTemplate.value, profileData: callout.canvasTemplate.profile }
               : undefined,
           },
         },

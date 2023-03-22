@@ -27,7 +27,7 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
         defaultImageSvg={<CanvasIcon />}
       />
       <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>
-        <Caption noWrap>{template.innovationPackDisplayName}</Caption>
+        <Caption noWrap>{template.innovationPackProfile}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
   );

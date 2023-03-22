@@ -42,7 +42,7 @@ export interface CalloutCreationDialogProps {
 
 export interface TemplateInfo {
   description: string;
-  title: string;
+  displayName: string;
   tags?: string[];
   visual?: {
     uri: string;
@@ -52,13 +52,13 @@ export interface TemplateInfo {
 export interface CalloutCardTemplate {
   defaultDescription: string;
   type: string;
-  info: TemplateInfo;
+  profile: TemplateInfo;
 }
 
 export interface CalloutCanvasTemplate {
   id?: string;
   value: string;
-  info: TemplateInfo;
+  profile: TemplateInfo;
 }
 
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
@@ -121,8 +121,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
     const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
     const newCallout: CalloutCreationType = {
-      displayName: callout.displayName!,
-      description: callout.description!,
+      profileData: {
+        displayName: callout.displayName!,
+        description: callout.description!,
+      },
       type: callout.type!,
       state: callout.state!,
       cardTemplate: calloutCardTemplate,
