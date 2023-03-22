@@ -40,11 +40,10 @@ export const makeAbsoluteUrl = (link: string) => {
 export const isFileAttachmentUrl = (link: string) => {
   let path = link;
   if (isAbsoluteUrl(link)) {
-    if (!hasSameOrigin(link)) return false;
+    if (!hasSameOrigin(link)) {
+      return false;
+    }
     path = link.slice(window.origin.length);
   }
-  if (path.startsWith('/ipfs/')) {
-    return true;
-  }
-  return false;
+  return path.startsWith('/ipfs/');
 };
