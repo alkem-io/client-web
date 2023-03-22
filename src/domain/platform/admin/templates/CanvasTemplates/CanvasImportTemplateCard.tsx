@@ -2,7 +2,7 @@ import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { getVisualBannerNarrow } from '../../../../common/visual/utils/visuals.utils';
 import { CanvasIcon } from '../../../../collaboration/canvas/icon/CanvasIcon';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import { InnovationPackIcon } from '../InnovationPacks/InnovationPackIcon';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
@@ -26,7 +26,7 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
         alt={template.info.title}
         defaultImageSvg={<CanvasIcon />}
       />
-      <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>
+      <CardSegmentCaption icon={<InnovationPackIcon />}>
         <Caption noWrap>{template.innovationPackDisplayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
