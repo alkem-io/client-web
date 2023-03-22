@@ -91,6 +91,7 @@
     "confirm-choice": "Confirm Choice",
     "confirm": "Confirm",
     "change-template": "Change template",
+    "find-template": "Find template",
     "change": "Change",
     "library": "Library",
     "share": "Share",
@@ -106,7 +107,8 @@
     "moveUp": "Move up",
     "moveDown": "Move down",
     "moveToTop": "Move to top",
-    "moveToBottom": "Move to bottom"
+    "moveToBottom": "Move to bottom",
+    "use": "Use"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -568,7 +570,13 @@
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "canvas-template": "Whiteboard template"
+    "template-library": "Template Library",
+    "filter-placeholder": "Search Templates...",
+    "canvas-template": "Whiteboard template",
+    "hub-templates": "Templates selected by the host of this community",
+    "load-platform-templates": "Or click here to browse through all platform templates",
+    "platform-templates": "Platform Templates",
+    "error-importing": "Error importing Canvas Template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
@@ -1845,7 +1853,8 @@
   },
   "associates-view": {
     "less": "show less",
-    "more": "...plus {{count}} more"
+    "more": "...plus {{count}} more",
+    "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "hubs-filter": {
     "current-filter": "Current filter: ",

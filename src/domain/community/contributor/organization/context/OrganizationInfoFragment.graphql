@@ -33,6 +33,11 @@ fragment OrganizationInfo on Organization {
       ...fullLocation
     }
   }
+  metrics {
+    id
+    name
+    value
+  }
   associates @include(if: $includeAssociates) {
     id
     nameID

@@ -8,12 +8,14 @@ interface OrganizationContextProps {
   organization?: OrganizationInfoFragment;
   organizationId: string;
   organizationNameId: string;
+  canReadUsers: boolean;
   displayName: string;
   loading: boolean;
 }
 
 const OrganizationContext = React.createContext<OrganizationContextProps>({
   loading: true,
+  canReadUsers: false,
   organizationId: '',
   organizationNameId: '',
   displayName: '',
@@ -39,6 +41,7 @@ const OrganizationProvider: FC = ({ children }) => {
         organization,
         organizationId: organization?.id || '',
         organizationNameId: organization?.nameID || organizationId,
+        canReadUsers: canReadUsers ?? false,
         displayName,
         loading,
       }}
