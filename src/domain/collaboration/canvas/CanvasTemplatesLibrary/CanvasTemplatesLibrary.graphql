@@ -1,0 +1,92 @@
+query HubCanvasTemplatesLibrary($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplates {
+        ...CanvasTemplate
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...CanvasTemplateProviderProfile
+      }
+    }
+  }
+}
+
+query HubCanvasTemplateValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplate(ID: $canvasTemplateId) {
+        ...CanvasTemplate
+        value
+      }
+    }
+  }
+}
+
+query PlatformCanvasTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        displayName
+        provider {
+          id
+          profile {
+            ...CanvasTemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          canvasTemplates {
+            ...CanvasTemplate
+          }
+        }
+      }
+    }
+  }
+}
+
+query PlatformCanvasTemplateValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        nameID
+        displayName
+        provider {
+          id
+          profile {
+            ...CanvasTemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          canvasTemplate(ID: $canvasTemplateId) {
+            ...CanvasTemplate
+            value
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment CanvasTemplateProviderProfile on Profile {
+  id
+  displayName
+  visual(type: AVATAR) {
+    ...VisualUri
+  }
+}

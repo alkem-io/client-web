@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import Box from '@mui/material/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import React, { ChangeEventHandler, FC, KeyboardEventHandler, Ref, useState } from 'react';
@@ -20,7 +20,9 @@ export interface MultipleSelectProps {
   inputProps?: {
     inputRef?: Ref<HTMLInputElement | null>;
     onBlur?: InputBaseProps['onBlur'];
+    size?: InputBaseProps['size'];
   };
+  containerProps?: BoxProps;
 }
 
 const filterTerms = (values: string[] | undefined) => {
@@ -59,6 +61,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   minLength = 2,
   autoFocus,
   inputProps,
+  containerProps,
   children,
 }) => {
   const { t } = useTranslation();
@@ -119,7 +122,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   };
 
   return (
-    <Box>
+    <Box {...containerProps}>
       <Tooltip
         id="overlay-example"
         title={t('pages.search.max-tags-reached', { max: MAX_TERMS_SEARCH })}
