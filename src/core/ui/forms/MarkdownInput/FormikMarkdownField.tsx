@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, FC, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
@@ -8,6 +8,8 @@ import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import { gutters } from '../../grid/utils';
 import { MarkdownFieldMaxLength, TextFieldMaxLength } from '../field-length.constants';
+import { error as logError } from '../../../../services/logging/sentry/log';
+import { isMarkdownMaxLengthError } from './MarkdownValidator';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -58,6 +60,13 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const tErr = useValidationMessageTranslation();
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
+
+  useEffect(() => {
+    if (meta.error && isMarkdownMaxLengthError(meta.error)) {
+      const { path, max } = meta.error;
+      logError(new TypeError(`${path} exceeded the length limit of ${max} chars.`));
+    }
+  }, [meta.error]);
 
   const helperText = useMemo(() => {
     if (!isError) {
