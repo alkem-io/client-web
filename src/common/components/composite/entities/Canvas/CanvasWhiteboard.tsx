@@ -63,13 +63,11 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
     const value = canvas?.value;
-    const data = useMemo(() => {
-      const parsedData = value ? JSON.parse(value) : initialExcalidrawState;
-      return {
-        ...parsedData,
-        zoomToFit: true,
-      };
-    }, [value]);
+    const parsedData = value ? JSON.parse(value) : initialExcalidrawState;
+    const data = {
+      ...parsedData,
+      zoomToFit: true,
+    };
 
     const refreshOnDataChange = useAsyncInterruptibleCallback(check =>
       debounce(async debouncedData => {
