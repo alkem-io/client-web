@@ -7,11 +7,11 @@ export const createCanvasTemplateForCalloutCreation = (
   if (!canvasTemplate) return undefined;
   const calloutCanvasTemplate: CanvasTemplateFormSubmittedValues = {
     value: canvasTemplate.value,
+    tags: canvasTemplate.profile.tagset?.tags,
+    visualUri: canvasTemplate.profile.visual?.uri,
     profile: {
       description: canvasTemplate.profile.description,
       displayName: canvasTemplate.profile.displayName,
-      tags: canvasTemplate.profile.tagset?.tags,
-      visualUri: canvasTemplate.profile.visual?.uri,
     },
   };
 

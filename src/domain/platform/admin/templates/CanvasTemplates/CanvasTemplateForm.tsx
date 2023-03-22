@@ -8,7 +8,7 @@ import CanvasFormikSelectInput, { Canvas } from './CanvasFormikSelectInput';
 import { useTranslation } from 'react-i18next';
 
 export interface CanvasTemplateFormValues {
-  title: string;
+  displayName: string;
   description: string;
   tags: string[];
   value: string;
@@ -16,11 +16,13 @@ export interface CanvasTemplateFormValues {
 
 export interface CanvasTemplateFormSubmittedValues {
   value: string;
+  tags: string[];
+  visualUri: string;
   profile: CreateProfileInput;
 }
 
 interface CanvasTemplateFormProps {
-  title: ReactNode;
+  displayName: ReactNode;
   initialValues: Partial<CanvasTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
@@ -34,7 +36,7 @@ const validator = {
 };
 
 const CanvasTemplateForm = ({
-  title,
+  displayName,
   initialValues,
   visual,
   onSubmit,
@@ -46,7 +48,7 @@ const CanvasTemplateForm = ({
 
   return (
     <TemplateForm
-      title={title}
+      displayName={displayName}
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}

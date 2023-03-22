@@ -145,18 +145,20 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           variables: {
             input: {
               ID: canvas.id,
-              displayName: canvas.profile.displayName,
               value: canvas.value,
+              profileData: {
+                displayName: canvas.profile.displayName,
+              },
             },
           },
         }),
-        canvas.preview &&
+        canvas.profile.visual &&
           previewImage &&
           uploadVisual({
             variables: {
               file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
               uploadData: {
-                visualID: canvas.preview?.id,
+                visualID: canvas.profile.visual?.id,
               },
             },
           }),

@@ -50,9 +50,9 @@ const TemplateForm = <Values extends TemplateInfoValues>({
       const { displayName, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
       onSubmit({
         ...validValues,
+        tags,
         profile: {
           displayName,
-          tags,
           description,
         },
       } as Values & TemplateInfoSubmittedValues);

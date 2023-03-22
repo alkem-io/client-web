@@ -23,7 +23,7 @@ const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTem
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{template.profile.description}</CardDescription>
+        <CardDescription>{template.profile.description || ''}</CardDescription>
         <CardTags tags={template.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>

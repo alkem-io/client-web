@@ -40,7 +40,7 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
       <AspectTemplateForm
         title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
-        visual={template.info.visual}
+        visual={template.profile.visual}
         onSubmit={onSubmit}
         actions={
           <>

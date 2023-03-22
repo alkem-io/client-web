@@ -17,10 +17,11 @@ export const createCardTemplateFromTemplateSet = <C extends { type?: CalloutType
           displayName: referenceCardTemplate.profile.displayName,
         },
       };
-      if (referenceCardTemplate.profile.tagset)
-        calloutCardTemplate.profile.tags = referenceCardTemplate.profile.tagset.tags;
-      if (referenceCardTemplate.profile.visual?.uri)
-        calloutCardTemplate.profile.visual.uri = referenceCardTemplate.profile.visual.uri;
+      // // TODO server-2452: to be refactored
+      // if (referenceCardTemplate.profile.tagset)
+      //   calloutCardTemplate.profile.tags = referenceCardTemplate.profile.tagset.tags;
+      // if (referenceCardTemplate.profile.visual?.uri)
+      //   calloutCardTemplate.profile.visual.uri = referenceCardTemplate.profile.visual.uri;
     }
   }
 
