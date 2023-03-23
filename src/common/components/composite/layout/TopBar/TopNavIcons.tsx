@@ -9,6 +9,7 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
 import { TopBarHeight } from './TopBar';
 import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 
 const PREFIX = 'TopNavIcons';
 
@@ -79,6 +80,11 @@ const TopNavIcons = () => {
         title: t('common.contributors'),
         icon: <GroupOutlinedIcon />,
         url: '/contributors',
+      },
+      {
+        title: t('common.forum'),
+        icon: <ForumOutlinedIcon />,
+        url: '/forum',
       },
     ],
     [t]

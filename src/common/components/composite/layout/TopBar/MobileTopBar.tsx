@@ -17,6 +17,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Divider from '@mui/material/Divider';
 import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
@@ -165,6 +166,12 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             <GroupOutlinedIcon />
           </ListItemIcon>
           {t('common.contributors')}
+        </MenuItem>
+        <MenuItem component={RouterLink} to="/forum">
+          <ListItemIcon>
+            <ForumOutlinedIcon />
+          </ListItemIcon>
+          {t('common.forum')}
         </MenuItem>
         {user && (
           <MenuItem component={RouterLink} to={buildUserProfileUrl(user.nameID)}>
