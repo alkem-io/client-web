@@ -1,4 +1,4 @@
-import { MutableRefObject, useRef } from 'react';
+import { MutableRefObject, useMemo, useRef } from 'react';
 
 interface FunctionalRef<T> {
   (refValue: T): void;
@@ -22,12 +22,15 @@ export const useCombinedRefs = <T>(initialValue: T, ...refs: Ref<T>[]): MutableR
     });
   };
 
-  return {
-    set current(current: T) {
-      updateAllRefs(current);
-    },
-    get current() {
-      return currentHolder.current;
-    },
-  };
+  return useMemo(
+    () => ({
+      set current(current: T) {
+        updateAllRefs(current);
+      },
+      get current() {
+        return currentHolder.current;
+      },
+    }),
+    []
+  );
 };
