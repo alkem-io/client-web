@@ -1,4 +1,4 @@
-import { MutableRefObject } from 'react';
+import { MutableRefObject, useMemo, useRef } from 'react';
 
 interface FunctionalRef<T> {
   (refValue: T): void;
@@ -6,9 +6,11 @@ interface FunctionalRef<T> {
 
 type Ref<T> = MutableRefObject<T> | FunctionalRef<T> | undefined | null;
 
-export function useCombinedRefs<T>(initialValue: T, ...refs: Ref<T>[]) {
-  const callbackRef: FunctionalRef<T> & Partial<MutableRefObject<T>> = (current: T) => {
-    refs.forEach(ref => {
+export const useCombinedRefs = <T>(initialValue: T, ...refs: Ref<T>[]): MutableRefObject<T> => {
+  const currentHolder = useRef<T>(initialValue);
+
+  const updateAllRefs = (current: T) => {
+    [currentHolder, ...refs].forEach(ref => {
       if (!ref) {
         return;
       }
@@ -18,11 +20,17 @@ export function useCombinedRefs<T>(initialValue: T, ...refs: Ref<T>[]) {
         ref.current = current;
       }
     });
-
-    callbackRef.current = current; // Making this callback ref act as a .current ref to save on useRefs
   };
 
-  callbackRef.current = initialValue;
-
-  return callbackRef as FunctionalRef<T> & MutableRefObject<T>;
-}
+  return useMemo(
+    () => ({
+      set current(current: T) {
+        updateAllRefs(current);
+      },
+      get current() {
+        return currentHolder.current;
+      },
+    }),
+    []
+  );
+};
