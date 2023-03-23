@@ -2866,7 +2866,7 @@ export type Opportunity = {
   context?: Maybe<Context>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The lifeycle for the Opportunity. */
+  /** The lifecycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
   /** Metrics about the activity within this Opportunity. */
   metrics?: Maybe<Array<Nvp>>;
@@ -2905,6 +2905,8 @@ export type OpportunityTemplate = {
 
 export type Organization = Groupable & {
   __typename?: 'Organization';
+  /** All Users that are admins of this Organization. */
+  admins?: Maybe<Array<User>>;
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** All Users that are associated with this Organization. */
@@ -2927,6 +2929,8 @@ export type Organization = Groupable & {
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** All Users that are owners of this Organization. */
+  owners?: Maybe<Array<User>>;
   /** The preferences for this Organization */
   preferences: Array<Preference>;
   /** The profile for this organization. */
@@ -16453,15 +16457,7 @@ export type OrganizationInfoFragment = {
         __typename?: 'User';
         id: string;
         nameID: string;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
+        isContactable: boolean;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -16472,6 +16468,8 @@ export type OrganizationInfoFragment = {
         };
       }>
     | undefined;
+  admins?: Array<{ __typename?: 'User'; id: string }> | undefined;
+  owners?: Array<{ __typename?: 'User'; id: string }> | undefined;
 };
 
 export type OrganizationInfoQueryVariables = Exact<{
@@ -16519,15 +16517,7 @@ export type OrganizationInfoQuery = {
           __typename?: 'User';
           id: string;
           nameID: string;
-          agent?:
-            | {
-                __typename?: 'Agent';
-                id: string;
-                credentials?:
-                  | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                  | undefined;
-              }
-            | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -16538,6 +16528,8 @@ export type OrganizationInfoQuery = {
           };
         }>
       | undefined;
+    admins?: Array<{ __typename?: 'User'; id: string }> | undefined;
+    owners?: Array<{ __typename?: 'User'; id: string }> | undefined;
   };
 };
 

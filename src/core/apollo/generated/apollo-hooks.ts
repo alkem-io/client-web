@@ -1714,14 +1714,7 @@ export const OrganizationInfoFragmentDoc = gql`
     associates @include(if: $includeAssociates) {
       id
       nameID
-      agent {
-        id
-        credentials {
-          id
-          type
-          resourceID
-        }
-      }
+      isContactable
       profile {
         id
         displayName
@@ -1737,6 +1730,12 @@ export const OrganizationInfoFragmentDoc = gql`
           tags
         }
       }
+    }
+    admins @include(if: $includeAssociates) {
+      id
+    }
+    owners @include(if: $includeAssociates) {
+      id
     }
   }
   ${VisualUriFragmentDoc}
