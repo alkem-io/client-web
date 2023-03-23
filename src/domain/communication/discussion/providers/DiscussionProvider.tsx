@@ -13,7 +13,7 @@ import {
   useRemoveMessageFromDiscussionMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Message as Comment } from '../../../shared/components/Comments/models/message';
-import { Discussion } from '../models/discussion';
+import { Discussion } from '../models/Discussion';
 import {
   CommunicationDiscussionMessageReceivedSubscription,
   CommunicationDiscussionMessageReceivedSubscriptionVariables,
@@ -115,7 +115,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       authors: authors,
       description: discussionData.description,
       createdAt: discussionData.timestamp ? new Date(discussionData.timestamp) : new Date(),
-      totalComments: sortedMessages.length,
+      commentsCount: sortedMessages.length,
       comments: sortedMessages.map<Comment>(m => ({
         id: m.id,
         body: m.message,

@@ -13,7 +13,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { Discussion } from '../../../../../domain/communication/discussion/models/discussion';
+import { Discussion } from '../../../../../domain/communication/discussion/models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
 import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
 
@@ -38,7 +38,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const navigate = useNavigate();
   const { pathname } = useResolvedPath('..');
 
-  const { id, title, createdAt, author, authors = [], totalComments, category } = discussion;
+  const { id, title, createdAt, author, authors = [], commentsCount, category } = discussion;
 
   return (
     <ListItemButton disableGutters onClick={() => navigate(buildDiscussionUrl(pathname, id))}>
@@ -56,8 +56,8 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
             <Typography variant="body2">
               {t('components.discussions-list.posted', {
                 name: author?.displayName,
-                date: createdAt.toLocaleDateString(),
-                count: totalComments,
+                date: createdAt ? createdAt.toLocaleDateString() : '',
+                count: commentsCount,
               })}
             </Typography>
           </Box>

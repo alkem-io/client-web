@@ -10,7 +10,7 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { Discussion } from '../models/discussion';
+import { Discussion } from '../models/Discussion';
 import {
   AuthorizationPrivilege,
   Communication,
@@ -114,7 +114,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       authors: [],
       description: x.description,
       createdAt: x.timestamp ? new Date(x.timestamp) : new Date(),
-      totalComments: x.commentsCount,
+      commentsCount: x.commentsCount,
     };
   });
 

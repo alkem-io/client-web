@@ -1,7 +1,7 @@
 import { Link } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Discussion } from '../../../communication/discussion/models/discussion';
+import { Discussion } from '../../../communication/discussion/models/Discussion';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import DiscussionOverview from '../../../../common/components/composite/entities/Communication/DiscussionOverview';
 import DashboardGenericSection from './DashboardGenericSection';
@@ -12,13 +12,21 @@ export interface DashboardDiscussionsSectionProps {
 }
 
 const DISCUSSIONS_NUMBER_IN_SECTION = 3;
-
+/**
+ * @deprecated ???
+ * @param param0
+ * @returns
+ */
 const DashboardDiscussionsSection: FC<DashboardDiscussionsSectionProps> = ({ discussions, isMember }) => {
   const { t } = useTranslation();
 
   const discussionsInCard = useMemo(
     () =>
-      discussions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, DISCUSSIONS_NUMBER_IN_SECTION),
+      discussions
+        .sort((a, b) =>
+          a.createdAt && b.createdAt ? b.createdAt.getTime() - a.createdAt?.getTime() : b.title.localeCompare(a.title)
+        )
+        .slice(0, DISCUSSIONS_NUMBER_IN_SECTION),
     [discussions]
   );
 

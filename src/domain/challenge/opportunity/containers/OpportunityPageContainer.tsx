@@ -8,7 +8,7 @@ import {
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { Discussion } from '../../../communication/discussion/models/discussion';
+import { Discussion } from '../../../communication/discussion/models/Discussion';
 import {
   AuthorizationPrivilege,
   DashboardTopCalloutFragment,
