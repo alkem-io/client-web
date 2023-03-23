@@ -2866,7 +2866,7 @@ export type Opportunity = {
   context?: Maybe<Context>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The lifeycle for the Opportunity. */
+  /** The lifecycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
   /** Metrics about the activity within this Opportunity. */
   metrics?: Maybe<Array<Nvp>>;
@@ -14463,6 +14463,99 @@ export type CommunicationDiscussionUpdatedSubscription = {
     timestamp?: number | undefined;
     category: DiscussionCategory;
     commentsCount: number;
+  };
+};
+
+export type PlatformDiscussionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformDiscussionsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: {
+      __typename?: 'Communication';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      discussions?:
+        | Array<{
+            __typename?: 'Discussion';
+            id: string;
+            title: string;
+            description: string;
+            category: DiscussionCategory;
+            timestamp?: number | undefined;
+            commentsCount: number;
+            createdBy?: string | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type PlatformDiscussionQueryVariables = Exact<{
+  discussionId: Scalars['String'];
+}>;
+
+export type PlatformDiscussionQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: {
+      __typename?: 'Communication';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      discussion?:
+        | {
+            __typename?: 'Discussion';
+            id: string;
+            title: string;
+            description: string;
+            createdBy?: string | undefined;
+            timestamp?: number | undefined;
+            category: DiscussionCategory;
+            commentsCount: number;
+            messages?:
+              | Array<{
+                  __typename?: 'Message';
+                  id: string;
+                  message: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        nameID: string;
+                        firstName: string;
+                        lastName: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?:
+                            | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                            | undefined;
+                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 

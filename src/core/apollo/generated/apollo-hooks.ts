@@ -12595,6 +12595,157 @@ export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
 >;
 export type CommunicationDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
+export const PlatformDiscussionsDocument = gql`
+  query platformDiscussions {
+    platform {
+      id
+      communication {
+        id
+        authorization {
+          myPrivileges
+        }
+        discussions {
+          id
+          title
+          description
+          category
+          timestamp
+          commentsCount
+          createdBy
+          authorization {
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformDiscussionsQuery__
+ *
+ * To run a query within a React component, call `usePlatformDiscussionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformDiscussionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformDiscussionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformDiscussionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformDiscussionsQuery,
+    SchemaTypes.PlatformDiscussionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformDiscussionsQuery, SchemaTypes.PlatformDiscussionsQueryVariables>(
+    PlatformDiscussionsDocument,
+    options
+  );
+}
+
+export function usePlatformDiscussionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformDiscussionsQuery,
+    SchemaTypes.PlatformDiscussionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformDiscussionsQuery, SchemaTypes.PlatformDiscussionsQueryVariables>(
+    PlatformDiscussionsDocument,
+    options
+  );
+}
+
+export type PlatformDiscussionsQueryHookResult = ReturnType<typeof usePlatformDiscussionsQuery>;
+export type PlatformDiscussionsLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionsLazyQuery>;
+export type PlatformDiscussionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformDiscussionsQuery,
+  SchemaTypes.PlatformDiscussionsQueryVariables
+>;
+export function refetchPlatformDiscussionsQuery(variables?: SchemaTypes.PlatformDiscussionsQueryVariables) {
+  return { query: PlatformDiscussionsDocument, variables: variables };
+}
+
+export const PlatformDiscussionDocument = gql`
+  query platformDiscussion($discussionId: String!) {
+    platform {
+      id
+      communication {
+        id
+        authorization {
+          myPrivileges
+        }
+        discussion(ID: $discussionId) {
+          ...DiscussionDetails
+          messages {
+            ...MessageDetails
+          }
+        }
+      }
+    }
+  }
+  ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __usePlatformDiscussionQuery__
+ *
+ * To run a query within a React component, call `usePlatformDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformDiscussionQuery({
+ *   variables: {
+ *      discussionId: // value for 'discussionId'
+ *   },
+ * });
+ */
+export function usePlatformDiscussionQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformDiscussionQuery,
+    SchemaTypes.PlatformDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformDiscussionQuery, SchemaTypes.PlatformDiscussionQueryVariables>(
+    PlatformDiscussionDocument,
+    options
+  );
+}
+
+export function usePlatformDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformDiscussionQuery,
+    SchemaTypes.PlatformDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformDiscussionQuery, SchemaTypes.PlatformDiscussionQueryVariables>(
+    PlatformDiscussionDocument,
+    options
+  );
+}
+
+export type PlatformDiscussionQueryHookResult = ReturnType<typeof usePlatformDiscussionQuery>;
+export type PlatformDiscussionLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionLazyQuery>;
+export type PlatformDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformDiscussionQuery,
+  SchemaTypes.PlatformDiscussionQueryVariables
+>;
+export function refetchPlatformDiscussionQuery(variables: SchemaTypes.PlatformDiscussionQueryVariables) {
+  return { query: PlatformDiscussionDocument, variables: variables };
+}
+
 export const RemoveMessageFromDiscussionDocument = gql`
   mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
     removeMessageFromDiscussion(messageData: $messageData)

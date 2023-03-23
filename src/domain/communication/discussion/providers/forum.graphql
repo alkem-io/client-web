@@ -1,0 +1,41 @@
+query platformDiscussions {
+  platform {
+    id
+    communication {
+      id
+      authorization {
+        myPrivileges
+      }
+      discussions {
+        id
+        title
+        description
+        category
+        timestamp
+        commentsCount
+        createdBy
+        authorization {
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+
+query platformDiscussion($discussionId: String!) {
+  platform {
+    id
+    communication {
+      id
+      authorization {
+        myPrivileges
+      }
+      discussion(ID: $discussionId) {
+        ...DiscussionDetails
+        messages {
+          ...MessageDetails
+        }
+      }
+    }
+  }
+}
