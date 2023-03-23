@@ -348,6 +348,11 @@ interface CanvasCreateDialogProps {
   };
 }
 
+type CanvasCreateFormValues = {
+  displayName: string;
+  value?: string;
+};
+
 const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, options }) => {
   const { t } = useTranslation();
   const styles = useStyles();
@@ -355,15 +360,18 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
 
-  const initialValues = {
+  const initialValues: CanvasCreateFormValues = {
     displayName: 'New Canvas', // TODO Localize?
     value: undefined,
   };
 
-  const handleSubmit = (canvasInput: Omit<CreateCanvasOnCalloutInput, 'calloutID'>) => {
+  const handleSubmit = (canvasInput: CanvasCreateFormValues) => {
     actions.onConfirm({
       calloutID: entities.calloutId,
-      ...canvasInput,
+      profileData: {
+        displayName: canvasInput.displayName,
+      },
+      value: canvasInput.value,
     });
   };
 

@@ -48,7 +48,7 @@ const EditCanvasTemplateDialog = ({
 
   const values: Partial<CanvasTemplateFormValues> = {
     value: templateValue?.value,
-    title: template.profile.displayName,
+    displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,
   };
@@ -61,7 +61,7 @@ const EditCanvasTemplateDialog = ({
       maxWidth={false}
     >
       <CanvasTemplateForm
-        title={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
+        displayName={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         visual={template.profile.visual}
         canvases={canvases}

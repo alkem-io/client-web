@@ -9,7 +9,7 @@ import TranslationKey from '../../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../shared/i18n/ValidationMessageTranslation';
 
 export interface Canvas extends Identifiable {
-  displayName: string;
+  profile: { displayName: string };
   value?: string;
 }
 
@@ -74,7 +74,7 @@ const CanvasFormikSelectInput = ({ label, name, canvases, getParentCalloutId }: 
                 >
                   {canvases?.map(canvas => (
                     <MenuItem key={canvas.id} value={canvas.id}>
-                      {canvas.displayName}
+                      {canvas.profile.displayName}
                     </MenuItem>
                   ))}
                 </Select>

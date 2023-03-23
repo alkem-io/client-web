@@ -23,7 +23,7 @@ export interface InnovationTemplateFormValues {
 export interface InnovationTemplateFormSubmittedValues {
   definition: string;
   type: LifecycleType;
-  profileData: CreateProfileInput;
+  profile: CreateProfileInput;
 }
 
 interface InnovationTemplateFormProps {

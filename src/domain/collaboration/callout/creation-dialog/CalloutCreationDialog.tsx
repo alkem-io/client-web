@@ -41,7 +41,7 @@ export interface CalloutCreationDialogProps {
 }
 
 export interface TemplateInfo {
-  description: string;
+  description?: string;
   displayName: string;
   tags?: string[];
   visual?: {
@@ -121,7 +121,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
     const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
     const newCallout: CalloutCreationType = {
-      profileData: {
+      profile: {
         displayName: callout.displayName!,
         description: callout.description!,
       },

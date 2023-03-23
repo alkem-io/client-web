@@ -47,7 +47,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const initialValues: CalloutFormInput = {
     ...callout,
     cardTemplateType: callout.cardTemplate?.type,
-    canvasTemplateData: { id: callout.canvasTemplate?.id, title: callout.canvasTemplate?.profile.displayName },
+    canvasTemplateData: { id: callout.canvasTemplate?.id, displayName: callout.canvasTemplate?.profile.displayName },
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchCanvasValueFromHub] = useHubTemplatesCanvasTemplateWithValueLazyQuery({

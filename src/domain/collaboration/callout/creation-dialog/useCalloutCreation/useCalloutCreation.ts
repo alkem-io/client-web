@@ -12,7 +12,7 @@ import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/te
 import { CanvasTemplateFormSubmittedValues } from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplateForm';
 
 export type CalloutCreationType = {
-  profileData: {
+  profile: {
     description: string;
     displayName: string;
   };
