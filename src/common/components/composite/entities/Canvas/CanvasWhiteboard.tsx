@@ -1,14 +1,18 @@
 import { Excalidraw } from '@alkemio/excalidraw';
 import { ExportedDataState, ImportedDataState } from '@alkemio/excalidraw/types/data/types';
-import { ExcalidrawAPIRefValue, ExcalidrawProps, ExportOpts } from '@alkemio/excalidraw/types/types';
+import {
+  ExcalidrawAPIRefValue,
+  ExcalidrawImperativeAPI,
+  ExcalidrawProps,
+  ExportOpts,
+} from '@alkemio/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
-import React, { forwardRef, useEffect, useMemo } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../../domain/shared/utils/useCombinedRefs';
-import useAsyncInterruptibleCallback from '../../../../../domain/shared/utils/useAsyncInterruptibleCallback';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -62,22 +66,21 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
     const styles = useActorWhiteboardStyles();
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
-    const value = canvas?.value;
     const data = useMemo(() => {
-      const parsedData = value ? JSON.parse(value) : initialExcalidrawState;
+      const parsedData = canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState;
       return {
         ...parsedData,
         zoomToFit: true,
       };
-    }, [value]);
+    }, [canvas?.value]);
 
-    const refreshOnDataChange = useAsyncInterruptibleCallback(check =>
-      debounce(async debouncedData => {
-        const excalidraw = await check(combinedRef.current?.readyPromise);
-        excalidraw?.updateScene(debouncedData);
+    const refreshOnDataChange = useRef(
+      debounce(async (state: Parameters<ExcalidrawImperativeAPI['updateScene']>[0]) => {
+        const excalidraw = await combinedRef.current?.readyPromise;
+        excalidraw?.updateScene(state);
         excalidraw?.zoomToFit();
       }, CANVAS_UPDATE_DEBOUNCE_INTERVAL)
-    );
+    ).current;
 
     useEffect(() => {
       // apparently when a canvas state is changed too fast
@@ -86,10 +89,10 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       return refreshOnDataChange.cancel;
     }, [refreshOnDataChange, data]);
 
-    const scrollToContent = useAsyncInterruptibleCallback(check => async () => {
-      const excalidraw = await check(combinedRef.current?.readyPromise);
+    const scrollToContent = async () => {
+      const excalidraw = await combinedRef.current?.readyPromise;
       excalidraw?.scrollToContent();
-    });
+    };
 
     useEffect(() => {
       if (canvas?.id) {
@@ -97,12 +100,12 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       }
     }, [canvas?.id, scrollToContent]);
 
-    const handleScroll = useAsyncInterruptibleCallback(check =>
+    const handleScroll = useRef(
       debounce(async () => {
-        const excalidraw = await check(combinedRef.current?.readyPromise);
+        const excalidraw = await combinedRef.current?.readyPromise;
         excalidraw?.refresh();
       }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
-    );
+    ).current;
 
     useEffect(() => {
       window.addEventListener('scroll', handleScroll, true);
