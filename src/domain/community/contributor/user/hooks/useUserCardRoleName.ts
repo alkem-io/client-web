@@ -32,10 +32,7 @@ const useUserCardRoleName = <T extends WithCredentials>(data: T[], resourceId: s
 
 export default useUserCardRoleName;
 
-export const addUserCardRoleNameKey = <T extends WithCredentials>(
-  data: T[],
-  resourceId: string
-): WithCardRoleKey<T>[] => {
+const addUserCardRoleNameKey = <T extends WithCredentials>(data: T[], resourceId: string): WithCardRoleKey<T>[] => {
   const withRoleNameKeyAdded = data.map(x => {
     const roleTranslationKey = getUserRoleTranslationKey(resourceId, x?.agent)!;
 

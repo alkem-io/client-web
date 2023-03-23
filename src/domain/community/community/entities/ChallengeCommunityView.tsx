@@ -45,14 +45,12 @@ const ChallengeCommunityView: FC = () => {
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <CommunityContributorsSection
-        resourceId={challengeId}
         organizations={leadOrganizations}
         users={leadUsers}
         loading={loading}
         contributorType="leading"
       />
       <CommunityContributorsSection
-        resourceId={challengeId}
         organizations={memberOrganizations}
         users={memberUsers}
         loading={loading}

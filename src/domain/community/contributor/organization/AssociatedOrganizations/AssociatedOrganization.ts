@@ -1,4 +1,3 @@
-import { getUserCardRoleNameKey } from '../../user/hooks/useUserCardRoleName';
 import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import {
   AssociatedOrganizationDetailsFragment,
@@ -15,7 +14,6 @@ export interface AssociatedOrganization {
   name?: string;
   avatar?: string;
   description?: string;
-  role?: string;
   associatesCount: number;
   verified: boolean;
   url?: string;
@@ -35,8 +33,6 @@ export const mapToAssociatedOrganization = (
   t: TFunction,
   state?: RequestState
 ): AssociatedOrganization => {
-  const userRole = user && organization && getUserCardRoleNameKey(user, organization.id);
-
   return {
     nameID, // to be used as React key
     name: organization?.profile.displayName,
@@ -44,7 +40,6 @@ export const mapToAssociatedOrganization = (
     description: organization?.profile.description,
     avatar: organization?.profile.visual?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-    role: userRole && t(userRole),
     url: organization && buildOrganizationUrl(organization.nameID),
     ...state,
   };

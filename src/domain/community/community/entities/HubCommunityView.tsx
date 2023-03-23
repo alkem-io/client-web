@@ -77,7 +77,6 @@ const HubCommunityView: FC = () => {
         ))}
       </DashboardGenericSection>
       <CommunityContributorsSection
-        resourceId={hubId}
         organizations={memberOrganizations}
         users={memberUsers}
         loading={loading}

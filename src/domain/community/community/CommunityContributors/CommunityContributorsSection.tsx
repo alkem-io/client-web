@@ -10,7 +10,6 @@ import DashboardContributingUsers from '../EntityDashboardContributorsSection/Da
 import DashboardLeads from '../EntityDashboardContributorsSection/DashboardLeads';
 
 interface CommunityContributorsSectionProps extends PossiblyUndefinedProps<Contributors> {
-  resourceId: string | undefined;
   loading?: boolean;
   contributorType: ContributorType;
 }
@@ -33,7 +32,6 @@ const ContributorTypeLabel: Record<ContributorType, 'leading-contributors' | 'co
 const CommunityContributorsSection = ({
   organizations,
   users,
-  resourceId,
   contributorType,
   loading = false,
 }: CommunityContributorsSectionProps) => {
@@ -44,7 +42,7 @@ const CommunityContributorsSection = ({
       title={t(`pages.generic.sections.community.${ContributorTypeLabel[contributorType]}` as const)}
       ariaKey={ContributorTypeLabel[contributorType]}
       organizations={useOrganizationCardProps(organizations)}
-      users={useUserCardProps(users, resourceId)}
+      users={useUserCardProps(users)}
       organizationsCount={organizations?.length}
       usersCount={users?.length}
       loading={loading}

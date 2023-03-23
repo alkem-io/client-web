@@ -38,14 +38,12 @@ const OpportunityCommunityView: FC = () => {
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <CommunityContributorsSection
-        resourceId={opportunityId}
         organizations={leadOrganizations}
         users={leadUsers}
         loading={loading}
         contributorType="leading"
       />
       <CommunityContributorsSection
-        resourceId={opportunityId}
         organizations={memberOrganizations}
         users={memberUsers}
         loading={loading}
