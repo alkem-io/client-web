@@ -99,8 +99,8 @@ const CalloutLayout = ({
     () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
     [callout.draft, t]
   );
-  const handleVisibilityChange = async (visibility: CalloutVisibility) => {
-    await onVisibilityChange(callout.id, visibility);
+  const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
+    await onVisibilityChange(callout.id, visibility, sendNotification);
     setVisibilityDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
@@ -234,7 +234,7 @@ const CalloutLayout = ({
         open={visibilityDialogOpen}
         onClose={() => setVisibilityDialogOpen(false)}
         title={visDialogTitle}
-        draft={callout.draft}
+        callout={callout}
         onVisibilityChanged={handleVisibilityChange}
       >
         <CalloutSummary callout={callout} />
