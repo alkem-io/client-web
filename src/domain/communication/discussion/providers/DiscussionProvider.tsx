@@ -63,7 +63,13 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
     discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
   },
 });
-
+/**
+ * @deprecated
+ * The idea is to get rid of ContextProviders that sit too high in the tree and fetch data globally for some random consumers.
+ * Instead, just fetch the data locally when needed.
+ * @param children
+ * @constructor
+ */
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const { isFeatureEnabled } = useConfig();
   const { discussionId = '' } = useUrlParams();

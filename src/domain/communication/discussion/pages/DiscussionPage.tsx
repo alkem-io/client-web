@@ -1,6 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DiscussionIcon from '../../../../common/components/composite/entities/Communication/DiscussionIcon';
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
 import { Loading } from '../../../../common/components/core';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
@@ -13,7 +12,9 @@ import DiscussionView from '../views/DiscussionView';
 import { PageProps } from '../../../shared/types/PageProps';
 
 interface DiscussionPageProps extends PageProps {}
-
+/**
+ * @deprecated
+ */
 export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { loading: loadingCommunity } = useCommunityContext();
@@ -71,11 +72,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
 
   return (
     <>
-      <DiscussionsLayout
-        title={discussion.title}
-        icon={<DiscussionIcon category={discussion.category} />}
-        enablePaper={false}
-      >
+      <DiscussionsLayout>
         <DiscussionView
           currentUserId={currentUserId}
           discussion={discussion}
