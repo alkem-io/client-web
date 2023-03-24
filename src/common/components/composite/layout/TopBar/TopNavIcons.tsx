@@ -3,13 +3,13 @@ import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import useRouteMatch from '../../../../../core/routing/useRouteMatch';
 import { RouterLink } from '../../../core/RouterLink';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
 import { TopBarHeight } from './TopBar';
 import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import { useLocation } from 'react-router-dom';
 
 const PREFIX = 'TopNavIcons';
 
@@ -68,6 +68,7 @@ type MenuItem = {
 
 const TopNavIcons = () => {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
 
   const menuItems: MenuItem[] = useMemo(
     () => [
@@ -90,8 +91,7 @@ const TopNavIcons = () => {
     [t]
   );
 
-  const match = useRouteMatch([...menuItems].reverse().map(x => x.url));
-  const selectedIndex = useMemo(() => menuItems.findIndex(x => x.url === match?.pathname), [menuItems, match]);
+  const selectedIndex = useMemo(() => menuItems.findIndex(x => pathname.startsWith(x.url)), [pathname, menuItems]);
 
   return (
     <Root>
