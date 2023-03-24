@@ -15502,6 +15502,27 @@ export type DashboardLeadUserFragment = {
   };
 };
 
+export type ContributingOrganizationsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
+}>;
+
+export type ContributingOrganizationsQuery = {
+  __typename?: 'Query';
+  organizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
+};
+
 export type ContributingUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
@@ -15522,27 +15543,6 @@ export type ContributingUsersQuery = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-    };
-  }>;
-};
-
-export type ContributingOrganizationsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
-  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
-}>;
-
-export type ContributingOrganizationsQuery = {
-  __typename?: 'Query';
-  organizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
 };
