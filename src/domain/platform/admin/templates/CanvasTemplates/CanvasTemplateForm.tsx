@@ -16,8 +16,8 @@ export interface CanvasTemplateFormValues {
 
 export interface CanvasTemplateFormSubmittedValues {
   value: string;
-  tags: string[];
-  visualUri: string;
+  tags?: string[];
+  visualUri?: string;
   profile: CreateProfileInput;
 }
 
@@ -48,7 +48,7 @@ const CanvasTemplateForm = ({
 
   return (
     <TemplateForm
-      displayName={displayName}
+      title={displayName}
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}
