@@ -8,7 +8,7 @@ import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikM
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from './DiscussionIcon';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import Dialog from '../../../../core/ui/dialog/Dialog';
 import { LoadingButton } from '@mui/lab';
@@ -58,7 +58,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
   };
 
   const validationSchema = yup.object().shape({
-    title: yup.string().trim().required(t('forms.validations.required')),
+    title: yup.string().trim().max(SMALL_TEXT_LENGTH).required(t('forms.validations.required')),
     category: yup.string().nullable().required(t('forms.validations.required')),
     description: MarkdownValidator(MID_TEXT_LENGTH).trim().required(t('forms.validations.required')),
   });
@@ -99,6 +99,8 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
                     title={t('components.new-discussion.title.title')}
                     placeholder={t('components.new-discussion.title.placeholder')}
                     disabled={isSubmitting}
+                    withCounter
+                    maxLength={SMALL_TEXT_LENGTH}
                   />
                 </Grid>
                 <Grid item xs={12} md={3}>

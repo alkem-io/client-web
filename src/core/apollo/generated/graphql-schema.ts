@@ -14476,6 +14476,7 @@ export type PlatformDiscussionsQuery = {
     communication: {
       __typename?: 'Communication';
       id: string;
+      discussionCategories: Array<DiscussionCategory>;
       authorization?:
         | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;

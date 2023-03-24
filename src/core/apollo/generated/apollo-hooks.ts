@@ -12601,6 +12601,7 @@ export const PlatformDiscussionsDocument = gql`
       id
       communication {
         id
+        discussionCategories
         authorization {
           myPrivileges
         }

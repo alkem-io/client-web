@@ -12,7 +12,7 @@ import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { compact } from 'lodash';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
-import { DiscussionCategoryExt, DiscussionCategoryExtEnum, ForumCategories } from '../constants/DiscusionCategories';
+import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
 import { useUserContext } from '../../../community/contributor/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
@@ -32,6 +32,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(ALL_CATEGORIES);
   const { data, loading: loadingDiscussions } = usePlatformDiscussionsQuery();
 
+  const validCategories = data?.platform.communication.discussionCategories ?? [];
   const communicationId = data?.platform.communication.id;
 
   const canCreateDiscussion =
@@ -65,13 +66,13 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
         title: t('common.show-all'),
         icon: <DiscussionIcon category={ALL_CATEGORIES} />,
       },
-      ...ForumCategories.map(id => ({
+      ...validCategories?.map(id => ({
         id: id,
         title: t(`common.enums.discussion-category.${id}` as const),
         icon: <DiscussionIcon category={id} />,
       })),
     ],
-    [t]
+    [validCategories, t]
   );
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
@@ -119,7 +120,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
           {!loading && communicationId && (
             <NewDiscussionDialog
               communicationId={communicationId}
-              categories={ForumCategories}
+              categories={validCategories}
               open={dialog === 'new'}
               onClose={() => navigate('/forum')}
             />

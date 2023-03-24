@@ -3,6 +3,7 @@ query platformDiscussions {
     id
     communication {
       id
+      discussionCategories
       authorization {
         myPrivileges
       }
