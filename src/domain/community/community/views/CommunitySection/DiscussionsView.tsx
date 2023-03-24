@@ -40,7 +40,9 @@ export const DiscussionsView: FC<DiscussionsProps> = ({ discussions, canCreate }
       <>
         {discussions
           .slice(0, DISCUSSIONS_NUMBER_IN_WINDOW)
-          .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+          .sort((a, b) =>
+            a.createdAt && b.createdAt ? b.createdAt.getTime() - a.createdAt.getTime() : a.title.localeCompare(b.title)
+          )
           .map((x, i) => (
             <DiscussionOverview key={i} discussion={x} />
           ))}
