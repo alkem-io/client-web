@@ -1,39 +1,20 @@
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
+import { Avatar, AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
 import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
+import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
+import { formatLongDate } from '../../../../core/utils/time/utils';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;
 }
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    avatar: {
-      height: theme.spacing(3.5),
-      width: theme.spacing(3.5),
-    },
-  })
-);
-
 const SHOW_AVATARS = false;
 
 const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
-  const styles = useStyles();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useResolvedPath('..');
@@ -46,34 +27,28 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>
       <ListItemText
-        primary={
-          <Typography color="primary" variant="h4">
-            {title}
-          </Typography>
-        }
+        primary={<BlockSectionTitle>{title}</BlockSectionTitle>}
         secondary={
           <Box display="flex" flexDirection="column">
-            <Typography variant="body2">
+            <Caption>
               {t('components.discussions-list.posted', {
                 name: author?.displayName,
-                date: createdAt ? createdAt.toLocaleDateString() : '',
+                date: formatLongDate(createdAt),
                 count: commentsCount,
               })}
-            </Typography>
+            </Caption>
           </Box>
         }
-        disableTypography
       />
       {SHOW_AVATARS && (
         <ListItemAvatar>
-          <AvatarGroup
-            max={3}
-            classes={{
-              avatar: styles.avatar,
-            }}
-          >
+          <AvatarGroup max={3}>
             {authors.map((a, i) => (
-              <Avatar key={i} src={a.avatarUrl}>
+              <Avatar
+                key={i}
+                src={a.avatarUrl}
+                sx={theme => ({ height: theme.spacing(3.5), width: theme.spacing(3.5) })}
+              >
                 {a.firstName[0]}
               </Avatar>
             ))}

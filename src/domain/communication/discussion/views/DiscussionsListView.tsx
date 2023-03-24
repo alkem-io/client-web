@@ -3,10 +3,10 @@ import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../../../platform/admin/components/Common/Filter';
-import ProfileCard from '../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import DiscussionOverview from './DiscussionOverview';
 import { Discussion } from '../models/Discussion';
 import { ViewProps } from '../../../../core/container/view';
+import { BlockTitle } from '../../../../core/ui/typography';
 
 interface DiscussionListViewEntities {
   discussions: Discussion[];
@@ -32,10 +32,8 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
   const { loading } = state;
 
   return (
-    <ProfileCard
-      title={t('components.discussions-list.title', { count: discussions.length })}
-      helpText={t('components.discussions-list.help')}
-    >
+    <>
+      <BlockTitle>{t('components.discussions-list.title', { count: discussions.length })}</BlockTitle>
       {loading && (
         <List>
           <ListItemText
@@ -67,6 +65,6 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
           )}
         </Filter>
       )}
-    </ProfileCard>
+    </>
   );
 };

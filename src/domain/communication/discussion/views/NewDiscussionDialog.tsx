@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface formValues {
   title: string;
-  category: DiscussionCategory;
+  category: DiscussionCategory | null;
   description: string;
 }
 
@@ -53,13 +53,13 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
 
   const initialValues: formValues = {
     title: '',
-    category: DiscussionCategory.General,
+    category: null,
     description: '',
   };
 
   const validationSchema = yup.object().shape({
     title: yup.string().trim().required(t('forms.validations.required')),
-    category: yup.string().required(t('forms.validations.required')),
+    category: yup.string().nullable().required(t('forms.validations.required')),
     description: MarkdownValidator(MID_TEXT_LENGTH).trim().required(t('forms.validations.required')),
   });
 
@@ -70,7 +70,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
           communicationID: communicationId,
           description: values.description,
           title: values.title,
-          category: values.category,
+          category: values.category!,
         },
       },
     });

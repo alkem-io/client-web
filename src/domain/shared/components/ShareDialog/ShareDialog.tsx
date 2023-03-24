@@ -11,7 +11,16 @@ import { DialogContent } from '../../../../common/components/core/dialog';
 interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
   onClose: () => void;
-  entityTypeName: 'hub' | 'challenge' | 'opportunity' | 'user' | 'organization' | 'callout' | 'card' | 'canvas';
+  entityTypeName:
+    | 'hub'
+    | 'challenge'
+    | 'opportunity'
+    | 'user'
+    | 'organization'
+    | 'callout'
+    | 'card'
+    | 'canvas'
+    | 'discussion';
 }
 
 export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeName, ...props }) => {

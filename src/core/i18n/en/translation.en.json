@@ -168,6 +168,7 @@
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
     "filterby": "Filter by...",
+    "forum": "Forum",
     "email": "Email",
     "state": "State",
     "aspect": "Card",
@@ -369,7 +370,12 @@
         "GENERAL": "General",
         "IDEAS": "Ideas",
         "QUESTIONS": "Questions",
-        "SHARING": "Sharing"
+        "SHARING": "Sharing",
+        "PLATFORM_FUNCTIONALITIES": "Platform Functionalities",
+        "COMMUNITY_BUILDING": "Community Building",
+        "CHALLENGE_CENTRIC": "Working Challenge Centric",
+        "HELP": "Need Help?",
+        "OTHER": "Other"
       }
     },
     "blocks": {
@@ -1032,11 +1038,11 @@
     "discussions-list": {
       "name": "Discussions - {{community}}",
       "title": "Discussions ({{count}})",
-      "help": "List of all discussions",
       "posted": "{{name}} on {{- date}} - {{count}} comment",
       "posted_plural": "{{name}} on {{- date}} - {{count}} comments"
     },
     "discussion": {
+      "initiate": "Initiate Discussion",
       "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
       "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
       "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
@@ -1051,11 +1057,6 @@
     "comment": {
       "posted": "{{name}} on {{- date}}",
       "reply": "Replay to this comment"
-    },
-    "discussions-layout": {
-      "buttons": {
-        "new-discussion": "Initiate new discussion"
-      }
     },
     "post-comment": {
       "fields": {
@@ -1767,6 +1768,11 @@
         "new-user": "New user? Start here!"
       },
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
+    },
+    "forum": {
+      "title": "Questions, suggestions, or feedback? Get in touch with other users of the platform!",
+      "new-title": "Alkemio Forum - Initiate Discussion",
+      "back": "See all discussions"
     }
   },
   "operations": {

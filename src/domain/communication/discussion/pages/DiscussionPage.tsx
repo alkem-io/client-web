@@ -1,48 +1,177 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
-import { Loading } from '../../../../common/components/core';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
-import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { useDiscussionContext } from '../providers/DiscussionProvider';
-import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import { useUserContext } from '../../../community/contributor/user';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import DiscussionView from '../views/DiscussionView';
-import { PageProps } from '../../../shared/types/PageProps';
+import {
+  MessageDetailsFragmentDoc,
+  refetchPlatformDiscussionQuery,
+  refetchPlatformDiscussionsQuery,
+  useDeleteDiscussionMutation,
+  usePlatformDiscussionQuery,
+  usePostDiscussionCommentMutation,
+  useRemoveMessageFromDiscussionMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { Discussion } from '../models/Discussion';
+import { compact } from 'lodash';
+import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
+import { Message } from '../../../shared/components/Comments/models/message';
+import { Skeleton } from '@mui/material';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import BackButton from '../../../../core/ui/actions/BackButton';
+import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
+import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
+import { useConfig } from '../../../platform/config/useConfig';
+import { useNavigate } from 'react-router-dom';
 
-interface DiscussionPageProps extends PageProps {}
-/**
- * @deprecated
- */
-export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
+interface DiscussionPageProps {}
+
+export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const { t } = useTranslation();
-  const { loading: loadingCommunity } = useCommunityContext();
+  const { discussionId } = useUrlParams();
   const { user } = useUserContext();
+  const { isFeatureEnabled } = useConfig();
+  const navigate = useNavigate();
 
-  const [showDeleteDiscModal, setShowDeleteDiscModal] = useState<boolean>(false);
+  const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
+    variables: {
+      discussionId: discussionId!,
+    },
+    skip: !discussionId,
+  });
+  const rawDiscussion = data?.platform.communication.discussion;
+  const authors = useAuthorsDetails(
+    compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.messages?.map(c => c.sender?.id))])
+  );
+
+  const discussion = useMemo<Discussion | undefined>(
+    () =>
+      rawDiscussion
+        ? {
+            id: rawDiscussion.id,
+            title: rawDiscussion.title,
+            description: rawDiscussion.description,
+            category: rawDiscussion.category,
+            myPrivileges: rawDiscussion.authorization?.myPrivileges,
+            author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
+            authors: authors.authors ?? [],
+            createdAt: rawDiscussion.timestamp ? new Date(rawDiscussion.timestamp) : undefined,
+            commentsCount: rawDiscussion.commentsCount,
+            comments:
+              rawDiscussion.messages?.map<Message>(m => ({
+                id: m.id,
+                body: m.message,
+                author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
+                createdAt: new Date(m.timestamp),
+              })) ?? [],
+          }
+        : undefined,
+    [rawDiscussion, authors]
+  );
+
+  const [showDeleteDiscussionModal, setShowDeleteDiscussionModal] = useState<boolean>(false);
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState<boolean>(false);
   // holds the ID of discussion or comment for deletion after the dialog is confirmed
   const [itemToDelete, setItemToDelete] = useState<string | undefined>(undefined);
 
-  const { discussion, handlePostComment, handleDeleteComment, loading: loadingDiscussions } = useDiscussionContext();
-  const { handleDeleteDiscussion } = useDiscussionsContext();
+  const [postComment] = usePostDiscussionCommentMutation();
 
-  const currentPaths = useMemo(
-    () => [...paths, { value: '', name: discussion?.title ?? '', real: false }],
-    [paths, discussion]
-  );
-  useUpdateNavigation({ currentPaths });
+  const handlePostComment = (post: string) => {
+    if (!discussionId) {
+      return;
+    }
 
-  if (loadingDiscussions || loadingCommunity) return <Loading />;
+    return postComment({
+      update: (cache, { data }) => {
+        console.log('updta');
+        if (isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+          console.log('subs enabled');
+          return;
+        }
+        console.log('subs NOT enabled');
+        cache.modify({
+          id: cache.identify({
+            id: discussionId,
+            __typename: 'Discussion',
+          }),
+          fields: {
+            messages(existingMessages = []) {
+              if (data) {
+                const newMessage = cache.writeFragment({
+                  data: data?.sendMessageToDiscussion,
+                  fragment: MessageDetailsFragmentDoc,
+                });
+                return [...existingMessages, newMessage];
+              }
+              return existingMessages;
+            },
+          },
+        });
+      },
+      refetchQueries: [
+        refetchPlatformDiscussionQuery({
+          discussionId,
+        }),
+      ],
+      variables: {
+        input: {
+          discussionID: discussionId,
+          message: post,
+        },
+      },
+    });
+  };
 
-  if (!discussion) return null;
+  const [deleteMessage] = useRemoveMessageFromDiscussionMutation({
+    update: (cache, { data }) =>
+      data?.removeMessageFromDiscussion && evictFromCache(cache, String(data.removeMessageFromDiscussion), 'Message'),
+    refetchQueries: [
+      refetchPlatformDiscussionQuery({
+        discussionId: discussionId!,
+      }),
+    ],
+  });
+
+  const handleDeleteComment = async (msgID: string) => {
+    if (!discussionId) {
+      return;
+    }
+    await deleteMessage({
+      variables: {
+        messageData: {
+          discussionID: discussionId,
+          messageID: msgID,
+        },
+      },
+    });
+  };
+
+  const [deleteDiscussion] = useDeleteDiscussionMutation({
+    onCompleted: () => navigate('/forum'),
+    refetchQueries: [refetchPlatformDiscussionsQuery()],
+  });
+
+  const handleDeleteDiscussion = async () => {
+    if (!discussionId) {
+      return;
+    }
+    await deleteDiscussion({
+      variables: {
+        deleteData: {
+          ID: discussionId,
+        },
+      },
+    });
+  };
 
   const currentUserId = user?.user.id;
 
   const deleteDiscussionHandler = (id: string) => {
     setItemToDelete(id);
-    setShowDeleteDiscModal(true);
+    setShowDeleteDiscussionModal(true);
   };
 
   const deleteCommentHandler = (id: string) => {
@@ -51,40 +180,48 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   };
 
   const onCancelModal = () => {
-    setShowDeleteDiscModal(false);
+    setShowDeleteDiscussionModal(false);
     setShowDeleteCommentModal(false);
     setItemToDelete(undefined);
   };
 
-  const onConfirmDiscDialog = () => {
-    if (itemToDelete) {
-      handleDeleteDiscussion(itemToDelete);
-      setShowDeleteDiscModal(false);
-    }
+  const onConfirmDiscussionDialog = () => {
+    handleDeleteDiscussion();
+    setShowDeleteDiscussionModal(false);
   };
 
   const onConfirmCommentDialog = () => {
     if (itemToDelete) {
-      handleDeleteComment(discussion.id, itemToDelete);
+      handleDeleteComment(itemToDelete);
       setShowDeleteCommentModal(false);
     }
   };
 
   return (
-    <>
-      <DiscussionsLayout>
-        <DiscussionView
-          currentUserId={currentUserId}
-          discussion={discussion}
-          onPostComment={handlePostComment}
-          onDeleteDiscussion={deleteDiscussionHandler}
-          onDeleteComment={deleteCommentHandler}
-        />
+    <TopLevelDesktopLayout>
+      <DiscussionsLayout
+        backButton={
+          <BackButton component={RouterLink} to="/forum">
+            {t('pages.forum.back')}
+          </BackButton>
+        }
+      >
+        {loadingDiscussion || !discussion ? (
+          <Skeleton />
+        ) : (
+          <DiscussionView
+            currentUserId={currentUserId}
+            discussion={discussion}
+            onPostComment={handlePostComment}
+            onDeleteDiscussion={deleteDiscussionHandler}
+            onDeleteComment={deleteCommentHandler}
+          />
+        )}
       </DiscussionsLayout>
       <RemoveModal
-        show={showDeleteDiscModal}
+        show={showDeleteDiscussionModal}
         onCancel={onCancelModal}
-        onConfirm={onConfirmDiscDialog}
+        onConfirm={onConfirmDiscussionDialog}
         text={t('components.discussion.delete-discussion')}
       />
       <RemoveModal
@@ -93,7 +230,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
         onConfirm={onConfirmCommentDialog}
         text={t('components.discussion.delete-comment')}
       />
-    </>
+    </TopLevelDesktopLayout>
   );
 };
 
