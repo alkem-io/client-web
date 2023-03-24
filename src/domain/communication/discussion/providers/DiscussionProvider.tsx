@@ -105,7 +105,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       title: discussionData.title,
       category: discussionData.category,
       myPrivileges: discussionData.authorization?.myPrivileges ?? [],
-      author: getAuthor(discussionData.createdBy || ''),
+      author: getAuthor(discussionData.createdBy),
       authors: authors,
       description: discussionData.description,
       createdAt: discussionData.timestamp ? new Date(discussionData.timestamp) : new Date(),

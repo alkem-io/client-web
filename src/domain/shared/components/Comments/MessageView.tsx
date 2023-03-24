@@ -1,6 +1,6 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
-import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
+import { Box, BoxProps, Grid, IconButton, styled, Typography } from '@mui/material';
 import { Message } from './models/message';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
@@ -38,11 +38,6 @@ interface MessageViewProps {
 export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete, isRootComment }) => {
   const { author, body, id } = message;
 
-  const authorLabel = useMemo(
-    () => (author?.roleName ? `${author?.displayName} • ${author?.roleName}` : author?.displayName),
-    [author?.displayName, author?.roleName]
-  );
-
   return (
     <Box display="flex" gap={gutters(0.5)}>
       <AuthorAvatar author={author} />
@@ -51,7 +46,7 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
           <Grid item>
             <Grid container spacing={1}>
               <Grid item xs>
-                <Caption>{authorLabel}</Caption>
+                <Caption>{author?.displayName}</Caption>
               </Grid>
               <Grid item>
                 {canDelete && onDelete && (

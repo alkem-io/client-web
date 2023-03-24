@@ -9,7 +9,7 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 
 export interface AssociatedOrganizationsDashboardSectionProps<
   Consumed extends {},
-  Organization extends Consumed & { nameID: string }
+  Organization extends Consumed & { key: string }
 > extends Omit<AssociatedOrganizationsViewProps<Consumed, Organization>, 'entityName'> {
   canCreateOrganization?: boolean;
   title: string;
@@ -19,7 +19,7 @@ export interface AssociatedOrganizationsDashboardSectionProps<
 
 export const AssociatedOrganizationsDashboardSection = <
   Consumed extends {},
-  Organization extends Consumed & { nameID: string }
+  Organization extends Consumed & { key: string }
 >({
   loading,
   canCreateOrganization = false,
