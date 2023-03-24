@@ -336,14 +336,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1816,16 +1808,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -19012,6 +18994,7 @@ export type CreateAspectTemplateMutationVariables = Exact<{
   defaultDescription: Scalars['Markdown'];
   profile: CreateProfileInput;
   type: Scalars['String'];
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateAspectTemplateMutation = {
@@ -19043,6 +19026,7 @@ export type CreateCanvasTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   value: Scalars['JSON'];
   profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateCanvasTemplateMutation = {
@@ -19086,7 +19070,12 @@ export type InnovationPacksQuery = {
               };
             }
           | undefined;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -19265,6 +19254,7 @@ export type CreateInnovationTemplateMutationVariables = Exact<{
   profile: CreateProfileInput;
   definition: Scalars['LifecycleDefinition'];
   type: LifecycleType;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateInnovationTemplateMutation = {

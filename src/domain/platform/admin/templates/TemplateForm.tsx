@@ -61,7 +61,7 @@ const TemplateForm = <Values extends TemplateInfoValues>({
   );
 
   const validationSchema = yup.object().shape({
-    title: displayNameValidator,
+    displayName: displayNameValidator,
     description: MarkdownValidator(LONG_TEXT_LENGTH).required(),
     tags: yup.array().of(yup.string().min(2)),
     ...validator,
@@ -80,7 +80,7 @@ const TemplateForm = <Values extends TemplateInfoValues>({
           <DialogContent>
             <FormCols>
               <TemplateFormRows>
-                <FormikInputField name="title" title={t('common.title')} />
+                <FormikInputField name="displayName" title={t('common.title')} />
                 <FormikMarkdownField
                   name="description"
                   title={t('common.description')}

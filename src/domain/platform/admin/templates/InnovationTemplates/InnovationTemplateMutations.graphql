@@ -13,9 +13,16 @@ mutation createInnovationTemplate(
   $profile: CreateProfileInput!
   $definition: LifecycleDefinition!
   $type: LifecycleType!
+  $tags: [String!]
 ) {
   createLifecycleTemplate(
-    lifecycleTemplateInput: { templatesSetID: $templatesSetId, profile: $profile, type: $type, definition: $definition }
+    lifecycleTemplateInput: {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      type: $type
+      definition: $definition
+      tags: $tags
+    }
   ) {
     id
   }

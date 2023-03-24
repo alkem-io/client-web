@@ -19809,6 +19809,7 @@ export const CreateAspectTemplateDocument = gql`
     $defaultDescription: Markdown!
     $profile: CreateProfileInput!
     $type: String!
+    $tags: [String!]
   ) {
     createAspectTemplate(
       aspectTemplateInput: {
@@ -19816,6 +19817,7 @@ export const CreateAspectTemplateDocument = gql`
         defaultDescription: $defaultDescription
         profile: $profile
         type: $type
+        tags: $tags
       }
     ) {
       id
@@ -19844,6 +19846,7 @@ export type CreateAspectTemplateMutationFn = Apollo.MutationFunction<
  *      defaultDescription: // value for 'defaultDescription'
  *      profile: // value for 'profile'
  *      type: // value for 'type'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
@@ -19965,8 +19968,15 @@ export type UpdateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCanvasTemplateMutationVariables
 >;
 export const CreateCanvasTemplateDocument = gql`
-  mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $profile: CreateProfileInput!) {
-    createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile }) {
+  mutation createCanvasTemplate(
+    $templatesSetId: UUID!
+    $value: JSON!
+    $profile: CreateProfileInput!
+    $tags: [String!]
+  ) {
+    createCanvasTemplate(
+      canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
+    ) {
       id
     }
   }
@@ -19992,6 +20002,7 @@ export type CreateCanvasTemplateMutationFn = Apollo.MutationFunction<
  *      templatesSetId: // value for 'templatesSetId'
  *      value: // value for 'value'
  *      profile: // value for 'profile'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
@@ -20086,6 +20097,10 @@ export const InnovationPacksDocument = gql`
           profile {
             id
             displayName
+            tagset {
+              id
+              tags
+            }
           }
           templates {
             id
@@ -20372,6 +20387,7 @@ export const CreateInnovationTemplateDocument = gql`
     $profile: CreateProfileInput!
     $definition: LifecycleDefinition!
     $type: LifecycleType!
+    $tags: [String!]
   ) {
     createLifecycleTemplate(
       lifecycleTemplateInput: {
@@ -20379,6 +20395,7 @@ export const CreateInnovationTemplateDocument = gql`
         profile: $profile
         type: $type
         definition: $definition
+        tags: $tags
       }
     ) {
       id
@@ -20407,6 +20424,7 @@ export type CreateInnovationTemplateMutationFn = Apollo.MutationFunction<
  *      profile: // value for 'profile'
  *      definition: // value for 'definition'
  *      type: // value for 'type'
+ *      tags: // value for 'tags'
  *   },
  * });
  */

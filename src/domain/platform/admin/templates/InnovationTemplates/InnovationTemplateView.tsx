@@ -25,6 +25,8 @@ const InnovationTemplateView = ({ template }: AspectInnovationViewProps) => {
     definition = '',
   } = template;
 
+  console.log(template);
+
   return (
     <>
       <Box>
