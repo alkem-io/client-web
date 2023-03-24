@@ -17250,36 +17250,6 @@ export type UserAvatarsQuery = {
   }>;
 };
 
-export type UserCardsContainerQueryVariables = Exact<{
-  ids: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type UserCardsContainerQuery = {
-  __typename?: 'Query';
-  usersById: Array<{
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-    };
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-            | undefined;
-        }
-      | undefined;
-  }>;
-};
-
 export type UserCardFragment = {
   __typename?: 'User';
   id: string;
