@@ -20,16 +20,21 @@ import CanvasWhiteboard from '../../../../common/components/composite/entities/C
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
 import Authorship from '../../../../core/ui/authorship/Authorship';
-import { PageTitle } from '../../../../core/ui/typography';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button, ButtonProps } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
-import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import canvasSchema from '../validation/canvasSchema';
 import isCanvasValueEqual from '../utils/isCanvasValueEqual';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { PageTitle } from '../../../../core/ui/typography';
+import CanvasTemplatesLibrary from '../CanvasTemplatesLibrary/CanvasTemplatesLibrary';
+import { CanvasTemplateWithValue } from '../CanvasTemplatesLibrary/CanvasTemplate';
+import mergeCanvas from '../utils/mergeCanvas';
+import { error as logError } from '../../../../services/logging/sentry/log';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -97,6 +102,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
   state,
 }: CanvasDialogProps<Canvas>) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const { canvas, lockedBy } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
 
@@ -190,6 +196,18 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     actions.onCancel(canvas!);
   };
 
+  const handleImportTemplate = async (template: CanvasTemplateWithValue) => {
+    const canvasApi = await excalidrawApiRef.current?.readyPromise;
+    if (canvasApi && options.canEdit && options.checkedOutByMe) {
+      try {
+        mergeCanvas(canvasApi, template.value);
+      } catch (err) {
+        notify(t('canvas-templates.error-importing'), 'error');
+        logError(new Error(`Error importing canvas template ${template.id}: '${err}'`));
+      }
+    }
+  };
+
   const currentAction: CanvasAction = options.checkedOutByMe ? 'save-and-checkin' : 'checkout';
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
@@ -232,15 +250,22 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       <Formik innerRef={formikRef} initialValues={initialValues} onSubmit={() => {}} validationSchema={canvasSchema}>
         {({ isValid }) => (
           <>
-            <DialogHeader actions={options.headerActions} onClose={onClose}>
+            <DialogHeader
+              actions={options.headerActions}
+              onClose={onClose}
+              titleContainerProps={{ flexDirection: options.checkedOutByMe ? 'row' : 'column' }}
+            >
               {options.checkedOutByMe ? (
-                <Box
-                  component={FormikInputField}
-                  title={t('fields.displayName')}
-                  name="displayName"
-                  size="small"
-                  maxWidth={gutters(50)}
-                />
+                <>
+                  <Box
+                    component={FormikInputField}
+                    title={t('fields.displayName')}
+                    name="displayName"
+                    size="small"
+                    maxWidth={gutters(30)}
+                  />
+                  <CanvasTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+                </>
               ) : (
                 <>
                   <Authorship authorAvatarUri={canvas?.createdBy?.profile.visual?.uri} date={canvas?.createdDate}>

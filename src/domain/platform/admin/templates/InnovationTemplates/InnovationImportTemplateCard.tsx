@@ -1,7 +1,7 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import { InnovationPackIcon } from '../InnovationPacks/InnovationPackIcon';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
@@ -26,7 +26,7 @@ const InnovationImportTemplateCard = ({ template, onClick }: InnovationImportTem
         <CardDescription>{template.profile.description || ''}</CardDescription>
         <CardTags tags={template.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
-      <CardSegmentCaption icon={<Inventory2OutlinedIcon />}>
+      <CardSegmentCaption icon={<InnovationPackIcon />}>
         <Caption noWrap>{template.innovationPackProfile}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
