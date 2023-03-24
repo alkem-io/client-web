@@ -20,7 +20,7 @@ const InnovationTemplateView = ({ template }: AspectInnovationViewProps) => {
   const { t } = useTranslation();
 
   const {
-    info: { tagset: { tags } = {}, description = '' },
+    profile: { tagset: { tags } = {}, description = '' },
     type: templateType,
     definition = '',
   } = template;

@@ -33,7 +33,7 @@ const CreateCanvasTemplateDialog = ({
       maxWidth={false}
     >
       <CanvasTemplateForm
-        title={t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
+        displayName={t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         canvases={canvases}
         onSubmit={onSubmit}

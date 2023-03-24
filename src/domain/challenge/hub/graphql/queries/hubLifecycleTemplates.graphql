@@ -7,9 +7,9 @@ query hubLifecycleTemplates($hubId: UUID_NAMEID!) {
         definition
         id
         type
-        info {
+        profile {
           id
-          title
+          displayName
         }
       }
     }

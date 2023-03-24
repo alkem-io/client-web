@@ -17,7 +17,7 @@ export const CardTemplatesChooser: FC<CardTemplatesChooserProps> = ({ name, temp
   const [field, , helpers] = useField(name);
 
   const cardTemplatesTypeList = useMemo(
-    () => templates.map(template => ({ type: template.type, title: template.info.title })),
+    () => templates.map(template => ({ type: template.type, title: template.profile.displayName })),
     [templates]
   );
 

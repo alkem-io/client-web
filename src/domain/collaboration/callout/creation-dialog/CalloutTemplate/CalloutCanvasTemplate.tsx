@@ -19,7 +19,7 @@ const CalloutCanvasTemplate: FC<CalloutCanvasTemplateProps> = ({ callout, onChan
     skip: callout.type !== CalloutType.Canvas,
   });
   const canvasTemplates =
-    hubCanvasTemplates?.hub?.templates?.canvasTemplates?.map(x => ({ id: x.id, title: x.info.title })) ?? [];
+    hubCanvasTemplates?.hub?.templates?.canvasTemplates?.map(x => ({ id: x.id, title: x.profile.displayName })) ?? [];
 
   const { data: canvasTemplateData, loading: canvasTemplateValueLoading } = useCanvasTemplateValueQuery({
     variables: { hubId, id: callout.templateId! },

@@ -48,7 +48,7 @@ const ImportTemplatesDialogGalleryStep = <T extends Template, Q extends T & Temp
         pack.templates.map(template => ({
           ...template,
           provider: pack.provider,
-          innovationPackDisplayName: pack.displayName,
+          innovationPackProfile: pack.profile,
           innovationPackNameID: pack.nameID,
           innovationPackId: pack.id,
         }))
