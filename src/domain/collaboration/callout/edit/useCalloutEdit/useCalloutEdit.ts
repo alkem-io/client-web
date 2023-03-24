@@ -33,8 +33,8 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
           calloutData: {
             ID: callout.id,
             profileData: {
-              description: callout.description,
-              displayName: callout.displayName,
+              description: callout.profile.description,
+              displayName: callout.profile.displayName,
             },
             state: callout.state,
             cardTemplate: callout.cardTemplate
