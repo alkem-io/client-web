@@ -8,11 +8,8 @@ import {
   ShareOutlined,
   AllInclusive,
 } from '@mui/icons-material';
-import CategorySelector, {
-  CategoryConfig,
-} from '../../../../common/components/composite/common/CategorySelector/CategorySelector';
+import CategorySelector, { CategoryConfig } from '../components/CategorySelector';
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
-import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import { DiscussionListView } from '../views/DiscussionsListView';
 import { PageProps } from '../../../shared/types/PageProps';
@@ -21,9 +18,12 @@ import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 interface DiscussionsPageProps extends PageProps {}
 
 // TODO use for Discussions Dialog?
+/**
+ * @deprecated
+ * delete me
+ */
 export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
 
   const showAllTitle = t('common.show-all');
@@ -53,8 +53,6 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
 
   return (
     <DiscussionsLayout
-      title={t('components.discussions-list.name', { community: communityName })}
-      newUrl={'new'}
       canCreateDiscussion={permissions.canCreateDiscussion}
       categorySelector={
         <CategorySelector

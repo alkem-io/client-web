@@ -19,7 +19,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { useDiscussionsContext } from '../../../communication/discussion/providers/DiscussionsProvider';
-import { Discussion } from '../../../communication/discussion/models/discussion';
+import { Discussion } from '../../../communication/discussion/models/Discussion';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../../../types/WithId';

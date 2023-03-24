@@ -7,7 +7,7 @@ import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { Message } from '../../../shared/components/Comments/models/message';
-import { Discussion } from '../models/discussion';
+import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface DiscussionViewProps {
@@ -27,10 +27,19 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { id, description, author, authors, createdAt, totalComments, comments, myPrivileges } = discussion;
+  const {
+    id,
+    description,
+    author,
+    authors,
+    createdAt,
+    commentsCount: totalComments,
+    comments,
+    myPrivileges,
+  } = discussion;
 
-  const canPost = myPrivileges.some(x => x === AuthorizationPrivilege.Create);
-  const canDeleteDiscussion = myPrivileges.some(x => x === AuthorizationPrivilege.Delete);
+  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.Create) ?? false;
+  const canDeleteDiscussion = myPrivileges?.some(x => x === AuthorizationPrivilege.Delete) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
 
