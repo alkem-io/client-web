@@ -1430,14 +1430,6 @@ export const UserCardFragmentDoc = gql`
     id
     nameID
     isContactable
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     profile {
       id
       displayName
