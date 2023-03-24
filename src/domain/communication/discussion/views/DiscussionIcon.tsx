@@ -1,10 +1,16 @@
 import {
   AllInclusive,
-  HelpOutlined,
-  LightbulbOutlined,
-  QuestionAnswerOutlined,
-  ShareOutlined,
+  Category as CategoryIcon,
+  GroupsOutlined as GroupsOutlinedIcon,
+  GpsNotFixedOutlined as GpsNotFixedOutlinedIcon,
+  QuestionMark as QuestionMarkIcon,
+  MoreHoriz as MoreHorizIcon,
+  HelpOutlined as HelpOutlinedIcon,
+  LightbulbOutlined as LightbulbOutlinedIcon,
+  QuestionAnswerOutlined as QuestionAnswerOutlinedIcon,
+  ShareOutlined as ShareOutlinedIcon,
 } from '@mui/icons-material';
+
 import { SvgIconProps } from '@mui/material';
 import { createElement, FC, useMemo } from 'react';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscussionCategoriesExt';
@@ -17,16 +23,28 @@ export interface DiscussionIconProps extends SvgIconProps {
 export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) => {
   const categoryIcon = useMemo(() => {
     switch (category) {
+      case DiscussionCategory.PlatformFunctionalities:
+        return CategoryIcon;
+      case DiscussionCategory.ChallengeCentric:
+        return GpsNotFixedOutlinedIcon;
+      case DiscussionCategory.CommunityBuilding:
+        return GroupsOutlinedIcon;
+      case DiscussionCategory.Help:
+        return QuestionMarkIcon;
+      case DiscussionCategory.Other:
+        return MoreHorizIcon;
+      case DiscussionCategory.General:
+        return QuestionAnswerOutlinedIcon;
       case DiscussionCategory.Ideas:
-        return LightbulbOutlined;
+        return LightbulbOutlinedIcon;
       case DiscussionCategory.Questions:
-        return HelpOutlined;
+        return HelpOutlinedIcon;
       case DiscussionCategory.Sharing:
-        return ShareOutlined;
+        return ShareOutlinedIcon;
       case DiscussionCategoryExtEnum.All:
         return AllInclusive;
       default:
-        return QuestionAnswerOutlined;
+        return QuestionAnswerOutlinedIcon;
     }
   }, [category]);
 
