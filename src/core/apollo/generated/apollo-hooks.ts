@@ -19968,15 +19968,8 @@ export type UpdateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCanvasTemplateMutationVariables
 >;
 export const CreateCanvasTemplateDocument = gql`
-  mutation createCanvasTemplate(
-    $templatesSetId: UUID!
-    $value: JSON!
-    $profile: CreateProfileInput!
-    $tags: [String!]
-  ) {
-    createCanvasTemplate(
-      canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
-    ) {
+  mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $profile: CreateProfileInput!) {
+    createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile }) {
       id
     }
   }
@@ -20002,7 +19995,6 @@ export type CreateCanvasTemplateMutationFn = Apollo.MutationFunction<
  *      templatesSetId: // value for 'templatesSetId'
  *      value: // value for 'value'
  *      profile: // value for 'profile'
- *      tags: // value for 'tags'
  *   },
  * });
  */

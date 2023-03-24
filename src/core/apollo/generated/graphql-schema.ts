@@ -19026,7 +19026,6 @@ export type CreateCanvasTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   value: Scalars['JSON'];
   profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateCanvasTemplateMutation = {
