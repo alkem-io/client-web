@@ -254,7 +254,7 @@ mutation createCanvasOnCallout($input: CreateCanvasOnCalloutInput!) {
 
 mutation deleteCanvas($input: DeleteCanvasInput!) {
   deleteCanvas(canvasData: $input) {
-    ...CanvasSummary
+    id
   }
 }
 

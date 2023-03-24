@@ -13953,16 +13953,7 @@ export type DeleteCanvasMutationVariables = Exact<{
   input: DeleteCanvasInput;
 }>;
 
-export type DeleteCanvasMutation = {
-  __typename?: 'Mutation';
-  deleteCanvas: {
-    __typename?: 'Canvas';
-    id: string;
-    nameID: string;
-    createdDate: Date;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
+export type DeleteCanvasMutation = { __typename?: 'Mutation'; deleteCanvas: { __typename?: 'Canvas'; id: string } };
 
 export type UpdateCanvasMutationVariables = Exact<{
   input: UpdateCanvasDirectInput;
@@ -19040,7 +19031,7 @@ export type DeleteAspectTemplateMutation = {
 export type UpdateCanvasTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   value?: InputMaybe<Scalars['JSON']>;
-  profile?: InputMaybe<UpdateProfileInput>;
+  profile: UpdateProfileInput;
 }>;
 
 export type UpdateCanvasTemplateMutation = {

@@ -11407,10 +11407,9 @@ export type CreateCanvasOnCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const DeleteCanvasDocument = gql`
   mutation deleteCanvas($input: DeleteCanvasInput!) {
     deleteCanvas(canvasData: $input) {
-      ...CanvasSummary
+      id
     }
   }
-  ${CanvasSummaryFragmentDoc}
 `;
 export type DeleteCanvasMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteCanvasMutation,
@@ -19916,7 +19915,7 @@ export type DeleteAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectTemplateMutationVariables
 >;
 export const UpdateCanvasTemplateDocument = gql`
-  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput) {
+  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput!) {
     updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
       id
     }

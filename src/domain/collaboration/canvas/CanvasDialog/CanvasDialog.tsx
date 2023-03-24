@@ -149,11 +149,15 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       return;
     }
 
-    //const displayName = formikRef.current?.values.displayName ?? canvas?.profile?.displayName;
+    const displayName = formikRef.current?.values.displayName ?? canvas?.profile?.displayName;
 
     return actions.onUpdate(
       {
         ...canvas,
+        profile: {
+          ...canvas.profile,
+          displayName,
+        },
         value,
       } as Canvas,
       previewImage ?? undefined
