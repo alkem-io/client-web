@@ -25,17 +25,16 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
       <Grid item container alignItems="center">
         <PageTitle>{t('pages.forum.title')}</PageTitle>
         <Box sx={{ width: '100%', marginY: theme => theme.spacing(2) }}>{backButton}</Box>
-        {canCreateDiscussion && (
-          <Button
-            variant="contained"
-            component={RouterLink}
-            startIcon={<AddIcon />}
-            to="new"
-            sx={{ marginLeft: 'auto', marginY: theme => theme.spacing(1) }}
-          >
-            {t('components.discussion.initiate')}
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          component={RouterLink}
+          startIcon={<AddIcon />}
+          disabled={!canCreateDiscussion}
+          to="new"
+          sx={{ marginLeft: 'auto', marginY: theme => theme.spacing(1) }}
+        >
+          {t('components.discussion.initiate')}
+        </Button>
       </Grid>
       <Grid item container spacing={2}>
         {categorySelector && (

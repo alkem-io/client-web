@@ -6,6 +6,7 @@ export enum DiscussionCategoryExtEnum {
 
 export type DiscussionCategoryExt = DiscussionCategory | DiscussionCategoryExtEnum;
 
+// Categories available in the public forum
 export const ForumCategories = [
   DiscussionCategory.PlatformFunctionalities,
   DiscussionCategory.CommunityBuilding,
