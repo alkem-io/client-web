@@ -9,11 +9,13 @@ import {
   ListItemIcon,
   ListItemProps,
   ListItemText,
+  SvgIconProps,
 } from '@mui/material';
 
 export interface CategoryConfig {
+  id: string;
   title: string;
-  icon?: ComponentType;
+  icon?: ComponentType<SvgIconProps>;
 }
 
 interface CategorySelectorProps {
@@ -49,18 +51,18 @@ const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) =
 export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value, showLabels = true, onSelect }) => {
   const items = useMemo(
     () =>
-      categories.map(({ title, icon: Icon }) => (
+      categories.map(({ id, title, icon: Icon }) => (
         <StyledListItemButton
           key={title}
-          selected={value === title}
+          selected={value === id}
           disableGutters={!showLabels}
-          onClick={() => onSelect?.(title)}
+          onClick={() => onSelect?.(id)}
         >
           {Icon && (
             <ListItemIcon
               sx={{
                 justifyContent: !showLabels ? 'center' : 'flex-start',
-                color: value === title ? 'neutralLight.main' : undefined,
+                color: value === id ? 'neutralLight.main' : undefined,
               }}
             >
               <Icon />
