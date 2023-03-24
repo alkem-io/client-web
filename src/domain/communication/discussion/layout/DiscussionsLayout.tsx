@@ -1,8 +1,8 @@
 import { Button, Grid, Paper } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouterLink } from '../../../core/RouterLink';
-import { PageTitle } from '../../../../../core/ui/typography';
+import { RouterLink } from '../../../../common/components/core/RouterLink';
+import { PageTitle } from '../../../../core/ui/typography';
 import AddIcon from '@mui/icons-material/Add';
 
 interface DiscussionsLayoutProps {

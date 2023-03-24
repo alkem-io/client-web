@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
+import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import NewDiscussionView from '../views/NewDiscussionView';
 import { PageProps } from '../../../shared/types/PageProps';

@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
+import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { Loading } from '../../../../common/components/core';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
 import { useCommunityContext } from '../../../community/community/CommunityContext';

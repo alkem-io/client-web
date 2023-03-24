@@ -9,7 +9,7 @@ import {
   AllInclusive,
 } from '@mui/icons-material';
 import CategorySelector, { CategoryConfig } from '../components/CategorySelector';
-import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
+import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import { DiscussionListView } from '../views/DiscussionsListView';
 import { PageProps } from '../../../shared/types/PageProps';
@@ -30,11 +30,11 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
 
   const categoryConfig = useMemo<CategoryConfig[]>(
     () => [
-      { title: showAllTitle, icon: AllInclusive },
-      { title: t('common.enums.discussion-category.GENERAL'), icon: QuestionAnswerOutlined },
-      { title: t('common.enums.discussion-category.IDEAS'), icon: LightbulbOutlined },
-      { title: t('common.enums.discussion-category.QUESTIONS'), icon: HelpOutlined },
-      { title: t('common.enums.discussion-category.SHARING'), icon: ShareOutlined },
+      { id: 'ALL', title: showAllTitle, icon: AllInclusive },
+      { id: 'GENERAL', title: t('common.enums.discussion-category.GENERAL'), icon: QuestionAnswerOutlined },
+      { id: 'IDEAS', title: t('common.enums.discussion-category.IDEAS'), icon: LightbulbOutlined },
+      { id: 'QUESTIONS', title: t('common.enums.discussion-category.QUESTIONS'), icon: HelpOutlined },
+      { id: 'SHARING', title: t('common.enums.discussion-category.SHARING'), icon: ShareOutlined },
     ],
     [showAllTitle, t]
   );
