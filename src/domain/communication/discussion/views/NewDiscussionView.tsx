@@ -8,7 +8,7 @@ import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikM
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
-import DiscussionIcon from '../../../../common/components/composite/entities/Communication/DiscussionIcon';
+import DiscussionIcon from './DiscussionIcon';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 

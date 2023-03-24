@@ -13,9 +13,9 @@ import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { Discussion } from '../../../../../domain/communication/discussion/models/Discussion';
+import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
-import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
+import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;

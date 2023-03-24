@@ -7,11 +7,8 @@ import {
 } from '@mui/icons-material';
 import { SvgIconProps } from '@mui/material';
 import { createElement, FC, useMemo } from 'react';
-import {
-  DiscussionCategoryExt,
-  DiscussionCategoryExtEnum,
-} from '../../../../../domain/communication/discussion/constants/DiscussionCategoriesExt';
-import { DiscussionCategory } from '../../../../../core/apollo/generated/graphql-schema';
+import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscussionCategoriesExt';
+import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface DiscussionIconProps extends SvgIconProps {
   category: DiscussionCategoryExt;

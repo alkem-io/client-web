@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Discussion } from '../../../communication/discussion/models/Discussion';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
-import DiscussionOverview from '../../../../common/components/composite/entities/Communication/DiscussionOverview';
+import DiscussionOverview from '../../../communication/discussion/views/DiscussionOverview';
 import DashboardGenericSection from './DashboardGenericSection';
 
 export interface DashboardDiscussionsSectionProps {
