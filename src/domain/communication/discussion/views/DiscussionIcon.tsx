@@ -13,7 +13,7 @@ import {
 
 import { SvgIconProps } from '@mui/material';
 import { createElement, FC, useMemo } from 'react';
-import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscussionCategoriesExt';
+import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface DiscussionIconProps extends SvgIconProps {

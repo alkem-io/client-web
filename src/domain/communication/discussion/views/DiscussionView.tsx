@@ -9,6 +9,7 @@ import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constant
 import { Message } from '../../../shared/components/Comments/models/message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
@@ -38,7 +39,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     myPrivileges,
   } = discussion;
 
-  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.Create) ?? false;
+  const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.CreateComment) ?? false;
   const canDeleteDiscussion = myPrivileges?.some(x => x === AuthorizationPrivilege.Delete) ?? false;
   const canDeleteComment = (authorId?: string) =>
     (currentUserId && authorId && authorId === currentUserId) || canDeleteDiscussion;
@@ -64,15 +65,15 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             />
           </Grid>
           <Grid item>
-            {comments && comments.length > 0 && (
+            {comments && (
               <>
                 <Box paddingY={2}>
-                  <Typography variant={'h4'}>
+                  <BlockSectionTitle>
                     {t('components.discussion.summary', {
                       comment: totalComments,
                       contributed: authors.length,
                     })}
-                  </Typography>
+                  </BlockSectionTitle>
                 </Box>
                 <Filter data={comments}>
                   {filteredComments => {

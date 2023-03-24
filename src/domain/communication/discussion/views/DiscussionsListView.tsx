@@ -39,11 +39,11 @@ export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, stat
       {loading && (
         <List>
           <ListItemText
-            primary={<Skeleton animation="wave" />}
+            primary={<Skeleton />}
             secondary={
               <>
-                <Skeleton animation="wave" />
-                <Skeleton animation="wave" />
+                <Skeleton />
+                <Skeleton />
               </>
             }
           />

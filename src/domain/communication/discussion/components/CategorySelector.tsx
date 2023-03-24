@@ -10,7 +10,7 @@ import {
   ListItemProps,
   ListItemText,
 } from '@mui/material';
-import { DiscussionCategoryExt } from '../constants/DiscussionCategoriesExt';
+import { DiscussionCategoryExt } from '../constants/DiscusionCategories';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 export interface CategoryConfig {
