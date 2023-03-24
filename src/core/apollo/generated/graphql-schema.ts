@@ -336,22 +336,10 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The banner Visual for this Aspect. */
-  banner?: Maybe<Visual>;
-  /** The narrow banner visual for this Aspect. */
-  bannerNarrow?: Maybe<Visual>;
   /** The parent Callout of the Aspect */
   callout?: Maybe<Callout>;
   /** The comments for this Aspect. */
@@ -385,8 +373,8 @@ export type AspectTemplate = {
   defaultDescription: Scalars['Markdown'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The meta information for this Template */
-  info: TemplateInfo;
+  /** The Profile for this template. */
+  profile: Profile;
   /** The type for this Aspect. */
   type: Scalars['String'];
 };
@@ -655,14 +643,12 @@ export type Callout = {
   comments?: Maybe<Comments>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
-  /** The description of this Callout */
-  description: Scalars['Markdown'];
-  /** The display name. */
-  displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The Profile for this Callout. */
+  profile: Profile;
   /** The user that published this Callout */
   publishedBy?: Maybe<User>;
   /** The timestamp for the publishing of this Callout. */
@@ -733,14 +719,12 @@ export type Canvas = {
   /** The user that created this Canvas */
   createdBy?: Maybe<User>;
   createdDate: Scalars['DateTime'];
-  /** The display name. */
-  displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The preview image for this Canvas. */
-  preview?: Maybe<Visual>;
+  /** The Profile for this Canvas. */
+  profile: Profile;
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
 };
@@ -784,8 +768,8 @@ export type CanvasTemplate = {
   authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The meta information for this Template */
-  info: TemplateInfo;
+  /** The Profile for this template. */
+  profile: Profile;
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
 };
@@ -1225,20 +1209,22 @@ export type CreateAspectOnCalloutInput = {
 export type CreateAspectTemplateInput = {
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription: Scalars['Markdown'];
-  /** The meta information for this Template. */
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   /** The type of Aspects created from this Template. */
   type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateAspectTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription: Scalars['Markdown'];
-  /** The meta information for this Template. */
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
   /** The type of Aspects created from this Template. */
   type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateCalendarEventOnCalendarInput = {
@@ -1261,15 +1247,12 @@ export type CreateCalendarEventOnCalendarInput = {
 };
 
 export type CreateCalloutOnCollaborationInput = {
-  /** CanvasTemplate data for Canvas Callouts. */
+  /** CardTemplate data for Card Callouts. */
   canvasTemplate?: InputMaybe<CreateCanvasTemplateInput>;
   /** CardTemplate data for Card Callouts. */
   cardTemplate?: InputMaybe<CreateAspectTemplateInput>;
   collaborationID: Scalars['UUID'];
-  /** Callout description. */
-  description: Scalars['Markdown'];
-  /** The display name for the entity. */
-  displayName: Scalars['String'];
+  profile: CreateProfileInput;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
@@ -1280,28 +1263,29 @@ export type CreateCalloutOnCollaborationInput = {
 
 export type CreateCanvasOnCalloutInput = {
   calloutID: Scalars['UUID'];
-  /** The display name for the entity. */
-  displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  profileData: CreateProfileInput;
   value?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateCanvasTemplateInput = {
   /** Use the specified Canvas as the initial value for this CanvasTemplate */
   canvasID?: InputMaybe<Scalars['UUID']>;
-  /** The meta information for this Template. */
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   value?: InputMaybe<Scalars['JSON']>;
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateCanvasTemplateOnTemplatesSetInput = {
   /** Use the specified Canvas as the initial value for this CanvasTemplate */
   canvasID?: InputMaybe<Scalars['UUID']>;
-  /** The meta information for this Template. */
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
   value?: InputMaybe<Scalars['JSON']>;
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -1352,10 +1336,9 @@ export type CreateHubInput = {
 };
 
 export type CreateInnovationPackOnLibraryInput = {
-  /** The display name for the entity. */
-  displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
+  profileData: CreateProfileInput;
   /** The provider Organization for the InnovationPack */
   providerID: Scalars['UUID_NAMEID'];
 };
@@ -1363,11 +1346,12 @@ export type CreateInnovationPackOnLibraryInput = {
 export type CreateLifecycleTemplateOnTemplatesSetInput = {
   /** The XState definition for this LifecycleTemplate. */
   definition: Scalars['LifecycleDefinition'];
-  /** The meta information for this Template. */
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
   /** The type of the Lifecycles that this Template supports. */
   type: LifecycleType;
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateLocationInput = {
@@ -1419,12 +1403,10 @@ export type CreateProfileInput = {
 };
 
 export type CreateProjectInput = {
-  description?: InputMaybe<Scalars['String']>;
-  /** The display name for the entity. */
-  displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   opportunityID: Scalars['UUID_NAMEID'];
+  profileData: CreateProfileInput;
 };
 
 export type CreateReferenceInput = {
@@ -1453,13 +1435,6 @@ export type CreateTagsetOnProfileInput = {
   name: Scalars['String'];
   profileID?: InputMaybe<Scalars['UUID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type CreateTemplateInfoInput = {
-  description: Scalars['Markdown'];
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  title: Scalars['String'];
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateUserGroupInput = {
@@ -1835,16 +1810,6 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
-};
-
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -1892,12 +1857,12 @@ export type InnovatonPack = {
   __typename?: 'InnovatonPack';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The display name. */
-  displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The Profile for this InnovationPack. */
+  profile: Profile;
   /** The InnovationPack provider. */
   provider?: Maybe<Organization>;
   /** The templates in use by this InnovationPack */
@@ -1944,8 +1909,8 @@ export type LifecycleTemplate = {
   definition: Scalars['LifecycleDefinition'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The meta information for this Template */
-  info: TemplateInfo;
+  /** The Profile for this template. */
+  profile: Profile;
   /** The type for this LifecycleTemplate. */
   type: LifecycleType;
 };
@@ -2905,6 +2870,8 @@ export type OpportunityTemplate = {
 
 export type Organization = Groupable & {
   __typename?: 'Organization';
+  /** All Users that are admins of this Organization. */
+  admins?: Maybe<Array<User>>;
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** All Users that are associated with this Organization. */
@@ -2927,6 +2894,8 @@ export type Organization = Groupable & {
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** All Users that are owners of this Organization. */
+  owners?: Maybe<Array<User>>;
   /** The preferences for this Organization */
   preferences: Array<Preference>;
   /** The profile for this organization. */
@@ -3187,17 +3156,14 @@ export type Project = {
   __typename?: 'Project';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  description?: Maybe<Scalars['String']>;
-  /** The display name. */
-  displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The maturity phase of the project i.e. new, being refined, committed, in-progress, closed etc */
   lifecycle?: Maybe<Lifecycle>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The set of tags for the project */
-  tagset?: Maybe<Tagset>;
+  /** The Profile for this Project. */
+  profile: Profile;
 };
 
 export type ProjectEventInput = {
@@ -3872,20 +3838,6 @@ export type Template = {
   users: Array<UserTemplate>;
 };
 
-export type TemplateInfo = {
-  __typename?: 'TemplateInfo';
-  /** The description for this Template. */
-  description: Scalars['Markdown'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The tags set on this Template. */
-  tagset?: Maybe<Tagset>;
-  /** The title for this Template. */
-  title: Scalars['String'];
-  /** The image associated with this Template`. */
-  visual?: Maybe<Visual>;
-};
-
 export type TemplatesSet = {
   __typename?: 'TemplatesSet';
   /** A single AspectTemplate */
@@ -3947,7 +3899,7 @@ export type UpdateAspectInput = {
   ID: Scalars['UUID'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** Update the Profile of the Card. */
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   type?: InputMaybe<Scalars['String']>;
 };
@@ -3956,8 +3908,8 @@ export type UpdateAspectTemplateInput = {
   ID: Scalars['UUID'];
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  /** The meta information for this Template. */
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
   /** The type of Aspects created from this Template. */
   type?: InputMaybe<Scalars['String']>;
 };
@@ -3972,7 +3924,7 @@ export type UpdateCalendarEventInput = {
   multipleDays: Scalars['Boolean'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** Update the Profile of the Card. */
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** The state date for the event. */
   startDate: Scalars['DateTime'];
@@ -3982,16 +3934,16 @@ export type UpdateCalendarEventInput = {
 };
 
 export type UpdateCalloutCanvasTemplateInput = {
-  /** The meta information for this Template. */
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The Profile of the Template. */
+  profileData?: InputMaybe<UpdateProfileInput>;
   value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateCalloutCardTemplateInput = {
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  /** The meta information for this Template. */
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The Profile of the Template. */
+  profileData?: InputMaybe<UpdateProfileInput>;
   /** The type of Aspects created from this Template. */
   type?: InputMaybe<Scalars['String']>;
 };
@@ -4002,12 +3954,10 @@ export type UpdateCalloutInput = {
   canvasTemplate?: InputMaybe<UpdateCalloutCanvasTemplateInput>;
   /** CardTemplate data for this Callout. */
   cardTemplate?: InputMaybe<UpdateCalloutCardTemplateInput>;
-  /** Callout description. */
-  description?: InputMaybe<Scalars['Markdown']>;
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
@@ -4034,17 +3984,17 @@ export type UpdateCalloutVisibilityInput = {
 
 export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
   value?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateCanvasTemplateInput = {
   ID: Scalars['UUID'];
-  /** The meta information for this Template. */
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
   value?: InputMaybe<Scalars['JSON']>;
 };
 
@@ -4061,7 +4011,7 @@ export type UpdateChallengeInput = {
   context?: InputMaybe<UpdateContextInput>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** Update the contained Profile entity. */
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
@@ -4133,7 +4083,7 @@ export type UpdateHubInput = {
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** Update the contained Profile entity. */
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
@@ -4155,10 +4105,10 @@ export type UpdateHubVisibilityInput = {
 export type UpdateInnovationPackInput = {
   /** The ID or NameID of the InnovationPack. */
   ID: Scalars['UUID_NAMEID'];
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
   /** Update the provider Organization for the InnovationPack. */
   providerOrgID?: InputMaybe<Scalars['UUID_NAMEID']>;
 };
@@ -4167,8 +4117,8 @@ export type UpdateLifecycleTemplateInput = {
   ID: Scalars['UUID'];
   /** The XState definition for this LifecycleTemplate. */
   definition?: InputMaybe<Scalars['LifecycleDefinition']>;
-  /** The meta information for this Template. */
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateLocationInput = {
@@ -4193,7 +4143,7 @@ export type UpdateOpportunityInput = {
   context?: InputMaybe<UpdateContextInput>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  /** Update the contained Profile entity. */
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
 };
 
@@ -4205,6 +4155,7 @@ export type UpdateOrganizationInput = {
   legalEntityName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   website?: InputMaybe<Scalars['String']>;
 };
@@ -4242,11 +4193,10 @@ export type UpdateProfileInput = {
 
 export type UpdateProjectInput = {
   ID: Scalars['UUID'];
-  description?: InputMaybe<Scalars['String']>;
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateReferenceInput = {
@@ -4260,13 +4210,6 @@ export type UpdateTagsetInput = {
   ID: Scalars['UUID'];
   name?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type UpdateTemplateInfoInput = {
-  description?: InputMaybe<Scalars['Markdown']>;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  title?: InputMaybe<Scalars['String']>;
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateUserGroupInput = {
@@ -4284,6 +4227,7 @@ export type UpdateUserInput = {
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   phone?: InputMaybe<Scalars['String']>;
+  /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Set this user profile as being used as a service account or not. */
   serviceProfile?: InputMaybe<Scalars['Boolean']>;
@@ -4854,11 +4798,15 @@ export type ChallengePageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
-                  displayName: string;
-                  description: string;
                   type: CalloutType;
                   visibility: CalloutVisibility;
                   activity: number;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -4909,8 +4857,26 @@ export type ChallengePageQuery = {
                         __typename?: 'Canvas';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -4937,20 +4903,6 @@ export type ChallengePageQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -5101,8 +5053,12 @@ export type ChallengePageQuery = {
                   __typename?: 'Project';
                   id: string;
                   nameID: string;
-                  displayName: string;
-                  description?: string | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                   lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                 }>
               | undefined;
@@ -5173,11 +5129,10 @@ export type ChallengeProfileFragment = {
               __typename?: 'Callout';
               id: string;
               nameID: string;
-              displayName: string;
-              description: string;
               type: CalloutType;
               visibility: CalloutVisibility;
               activity: number;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -5228,8 +5183,26 @@ export type ChallengeProfileFragment = {
                     __typename?: 'Canvas';
                     id: string;
                     nameID: string;
-                    displayName: string;
                     createdDate: Date;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                          }
+                        | undefined;
+                    };
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -5252,20 +5225,6 @@ export type ChallengeProfileFragment = {
                                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                               }
                             | undefined;
-                        }
-                      | undefined;
-                    preview?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
                         }
                       | undefined;
                     createdBy?:
@@ -5416,8 +5375,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'Project';
               id: string;
               nameID: string;
-              displayName: string;
-              description?: string | undefined;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             }>
           | undefined;
@@ -5591,8 +5549,7 @@ export type OpportunitiesOnChallengeFragment = {
               __typename?: 'Project';
               id: string;
               nameID: string;
-              displayName: string;
-              description?: string | undefined;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             }>
           | undefined;
@@ -6033,8 +5990,7 @@ export type OpportunityCreatedSubscription = {
             __typename?: 'Project';
             id: string;
             nameID: string;
-            displayName: string;
-            description?: string | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           }>
         | undefined;
@@ -6742,11 +6698,11 @@ export type HubTemplatesQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -6754,11 +6710,11 @@ export type HubTemplatesQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -6768,7 +6724,7 @@ export type HubTemplatesQuery = {
             id: string;
             definition: string;
             type: LifecycleType;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }>;
         }
       | undefined;
@@ -6793,11 +6749,11 @@ export type CalloutFormTemplatesFromHubQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -6805,11 +6761,11 @@ export type CalloutFormTemplatesFromHubQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -6837,11 +6793,11 @@ export type AspectTemplatesFromHubQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -6867,11 +6823,11 @@ export type CanvasTemplatesFromHubQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -6899,7 +6855,7 @@ export type LifecycleTemplatesFromHubQuery = {
             id: string;
             definition: string;
             type: LifecycleType;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }>;
         }
       | undefined;
@@ -6925,11 +6881,11 @@ export type HubTemplatesCanvasTemplateWithValueQuery = {
                 __typename?: 'CanvasTemplate';
                 value: string;
                 id: string;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  title: string;
-                  description: string;
+                  displayName: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
@@ -6951,11 +6907,11 @@ export type HubTemplatesFragment = {
           id: string;
           defaultDescription: string;
           type: string;
-          info: {
-            __typename?: 'TemplateInfo';
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            title: string;
-            description: string;
+            displayName: string;
+            description?: string | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
@@ -6963,11 +6919,11 @@ export type HubTemplatesFragment = {
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';
           id: string;
-          info: {
-            __typename?: 'TemplateInfo';
+          profile: {
+            __typename?: 'Profile';
             id: string;
-            title: string;
-            description: string;
+            displayName: string;
+            description?: string | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
@@ -6977,7 +6933,7 @@ export type HubTemplatesFragment = {
           id: string;
           definition: string;
           type: LifecycleType;
-          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }>;
       }
     | undefined;
@@ -6988,21 +6944,21 @@ export type AspectTemplateFragment = {
   id: string;
   defaultDescription: string;
   type: string;
-  info: {
-    __typename?: 'TemplateInfo';
+  profile: {
+    __typename?: 'Profile';
     id: string;
-    title: string;
-    description: string;
+    displayName: string;
+    description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
   };
 };
 
-export type TemplateInfoFragment = {
-  __typename?: 'TemplateInfo';
+export type ProfileInfoFragment = {
+  __typename?: 'Profile';
   id: string;
-  title: string;
-  description: string;
+  displayName: string;
+  description?: string | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
@@ -7010,11 +6966,11 @@ export type TemplateInfoFragment = {
 export type CanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
-  info: {
-    __typename?: 'TemplateInfo';
+  profile: {
+    __typename?: 'Profile';
     id: string;
-    title: string;
-    description: string;
+    displayName: string;
+    description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
   };
@@ -7024,11 +6980,11 @@ export type CanvasTemplateWithValueFragment = {
   __typename?: 'CanvasTemplate';
   value: string;
   id: string;
-  info: {
-    __typename?: 'TemplateInfo';
+  profile: {
+    __typename?: 'Profile';
     id: string;
-    title: string;
-    description: string;
+    displayName: string;
+    description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
   };
@@ -7039,7 +6995,7 @@ export type LifecycleTemplateFragment = {
   id: string;
   definition: string;
   type: LifecycleType;
-  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
 };
 
 export type HubPageQueryVariables = Exact<{
@@ -7062,11 +7018,10 @@ export type HubPageQuery = {
                 __typename?: 'Callout';
                 id: string;
                 nameID: string;
-                displayName: string;
-                description: string;
                 type: CalloutType;
                 visibility: CalloutVisibility;
                 activity: number;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -7117,8 +7072,26 @@ export type HubPageQuery = {
                       __typename?: 'Canvas';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       createdDate: Date;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      };
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -7141,20 +7114,6 @@ export type HubPageQuery = {
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
                           }
                         | undefined;
                       createdBy?:
@@ -7382,11 +7341,10 @@ export type HubPageFragment = {
               __typename?: 'Callout';
               id: string;
               nameID: string;
-              displayName: string;
-              description: string;
               type: CalloutType;
               visibility: CalloutVisibility;
               activity: number;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -7437,8 +7395,26 @@ export type HubPageFragment = {
                     __typename?: 'Canvas';
                     id: string;
                     nameID: string;
-                    displayName: string;
                     createdDate: Date;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                          }
+                        | undefined;
+                    };
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -7461,20 +7437,6 @@ export type HubPageFragment = {
                                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                               }
                             | undefined;
-                        }
-                      | undefined;
-                    preview?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
                         }
                       | undefined;
                     createdBy?:
@@ -8163,7 +8125,7 @@ export type HubLifecycleTemplatesQuery = {
             definition: string;
             id: string;
             type: LifecycleType;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
       | undefined;
@@ -8393,11 +8355,15 @@ export type OpportunityPageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   nameID: string;
-                  displayName: string;
-                  description: string;
                   type: CalloutType;
                   visibility: CalloutVisibility;
                   activity: number;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -8448,8 +8414,26 @@ export type OpportunityPageQuery = {
                         __typename?: 'Canvas';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -8476,20 +8460,6 @@ export type OpportunityPageQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -8664,11 +8634,10 @@ export type OpportunityPageFragment = {
               __typename?: 'Callout';
               id: string;
               nameID: string;
-              displayName: string;
-              description: string;
               type: CalloutType;
               visibility: CalloutVisibility;
               activity: number;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -8719,8 +8688,26 @@ export type OpportunityPageFragment = {
                     __typename?: 'Canvas';
                     id: string;
                     nameID: string;
-                    displayName: string;
                     createdDate: Date;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      visual?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                          }
+                        | undefined;
+                    };
                     authorization?:
                       | {
                           __typename?: 'Authorization';
@@ -8743,20 +8730,6 @@ export type OpportunityPageFragment = {
                                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                               }
                             | undefined;
-                        }
-                      | undefined;
-                    preview?:
-                      | {
-                          __typename?: 'Visual';
-                          id: string;
-                          uri: string;
-                          name: string;
-                          allowedTypes: Array<string>;
-                          aspectRatio: number;
-                          maxHeight: number;
-                          maxWidth: number;
-                          minHeight: number;
-                          minWidth: number;
                         }
                       | undefined;
                     createdBy?:
@@ -9072,8 +9045,7 @@ export type OpportunityCardFragment = {
         __typename?: 'Project';
         id: string;
         nameID: string;
-        displayName: string;
-        description?: string | undefined;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
       }>
     | undefined;
@@ -9141,8 +9113,7 @@ export type CreateOpportunityMutation = {
           __typename?: 'Project';
           id: string;
           nameID: string;
-          displayName: string;
-          description?: string | undefined;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
         }>
       | undefined;
@@ -9357,8 +9328,12 @@ export type OpportunityCardsQuery = {
                   __typename?: 'Project';
                   id: string;
                   nameID: string;
-                  displayName: string;
-                  description?: string | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                   lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
                 }>
               | undefined;
@@ -10855,11 +10830,10 @@ export type DashboardTopCalloutsFragment = {
         __typename?: 'Callout';
         id: string;
         nameID: string;
-        displayName: string;
-        description: string;
         type: CalloutType;
         visibility: CalloutVisibility;
         activity: number;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         aspects?:
           | Array<{
               __typename?: 'Aspect';
@@ -10910,8 +10884,26 @@ export type DashboardTopCalloutsFragment = {
               __typename?: 'Canvas';
               id: string;
               nameID: string;
-              displayName: string;
               createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -10936,20 +10928,6 @@ export type DashboardTopCalloutsFragment = {
                       | undefined;
                   }
                 | undefined;
-              preview?:
-                | {
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
-                  }
-                | undefined;
               createdBy?:
                 | {
                     __typename?: 'User';
@@ -10972,11 +10950,10 @@ export type DashboardTopCalloutFragment = {
   __typename?: 'Callout';
   id: string;
   nameID: string;
-  displayName: string;
-  description: string;
   type: CalloutType;
   visibility: CalloutVisibility;
   activity: number;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   aspects?:
     | Array<{
         __typename?: 'Aspect';
@@ -11023,8 +11000,26 @@ export type DashboardTopCalloutFragment = {
         __typename?: 'Canvas';
         id: string;
         nameID: string;
-        displayName: string;
         createdDate: Date;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
+        };
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -11043,20 +11038,6 @@ export type DashboardTopCalloutFragment = {
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
-            }
-          | undefined;
-        preview?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
             }
           | undefined;
         createdBy?:
@@ -11122,12 +11103,12 @@ export type TemplatesForCalloutCreationQuery = {
           aspectTemplates: Array<{
             __typename?: 'AspectTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
       | undefined;
@@ -11150,7 +11131,7 @@ export type AspectTemplatesOnCalloutCreationQuery = {
           aspectTemplates: Array<{
             __typename?: 'AspectTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
       | undefined;
@@ -11173,14 +11154,14 @@ export type CanvasTemplatesOnCalloutCreationQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
       | undefined;
   };
 };
 
-export type TemplateTitleFragment = { __typename?: 'TemplateInfo'; id: string; title: string };
+export type ProfileDisplayNameFragment = { __typename?: 'Profile'; id: string; displayName: string };
 
 export type AspectTemplateValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -11202,10 +11183,10 @@ export type AspectTemplateValueQuery = {
                 id: string;
                 type: string;
                 defaultDescription: string;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  description: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 };
               }
@@ -11246,10 +11227,9 @@ export type CreateCalloutMutation = {
     id: string;
     nameID: string;
     type: CalloutType;
-    displayName: string;
-    description: string;
     state: CalloutState;
     visibility: CalloutVisibility;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -11354,19 +11334,18 @@ export type UpdateCalloutMutation = {
   updateCallout: {
     __typename?: 'Callout';
     id: string;
-    description: string;
-    displayName: string;
     state: CalloutState;
     type: CalloutType;
     visibility: CalloutVisibility;
+    profile: { __typename?: 'Profile'; id: string; description?: string | undefined; displayName: string };
     cardTemplate?:
       | {
           __typename?: 'AspectTemplate';
           id: string;
           type: string;
           defaultDescription: string;
-          info: {
-            __typename?: 'TemplateInfo';
+          profile: {
+            __typename?: 'Profile';
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
@@ -11377,10 +11356,11 @@ export type UpdateCalloutMutation = {
           __typename?: 'CanvasTemplate';
           id: string;
           value: string;
-          info: {
-            __typename?: 'TemplateInfo';
-            title: string;
-            description: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
@@ -11460,19 +11440,36 @@ export type CalloutsQuery = {
                 id: string;
                 nameID: string;
                 type: CalloutType;
-                displayName: string;
-                description: string;
                 state: CalloutState;
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       createdDate: Date;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      };
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -11495,20 +11492,6 @@ export type CalloutsQuery = {
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
                           }
                         | undefined;
                       createdBy?:
@@ -11582,8 +11565,8 @@ export type CalloutsQuery = {
                       id: string;
                       type: string;
                       defaultDescription: string;
-                      info: {
-                        __typename?: 'TemplateInfo';
+                      profile: {
+                        __typename?: 'Profile';
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
@@ -11594,10 +11577,11 @@ export type CalloutsQuery = {
                       __typename?: 'CanvasTemplate';
                       id: string;
                       value: string;
-                      info: {
-                        __typename?: 'TemplateInfo';
-                        title: string;
-                        description: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                       };
@@ -11624,19 +11608,41 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  displayName: string;
-                  description: string;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11663,20 +11669,6 @@ export type CalloutsQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -11755,8 +11747,8 @@ export type CalloutsQuery = {
                         id: string;
                         type: string;
                         defaultDescription: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
+                        profile: {
+                          __typename?: 'Profile';
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11767,10 +11759,11 @@ export type CalloutsQuery = {
                         __typename?: 'CanvasTemplate';
                         id: string;
                         value: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          title: string;
-                          description: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11798,19 +11791,41 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
-                  displayName: string;
-                  description: string;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
                   visibility: CalloutVisibility;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -11837,20 +11852,6 @@ export type CalloutsQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -11929,8 +11930,8 @@ export type CalloutsQuery = {
                         id: string;
                         type: string;
                         defaultDescription: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
+                        profile: {
+                          __typename?: 'Profile';
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -11941,10 +11942,11 @@ export type CalloutsQuery = {
                         __typename?: 'CanvasTemplate';
                         id: string;
                         value: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          title: string;
-                          description: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -12292,19 +12294,36 @@ export type CollaborationWithCalloutsFragment = {
         id: string;
         nameID: string;
         type: CalloutType;
-        displayName: string;
-        description: string;
         state: CalloutState;
         sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         canvases?:
           | Array<{
               __typename?: 'Canvas';
               id: string;
               nameID: string;
-              displayName: string;
               createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -12327,20 +12346,6 @@ export type CollaborationWithCalloutsFragment = {
                           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                         }
                       | undefined;
-                  }
-                | undefined;
-              preview?:
-                | {
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
                   }
                 | undefined;
               createdBy?:
@@ -12410,8 +12415,8 @@ export type CollaborationWithCalloutsFragment = {
               id: string;
               type: string;
               defaultDescription: string;
-              info: {
-                __typename?: 'TemplateInfo';
+              profile: {
+                __typename?: 'Profile';
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
@@ -12422,10 +12427,11 @@ export type CollaborationWithCalloutsFragment = {
               __typename?: 'CanvasTemplate';
               id: string;
               value: string;
-              info: {
-                __typename?: 'TemplateInfo';
-                title: string;
-                description: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
               };
@@ -12440,19 +12446,36 @@ export type CalloutFragment = {
   id: string;
   nameID: string;
   type: CalloutType;
-  displayName: string;
-  description: string;
   state: CalloutState;
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   canvases?:
     | Array<{
         __typename?: 'Canvas';
         id: string;
         nameID: string;
-        displayName: string;
         createdDate: Date;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
+        };
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -12471,20 +12494,6 @@ export type CalloutFragment = {
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
-            }
-          | undefined;
-        preview?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
             }
           | undefined;
         createdBy?:
@@ -12552,8 +12561,8 @@ export type CalloutFragment = {
         id: string;
         type: string;
         defaultDescription: string;
-        info: {
-          __typename?: 'TemplateInfo';
+        profile: {
+          __typename?: 'Profile';
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
@@ -12564,10 +12573,11 @@ export type CalloutFragment = {
         __typename?: 'CanvasTemplate';
         id: string;
         value: string;
-        info: {
-          __typename?: 'TemplateInfo';
-          title: string;
-          description: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
@@ -12583,8 +12593,8 @@ export type CalloutCardTemplateFragment = {
         id: string;
         type: string;
         defaultDescription: string;
-        info: {
-          __typename?: 'TemplateInfo';
+        profile: {
+          __typename?: 'Profile';
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
@@ -12599,10 +12609,11 @@ export type CalloutCanvasTemplateFragment = {
         __typename?: 'CanvasTemplate';
         id: string;
         value: string;
-        info: {
-          __typename?: 'TemplateInfo';
-          title: string;
-          description: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
         };
@@ -12661,11 +12672,11 @@ export type HubCanvasTemplatesLibraryQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
@@ -12707,11 +12718,11 @@ export type HubCanvasTemplateValueQuery = {
                 __typename?: 'CanvasTemplate';
                 value: string;
                 id: string;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  title: string;
-                  description: string;
+                  displayName: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
@@ -12736,7 +12747,6 @@ export type PlatformCanvasTemplatesLibraryQuery = {
         __typename?: 'InnovatonPack';
         id: string;
         nameID: string;
-        displayName: string;
         provider?:
           | {
               __typename?: 'Organization';
@@ -12756,11 +12766,11 @@ export type PlatformCanvasTemplatesLibraryQuery = {
               canvasTemplates: Array<{
                 __typename?: 'CanvasTemplate';
                 id: string;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  title: string;
-                  description: string;
+                  displayName: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 };
@@ -12790,7 +12800,27 @@ export type PlatformCanvasTemplateValueQuery = {
             __typename?: 'InnovatonPack';
             id: string;
             nameID: string;
-            displayName: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  canvasTemplate?:
+                    | {
+                        __typename?: 'CanvasTemplate';
+                        value: string;
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
             provider?:
               | {
                   __typename?: 'Organization';
@@ -12803,34 +12833,31 @@ export type PlatformCanvasTemplateValueQuery = {
                   };
                 }
               | undefined;
-            templates?:
-              | {
-                  __typename?: 'TemplatesSet';
-                  id: string;
-                  canvasTemplate?:
-                    | {
-                        __typename?: 'CanvasTemplate';
-                        value: string;
-                        id: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
-                          id: string;
-                          title: string;
-                          description: string;
-                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        };
-                      }
-                    | undefined;
-                }
-              | undefined;
           }
         | undefined;
     };
   };
 };
 
-export type CanvasTemplateProviderProfileFragment = {
+export type InnovationPackWithProviderFragment = {
+  __typename?: 'InnovatonPack';
+  id: string;
+  nameID: string;
+  provider?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type TemplateProviderProfileFragment = {
   __typename?: 'Profile';
   id: string;
   displayName: string;
@@ -12841,8 +12868,26 @@ export type CanvasDetailsFragment = {
   __typename?: 'Canvas';
   id: string;
   nameID: string;
-  displayName: string;
   createdDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
+  };
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -12863,20 +12908,6 @@ export type CanvasDetailsFragment = {
           | undefined;
       }
     | undefined;
-  preview?:
-    | {
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-      }
-    | undefined;
   createdBy?:
     | {
         __typename?: 'User';
@@ -12895,8 +12926,8 @@ export type CanvasSummaryFragment = {
   __typename?: 'Canvas';
   id: string;
   nameID: string;
-  displayName: string;
   createdDate: Date;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
 export type CanvasValueFragment = { __typename?: 'Canvas'; id: string; value: string };
@@ -12929,7 +12960,7 @@ export type CanvasTemplatesQuery = {
             __typename?: 'CanvasTemplate';
             id: string;
             value: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }>;
         }
       | undefined;
@@ -12940,7 +12971,7 @@ export type CreateCanvasCanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
   value: string;
-  info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
 };
 
 export type CalloutWithCanvasFragment = {
@@ -12965,8 +12996,26 @@ export type CalloutWithCanvasFragment = {
               __typename?: 'Canvas';
               id: string;
               nameID: string;
-              displayName: string;
               createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -12989,20 +13038,6 @@ export type CalloutWithCanvasFragment = {
                           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                         }
                       | undefined;
-                  }
-                | undefined;
-              preview?:
-                | {
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
                   }
                 | undefined;
               createdBy?:
@@ -13045,8 +13080,26 @@ export type CollaborationWithCanvasDetailsFragment = {
               __typename?: 'Canvas';
               id: string;
               nameID: string;
-              displayName: string;
               createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              };
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -13069,20 +13122,6 @@ export type CollaborationWithCanvasDetailsFragment = {
                           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                         }
                       | undefined;
-                  }
-                | undefined;
-              preview?:
-                | {
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
                   }
                 | undefined;
               createdBy?:
@@ -13137,8 +13176,26 @@ export type HubCanvasFromCalloutQuery = {
                       __typename?: 'Canvas';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       createdDate: Date;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      };
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -13161,20 +13218,6 @@ export type HubCanvasFromCalloutQuery = {
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
                           }
                         | undefined;
                       createdBy?:
@@ -13230,8 +13273,26 @@ export type HubCanvasesQuery = {
                       __typename?: 'Canvas';
                       id: string;
                       nameID: string;
-                      displayName: string;
                       createdDate: Date;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      };
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -13254,20 +13315,6 @@ export type HubCanvasesQuery = {
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
                           }
                         | undefined;
                       createdBy?:
@@ -13322,10 +13369,28 @@ export type HubCanvasValuesQuery = {
                   | Array<{
                       __typename?: 'Canvas';
                       id: string;
-                      value: string;
                       nameID: string;
-                      displayName: string;
                       createdDate: Date;
+                      value: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      };
                       authorization?:
                         | {
                             __typename?: 'Authorization';
@@ -13348,20 +13413,6 @@ export type HubCanvasValuesQuery = {
                                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                 }
                               | undefined;
-                          }
-                        | undefined;
-                      preview?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
                           }
                         | undefined;
                       createdBy?:
@@ -13423,8 +13474,26 @@ export type ChallengeCanvasFromCalloutQuery = {
                         __typename?: 'Canvas';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -13451,20 +13520,6 @@ export type ChallengeCanvasFromCalloutQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -13524,10 +13579,28 @@ export type ChallengeCanvasValuesQuery = {
                     | Array<{
                         __typename?: 'Canvas';
                         id: string;
-                        value: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        value: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -13554,20 +13627,6 @@ export type ChallengeCanvasValuesQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -13630,8 +13689,26 @@ export type OpportunityCanvasFromCalloutQuery = {
                         __typename?: 'Canvas';
                         id: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -13658,20 +13735,6 @@ export type OpportunityCanvasFromCalloutQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -13731,10 +13794,28 @@ export type OpportunityCanvasValuesQuery = {
                     | Array<{
                         __typename?: 'Canvas';
                         id: string;
-                        value: string;
                         nameID: string;
-                        displayName: string;
                         createdDate: Date;
+                        value: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                        };
                         authorization?:
                           | {
                               __typename?: 'Authorization';
@@ -13761,20 +13842,6 @@ export type OpportunityCanvasValuesQuery = {
                                     myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                                   }
                                 | undefined;
-                            }
-                          | undefined;
-                        preview?:
-                          | {
-                              __typename?: 'Visual';
-                              id: string;
-                              uri: string;
-                              name: string;
-                              allowedTypes: Array<string>;
-                              aspectRatio: number;
-                              maxHeight: number;
-                              maxWidth: number;
-                              minHeight: number;
-                              minWidth: number;
                             }
                           | undefined;
                         createdBy?:
@@ -13809,8 +13876,26 @@ export type CreateCanvasOnCalloutMutation = {
     __typename?: 'Canvas';
     id: string;
     nameID: string;
-    displayName: string;
     createdDate: Date;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+          }
+        | undefined;
+    };
     authorization?:
       | {
           __typename?: 'Authorization';
@@ -13829,20 +13914,6 @@ export type CreateCanvasOnCalloutMutation = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-        }
-      | undefined;
-    preview?:
-      | {
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
         }
       | undefined;
     createdBy?:
@@ -13864,10 +13935,7 @@ export type DeleteCanvasMutationVariables = Exact<{
   input: DeleteCanvasInput;
 }>;
 
-export type DeleteCanvasMutation = {
-  __typename?: 'Mutation';
-  deleteCanvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string; createdDate: Date };
-};
+export type DeleteCanvasMutation = { __typename?: 'Mutation'; deleteCanvas: { __typename?: 'Canvas'; id: string } };
 
 export type UpdateCanvasMutationVariables = Exact<{
   input: UpdateCanvasDirectInput;
@@ -13875,7 +13943,12 @@ export type UpdateCanvasMutationVariables = Exact<{
 
 export type UpdateCanvasMutation = {
   __typename?: 'Mutation';
-  updateCanvas: { __typename?: 'Canvas'; id: string; value: string; displayName: string };
+  updateCanvas: {
+    __typename?: 'Canvas';
+    id: string;
+    value: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type CheckoutCanvasMutationVariables = Exact<{
@@ -18792,11 +18865,11 @@ export type AdminHubTemplatesQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?:
                 | {
@@ -18817,11 +18890,11 @@ export type AdminHubTemplatesQuery = {
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?:
                 | {
@@ -18844,11 +18917,11 @@ export type AdminHubTemplatesQuery = {
             id: string;
             definition: string;
             type: LifecycleType;
-            info: {
-              __typename?: 'TemplateInfo';
+            profile: {
+              __typename?: 'Profile';
               id: string;
-              title: string;
-              description: string;
+              displayName: string;
+              description?: string | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?:
                 | {
@@ -18876,11 +18949,11 @@ export type AdminLifecycleTemplateFragment = {
   id: string;
   definition: string;
   type: LifecycleType;
-  info: {
-    __typename?: 'TemplateInfo';
+  profile: {
+    __typename?: 'Profile';
     id: string;
-    title: string;
-    description: string;
+    displayName: string;
+    description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?:
       | {
@@ -18904,11 +18977,11 @@ export type AdminAspectTemplateFragment = {
   id: string;
   defaultDescription: string;
   type: string;
-  info: {
-    __typename?: 'TemplateInfo';
+  profile: {
+    __typename?: 'Profile';
     id: string;
-    title: string;
-    description: string;
+    displayName: string;
+    description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?:
       | {
@@ -18930,11 +19003,11 @@ export type AdminAspectTemplateFragment = {
 export type AdminCanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
-  info: {
-    __typename?: 'TemplateInfo';
+  profile: {
+    __typename?: 'Profile';
     id: string;
-    title: string;
-    description: string;
+    displayName: string;
+    description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?:
       | {
@@ -18955,11 +19028,11 @@ export type AdminCanvasTemplateFragment = {
 
 export type AdminCanvasTemplateValueFragment = { __typename?: 'CanvasTemplate'; id: string; value: string };
 
-export type TemplateInfoWithFullVisualFragment = {
-  __typename?: 'TemplateInfo';
+export type ProfileInfoWithVisualFragment = {
+  __typename?: 'Profile';
   id: string;
-  title: string;
-  description: string;
+  displayName: string;
+  description?: string | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   visual?:
     | {
@@ -19000,7 +19073,7 @@ export type HubTemplatesAdminCanvasTemplateWithValueQuery = {
 export type UpdateAspectTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  profile?: InputMaybe<UpdateProfileInput>;
   type?: InputMaybe<Scalars['String']>;
 }>;
 
@@ -19012,8 +19085,9 @@ export type UpdateAspectTemplateMutation = {
 export type CreateAspectTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   defaultDescription: Scalars['Markdown'];
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
   type: Scalars['String'];
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateAspectTemplateMutation = {
@@ -19033,7 +19107,7 @@ export type DeleteAspectTemplateMutation = {
 export type UpdateCanvasTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   value?: InputMaybe<Scalars['JSON']>;
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  profile: UpdateProfileInput;
 }>;
 
 export type UpdateCanvasTemplateMutation = {
@@ -19044,7 +19118,7 @@ export type UpdateCanvasTemplateMutation = {
 export type CreateCanvasTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   value: Scalars['JSON'];
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
 }>;
 
 export type CreateCanvasTemplateMutation = {
@@ -19075,7 +19149,6 @@ export type InnovationPacksQuery = {
         __typename?: 'InnovatonPack';
         id: string;
         nameID: string;
-        displayName: string;
         provider?:
           | {
               __typename?: 'Organization';
@@ -19089,6 +19162,7 @@ export type InnovationPacksQuery = {
               };
             }
           | undefined;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
         templates?:
           | {
               __typename?: 'TemplatesSet';
@@ -19098,11 +19172,11 @@ export type InnovationPacksQuery = {
                 id: string;
                 defaultDescription: string;
                 type: string;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  title: string;
-                  description: string;
+                  displayName: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                   visual?:
                     | {
@@ -19123,11 +19197,11 @@ export type InnovationPacksQuery = {
               canvasTemplates: Array<{
                 __typename?: 'CanvasTemplate';
                 id: string;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  title: string;
-                  description: string;
+                  displayName: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                   visual?:
                     | {
@@ -19150,11 +19224,11 @@ export type InnovationPacksQuery = {
                 id: string;
                 definition: string;
                 type: LifecycleType;
-                info: {
-                  __typename?: 'TemplateInfo';
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  title: string;
-                  description: string;
+                  displayName: string;
+                  description?: string | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                   visual?:
                     | {
@@ -19233,11 +19307,11 @@ export type InnovationPackFullCanvasTemplateWithValueQuery = {
                         __typename?: 'CanvasTemplate';
                         value: string;
                         id: string;
-                        info: {
-                          __typename?: 'TemplateInfo';
+                        profile: {
+                          __typename?: 'Profile';
                           id: string;
-                          title: string;
-                          description: string;
+                          displayName: string;
+                          description?: string | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                         };
@@ -19253,7 +19327,7 @@ export type InnovationPackFullCanvasTemplateWithValueQuery = {
 
 export type UpdateInnovationTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
-  info?: InputMaybe<UpdateTemplateInfoInput>;
+  profile: UpdateProfileInput;
   definition: Scalars['LifecycleDefinition'];
 }>;
 
@@ -19264,9 +19338,10 @@ export type UpdateInnovationTemplateMutation = {
 
 export type CreateInnovationTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
   definition: Scalars['LifecycleDefinition'];
   type: LifecycleType;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateInnovationTemplateMutation = {
@@ -19623,7 +19698,12 @@ export type SearchQuery = {
                 authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
               }
             | undefined;
-          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
         }
       | {
           __typename?: 'SearchResultChallenge';
@@ -19704,7 +19784,12 @@ export type SearchResultCardFragment = {
         authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       }
     | undefined;
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type CardParentFragment = {
@@ -19734,7 +19819,12 @@ export type CardParentFragment = {
         authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
       }
     | undefined;
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type SearchResultUserFragment = {
@@ -19961,8 +20051,18 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-          canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+          canvas: {
+            __typename?: 'Canvas';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
         }
       | {
           __typename: 'ActivityLogEntryCalloutCardComment';
@@ -19986,7 +20086,12 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
           card: {
             __typename?: 'Aspect';
             id: string;
@@ -20016,7 +20121,12 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
           card: {
             __typename?: 'Aspect';
             id: string;
@@ -20047,7 +20157,12 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
         }
       | {
           __typename: 'ActivityLogEntryCalloutPublished';
@@ -20071,7 +20186,13 @@ export type ActivityCreatedSubscription = {
               location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             };
           };
-          callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            type: CalloutType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
         }
       | {
           __typename: 'ActivityLogEntryChallengeCreated';
@@ -20219,8 +20340,18 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment = 
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  canvas: {
+    __typename?: 'Canvas';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment = {
@@ -20245,7 +20376,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
   card: {
     __typename?: 'Aspect';
     id: string;
@@ -20276,7 +20412,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
   card: {
     __typename?: 'Aspect';
     id: string;
@@ -20308,7 +20449,12 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragmen
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
@@ -20333,7 +20479,13 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     };
   };
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
@@ -20501,8 +20653,18 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-        canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+        canvas: {
+          __typename?: 'Canvas';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutCardComment';
@@ -20526,7 +20688,12 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
         card: {
           __typename?: 'Aspect';
           id: string;
@@ -20556,7 +20723,12 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
         card: {
           __typename?: 'Aspect';
           id: string;
@@ -20587,7 +20759,12 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
       }
     | {
         __typename: 'ActivityLogEntryCalloutPublished';
@@ -20611,7 +20788,13 @@ export type ActivityLogOnCollaborationQuery = {
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           };
         };
-        callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          type: CalloutType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
       }
     | {
         __typename: 'ActivityLogEntryChallengeCreated';
@@ -20762,12 +20945,23 @@ export type ActivityLogMemberJoinedFragment = {
 
 export type ActivityLogCalloutPublishedFragment = {
   __typename?: 'ActivityLogEntryCalloutPublished';
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string; type: CalloutType };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type ActivityLogCalloutCardCreatedFragment = {
   __typename?: 'ActivityLogEntryCalloutCardCreated';
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
   card: {
     __typename?: 'Aspect';
     id: string;
@@ -20779,7 +20973,12 @@ export type ActivityLogCalloutCardCreatedFragment = {
 
 export type ActivityLogCalloutCardCommentFragment = {
   __typename?: 'ActivityLogEntryCalloutCardComment';
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
   card: {
     __typename?: 'Aspect';
     id: string;
@@ -20790,8 +20989,18 @@ export type ActivityLogCalloutCardCommentFragment = {
 
 export type ActivityLogCalloutCanvasCreatedFragment = {
   __typename?: 'ActivityLogEntryCalloutCanvasCreated';
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
-  canvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  canvas: {
+    __typename?: 'Canvas';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type ActivityLogChallengeCreatedFragment = {
@@ -20816,7 +21025,12 @@ export type ActivityLogOpportunityCreatedFragment = {
 
 export type ActivityLogCalloutDiscussionCommentFragment = {
   __typename?: 'ActivityLogEntryCalloutDiscussionComment';
-  callout: { __typename?: 'Callout'; id: string; nameID: string; displayName: string };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type ActivityLogUpdateSentFragment = {

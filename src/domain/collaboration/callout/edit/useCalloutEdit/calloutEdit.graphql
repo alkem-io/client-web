@@ -1,8 +1,11 @@
 mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
   updateCallout(calloutData: $calloutData) {
     id
-    description
-    displayName
+    profile {
+      id
+      description
+      displayName
+    }
     state
     type
     visibility

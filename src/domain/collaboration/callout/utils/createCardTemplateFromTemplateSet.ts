@@ -12,14 +12,16 @@ export const createCardTemplateFromTemplateSet = <C extends { type?: CalloutType
       calloutCardTemplate = {
         defaultDescription: referenceCardTemplate.defaultDescription,
         type: referenceCardTemplate.type,
-        info: {
-          description: referenceCardTemplate.info.description,
-          title: referenceCardTemplate.info.title,
+        profile: {
+          description: referenceCardTemplate.profile.description,
+          displayName: referenceCardTemplate.profile.displayName,
         },
       };
-      if (referenceCardTemplate.info.tagset) calloutCardTemplate.info.tags = referenceCardTemplate.info.tagset.tags;
-      if (referenceCardTemplate.info.visual?.uri)
-        calloutCardTemplate.info.visualUri = referenceCardTemplate.info.visual.uri;
+      // // TODO server-2452: to be refactored
+      // if (referenceCardTemplate.profile.tagset)
+      //   calloutCardTemplate.profile.tags = referenceCardTemplate.profile.tagset.tags;
+      // if (referenceCardTemplate.profile.visual?.uri)
+      //   calloutCardTemplate.profile.visual.uri = referenceCardTemplate.profile.visual.uri;
     }
   }
 

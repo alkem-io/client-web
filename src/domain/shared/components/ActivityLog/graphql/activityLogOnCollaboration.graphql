@@ -93,8 +93,11 @@ fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
   callout {
     id
     nameID
-    displayName
     type
+    profile {
+      id
+      displayName
+    }
   }
 }
 
@@ -102,7 +105,10 @@ fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
   callout {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
   card {
     id
@@ -120,7 +126,10 @@ fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
   callout {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
   card {
     id
@@ -136,12 +145,18 @@ fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated
   callout {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
   canvas {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
 
@@ -173,7 +188,10 @@ fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussio
   callout {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
 

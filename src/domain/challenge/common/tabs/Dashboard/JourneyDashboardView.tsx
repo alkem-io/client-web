@@ -189,8 +189,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             {topCallouts?.map(callout => (
               <TopCalloutDetails
                 key={callout.id}
-                title={callout.displayName}
-                description={callout.description}
+                title={callout.profile.displayName}
+                description={callout.profile.description || ''}
                 activity={callout.activity}
                 type={callout.type}
                 calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}

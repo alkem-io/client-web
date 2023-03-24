@@ -23,8 +23,8 @@ interface CanvasTemplatesChooserProps {
 export type TemplateOrigin = 'Hub' | 'Library';
 export type LibraryCanvasTemplate = {
   id: string;
-  info: {
-    title: string;
+  profile: {
+    displayName: string;
   };
   innovationPackId: string;
 };
@@ -35,8 +35,8 @@ export type CanvasTemplateWithOrigin = CanvasTemplateFragment & {
 
 export type CanvasTemplateListItem = {
   id: string;
-  info: {
-    title: string;
+  profile: {
+    displayName: string;
   };
   origin: TemplateOrigin;
   innovationPackId?: string;
@@ -52,7 +52,7 @@ export const CanvasTemplatesChooser: FC<CanvasTemplatesChooserProps> = ({
   const { hubNameId } = useUrlParams();
   const [isTemplateChooserVisible, setIsTemplateChooserVisible] = useState(!editMode);
 
-  const selectedTemplate = templates.find(template => template.info.title === field.value.title);
+  const selectedTemplate = templates.find(template => template.profile.displayName === field.value.displayName);
 
   const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesCanvasTemplateWithValueQuery({
     fetchPolicy: 'cache-and-network',
