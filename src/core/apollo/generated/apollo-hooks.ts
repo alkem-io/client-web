@@ -20097,10 +20097,6 @@ export const InnovationPacksDocument = gql`
           profile {
             id
             displayName
-            tagset {
-              id
-              tags
-            }
           }
           templates {
             id

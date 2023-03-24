@@ -19070,12 +19070,7 @@ export type InnovationPacksQuery = {
               };
             }
           | undefined;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        };
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
         templates?:
           | {
               __typename?: 'TemplatesSet';
