@@ -12,7 +12,7 @@ import {
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
   usePostDiscussionCommentMutation,
-  useRemoveMessageFromDiscussionMutation,
+  useDeleteCommentMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
@@ -52,11 +52,11 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
 interface DiscussionPageProps {}
 
 export const DiscussionPage: FC<DiscussionPageProps> = () => {
-  const { t } = useTranslation();
   const { discussionId } = useUrlParams();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const { user } = useUserContext();
   const { isFeatureEnabled } = useConfig();
-  const navigate = useNavigate();
 
   const {
     data,
@@ -99,11 +99,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         : undefined,
     [rawDiscussion, authors]
   );
-
-  const [showDeleteDiscussionModal, setShowDeleteDiscussionModal] = useState<boolean>(false);
-  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState<boolean>(false);
-  // holds the ID of discussion or comment for deletion after the dialog is confirmed
-  const [itemToDelete, setItemToDelete] = useState<string | undefined>(undefined);
 
   const [postComment] = usePostDiscussionCommentMutation();
 
@@ -150,7 +145,29 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     });
   };
 
-  const [deleteMessage] = useRemoveMessageFromDiscussionMutation({
+  const [deleteDiscussionId, setDeleteDiscussionId] = useState<string>();
+  const [deleteCommentId, setDeleteCommentId] = useState<string>();
+
+  const [deleteDiscussion] = useDeleteDiscussionMutation({
+    refetchQueries: [refetchPlatformDiscussionsQuery()],
+  });
+
+  const handleDeleteDiscussion = async () => {
+    if (!deleteDiscussionId) {
+      return;
+    }
+    await deleteDiscussion({
+      variables: {
+        deleteData: {
+          ID: deleteDiscussionId,
+        },
+      },
+    });
+    setDeleteDiscussionId(undefined);
+    navigate('/forum');
+  };
+
+  const [deleteComment] = useDeleteCommentMutation({
     update: (cache, { data }) =>
       data?.removeMessageFromDiscussion && evictFromCache(cache, String(data.removeMessageFromDiscussion), 'Message'),
     refetchQueries: [
@@ -160,66 +177,24 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     ],
   });
 
-  const handleDeleteComment = async (msgID: string) => {
-    if (!discussionId) {
+  const handleDeleteComment = async () => {
+    if (!discussionId || !deleteCommentId) {
       return;
     }
-    await deleteMessage({
+    await deleteComment({
       variables: {
         messageData: {
           discussionID: discussionId,
-          messageID: msgID,
+          messageID: deleteCommentId,
         },
       },
     });
+    setDeleteCommentId(undefined);
   };
 
-  const [deleteDiscussion] = useDeleteDiscussionMutation({
-    onCompleted: () => navigate('/forum'),
-    refetchQueries: [refetchPlatformDiscussionsQuery()],
-  });
-
-  const handleDeleteDiscussion = async () => {
-    if (!discussionId) {
-      return;
-    }
-    await deleteDiscussion({
-      variables: {
-        deleteData: {
-          ID: discussionId,
-        },
-      },
-    });
-  };
-
-  const currentUserId = user?.user.id;
-
-  const deleteDiscussionHandler = (id: string) => {
-    setItemToDelete(id);
-    setShowDeleteDiscussionModal(true);
-  };
-
-  const deleteCommentHandler = (id: string) => {
-    setItemToDelete(id);
-    setShowDeleteCommentModal(true);
-  };
-
-  const onCancelModal = () => {
-    setShowDeleteDiscussionModal(false);
-    setShowDeleteCommentModal(false);
-    setItemToDelete(undefined);
-  };
-
-  const onConfirmDiscussionDialog = () => {
-    handleDeleteDiscussion();
-    setShowDeleteDiscussionModal(false);
-  };
-
-  const onConfirmCommentDialog = () => {
-    if (itemToDelete) {
-      handleDeleteComment(itemToDelete);
-      setShowDeleteCommentModal(false);
-    }
+  const onCancelDeleteModal = () => {
+    setDeleteCommentId(undefined);
+    setDeleteDiscussionId(undefined);
   };
 
   return (
@@ -235,24 +210,24 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
           <Skeleton />
         ) : (
           <DiscussionView
-            currentUserId={currentUserId}
+            currentUserId={user?.user.id}
             discussion={discussion}
             onPostComment={handlePostComment}
-            onDeleteDiscussion={deleteDiscussionHandler}
-            onDeleteComment={deleteCommentHandler}
+            onDeleteDiscussion={() => setDeleteDiscussionId(discussionId)}
+            onDeleteComment={(id: string) => setDeleteCommentId(id)}
           />
         )}
       </DiscussionsLayout>
       <RemoveModal
-        show={showDeleteDiscussionModal}
-        onCancel={onCancelModal}
-        onConfirm={onConfirmDiscussionDialog}
+        show={Boolean(deleteDiscussionId)}
+        onCancel={onCancelDeleteModal}
+        onConfirm={handleDeleteDiscussion}
         text={t('components.discussion.delete-discussion')}
       />
       <RemoveModal
-        show={showDeleteCommentModal}
-        onCancel={onCancelModal}
-        onConfirm={onConfirmCommentDialog}
+        show={Boolean(deleteCommentId)}
+        onCancel={onCancelDeleteModal}
+        onConfirm={handleDeleteComment}
         text={t('components.discussion.delete-comment')}
       />
     </TopLevelDesktopLayout>

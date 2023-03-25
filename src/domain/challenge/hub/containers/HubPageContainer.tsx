@@ -18,8 +18,6 @@ import {
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { useDiscussionsContext } from '../../../communication/discussion/providers/DiscussionsProvider';
-import { Discussion } from '../../../communication/discussion/models/Discussion';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../../../types/WithId';
@@ -47,7 +45,6 @@ export interface HubContainerEntities {
   challengesCount: number | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
-  discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
@@ -92,7 +89,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 
-  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   // don't load references without READ privilege on Context
   const { data: referencesData } = useHubDashboardReferencesAndRecommendationsQuery({
     variables: { hubId },
@@ -168,7 +164,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
       {children(
         {
           hub: _hub?.hub,
-          discussionList,
           isPrivate,
           permissions,
           challengesCount,
@@ -189,7 +184,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
         {
-          loading: loadingHubQuery || loadingHub || loadingDiscussions,
+          loading: loadingHubQuery || loadingHub,
         },
         {}
       )}

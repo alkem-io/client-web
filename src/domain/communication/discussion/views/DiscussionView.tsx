@@ -16,8 +16,8 @@ export interface DiscussionViewProps {
   discussion: Discussion;
   currentUserId?: string;
   onPostComment?: (comment: string) => Promise<FetchResult<unknown>> | void;
-  onDeleteDiscussion?: (id: string) => Promise<void> | void;
-  onDeleteComment?: (id: string) => Promise<void> | void;
+  onDeleteDiscussion?: () => void;
+  onDeleteComment?: (id: string) => void;
 }
 
 export const DiscussionView: FC<DiscussionViewProps> = ({

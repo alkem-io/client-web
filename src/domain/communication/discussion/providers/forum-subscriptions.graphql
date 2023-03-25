@@ -9,3 +9,12 @@ subscription communicationDiscussionUpdated($communicationID: UUID!) {
     commentsCount
   }
 }
+
+subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
+  communicationDiscussionMessageReceived(discussionID: $discussionID) {
+    discussionID
+    message {
+      ...MessageDetails
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactElement, useMemo } from 'react';
 import {
   alpha,
   Box,
@@ -11,7 +11,6 @@ import {
   ListItemText,
 } from '@mui/material';
 import { DiscussionCategoryExt } from '../constants/DiscusionCategories';
-import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 export interface CategoryConfig {
   id: DiscussionCategoryExt;

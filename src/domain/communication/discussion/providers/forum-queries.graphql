@@ -1,3 +1,26 @@
+fragment DiscussionDetails on Discussion {
+  id
+  title
+  description
+  createdBy
+  timestamp
+  category
+  commentsCount
+  authorization {
+    myPrivileges
+  }
+}
+
+fragment DiscussionDetailsNoAuth on Discussion {
+  id
+  title
+  description
+  createdBy
+  timestamp
+  category
+  commentsCount
+}
+
 query platformDiscussions {
   platform {
     id
