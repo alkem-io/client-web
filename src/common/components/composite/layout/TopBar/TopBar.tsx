@@ -18,7 +18,7 @@ const classes = {
   bar: `${PREFIX}-bar`,
 };
 
-export const TopBarHeight = 9;
+export const TopBarHeight = 4;
 
 const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
@@ -70,7 +70,7 @@ export const TopBarSpacer = () => {
 
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
-  const height = theme.spacing(isMobile ? MobileTopBarHeight : TopBarHeight);
+  const height = gutters(isMobile ? MobileTopBarHeight : TopBarHeight)(theme);
 
   return <Box height={height} sx={{ visibility: 'hidden' }} />;
 };
@@ -80,13 +80,13 @@ export default TopBar;
 const DesktopTopBar = () => {
   return (
     <Box
-      height={theme => theme.spacing(TopBarHeight)}
+      height={gutters(TopBarHeight)}
       display="flex"
       gap={gutters()}
       alignItems="center"
       justifyContent="space-between"
     >
-      <LogoComponent flexGrow={1} height={theme => theme.spacing(5)} />
+      <LogoComponent height={gutters(2.5)} />
       <SearchBarGroup
         sx={{
           display: { xs: 'none', md: 'flex' },

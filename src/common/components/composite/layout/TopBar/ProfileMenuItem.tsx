@@ -8,10 +8,11 @@ import UserSegment from '../../entities/User/UserSegment';
 import SignInIcon from './SignInIcon';
 
 interface ProfileMenuItemProps {
-  buttonClassName: string;
+  buttonsClassName: string;
+  signInButtonClassName: string;
 }
 
-const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
+const ProfileMenuItem = ({ buttonsClassName, signInButtonClassName }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();
   const { pathname } = useLocation();
@@ -27,7 +28,7 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
   const renderUserProfileSegment = () => {
     if (loadingMe) {
       return (
-        <Button className={buttonClassName}>
+        <Button className={buttonsClassName}>
           <Skeleton
             variant="circular"
             width={theme.spacing(3)}
@@ -39,12 +40,12 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon className={buttonClassName} returnUrl={pathname} />;
+      return <SignInIcon className={`${buttonsClassName} ${signInButtonClassName}`} returnUrl={pathname} />;
     }
     return (
       <>
         {isUserSegmentVisible && user && (
-          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
+          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonsClassName} />
         )}
       </>
     );

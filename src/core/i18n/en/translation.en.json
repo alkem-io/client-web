@@ -115,6 +115,7 @@
     "click-delete": "Click to delete"
   },
   "authentication": {
+    "topbar-sign-in": "Log In | Sign Up",
     "sign-in": "Sign in",
     "sign-up": "Sign up",
     "sign-out": "Sign out",
