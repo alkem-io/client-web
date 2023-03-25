@@ -8,11 +8,6 @@ import ForumPage from '../pages/ForumPage';
 interface ForumRouteProps {}
 
 export const ForumRoute: FC<ForumRouteProps> = () => {
-  //!! TODO: Do something with config value ??
-  // import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../platform/config/features.constants';
-  //const { isFeatureEnabled } = useConfig();
-  //if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
-
   return (
     <Routes>
       <Route path={'/'}>

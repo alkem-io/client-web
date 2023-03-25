@@ -5,6 +5,7 @@ import RemoveModal from '../../../../common/components/core/RemoveModal';
 import { useUserContext } from '../../../community/contributor/user';
 import DiscussionView from '../views/DiscussionView';
 import {
+  CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,
   refetchPlatformDiscussionQuery,
   refetchPlatformDiscussionsQuery,
@@ -26,6 +27,27 @@ import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constan
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { useConfig } from '../../../platform/config/useConfig';
 import { useNavigate } from 'react-router-dom';
+import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import {
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables,
+  DiscussionDetailsFragment,
+  MessageDetailsFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
+
+const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
+  DiscussionDetailsFragment & {
+    messages?: MessageDetailsFragment[];
+  },
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables
+>({
+  subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
+  getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
+  updateSubEntity: (discussion, subscriptionData) => {
+    discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
+  },
+});
 
 interface DiscussionPageProps {}
 
@@ -36,12 +58,18 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const { isFeatureEnabled } = useConfig();
   const navigate = useNavigate();
 
-  const { data, loading: loadingDiscussion } = usePlatformDiscussionQuery({
+  const {
+    data,
+    loading: loadingDiscussion,
+    subscribeToMore,
+  } = usePlatformDiscussionQuery({
     variables: {
       discussionId: discussionId!,
     },
     skip: !discussionId,
   });
+  useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
+
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
     compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.messages?.map(c => c.sender?.id))])

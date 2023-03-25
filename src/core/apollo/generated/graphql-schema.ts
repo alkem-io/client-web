@@ -14478,7 +14478,12 @@ export type PlatformDiscussionsQuery = {
       id: string;
       discussionCategories: Array<DiscussionCategory>;
       authorization?:
-        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
         | undefined;
       discussions?:
         | Array<{
@@ -14491,7 +14496,12 @@ export type PlatformDiscussionsQuery = {
             commentsCount: number;
             createdBy?: string | undefined;
             authorization?:
-              | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
               | undefined;
           }>
         | undefined;
@@ -14512,7 +14522,12 @@ export type PlatformDiscussionQuery = {
       __typename?: 'Communication';
       id: string;
       authorization?:
-        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
         | undefined;
       discussion?:
         | {

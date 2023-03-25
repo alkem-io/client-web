@@ -12603,7 +12603,9 @@ export const PlatformDiscussionsDocument = gql`
         id
         discussionCategories
         authorization {
+          id
           myPrivileges
+          anonymousReadAccess
         }
         discussions {
           id
@@ -12614,7 +12616,9 @@ export const PlatformDiscussionsDocument = gql`
           commentsCount
           createdBy
           authorization {
+            id
             myPrivileges
+            anonymousReadAccess
           }
         }
       }
@@ -12680,7 +12684,9 @@ export const PlatformDiscussionDocument = gql`
       communication {
         id
         authorization {
+          id
           myPrivileges
+          anonymousReadAccess
         }
         discussion(ID: $discussionId) {
           ...DiscussionDetails

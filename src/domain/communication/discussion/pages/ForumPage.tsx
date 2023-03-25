@@ -6,19 +6,49 @@ import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
 import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
-import { usePlatformDiscussionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  CommunicationDiscussionUpdatedDocument,
+  usePlatformDiscussionsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { compact } from 'lodash';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  Communication,
+  CommunicationDiscussionUpdatedSubscription,
+  CommunicationDiscussionUpdatedSubscriptionVariables,
+} from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
 import { useUserContext } from '../../../community/contributor/user';
 import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
+import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
+
+const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
+  Pick<Communication, 'id' | 'discussions'>,
+  CommunicationDiscussionUpdatedSubscription,
+  CommunicationDiscussionUpdatedSubscriptionVariables
+>({
+  subscriptionDocument: CommunicationDiscussionUpdatedDocument,
+  getSubscriptionVariables: communication => ({ communicationID: communication.id }),
+  updateSubEntity: (communication, subscriptionData) => {
+    if (!communication?.discussions) {
+      return;
+    }
+    const discussionIndex = communication.discussions.findIndex(
+      d => d.id === subscriptionData.communicationDiscussionUpdated.id
+    );
+    if (discussionIndex === -1) {
+      return;
+    }
+    communication.discussions[discussionIndex] = subscriptionData.communicationDiscussionUpdated;
+  },
+});
 
 interface ForumPageProps {
   dialog?: 'new' | undefined;
@@ -30,7 +60,8 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const { isAuthenticated, loading: loadingUser } = useUserContext();
 
   const [categorySelected, setCategorySelected] = useState<DiscussionCategoryExt>(ALL_CATEGORIES);
-  const { data, loading: loadingDiscussions } = usePlatformDiscussionsQuery();
+  const { data, loading: loadingDiscussions, subscribeToMore } = usePlatformDiscussionsQuery();
+  useSubscriptionToCommunication(data, data => data?.platform.communication, subscribeToMore);
 
   const validCategories = data?.platform.communication.discussionCategories ?? [];
   const communicationId = data?.platform.communication.id;

@@ -5,7 +5,9 @@ query platformDiscussions {
       id
       discussionCategories
       authorization {
+        id
         myPrivileges
+        anonymousReadAccess
       }
       discussions {
         id
@@ -16,7 +18,9 @@ query platformDiscussions {
         commentsCount
         createdBy
         authorization {
+          id
           myPrivileges
+          anonymousReadAccess
         }
       }
     }
@@ -29,7 +33,9 @@ query platformDiscussion($discussionId: String!) {
     communication {
       id
       authorization {
+        id
         myPrivileges
+        anonymousReadAccess
       }
       discussion(ID: $discussionId) {
         ...DiscussionDetails
