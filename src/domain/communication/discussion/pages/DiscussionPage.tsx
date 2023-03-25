@@ -86,12 +86,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
 
     return postComment({
       update: (cache, { data }) => {
-        console.log('updta');
         if (isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
-          console.log('subs enabled');
           return;
         }
-        console.log('subs NOT enabled');
         cache.modify({
           id: cache.identify({
             id: discussionId,
