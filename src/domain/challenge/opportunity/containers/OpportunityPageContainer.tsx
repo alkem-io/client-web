@@ -8,7 +8,6 @@ import {
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { Discussion } from '../../../communication/discussion/models/Discussion';
 import {
   AuthorizationPrivilege,
   DashboardTopCalloutFragment,
@@ -64,7 +63,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     incoming: OpportunityPageRelationsFragment[];
     outgoing: OpportunityPageRelationsFragment[];
   };
-  discussions: Discussion[];
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   canvases: CanvasFragmentWithCallout[];
@@ -223,7 +221,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
             incoming,
             outgoing,
           },
-          discussions: [], //discussionList,
           aspects,
           aspectsCount,
           canvases,
