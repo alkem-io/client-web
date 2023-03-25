@@ -31,7 +31,10 @@ interface CanvasTemplatesListProps {
   };
 }
 
-const formatCanvasTemplate = (canvas: CanvasTemplateListItem) => ({ id: canvas.id, displayName: canvas.info.title });
+const formatCanvasTemplate = (canvas: CanvasTemplateListItem) => ({
+  id: canvas.id,
+  displayName: canvas.profile.displayName,
+});
 
 const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, state }) => {
   const { templates, selectedTemplate } = entities;
@@ -49,7 +52,7 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
   const handleTemplateSelect = (canvas: CanvasTemplateListItem) => {
     actions.onSelect({
       id: canvas.id,
-      title: canvas.info.title,
+      displayName: canvas.profile.displayName,
       origin: canvas.origin,
       innovationPackId: canvas.innovationPackId,
     });
@@ -66,14 +69,14 @@ const CanvasTemplatesList: FC<CanvasTemplatesListProps> = ({ actions, entities, 
   }, [innovationPacks]);
 
   const handleImportTemplate = async (template: LibraryCanvasTemplate) => {
-    if (templates.find(templ => templ.info.title === template.info.title)) {
+    if (templates.find(templ => templ.profile.displayName === template.profile.displayName)) {
       closeImportTemplatesDialog();
       return;
     }
     actions.updateLibraryTemplates(template);
     const selectedLibraryTemplate = {
       id: template.id,
-      info: { title: template.info.title },
+      profile: { displayName: template.profile.displayName },
       origin: 'Library' as TemplateOrigin,
       innovationPackId: template.innovationPackId,
     };

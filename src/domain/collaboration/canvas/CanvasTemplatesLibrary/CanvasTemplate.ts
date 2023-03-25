@@ -1,6 +1,7 @@
 import {
   CanvasTemplateFragment,
-  CanvasTemplateProviderProfileFragment,
+  InnovationPackWithProviderFragment,
+  TemplateProviderProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../shared/types/Identifiable';
 
@@ -25,22 +26,22 @@ export interface CanvasTemplateWithValue extends CanvasTemplate {
 
 export const CanvasTemplateMapper = (
   template: CanvasTemplateFragment,
-  provider?: CanvasTemplateProviderProfileFragment,
-  innovationPack?: { id: string; displayName: string }
+  profile?: TemplateProviderProfileFragment,
+  innovationPack?: InnovationPackWithProviderFragment
 ): CanvasTemplate => {
   return {
     id: template.id,
-    displayName: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description ?? '',
+    tags: template.profile.tagset?.tags,
     provider: {
-      displayName: provider?.displayName,
-      avatarUri: provider?.visual?.uri,
+      displayName: profile?.displayName,
+      avatarUri: profile?.visual?.uri,
     },
     innovationPack: {
       id: innovationPack?.id,
-      displayName: innovationPack?.displayName,
+      displayName: innovationPack?.provider?.profile.displayName,
     },
-    visualUri: template.info.visual?.uri,
+    visualUri: template.profile.visual?.uri,
   };
 };

@@ -29,7 +29,7 @@ type FormValueType = {
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] } & {
+type AspectEditFields = Partial<Pick<Aspect, 'profile'>> & { references?: Reference[] } & {
   id?: string;
 };
 export type AspectFormOutput = {

@@ -291,7 +291,7 @@ const _hydrateContributionCard = (data: SearchResultT<SearchResultCardFragment> 
               opportunityNameId: data.opportunity?.nameID,
             })}
           >
-            {data.callout.displayName}
+            {data.callout.profile.displayName}
           </CardParentJourneySegment>
           <CardParentJourneySegment iconComponent={parent.icon} parentJourneyUri={parent.url} locked={parent.locked}>
             {parent.displayName}

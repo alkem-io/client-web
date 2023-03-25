@@ -28,7 +28,7 @@ import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownVali
 
 export type CanvasTemplateData = {
   id?: string;
-  title?: string;
+  displayName?: string;
   origin?: TemplateOrigin;
   innovationPackId?: string;
 };

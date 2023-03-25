@@ -24,7 +24,7 @@ const TemplateViewDialog = <T extends Template>({
   const { t } = useTranslation();
 
   const {
-    info: { title, visual, description },
+    profile: { displayName, visual, description },
   } = template;
 
   return (
@@ -33,7 +33,7 @@ const TemplateViewDialog = <T extends Template>({
       <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box display="flex" minWidth={theme => theme.spacing(46)} justifyContent="space-between" alignItems="center">
           <Typography variant="h5" color="primary" fontWeight="bold">
-            {title}
+            {displayName}
           </Typography>
           <DialogActions sx={{ p: 0 }}>
             {editUrl && (

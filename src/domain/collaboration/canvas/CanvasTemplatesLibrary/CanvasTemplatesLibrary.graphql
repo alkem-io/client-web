@@ -11,7 +11,7 @@ query HubCanvasTemplatesLibrary($hubId: UUID_NAMEID!) {
       id
       nameID
       profile {
-        ...CanvasTemplateProviderProfile
+        ...TemplateProviderProfile
       }
     }
   }
@@ -38,11 +38,10 @@ query PlatformCanvasTemplatesLibrary {
       innovationPacks {
         id
         nameID
-        displayName
         provider {
           id
           profile {
-            ...CanvasTemplateProviderProfile
+            ...TemplateProviderProfile
           }
         }
         templates {
@@ -62,15 +61,7 @@ query PlatformCanvasTemplateValue($innovationPackId: UUID!, $canvasTemplateId: U
     library {
       id
       innovationPack(ID: $innovationPackId) {
-        id
-        nameID
-        displayName
-        provider {
-          id
-          profile {
-            ...CanvasTemplateProviderProfile
-          }
-        }
+        ...InnovationPackWithProvider
         templates {
           id
           canvasTemplate(ID: $canvasTemplateId) {
@@ -83,7 +74,17 @@ query PlatformCanvasTemplateValue($innovationPackId: UUID!, $canvasTemplateId: U
   }
 }
 
-fragment CanvasTemplateProviderProfile on Profile {
+fragment InnovationPackWithProvider on InnovatonPack {
+  id
+  nameID
+  provider {
+    id
+    profile {
+      ...TemplateProviderProfile
+    }
+  }
+}
+fragment TemplateProviderProfile on Profile {
   id
   displayName
   visual(type: AVATAR) {

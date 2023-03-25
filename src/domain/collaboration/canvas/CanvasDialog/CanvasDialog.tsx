@@ -139,7 +139,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       appState,
       elements,
       files: files ?? null,
-      getDimensions: getCanvasBannerCardDimensions(canvas.preview),
+      getDimensions: getCanvasBannerCardDimensions(canvas?.profile?.visual),
       mimeType: 'image/png',
     });
 
@@ -149,12 +149,15 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       return;
     }
 
-    const displayName = formikRef.current?.values.displayName ?? canvas.displayName;
+    const displayName = formikRef.current?.values.displayName ?? canvas?.profile?.displayName;
 
     return actions.onUpdate(
       {
         ...canvas,
-        displayName,
+        profile: {
+          ...canvas.profile,
+          displayName,
+        },
         value,
       } as Canvas,
       previewImage ?? undefined
@@ -213,7 +216,10 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
 
   const formikRef = useRef<FormikProps<{ displayName: string }>>(null);
 
-  const initialValues = useMemo(() => ({ displayName: canvas?.displayName ?? '' }), [canvas?.displayName]);
+  const initialValues = useMemo(
+    () => ({ displayName: canvas?.profile?.displayName ?? '' }),
+    [canvas?.profile?.displayName]
+  );
 
   useEffect(() => {
     formikRef.current?.resetForm({
@@ -269,7 +275,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
                   <Authorship authorAvatarUri={canvas?.createdBy?.profile.visual?.uri} date={canvas?.createdDate}>
                     {canvas?.createdBy?.profile.displayName}
                   </Authorship>
-                  <PageTitle>{canvas?.displayName}</PageTitle>
+                  <PageTitle>{canvas?.profile?.displayName}</PageTitle>
                 </>
               )}
             </DialogHeader>
