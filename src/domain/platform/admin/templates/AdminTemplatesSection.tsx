@@ -4,7 +4,6 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TemplateInfoWithFullVisualFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -18,9 +17,10 @@ import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { ProfileInfoWithVisualFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface Template extends Identifiable {
-  info: TemplateInfoWithFullVisualFragment;
+  profile: ProfileInfoWithVisualFragment;
 }
 
 export interface TemplateValue {}
@@ -58,7 +58,7 @@ type AdminTemplatesSectionProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
+  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -98,7 +98,7 @@ const AdminTemplatesSection = <
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
+  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -189,13 +189,13 @@ const AdminTemplatesSection = <
     }
 
     // Deconstruct and rebuild template information from the InnovationPack template downloaded:
-    const { id, info, ...templateData } = template;
-    const { id: infoId, ...infoData } = info;
+    const { id, profile, ...templateData } = template;
+    const { id: infoId, ...infoData } = profile;
     const values: SubmittedValues = {
       ...(templateData as SubmittedValues),
       ...value,
       info: {
-        title: infoData.title,
+        title: infoData.displayName,
         tags: infoData.tagset?.tags,
         description: infoData.description,
       },
@@ -269,8 +269,8 @@ const AdminTemplatesSection = <
           {templates?.map(template => (
             <TemplateCard
               key={template.id}
-              title={template.info.title}
-              imageUrl={template.info.visual?.uri}
+              title={template.profile.displayName}
+              imageUrl={template.profile.visual?.uri}
               {...buildTemplateLink(template)}
             />
           ))}
@@ -336,7 +336,7 @@ const AdminTemplatesSection = <
           onConfirm={handleAspectTemplateDeletion}
         >
           {t('pages.admin.generic.sections.templates.delete-confirmation', {
-            template: deletingTemplate?.info.title,
+            template: deletingTemplate?.profile.displayName,
           })}
         </ConfirmationDialog>
       )}

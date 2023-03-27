@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 
 export interface ActivityCalloutPublishedViewProps extends ActivityViewProps {
-  callout: NameableEntityOld;
+  callout: NameableEntity;
   calloutType: string;
 }
 
@@ -14,7 +14,7 @@ export const ActivityCalloutPublishedView: FC<ActivityCalloutPublishedViewProps>
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.callout-published');
   const description = t('components.activity-log-view.activity-description.callout-published', {
-    displayName: props.callout.displayName,
+    displayName: props.callout.profile.displayName,
     type: props.calloutType,
     interpolation: {
       escapeValue: false,

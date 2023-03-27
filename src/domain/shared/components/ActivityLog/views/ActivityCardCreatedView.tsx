@@ -3,11 +3,11 @@ import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntity, NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
 
 export interface ActivityCardCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntityOld;
+  callout: NameableEntity;
   card: NameableEntity;
   cardType: string;
   cardDescription: string;
@@ -16,7 +16,7 @@ export interface ActivityCardCreatedViewProps extends ActivityViewProps {
 export const ActivityCardCreatedView: FC<ActivityCardCreatedViewProps> = props => {
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.card-created', {
-    calloutDisplayName: props.callout.displayName,
+    calloutDisplayName: props.callout.profile.displayName,
     interpolation: {
       escapeValue: false,
     },

@@ -3,23 +3,23 @@ import { ActivityBaseView, ActivityBaseViewProps } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { useTranslation } from 'react-i18next';
 import { buildCanvasUrl } from '../../../../../common/utils/urlBuilders';
-import { NameableEntityOld } from '../../../types/NameableEntity';
+import { NameableEntity } from '../../../types/NameableEntity';
 
 export interface ActivityCanvasCreatedViewProps extends ActivityViewProps {
-  callout: NameableEntityOld;
-  canvas: NameableEntityOld;
+  callout: NameableEntity;
+  canvas: NameableEntity;
 }
 
 export const ActivityCanvasCreatedView: FC<ActivityCanvasCreatedViewProps> = props => {
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.canvas-created', {
-    parentDisplayName: props.callout.displayName,
+    parentDisplayName: props.callout.profile.displayName,
     interpolation: {
       escapeValue: false,
     },
   });
   const description = t('components.activity-log-view.activity-description.canvas-created', {
-    displayName: props.canvas.displayName,
+    displayName: props.canvas.profile.displayName,
     interpolation: {
       escapeValue: false,
     },
