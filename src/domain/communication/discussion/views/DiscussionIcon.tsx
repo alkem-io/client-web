@@ -1,5 +1,5 @@
 import {
-  AllInclusive,
+  AllInclusive as AllInclusiveIcon,
   Category as CategoryIcon,
   GroupsOutlined as GroupsOutlinedIcon,
   GpsNotFixedOutlined as GpsNotFixedOutlinedIcon,
@@ -42,7 +42,7 @@ export const DiscussionIcon: FC<DiscussionIconProps> = ({ category, ...rest }) =
       case DiscussionCategory.Sharing:
         return ShareOutlinedIcon;
       case DiscussionCategoryExtEnum.All:
-        return AllInclusive;
+        return AllInclusiveIcon;
       default:
         return QuestionAnswerOutlinedIcon;
     }
