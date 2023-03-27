@@ -515,9 +515,9 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
+  cascade: Scalars['Boolean'];
   criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  inheritable: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
 };
 
