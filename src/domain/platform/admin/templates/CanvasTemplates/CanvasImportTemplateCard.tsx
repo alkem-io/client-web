@@ -27,7 +27,7 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
         defaultImageSvg={<CanvasIcon />}
       />
       <CardSegmentCaption icon={<InnovationPackIcon />}>
-        <Caption noWrap>{template.innovationPackProfile}</Caption>
+        <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
   );
