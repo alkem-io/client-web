@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
-import { CreateTemplateInfoInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
+import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
@@ -11,7 +11,7 @@ import TemplateForm from '../TemplateForm';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface AspectTemplateFormValues {
-  title: string;
+  displayName: string;
   description: string;
   tags: string[];
   type: string;
@@ -21,7 +21,7 @@ export interface AspectTemplateFormValues {
 export interface AspectTemplateFormSubmittedValues {
   defaultDescription: string;
   type: string;
-  info: CreateTemplateInfoInput;
+  profile: CreateProfileInput;
 }
 
 interface AspectTemplateFormProps {

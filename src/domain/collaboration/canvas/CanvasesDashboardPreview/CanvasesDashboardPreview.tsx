@@ -48,8 +48,8 @@ const CanvasesDashboardPreview = ({
           <SimpleCard
             key={canvas.id}
             {...buildCanvasLink(canvas.nameID, canvas.calloutNameId)}
-            title={canvas.displayName}
-            imageUrl={canvas.preview?.uri}
+            title={canvas.profile.displayName}
+            imageUrl={canvas.profile.visual?.uri}
             iconComponent={CanvasIcon}
           />
         ))}

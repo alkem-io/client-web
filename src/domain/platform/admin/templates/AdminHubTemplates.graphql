@@ -24,8 +24,8 @@ fragment AdminLifecycleTemplate on LifecycleTemplate {
   id
   definition
   type
-  info {
-    ...TemplateInfoWithFullVisual
+  profile {
+    ...ProfileInfoWithVisual
   }
 }
 
@@ -33,15 +33,15 @@ fragment AdminAspectTemplate on AspectTemplate {
   id
   defaultDescription
   type
-  info {
-    ...TemplateInfoWithFullVisual
+  profile {
+    ...ProfileInfoWithVisual
   }
 }
 
 fragment AdminCanvasTemplate on CanvasTemplate {
   id
-  info {
-    ...TemplateInfoWithFullVisual
+  profile {
+    ...ProfileInfoWithVisual
   }
 }
 
@@ -50,15 +50,15 @@ fragment AdminCanvasTemplateValue on CanvasTemplate {
   value
 }
 
-fragment TemplateInfoWithFullVisual on TemplateInfo {
+fragment ProfileInfoWithVisual on Profile {
   id
-  title
+  displayName
   description
   tagset {
     id
     tags
   }
-  visual {
+  visual(type: CARD) {
     ...VisualFull
   }
 }

@@ -8,8 +8,11 @@ fragment DashboardTopCallouts on Collaboration {
 fragment DashboardTopCallout on Callout {
   id
   nameID
-  displayName
-  description
+  profile {
+    id
+    displayName
+    description
+  }
   type
   visibility
   aspects(limit: 2, shuffle: true) {
