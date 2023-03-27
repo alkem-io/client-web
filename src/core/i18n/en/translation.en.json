@@ -707,6 +707,9 @@
       "create-card": "Successfully created the Card",
       "give-feedback": "Give feedback"
     },
+    "callout-publish": {
+      "notify-members": "Notify members of the $t(common.community)"
+    },
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
