@@ -10,59 +10,59 @@ query CalloutFormTemplatesFromHub($hubId: UUID_NAMEID!) {
     id
     templates {
       id
-      aspectTemplates {
-        ...AspectTemplate
+      postTemplates {
+        ...PostTemplate
       }
-      canvasTemplates {
-        ...CanvasTemplate
-      }
-    }
-  }
-}
-
-query AspectTemplatesFromHub($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    templates {
-      id
-      aspectTemplates {
-        ...AspectTemplate
+      whiteboardTemplates {
+        ...WhiteboardTemplate
       }
     }
   }
 }
 
-query CanvasTemplatesFromHub($hubId: UUID_NAMEID!) {
+query PostTemplatesFromHub($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     templates {
       id
-      canvasTemplates {
-        ...CanvasTemplate
+      postTemplates {
+        ...PostTemplate
       }
     }
   }
 }
 
-query LifecycleTemplatesFromHub($hubId: UUID_NAMEID!) {
+query WhiteboardTemplatesFromHub($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     templates {
       id
-      lifecycleTemplates {
-        ...LifecycleTemplate
+      whiteboardTemplates {
+        ...WhiteboardTemplate
       }
     }
   }
 }
 
-query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+query InnovationFlowTemplatesFromHub($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     templates {
       id
-      canvasTemplate(ID: $canvasTemplateId) {
-        ...CanvasTemplateWithValue
+      innovationFlowTemplates {
+        ...InnovationFlowTemplate
+      }
+    }
+  }
+}
+
+query HubTemplatesWhiteboardTemplateWithValue($hubId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        ...WhiteboardTemplateWithValue
       }
     }
   }
@@ -71,19 +71,19 @@ query HubTemplatesCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateI
 fragment HubTemplates on Hub {
   templates {
     id
-    aspectTemplates {
-      ...AspectTemplate
+    postTemplates {
+      ...PostTemplate
     }
-    canvasTemplates {
-      ...CanvasTemplate
+    whiteboardTemplates {
+      ...WhiteboardTemplate
     }
-    lifecycleTemplates {
-      ...LifecycleTemplate
+    innovationFlowTemplates {
+      ...InnovationFlowTemplate
     }
   }
 }
 
-fragment AspectTemplate on AspectTemplate {
+fragment PostTemplate on PostTemplate {
   id
   defaultDescription
   type
@@ -105,18 +105,18 @@ fragment ProfileInfo on Profile {
     uri
   }
 }
-fragment CanvasTemplate on CanvasTemplate {
+fragment WhiteboardTemplate on WhiteboardTemplate {
   id
   profile {
     ...ProfileInfo
   }
 }
-fragment CanvasTemplateWithValue on CanvasTemplate {
-  ...CanvasTemplate
+fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
+  ...WhiteboardTemplate
   value
 }
 
-fragment LifecycleTemplate on LifecycleTemplate {
+fragment InnovationFlowTemplate on InnovationFlowTemplate {
   id
   definition
   type

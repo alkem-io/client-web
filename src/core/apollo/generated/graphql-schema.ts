@@ -365,20 +365,6 @@ export type AspectCommentsMessageReceived = {
   message: Message;
 };
 
-export type AspectTemplate = {
-  __typename?: 'AspectTemplate';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The default description to show to users filling our a new instance. */
-  defaultDescription: Scalars['Markdown'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The Profile for this template. */
-  profile: Profile;
-  /** The type for this Aspect. */
-  type: Scalars['String'];
-};
-
 export type AssignChallengeAdminInput = {
   challengeID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -507,9 +493,9 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
+  cascade: Scalars['Boolean'];
   criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  inheritable: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
 };
 
@@ -633,12 +619,8 @@ export type Callout = {
   aspects?: Maybe<Array<Aspect>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Canvas template associated with this Callout. */
-  canvasTemplate?: Maybe<CanvasTemplate>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
-  /** The Aspect template associated with this Callout. */
-  cardTemplate?: Maybe<AspectTemplate>;
   /** The Comments object for this Callout. */
   comments?: Maybe<Comments>;
   /** The user that created this Callout */
@@ -647,6 +629,8 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The PostTemplate for this Callout. */
+  postTemplate?: Maybe<PostTemplate>;
   /** The Profile for this Callout. */
   profile: Profile;
   /** The user that published this Callout */
@@ -661,6 +645,8 @@ export type Callout = {
   type: CalloutType;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
+  /** The Whiteboard template for this Callout. */
+  whiteboardTemplate?: Maybe<WhiteboardTemplate>;
 };
 
 export type CalloutAspectsArgs = {
@@ -760,18 +746,6 @@ export type CanvasContentUpdated = {
   canvasID: Scalars['String'];
   /** The updated content. */
   value: Scalars['String'];
-};
-
-export type CanvasTemplate = {
-  __typename?: 'CanvasTemplate';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The Profile for this template. */
-  profile: Profile;
-  /** The JSON representation of the Canvas. */
-  value: Scalars['JSON'];
 };
 
 export type Challenge = {
@@ -1206,27 +1180,6 @@ export type CreateAspectOnCalloutInput = {
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateAspectTemplateInput = {
-  /** The default description to be pre-filled when users create Aspects based on this template. */
-  defaultDescription: Scalars['Markdown'];
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  /** The type of Aspects created from this Template. */
-  type: Scalars['String'];
-  visualUri?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateAspectTemplateOnTemplatesSetInput = {
-  /** The default description to be pre-filled when users create Aspects based on this template. */
-  defaultDescription: Scalars['Markdown'];
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  templatesSetID: Scalars['UUID'];
-  /** The type of Aspects created from this Template. */
-  type: Scalars['String'];
-  visualUri?: InputMaybe<Scalars['String']>;
-};
-
 export type CreateCalendarEventOnCalendarInput = {
   calendarID: Scalars['UUID'];
   /** The length of the event in days. */
@@ -1247,11 +1200,9 @@ export type CreateCalendarEventOnCalendarInput = {
 };
 
 export type CreateCalloutOnCollaborationInput = {
-  /** CardTemplate data for Card Callouts. */
-  canvasTemplate?: InputMaybe<CreateCanvasTemplateInput>;
-  /** CardTemplate data for Card Callouts. */
-  cardTemplate?: InputMaybe<CreateAspectTemplateInput>;
   collaborationID: Scalars['UUID'];
+  /** PostTemplate data for Card Callouts. */
+  postTemplate?: InputMaybe<CreatePostTemplateInput>;
   profile: CreateProfileInput;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
@@ -1259,6 +1210,8 @@ export type CreateCalloutOnCollaborationInput = {
   state?: InputMaybe<CalloutState>;
   /** Callout type. */
   type: CalloutType;
+  /** WhiteboardTemplate data for whiteboard Callouts. */
+  whiteboardTemplate?: InputMaybe<CreateWhiteboardTemplateInput>;
 };
 
 export type CreateCanvasOnCalloutInput = {
@@ -1267,25 +1220,6 @@ export type CreateCanvasOnCalloutInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   value?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateCanvasTemplateInput = {
-  /** Use the specified Canvas as the initial value for this CanvasTemplate */
-  canvasID?: InputMaybe<Scalars['UUID']>;
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  value?: InputMaybe<Scalars['JSON']>;
-  visualUri?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateCanvasTemplateOnTemplatesSetInput = {
-  /** Use the specified Canvas as the initial value for this CanvasTemplate */
-  canvasID?: InputMaybe<Scalars['UUID']>;
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  templatesSetID: Scalars['UUID'];
-  value?: InputMaybe<Scalars['JSON']>;
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -1335,23 +1269,23 @@ export type CreateHubInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateInnovationFlowTemplateOnTemplatesSetInput = {
+  /** The XState definition for this InnovationFlowTemplate. */
+  definition: Scalars['LifecycleDefinition'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  /** The type of the InnovationFlows that this Template supports. */
+  type: InnovationFlowType;
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateInnovationPackOnLibraryInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
   /** The provider Organization for the InnovationPack */
   providerID: Scalars['UUID_NAMEID'];
-};
-
-export type CreateLifecycleTemplateOnTemplatesSetInput = {
-  /** The XState definition for this LifecycleTemplate. */
-  definition: Scalars['LifecycleDefinition'];
-  profile: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  templatesSetID: Scalars['UUID'];
-  /** The type of the Lifecycles that this Template supports. */
-  type: LifecycleType;
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateLocationInput = {
@@ -1388,6 +1322,27 @@ export type CreateOrganizationInput = {
   nameID: Scalars['NameID'];
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type CreatePostTemplateInput = {
+  /** The default description to be pre-filled when users create Posts based on this template. */
+  defaultDescription: Scalars['Markdown'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  /** The type of Posts created from this Template. */
+  type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
+export type CreatePostTemplateOnTemplatesSetInput = {
+  /** The default description to be pre-filled when users create Posts based on this template. */
+  defaultDescription: Scalars['Markdown'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  /** The type of Posts created from this Template. */
+  type: Scalars['String'];
+  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProfileInput = {
@@ -1456,6 +1411,25 @@ export type CreateUserInput = {
   profileData: CreateProfileInput;
 };
 
+export type CreateWhiteboardTemplateInput = {
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  value?: InputMaybe<Scalars['JSON']>;
+  visualUri?: InputMaybe<Scalars['String']>;
+  /** Use the specified Whiteboard as the initial value for this WhiteboardTemplate */
+  whiteboardID?: InputMaybe<Scalars['UUID']>;
+};
+
+export type CreateWhiteboardTemplateOnTemplatesSetInput = {
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
+  visualUri?: InputMaybe<Scalars['String']>;
+  /** Use the specified Whiteboard as the initial value for this WhiteboardTemplate */
+  whiteboardID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type Credential = {
   __typename?: 'Credential';
   /** The ID of the entity */
@@ -1504,10 +1478,6 @@ export type DeleteAspectInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteAspectTemplateInput = {
-  ID: Scalars['UUID'];
-};
-
 export type DeleteCalendarEventInput = {
   ID: Scalars['UUID'];
 };
@@ -1517,10 +1487,6 @@ export type DeleteCalloutInput = {
 };
 
 export type DeleteCanvasInput = {
-  ID: Scalars['UUID'];
-};
-
-export type DeleteCanvasTemplateInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1545,12 +1511,12 @@ export type DeleteHubInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type DeleteInnovationPackInput = {
-  ID: Scalars['UUID_NAMEID'];
+export type DeleteInnovationFlowTemplateInput = {
+  ID: Scalars['UUID'];
 };
 
-export type DeleteLifecycleTemplateInput = {
-  ID: Scalars['UUID'];
+export type DeleteInnovationPackInput = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type DeleteOpportunityInput = {
@@ -1559,6 +1525,10 @@ export type DeleteOpportunityInput = {
 
 export type DeleteOrganizationInput = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeletePostTemplateInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteProjectInput = {
@@ -1579,6 +1549,10 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type DeleteWhiteboardTemplateInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DirectRoom = {
@@ -1853,6 +1827,25 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+export type InnovationFlowTemplate = {
+  __typename?: 'InnovationFlowTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The XState definition for this InnovationFlowTemplate. */
+  definition: Scalars['LifecycleDefinition'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The type for this InnovationFlowTemplate. */
+  type: InnovationFlowType;
+};
+
+export enum InnovationFlowType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+}
+
 export type InnovatonPack = {
   __typename?: 'InnovatonPack';
   /** The authorization rules for the entity */
@@ -1900,25 +1893,6 @@ export type Lifecycle = {
   /** The Lifecycle template name. */
   templateName?: Maybe<Scalars['String']>;
 };
-
-export type LifecycleTemplate = {
-  __typename?: 'LifecycleTemplate';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The XState definition for this LifecycleTemplate. */
-  definition: Scalars['LifecycleDefinition'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The Profile for this template. */
-  profile: Profile;
-  /** The type for this LifecycleTemplate. */
-  type: LifecycleType;
-};
-
-export enum LifecycleType {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-}
 
 export type Location = {
   __typename?: 'Location';
@@ -2022,14 +1996,10 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Create a new Aspect on the Callout. */
   createAspectOnCallout: Aspect;
-  /** Creates a new AspectTemplate on the specified TemplatesSet. */
-  createAspectTemplate: AspectTemplate;
   /** Create a new Callout on the Collaboration. */
   createCalloutOnCollaboration: Callout;
   /** Create a new Canvas on the Callout. */
   createCanvasOnCallout: Canvas;
-  /** Creates a new CanvasTemplate on the specified TemplatesSet. */
-  createCanvasTemplate: CanvasTemplate;
   /** Creates a new Challenge within the specified Hub. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -2046,14 +2016,16 @@ export type Mutation = {
   createGroupOnOrganization: UserGroup;
   /** Creates a new Hub. */
   createHub: Hub;
+  /** Creates a new InnovationFlowTemplate on the specified TemplatesSet. */
+  createInnovationFlowTemplate: InnovationFlowTemplate;
   /** Create a new InnovatonPack on the Library. */
   createInnovationPackOnLibrary: InnovatonPack;
-  /** Creates a new LifecycleTemplate on the specified TemplatesSet. */
-  createLifecycleTemplate: LifecycleTemplate;
   /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
   /** Creates a new Organization on the platform. */
   createOrganization: Organization;
+  /** Creates a new PostTemplate on the specified TemplatesSet. */
+  createPostTemplate: PostTemplate;
   /** Create a new Project on the Opportunity */
   createProject: Project;
   /** Creates a new Reference on the specified Profile. */
@@ -2066,22 +2038,20 @@ export type Mutation = {
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
   createUserNewRegistration: User;
+  /** Creates a new WhiteboardTemplate on the specified TemplatesSet. */
+  createWhiteboardTemplate: WhiteboardTemplate;
   /** Deletes the specified Actor. */
   deleteActor: Actor;
   /** Deletes the specified Actor Group, including contained Actors. */
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
-  /** Deletes the specified AspectTemplate. */
-  deleteAspectTemplate: AspectTemplate;
   /** Deletes the specified CalendarEvent. */
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
   deleteCallout: Callout;
   /** Updates the specified Canvas. */
   deleteCanvas: Canvas;
-  /** Deletes the specified CanvasTemplate. */
-  deleteCanvasTemplate: CanvasTemplate;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Delete Collaboration. */
@@ -2092,14 +2062,16 @@ export type Mutation = {
   deleteFile: Scalars['Boolean'];
   /** Deletes the specified Hub. */
   deleteHub: Hub;
+  /** Deletes the specified InnovationFlowTemplate. */
+  deleteInnovationFlowTemplate: InnovationFlowTemplate;
   /** Deletes the specified InnovationPack. */
   deleteInnovationPack: InnovatonPack;
-  /** Deletes the specified LifecycleTemplate. */
-  deleteLifecycleTemplate: LifecycleTemplate;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
   deleteOrganization: Organization;
+  /** Deletes the specified PostTemplate. */
+  deletePostTemplate: PostTemplate;
   /** Deletes the specified Project. */
   deleteProject: Project;
   /** Deletes the specified Reference. */
@@ -2112,6 +2084,8 @@ export type Mutation = {
   deleteUserApplication: Application;
   /** Deletes the specified User Group. */
   deleteUserGroup: UserGroup;
+  /** Deletes the specified WhiteboardTemplate. */
+  deleteWhiteboardTemplate: WhiteboardTemplate;
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
   /** Trigger an event on the Organization Verification. */
@@ -2186,8 +2160,6 @@ export type Mutation = {
   updateActor: Actor;
   /** Updates the specified Aspect. */
   updateAspect: Aspect;
-  /** Updates the specified AspectTemplate. */
-  updateAspectTemplate: AspectTemplate;
   /** Updates the specified CalendarEvent. */
   updateCalendarEvent: CalendarEvent;
   /** Update a Callout. */
@@ -2200,8 +2172,6 @@ export type Mutation = {
   updateCalloutsSortOrder: Array<Callout>;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
-  /** Updates the specified CanvasTemplate. */
-  updateCanvasTemplate: CanvasTemplate;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
   /** Updates the Innovation Flow on the specified Challenge. */
@@ -2216,16 +2186,18 @@ export type Mutation = {
   updateHub: Hub;
   /** Update the visibility of the specified Hub. */
   updateHubVisibility: Hub;
+  /** Updates the specified InnovationFlowTemplate. */
+  updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Updates the InnovationPack. */
   updateInnovationPack: InnovatonPack;
-  /** Updates the specified LifecycleTemplate. */
-  updateLifecycleTemplate: LifecycleTemplate;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
   /** Updates the Innovation Flow on the specified Opportunity. */
   updateOpportunityInnovationFlow: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates the specified PostTemplate. */
+  updatePostTemplate: PostTemplate;
   /** Updates one of the Preferences on a Challenge */
   updatePreferenceOnChallenge: Preference;
   /** Updates one of the Preferences on a Hub */
@@ -2244,6 +2216,8 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
+  /** Updates the specified WhiteboardTemplate. */
+  updateWhiteboardTemplate: WhiteboardTemplate;
   /** Uploads a file. */
   uploadFile: Scalars['String'];
   /** Uploads and sets an image for the specified Visual. */
@@ -2362,20 +2336,12 @@ export type MutationCreateAspectOnCalloutArgs = {
   aspectData: CreateAspectOnCalloutInput;
 };
 
-export type MutationCreateAspectTemplateArgs = {
-  aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput;
-};
-
 export type MutationCreateCalloutOnCollaborationArgs = {
   calloutData: CreateCalloutOnCollaborationInput;
 };
 
 export type MutationCreateCanvasOnCalloutArgs = {
   canvasData: CreateCanvasOnCalloutInput;
-};
-
-export type MutationCreateCanvasTemplateArgs = {
-  canvasTemplateInput: CreateCanvasTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateChallengeArgs = {
@@ -2410,12 +2376,12 @@ export type MutationCreateHubArgs = {
   hubData: CreateHubInput;
 };
 
-export type MutationCreateInnovationPackOnLibraryArgs = {
-  packData: CreateInnovationPackOnLibraryInput;
+export type MutationCreateInnovationFlowTemplateArgs = {
+  innovationFlowTemplateInput: CreateInnovationFlowTemplateOnTemplatesSetInput;
 };
 
-export type MutationCreateLifecycleTemplateArgs = {
-  lifecycleTemplateInput: CreateLifecycleTemplateOnTemplatesSetInput;
+export type MutationCreateInnovationPackOnLibraryArgs = {
+  packData: CreateInnovationPackOnLibraryInput;
 };
 
 export type MutationCreateOpportunityArgs = {
@@ -2424,6 +2390,10 @@ export type MutationCreateOpportunityArgs = {
 
 export type MutationCreateOrganizationArgs = {
   organizationData: CreateOrganizationInput;
+};
+
+export type MutationCreatePostTemplateArgs = {
+  postTemplateInput: CreatePostTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateProjectArgs = {
@@ -2446,6 +2416,10 @@ export type MutationCreateUserArgs = {
   userData: CreateUserInput;
 };
 
+export type MutationCreateWhiteboardTemplateArgs = {
+  whiteboardTemplateInput: CreateWhiteboardTemplateOnTemplatesSetInput;
+};
+
 export type MutationDeleteActorArgs = {
   deleteData: DeleteActorInput;
 };
@@ -2458,10 +2432,6 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
-export type MutationDeleteAspectTemplateArgs = {
-  deleteData: DeleteAspectTemplateInput;
-};
-
 export type MutationDeleteCalendarEventArgs = {
   deleteData: DeleteCalendarEventInput;
 };
@@ -2472,10 +2442,6 @@ export type MutationDeleteCalloutArgs = {
 
 export type MutationDeleteCanvasArgs = {
   canvasData: DeleteCanvasInput;
-};
-
-export type MutationDeleteCanvasTemplateArgs = {
-  deleteData: DeleteCanvasTemplateInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -2498,12 +2464,12 @@ export type MutationDeleteHubArgs = {
   deleteData: DeleteHubInput;
 };
 
-export type MutationDeleteInnovationPackArgs = {
-  deleteData: DeleteInnovationPackInput;
+export type MutationDeleteInnovationFlowTemplateArgs = {
+  deleteData: DeleteInnovationFlowTemplateInput;
 };
 
-export type MutationDeleteLifecycleTemplateArgs = {
-  deleteData: DeleteLifecycleTemplateInput;
+export type MutationDeleteInnovationPackArgs = {
+  deleteData: DeleteInnovationPackInput;
 };
 
 export type MutationDeleteOpportunityArgs = {
@@ -2512,6 +2478,10 @@ export type MutationDeleteOpportunityArgs = {
 
 export type MutationDeleteOrganizationArgs = {
   deleteData: DeleteOrganizationInput;
+};
+
+export type MutationDeletePostTemplateArgs = {
+  deleteData: DeletePostTemplateInput;
 };
 
 export type MutationDeleteProjectArgs = {
@@ -2536,6 +2506,10 @@ export type MutationDeleteUserApplicationArgs = {
 
 export type MutationDeleteUserGroupArgs = {
   deleteData: DeleteUserGroupInput;
+};
+
+export type MutationDeleteWhiteboardTemplateArgs = {
+  deleteData: DeleteWhiteboardTemplateInput;
 };
 
 export type MutationEventOnApplicationArgs = {
@@ -2686,10 +2660,6 @@ export type MutationUpdateAspectArgs = {
   aspectData: UpdateAspectInput;
 };
 
-export type MutationUpdateAspectTemplateArgs = {
-  aspectTemplateInput: UpdateAspectTemplateInput;
-};
-
 export type MutationUpdateCalendarEventArgs = {
   eventData: UpdateCalendarEventInput;
 };
@@ -2712,10 +2682,6 @@ export type MutationUpdateCalloutsSortOrderArgs = {
 
 export type MutationUpdateCanvasArgs = {
   canvasData: UpdateCanvasDirectInput;
-};
-
-export type MutationUpdateCanvasTemplateArgs = {
-  canvasTemplateInput: UpdateCanvasTemplateInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -2746,12 +2712,12 @@ export type MutationUpdateHubVisibilityArgs = {
   visibilityData: UpdateHubVisibilityInput;
 };
 
-export type MutationUpdateInnovationPackArgs = {
-  innovationPackData: UpdateInnovationPackInput;
+export type MutationUpdateInnovationFlowTemplateArgs = {
+  innovationFlowTemplateInput: UpdateInnovationFlowTemplateInput;
 };
 
-export type MutationUpdateLifecycleTemplateArgs = {
-  lifecycleTemplateInput: UpdateLifecycleTemplateInput;
+export type MutationUpdateInnovationPackArgs = {
+  innovationPackData: UpdateInnovationPackInput;
 };
 
 export type MutationUpdateOpportunityArgs = {
@@ -2764,6 +2730,10 @@ export type MutationUpdateOpportunityInnovationFlowArgs = {
 
 export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
+};
+
+export type MutationUpdatePostTemplateArgs = {
+  postTemplateInput: UpdatePostTemplateInput;
 };
 
 export type MutationUpdatePreferenceOnChallengeArgs = {
@@ -2800,6 +2770,10 @@ export type MutationUpdateUserGroupArgs = {
 
 export type MutationUpdateVisualArgs = {
   updateData: UpdateVisualInput;
+};
+
+export type MutationUpdateWhiteboardTemplateArgs = {
+  whiteboardTemplateInput: UpdateWhiteboardTemplateInput;
 };
 
 export type MutationUploadFileArgs = {
@@ -3035,6 +3009,20 @@ export type PlatformLocations = {
   terms: Scalars['String'];
   /** URL where users can get tips and tricks */
   tips: Scalars['String'];
+};
+
+export type PostTemplate = {
+  __typename?: 'PostTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The default description to show to users filling our a new instance. */
+  defaultDescription: Scalars['Markdown'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The type for this Post. */
+  type: Scalars['String'];
 };
 
 export type Preference = {
@@ -3840,35 +3828,35 @@ export type Template = {
 
 export type TemplatesSet = {
   __typename?: 'TemplatesSet';
-  /** A single AspectTemplate */
-  aspectTemplate?: Maybe<AspectTemplate>;
-  /** The AspectTemplates in this TemplatesSet. */
-  aspectTemplates: Array<AspectTemplate>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** A single CanvasTemplate */
-  canvasTemplate?: Maybe<CanvasTemplate>;
-  /** The CanvasTemplates in this TemplatesSet. */
-  canvasTemplates: Array<CanvasTemplate>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** A single LifecycleTemplate */
-  lifecycleTemplate?: Maybe<LifecycleTemplate>;
-  /** The LifecycleTemplates in this TemplatesSet. */
-  lifecycleTemplates: Array<LifecycleTemplate>;
+  /** A single InnovationFlowTemplate */
+  innovationFlowTemplate?: Maybe<InnovationFlowTemplate>;
+  /** The InnovationFlowTemplates in this TemplatesSet. */
+  innovationFlowTemplates: Array<InnovationFlowTemplate>;
   /** The policy for this TemplatesSet. */
   policy?: Maybe<TemplatesSetPolicy>;
+  /** A single PostTemplate */
+  postTemplate?: Maybe<PostTemplate>;
+  /** The PostTemplates in this TemplatesSet. */
+  postTemplates: Array<PostTemplate>;
+  /** A single WhiteboardTemplate */
+  whiteboardTemplate?: Maybe<WhiteboardTemplate>;
+  /** The WhiteboardTemplates in this TemplatesSet. */
+  whiteboardTemplates: Array<WhiteboardTemplate>;
 };
 
-export type TemplatesSetAspectTemplateArgs = {
+export type TemplatesSetInnovationFlowTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
-export type TemplatesSetCanvasTemplateArgs = {
+export type TemplatesSetPostTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
-export type TemplatesSetLifecycleTemplateArgs = {
+export type TemplatesSetWhiteboardTemplateArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3904,16 +3892,6 @@ export type UpdateAspectInput = {
   type?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateAspectTemplateInput = {
-  ID: Scalars['UUID'];
-  /** The default description to be pre-filled when users create Aspects based on this template. */
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  /** The Profile of the Template. */
-  profile?: InputMaybe<UpdateProfileInput>;
-  /** The type of Aspects created from this Template. */
-  type?: InputMaybe<Scalars['String']>;
-};
-
 export type UpdateCalendarEventInput = {
   ID: Scalars['UUID'];
   /** The length of the event in days. */
@@ -3933,35 +3911,29 @@ export type UpdateCalendarEventInput = {
   wholeDay: Scalars['Boolean'];
 };
 
-export type UpdateCalloutCanvasTemplateInput = {
-  /** The Profile of the Template. */
-  profileData?: InputMaybe<UpdateProfileInput>;
-  value?: InputMaybe<Scalars['JSON']>;
-};
-
-export type UpdateCalloutCardTemplateInput = {
-  /** The default description to be pre-filled when users create Aspects based on this template. */
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  /** The Profile of the Template. */
-  profileData?: InputMaybe<UpdateProfileInput>;
-  /** The type of Aspects created from this Template. */
-  type?: InputMaybe<Scalars['String']>;
-};
-
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
-  /** CanvasTemplate data for this Callout. */
-  canvasTemplate?: InputMaybe<UpdateCalloutCanvasTemplateInput>;
-  /** CardTemplate data for this Callout. */
-  cardTemplate?: InputMaybe<UpdateCalloutCardTemplateInput>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** CardTemplate data for this Callout. */
+  postTemplate?: InputMaybe<UpdateCalloutPostTemplateInput>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+  /** CanvasTemplate data for this Callout. */
+  whiteboardTemplate?: InputMaybe<UpdateCalloutWhiteboardTemplateInput>;
+};
+
+export type UpdateCalloutPostTemplateInput = {
+  /** The default description to be pre-filled when users create Posts based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The Profile of the Template. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+  /** The type of Posts created from this Template. */
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateCalloutPublishInfoInput = {
@@ -3982,6 +3954,12 @@ export type UpdateCalloutVisibilityInput = {
   visibility: CalloutVisibility;
 };
 
+export type UpdateCalloutWhiteboardTemplateInput = {
+  /** The Profile of the Template. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+  value?: InputMaybe<Scalars['JSON']>;
+};
+
 export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -3989,13 +3967,6 @@ export type UpdateCanvasDirectInput = {
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   value?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateCanvasTemplateInput = {
-  ID: Scalars['UUID'];
-  /** The Profile of the Template. */
-  profile?: InputMaybe<UpdateProfileInput>;
-  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateChallengeInnovationFlowInput = {
@@ -4102,6 +4073,14 @@ export type UpdateHubVisibilityInput = {
   visibility: HubVisibility;
 };
 
+export type UpdateInnovationFlowTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The XState definition for this InnovationFlowTemplate. */
+  definition?: InputMaybe<Scalars['LifecycleDefinition']>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateInnovationPackInput = {
   /** The ID or NameID of the InnovationPack. */
   ID: Scalars['UUID_NAMEID'];
@@ -4111,14 +4090,6 @@ export type UpdateInnovationPackInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Update the provider Organization for the InnovationPack. */
   providerOrgID?: InputMaybe<Scalars['UUID_NAMEID']>;
-};
-
-export type UpdateLifecycleTemplateInput = {
-  ID: Scalars['UUID'];
-  /** The XState definition for this LifecycleTemplate. */
-  definition?: InputMaybe<Scalars['LifecycleDefinition']>;
-  /** The Profile of the Template. */
-  profile?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateLocationInput = {
@@ -4166,6 +4137,16 @@ export type UpdateOrganizationPreferenceInput = {
   /** Type of the organization preference */
   type: OrganizationPreferenceType;
   value: Scalars['String'];
+};
+
+export type UpdatePostTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The default description to be pre-filled when users create Posts based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+  /** The type of Posts created from this Template. */
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateProfileDirectInput = {
@@ -4244,6 +4225,13 @@ export type UpdateUserPreferenceInput = {
 export type UpdateVisualInput = {
   uri: Scalars['String'];
   visualID: Scalars['String'];
+};
+
+export type UpdateWhiteboardTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type Updates = {
@@ -4440,6 +4428,18 @@ export enum VisualType {
 
 export type VisualUploadImageInput = {
   visualID: Scalars['String'];
+};
+
+export type WhiteboardTemplate = {
+  __typename?: 'WhiteboardTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for this template. */
+  profile: Profile;
+  /** The JSON representation of the Whiteboard. */
+  value: Scalars['JSON'];
 };
 
 export type UploadFileMutationVariables = Exact<{
@@ -6693,8 +6693,8 @@ export type HubTemplatesQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
             id: string;
             defaultDescription: string;
             type: string;
@@ -6707,8 +6707,8 @@ export type HubTemplatesQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           }>;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -6719,11 +6719,11 @@ export type HubTemplatesQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           }>;
-          lifecycleTemplates: Array<{
-            __typename?: 'LifecycleTemplate';
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
             id: string;
             definition: string;
-            type: LifecycleType;
+            type: InnovationFlowType;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }>;
         }
@@ -6744,8 +6744,8 @@ export type CalloutFormTemplatesFromHubQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
             id: string;
             defaultDescription: string;
             type: string;
@@ -6758,8 +6758,8 @@ export type CalloutFormTemplatesFromHubQuery = {
               visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
             };
           }>;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -6775,11 +6775,11 @@ export type CalloutFormTemplatesFromHubQuery = {
   };
 };
 
-export type AspectTemplatesFromHubQueryVariables = Exact<{
+export type PostTemplatesFromHubQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type AspectTemplatesFromHubQuery = {
+export type PostTemplatesFromHubQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -6788,8 +6788,8 @@ export type AspectTemplatesFromHubQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
             id: string;
             defaultDescription: string;
             type: string;
@@ -6807,11 +6807,11 @@ export type AspectTemplatesFromHubQuery = {
   };
 };
 
-export type CanvasTemplatesFromHubQueryVariables = Exact<{
+export type WhiteboardTemplatesFromHubQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type CanvasTemplatesFromHubQuery = {
+export type WhiteboardTemplatesFromHubQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -6820,8 +6820,8 @@ export type CanvasTemplatesFromHubQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -6837,11 +6837,11 @@ export type CanvasTemplatesFromHubQuery = {
   };
 };
 
-export type LifecycleTemplatesFromHubQueryVariables = Exact<{
+export type InnovationFlowTemplatesFromHubQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type LifecycleTemplatesFromHubQuery = {
+export type InnovationFlowTemplatesFromHubQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -6850,11 +6850,11 @@ export type LifecycleTemplatesFromHubQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          lifecycleTemplates: Array<{
-            __typename?: 'LifecycleTemplate';
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
             id: string;
             definition: string;
-            type: LifecycleType;
+            type: InnovationFlowType;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }>;
         }
@@ -6862,12 +6862,12 @@ export type LifecycleTemplatesFromHubQuery = {
   };
 };
 
-export type HubTemplatesCanvasTemplateWithValueQueryVariables = Exact<{
+export type HubTemplatesWhiteboardTemplateWithValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
-  canvasTemplateId: Scalars['UUID'];
+  whiteboardTemplateId: Scalars['UUID'];
 }>;
 
-export type HubTemplatesCanvasTemplateWithValueQuery = {
+export type HubTemplatesWhiteboardTemplateWithValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -6876,9 +6876,9 @@ export type HubTemplatesCanvasTemplateWithValueQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplate?:
+          whiteboardTemplate?:
             | {
-                __typename?: 'CanvasTemplate';
+                __typename?: 'WhiteboardTemplate';
                 value: string;
                 id: string;
                 profile: {
@@ -6902,8 +6902,8 @@ export type HubTemplatesFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
-        aspectTemplates: Array<{
-          __typename?: 'AspectTemplate';
+        postTemplates: Array<{
+          __typename?: 'PostTemplate';
           id: string;
           defaultDescription: string;
           type: string;
@@ -6916,8 +6916,8 @@ export type HubTemplatesFragment = {
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
         }>;
-        canvasTemplates: Array<{
-          __typename?: 'CanvasTemplate';
+        whiteboardTemplates: Array<{
+          __typename?: 'WhiteboardTemplate';
           id: string;
           profile: {
             __typename?: 'Profile';
@@ -6928,19 +6928,19 @@ export type HubTemplatesFragment = {
             visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           };
         }>;
-        lifecycleTemplates: Array<{
-          __typename?: 'LifecycleTemplate';
+        innovationFlowTemplates: Array<{
+          __typename?: 'InnovationFlowTemplate';
           id: string;
           definition: string;
-          type: LifecycleType;
+          type: InnovationFlowType;
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }>;
       }
     | undefined;
 };
 
-export type AspectTemplateFragment = {
-  __typename?: 'AspectTemplate';
+export type PostTemplateFragment = {
+  __typename?: 'PostTemplate';
   id: string;
   defaultDescription: string;
   type: string;
@@ -6963,8 +6963,8 @@ export type ProfileInfoFragment = {
   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
-export type CanvasTemplateFragment = {
-  __typename?: 'CanvasTemplate';
+export type WhiteboardTemplateFragment = {
+  __typename?: 'WhiteboardTemplate';
   id: string;
   profile: {
     __typename?: 'Profile';
@@ -6976,8 +6976,8 @@ export type CanvasTemplateFragment = {
   };
 };
 
-export type CanvasTemplateWithValueFragment = {
-  __typename?: 'CanvasTemplate';
+export type WhiteboardTemplateWithValueFragment = {
+  __typename?: 'WhiteboardTemplate';
   value: string;
   id: string;
   profile: {
@@ -6990,11 +6990,11 @@ export type CanvasTemplateWithValueFragment = {
   };
 };
 
-export type LifecycleTemplateFragment = {
-  __typename?: 'LifecycleTemplate';
+export type InnovationFlowTemplateFragment = {
+  __typename?: 'InnovationFlowTemplate';
   id: string;
   definition: string;
-  type: LifecycleType;
+  type: InnovationFlowType;
   profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
 };
 
@@ -8107,11 +8107,11 @@ export type HubHostReferencesQuery = {
   };
 };
 
-export type HubLifecycleTemplatesQueryVariables = Exact<{
+export type HubInnovationFlowTemplatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubLifecycleTemplatesQuery = {
+export type HubInnovationFlowTemplatesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -8120,11 +8120,11 @@ export type HubLifecycleTemplatesQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          lifecycleTemplates: Array<{
-            __typename?: 'LifecycleTemplate';
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
             definition: string;
             id: string;
-            type: LifecycleType;
+            type: InnovationFlowType;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
         }
@@ -11100,36 +11100,13 @@ export type TemplatesForCalloutCreationQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type AspectTemplatesOnCalloutCreationQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
@@ -11138,11 +11115,11 @@ export type AspectTemplatesOnCalloutCreationQuery = {
   };
 };
 
-export type CanvasTemplatesOnCalloutCreationQueryVariables = Exact<{
+export type PostTemplatesOnCalloutCreationQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type CanvasTemplatesOnCalloutCreationQuery = {
+export type PostTemplatesOnCalloutCreationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11151,8 +11128,31 @@ export type CanvasTemplatesOnCalloutCreationQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type WhiteboardTemplatesOnCalloutCreationQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type WhiteboardTemplatesOnCalloutCreationQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string };
           }>;
@@ -11163,12 +11163,12 @@ export type CanvasTemplatesOnCalloutCreationQuery = {
 
 export type ProfileDisplayNameFragment = { __typename?: 'Profile'; id: string; displayName: string };
 
-export type AspectTemplateValueQueryVariables = Exact<{
+export type PostTemplateValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   id: Scalars['UUID'];
 }>;
 
-export type AspectTemplateValueQuery = {
+export type PostTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11177,9 +11177,9 @@ export type AspectTemplateValueQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          aspectTemplate?:
+          postTemplate?:
             | {
-                __typename?: 'AspectTemplate';
+                __typename?: 'PostTemplate';
                 id: string;
                 type: string;
                 defaultDescription: string;
@@ -11196,12 +11196,12 @@ export type AspectTemplateValueQuery = {
   };
 };
 
-export type CanvasTemplateValueQueryVariables = Exact<{
+export type WhiteboardTemplateValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   id: Scalars['UUID'];
 }>;
 
-export type CanvasTemplateValueQuery = {
+export type WhiteboardTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11210,7 +11210,7 @@ export type CanvasTemplateValueQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+          whiteboardTemplate?: { __typename?: 'WhiteboardTemplate'; id: string; value: string } | undefined;
         }
       | undefined;
   };
@@ -11338,9 +11338,9 @@ export type UpdateCalloutMutation = {
     type: CalloutType;
     visibility: CalloutVisibility;
     profile: { __typename?: 'Profile'; id: string; description?: string | undefined; displayName: string };
-    cardTemplate?:
+    postTemplate?:
       | {
-          __typename?: 'AspectTemplate';
+          __typename?: 'PostTemplate';
           id: string;
           type: string;
           defaultDescription: string;
@@ -11351,9 +11351,9 @@ export type UpdateCalloutMutation = {
           };
         }
       | undefined;
-    canvasTemplate?:
+    whiteboardTemplate?:
       | {
-          __typename?: 'CanvasTemplate';
+          __typename?: 'WhiteboardTemplate';
           id: string;
           value: string;
           profile: {
@@ -11559,9 +11559,9 @@ export type CalloutsQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
-                cardTemplate?:
+                postTemplate?:
                   | {
-                      __typename?: 'AspectTemplate';
+                      __typename?: 'PostTemplate';
                       id: string;
                       type: string;
                       defaultDescription: string;
@@ -11572,9 +11572,9 @@ export type CalloutsQuery = {
                       };
                     }
                   | undefined;
-                canvasTemplate?:
+                whiteboardTemplate?:
                   | {
-                      __typename?: 'CanvasTemplate';
+                      __typename?: 'WhiteboardTemplate';
                       id: string;
                       value: string;
                       profile: {
@@ -11741,9 +11741,9 @@ export type CalloutsQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  cardTemplate?:
+                  postTemplate?:
                     | {
-                        __typename?: 'AspectTemplate';
+                        __typename?: 'PostTemplate';
                         id: string;
                         type: string;
                         defaultDescription: string;
@@ -11754,9 +11754,9 @@ export type CalloutsQuery = {
                         };
                       }
                     | undefined;
-                  canvasTemplate?:
+                  whiteboardTemplate?:
                     | {
-                        __typename?: 'CanvasTemplate';
+                        __typename?: 'WhiteboardTemplate';
                         id: string;
                         value: string;
                         profile: {
@@ -11924,9 +11924,9 @@ export type CalloutsQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  cardTemplate?:
+                  postTemplate?:
                     | {
-                        __typename?: 'AspectTemplate';
+                        __typename?: 'PostTemplate';
                         id: string;
                         type: string;
                         defaultDescription: string;
@@ -11937,9 +11937,9 @@ export type CalloutsQuery = {
                         };
                       }
                     | undefined;
-                  canvasTemplate?:
+                  whiteboardTemplate?:
                     | {
-                        __typename?: 'CanvasTemplate';
+                        __typename?: 'WhiteboardTemplate';
                         id: string;
                         value: string;
                         profile: {
@@ -12409,9 +12409,9 @@ export type CollaborationWithCalloutsFragment = {
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        cardTemplate?:
+        postTemplate?:
           | {
-              __typename?: 'AspectTemplate';
+              __typename?: 'PostTemplate';
               id: string;
               type: string;
               defaultDescription: string;
@@ -12422,9 +12422,9 @@ export type CollaborationWithCalloutsFragment = {
               };
             }
           | undefined;
-        canvasTemplate?:
+        whiteboardTemplate?:
           | {
-              __typename?: 'CanvasTemplate';
+              __typename?: 'WhiteboardTemplate';
               id: string;
               value: string;
               profile: {
@@ -12555,9 +12555,9 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  cardTemplate?:
+  postTemplate?:
     | {
-        __typename?: 'AspectTemplate';
+        __typename?: 'PostTemplate';
         id: string;
         type: string;
         defaultDescription: string;
@@ -12568,9 +12568,9 @@ export type CalloutFragment = {
         };
       }
     | undefined;
-  canvasTemplate?:
+  whiteboardTemplate?:
     | {
-        __typename?: 'CanvasTemplate';
+        __typename?: 'WhiteboardTemplate';
         id: string;
         value: string;
         profile: {
@@ -12585,11 +12585,11 @@ export type CalloutFragment = {
     | undefined;
 };
 
-export type CalloutCardTemplateFragment = {
+export type CalloutPostTemplateFragment = {
   __typename?: 'Callout';
-  cardTemplate?:
+  postTemplate?:
     | {
-        __typename?: 'AspectTemplate';
+        __typename?: 'PostTemplate';
         id: string;
         type: string;
         defaultDescription: string;
@@ -12602,11 +12602,11 @@ export type CalloutCardTemplateFragment = {
     | undefined;
 };
 
-export type CalloutCanvasTemplateFragment = {
+export type CalloutWhiteboardTemplateFragment = {
   __typename?: 'Callout';
-  canvasTemplate?:
+  whiteboardTemplate?:
     | {
-        __typename?: 'CanvasTemplate';
+        __typename?: 'WhiteboardTemplate';
         id: string;
         value: string;
         profile: {
@@ -12656,11 +12656,11 @@ export type CalloutMessageReceivedSubscription = {
   };
 };
 
-export type HubCanvasTemplatesLibraryQueryVariables = Exact<{
+export type HubWhiteboardTemplatesLibraryQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubCanvasTemplatesLibraryQuery = {
+export type HubWhiteboardTemplatesLibraryQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -12669,8 +12669,8 @@ export type HubCanvasTemplatesLibraryQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -12699,12 +12699,12 @@ export type HubCanvasTemplatesLibraryQuery = {
   };
 };
 
-export type HubCanvasTemplateValueQueryVariables = Exact<{
+export type HubWhiteboardTemplateValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
-  canvasTemplateId: Scalars['UUID'];
+  whiteboardTemplateId: Scalars['UUID'];
 }>;
 
-export type HubCanvasTemplateValueQuery = {
+export type HubWhiteboardTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -12713,9 +12713,9 @@ export type HubCanvasTemplateValueQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplate?:
+          whiteboardTemplate?:
             | {
-                __typename?: 'CanvasTemplate';
+                __typename?: 'WhiteboardTemplate';
                 value: string;
                 id: string;
                 profile: {
@@ -12733,9 +12733,9 @@ export type HubCanvasTemplateValueQuery = {
   };
 };
 
-export type PlatformCanvasTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
+export type PlatformWhiteboardTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
 
-export type PlatformCanvasTemplatesLibraryQuery = {
+export type PlatformWhiteboardTemplatesLibraryQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -12763,8 +12763,8 @@ export type PlatformCanvasTemplatesLibraryQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
-              canvasTemplates: Array<{
-                __typename?: 'CanvasTemplate';
+              whiteboardTemplates: Array<{
+                __typename?: 'WhiteboardTemplate';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -12782,12 +12782,12 @@ export type PlatformCanvasTemplatesLibraryQuery = {
   };
 };
 
-export type PlatformCanvasTemplateValueQueryVariables = Exact<{
+export type PlatformWhiteboardTemplateValueQueryVariables = Exact<{
   innovationPackId: Scalars['UUID'];
-  canvasTemplateId: Scalars['UUID'];
+  whiteboardTemplateId: Scalars['UUID'];
 }>;
 
-export type PlatformCanvasTemplateValueQuery = {
+export type PlatformWhiteboardTemplateValueQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -12804,9 +12804,9 @@ export type PlatformCanvasTemplateValueQuery = {
               | {
                   __typename?: 'TemplatesSet';
                   id: string;
-                  canvasTemplate?:
+                  whiteboardTemplate?:
                     | {
-                        __typename?: 'CanvasTemplate';
+                        __typename?: 'WhiteboardTemplate';
                         value: string;
                         id: string;
                         profile: {
@@ -12943,11 +12943,11 @@ export type CheckoutDetailsFragment = {
     | undefined;
 };
 
-export type CanvasTemplatesQueryVariables = Exact<{
+export type WhiteboardTemplatesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type CanvasTemplatesQuery = {
+export type WhiteboardTemplatesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -12956,8 +12956,8 @@ export type CanvasTemplatesQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             value: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
@@ -12967,8 +12967,8 @@ export type CanvasTemplatesQuery = {
   };
 };
 
-export type CreateCanvasCanvasTemplateFragment = {
-  __typename?: 'CanvasTemplate';
+export type CreateCanvasWhiteboardTemplateFragment = {
+  __typename?: 'WhiteboardTemplate';
   id: string;
   value: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
@@ -18767,8 +18767,8 @@ export type AdminHubTemplatesQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
             id: string;
             defaultDescription: string;
             type: string;
@@ -18794,8 +18794,8 @@ export type AdminHubTemplatesQuery = {
                 | undefined;
             };
           }>;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
             id: string;
             profile: {
               __typename?: 'Profile';
@@ -18819,11 +18819,11 @@ export type AdminHubTemplatesQuery = {
                 | undefined;
             };
           }>;
-          lifecycleTemplates: Array<{
-            __typename?: 'LifecycleTemplate';
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
             id: string;
             definition: string;
-            type: LifecycleType;
+            type: InnovationFlowType;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -18851,11 +18851,11 @@ export type AdminHubTemplatesQuery = {
   };
 };
 
-export type AdminLifecycleTemplateFragment = {
-  __typename?: 'LifecycleTemplate';
+export type AdminInnovationFlowTemplateFragment = {
+  __typename?: 'InnovationFlowTemplate';
   id: string;
   definition: string;
-  type: LifecycleType;
+  type: InnovationFlowType;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18879,8 +18879,8 @@ export type AdminLifecycleTemplateFragment = {
   };
 };
 
-export type AdminAspectTemplateFragment = {
-  __typename?: 'AspectTemplate';
+export type AdminPostTemplateFragment = {
+  __typename?: 'PostTemplate';
   id: string;
   defaultDescription: string;
   type: string;
@@ -18907,8 +18907,8 @@ export type AdminAspectTemplateFragment = {
   };
 };
 
-export type AdminCanvasTemplateFragment = {
-  __typename?: 'CanvasTemplate';
+export type AdminWhiteboardTemplateFragment = {
+  __typename?: 'WhiteboardTemplate';
   id: string;
   profile: {
     __typename?: 'Profile';
@@ -18933,7 +18933,7 @@ export type AdminCanvasTemplateFragment = {
   };
 };
 
-export type AdminCanvasTemplateValueFragment = { __typename?: 'CanvasTemplate'; id: string; value: string };
+export type AdminWhiteboardTemplateValueFragment = { __typename?: 'WhiteboardTemplate'; id: string; value: string };
 
 export type ProfileInfoWithVisualFragment = {
   __typename?: 'Profile';
@@ -18957,12 +18957,12 @@ export type ProfileInfoWithVisualFragment = {
     | undefined;
 };
 
-export type HubTemplatesAdminCanvasTemplateWithValueQueryVariables = Exact<{
+export type HubTemplatesAdminWhiteboardTemplateWithValueQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
-  canvasTemplateId: Scalars['UUID'];
+  whiteboardTemplateId: Scalars['UUID'];
 }>;
 
-export type HubTemplatesAdminCanvasTemplateWithValueQuery = {
+export type HubTemplatesAdminWhiteboardTemplateWithValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -18971,75 +18971,10 @@ export type HubTemplatesAdminCanvasTemplateWithValueQuery = {
       | {
           __typename?: 'TemplatesSet';
           id: string;
-          canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+          whiteboardTemplate?: { __typename?: 'WhiteboardTemplate'; id: string; value: string } | undefined;
         }
       | undefined;
   };
-};
-
-export type UpdateAspectTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-  defaultDescription?: InputMaybe<Scalars['Markdown']>;
-  profile?: InputMaybe<UpdateProfileInput>;
-  type?: InputMaybe<Scalars['String']>;
-}>;
-
-export type UpdateAspectTemplateMutation = {
-  __typename?: 'Mutation';
-  updateAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
-};
-
-export type CreateAspectTemplateMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID'];
-  defaultDescription: Scalars['Markdown'];
-  profile: CreateProfileInput;
-  type: Scalars['String'];
-  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
-}>;
-
-export type CreateAspectTemplateMutation = {
-  __typename?: 'Mutation';
-  createAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
-};
-
-export type DeleteAspectTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-}>;
-
-export type DeleteAspectTemplateMutation = {
-  __typename?: 'Mutation';
-  deleteAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
-};
-
-export type UpdateCanvasTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-  value?: InputMaybe<Scalars['JSON']>;
-  profile: UpdateProfileInput;
-}>;
-
-export type UpdateCanvasTemplateMutation = {
-  __typename?: 'Mutation';
-  updateCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
-};
-
-export type CreateCanvasTemplateMutationVariables = Exact<{
-  templatesSetId: Scalars['UUID'];
-  value: Scalars['JSON'];
-  profile: CreateProfileInput;
-}>;
-
-export type CreateCanvasTemplateMutation = {
-  __typename?: 'Mutation';
-  createCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
-};
-
-export type DeleteCanvasTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-}>;
-
-export type DeleteCanvasTemplateMutation = {
-  __typename?: 'Mutation';
-  deleteCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
 };
 
 export type InnovationPacksQueryVariables = Exact<{ [key: string]: never }>;
@@ -19074,8 +19009,8 @@ export type InnovationPacksQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
-              aspectTemplates: Array<{
-                __typename?: 'AspectTemplate';
+              postTemplates: Array<{
+                __typename?: 'PostTemplate';
                 id: string;
                 defaultDescription: string;
                 type: string;
@@ -19101,8 +19036,8 @@ export type InnovationPacksQuery = {
                     | undefined;
                 };
               }>;
-              canvasTemplates: Array<{
-                __typename?: 'CanvasTemplate';
+              whiteboardTemplates: Array<{
+                __typename?: 'WhiteboardTemplate';
                 id: string;
                 profile: {
                   __typename?: 'Profile';
@@ -19126,11 +19061,11 @@ export type InnovationPacksQuery = {
                     | undefined;
                 };
               }>;
-              lifecycleTemplates: Array<{
-                __typename?: 'LifecycleTemplate';
+              innovationFlowTemplates: Array<{
+                __typename?: 'InnovationFlowTemplate';
                 id: string;
                 definition: string;
-                type: LifecycleType;
+                type: InnovationFlowType;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -19160,12 +19095,12 @@ export type InnovationPacksQuery = {
   };
 };
 
-export type InnovationPackCanvasTemplateWithValueQueryVariables = Exact<{
+export type InnovationPackWhiteboardTemplateWithValueQueryVariables = Exact<{
   innovationPackId: Scalars['UUID'];
-  canvasTemplateId: Scalars['UUID'];
+  whiteboardTemplateId: Scalars['UUID'];
 }>;
 
-export type InnovationPackCanvasTemplateWithValueQuery = {
+export type InnovationPackWhiteboardTemplateWithValueQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -19180,7 +19115,7 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
             templates?:
               | {
                   __typename?: 'TemplatesSet';
-                  canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+                  whiteboardTemplate?: { __typename?: 'WhiteboardTemplate'; id: string; value: string } | undefined;
                 }
               | undefined;
           }
@@ -19189,12 +19124,12 @@ export type InnovationPackCanvasTemplateWithValueQuery = {
   };
 };
 
-export type InnovationPackFullCanvasTemplateWithValueQueryVariables = Exact<{
+export type InnovationPackFullWhiteboardTemplateWithValueQueryVariables = Exact<{
   innovationPackId: Scalars['UUID'];
-  canvasTemplateId: Scalars['UUID'];
+  whiteboardTemplateId: Scalars['UUID'];
 }>;
 
-export type InnovationPackFullCanvasTemplateWithValueQuery = {
+export type InnovationPackFullWhiteboardTemplateWithValueQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
@@ -19209,9 +19144,9 @@ export type InnovationPackFullCanvasTemplateWithValueQuery = {
             templates?:
               | {
                   __typename?: 'TemplatesSet';
-                  canvasTemplate?:
+                  whiteboardTemplate?:
                     | {
-                        __typename?: 'CanvasTemplate';
+                        __typename?: 'WhiteboardTemplate';
                         value: string;
                         id: string;
                         profile: {
@@ -19240,20 +19175,20 @@ export type UpdateInnovationTemplateMutationVariables = Exact<{
 
 export type UpdateInnovationTemplateMutation = {
   __typename?: 'Mutation';
-  updateLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+  updateInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
 };
 
 export type CreateInnovationTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   profile: CreateProfileInput;
   definition: Scalars['LifecycleDefinition'];
-  type: LifecycleType;
+  type: InnovationFlowType;
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CreateInnovationTemplateMutation = {
   __typename?: 'Mutation';
-  createLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+  createInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
 };
 
 export type DeleteInnovationTemplateMutationVariables = Exact<{
@@ -19262,7 +19197,72 @@ export type DeleteInnovationTemplateMutationVariables = Exact<{
 
 export type DeleteInnovationTemplateMutation = {
   __typename?: 'Mutation';
-  deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+  deleteInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
+};
+
+export type UpdatePostTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  profile?: InputMaybe<UpdateProfileInput>;
+  type?: InputMaybe<Scalars['String']>;
+}>;
+
+export type UpdatePostTemplateMutation = {
+  __typename?: 'Mutation';
+  updatePostTemplate: { __typename?: 'PostTemplate'; id: string };
+};
+
+export type CreatePostTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  defaultDescription: Scalars['Markdown'];
+  profile: CreateProfileInput;
+  type: Scalars['String'];
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+export type CreatePostTemplateMutation = {
+  __typename?: 'Mutation';
+  createPostTemplate: { __typename?: 'PostTemplate'; id: string };
+};
+
+export type DeletePostTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeletePostTemplateMutation = {
+  __typename?: 'Mutation';
+  deletePostTemplate: { __typename?: 'PostTemplate'; id: string };
+};
+
+export type UpdateWhiteboardTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
+  profile: UpdateProfileInput;
+}>;
+
+export type UpdateWhiteboardTemplateMutation = {
+  __typename?: 'Mutation';
+  updateWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
+};
+
+export type CreateWhiteboardTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  value: Scalars['JSON'];
+  profile: CreateProfileInput;
+}>;
+
+export type CreateWhiteboardTemplateMutation = {
+  __typename?: 'Mutation';
+  createWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
+};
+
+export type DeleteWhiteboardTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteWhiteboardTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteWhiteboardTemplate: { __typename?: 'WhiteboardTemplate'; id: string };
 };
 
 export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;

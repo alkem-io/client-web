@@ -7,7 +7,7 @@ import { DialogContent, DialogTitle } from '../../../../common/components/core/d
 import AspectForm, { AspectFormOutput } from '../AspectForm/AspectForm';
 import { CreateAspectOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
-import { CalloutCardTemplate } from '../../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate } from '../../callout/creation-dialog/CalloutCreationDialog';
 
 export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
@@ -19,19 +19,19 @@ export type AspectCreationDialogProps = {
   onCreate: (aspect: AspectCreationOutput) => Promise<{ nameID: string } | undefined>;
   calloutDisplayName: string;
   calloutId: string;
-  cardTemplate: CalloutCardTemplate | undefined;
+  postTemplate: CalloutPostTemplate | undefined;
   isCreating: boolean;
 } & CoreEntityIdTypes;
 
-export interface CardCreationCardTemplateInfo {
+export interface CardCreationPostTemplateInfo {
   tags: string[] | undefined;
   visualUri: string | undefined;
 }
 
-export interface CardCreationCardTemplate {
+export interface CardCreationPostTemplate {
   type: string | undefined;
   defaultDescription: string | undefined;
-  info: CardCreationCardTemplateInfo;
+  info: CardCreationPostTemplateInfo;
 }
 
 const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
@@ -40,7 +40,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   onClose,
   onCreate,
   calloutDisplayName,
-  cardTemplate,
+  postTemplate,
   isCreating,
 }) => {
   const { t } = useTranslation();
@@ -58,8 +58,8 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
         displayName: aspect?.profileData?.displayName ?? '',
         description: aspect?.profileData?.description ?? '',
       },
-      type: cardTemplate?.type ?? '',
-      visualUri: cardTemplate?.profile?.visual?.uri,
+      type: postTemplate?.type ?? '',
+      visualUri: postTemplate?.profile?.visual?.uri,
       tags: aspect.tags,
     });
     handleClose();
@@ -75,7 +75,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
       ...newAspect,
     });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
-  const tags = cardTemplate?.profile?.tags;
+  const tags = postTemplate?.profile?.tags;
 
   const renderButtons = () => {
     return (
@@ -103,7 +103,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
             aspectNames={aspectNames}
             onChange={handleFormChange}
             onStatusChanged={handleFormStatusChange}
-            descriptionTemplate={cardTemplate?.defaultDescription}
+            descriptionTemplate={postTemplate?.defaultDescription}
             tags={tags}
           />
         </Box>

@@ -9,7 +9,7 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
 import {
-  AdminLifecycleTemplateFragment,
+  AdminInnovationFlowTemplateFragment,
   UpdateInnovationTemplateMutation,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
@@ -23,14 +23,14 @@ import InnovationImportTemplateCard from './InnovationImportTemplateCard';
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminLifecycleTemplateFragment[] | undefined;
+  templates: AdminInnovationFlowTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (aspect: AdminLifecycleTemplateFragment) => LinkWithState;
+  buildTemplateLink: (aspect: AdminInnovationFlowTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<AdminLifecycleTemplateFragment>[];
+  innovationPacks: InnovationPack<AdminInnovationFlowTemplateFragment>[];
   canImportTemplates: boolean;
 }
 

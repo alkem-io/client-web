@@ -8,8 +8,8 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
-import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/templates/AspectTemplates/AspectTemplateForm';
-import { CanvasTemplateFormSubmittedValues } from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplateForm';
+import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
+import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 
 export type CalloutCreationType = {
   profile: {
@@ -18,8 +18,8 @@ export type CalloutCreationType = {
   };
   type: CalloutType;
   state: CalloutState;
-  cardTemplate?: AspectTemplateFormSubmittedValues;
-  canvasTemplate?: CanvasTemplateFormSubmittedValues;
+  postTemplate?: PostTemplateFormSubmittedValues;
+  whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
 };
 
 interface CalloutCreationUtils {

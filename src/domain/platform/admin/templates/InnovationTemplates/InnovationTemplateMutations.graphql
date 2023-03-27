@@ -3,7 +3,7 @@ mutation updateInnovationTemplate(
   $profile: UpdateProfileInput!
   $definition: LifecycleDefinition!
 ) {
-  updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
+  updateInnovationFlowTemplate(innovationFlowTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
     id
   }
 }
@@ -12,11 +12,11 @@ mutation createInnovationTemplate(
   $templatesSetId: UUID!
   $profile: CreateProfileInput!
   $definition: LifecycleDefinition!
-  $type: LifecycleType!
+  $type: InnovationFlowType!
   $tags: [String!]
 ) {
-  createLifecycleTemplate(
-    lifecycleTemplateInput: {
+  createInnovationFlowTemplate(
+    innovationFlowTemplateInput: {
       templatesSetID: $templatesSetId
       profile: $profile
       type: $type
@@ -29,7 +29,7 @@ mutation createInnovationTemplate(
 }
 
 mutation deleteInnovationTemplate($templateId: UUID!) {
-  deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
+  deleteInnovationFlowTemplate(deleteData: { ID: $templateId }) {
     id
   }
 }

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../core/apollo/generated/graphql-schema';
 import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 import SelectInnovationFlowDialog, {
-  LifecycleTemplate,
+  InnovationFlowTemplate,
   SelectInnovationFlowFormValuesType,
 } from './SelectInnovationFlowDialog';
 import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDialog';
@@ -13,7 +13,7 @@ interface EditLifecycleProps {
   lifecycle: Lifecycle | undefined;
   entityId: string;
   onSetNewState: (id: string, newState: string) => void;
-  innovationFlowTemplates: LifecycleTemplate[] | undefined;
+  innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
