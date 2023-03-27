@@ -12,8 +12,10 @@ import { AspectTemplateFormSubmittedValues } from '../../../../platform/admin/te
 import { CanvasTemplateFormSubmittedValues } from '../../../../platform/admin/templates/CanvasTemplates/CanvasTemplateForm';
 
 export type CalloutCreationType = {
-  description: string;
-  displayName: string;
+  profile: {
+    description: string;
+    displayName: string;
+  };
   type: CalloutType;
   state: CalloutState;
   cardTemplate?: AspectTemplateFormSubmittedValues;

@@ -29,8 +29,11 @@ fragment OpportunityCard on Opportunity {
   projects {
     id
     nameID
-    displayName
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     lifecycle {
       id
       state

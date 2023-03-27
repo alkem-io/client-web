@@ -48,7 +48,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   const { t } = useTranslation();
 
   const buildCalloutTitle = (callout: TypedCallout) => {
-    return <EllipsableWithCount count={getItemsCount(callout)}>{callout.displayName}</EllipsableWithCount>;
+    return <EllipsableWithCount count={getItemsCount(callout)}>{callout.profile.displayName}</EllipsableWithCount>;
   };
 
   const {
@@ -70,7 +70,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
-  const calloutNames = useMemo(() => (callouts ?? []).map(x => x.displayName), [callouts]);
+  const calloutNames = useMemo(() => (callouts ?? []).map(x => x.profile.displayName), [callouts]);
 
   // Scroll to Callout handler:
   const { scrollable } = useScrollToElement(calloutNameId, { enabled: scrollToCallout });

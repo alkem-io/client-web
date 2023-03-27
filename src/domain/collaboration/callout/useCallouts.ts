@@ -52,15 +52,17 @@ type CalloutTypesWithChildTypes = {
     CalloutCardTemplateType[Type];
 };
 
-export type TypedCallout = Pick<
-  Callout,
-  'id' | 'displayName' | 'nameID' | 'description' | 'state' | 'activity' | 'authorization' | 'sortOrder'
-> &
+export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' | 'authorization' | 'sortOrder'> &
   (
     | CalloutTypesWithChildTypes[CalloutType.Card]
     | CalloutTypesWithChildTypes[CalloutType.Canvas]
     | CalloutTypesWithChildTypes[CalloutType.Comments]
   ) & {
+    profile: {
+      id: string;
+      displayName: string;
+      description?: string;
+    };
     draft: boolean;
     editable: boolean;
     isSubscribedToComments: boolean;

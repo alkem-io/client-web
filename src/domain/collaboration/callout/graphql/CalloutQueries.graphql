@@ -147,8 +147,11 @@ fragment Callout on Callout {
   id
   nameID
   type
-  displayName
-  description
+  profile {
+    id
+    displayName
+    description
+  }
   state
   sortOrder
   activity
@@ -172,12 +175,12 @@ fragment CalloutCardTemplate on Callout {
     id
     type
     defaultDescription
-    info {
+    profile {
       tagset {
         id
         tags
       }
-      visual {
+      visual(type: CARD) {
         id
         uri
       }
@@ -189,14 +192,15 @@ fragment CalloutCanvasTemplate on Callout {
   canvasTemplate {
     id
     value
-    info {
-      title
+    profile {
+      id
+      displayName
       description
       tagset {
         id
         tags
       }
-      visual {
+      visual(type: CARD) {
         id
         uri
       }

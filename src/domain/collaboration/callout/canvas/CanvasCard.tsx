@@ -39,9 +39,13 @@ const CanvasCard = ({ canvas, onClick }: CanvasCardProps) => {
 
   return (
     <ContributeCard onClick={handleClick}>
-      <CardHeader title={canvas?.displayName} iconComponent={CanvasIcon} />
-      {canvas?.preview?.uri ? (
-        <CardImage aspectRatio={CANVAS_IMAGE_ASPECT_RATIO} src={canvas?.preview?.uri} alt={canvas.displayName} />
+      <CardHeader title={canvas?.profile.displayName} iconComponent={CanvasIcon} />
+      {canvas?.profile?.visual?.uri ? (
+        <CardImage
+          aspectRatio={CANVAS_IMAGE_ASPECT_RATIO}
+          src={canvas?.profile?.visual?.uri}
+          alt={canvas.profile.displayName}
+        />
       ) : (
         <CanvasDefaultImage />
       )}

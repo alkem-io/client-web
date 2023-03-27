@@ -59,9 +59,11 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
 
   return (
     <>
-      {innovationFlowTemplate?.info.title && (
+      {innovationFlowTemplate?.profile.displayName && (
         <Typography variant="h5" color="black" fontWeight={600}>
-          {`${t('components.update-innovation-flow.template-label.title')}: ${innovationFlowTemplate?.info.title}`}
+          {`${t('components.update-innovation-flow.template-label.title')}: ${
+            innovationFlowTemplate?.profile.displayName
+          }`}
         </Typography>
       )}
       {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}

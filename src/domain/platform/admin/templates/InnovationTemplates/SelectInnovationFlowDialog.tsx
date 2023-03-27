@@ -12,13 +12,13 @@ import { LifecycleType } from '../../../../../core/apollo/generated/graphql-sche
 
 export interface LifecycleTemplateInfo {
   id: string;
-  title?: string;
+  displayName: string;
 }
 export interface LifecycleTemplate {
   definition: string;
   id: string;
   type: LifecycleType;
-  info: LifecycleTemplateInfo;
+  profile: LifecycleTemplateInfo;
 }
 export interface SelectInnovationFlowFormValuesType {
   innovationFlowTemplateID: string;
@@ -49,7 +49,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
     () =>
       Object.values(innovationFlowTemplates || []).map<FormikSelectValue>(x => ({
         id: x.id,
-        name: x.info.title || '',
+        name: x.profile.displayName,
       })),
     [innovationFlowTemplates]
   );

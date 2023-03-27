@@ -1,21 +1,32 @@
-mutation updateAspectTemplate($templateId: UUID!, $defaultDescription: Markdown, $info: UpdateTemplateInfoInput, $type: String) {
-  updateAspectTemplate(aspectTemplateInput: {
-    ID: $templateId
-    defaultDescription: $defaultDescription
-    info: $info
-    type: $type
-  }) {
+mutation updateAspectTemplate(
+  $templateId: UUID!
+  $defaultDescription: Markdown
+  $profile: UpdateProfileInput
+  $type: String
+) {
+  updateAspectTemplate(
+    aspectTemplateInput: { ID: $templateId, defaultDescription: $defaultDescription, profile: $profile, type: $type }
+  ) {
     id
   }
 }
 
-mutation createAspectTemplate($templatesSetId: UUID!, $defaultDescription: Markdown!, $info: CreateTemplateInfoInput!, $type: String!) {
-  createAspectTemplate(aspectTemplateInput: {
-    templatesSetID: $templatesSetId
-    defaultDescription: $defaultDescription
-    info: $info
-    type: $type
-  }) {
+mutation createAspectTemplate(
+  $templatesSetId: UUID!
+  $defaultDescription: Markdown!
+  $profile: CreateProfileInput!
+  $type: String!
+  $tags: [String!]
+) {
+  createAspectTemplate(
+    aspectTemplateInput: {
+      templatesSetID: $templatesSetId
+      defaultDescription: $defaultDescription
+      profile: $profile
+      type: $type
+      tags: $tags
+    }
+  ) {
     id
   }
 }

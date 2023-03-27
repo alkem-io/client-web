@@ -165,7 +165,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
                     disablePortal
                     options={calloutsOfTypeCard ?? []}
                     value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
-                    getOptionLabel={callout => callout.displayName}
+                    getOptionLabel={callout => callout.profile.displayName}
                     onChange={(event, callout) => {
                       setTargetCalloutId(callout?.id);
                     }}
