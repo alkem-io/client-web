@@ -180,7 +180,7 @@ const AdminTemplatesSection = <
         profile: {
           tagsets: [
             {
-              id: tagsetId,
+              ID: tagsetId,
               tags,
             },
           ],
