@@ -218,12 +218,11 @@ const AdminTemplatesSection = <
     const values: SubmittedValues = {
       ...(templateData as SubmittedValues),
       ...value,
-      // TODO double check that info is needed to be submitted and not profile
-      info: {
-        title: infoData.displayName,
-        tags: infoData.tagset?.tags,
+      profile: {
+        displayName: infoData.displayName,
         description: infoData.description,
       },
+      tags: infoData.tagset?.tags,
     };
 
     const result = await createAspectTemplate({
