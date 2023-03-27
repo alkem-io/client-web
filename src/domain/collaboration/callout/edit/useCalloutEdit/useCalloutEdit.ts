@@ -9,7 +9,11 @@ import { CalloutEditType } from '../CalloutEditType';
 import removeFromCache from '../../../../shared/utils/apollo-cache/removeFromCache';
 
 type UseCalloutEditReturnType = {
-  handleVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
+  handleVisibilityChange: (
+    calloutId: Callout['id'],
+    visibility: CalloutVisibility,
+    sendNotification: boolean
+  ) => Promise<void>;
   handleEdit: (callout: CalloutEditType) => Promise<void>;
   handleDelete: (callout: CalloutEditType) => Promise<void>;
 };
@@ -19,9 +23,11 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
 
   const handleVisibilityChange = useCallback(
-    async (calloutId: string, visibility: CalloutVisibility) => {
+    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
       await updateCalloutVisibility({
-        variables: { calloutData: { calloutID: calloutId, visibility: visibility } },
+        variables: {
+          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
+        },
       });
     },
     [updateCalloutVisibility]
