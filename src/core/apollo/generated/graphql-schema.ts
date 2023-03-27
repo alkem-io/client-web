@@ -629,7 +629,7 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The PostTemplate for this Callout. */
+  /** The Post template associated with this Callout. */
   postTemplate?: Maybe<PostTemplate>;
   /** The Profile for this Callout. */
   profile: Profile;
@@ -645,7 +645,7 @@ export type Callout = {
   type: CalloutType;
   /** Visibility of the Callout. */
   visibility: CalloutVisibility;
-  /** The Whiteboard template for this Callout. */
+  /** The whiteboard template associated with this Callout. */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
 };
 
