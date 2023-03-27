@@ -18,7 +18,7 @@ const SignInIcon = ({ className, returnUrl }: SignInIconProps) => {
       to={buildLoginUrl(returnUrl)}
       aria-label={t('authentication.sign-in')}
       component={RouterLink}
-      className={`${className}`}
+      className={className}
       startIcon={<AssignmentIndOutlinedIcon />}
     >
       {t('authentication.topbar-sign-in')}
