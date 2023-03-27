@@ -18,8 +18,10 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 
 export type CalloutSummaryFields = {
-  description: string;
-  displayName: string;
+  profile: {
+    description?: string;
+    displayName: string;
+  };
   templateId?: string;
   type: CalloutType;
   draft: boolean;
@@ -74,11 +76,11 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
               <Gutters paddingTop={0}>
                 <Box>
                   <BlockTitle>{t('common.title')}</BlockTitle>
-                  <Text>{callout?.displayName}</Text>
+                  <Text>{callout?.profile.displayName}</Text>
                 </Box>
                 <Box>
                   <BlockTitle>{t('common.description')}</BlockTitle>
-                  <WrapperMarkdown>{callout?.description}</WrapperMarkdown>
+                  <WrapperMarkdown>{callout?.profile.description ?? ''}</WrapperMarkdown>
                 </Box>
                 <Box>
                   <BlockTitle>{t('components.callout-creation.callout-type-label')}</BlockTitle>
