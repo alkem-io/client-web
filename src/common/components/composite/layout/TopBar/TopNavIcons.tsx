@@ -9,12 +9,8 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { useLocation } from 'react-router-dom';
 
 const PREFIX = 'TopNavIcons';
-
 const classes = {
-  bar: `${PREFIX}-bar`,
-  button: `${PREFIX}-buttons`,
   buttonSelected: `${PREFIX}-buttonSelected`,
-  buttonSignIn: `${PREFIX}-buttonSignIn`,
 };
 
 const TopBarButton = styled(Button)(({ theme }) => ({
@@ -51,11 +47,12 @@ const TopBarButton = styled(Button)(({ theme }) => ({
   [`&.${classes.buttonSelected}`]: {
     borderBottomColor: theme.palette.primary.main,
   },
-  [`&.${classes.button}.${classes.buttonSignIn}`]: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-  },
-  [`&.${classes.button}.${classes.buttonSignIn}:hover`]: {
+}));
+
+const SignInButton = styled(TopBarButton)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  '&:hover': {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
   },
@@ -123,7 +120,7 @@ const TopNavIcons = () => {
           );
         })}
 
-        <ProfileMenuItem buttonComponent={TopBarButton} />
+        <ProfileMenuItem buttonComponent={TopBarButton} signInButtonComponent={SignInButton} />
       </List>
     </Root>
   );

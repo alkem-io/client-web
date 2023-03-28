@@ -10,9 +10,10 @@ import SignInIcon from './SignInIcon';
 
 interface ProfileMenuItemProps {
   buttonComponent: ComponentType<ButtonProps>;
+  signInButtonComponent: ComponentType<ButtonProps>;
 }
 
-const ProfileMenuItem = ({ buttonComponent: Button }: ProfileMenuItemProps) => {
+const ProfileMenuItem = ({ buttonComponent: Button, signInButtonComponent: SignInButton }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();
   const { pathname } = useLocation();
@@ -40,7 +41,7 @@ const ProfileMenuItem = ({ buttonComponent: Button }: ProfileMenuItemProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon buttonComponent={Button} returnUrl={pathname} />;
+      return <SignInIcon buttonComponent={SignInButton} returnUrl={pathname} />;
     }
     return (
       <>
