@@ -1,4 +1,4 @@
-import React, { ComponentType, FC, useMemo } from 'react';
+import React, { FC, ReactElement, useMemo } from 'react';
 import {
   alpha,
   Box,
@@ -10,17 +10,19 @@ import {
   ListItemProps,
   ListItemText,
 } from '@mui/material';
+import { DiscussionCategoryExt } from '../constants/DiscusionCategories';
 
 export interface CategoryConfig {
+  id: DiscussionCategoryExt;
   title: string;
-  icon?: ComponentType;
+  icon?: ReactElement;
 }
 
 interface CategorySelectorProps {
   categories: CategoryConfig[];
   value: string | null;
   showLabels?: boolean;
-  onSelect?: (category: string) => void;
+  onSelect?: (category: DiscussionCategoryExt) => void;
 }
 
 const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) => ({
@@ -49,21 +51,21 @@ const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) =
 export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value, showLabels = true, onSelect }) => {
   const items = useMemo(
     () =>
-      categories.map(({ title, icon: Icon }) => (
+      categories.map(({ id, title, icon }) => (
         <StyledListItemButton
           key={title}
-          selected={value === title}
+          selected={value === id}
           disableGutters={!showLabels}
-          onClick={() => onSelect?.(title)}
+          onClick={() => onSelect?.(id)}
         >
-          {Icon && (
+          {icon && (
             <ListItemIcon
               sx={{
                 justifyContent: !showLabels ? 'center' : 'flex-start',
-                color: value === title ? 'neutralLight.main' : undefined,
+                color: value === id ? 'neutralLight.main' : undefined,
               }}
             >
-              <Icon />
+              {icon}
             </ListItemIcon>
           )}
           {showLabels && (
@@ -73,7 +75,7 @@ export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value,
                 noWrap
                 fontWeight="bold"
                 display="flex"
-                sx={{ textTransform: 'uppercase', justifyContent: !Icon ? 'center' : 'flex-start' }}
+                sx={{ textTransform: 'uppercase', justifyContent: !icon ? 'center' : 'flex-start' }}
               >
                 {title}
               </Box>

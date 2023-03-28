@@ -1,6 +1,5 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
-import { useDiscussionsContext } from '../../../communication/discussion/providers/DiscussionsProvider';
 import { useUserContext } from '../../../community/contributor/user';
 import { useHub } from '../../hub/HubContext/useHub';
 import { useChallenge } from '../hooks/useChallenge';
@@ -11,7 +10,6 @@ import {
   useSendMessageToCommunityLeadsMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
   AuthorizationPrivilege,
   ChallengeProfileFragment,
@@ -54,7 +52,6 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   };
   isAuthenticated: boolean;
   isMember: boolean;
-  discussions: Discussion[];
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
@@ -118,8 +115,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     skip: !canReadReferences,
   });
 
-  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-
   const { metrics = [] } = _challenge?.hub.challenge || {};
 
   const opportunitiesCount = useMemo(() => getMetricCount(metrics, MetricType.Opportunity), [metrics]);
@@ -175,13 +170,12 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           references,
           recommendations,
           isMember: user?.ofChallenge(challengeId) || false,
-          discussions: discussionList,
           ...contributors,
           activities,
           topCallouts,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
         },
-        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions, activityLoading },
+        { loading: loading || loadingProfile || loadingHubContext, activityLoading },
         {}
       )}
     </>

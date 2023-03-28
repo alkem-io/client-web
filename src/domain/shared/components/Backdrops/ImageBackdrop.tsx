@@ -7,7 +7,7 @@ import {
   AUTH_SIGN_UP_PATH,
 } from '../../../../core/auth/authentication/constants/authentication.constants';
 import Image from '../Image';
-import { Box, Button, styled, Typography, TypographyProps } from '@mui/material';
+import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
 
 const Root = styled(Box)(() => ({
   position: 'relative',
@@ -48,6 +48,7 @@ interface ImageBackdropProps extends BackdropProps {
   backdropMessage: 'private' | 'authentication' | 'login'; // translation: components.backdrop.*
   blockName: 'users-contributing' | 'all-contributing-users'; // translation: common.block.*
   messageSx?: TypographyProps['sx'];
+  imageSx?: BoxProps['sx'];
 }
 
 const ImageBackdrop: FC<ImageBackdropProps> = ({
@@ -56,6 +57,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
   backdropMessage,
   blockName,
   messageSx,
+  imageSx,
   show = true,
 }) => {
   const { t } = useTranslation();
@@ -65,7 +67,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
     <>
       {show && (
         <Root>
-          <Background src={src} />
+          <Background src={src} sx={imageSx} />
           {children}
           <Message>
             <FlexSpacer />

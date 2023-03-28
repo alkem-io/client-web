@@ -6,11 +6,11 @@ export interface Discussion {
   id: string;
   title: string;
   category: DiscussionCategory;
-  myPrivileges: AuthorizationPrivilege[];
+  myPrivileges: AuthorizationPrivilege[] | undefined;
   author?: Author;
   authors: Author[];
   description: string;
-  createdAt: Date;
+  createdAt: Date | undefined;
   comments?: Comment[];
-  totalComments: number;
+  commentsCount: number;
 }

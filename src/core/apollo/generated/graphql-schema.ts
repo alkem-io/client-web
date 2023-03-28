@@ -14305,149 +14305,23 @@ export type AuthorDetailsQuery = {
   }>;
 };
 
-export type DeleteDiscussionMutationVariables = Exact<{
-  deleteData: DeleteDiscussionInput;
+export type CreateDiscussionMutationVariables = Exact<{
+  input: CommunicationCreateDiscussionInput;
 }>;
 
-export type DeleteDiscussionMutation = {
+export type CreateDiscussionMutation = {
   __typename?: 'Mutation';
-  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
-};
-
-export type DiscussionDetailsFragment = {
-  __typename?: 'Discussion';
-  id: string;
-  title: string;
-  description: string;
-  createdBy?: string | undefined;
-  timestamp?: number | undefined;
-  category: DiscussionCategory;
-  commentsCount: number;
-  authorization?:
-    | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
-export type DiscussionDetailsNoAuthFragment = {
-  __typename?: 'Discussion';
-  id: string;
-  title: string;
-  description: string;
-  createdBy?: string | undefined;
-  timestamp?: number | undefined;
-  category: DiscussionCategory;
-  commentsCount: number;
-};
-
-export type CommunityDiscussionQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-  discussionId: Scalars['String'];
-}>;
-
-export type CommunityDiscussionQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
+  createDiscussion: {
+    __typename?: 'Discussion';
     id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          communication?:
-            | {
-                __typename?: 'Communication';
-                id: string;
-                authorization?:
-                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                  | undefined;
-                discussion?:
-                  | {
-                      __typename?: 'Discussion';
-                      id: string;
-                      title: string;
-                      description: string;
-                      createdBy?: string | undefined;
-                      timestamp?: number | undefined;
-                      category: DiscussionCategory;
-                      commentsCount: number;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            message: string;
-                            timestamp: number;
-                            sender?:
-                              | {
-                                  __typename?: 'User';
-                                  id: string;
-                                  nameID: string;
-                                  firstName: string;
-                                  lastName: string;
-                                  profile: {
-                                    __typename?: 'Profile';
-                                    id: string;
-                                    displayName: string;
-                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                                    tagsets?:
-                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                                      | undefined;
-                                    location?:
-                                      | { __typename?: 'Location'; id: string; city: string; country: string }
-                                      | undefined;
-                                  };
-                                }
-                              | undefined;
-                          }>
-                        | undefined;
-                      authorization?:
-                        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                        | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CommunityDiscussionListQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityDiscussionListQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          communication?:
-            | {
-                __typename?: 'Communication';
-                id: string;
-                authorization?:
-                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                  | undefined;
-                discussions?:
-                  | Array<{
-                      __typename?: 'Discussion';
-                      id: string;
-                      title: string;
-                      description: string;
-                      createdBy?: string | undefined;
-                      timestamp?: number | undefined;
-                      category: DiscussionCategory;
-                      commentsCount: number;
-                    }>
-                  | undefined;
-              }
-            | undefined;
-        }
+    title: string;
+    description: string;
+    createdBy?: string | undefined;
+    timestamp?: number | undefined;
+    category: DiscussionCategory;
+    commentsCount: number;
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
 };
@@ -14483,13 +14357,162 @@ export type PostDiscussionCommentMutation = {
   };
 };
 
-export type CreateDiscussionMutationVariables = Exact<{
-  input: CommunicationCreateDiscussionInput;
+export type DeleteDiscussionMutationVariables = Exact<{
+  deleteData: DeleteDiscussionInput;
 }>;
 
-export type CreateDiscussionMutation = {
+export type DeleteDiscussionMutation = {
   __typename?: 'Mutation';
-  createDiscussion: {
+  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+};
+
+export type DeleteCommentMutationVariables = Exact<{
+  messageData: DiscussionRemoveMessageInput;
+}>;
+
+export type DeleteCommentMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
+
+export type DiscussionDetailsFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  title: string;
+  description: string;
+  createdBy?: string | undefined;
+  timestamp?: number | undefined;
+  category: DiscussionCategory;
+  commentsCount: number;
+  authorization?:
+    | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type DiscussionDetailsNoAuthFragment = {
+  __typename?: 'Discussion';
+  id: string;
+  title: string;
+  description: string;
+  createdBy?: string | undefined;
+  timestamp?: number | undefined;
+  category: DiscussionCategory;
+  commentsCount: number;
+};
+
+export type PlatformDiscussionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformDiscussionsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: {
+      __typename?: 'Communication';
+      id: string;
+      discussionCategories: Array<DiscussionCategory>;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
+        | undefined;
+      discussions?:
+        | Array<{
+            __typename?: 'Discussion';
+            id: string;
+            title: string;
+            description: string;
+            category: DiscussionCategory;
+            timestamp?: number | undefined;
+            commentsCount: number;
+            createdBy?: string | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type PlatformDiscussionQueryVariables = Exact<{
+  discussionId: Scalars['String'];
+}>;
+
+export type PlatformDiscussionQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    communication: {
+      __typename?: 'Communication';
+      id: string;
+      authorization?:
+        | {
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            anonymousReadAccess: boolean;
+          }
+        | undefined;
+      discussion?:
+        | {
+            __typename?: 'Discussion';
+            id: string;
+            title: string;
+            description: string;
+            createdBy?: string | undefined;
+            timestamp?: number | undefined;
+            category: DiscussionCategory;
+            commentsCount: number;
+            messages?:
+              | Array<{
+                  __typename?: 'Message';
+                  id: string;
+                  message: string;
+                  timestamp: number;
+                  sender?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        nameID: string;
+                        firstName: string;
+                        lastName: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          tagsets?:
+                            | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                            | undefined;
+                          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CommunicationDiscussionUpdatedSubscriptionVariables = Exact<{
+  communicationID: Scalars['UUID'];
+}>;
+
+export type CommunicationDiscussionUpdatedSubscription = {
+  __typename?: 'Subscription';
+  communicationDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
     title: string;
@@ -14498,9 +14521,6 @@ export type CreateDiscussionMutation = {
     timestamp?: number | undefined;
     category: DiscussionCategory;
     commentsCount: number;
-    authorization?:
-      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
   };
 };
 
@@ -14538,30 +14558,6 @@ export type CommunicationDiscussionMessageReceivedSubscription = {
     };
   };
 };
-
-export type CommunicationDiscussionUpdatedSubscriptionVariables = Exact<{
-  communicationID: Scalars['UUID'];
-}>;
-
-export type CommunicationDiscussionUpdatedSubscription = {
-  __typename?: 'Subscription';
-  communicationDiscussionUpdated: {
-    __typename?: 'Discussion';
-    id: string;
-    title: string;
-    description: string;
-    createdBy?: string | undefined;
-    timestamp?: number | undefined;
-    category: DiscussionCategory;
-    commentsCount: number;
-  };
-};
-
-export type RemoveMessageFromDiscussionMutationVariables = Exact<{
-  messageData: DiscussionRemoveMessageInput;
-}>;
-
-export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
 
 export type SendMessageToUserMutationVariables = Exact<{
   messageData: CommunicationSendMessageToUserInput;

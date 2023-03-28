@@ -10,7 +10,7 @@ const BackButton = <D extends React.ElementType = ButtonTypeMap['defaultComponen
   const { t } = useTranslation();
   return (
     <Button startIcon={<ArrowBackIcon />} {...props}>
-      {t('buttons.back')}
+      {props.children ?? t('buttons.back')}
     </Button>
   );
 };
