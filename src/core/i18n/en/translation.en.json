@@ -1224,9 +1224,9 @@
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "no-templates": "Couldn't find any Template of this type",
+              "no-templates": "No Hub templates found, find further platform templates below",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -1465,8 +1465,8 @@
         "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "",
-          "body": "Each Hub is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
-          "body1": "Visibility: Public Hubs are fully visible to everyone. For private Hubs, the content is only available after becoming a member."
+          "body": "Each Hub is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
+          "body1": "For Users, Hubs are free to join. Explore the membership options, including for public and private Hubs."
         },
         "my-hubs": {
           "header": "My Hubs ({{myHubsCount}})"
@@ -1869,7 +1869,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "hubs-filter": {
-    "current-filter": "Current filter: ",
+    "current-filter": "Choose the topics you care most about! Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [
