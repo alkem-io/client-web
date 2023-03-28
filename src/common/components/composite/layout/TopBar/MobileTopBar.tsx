@@ -33,7 +33,7 @@ import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
 import HelpDialog from '../../../../../core/help/dialog/HelpDialog';
 import { gutters } from '../../../../../core/ui/grid/utils';
 
-export const MobileTopBarHeight = 3;
+export const MobileTopBarHeightGutters = 3;
 
 const MobileTopBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -54,7 +54,13 @@ const MobileTopBar = () => {
   const navigate = useNavigate();
 
   return (
-    <Box height={gutters(MobileTopBarHeight)} display="flex" gap={2} alignItems="center" justifyContent="space-between">
+    <Box
+      height={gutters(MobileTopBarHeightGutters)}
+      display="flex"
+      gap={2}
+      alignItems="center"
+      justifyContent="space-between"
+    >
       {!isSearchOpen && (
         <HamburgerDropdown anchorEl={anchorEl} open={isMenuOpen} onOpen={openMenu} onClose={closeMenu} />
       )}
@@ -145,7 +151,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              {t('authentication.topbar-sign-in')}
+              {t('topbar.sign-in')}
             </MenuItem>
             <Divider />
           </>

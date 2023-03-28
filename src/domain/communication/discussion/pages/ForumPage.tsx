@@ -51,7 +51,7 @@ const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
 });
 
 interface ForumPageProps {
-  dialog?: 'new' | undefined;
+  dialog?: 'new';
 }
 
 export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {

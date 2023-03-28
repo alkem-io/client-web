@@ -1,16 +1,12 @@
 import { Box, Button, List } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouterLink } from '../../../core/RouterLink';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
-import { TopBarHeight } from './TopBar';
 import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { useLocation } from 'react-router-dom';
-import { gutters } from '../../../../../core/ui/grid/utils';
 
 const PREFIX = 'TopNavIcons';
 
@@ -21,50 +17,53 @@ const classes = {
   buttonSignIn: `${PREFIX}-buttonSignIn`,
 };
 
-const Root = styled(Box)(({ theme }) => ({
-  [`.${classes.button}`]: {
-    height: gutters(TopBarHeight)(theme),
-    marginRight: theme.spacing(1),
-    flexDirection: 'column',
-    color: theme.palette.common.black,
-    borderBottomWidth: '2px',
-    borderBottomColor: 'transparent',
-    borderBottomStyle: 'solid',
-    borderRadius: 0,
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    fontSize: '9px', //theme.typography.caption.fontSize,
-    '.MuiButton-startIcon': {
-      margin: 0,
-    },
-    '.MuiButton-startIcon>*:nth-of-type(1)': {
-      fontSize: theme.spacing(3.7),
-    },
-    '.MuiButton-startIcon>div': {
-      width: theme.spacing(3.7),
-      height: theme.spacing(3.7),
-    },
-    '&.Mui-disabled': {
-      color: theme.palette.grey[400],
-      opacity: 0.8,
-    },
+const TopBarButton = styled(Button)(({ theme }) => ({
+  height: '100%',
+  marginRight: theme.spacing(1),
+  flexDirection: 'column',
+  color: theme.palette.common.black,
+  borderBottomWidth: '2px',
+  borderBottomColor: 'transparent',
+  borderBottomStyle: 'solid',
+  borderRadius: 0,
+  paddingTop: 0,
+  paddingBottom: 0,
+  paddingLeft: theme.spacing(1),
+  paddingRight: theme.spacing(1),
+  fontSize: '9px', //theme.typography.caption.fontSize,
+  '.MuiButton-startIcon': {
+    margin: 0,
   },
-  [`.${classes.button}:last-child`]: {
+  '.MuiButton-startIcon>*:nth-of-type(1)': {
+    fontSize: theme.spacing(3.7),
+  },
+  '.MuiButton-startIcon>div': {
+    width: theme.spacing(3.7),
+    height: theme.spacing(3.7),
+  },
+  '&.Mui-disabled': {
+    color: theme.palette.grey[400],
+    opacity: 0.8,
+  },
+  '&:last-child': {
     marginRight: 0,
   },
-  [`.${classes.buttonSelected}`]: {
+  [`&.${classes.buttonSelected}`]: {
     borderBottomColor: theme.palette.primary.main,
   },
-  [`.${classes.button}.${classes.buttonSignIn}`]: {
+  [`&.${classes.button}.${classes.buttonSignIn}`]: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
   },
-  [`.${classes.button}.${classes.buttonSignIn}:hover`]: {
+  [`&.${classes.button}.${classes.buttonSignIn}:hover`]: {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
   },
+}));
+
+const Root = styled(Box)(() => ({
+  height: '100%',
+  nav: { height: '100%' },
 }));
 
 type MenuItem = {
@@ -110,22 +109,21 @@ const TopNavIcons = () => {
             return null;
           }
           return (
-            <Button
+            <TopBarButton
               key={i}
-              className={clsx(classes.button, { [classes.buttonSelected]: selectedIndex === i })}
-              component={RouterLink}
-              to={url}
+              className={selectedIndex === i ? classes.buttonSelected : undefined}
+              href={url}
               color="primary"
               disabled={disabled}
               hidden={hidden}
               startIcon={icon}
             >
               {title}
-            </Button>
+            </TopBarButton>
           );
         })}
 
-        <ProfileMenuItem buttonsClassName={classes.button} signInButtonClassName={classes.buttonSignIn} />
+        <ProfileMenuItem buttonComponent={TopBarButton} />
       </List>
     </Root>
   );

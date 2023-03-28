@@ -1,4 +1,5 @@
-import { Button, useTheme } from '@mui/material';
+import { ComponentType } from 'react';
+import { ButtonProps, useTheme } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import { useLocation } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
@@ -8,11 +9,10 @@ import UserSegment from '../../entities/User/UserSegment';
 import SignInIcon from './SignInIcon';
 
 interface ProfileMenuItemProps {
-  buttonsClassName: string;
-  signInButtonClassName: string;
+  buttonComponent: ComponentType<ButtonProps>;
 }
 
-const ProfileMenuItem = ({ buttonsClassName, signInButtonClassName }: ProfileMenuItemProps) => {
+const ProfileMenuItem = ({ buttonComponent: Button }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();
   const { pathname } = useLocation();
@@ -28,7 +28,7 @@ const ProfileMenuItem = ({ buttonsClassName, signInButtonClassName }: ProfileMen
   const renderUserProfileSegment = () => {
     if (loadingMe) {
       return (
-        <Button className={buttonsClassName}>
+        <Button>
           <Skeleton
             variant="circular"
             width={theme.spacing(3)}
@@ -40,12 +40,12 @@ const ProfileMenuItem = ({ buttonsClassName, signInButtonClassName }: ProfileMen
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon className={`${buttonsClassName} ${signInButtonClassName}`} returnUrl={pathname} />;
+      return <SignInIcon buttonComponent={Button} returnUrl={pathname} />;
     }
     return (
       <>
         {isUserSegmentVisible && user && (
-          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonsClassName} />
+          <UserSegment userMetadata={user} emailVerified={verified} buttonComponent={Button} />
         )}
       </>
     );

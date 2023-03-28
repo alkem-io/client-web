@@ -114,8 +114,10 @@
     "click-more-info": "Click for more information",
     "click-delete": "Click to delete"
   },
+  "topbar": {
+    "sign-in": "Log In | Sign Up"
+  },
   "authentication": {
-    "topbar-sign-in": "Log In | Sign Up",
     "sign-in": "Sign in",
     "sign-up": "Sign up",
     "sign-out": "Sign out",

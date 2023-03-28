@@ -1,27 +1,24 @@
-import React from 'react';
-import { Button } from '@mui/material';
+import React, { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouterLink } from '../../../core/RouterLink';
 import { buildLoginUrl } from '../../../../utils/urlBuilders';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import { ButtonProps } from '@mui/material';
 
 interface SignInIconProps {
-  className: string;
   returnUrl?: string;
+  buttonComponent: ComponentType<ButtonProps>;
 }
 
-const SignInIcon = ({ className, returnUrl }: SignInIconProps) => {
+const SignInIcon = ({ buttonComponent: Button, returnUrl }: SignInIconProps) => {
   const { t } = useTranslation();
 
   return (
     <Button
-      to={buildLoginUrl(returnUrl)}
+      href={buildLoginUrl(returnUrl)}
       aria-label={t('authentication.sign-in')}
-      component={RouterLink}
-      className={className}
       startIcon={<AssignmentIndOutlinedIcon />}
     >
-      {t('authentication.topbar-sign-in')}
+      {t('topbar.sign-in')}
     </Button>
   );
 };
