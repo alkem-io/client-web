@@ -3,14 +3,14 @@ import CreateInnovationTemplateDialog from './CreateInnovationTemplateDialog';
 import EditInnovationTemplateDialog from './EditInnovationTemplateDialog';
 import React from 'react';
 import {
-  useCreateInnovationTemplateMutation,
-  useDeleteInnovationTemplateMutation,
-  useUpdateInnovationTemplateMutation,
+  useCreateInnovationFlowTemplateMutation,
+  useDeleteInnovationFlowTemplateMutation,
+  useUpdateInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
 import {
   AdminInnovationFlowTemplateFragment,
-  UpdateInnovationTemplateMutation,
+  UpdateInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
@@ -49,14 +49,14 @@ const AdminInnovationTemplatesSection = (props: AdminInnovationTemplatesSectionP
       templatePreviewComponent={InnovationTemplateView}
       createTemplateDialogComponent={CreateInnovationTemplateDialog}
       editTemplateDialogComponent={EditInnovationTemplateDialog}
-      useCreateTemplateMutation={useCreateInnovationTemplateMutation}
+      useCreateTemplateMutation={useCreateInnovationFlowTemplateMutation}
       useUpdateTemplateMutation={
-        useUpdateInnovationTemplateMutation as MutationHook<
+        useUpdateInnovationFlowTemplateMutation as MutationHook<
           Partial<InnovationTemplateFormSubmittedValues> & { templateId: string },
-          UpdateInnovationTemplateMutation
+          UpdateInnovationFlowTemplateMutation
         >
       }
-      useDeleteTemplateMutation={useDeleteInnovationTemplateMutation}
+      useDeleteTemplateMutation={useDeleteInnovationFlowTemplateMutation}
     />
   );
 };

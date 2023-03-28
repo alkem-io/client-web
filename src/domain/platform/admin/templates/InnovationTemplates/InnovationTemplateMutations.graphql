@@ -1,4 +1,4 @@
-mutation updateInnovationTemplate(
+mutation updateInnovationFlowTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
   $definition: LifecycleDefinition!
@@ -8,7 +8,7 @@ mutation updateInnovationTemplate(
   }
 }
 
-mutation createInnovationTemplate(
+mutation createInnovationFlowTemplate(
   $templatesSetId: UUID!
   $profile: CreateProfileInput!
   $definition: LifecycleDefinition!
@@ -28,7 +28,7 @@ mutation createInnovationTemplate(
   }
 }
 
-mutation deleteInnovationTemplate($templateId: UUID!) {
+mutation deleteInnovationFlowTemplate($templateId: UUID!) {
   deleteInnovationFlowTemplate(deleteData: { ID: $templateId }) {
     id
   }

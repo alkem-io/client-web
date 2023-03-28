@@ -19167,18 +19167,18 @@ export type InnovationPackFullWhiteboardTemplateWithValueQuery = {
   };
 };
 
-export type UpdateInnovationTemplateMutationVariables = Exact<{
+export type UpdateInnovationFlowTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;
   definition: Scalars['LifecycleDefinition'];
 }>;
 
-export type UpdateInnovationTemplateMutation = {
+export type UpdateInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   updateInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
 };
 
-export type CreateInnovationTemplateMutationVariables = Exact<{
+export type CreateInnovationFlowTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   profile: CreateProfileInput;
   definition: Scalars['LifecycleDefinition'];
@@ -19186,16 +19186,16 @@ export type CreateInnovationTemplateMutationVariables = Exact<{
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
-export type CreateInnovationTemplateMutation = {
+export type CreateInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   createInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
 };
 
-export type DeleteInnovationTemplateMutationVariables = Exact<{
+export type DeleteInnovationFlowTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
 }>;
 
-export type DeleteInnovationTemplateMutation = {
+export type DeleteInnovationFlowTemplateMutation = {
   __typename?: 'Mutation';
   deleteInnovationFlowTemplate: { __typename?: 'InnovationFlowTemplate'; id: string };
 };
