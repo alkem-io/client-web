@@ -407,16 +407,16 @@ export type AuthorizationFieldPolicy = {
   verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleCredentialKeySpecifier = (
+  | 'cascade'
   | 'criterias'
   | 'grantedPrivileges'
-  | 'inheritable'
   | 'name'
   | AuthorizationPolicyRuleCredentialKeySpecifier
 )[];
 export type AuthorizationPolicyRuleCredentialFieldPolicy = {
+  cascade?: FieldPolicy<any> | FieldReadFunction<any>;
   criterias?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
-  inheritable?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRulePrivilegeKeySpecifier = (
