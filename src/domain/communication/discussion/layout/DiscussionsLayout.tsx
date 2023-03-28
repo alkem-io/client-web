@@ -22,6 +22,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
 
   return (
     <>
+      {/* TODO: Remove use of MUI Grid - We don't use MUI Grid anymore*/}
       <Grid item container alignItems="center">
         <PageTitle>{t('pages.forum.title')}</PageTitle>
         <Box sx={{ width: '100%', marginY: theme => theme.spacing(2) }}>{backButton}</Box>
