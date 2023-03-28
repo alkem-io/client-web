@@ -60,14 +60,6 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const CanvasSummaryFragmentDoc = gql`
-  fragment CanvasSummary on Canvas {
-    id
-    nameID
-    displayName
-    createdDate
-  }
-`;
 export const CheckoutDetailsFragmentDoc = gql`
   fragment CheckoutDetails on CanvasCheckout {
     id
@@ -85,7 +77,16 @@ export const CheckoutDetailsFragmentDoc = gql`
 `;
 export const CanvasDetailsFragmentDoc = gql`
   fragment CanvasDetails on Canvas {
-    ...CanvasSummary
+    id
+    nameID
+    createdDate
+    profile {
+      id
+      displayName
+      visual(type: CARD) {
+        ...VisualFull
+      }
+    }
     authorization {
       id
       myPrivileges
@@ -93,9 +94,6 @@ export const CanvasDetailsFragmentDoc = gql`
     }
     checkout {
       ...CheckoutDetails
-    }
-    preview {
-      ...VisualFull
     }
     createdBy {
       id
@@ -109,16 +107,18 @@ export const CanvasDetailsFragmentDoc = gql`
       }
     }
   }
-  ${CanvasSummaryFragmentDoc}
-  ${CheckoutDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${CheckoutDetailsFragmentDoc}
 `;
 export const DashboardTopCalloutFragmentDoc = gql`
   fragment DashboardTopCallout on Callout {
     id
     nameID
-    displayName
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     type
     visibility
     aspects(limit: 2, shuffle: true) {
@@ -309,8 +309,11 @@ export const OpportunityCardFragmentDoc = gql`
     projects {
       id
       nameID
-      displayName
-      description
+      profile {
+        id
+        displayName
+        description
+      }
       lifecycle {
         id
         state
@@ -553,16 +556,16 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-export const TemplateInfoFragmentDoc = gql`
-  fragment TemplateInfo on TemplateInfo {
+export const ProfileInfoFragmentDoc = gql`
+  fragment ProfileInfo on Profile {
     id
-    title
+    displayName
     description
     tagset {
       id
       tags
     }
-    visual {
+    visual(type: CARD) {
       id
       uri
     }
@@ -573,29 +576,29 @@ export const AspectTemplateFragmentDoc = gql`
     id
     defaultDescription
     type
-    info {
-      ...TemplateInfo
+    profile {
+      ...ProfileInfo
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${ProfileInfoFragmentDoc}
 `;
 export const CanvasTemplateFragmentDoc = gql`
   fragment CanvasTemplate on CanvasTemplate {
     id
-    info {
-      ...TemplateInfo
+    profile {
+      ...ProfileInfo
     }
   }
-  ${TemplateInfoFragmentDoc}
+  ${ProfileInfoFragmentDoc}
 `;
 export const LifecycleTemplateFragmentDoc = gql`
   fragment LifecycleTemplate on LifecycleTemplate {
     id
     definition
     type
-    info {
+    profile {
       id
-      title
+      displayName
       description
     }
   }
@@ -1137,10 +1140,10 @@ export const CalloutAspectInfoFragmentDoc = gql`
     }
   }
 `;
-export const TemplateTitleFragmentDoc = gql`
-  fragment TemplateTitle on TemplateInfo {
+export const ProfileDisplayNameFragmentDoc = gql`
+  fragment ProfileDisplayName on Profile {
     id
-    title
+    displayName
   }
 `;
 export const PrivilegesOnCollaborationFragmentDoc = gql`
@@ -1173,12 +1176,12 @@ export const CalloutCardTemplateFragmentDoc = gql`
       id
       type
       defaultDescription
-      info {
+      profile {
         tagset {
           id
           tags
         }
-        visual {
+        visual(type: CARD) {
           id
           uri
         }
@@ -1191,14 +1194,15 @@ export const CalloutCanvasTemplateFragmentDoc = gql`
     canvasTemplate {
       id
       value
-      info {
-        title
+      profile {
+        id
+        displayName
         description
         tagset {
           id
           tags
         }
-        visual {
+        visual(type: CARD) {
           id
           uri
         }
@@ -1211,8 +1215,11 @@ export const CalloutFragmentDoc = gql`
     id
     nameID
     type
-    displayName
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     state
     sortOrder
     activity
@@ -1248,8 +1255,8 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
   }
   ${CalloutFragmentDoc}
 `;
-export const CanvasTemplateProviderProfileFragmentDoc = gql`
-  fragment CanvasTemplateProviderProfile on Profile {
+export const TemplateProviderProfileFragmentDoc = gql`
+  fragment TemplateProviderProfile on Profile {
     id
     displayName
     visual(type: AVATAR) {
@@ -1257,6 +1264,30 @@ export const CanvasTemplateProviderProfileFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const InnovationPackWithProviderFragmentDoc = gql`
+  fragment InnovationPackWithProvider on InnovatonPack {
+    id
+    nameID
+    provider {
+      id
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+`;
+export const CanvasSummaryFragmentDoc = gql`
+  fragment CanvasSummary on Canvas {
+    id
+    nameID
+    createdDate
+    profile {
+      id
+      displayName
+    }
+  }
 `;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
@@ -1267,9 +1298,9 @@ export const CanvasValueFragmentDoc = gql`
 export const CreateCanvasCanvasTemplateFragmentDoc = gql`
   fragment CreateCanvasCanvasTemplate on CanvasTemplate {
     id
-    info {
+    profile {
       id
-      title
+      displayName
       description
     }
     value
@@ -2056,16 +2087,16 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const TemplateInfoWithFullVisualFragmentDoc = gql`
-  fragment TemplateInfoWithFullVisual on TemplateInfo {
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
     id
-    title
+    displayName
     description
     tagset {
       id
       tags
     }
-    visual {
+    visual(type: CARD) {
       ...VisualFull
     }
   }
@@ -2076,31 +2107,31 @@ export const AdminLifecycleTemplateFragmentDoc = gql`
     id
     definition
     type
-    info {
-      ...TemplateInfoWithFullVisual
+    profile {
+      ...ProfileInfoWithVisual
     }
   }
-  ${TemplateInfoWithFullVisualFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const AdminAspectTemplateFragmentDoc = gql`
   fragment AdminAspectTemplate on AspectTemplate {
     id
     defaultDescription
     type
-    info {
-      ...TemplateInfoWithFullVisual
+    profile {
+      ...ProfileInfoWithVisual
     }
   }
-  ${TemplateInfoWithFullVisualFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateFragmentDoc = gql`
   fragment AdminCanvasTemplate on CanvasTemplate {
     id
-    info {
-      ...TemplateInfoWithFullVisual
+    profile {
+      ...ProfileInfoWithVisual
     }
   }
-  ${TemplateInfoWithFullVisualFragmentDoc}
+  ${ProfileInfoWithVisualFragmentDoc}
 `;
 export const AdminCanvasTemplateValueFragmentDoc = gql`
   fragment AdminCanvasTemplateValue on CanvasTemplate {
@@ -2218,7 +2249,10 @@ export const CardParentFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2470,8 +2504,11 @@ export const ActivityLogCalloutPublishedFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
       type
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2480,7 +2517,10 @@ export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     card {
       id
@@ -2499,7 +2539,10 @@ export const ActivityLogCalloutCardCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     card {
       id
@@ -2516,12 +2559,18 @@ export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
     canvas {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -2530,7 +2579,10 @@ export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
     callout {
       id
       nameID
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -4425,6 +4477,7 @@ export const ChallengeProfileInfoDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -4566,6 +4619,7 @@ export const AboutPageNonMembersDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -4599,6 +4653,7 @@ export const AboutPageNonMembersDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -4636,6 +4691,7 @@ export const AboutPageNonMembersDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -6103,9 +6159,9 @@ export const HubLifecycleTemplatesDocument = gql`
           definition
           id
           type
-          info {
+          profile {
             id
-            title
+            displayName
           }
         }
       }
@@ -8914,20 +8970,20 @@ export const TemplatesForCalloutCreationDocument = gql`
         id
         aspectTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
         canvasTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
       }
     }
   }
-  ${TemplateTitleFragmentDoc}
+  ${ProfileDisplayNameFragmentDoc}
 `;
 
 /**
@@ -8992,14 +9048,14 @@ export const AspectTemplatesOnCalloutCreationDocument = gql`
         id
         aspectTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
       }
     }
   }
-  ${TemplateTitleFragmentDoc}
+  ${ProfileDisplayNameFragmentDoc}
 `;
 
 /**
@@ -9068,14 +9124,14 @@ export const CanvasTemplatesOnCalloutCreationDocument = gql`
         id
         canvasTemplates {
           id
-          info {
-            ...TemplateTitle
+          profile {
+            ...ProfileDisplayName
           }
         }
       }
     }
   }
-  ${TemplateTitleFragmentDoc}
+  ${ProfileDisplayNameFragmentDoc}
 `;
 
 /**
@@ -9146,7 +9202,7 @@ export const AspectTemplateValueDocument = gql`
           id
           type
           defaultDescription
-          info {
+          profile {
             id
             description
             tagset {
@@ -9287,8 +9343,11 @@ export const CreateCalloutDocument = gql`
       id
       nameID
       type
-      displayName
-      description
+      profile {
+        id
+        displayName
+        description
+      }
       state
       visibility
       authorization {
@@ -9552,8 +9611,11 @@ export const UpdateCalloutDocument = gql`
   mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
     updateCallout(calloutData: $calloutData) {
       id
-      description
-      displayName
+      profile {
+        id
+        description
+        displayName
+      }
       state
       type
       visibility
@@ -10415,13 +10477,13 @@ export const HubCanvasTemplatesLibraryDocument = gql`
         id
         nameID
         profile {
-          ...CanvasTemplateProviderProfile
+          ...TemplateProviderProfile
         }
       }
     }
   }
   ${CanvasTemplateFragmentDoc}
-  ${CanvasTemplateProviderProfileFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
 `;
 
 /**
@@ -10554,11 +10616,10 @@ export const PlatformCanvasTemplatesLibraryDocument = gql`
         innovationPacks {
           id
           nameID
-          displayName
           provider {
             id
             profile {
-              ...CanvasTemplateProviderProfile
+              ...TemplateProviderProfile
             }
           }
           templates {
@@ -10571,7 +10632,7 @@ export const PlatformCanvasTemplatesLibraryDocument = gql`
       }
     }
   }
-  ${CanvasTemplateProviderProfileFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
   ${CanvasTemplateFragmentDoc}
 `;
 
@@ -10637,15 +10698,7 @@ export const PlatformCanvasTemplateValueDocument = gql`
       library {
         id
         innovationPack(ID: $innovationPackId) {
-          id
-          nameID
-          displayName
-          provider {
-            id
-            profile {
-              ...CanvasTemplateProviderProfile
-            }
-          }
+          ...InnovationPackWithProvider
           templates {
             id
             canvasTemplate(ID: $canvasTemplateId) {
@@ -10657,7 +10710,7 @@ export const PlatformCanvasTemplateValueDocument = gql`
       }
     }
   }
-  ${CanvasTemplateProviderProfileFragmentDoc}
+  ${InnovationPackWithProviderFragmentDoc}
   ${CanvasTemplateFragmentDoc}
 `;
 
@@ -11358,10 +11411,9 @@ export type CreateCanvasOnCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const DeleteCanvasDocument = gql`
   mutation deleteCanvas($input: DeleteCanvasInput!) {
     deleteCanvas(canvasData: $input) {
-      ...CanvasSummary
+      id
     }
   }
-  ${CanvasSummaryFragmentDoc}
 `;
 export type DeleteCanvasMutationFn = Apollo.MutationFunction<
   SchemaTypes.DeleteCanvasMutation,
@@ -11406,7 +11458,10 @@ export const UpdateCanvasDocument = gql`
     updateCanvas(canvasData: $input) {
       id
       value
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 `;
@@ -12201,257 +12256,6 @@ export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQu
   return { query: AuthorDetailsDocument, variables: variables };
 }
 
-export const DeleteDiscussionDocument = gql`
-  mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
-    deleteDiscussion(deleteData: $deleteData) {
-      id
-      title
-    }
-  }
-`;
-export type DeleteDiscussionMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteDiscussionMutation,
-  SchemaTypes.DeleteDiscussionMutationVariables
->;
-
-/**
- * __useDeleteDiscussionMutation__
- *
- * To run a mutation, you first call `useDeleteDiscussionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteDiscussionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteDiscussionMutation, { data, loading, error }] = useDeleteDiscussionMutation({
- *   variables: {
- *      deleteData: // value for 'deleteData'
- *   },
- * });
- */
-export function useDeleteDiscussionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteDiscussionMutation,
-    SchemaTypes.DeleteDiscussionMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteDiscussionMutation, SchemaTypes.DeleteDiscussionMutationVariables>(
-    DeleteDiscussionDocument,
-    options
-  );
-}
-
-export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
-export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
-export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteDiscussionMutation,
-  SchemaTypes.DeleteDiscussionMutationVariables
->;
-export const CommunityDiscussionDocument = gql`
-  query communityDiscussion($hubId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
-    hub(ID: $hubId) {
-      id
-      community(ID: $communityId) {
-        id
-        communication {
-          id
-          authorization {
-            myPrivileges
-          }
-          discussion(ID: $discussionId) {
-            ...DiscussionDetails
-            messages {
-              ...MessageDetails
-            }
-          }
-        }
-      }
-    }
-  }
-  ${DiscussionDetailsFragmentDoc}
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCommunityDiscussionQuery__
- *
- * To run a query within a React component, call `useCommunityDiscussionQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityDiscussionQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *      communityId: // value for 'communityId'
- *      discussionId: // value for 'discussionId'
- *   },
- * });
- */
-export function useCommunityDiscussionQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityDiscussionQuery,
-    SchemaTypes.CommunityDiscussionQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityDiscussionQuery, SchemaTypes.CommunityDiscussionQueryVariables>(
-    CommunityDiscussionDocument,
-    options
-  );
-}
-
-export function useCommunityDiscussionLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityDiscussionQuery,
-    SchemaTypes.CommunityDiscussionQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CommunityDiscussionQuery, SchemaTypes.CommunityDiscussionQueryVariables>(
-    CommunityDiscussionDocument,
-    options
-  );
-}
-
-export type CommunityDiscussionQueryHookResult = ReturnType<typeof useCommunityDiscussionQuery>;
-export type CommunityDiscussionLazyQueryHookResult = ReturnType<typeof useCommunityDiscussionLazyQuery>;
-export type CommunityDiscussionQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityDiscussionQuery,
-  SchemaTypes.CommunityDiscussionQueryVariables
->;
-export function refetchCommunityDiscussionQuery(variables: SchemaTypes.CommunityDiscussionQueryVariables) {
-  return { query: CommunityDiscussionDocument, variables: variables };
-}
-
-export const CommunityDiscussionListDocument = gql`
-  query communityDiscussionList($hubId: UUID_NAMEID!, $communityId: UUID!) {
-    hub(ID: $hubId) {
-      id
-      community(ID: $communityId) {
-        id
-        communication {
-          id
-          authorization {
-            myPrivileges
-          }
-          discussions {
-            ...DiscussionDetailsNoAuth
-          }
-        }
-      }
-    }
-  }
-  ${DiscussionDetailsNoAuthFragmentDoc}
-`;
-
-/**
- * __useCommunityDiscussionListQuery__
- *
- * To run a query within a React component, call `useCommunityDiscussionListQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityDiscussionListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityDiscussionListQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *      communityId: // value for 'communityId'
- *   },
- * });
- */
-export function useCommunityDiscussionListQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityDiscussionListQuery,
-    SchemaTypes.CommunityDiscussionListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityDiscussionListQuery, SchemaTypes.CommunityDiscussionListQueryVariables>(
-    CommunityDiscussionListDocument,
-    options
-  );
-}
-
-export function useCommunityDiscussionListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityDiscussionListQuery,
-    SchemaTypes.CommunityDiscussionListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CommunityDiscussionListQuery,
-    SchemaTypes.CommunityDiscussionListQueryVariables
-  >(CommunityDiscussionListDocument, options);
-}
-
-export type CommunityDiscussionListQueryHookResult = ReturnType<typeof useCommunityDiscussionListQuery>;
-export type CommunityDiscussionListLazyQueryHookResult = ReturnType<typeof useCommunityDiscussionListLazyQuery>;
-export type CommunityDiscussionListQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityDiscussionListQuery,
-  SchemaTypes.CommunityDiscussionListQueryVariables
->;
-export function refetchCommunityDiscussionListQuery(variables: SchemaTypes.CommunityDiscussionListQueryVariables) {
-  return { query: CommunityDiscussionListDocument, variables: variables };
-}
-
-export const PostDiscussionCommentDocument = gql`
-  mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
-    sendMessageToDiscussion(messageData: $input) {
-      ...MessageDetails
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-export type PostDiscussionCommentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostDiscussionCommentMutation,
-  SchemaTypes.PostDiscussionCommentMutationVariables
->;
-
-/**
- * __usePostDiscussionCommentMutation__
- *
- * To run a mutation, you first call `usePostDiscussionCommentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostDiscussionCommentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postDiscussionCommentMutation, { data, loading, error }] = usePostDiscussionCommentMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function usePostDiscussionCommentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.PostDiscussionCommentMutation,
-    SchemaTypes.PostDiscussionCommentMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.PostDiscussionCommentMutation,
-    SchemaTypes.PostDiscussionCommentMutationVariables
-  >(PostDiscussionCommentDocument, options);
-}
-
-export type PostDiscussionCommentMutationHookResult = ReturnType<typeof usePostDiscussionCommentMutation>;
-export type PostDiscussionCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostDiscussionCommentMutation>;
-export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostDiscussionCommentMutation,
-  SchemaTypes.PostDiscussionCommentMutationVariables
->;
 export const CreateDiscussionDocument = gql`
   mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
     createDiscussion(createData: $input) {
@@ -12501,52 +12305,308 @@ export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
   SchemaTypes.CreateDiscussionMutationVariables
 >;
-export const CommunicationDiscussionMessageReceivedDocument = gql`
-  subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
-    communicationDiscussionMessageReceived(discussionID: $discussionID) {
-      discussionID
-      message {
-        ...MessageDetails
-      }
+export const PostDiscussionCommentDocument = gql`
+  mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
+    sendMessageToDiscussion(messageData: $input) {
+      ...MessageDetails
     }
   }
   ${MessageDetailsFragmentDoc}
 `;
+export type PostDiscussionCommentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.PostDiscussionCommentMutation,
+  SchemaTypes.PostDiscussionCommentMutationVariables
+>;
 
 /**
- * __useCommunicationDiscussionMessageReceivedSubscription__
+ * __usePostDiscussionCommentMutation__
  *
- * To run a query within a React component, call `useCommunicationDiscussionMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommunicationDiscussionMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `usePostDiscussionCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostDiscussionCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useCommunicationDiscussionMessageReceivedSubscription({
+ * const [postDiscussionCommentMutation, { data, loading, error }] = usePostDiscussionCommentMutation({
  *   variables: {
- *      discussionID: // value for 'discussionID'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useCommunicationDiscussionMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
+export function usePostDiscussionCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.PostDiscussionCommentMutation,
+    SchemaTypes.PostDiscussionCommentMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
-    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
-  >(CommunicationDiscussionMessageReceivedDocument, options);
+  return Apollo.useMutation<
+    SchemaTypes.PostDiscussionCommentMutation,
+    SchemaTypes.PostDiscussionCommentMutationVariables
+  >(PostDiscussionCommentDocument, options);
 }
 
-export type CommunicationDiscussionMessageReceivedSubscriptionHookResult = ReturnType<
-  typeof useCommunicationDiscussionMessageReceivedSubscription
+export type PostDiscussionCommentMutationHookResult = ReturnType<typeof usePostDiscussionCommentMutation>;
+export type PostDiscussionCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostDiscussionCommentMutation>;
+export type PostDiscussionCommentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.PostDiscussionCommentMutation,
+  SchemaTypes.PostDiscussionCommentMutationVariables
 >;
-export type CommunicationDiscussionMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionMessageReceivedSubscription>;
+export const DeleteDiscussionDocument = gql`
+  mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
+    deleteDiscussion(deleteData: $deleteData) {
+      id
+      title
+    }
+  }
+`;
+export type DeleteDiscussionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteDiscussionMutation,
+  SchemaTypes.DeleteDiscussionMutationVariables
+>;
+
+/**
+ * __useDeleteDiscussionMutation__
+ *
+ * To run a mutation, you first call `useDeleteDiscussionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDiscussionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDiscussionMutation, { data, loading, error }] = useDeleteDiscussionMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteDiscussionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteDiscussionMutation,
+    SchemaTypes.DeleteDiscussionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteDiscussionMutation, SchemaTypes.DeleteDiscussionMutationVariables>(
+    DeleteDiscussionDocument,
+    options
+  );
+}
+
+export type DeleteDiscussionMutationHookResult = ReturnType<typeof useDeleteDiscussionMutation>;
+export type DeleteDiscussionMutationResult = Apollo.MutationResult<SchemaTypes.DeleteDiscussionMutation>;
+export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteDiscussionMutation,
+  SchemaTypes.DeleteDiscussionMutationVariables
+>;
+export const DeleteCommentDocument = gql`
+  mutation deleteComment($messageData: DiscussionRemoveMessageInput!) {
+    removeMessageFromDiscussion(messageData: $messageData)
+  }
+`;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCommentMutation,
+  SchemaTypes.DeleteCommentMutationVariables
+>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCommentMutation,
+    SchemaTypes.DeleteCommentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteCommentMutation, SchemaTypes.DeleteCommentMutationVariables>(
+    DeleteCommentDocument,
+    options
+  );
+}
+
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCommentMutation,
+  SchemaTypes.DeleteCommentMutationVariables
+>;
+export const PlatformDiscussionsDocument = gql`
+  query platformDiscussions {
+    platform {
+      id
+      communication {
+        id
+        discussionCategories
+        authorization {
+          id
+          myPrivileges
+          anonymousReadAccess
+        }
+        discussions {
+          id
+          title
+          description
+          category
+          timestamp
+          commentsCount
+          createdBy
+          authorization {
+            id
+            myPrivileges
+            anonymousReadAccess
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformDiscussionsQuery__
+ *
+ * To run a query within a React component, call `usePlatformDiscussionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformDiscussionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformDiscussionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformDiscussionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformDiscussionsQuery,
+    SchemaTypes.PlatformDiscussionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformDiscussionsQuery, SchemaTypes.PlatformDiscussionsQueryVariables>(
+    PlatformDiscussionsDocument,
+    options
+  );
+}
+
+export function usePlatformDiscussionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformDiscussionsQuery,
+    SchemaTypes.PlatformDiscussionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformDiscussionsQuery, SchemaTypes.PlatformDiscussionsQueryVariables>(
+    PlatformDiscussionsDocument,
+    options
+  );
+}
+
+export type PlatformDiscussionsQueryHookResult = ReturnType<typeof usePlatformDiscussionsQuery>;
+export type PlatformDiscussionsLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionsLazyQuery>;
+export type PlatformDiscussionsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformDiscussionsQuery,
+  SchemaTypes.PlatformDiscussionsQueryVariables
+>;
+export function refetchPlatformDiscussionsQuery(variables?: SchemaTypes.PlatformDiscussionsQueryVariables) {
+  return { query: PlatformDiscussionsDocument, variables: variables };
+}
+
+export const PlatformDiscussionDocument = gql`
+  query platformDiscussion($discussionId: String!) {
+    platform {
+      id
+      communication {
+        id
+        authorization {
+          id
+          myPrivileges
+          anonymousReadAccess
+        }
+        discussion(ID: $discussionId) {
+          ...DiscussionDetails
+          messages {
+            ...MessageDetails
+          }
+        }
+      }
+    }
+  }
+  ${DiscussionDetailsFragmentDoc}
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __usePlatformDiscussionQuery__
+ *
+ * To run a query within a React component, call `usePlatformDiscussionQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformDiscussionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformDiscussionQuery({
+ *   variables: {
+ *      discussionId: // value for 'discussionId'
+ *   },
+ * });
+ */
+export function usePlatformDiscussionQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformDiscussionQuery,
+    SchemaTypes.PlatformDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformDiscussionQuery, SchemaTypes.PlatformDiscussionQueryVariables>(
+    PlatformDiscussionDocument,
+    options
+  );
+}
+
+export function usePlatformDiscussionLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformDiscussionQuery,
+    SchemaTypes.PlatformDiscussionQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformDiscussionQuery, SchemaTypes.PlatformDiscussionQueryVariables>(
+    PlatformDiscussionDocument,
+    options
+  );
+}
+
+export type PlatformDiscussionQueryHookResult = ReturnType<typeof usePlatformDiscussionQuery>;
+export type PlatformDiscussionLazyQueryHookResult = ReturnType<typeof usePlatformDiscussionLazyQuery>;
+export type PlatformDiscussionQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformDiscussionQuery,
+  SchemaTypes.PlatformDiscussionQueryVariables
+>;
+export function refetchPlatformDiscussionQuery(variables: SchemaTypes.PlatformDiscussionQueryVariables) {
+  return { query: PlatformDiscussionDocument, variables: variables };
+}
+
 export const CommunicationDiscussionUpdatedDocument = gql`
   subscription communicationDiscussionUpdated($communicationID: UUID!) {
     communicationDiscussionUpdated(communicationID: $communicationID) {
@@ -12595,53 +12655,52 @@ export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
 >;
 export type CommunicationDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
-export const RemoveMessageFromDiscussionDocument = gql`
-  mutation removeMessageFromDiscussion($messageData: DiscussionRemoveMessageInput!) {
-    removeMessageFromDiscussion(messageData: $messageData)
+export const CommunicationDiscussionMessageReceivedDocument = gql`
+  subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
+    communicationDiscussionMessageReceived(discussionID: $discussionID) {
+      discussionID
+      message {
+        ...MessageDetails
+      }
+    }
   }
+  ${MessageDetailsFragmentDoc}
 `;
-export type RemoveMessageFromDiscussionMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveMessageFromDiscussionMutation,
-  SchemaTypes.RemoveMessageFromDiscussionMutationVariables
->;
 
 /**
- * __useRemoveMessageFromDiscussionMutation__
+ * __useCommunicationDiscussionMessageReceivedSubscription__
  *
- * To run a mutation, you first call `useRemoveMessageFromDiscussionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveMessageFromDiscussionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useCommunicationDiscussionMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommunicationDiscussionMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [removeMessageFromDiscussionMutation, { data, loading, error }] = useRemoveMessageFromDiscussionMutation({
+ * const { data, loading, error } = useCommunicationDiscussionMessageReceivedSubscription({
  *   variables: {
- *      messageData: // value for 'messageData'
+ *      discussionID: // value for 'discussionID'
  *   },
  * });
  */
-export function useRemoveMessageFromDiscussionMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveMessageFromDiscussionMutation,
-    SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+export function useCommunicationDiscussionMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveMessageFromDiscussionMutation,
-    SchemaTypes.RemoveMessageFromDiscussionMutationVariables
-  >(RemoveMessageFromDiscussionDocument, options);
+  return Apollo.useSubscription<
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
+  >(CommunicationDiscussionMessageReceivedDocument, options);
 }
 
-export type RemoveMessageFromDiscussionMutationHookResult = ReturnType<typeof useRemoveMessageFromDiscussionMutation>;
-export type RemoveMessageFromDiscussionMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveMessageFromDiscussionMutation>;
-export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveMessageFromDiscussionMutation,
-  SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+export type CommunicationDiscussionMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useCommunicationDiscussionMessageReceivedSubscription
 >;
+export type CommunicationDiscussionMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionMessageReceivedSubscription>;
 export const SendMessageToUserDocument = gql`
   mutation sendMessageToUser($messageData: CommunicationSendMessageToUserInput!) {
     sendMessageToUser(messageData: $messageData)
@@ -19698,11 +19757,11 @@ export const UpdateAspectTemplateDocument = gql`
   mutation updateAspectTemplate(
     $templateId: UUID!
     $defaultDescription: Markdown
-    $info: UpdateTemplateInfoInput
+    $profile: UpdateProfileInput
     $type: String
   ) {
     updateAspectTemplate(
-      aspectTemplateInput: { ID: $templateId, defaultDescription: $defaultDescription, info: $info, type: $type }
+      aspectTemplateInput: { ID: $templateId, defaultDescription: $defaultDescription, profile: $profile, type: $type }
     ) {
       id
     }
@@ -19728,7 +19787,7 @@ export type UpdateAspectTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templateId: // value for 'templateId'
  *      defaultDescription: // value for 'defaultDescription'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      type: // value for 'type'
  *   },
  * });
@@ -19756,15 +19815,17 @@ export const CreateAspectTemplateDocument = gql`
   mutation createAspectTemplate(
     $templatesSetId: UUID!
     $defaultDescription: Markdown!
-    $info: CreateTemplateInfoInput!
+    $profile: CreateProfileInput!
     $type: String!
+    $tags: [String!]
   ) {
     createAspectTemplate(
       aspectTemplateInput: {
         templatesSetID: $templatesSetId
         defaultDescription: $defaultDescription
-        info: $info
+        profile: $profile
         type: $type
+        tags: $tags
       }
     ) {
       id
@@ -19791,8 +19852,9 @@ export type CreateAspectTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
  *      defaultDescription: // value for 'defaultDescription'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      type: // value for 'type'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
@@ -19864,8 +19926,8 @@ export type DeleteAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectTemplateMutationVariables
 >;
 export const UpdateCanvasTemplateDocument = gql`
-  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $info: UpdateTemplateInfoInput) {
-    updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, info: $info }) {
+  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $profile: UpdateProfileInput!) {
+    updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, profile: $profile }) {
       id
     }
   }
@@ -19890,7 +19952,7 @@ export type UpdateCanvasTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templateId: // value for 'templateId'
  *      value: // value for 'value'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *   },
  * });
  */
@@ -19914,8 +19976,15 @@ export type UpdateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCanvasTemplateMutationVariables
 >;
 export const CreateCanvasTemplateDocument = gql`
-  mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $info: CreateTemplateInfoInput!) {
-    createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, info: $info }) {
+  mutation createCanvasTemplate(
+    $templatesSetId: UUID!
+    $value: JSON!
+    $profile: CreateProfileInput!
+    $tags: [String!]
+  ) {
+    createCanvasTemplate(
+      canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, profile: $profile, tags: $tags }
+    ) {
       id
     }
   }
@@ -19940,7 +20009,8 @@ export type CreateCanvasTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
  *      value: // value for 'value'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
@@ -20032,7 +20102,10 @@ export const InnovationPacksDocument = gql`
               }
             }
           }
-          displayName
+          profile {
+            id
+            displayName
+          }
           templates {
             id
             aspectTemplates {
@@ -20260,10 +20333,10 @@ export function refetchInnovationPackFullCanvasTemplateWithValueQuery(
 export const UpdateInnovationTemplateDocument = gql`
   mutation updateInnovationTemplate(
     $templateId: UUID!
-    $info: UpdateTemplateInfoInput
+    $profile: UpdateProfileInput!
     $definition: LifecycleDefinition!
   ) {
-    updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, info: $info, definition: $definition }) {
+    updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, profile: $profile, definition: $definition }) {
       id
     }
   }
@@ -20287,7 +20360,7 @@ export type UpdateInnovationTemplateMutationFn = Apollo.MutationFunction<
  * const [updateInnovationTemplateMutation, { data, loading, error }] = useUpdateInnovationTemplateMutation({
  *   variables: {
  *      templateId: // value for 'templateId'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      definition: // value for 'definition'
  *   },
  * });
@@ -20315,12 +20388,19 @@ export type UpdateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
 export const CreateInnovationTemplateDocument = gql`
   mutation createInnovationTemplate(
     $templatesSetId: UUID!
-    $info: CreateTemplateInfoInput!
+    $profile: CreateProfileInput!
     $definition: LifecycleDefinition!
     $type: LifecycleType!
+    $tags: [String!]
   ) {
     createLifecycleTemplate(
-      lifecycleTemplateInput: { templatesSetID: $templatesSetId, info: $info, type: $type, definition: $definition }
+      lifecycleTemplateInput: {
+        templatesSetID: $templatesSetId
+        profile: $profile
+        type: $type
+        definition: $definition
+        tags: $tags
+      }
     ) {
       id
     }
@@ -20345,9 +20425,10 @@ export type CreateInnovationTemplateMutationFn = Apollo.MutationFunction<
  * const [createInnovationTemplateMutation, { data, loading, error }] = useCreateInnovationTemplateMutation({
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
- *      info: // value for 'info'
+ *      profile: // value for 'profile'
  *      definition: // value for 'definition'
  *      type: // value for 'type'
+ *      tags: // value for 'tags'
  *   },
  * });
  */

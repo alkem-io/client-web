@@ -56,7 +56,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
   const isLoading = isCreating || isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
-    const { name, nameID, tagsets, tagline, references } = values;
+    const { name: displayName, nameID, tagsets, tagline, references } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -65,8 +65,8 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
             input: {
               nameID: nameID,
               profileData: {
-                displayName: name,
-                tagline: tagline,
+                displayName,
+                tagline,
                 location: formatDatabaseLocation(values.location),
               },
               hubID: hubNameId,
@@ -83,7 +83,8 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               ID: challengeId,
               nameID: nameID,
               profileData: {
-                displayName: name,
+                displayName,
+                tagline,
                 location: formatDatabaseLocation(values.location),
                 tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
                 references: references.map(reference => ({

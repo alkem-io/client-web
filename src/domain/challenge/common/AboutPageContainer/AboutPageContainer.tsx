@@ -156,7 +156,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({
     return {
       id: nonMemberProfile?.id ?? '',
       displayName: nonMemberProfile?.displayName || '',
-      // description: nonMemberProfile?.description,
+      description: nonMemberProfile?.description,
       tagset: nonMemberProfile?.tagset,
       visuals: nonMemberProfile?.visuals ?? [],
       tagline: nonMemberProfile?.tagline || '',

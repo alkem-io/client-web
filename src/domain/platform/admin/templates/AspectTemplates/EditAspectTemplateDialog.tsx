@@ -10,7 +10,7 @@ import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmit
 interface EditAspectTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: AspectTemplateFormSubmittedValues) => void;
+  onSubmit: (values: AspectTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminAspectTemplateFragment | undefined;
 }
@@ -25,9 +25,16 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
   const values: Partial<AspectTemplateFormValues> = {
     type: template.type,
     defaultDescription: template.defaultDescription,
-    title: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
+  };
+
+  const handleSubmit = (values: AspectTemplateFormSubmittedValues) => {
+    return onSubmit({
+      ...values,
+      tagsetId: template.profile.tagset?.id,
+    });
   };
 
   return (
@@ -40,8 +47,8 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
       <AspectTemplateForm
         title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
-        visual={template.info.visual}
-        onSubmit={onSubmit}
+        visual={template.profile.visual}
+        onSubmit={handleSubmit}
         actions={
           <>
             <DeleteButton onClick={onDelete} />

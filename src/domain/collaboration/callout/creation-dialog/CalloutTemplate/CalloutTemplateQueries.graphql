@@ -5,14 +5,14 @@ query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
       id
       aspectTemplates {
         id
-        info {
-          ...TemplateTitle
+        profile {
+          ...ProfileDisplayName
         }
       }
       canvasTemplates {
         id
-        info {
-          ...TemplateTitle
+        profile {
+          ...ProfileDisplayName
         }
       }
     }
@@ -26,8 +26,8 @@ query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
       id
       aspectTemplates {
         id
-        info {
-          ...TemplateTitle
+        profile {
+          ...ProfileDisplayName
         }
       }
     }
@@ -41,17 +41,17 @@ query CanvasTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
       id
       canvasTemplates {
         id
-        info {
-          ...TemplateTitle
+        profile {
+          ...ProfileDisplayName
         }
       }
     }
   }
 }
 
-fragment TemplateTitle on TemplateInfo {
+fragment ProfileDisplayName on Profile {
   id
-  title
+  displayName
 }
 
 query AspectTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
@@ -63,7 +63,7 @@ query AspectTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
         id
         type
         defaultDescription
-        info {
+        profile {
           id
           description
           tagset {

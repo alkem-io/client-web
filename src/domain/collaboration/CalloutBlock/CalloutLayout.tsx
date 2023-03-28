@@ -40,8 +40,11 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   callout: {
     id: string;
     nameID: string;
-    displayName: string;
-    description: string;
+    profile: {
+      id: string;
+      displayName: string;
+      description?: string;
+    };
     type: CalloutType;
     state: CalloutState;
     draft: boolean;
@@ -99,8 +102,8 @@ const CalloutLayout = ({
     () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
     [callout.draft, t]
   );
-  const handleVisibilityChange = async (visibility: CalloutVisibility) => {
-    await onVisibilityChange(callout.id, visibility);
+  const handleVisibilityChange = async (visibility: CalloutVisibility, sendNotification: boolean) => {
+    await onVisibilityChange(callout.id, visibility, sendNotification);
     setVisibilityDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
@@ -175,11 +178,11 @@ const CalloutLayout = ({
             })}`}
           </Authorship>
         )}
-        {!hasCalloutDetails && <BlockTitle noWrap>{callout.displayName}</BlockTitle>}
+        {!hasCalloutDetails && <BlockTitle noWrap>{callout.profile.displayName}</BlockTitle>}
       </DialogHeader>
       <Gutters minHeight={0} paddingTop={0}>
-        {hasCalloutDetails && <BlockTitle>{callout.displayName}</BlockTitle>}
-        <WrapperMarkdown>{callout.description ?? ''}</WrapperMarkdown>
+        {hasCalloutDetails && <BlockTitle>{callout.profile.displayName}</BlockTitle>}
+        <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
         {children}
       </Gutters>
       {calloutNotOpenStateName && (
@@ -234,7 +237,7 @@ const CalloutLayout = ({
         open={visibilityDialogOpen}
         onClose={() => setVisibilityDialogOpen(false)}
         title={visDialogTitle}
-        draft={callout.draft}
+        callout={callout}
         onVisibilityChanged={handleVisibilityChange}
       >
         <CalloutSummary callout={callout} />

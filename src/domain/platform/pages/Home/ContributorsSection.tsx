@@ -17,7 +17,7 @@ const ContributorsSection = () => {
       entities={entities}
       loading={isLoadingContributors}
     >
-      <Button component={Link} to="contributors" startIcon={<ArrowForward />} sx={{ alignSelf: 'end' }}>
+      <Button component={Link} to="/contributors" startIcon={<ArrowForward />} sx={{ alignSelf: 'end' }}>
         {t('common.contributors')}
       </Button>
     </DashboardContributorsSection>

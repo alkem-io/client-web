@@ -27,6 +27,7 @@ import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
 import RootRedirect from '../../domain/platform/routes/RootRedirect';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
+import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -111,6 +112,14 @@ export const TopLevelRoutes: FC = () => {
           element={
             <WithApmTransaction path="/contributors">
               <ContributorsPage />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/forum/*"
+          element={
+            <WithApmTransaction path="/forum">
+              <ForumRoute />
             </WithApmTransaction>
           }
         />

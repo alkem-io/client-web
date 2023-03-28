@@ -111,7 +111,10 @@ fragment CardParent on SearchResultCard {
   callout {
     id
     nameID
-    displayName
+    profile {
+      id
+      displayName
+    }
   }
 }
 

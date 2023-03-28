@@ -16,18 +16,18 @@ interface CanvasImportTemplateCardProps extends TemplateImportCardComponentProps
 const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCardProps) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template.info.title} iconComponent={CanvasIcon}>
+      <CardHeader title={template.profile.displayName} iconComponent={CanvasIcon}>
         <CardHeaderCaption noWrap logoUrl={template.provider?.profile.visual?.uri}>
           {template.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardImage
-        src={getVisualBannerNarrow(template.info.visual)}
-        alt={template.info.title}
+        src={getVisualBannerNarrow(template.profile.visual)}
+        alt={template.profile.displayName}
         defaultImageSvg={<CanvasIcon />}
       />
       <CardSegmentCaption icon={<InnovationPackIcon />}>
-        <Caption noWrap>{template.innovationPackDisplayName}</Caption>
+        <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
   );

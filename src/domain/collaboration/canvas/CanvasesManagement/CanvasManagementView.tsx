@@ -119,7 +119,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
               onUpdate: actions.onUpdate,
-              onDelete: c => setCanvasBeingDeleted({ canvasId: c.id, displayName: c.displayName, calloutId }),
+              onDelete: c => setCanvasBeingDeleted({ canvasId: c.id, displayName: c.profile.displayName, calloutId }),
             }}
             options={{
               show: Boolean(canvasNameId),

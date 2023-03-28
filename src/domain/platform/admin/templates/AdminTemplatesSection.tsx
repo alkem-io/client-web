@@ -4,7 +4,6 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TemplateInfoWithFullVisualFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -18,9 +17,10 @@ import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface Template extends Identifiable {
-  info: TemplateInfoWithFullVisualFragment;
+  profile: ProfileInfoWithVisualFragment;
 }
 
 export interface TemplateValue {}
@@ -54,11 +54,18 @@ export interface MutationHook<Variables, MutationResult> {
   (baseOptions?: Apollo.MutationHookOptions<MutationResult, Variables>): MutationTuple<MutationResult, Variables>;
 }
 
+export interface ProfileUpdate {
+  profile?: { tagsets?: Partial<Tagset>[] };
+}
+
 type AdminTemplatesSectionProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
+  // TODO There must be either introduced a minimal common subtype between the received and submitted values,
+  // so that that one in not constructed from the other by removing fields, OR
+  // the received and the submitted values may be two independent types.
+  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -88,9 +95,12 @@ type AdminTemplatesSectionProps<
   templateValue?: V | undefined;
   importedTemplateValue?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
-  editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
+  editTemplateDialogComponent: ComponentType<
+    DialogProps & EditTemplateDialogProps<T, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+  >;
+  // TODO instead of mutations let's just pass callbacks - mutations have options which make the type too complicated for using in generics.
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
-  useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues> & { templateId: string }, UpdateM>;
+  useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues & ProfileUpdate> & { templateId: string }, UpdateM>;
   useDeleteTemplateMutation: MutationHook<{ templateId: string; templatesSetId?: string }, DeleteM>;
 };
 
@@ -98,7 +108,7 @@ const AdminTemplatesSection = <
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
-  SubmittedValues extends Omit<T, 'id' | 'info'> & Omit<V, 'id'>,
+  SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
   DeleteM,
@@ -130,7 +140,9 @@ const AdminTemplatesSection = <
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
-  const EditTemplateDialog = editTemplateDialogComponent as ComponentType<EditTemplateDialogProps<T, SubmittedValues>>;
+  const EditTemplateDialog = editTemplateDialogComponent as ComponentType<
+    EditTemplateDialogProps<T, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+  >;
 
   const { t } = useTranslation();
   const notify = useNotification();
@@ -152,7 +164,11 @@ const AdminTemplatesSection = <
   const [createAspectTemplate] = useCreateTemplateMutation();
   const [deleteAspectTemplate, { loading: isDeletingAspectTemplate }] = useDeleteTemplateMutation();
 
-  const handleTemplateUpdate = async (values: SubmittedValues) => {
+  const handleTemplateUpdate = async ({
+    tagsetId,
+    tags,
+    ...values
+  }: SubmittedValues & { tags?: string[]; tagsetId: string | undefined }) => {
     if (!templateId) {
       throw new TypeError('Missing Template ID.');
     }
@@ -160,7 +176,15 @@ const AdminTemplatesSection = <
     await updateAspectTemplate({
       variables: {
         templateId,
-        ...values,
+        ...(values as unknown as SubmittedValues),
+        profile: {
+          tagsets: [
+            {
+              ID: tagsetId,
+              tags,
+            },
+          ],
+        },
       },
       refetchQueries,
     });
@@ -189,16 +213,16 @@ const AdminTemplatesSection = <
     }
 
     // Deconstruct and rebuild template information from the InnovationPack template downloaded:
-    const { id, info, ...templateData } = template;
-    const { id: infoId, ...infoData } = info;
+    const { id, profile, ...templateData } = template;
+    const { id: infoId, ...infoData } = profile;
     const values: SubmittedValues = {
       ...(templateData as SubmittedValues),
       ...value,
-      info: {
-        title: infoData.title,
-        tags: infoData.tagset?.tags,
+      profile: {
+        displayName: infoData.displayName,
         description: infoData.description,
       },
+      tags: infoData.tagset?.tags,
     };
 
     const result = await createAspectTemplate({
@@ -269,8 +293,8 @@ const AdminTemplatesSection = <
           {templates?.map(template => (
             <TemplateCard
               key={template.id}
-              title={template.info.title}
-              imageUrl={template.info.visual?.uri}
+              title={template.profile.displayName}
+              imageUrl={template.profile.visual?.uri}
               {...buildTemplateLink(template)}
             />
           ))}
@@ -336,7 +360,7 @@ const AdminTemplatesSection = <
           onConfirm={handleAspectTemplateDeletion}
         >
           {t('pages.admin.generic.sections.templates.delete-confirmation', {
-            template: deletingTemplate?.info.title,
+            template: deletingTemplate?.profile.displayName,
           })}
         </ConfirmationDialog>
       )}

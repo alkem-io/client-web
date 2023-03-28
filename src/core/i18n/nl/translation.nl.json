@@ -1,8 +1,7 @@
 {
   "notifications": {
     "release-updates": {
-      "text": "We hebben een aantal wijzigingen aangebracht op ons platform. Meer lezen over deze veranderingen?",
-      "link": "Klik hier"
+      "text": "Er is een nieuwe versie van het platform!  <a href=\"https://alkemio.foundation/releases\">Klik hier</a> om meer te lezen over de laatste updates."
     }
   },
   "cookie": {
@@ -30,7 +29,7 @@
     "add-event": "Voeg evenement toe",
     "edit-event": "Evenement wijzigen",
     "delete-event": "Verwijder evenement",
-    "delete-confirmation": "Weet u zeker dat u de gebeurtenis '{{title}}' wilt verwijderen uit de hub?",
+    "delete-confirmation": "Weet je zeker dat u de gebeurtenis '{{title}}' wilt verwijderen uit de hub?",
     "event": {
       "type": "Type evenement",
       "multiple-days": "{days} dagen",
@@ -38,12 +37,14 @@
     },
     "validation": {
       "durationMinutes": {
-        "positive": "Evenement eindtijd kan niet voor de starttijd van evenement zijn"
+        "positive": "De eindtijd van een evenement kan niet voor de starttijd plaatsvinden"
       }
     },
     "no-data": "Geen evenementen gevonden",
     "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
-    "past-events": "Afgelopen evenementen"
+    "past-events": "Eerdere evenementen",
+    "show-calendar": "Toon Kalender",
+    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
   },
   "buttons": {
     "leave": "Verlaat",
@@ -73,6 +74,7 @@
     "explore-and-connect": "Verken en verbind",
     "send-message": "Verstuur bericht",
     "edit-members": "Pas leden aan",
+    "insert": "Invoegen",
     "my-profile": "Mijn profiel",
     "new": "Nieuw",
     "sign-out": "Log uit",
@@ -85,11 +87,12 @@
     "profile": "Profiel",
     "view-profile": "Bekijk Profiel",
     "edit-photo": "Pas foto aan",
-    "accept-all-cookies": "Accepteer Alle Cookies",
+    "accept-all-cookies": "Accepteer alle cookies",
     "confirm-choice": "Bevestig keuze",
     "confirm": "Bevestig",
     "change-template": "Verander template",
-    "change": "Verander",
+    "find-template": "Template zoeken",
+    "change": "Aanpassen",
     "library": "Bibliotheek",
     "share": "Delen",
     "preview": "Voorbeeld",
@@ -100,7 +103,12 @@
     "select": "Selecteer",
     "change-field": "{{field}} wijzigen",
     "send": "Verzenden",
-    "contact-leads": "Contacteer de {{contact}}(s)"
+    "contact-leads": "Neem contact op met de {{contact}}(s)",
+    "moveUp": "Omhoog verplaatsen",
+    "moveDown": "Omlaag verplaatsen",
+    "moveToTop": "Bovenaan zetten",
+    "moveToBottom": "Onderaan zetten",
+    "use": "Gebruik"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -177,6 +185,7 @@
     "organizations": "Organisaties",
     "communications": "Updates",
     "applications": "Aanmeldingen",
+    "introduction": "Introductie",
     "interest": "Interesse",
     "interests": "Interesses",
     "project": "Project",
@@ -223,6 +232,7 @@
     "profile": "Profiel",
     "social": "Sociaal",
     "lifecycle": "Levenscyclus",
+    "location": "Locatie",
     "home": "Startpagina",
     "visuals": "Beeldmateriaal",
     "authorization": "Authorisatie",
@@ -252,11 +262,6 @@
         "ACTIVE": "Actief",
         "ARCHIVED": "Gearchiveerd",
         "DEMO": "Demo"
-      },
-      "callout-state": {
-        "ARCHIVED": "Gearchiveerd",
-        "CLOSED": "Gesloten",
-        "OPEN": "Open"
       },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
@@ -370,47 +375,6 @@
     "blocks": {
       "users-contributing": "gebruikers die bijdragen",
       "all-contributing-users": "alle gebruikers die een bijdrage leveren"
-    },
-    "wysiwyg-editor": {
-      "generic": {
-        "add": "$t(common.add)",
-        "cancel": "$t(buttons.cancel)"
-      },
-      "toolbar": {
-        "blocktype.h1": "Koptekst 1",
-        "blocktype.h2": "Koptekst 2",
-        "blocktype.h3": "Koptekst 3",
-        "blocktype.h4": "Koptekst 4",
-        "blocktype.h5": "Koptekst 5",
-        "blocktype.h6": "Koptekst 6",
-        "blocktype.blockquote": "Citaatblok",
-        "blocktype.code": "Code",
-        "blocktype.blocktype": "Blok type",
-        "blocktype.normal": "Normaal",
-        "emoji.emoji": "Emoticons",
-        "history.history": "Geschiedenis",
-        "history.undo": "Undo",
-        "history.redo": "Redo",
-        "image.image": "Afbeeldingen",
-        "image.fileUpload": "Bestand uploaden",
-        "image.byURL": "Plak URL",
-        "image.dropFileText": "Drop het bestand of klik om te uploaden",
-        "inline.bold": "Vet",
-        "inline.italic": "Cursief",
-        "inline.strikethrough": "Doorstrepen",
-        "inline.monospace": "Monospace",
-        "link.linkTitle": "Link Titel",
-        "link.linkTarget": "URL",
-        "link.linkTargetOption": "Link openen in nieuw venster",
-        "link.link": "Link",
-        "link.unlink": "Link verwijderen",
-        "list.list": "Lijst",
-        "list.unordered": "Ongeordende Lijst",
-        "list.ordered": "Geordende lijst",
-        "list.indent": "Inspringen",
-        "list.outdent": "Inspringen verwijderen",
-        "remove.remove": "Verwijder"
-      }
     }
   },
   "community": {
@@ -421,12 +385,22 @@
     "leads": "Leads",
     "members": "Leden",
     "host": "Host",
-    "members-count": "Leden ({{count}})"
+    "members-count": "Leden ({{count}})",
+    "application-form": {
+      "title": "Aanmeldingsformulier",
+      "subtitle": "Hier kan je de vragen instellen die gebruikers te zien krijgen wanneer ze zich aanmelden voor de Hub. <br /><b>Let op,</b> deze vragen worden alleen weergegeven wanneer \"Allow applications to this Hub\" is ingeschakeld, en \"Allow any registered user to join this Hub\" is uitgeschakeld. Deze instellingen vind je in het <b>Lidmaatschap</b> blok hierboven.",
+      "required-question": "Vereiste vraag",
+      "move-up": "Vraag één positie omhoog verplaatsen",
+      "move-down": "Vraag één positie naar beneden verplaatsen",
+      "delete-question": "Vraag verwijderen",
+      "updated-successfully": "Aanmeldingsformulier succesvol bijgewerkt."
+    }
   },
   "callout": {
     "contributions": "{{count}} Bijdrage",
     "contributions_plural": "{{count}} Bijdragen",
     "draftNotice": "Voorlopige versie - Deze oproep is alleen zichtbaar voor beheerders.",
+    "closed": "Deze oproep is gesloten. Je kunt nog altijd commentaar geven op de individuele kaarten.",
     "delete-confirm-title": "Oproep verwijderen?",
     "delete-confirm-text": "Alle kaarten, whiteboards en discussies onder deze oproep worden ook verwijderd.",
     "state-permission": "Accepteer nieuwe reacties",
@@ -450,7 +424,7 @@
     "share-this-on": "Deel deze {{entity}} op {{platform}}",
     "or": "of",
     "url": "URL",
-    "warning": "Houd er rekening mee dat uw persoonlijke e-mailadres zichtbaar is voor de gebruiker wanneer u hen een bericht stuurt.",
+    "warning": "Houd er rekening mee dat je persoonlijke e-mailadres zichtbaar is voor de gebruiker wanneer je een bericht stuurt.",
     "platforms": {
       "clipboard": {
         "title": "Link kopiëren",
@@ -508,17 +482,17 @@
     "challenge": {
       "displayName": {
         "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
+        "description": "Probeer het kort, beschrijvend en aantrekkelijk te houden",
         "placeholder": ""
       },
       "tagline": {
         "title": "Challenge Statement",
-        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met 'Hoe kunnen we...?'",
+        "description": "Omschrijf in één zin waar deze Challenge over gaat. Je kan hier ook een vraag van maken, beginnend met 'Hoe kunnen we...?'",
         "placeholder": ""
       },
       "background": {
         "title": "Huidige realiteit",
-        "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan de 'wat, waar, wanneer en wie'.",
+        "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan 'wat, waar, wanneer en wie'.",
         "placeholder": ""
       },
       "impact": {
@@ -545,7 +519,7 @@
     "opportunity": {
       "displayName": {
         "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
+        "description": "Probeer het kort, beschrijvend en aantrekkelijk te houden",
         "placeholder": ""
       },
       "tagline": {
@@ -555,7 +529,7 @@
       },
       "background": {
         "title": "Achtergrond",
-        "description": "Geef een korte omschrijving van hoe de Opportunity is ontstaan en hoe het pas in het grotere plaatje.",
+        "description": "Geef een korte omschrijving van hoe de Opportunity is ontstaan en hoe het past in het grotere plaatje.",
         "placeholder": ""
       },
       "impact": {
@@ -596,7 +570,13 @@
     "banner-narrow": "Smalle banner"
   },
   "canvas-templates": {
-    "canvas-template": "Whiteboard template"
+    "template-library": "Template Bibliotheek",
+    "filter-placeholder": "Templates zoeken...",
+    "canvas-template": "Whiteboard template",
+    "hub-templates": "Templates geselecteerd door de host van deze community",
+    "load-platform-templates": "Of klik hier om alle platformtemplates te bekijken",
+    "platform-templates": "Platform templates",
+    "error-importing": "Fout bij importeren Canvas Template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation flow template",
@@ -609,6 +589,62 @@
     }
   },
   "components": {
+    "confirmation-dialog": {
+      "delete-comment": {
+        "confirmation-title": "Verwijder reactie",
+        "confirmation-text": "Weet je zeker dat je deze reactie wilt verwijderen?"
+      }
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Koptekst 1",
+        "blocktype.h2": "Koptekst 2",
+        "blocktype.h3": "Koptekst 3",
+        "blocktype.h4": "Koptekst 4",
+        "blocktype.h5": "Koptekst 5",
+        "blocktype.h6": "Koptekst 6",
+        "blocktype.blockquote": "Blockquote",
+        "blocktype.code": "Code",
+        "blocktype.blocktype": "Type blok",
+        "blocktype.normal": "Normaal",
+        "emoji.emoji": "Emoticons",
+        "history.history": "Geschiedenis",
+        "history.undo": "Herstel",
+        "history.redo": "Opnieuw",
+        "image.image": "Afbeeldingen",
+        "image.fileUpload": "Bestand uploaden",
+        "image.byURL": "Plak URL",
+        "image.dropFileText": "Sleep het bestand hierheen of klik om te uploaden",
+        "inline.bold": "Vet",
+        "inline.italic": "Cursief",
+        "inline.strikethrough": "Doorstrepen",
+        "inline.monospace": "Monospace",
+        "link.linkTitle": "Link Titel",
+        "link.linkTarget": "URL",
+        "link.linkTargetOption": "Link openen in nieuw venster",
+        "link.link": "Link",
+        "link.unlink": "Link verwijderen",
+        "list.list": "Lijst",
+        "list.unordered": "Opsommingstekens",
+        "list.ordered": "Nummering",
+        "list.indent": "Inspringen",
+        "list.outdent": "Inspringing verwijderen",
+        "remove.remove": "Verwijderen"
+      },
+      "image": {
+        "dialogHeader": "Afbeelding invoegen"
+      },
+      "link": {
+        "dialogHeader": "Selectie omzetten naar Hyperlink"
+      },
+      "validation": {
+        "maxLength": "De tekst is langer dan door de server wordt geaccepteerd."
+      }
+    },
     "top-callouts": {
       "title": "Top Oproepen"
     },
@@ -633,8 +669,8 @@
     },
     "activity-log-section": {
       "title": "Recente bijdragen",
-      "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
-      "activity-join-error-message": "Om recente bijdragen te zien, kunt u zich aansluiten als u nog geen lid bent van deze {{journeyType}}.",
+      "activity-sign-in-error-message": "Meld je aan om recente bijdragen te zien.",
+      "activity-join-error-message": "Om recente bijdragen te zien, kan je je aansluiten als je nog geen lid bent van deze {{journeyType}}.",
       "activity-sign-in-and-join-error-message": "Log in of meld je aan om de recente bijdragen te zien als je nog geen lid bent van deze {{journeyType}}."
     },
     "activity-log-view": {
@@ -644,7 +680,7 @@
         "card-comment-created": "heeft gereageerd op '{{cardDisplayName}}'",
         "card-created": "voegde een {{cardType}} Kaart toe aan '{{calloutDisplayName}}'",
         "discussion-comment-created": "heeft gereageerd op '{{calloutDisplayName}}'",
-        "member-joined": "nieuw lid toegetreden tot {{journeyType}} '{{journeyDisplayName}}'",
+        "member-joined": "nieuw lid van de {{journeyType}} '{{journeyDisplayName}}'",
         "challenge-created": "heeft een nieuwe $t(common.challenge) aangemaakt",
         "opportunity-created": "heeft een nieuwe $t(common.opportunity) aangemaakt",
         "update-sent": "heeft een nieuwe $t(common.update) gedeeld"
@@ -1138,6 +1174,14 @@
         "recommendations": {
           "title": "Aanbevolen door de Host"
         }
+      },
+      "archived-notice": {
+        "archived-hub": "Deze Hub is momenteel gearchiveerd. Wil je de Hub nieuw leven inblazen? <contact>Klik hier</contact> om contact met ons op te nemen.",
+        "archived-journey": "Deze {{journey}} staat onder een gearchiveerde Hub. Geïnteresseerd om hem nieuw leven in te blazen? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
+      },
+      "demo-notice": {
+        "demo-hub": "Dit is een Demo Hub. <alkemio>Klik hier</alkemio> om samen te werken in actieve Hubs.",
+        "demo-journey": "Deze {{journey}} ligt binnen een Demo Hub. <alkemio>Klik hier</alkemio> om samen te werken in actieve Hubs."
       }
     },
     "contribute": {
@@ -1218,7 +1262,7 @@
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
-            "subtitle": "In deze sectie kun je de lidmaatschap voorkeuren aanpassen voor de $t(common.challenge)"
+            "subtitle": "In deze sectie kun je de lidmaatschapsvoorkeuren aanpassen voor de $t(common.challenge)"
           }
         },
         "sections": {
@@ -1318,7 +1362,7 @@
     },
     "search": {
       "placeholder": "Zoek...",
-      "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
+      "max-tags-reached": "Je hebt de limiet van {{max}} tekens bereikt",
       "search-suggestions": "Zoeksuggesties:",
       "suggestions-array": [
         "Innovatie",
@@ -1331,7 +1375,7 @@
         "SSI",
         "Vertrouwelijkheid"
       ],
-      "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten",
+      "user-not-logged": "Log in of registreer om gebruikers toe te voegen in je zoekresultaten",
       "filter": {
         "type": {
           "journey": "Journey type",
@@ -1349,12 +1393,13 @@
           "whiteboard": "Whiteboards (binnenkort beschikbaar)",
           "callout": "Oproepen (binnenkort beschikbaar)"
         }
-      }
+      },
+      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "search": {
         "title": "Verken Challenges",
-        "subtitle": "In deze sectie kan je alle door Challenges op Alkemio zoeken die voor jou zichtbaar zijn.",
+        "subtitle": "In deze sectie kan je alle Challenges op Alkemio vinden die voor jou zichtbaar zijn.",
         "placeholder": "Zoek met termen naar Challenges op Alkemio...",
         "default-search-term": "Innovatie",
         "no-results": "Geen resultaten stemmen overeen met je zoekopdracht."
@@ -1386,7 +1431,7 @@
     "activity": {
       "title": "{{blockName}} Activiteit",
       "hubs": "Challenges Hubs",
-      "innovation-flow-info": "Klik om de Innovatie Flow te weergeven"
+      "innovation-flow-info": "Klik om de Innovatie Flow weer te geven"
     },
     "home": {
       "sections": {
@@ -1446,12 +1491,10 @@
     },
     "hub": {
       "title": "Hub",
-      "archived-hub-notice": "Deze Hub is momenteel gearchiveerd. Wil je de Hub weer in leven brengen? <contact>Klik hier om Alkemio te contacteren</contact>.",
-      "demo-hub-notice": "Dit is een Demo Hub. <alkemio>Klik hier om samen te werken in actieve Hubs</alkemio>.",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
-        "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
-        "finish": "Bedankt voor het voltooien van uw inschrijving voor ",
+        "subheader": "Vul de onderstaande vragen in, je antwoorden worden samen met je profiel naar de betreffende partij gestuurd.",
+        "finish": "Bedankt voor het voltooien van je inschrijving voor ",
         "backButton": "Terug",
         "loading": "Vragen laden",
         "errorBlockName": "de vragen"
@@ -1547,10 +1590,10 @@
       "header": "Whiteboards in deze {{blockName}}",
       "subheader": "Maak een visualisatie en deel deze met anderen.",
       "add-canvas": "Creëer een whiteboard",
-      "no-canvases": "Er zijn nog geen whiteboards aangemaakt. Wees de eerste die er een toevoegt.",
+      "no-canvases": "Er zijn nog geen whiteboards aangemaakt. Wees de eerste!",
       "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
       "state": {
-        "checkedout": "Iemand anders is momenteel dit Whiteboard aan het bewerken"
+        "checkedout": "Iemand anders is momenteel dit whiteboard aan het bewerken"
       },
       "state-actions": {
         "check-out": "Bewerk",
@@ -1810,7 +1853,8 @@
   },
   "associates-view": {
     "less": "toon minder",
-    "more": "...plus {{count}} meer"
+    "more": "...plus {{count}} meer",
+    "sign-in": "Log in om de gebruikers die aan deze organisatie zijn gekoppeld te zien."
   },
   "hubs-filter": {
     "current-filter": "Huidige filter: ",
@@ -1820,33 +1864,46 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-diensten",
         "name": "Publieke Diensten",
-        "tags": ["Publieke Diensten", "Publieke Diensten"]
+        "tags": [
+          "Publieke Diensten",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
-      },
-      {
-        "key": "kwetsbare-groepen",
-        "name": "Kwetsbare Groepen",
-        "tags": ["Kwetsbare Groepen", "Kwetsbare Groepen"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
+  },
+  "hubSearch": {
+    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   }
 }

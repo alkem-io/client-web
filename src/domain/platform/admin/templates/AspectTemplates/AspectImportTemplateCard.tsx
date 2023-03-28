@@ -17,17 +17,17 @@ interface AspectImportTemplateCardProps extends TemplateImportCardComponentProps
 const AspectImportTemplateCard = ({ template, onClick }: AspectImportTemplateCardProps) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template.info.title} iconComponent={AspectIcon}>
+      <CardHeader title={template.profile.displayName} iconComponent={AspectIcon}>
         <CardHeaderCaption noWrap logoUrl={template.provider?.profile.visual?.uri}>
           {template.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescription>{template.info.description}</CardDescription>
-        <CardTags tags={template.info.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
+        <CardDescription>{template.profile.description ?? ''}</CardDescription>
+        <CardTags tags={template.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardSegmentCaption icon={<InnovationPackIcon />}>
-        <Caption noWrap>{template.innovationPackDisplayName}</Caption>
+        <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
   );

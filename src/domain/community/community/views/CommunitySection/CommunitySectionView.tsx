@@ -11,7 +11,7 @@ import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../../../../common/components/core/Section';
 import { useCommunityContext } from '../../CommunityContext';
 import { useConfig } from '../../../../platform/config/useConfig';
-import { Discussion } from '../../../../communication/discussion/models/discussion';
+import { Discussion } from '../../../../communication/discussion/models/Discussion';
 import { AuthorizationPrivilege, Message, User } from '../../../../../core/apollo/generated/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';

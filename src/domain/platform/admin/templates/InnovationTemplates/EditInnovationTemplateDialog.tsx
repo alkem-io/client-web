@@ -13,7 +13,7 @@ import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmit
 interface EditInnovationTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
+  onSubmit: (values: InnovationTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminLifecycleTemplateFragment | undefined;
 }
@@ -34,9 +34,16 @@ const EditInnovationTemplateDialog = ({
   const values: Partial<InnovationTemplateFormValues> = {
     type: template.type,
     definition: template.definition,
-    title: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
+  };
+
+  const handleSubmit = (values: InnovationTemplateFormSubmittedValues) => {
+    return onSubmit({
+      ...values,
+      tagsetId: template.profile.tagset?.id,
+    });
   };
 
   return (
@@ -49,8 +56,8 @@ const EditInnovationTemplateDialog = ({
       <InnovationTemplateForm
         title={t('common.edit-entity', { entity: t('innovation-templates.innovation-template') })}
         initialValues={values}
-        visual={template.info.visual}
-        onSubmit={onSubmit}
+        visual={template.profile.visual}
+        onSubmit={handleSubmit}
         actions={
           <>
             <DeleteButton onClick={onDelete} />

@@ -139,7 +139,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
             endAdornment: (
               <>
                 <SelectedTerms selectedTerms={value} disabled={disabled} handleRemove={handleRemove} />
-                <IconButton onClick={() => handleSearch()} disabled={disabled}>
+                <IconButton onClick={() => handleSearch(textInput)} disabled={disabled}>
                   <SearchIcon color="primary" />
                 </IconButton>
               </>

@@ -18,7 +18,7 @@ const AspectTemplateView = ({ template }: AspectTemplateViewProps) => {
   const { t } = useTranslation();
 
   const {
-    info: { tagset: { tags } = {}, description = '' },
+    profile: { tagset: { tags } = {}, description = '' },
     type: templateType,
     defaultDescription,
   } = template;

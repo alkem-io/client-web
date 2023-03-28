@@ -4,10 +4,10 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 
-import DiscussionOverview from '../../../../../common/components/composite/entities/Communication/DiscussionOverview';
+import DiscussionOverview from '../../../../communication/discussion/views/DiscussionOverview';
 import ConditionalLink from '../../../../../common/components/core/ConditionalLink';
 import { RouterLink } from '../../../../../common/components/core/RouterLink';
-import { Discussion } from '../../../../communication/discussion/models/discussion';
+import { Discussion } from '../../../../communication/discussion/models/Discussion';
 import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../../../../common/utils/urlBuilders';
 
 const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
@@ -40,7 +40,9 @@ export const DiscussionsView: FC<DiscussionsProps> = ({ discussions, canCreate }
       <>
         {discussions
           .slice(0, DISCUSSIONS_NUMBER_IN_WINDOW)
-          .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+          .sort((a, b) =>
+            a.createdAt && b.createdAt ? b.createdAt.getTime() - a.createdAt.getTime() : a.title.localeCompare(b.title)
+          )
           .map((x, i) => (
             <DiscussionOverview key={i} discussion={x} />
           ))}

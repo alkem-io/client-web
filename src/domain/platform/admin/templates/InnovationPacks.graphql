@@ -18,7 +18,10 @@ query InnovationPacks {
             }
           }
         }
-        displayName
+        profile {
+          id
+          displayName
+        }
         templates {
           id
           aspectTemplates {

@@ -14,7 +14,7 @@ import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmit
 export interface EditCanvasTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
+  onSubmit: (values: CanvasTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminCanvasTemplateFragment | undefined;
   getTemplateValue: (template: AdminCanvasTemplateFragment) => void;
@@ -48,9 +48,16 @@ const EditCanvasTemplateDialog = ({
 
   const values: Partial<CanvasTemplateFormValues> = {
     value: templateValue?.value,
-    title: template.info.title,
-    description: template.info.description,
-    tags: template.info.tagset?.tags,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
+  };
+
+  const handleSubmit = (values: CanvasTemplateFormSubmittedValues) => {
+    return onSubmit({
+      ...values,
+      tagsetId: template.profile.tagset?.id,
+    });
   };
 
   return (
@@ -61,11 +68,11 @@ const EditCanvasTemplateDialog = ({
       maxWidth={false}
     >
       <CanvasTemplateForm
-        title={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
+        displayName={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
-        visual={template.info.visual}
+        visual={template.profile.visual}
         canvases={canvases}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         getParentCalloutId={getParentCalloutId}
         actions={
           <>

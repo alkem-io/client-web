@@ -3,8 +3,11 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     id
     nameID
     type
-    displayName
-    description
+    profile {
+      id
+      displayName
+      description
+    }
     state
     visibility
     authorization {
