@@ -194,11 +194,11 @@ const AdminTemplatesSection = <
     const values: SubmittedValues = {
       ...(templateData as SubmittedValues),
       ...value,
-      info: {
-        title: infoData.displayName,
-        tags: infoData.tagset?.tags,
+      profile: {
+        displayName: infoData.displayName,
         description: infoData.description,
       },
+      tags: infoData.tagset?.tags,
     };
 
     const result = await createAspectTemplate({
