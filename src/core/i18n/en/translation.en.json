@@ -411,7 +411,7 @@
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "closed": "This Callout is closed. You can still comment on the individual cards.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, whiteboards and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All cards, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries."
   },
@@ -575,7 +575,7 @@
   },
   "aspect-templates": {
     "aspect-template": "Card template",
-    "default-description": "Default Card description",
+    "default-description": "Default Card content",
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
@@ -722,7 +722,7 @@
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card type",
+      "card-type-label": "Card label",
       "info-step": {
         "title": "Details",
         "description": "Description",
@@ -756,8 +756,8 @@
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Card Type",
-        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share."
+        "label": "Card label",
+        "type-help-text-short": "Please choose the Card label that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
@@ -1832,13 +1832,13 @@
     "new": "New Card",
     "edit": "Edit Card",
     "type": {
-      "title": "Card Type",
+      "title": "Card label",
       "help-text": "What type of information do you want to share?"
     },
     "cardLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "reminder": "Be careful changing the card’s location. Moving the card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move cards within the same Hub, Challenge or Opportunity.",
       "success": "Successfully moved card to the new Callout.",
       "error": "Something went wrong when moving the card, please try again."
     }
