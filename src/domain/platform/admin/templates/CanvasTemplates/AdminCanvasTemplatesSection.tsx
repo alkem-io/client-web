@@ -9,16 +9,14 @@ import {
 import {
   AdminCanvasTemplateFragment,
   CanvasDetailsFragment,
-  UpdateCanvasTemplateMutation,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection from '../AdminTemplatesSection';
 import EditCanvasTemplateDialog, { EditCanvasTemplateDialogProps } from './EditCanvasTemplateDialog';
 import CanvasTemplateCard from './CanvasTemplateCard';
 import CreateCanvasTemplateDialog, { CreateCanvasTemplateDialogProps } from './CreateCanvasTemplateDialog';
 import CanvasTemplatePreview from './CanvasTemplatePreview';
-import { CanvasTemplateFormSubmittedValues } from './CanvasTemplateForm';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './CanvasImportTemplateCard';
@@ -112,14 +110,12 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
       templateValue={canvasValue?.hub.templates?.canvasTemplate}
       importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.canvasTemplate}
       createTemplateDialogComponent={CreateCanvasTemplateDialogWithCanvases}
-      editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases}
-      useCreateTemplateMutation={useCreateCanvasTemplateMutation}
-      useUpdateTemplateMutation={
-        useUpdateCanvasTemplateMutation as MutationHook<
-          Partial<CanvasTemplateFormSubmittedValues> & { templateId: string },
-          UpdateCanvasTemplateMutation
-        >
-      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      editTemplateDialogComponent={EditCanvasTemplateDialogWithCanvases as any}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useCreateTemplateMutation={useCreateCanvasTemplateMutation as any}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useUpdateTemplateMutation={useUpdateCanvasTemplateMutation as any}
       useDeleteTemplateMutation={useDeleteCanvasTemplateMutation}
     />
   );

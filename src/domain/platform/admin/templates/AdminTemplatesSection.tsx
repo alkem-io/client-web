@@ -17,7 +17,7 @@ import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTemplatesDialogGalleryStep';
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { ProfileInfoWithVisualFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface Template extends Identifiable {
   profile: ProfileInfoWithVisualFragment;
@@ -54,10 +54,17 @@ export interface MutationHook<Variables, MutationResult> {
   (baseOptions?: Apollo.MutationHookOptions<MutationResult, Variables>): MutationTuple<MutationResult, Variables>;
 }
 
+export interface ProfileUpdate {
+  profile?: { tagsets?: Partial<Tagset>[] };
+}
+
 type AdminTemplatesSectionProps<
   T extends Template,
   Q extends T & TemplateInnovationPackMetaInfo,
   V extends TemplateValue,
+  // TODO There must be either introduced a minimal common subtype between the received and submitted values,
+  // so that that one in not constructed from the other by removing fields, OR
+  // the received and the submitted values may be two independent types.
   SubmittedValues extends Omit<T, 'id' | 'profile'> & Omit<V, 'id'>,
   CreateM,
   UpdateM,
@@ -88,9 +95,12 @@ type AdminTemplatesSectionProps<
   templateValue?: V | undefined;
   importedTemplateValue?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
-  editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
+  editTemplateDialogComponent: ComponentType<
+    DialogProps & EditTemplateDialogProps<T, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+  >;
+  // TODO instead of mutations let's just pass callbacks - mutations have options which make the type too complicated for using in generics.
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
-  useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues> & { templateId: string }, UpdateM>;
+  useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues & ProfileUpdate> & { templateId: string }, UpdateM>;
   useDeleteTemplateMutation: MutationHook<{ templateId: string; templatesSetId?: string }, DeleteM>;
 };
 
@@ -130,7 +140,9 @@ const AdminTemplatesSection = <
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
-  const EditTemplateDialog = editTemplateDialogComponent as ComponentType<EditTemplateDialogProps<T, SubmittedValues>>;
+  const EditTemplateDialog = editTemplateDialogComponent as ComponentType<
+    EditTemplateDialogProps<T, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+  >;
 
   const { t } = useTranslation();
   const notify = useNotification();
@@ -152,7 +164,11 @@ const AdminTemplatesSection = <
   const [createAspectTemplate] = useCreateTemplateMutation();
   const [deleteAspectTemplate, { loading: isDeletingAspectTemplate }] = useDeleteTemplateMutation();
 
-  const handleTemplateUpdate = async (values: SubmittedValues) => {
+  const handleTemplateUpdate = async ({
+    tagsetId,
+    tags,
+    ...values
+  }: SubmittedValues & { tags?: string[]; tagsetId: string | undefined }) => {
     if (!templateId) {
       throw new TypeError('Missing Template ID.');
     }
@@ -160,7 +176,15 @@ const AdminTemplatesSection = <
     await updateAspectTemplate({
       variables: {
         templateId,
-        ...values,
+        ...(values as unknown as SubmittedValues),
+        profile: {
+          tagsets: [
+            {
+              ID: tagsetId,
+              tags,
+            },
+          ],
+        },
       },
       refetchQueries,
     });
