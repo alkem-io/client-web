@@ -55,18 +55,18 @@ export const buildProjectUrl = (
 ) => `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
 
 export const buildDiscussionUrl = (url: string, id: string) => {
-  const stripUrl = url.replaceAll(/\/discussions|\/new/g, '');
-  return `${stripUrl}/discussions/${id}`;
+  const stripUrl = url.replaceAll(/\/discussion|\/new/g, '');
+  return `${stripUrl}/discussion/${id}`;
 };
 
 export const buildDiscussionsUrl = (url: string) => {
-  const stripUrl = url.replace(/\/discussions\/.*/g, '');
-  return `${stripUrl}/discussions/`;
+  const stripUrl = url.replace(/\/discussion\/.*/g, '');
+  return `${stripUrl}/discussion/`;
 };
 
 export const buildNewDiscussionUrl = (url: string) => {
-  const stripUrl = url.replace('/discussions', '');
-  return `${stripUrl}/discussions/new`;
+  const stripUrl = url.replace('/discussion', '');
+  return `${stripUrl}/discussion/new`;
 };
 
 export const buildNewOrganizationUrl = () => {
