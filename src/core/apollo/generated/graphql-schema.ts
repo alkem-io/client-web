@@ -515,9 +515,9 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
+  cascade: Scalars['Boolean'];
   criterias: Array<CredentialDefinition>;
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  inheritable: Scalars['Boolean'];
   name?: Maybe<Scalars['String']>;
 };
 
@@ -5896,6 +5896,7 @@ export type ChallengeProfileInfoQuery = {
         id: string;
         displayName: string;
         tagline: string;
+        description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         visuals: Array<{
           __typename?: 'Visual';
@@ -6056,6 +6057,7 @@ export type AboutPageNonMembersQuery = {
       id: string;
       displayName: string;
       tagline: string;
+      description?: string | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       visuals: Array<{
         __typename?: 'Visual';
@@ -6117,6 +6119,7 @@ export type AboutPageNonMembersQuery = {
         id: string;
         displayName: string;
         tagline: string;
+        description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         visuals: Array<{
           __typename?: 'Visual';
@@ -6167,6 +6170,7 @@ export type AboutPageNonMembersQuery = {
         id: string;
         displayName: string;
         tagline: string;
+        description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         visuals: Array<{
           __typename?: 'Visual';

@@ -4477,6 +4477,7 @@ export const ChallengeProfileInfoDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -4618,6 +4619,7 @@ export const AboutPageNonMembersDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -4651,6 +4653,7 @@ export const AboutPageNonMembersDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name
@@ -4688,6 +4691,7 @@ export const AboutPageNonMembersDocument = gql`
           id
           displayName
           tagline
+          description
           tagset {
             id
             name

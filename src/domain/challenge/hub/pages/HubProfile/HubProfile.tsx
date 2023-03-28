@@ -31,13 +31,14 @@ export const HubProfile: FC = () => {
   };
 
   const onSubmit = async (values: HubEditFormValuesType) => {
-    const { name, host, tagsets, references } = values;
+    const { name: displayName, tagline, host, tagsets, references } = values;
     updateHub({
       variables: {
         input: {
           context: updateContextInput({ ...values }),
           profileData: {
-            displayName: name,
+            displayName,
+            tagline,
             location: formatDatabaseLocation(values.location),
             references: references?.map(reference => ({
               ID: reference.id ?? '',
