@@ -81,7 +81,6 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
               </Box>
               <Filter data={comments}>
                 {filteredComments => {
-                  console.log('filteredComments', filteredComments);
                   if (filteredComments.length === 0) return null;
                   return (
                     <Box marginTop={2}>

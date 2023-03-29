@@ -10,6 +10,7 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
     subscriptionData: SubEntitySubscription,
     prev: SubEntity | null | undefined
   ) => void;
+  onSubEntityUpdate?: (subEntity: SubEntity | null | undefined) => void;
 }
 
 /**
@@ -55,11 +56,7 @@ const createUseSubscriptionToSubEntityHook =
           const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
           options.updateSubEntity(nextSubEntity, subscriptionData.data, getSubEntity(prev));
         });
-        console.log('updateQuery', prev, nextValue);
-        console.log('===', prev === nextValue);
-        console.log('subEntity===', getSubEntity(prev) === getSubEntity(nextValue));
-        // @ts-ignore
-        console.log('messages===', getSubEntity(prev)?.['messages'] === getSubEntity(nextValue)?.['messages']);
+        options.onSubEntityUpdate?.(getSubEntity(nextValue));
         return nextValue;
       },
       ...subscriptionOptions,

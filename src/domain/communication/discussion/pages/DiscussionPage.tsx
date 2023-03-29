@@ -50,7 +50,7 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
     console.log('messageReceived:', subscriptionData.communicationDiscussionMessageReceived.message);
     discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
   },
-  onUpdate: subEntity => {
+  onSubEntityUpdate: subEntity => {
     console.log('onSubEntityUpdate', subEntity);
   },
 });
@@ -75,7 +75,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     skip: !discussionId,
   });
   useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
-  console.log('render', data?.platform.communication.discussion);
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
@@ -106,8 +105,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         : undefined,
     [rawDiscussion, authors]
   );
-
-  console.log('discussion', discussion);
 
   const [postComment] = usePostDiscussionCommentMutation();
 
