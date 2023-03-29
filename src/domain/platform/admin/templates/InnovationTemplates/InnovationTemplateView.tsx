@@ -1,7 +1,7 @@
 import { Box, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdminLifecycleTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
@@ -12,7 +12,7 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
 }));
 
 interface AspectInnovationViewProps {
-  template: AdminLifecycleTemplateFragment;
+  template: AdminInnovationFlowTemplateFragment;
   // TODO: Add getTemplateValue here and apply the same lazyQuery aproach it's done on Canvases if we don't want to load the full IF definition in the index query
 }
 

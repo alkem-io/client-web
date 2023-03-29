@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
-import { CreateProfileInput, LifecycleType, Visual } from '../../../../../core/apollo/generated/graphql-schema';
+import { CreateProfileInput, InnovationFlowType, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import FormRows from '../../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
@@ -16,13 +16,13 @@ export interface InnovationTemplateFormValues {
   displayName: string;
   description: string;
   tags: string[];
-  type: LifecycleType;
+  type: InnovationFlowType;
   definition: string;
 }
 
 export interface InnovationTemplateFormSubmittedValues {
   definition: string;
-  type: LifecycleType;
+  type: InnovationFlowType;
   profile: CreateProfileInput;
 }
 
@@ -41,7 +41,7 @@ const validator = {
     .test('is-renderable', 'Invalid definition provided', value =>
       value ? LifecycleDataProvider.validateLifecycleDefinition(value) : false
     ),
-  type: yup.string().oneOf(Object.values(LifecycleType)),
+  type: yup.string().oneOf(Object.values(InnovationFlowType)),
 };
 
 const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: InnovationTemplateFormProps) => {
@@ -49,7 +49,7 @@ const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, action
 
   const types = useMemo(
     () =>
-      Object.values(LifecycleType).map<FormikSelectValue>(x => ({
+      Object.values(InnovationFlowType).map<FormikSelectValue>(x => ({
         id: x,
         name: x,
       })),

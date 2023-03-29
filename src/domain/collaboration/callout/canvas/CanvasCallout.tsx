@@ -6,7 +6,7 @@ import CanvasActionsContainer from '../../canvas/containers/CanvasActionsContain
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import {
   CalloutState,
-  CanvasTemplate,
+  WhiteboardTemplate,
   CreateCanvasOnCalloutInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
@@ -23,7 +23,7 @@ import CanvasDialog from '../../canvas/CanvasDialog/CanvasDialog';
 interface CanvasCalloutProps extends BaseCalloutProps {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCardCanvas[];
-    canvasTemplate: CanvasTemplate;
+    whiteboardTemplate: WhiteboardTemplate;
   };
 }
 
@@ -102,7 +102,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
                     id: '',
                     displayName: '',
                   },
-                  value: callout.canvasTemplate.value,
+                  value: callout.whiteboardTemplate.value,
                 },
               }}
               actions={{

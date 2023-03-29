@@ -6,7 +6,7 @@ import {
   AuthorizationPrivilege,
   CanvasDetailsFragment,
   CollaborationWithCanvasDetailsFragment,
-  CreateCanvasCanvasTemplateFragment,
+  CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import CanvasManagementView, {
@@ -19,7 +19,7 @@ import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
   entityTypeName: EntityTypeName;
   canvas: CanvasDetailsFragment | undefined;
-  templates: CreateCanvasCanvasTemplateFragment[];
+  templates: CreateCanvasWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
   loadingCanvases: boolean;

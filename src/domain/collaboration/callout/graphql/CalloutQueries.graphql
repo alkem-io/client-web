@@ -166,12 +166,12 @@ fragment Callout on Callout {
     myPrivileges
   }
   visibility
-  ...CalloutCardTemplate
-  ...CalloutCanvasTemplate
+  ...CalloutPostTemplate
+  ...CalloutWhiteboardTemplate
 }
 
-fragment CalloutCardTemplate on Callout {
-  cardTemplate {
+fragment CalloutPostTemplate on Callout {
+  postTemplate {
     id
     type
     defaultDescription
@@ -188,8 +188,8 @@ fragment CalloutCardTemplate on Callout {
   }
 }
 
-fragment CalloutCanvasTemplate on Callout {
-  canvasTemplate {
+fragment CalloutWhiteboardTemplate on Callout {
+  whiteboardTemplate {
     id
     value
     profile {
