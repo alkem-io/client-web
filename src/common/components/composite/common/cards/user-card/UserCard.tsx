@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler } from 'react';
+import { FC, MouseEventHandler, ReactNode } from 'react';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
@@ -45,7 +45,7 @@ export interface UserCardProps {
   displayName?: string;
   tags?: string[];
   url?: string;
-  roleName?: string;
+  roleName?: ReactNode;
   city?: string;
   country?: string;
   loading?: boolean;
@@ -106,7 +106,7 @@ const UserCard: FC<UserCardProps> = ({
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" loading={loading} />
+                {roleName && <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" loading={loading} />}
                 <InfoRow
                   text={location || 'No location specified'}
                   icon={LocationOnIcon}
@@ -130,7 +130,7 @@ export default UserCard;
 interface InfoRowProps {
   icon: typeof SvgIcon;
   ariaLabel: string;
-  text?: string;
+  text?: ReactNode;
   loading?: boolean;
 }
 

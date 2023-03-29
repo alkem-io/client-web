@@ -28,7 +28,7 @@ const HubContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dial
     <>
       <CommunityContributorsView
         organizations={useOrganizationCardProps(memberOrganizations)}
-        users={useUserCardProps(memberUsers, hubId)}
+        users={useUserCardProps(memberUsers)}
         organizationsCount={memberOrganizations?.length}
         usersCount={memberUsers?.length}
         noOrganizationsView={<NoOrganizations type={'member'} />}

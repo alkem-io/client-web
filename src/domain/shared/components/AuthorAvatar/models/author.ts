@@ -6,7 +6,6 @@ export interface Author {
   avatarUrl: string;
   url: string;
   tags?: string[];
-  roleName?: string;
   city?: string;
   country?: string;
 }

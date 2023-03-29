@@ -6,7 +6,7 @@ import ProfileCard, {
   ProfileCardProps,
 } from '../../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/CardsLayout/CardsLayout';
-import UserCredentialsContainer from '../../../contributor/user/containers/UserCredentialsContainer';
+import UserCredentialsContainer from '../../../../platform/VerifiedCredentials/UserCredentialsContainer';
 
 export interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
