@@ -1,8 +1,18 @@
-import { Box, BoxProps, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
+import {
+  Box,
+  BoxProps,
+  ButtonProps,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Popover,
+  styled,
+} from '@mui/material';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Person from '@mui/icons-material/Person';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import React, { ElementType, useMemo, useRef, useState } from 'react';
+import React, { ComponentType, ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
@@ -28,13 +38,13 @@ const PopoverRoot = styled('div')(({ theme }) => ({
 type UserSegmentProps<El extends ElementType> = BoxProps<El> & {
   userMetadata: UserMetadata;
   emailVerified: boolean;
-  buttonClassName?: string;
+  buttonComponent: ComponentType<ButtonProps>;
 };
 
 const UserSegment = <El extends ElementType>({
   userMetadata,
   emailVerified,
-  buttonClassName,
+  buttonComponent,
   ...userBoxProps
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
@@ -63,7 +73,7 @@ const UserSegment = <El extends ElementType>({
         name={user.firstName}
         src={user.profile.visual?.uri}
         ref={popoverAnchor}
-        className={buttonClassName}
+        buttonComponent={buttonComponent}
         onClick={() => setDropdownOpen(true)}
         {...userBoxProps}
       />

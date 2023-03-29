@@ -27,7 +27,7 @@ const AspectImportTemplateCard = ({ template, onClick }: AspectImportTemplateCar
         <CardTags tags={template.profile.tagset?.tags ?? []} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardSegmentCaption icon={<InnovationPackIcon />}>
-        <Caption noWrap>{template.innovationPackProfile}</Caption>
+        <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>
       </CardSegmentCaption>
     </ContributeCard>
   );

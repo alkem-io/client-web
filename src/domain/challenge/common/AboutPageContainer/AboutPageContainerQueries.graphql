@@ -37,6 +37,7 @@ query AboutPageNonMembers(
         id
         displayName
         tagline
+        description
         tagset {
           id
           name
@@ -70,6 +71,7 @@ query AboutPageNonMembers(
         id
         displayName
         tagline
+        description
         tagset {
           id
           name
@@ -108,6 +110,7 @@ query AboutPageNonMembers(
         id
         displayName
         tagline
+        description
         tagset {
           id
           name

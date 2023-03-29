@@ -1,8 +1,7 @@
 {
   "notifications": {
     "release-updates": {
-      "text": "We hebben een aantal wijzigingen aangebracht op ons platform. Meer lezen over deze veranderingen?",
-      "link": "Klik hier"
+      "text": "Er is een nieuwe versie van het platform!  <a href=\"https://alkemio.foundation/releases\">Klik hier</a> om meer te lezen over de laatste updates."
     }
   },
   "cookie": {
@@ -43,7 +42,9 @@
     },
     "no-data": "Geen evenementen gevonden",
     "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
-    "past-events": "Afgelopen evenementen"
+    "past-events": "Afgelopen evenementen",
+    "show-calendar": "Toon Kalender",
+    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
   },
   "buttons": {
     "leave": "Verlaat",
@@ -73,6 +74,7 @@
     "explore-and-connect": "Verken en verbind",
     "send-message": "Verstuur bericht",
     "edit-members": "Pas leden aan",
+    "insert": "Invoegen",
     "my-profile": "Mijn profiel",
     "new": "Nieuw",
     "sign-out": "Log uit",
@@ -89,6 +91,7 @@
     "confirm-choice": "Bevestig keuze",
     "confirm": "Bevestig",
     "change-template": "Verander template",
+    "find-template": "Template zoeken",
     "change": "Verander",
     "library": "Bibliotheek",
     "share": "Delen",
@@ -100,11 +103,19 @@
     "select": "Selecteer",
     "change-field": "{{field}} wijzigen",
     "send": "Verzenden",
-    "contact-leads": "Contacteer de {{contact}}(s)"
+    "contact-leads": "Neem contact op met de {{contact}}(s)",
+    "moveUp": "Omhoog verplaatsen",
+    "moveDown": "Omlaag verplaatsen",
+    "moveToTop": "Bovenaan zetten",
+    "moveToBottom": "Onderaan zetten",
+    "use": "Gebruik"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
     "click-delete": "Klik om te verwijderen"
+  },
+  "topbar": {
+    "sign-in": "Log In | Sign Up"
   },
   "authentication": {
     "sign-in": "Log in",
@@ -160,6 +171,7 @@
     "edit-entity": "Pas {{entity}} aan",
     "filter": "Filter",
     "filterby": "Filter op...",
+    "forum": "Forum",
     "email": "Email",
     "state": "Staat",
     "aspect": "Kaart",
@@ -177,6 +189,7 @@
     "organizations": "Organisaties",
     "communications": "Updates",
     "applications": "Aanmeldingen",
+    "introduction": "Inleiding",
     "interest": "Interesse",
     "interests": "Interesses",
     "project": "Project",
@@ -223,6 +236,7 @@
     "profile": "Profiel",
     "social": "Sociaal",
     "lifecycle": "Levenscyclus",
+    "location": "Locatie",
     "home": "Startpagina",
     "visuals": "Beeldmateriaal",
     "authorization": "Authorisatie",
@@ -252,11 +266,6 @@
         "ACTIVE": "Actief",
         "ARCHIVED": "Gearchiveerd",
         "DEMO": "Demo"
-      },
-      "callout-state": {
-        "ARCHIVED": "Gearchiveerd",
-        "CLOSED": "Gesloten",
-        "OPEN": "Open"
       },
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
@@ -364,53 +373,17 @@
         "GENERAL": "Algemeen",
         "IDEAS": "Ideeën",
         "QUESTIONS": "Vragen",
-        "SHARING": "Delen"
+        "SHARING": "Delen",
+        "PLATFORM_FUNCTIONALITIES": "Platform Functionaliteiten",
+        "COMMUNITY_BUILDING": "Community Building",
+        "CHALLENGE_CENTRIC": "Opgavegericht werken",
+        "HELP": "Hulp nodig?",
+        "OTHER": "Overig"
       }
     },
     "blocks": {
       "users-contributing": "gebruikers die bijdragen",
       "all-contributing-users": "alle gebruikers die een bijdrage leveren"
-    },
-    "wysiwyg-editor": {
-      "generic": {
-        "add": "$t(common.add)",
-        "cancel": "$t(buttons.cancel)"
-      },
-      "toolbar": {
-        "blocktype.h1": "Koptekst 1",
-        "blocktype.h2": "Koptekst 2",
-        "blocktype.h3": "Koptekst 3",
-        "blocktype.h4": "Koptekst 4",
-        "blocktype.h5": "Koptekst 5",
-        "blocktype.h6": "Koptekst 6",
-        "blocktype.blockquote": "Citaatblok",
-        "blocktype.code": "Code",
-        "blocktype.blocktype": "Blok type",
-        "blocktype.normal": "Normaal",
-        "emoji.emoji": "Emoticons",
-        "history.history": "Geschiedenis",
-        "history.undo": "Undo",
-        "history.redo": "Redo",
-        "image.image": "Afbeeldingen",
-        "image.fileUpload": "Bestand uploaden",
-        "image.byURL": "Plak URL",
-        "image.dropFileText": "Drop het bestand of klik om te uploaden",
-        "inline.bold": "Vet",
-        "inline.italic": "Cursief",
-        "inline.strikethrough": "Doorstrepen",
-        "inline.monospace": "Monospace",
-        "link.linkTitle": "Link Titel",
-        "link.linkTarget": "URL",
-        "link.linkTargetOption": "Link openen in nieuw venster",
-        "link.link": "Link",
-        "link.unlink": "Link verwijderen",
-        "list.list": "Lijst",
-        "list.unordered": "Ongeordende Lijst",
-        "list.ordered": "Geordende lijst",
-        "list.indent": "Inspringen",
-        "list.outdent": "Inspringen verwijderen",
-        "remove.remove": "Verwijder"
-      }
     }
   },
   "community": {
@@ -421,12 +394,22 @@
     "leads": "Leads",
     "members": "Leden",
     "host": "Host",
-    "members-count": "Leden ({{count}})"
+    "members-count": "Leden ({{count}})",
+    "application-form": {
+      "title": "Aanmeldingsformulier",
+      "subtitle": "Deze sectie stelt je in staat om de vragen te wijzigen voor gebruikers die willen toetreden tot de Hub. <br /><b>Houd er rekening mee dat</b> deze vragen alleen worden weergegeven wanneer de schakelaar \"Allow applications to this Hub\" is ingeschakeld <b>in</b>, en \"Allow any registered user to join this Hub\" is uitgeschakeld <b>.</b>. Deze kunnen in het bovenstaande <b>Lidmaatschap</b> blok worden ingesteld.",
+      "required-question": "Vereiste vraag",
+      "move-up": "Vraag één positie omhoog verplaatsen",
+      "move-down": "Vraag één positie naar beneden verplaatsen",
+      "delete-question": "Vraag verwijderen",
+      "updated-successfully": "Aanmeldingsformulier succesvol bijgewerkt."
+    }
   },
   "callout": {
     "contributions": "{{count}} Bijdrage",
     "contributions_plural": "{{count}} Bijdragen",
     "draftNotice": "Voorlopige versie - Deze oproep is alleen zichtbaar voor beheerders.",
+    "closed": "Deze oproep is gesloten. Je kunt nog altijd commentaar geven op de individuele kaarten.",
     "delete-confirm-title": "Oproep verwijderen?",
     "delete-confirm-text": "Alle kaarten, whiteboards en discussies onder deze oproep worden ook verwijderd.",
     "state-permission": "Accepteer nieuwe reacties",
@@ -596,7 +579,13 @@
     "banner-narrow": "Smalle banner"
   },
   "canvas-templates": {
-    "canvas-template": "Whiteboard template"
+    "template-library": "Template Bibliotheek",
+    "filter-placeholder": "Templates zoeken...",
+    "canvas-template": "Whiteboard template",
+    "hub-templates": "Templates geselecteerd door de host van deze community",
+    "load-platform-templates": "Of klik hier om door alle platformtemplates te bladeren",
+    "platform-templates": "Platform templates",
+    "error-importing": "Fout bij importeren Canvas Template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation flow template",
@@ -609,6 +598,62 @@
     }
   },
   "components": {
+    "confirmation-dialog": {
+      "delete-comment": {
+        "confirmation-title": "Verwijder reactie",
+        "confirmation-text": "Weet je zeker dat je deze reactie wilt verwijderen?"
+      }
+    },
+    "wysiwyg-editor": {
+      "generic": {
+        "add": "$t(common.add)",
+        "cancel": "$t(buttons.cancel)"
+      },
+      "toolbar": {
+        "blocktype.h1": "Koptekst 1",
+        "blocktype.h2": "Koptekst 2",
+        "blocktype.h3": "Koptekst 3",
+        "blocktype.h4": "Koptekst 4",
+        "blocktype.h5": "Koptekst 5",
+        "blocktype.h6": "Koptekst 6",
+        "blocktype.blockquote": "Blockquote",
+        "blocktype.code": "Code",
+        "blocktype.blocktype": "Type blok",
+        "blocktype.normal": "Normaal",
+        "emoji.emoji": "Emoticons",
+        "history.history": "Geschiedenis",
+        "history.undo": "Herstel",
+        "history.redo": "Opnieuw",
+        "image.image": "Afbeeldingen",
+        "image.fileUpload": "Bestand uploaden",
+        "image.byURL": "Plak URL",
+        "image.dropFileText": "Drop het bestand of klik om te uploaden",
+        "inline.bold": "Vet",
+        "inline.italic": "Cursief",
+        "inline.strikethrough": "Doorstrepen",
+        "inline.monospace": "Monospace",
+        "link.linkTitle": "Link Titel",
+        "link.linkTarget": "URL",
+        "link.linkTargetOption": "Link openen in nieuw venster",
+        "link.link": "Link",
+        "link.unlink": "Link verwijderen",
+        "list.list": "Lijst",
+        "list.unordered": "Opsommingstekens",
+        "list.ordered": "Nummering",
+        "list.indent": "Inspringen",
+        "list.outdent": "Inspringing verwijderen",
+        "remove.remove": "Verwijderen"
+      },
+      "image": {
+        "dialogHeader": "Afbeelding invoegen"
+      },
+      "link": {
+        "dialogHeader": "Selectie omzetten naar Hyperlink"
+      },
+      "validation": {
+        "maxLength": "De resulterende tekst gaat verder dan de grootte die door de server is geaccepteerd."
+      }
+    },
     "top-callouts": {
       "title": "Top Oproepen"
     },
@@ -670,6 +715,9 @@
     "context-section": {
       "create-card": "Kaart aangemaakt!",
       "give-feedback": "Geef feedback"
+    },
+    "callout-publish": {
+      "notify-members": "Stuur een notificatie naar de leden van $t(common.community)"
     },
     "callout-creation": {
       "title": "Plaats een nieuwe oproep",
@@ -996,11 +1044,11 @@
     "discussions-list": {
       "name": "Discussies - {{community}}",
       "title": "Discussies ({{count}})",
-      "help": "Lijst van alle discussies",
       "posted": "{{name}} op {{- date}} - {{count}} opmerking",
       "posted_plural": "{{name}} op {{- date}} - {{count}} opmerkingen"
     },
     "discussion": {
+      "initiate": "Nieuwe Discussie starten",
       "posted": "{{name}} gestart op {{- date}} - {{count}} operking",
       "posted_plural": "{{name}} gestart op {{- date}} - {{count}} operkingen",
       "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
@@ -1015,11 +1063,6 @@
     "comment": {
       "posted": "{{name}} op {{- date}}",
       "reply": "Op deze opmerking reageren"
-    },
-    "discussions-layout": {
-      "buttons": {
-        "new-discussion": "Nieuwe discussie starten"
-      }
     },
     "post-comment": {
       "fields": {
@@ -1138,6 +1181,14 @@
         "recommendations": {
           "title": "Aanbevolen door de Host"
         }
+      },
+      "archived-notice": {
+        "archived-hub": "Deze Hub is momenteel gearchiveerd. Wil je de Hub weer in leven brengen? <contact>Klik hier</contact> om contact te zoeken.",
+        "archived-journey": "Deze {{journey}} staat onder een gearchiveerde Hub. Geïnteresseerd om het terug te brengen naar het leven? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
+      },
+      "demo-notice": {
+        "demo-hub": "Dit is een Demo Hub. <alkemio>Klik hier</alkemio> om samen te werken in actieve Hubs.",
+        "demo-journey": "Deze {{journey}} ligt binnen een Demo Hub. <alkemio>Klik hier</alkemio> om samen te werken in actieve Hubs."
       }
     },
     "contribute": {
@@ -1349,7 +1400,8 @@
           "whiteboard": "Whiteboards (binnenkort beschikbaar)",
           "callout": "Oproepen (binnenkort beschikbaar)"
         }
-      }
+      },
+      "journeyFilterTitle": "$t(common.hubs), $t(common.challenges) & $t(common.opportunities)"
     },
     "challenge-explorer": {
       "search": {
@@ -1446,8 +1498,6 @@
     },
     "hub": {
       "title": "Hub",
-      "archived-hub-notice": "Deze Hub is momenteel gearchiveerd. Wil je de Hub weer in leven brengen? <contact>Klik hier om Alkemio te contacteren</contact>.",
-      "demo-hub-notice": "Dit is een Demo Hub. <alkemio>Klik hier om samen te werken in actieve Hubs</alkemio>.",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
         "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
@@ -1724,6 +1774,11 @@
         "new-user": "Nieuwe gebruiker? Begin hier!"
       },
       "tips-and-tricks": "Op zoek naar tips & tricks? Vind ze hier in onze blogs!"
+    },
+    "forum": {
+      "title": "Vragen, suggesties of feedback? Stel ze hier aan het Alkemio team of andere gebruikers van het platform!",
+      "new-title": "Alkemio Forum - Discussie starten",
+      "back": "Alle Discussies"
     }
   },
   "operations": {
@@ -1810,7 +1865,8 @@
   },
   "associates-view": {
     "less": "toon minder",
-    "more": "...plus {{count}} meer"
+    "more": "...plus {{count}} meer",
+    "sign-in": "Log in om de gebruikers die aan deze organisatie zijn gekoppeld te zien."
   },
   "hubs-filter": {
     "current-filter": "Huidige filter: ",
@@ -1820,33 +1876,46 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-diensten",
         "name": "Publieke Diensten",
-        "tags": ["Publieke Diensten", "Publieke Diensten"]
+        "tags": [
+          "Publieke Diensten",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
-      },
-      {
-        "key": "kwetsbare-groepen",
-        "name": "Kwetsbare Groepen",
-        "tags": ["Kwetsbare Groepen", "Kwetsbare Groepen"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
+  },
+  "hubSearch": {
+    "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
   }
 }

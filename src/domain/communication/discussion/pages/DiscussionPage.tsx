@@ -1,102 +1,228 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DiscussionIcon from '../../../../common/components/composite/entities/Communication/DiscussionIcon';
-import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
-import { Loading } from '../../../../common/components/core';
+import DiscussionsLayout from '../layout/DiscussionsLayout';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
-import { useCommunityContext } from '../../../community/community/CommunityContext';
-import { useDiscussionContext } from '../providers/DiscussionProvider';
-import { useDiscussionsContext } from '../providers/DiscussionsProvider';
 import { useUserContext } from '../../../community/contributor/user';
-import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
 import DiscussionView from '../views/DiscussionView';
-import { PageProps } from '../../../shared/types/PageProps';
+import {
+  CommunicationDiscussionMessageReceivedDocument,
+  MessageDetailsFragmentDoc,
+  refetchPlatformDiscussionQuery,
+  refetchPlatformDiscussionsQuery,
+  useDeleteDiscussionMutation,
+  usePlatformDiscussionQuery,
+  usePostDiscussionCommentMutation,
+  useDeleteCommentMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { Discussion } from '../models/Discussion';
+import { compact } from 'lodash';
+import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
+import { Message } from '../../../shared/components/Comments/models/message';
+import { Skeleton } from '@mui/material';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import BackButton from '../../../../core/ui/actions/BackButton';
+import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
+import { useConfig } from '../../../platform/config/useConfig';
+import { useNavigate } from 'react-router-dom';
+import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
+import {
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables,
+  DiscussionDetailsFragment,
+  MessageDetailsFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 
-interface DiscussionPageProps extends PageProps {}
+const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
+  DiscussionDetailsFragment & {
+    messages?: MessageDetailsFragment[];
+  },
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables
+>({
+  subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
+  getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
+  updateSubEntity: (discussion, subscriptionData) => {
+    discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
+  },
+});
 
-export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
+interface DiscussionPageProps {}
+
+export const DiscussionPage: FC<DiscussionPageProps> = () => {
+  const { discussionId } = useUrlParams();
   const { t } = useTranslation();
-  const { loading: loadingCommunity } = useCommunityContext();
+  const navigate = useNavigate();
   const { user } = useUserContext();
+  const { isFeatureEnabled } = useConfig();
 
-  const [showDeleteDiscModal, setShowDeleteDiscModal] = useState<boolean>(false);
-  const [showDeleteCommentModal, setShowDeleteCommentModal] = useState<boolean>(false);
-  // holds the ID of discussion or comment for deletion after the dialog is confirmed
-  const [itemToDelete, setItemToDelete] = useState<string | undefined>(undefined);
+  const {
+    data,
+    loading: loadingDiscussion,
+    subscribeToMore,
+  } = usePlatformDiscussionQuery({
+    variables: {
+      discussionId: discussionId!,
+    },
+    skip: !discussionId,
+  });
+  useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
 
-  const { discussion, handlePostComment, handleDeleteComment, loading: loadingDiscussions } = useDiscussionContext();
-  const { handleDeleteDiscussion } = useDiscussionsContext();
-
-  const currentPaths = useMemo(
-    () => [...paths, { value: '', name: discussion?.title ?? '', real: false }],
-    [paths, discussion]
+  const rawDiscussion = data?.platform.communication.discussion;
+  const authors = useAuthorsDetails(
+    compact([rawDiscussion?.createdBy, ...compact(rawDiscussion?.messages?.map(c => c.sender?.id))])
   );
-  useUpdateNavigation({ currentPaths });
 
-  if (loadingDiscussions || loadingCommunity) return <Loading />;
+  const discussion = useMemo<Discussion | undefined>(
+    () =>
+      rawDiscussion
+        ? {
+            id: rawDiscussion.id,
+            title: rawDiscussion.title,
+            description: rawDiscussion.description,
+            category: rawDiscussion.category,
+            myPrivileges: rawDiscussion.authorization?.myPrivileges,
+            author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
+            authors: authors.authors ?? [],
+            createdAt: rawDiscussion.timestamp ? new Date(rawDiscussion.timestamp) : undefined,
+            commentsCount: rawDiscussion.commentsCount,
+            comments:
+              rawDiscussion.messages?.map<Message>(m => ({
+                id: m.id,
+                body: m.message,
+                author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
+                createdAt: new Date(m.timestamp),
+              })) ?? [],
+          }
+        : undefined,
+    [rawDiscussion, authors]
+  );
 
-  if (!discussion) return null;
+  const [postComment] = usePostDiscussionCommentMutation();
 
-  const currentUserId = user?.user.id;
-
-  const deleteDiscussionHandler = (id: string) => {
-    setItemToDelete(id);
-    setShowDeleteDiscModal(true);
-  };
-
-  const deleteCommentHandler = (id: string) => {
-    setItemToDelete(id);
-    setShowDeleteCommentModal(true);
-  };
-
-  const onCancelModal = () => {
-    setShowDeleteDiscModal(false);
-    setShowDeleteCommentModal(false);
-    setItemToDelete(undefined);
-  };
-
-  const onConfirmDiscDialog = () => {
-    if (itemToDelete) {
-      handleDeleteDiscussion(itemToDelete);
-      setShowDeleteDiscModal(false);
+  const handlePostComment = (post: string) => {
+    if (!discussionId) {
+      return;
     }
+
+    return postComment({
+      update: (cache, { data }) => {
+        if (isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+          return;
+        }
+        cache.modify({
+          id: cache.identify({
+            id: discussionId,
+            __typename: 'Discussion',
+          }),
+          fields: {
+            messages(existingMessages = []) {
+              if (data) {
+                const newMessage = cache.writeFragment({
+                  data: data?.sendMessageToDiscussion,
+                  fragment: MessageDetailsFragmentDoc,
+                });
+                return [...existingMessages, newMessage];
+              }
+              return existingMessages;
+            },
+          },
+        });
+      },
+      variables: {
+        input: {
+          discussionID: discussionId,
+          message: post,
+        },
+      },
+    });
   };
 
-  const onConfirmCommentDialog = () => {
-    if (itemToDelete) {
-      handleDeleteComment(discussion.id, itemToDelete);
-      setShowDeleteCommentModal(false);
+  const [deleteDiscussionId, setDeleteDiscussionId] = useState<string>();
+  const [deleteCommentId, setDeleteCommentId] = useState<string>();
+
+  const [deleteDiscussion] = useDeleteDiscussionMutation({
+    refetchQueries: [refetchPlatformDiscussionsQuery()],
+  });
+
+  const handleDeleteDiscussion = async () => {
+    if (!deleteDiscussionId) {
+      return;
     }
+    await deleteDiscussion({
+      variables: {
+        deleteData: {
+          ID: deleteDiscussionId,
+        },
+      },
+    });
+    setDeleteDiscussionId(undefined);
+    navigate('/forum');
+  };
+
+  const [deleteComment] = useDeleteCommentMutation({
+    refetchQueries: [
+      refetchPlatformDiscussionQuery({
+        discussionId: discussionId!,
+      }),
+    ],
+  });
+
+  const handleDeleteComment = async () => {
+    if (!discussionId || !deleteCommentId) {
+      return;
+    }
+    await deleteComment({
+      variables: {
+        messageData: {
+          discussionID: discussionId,
+          messageID: deleteCommentId,
+        },
+      },
+    });
+    setDeleteCommentId(undefined);
+  };
+
+  const onCancelDeleteModal = () => {
+    setDeleteCommentId(undefined);
+    setDeleteDiscussionId(undefined);
   };
 
   return (
-    <>
+    <TopLevelDesktopLayout>
       <DiscussionsLayout
-        title={discussion.title}
-        icon={<DiscussionIcon category={discussion.category} />}
-        enablePaper={false}
+        backButton={
+          <BackButton component={RouterLink} to="/forum">
+            {t('pages.forum.back')}
+          </BackButton>
+        }
       >
-        <DiscussionView
-          currentUserId={currentUserId}
-          discussion={discussion}
-          onPostComment={handlePostComment}
-          onDeleteDiscussion={deleteDiscussionHandler}
-          onDeleteComment={deleteCommentHandler}
-        />
+        {loadingDiscussion || !discussion ? (
+          <Skeleton />
+        ) : (
+          <DiscussionView
+            currentUserId={user?.user.id}
+            discussion={discussion}
+            onPostComment={handlePostComment}
+            onDeleteDiscussion={() => setDeleteDiscussionId(discussionId)}
+            onDeleteComment={(id: string) => setDeleteCommentId(id)}
+          />
+        )}
       </DiscussionsLayout>
       <RemoveModal
-        show={showDeleteDiscModal}
-        onCancel={onCancelModal}
-        onConfirm={onConfirmDiscDialog}
+        show={Boolean(deleteDiscussionId)}
+        onCancel={onCancelDeleteModal}
+        onConfirm={handleDeleteDiscussion}
         text={t('components.discussion.delete-discussion')}
       />
       <RemoveModal
-        show={showDeleteCommentModal}
-        onCancel={onCancelModal}
-        onConfirm={onConfirmCommentDialog}
+        show={Boolean(deleteCommentId)}
+        onCancel={onCancelDeleteModal}
+        onConfirm={handleDeleteComment}
         text={t('components.discussion.delete-comment')}
       />
-    </>
+    </TopLevelDesktopLayout>
   );
 };
 

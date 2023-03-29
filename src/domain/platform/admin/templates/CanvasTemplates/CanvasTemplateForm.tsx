@@ -16,9 +16,9 @@ export interface CanvasTemplateFormValues {
 
 export interface CanvasTemplateFormSubmittedValues {
   value: string;
-  tags?: string[];
   visualUri?: string;
   profile: CreateProfileInput;
+  tags?: string[];
 }
 
 interface CanvasTemplateFormProps {

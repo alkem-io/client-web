@@ -15,7 +15,7 @@ import {
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AspectTemplateView from './AspectTemplateView';
-import AdminTemplatesSection, { MutationHook } from '../AdminTemplatesSection';
+import AdminTemplatesSection, { MutationHook, ProfileUpdate } from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import AspectImportTemplateCard from './AspectImportTemplateCard';
@@ -52,7 +52,7 @@ const AdminAspectTemplatesSection = (props: AdminAspectTemplatesSectionProps) =>
       useCreateTemplateMutation={useCreateAspectTemplateMutation}
       useUpdateTemplateMutation={
         useUpdateAspectTemplateMutation as MutationHook<
-          Partial<AspectTemplateFormSubmittedValues> & { templateId: string },
+          Partial<AspectTemplateFormSubmittedValues & ProfileUpdate> & { templateId: string },
           UpdateAspectTemplateMutation
         >
       }
