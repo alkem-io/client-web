@@ -94,7 +94,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       postTemplateType: callout?.postTemplateType ?? '',
       whiteboardTemplateData: callout?.whiteboardTemplateData ?? {
         id: '',
-        title: '',
+        displayName: '',
         origin: 'Hub',
       },
     }),
@@ -126,7 +126,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       is: CalloutType.Canvas,
       then: yup.object().shape({
         id: yup.string().required(),
-        title: yup.string().required(),
+        displayName: yup.string().required(),
         origin: yup.string().optional(),
         innovationPackId: yup.string().optional(),
       }),

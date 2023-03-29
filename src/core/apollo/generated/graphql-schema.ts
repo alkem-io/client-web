@@ -14271,15 +14271,6 @@ export type AuthorDetailsQuery = {
     id: string;
     nameID: string;
     isContactable: boolean;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -15154,20 +15145,6 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 isContactable: boolean;
-                agent?:
-                  | {
-                      __typename?: 'Agent';
-                      id: string;
-                      credentials?:
-                        | Array<{
-                            __typename?: 'Credential';
-                            id: string;
-                            type: AuthorizationCredential;
-                            resourceID: string;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -15184,20 +15161,6 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 isContactable: boolean;
-                agent?:
-                  | {
-                      __typename?: 'Agent';
-                      id: string;
-                      credentials?:
-                        | Array<{
-                            __typename?: 'Credential';
-                            id: string;
-                            type: AuthorizationCredential;
-                            resourceID: string;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -15256,20 +15219,6 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15288,20 +15237,6 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15383,20 +15318,6 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15415,20 +15336,6 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   isContactable: boolean;
-                  agent?:
-                    | {
-                        __typename?: 'Agent';
-                        id: string;
-                        credentials?:
-                          | Array<{
-                              __typename?: 'Credential';
-                              id: string;
-                              type: AuthorizationCredential;
-                              resourceID: string;
-                            }>
-                          | undefined;
-                      }
-                    | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -15495,15 +15402,6 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         isContactable: boolean;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -15520,15 +15418,6 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         isContactable: boolean;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -15682,6 +15571,27 @@ export type DashboardLeadUserFragment = {
   };
 };
 
+export type ContributingOrganizationsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
+}>;
+
+export type ContributingOrganizationsQuery = {
+  __typename?: 'Query';
+  organizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
+};
+
 export type ContributingUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
@@ -15702,27 +15612,6 @@ export type ContributingUsersQuery = {
       location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-    };
-  }>;
-};
-
-export type ContributingOrganizationsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
-  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
-}>;
-
-export type ContributingOrganizationsQuery = {
-  __typename?: 'Query';
-  organizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
 };
@@ -16718,15 +16607,7 @@ export type OrganizationInfoFragment = {
         __typename?: 'User';
         id: string;
         nameID: string;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
+        isContactable: boolean;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -16737,6 +16618,8 @@ export type OrganizationInfoFragment = {
         };
       }>
     | undefined;
+  admins?: Array<{ __typename?: 'User'; id: string }> | undefined;
+  owners?: Array<{ __typename?: 'User'; id: string }> | undefined;
 };
 
 export type OrganizationInfoQueryVariables = Exact<{
@@ -16784,15 +16667,7 @@ export type OrganizationInfoQuery = {
           __typename?: 'User';
           id: string;
           nameID: string;
-          agent?:
-            | {
-                __typename?: 'Agent';
-                id: string;
-                credentials?:
-                  | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                  | undefined;
-              }
-            | undefined;
+          isContactable: boolean;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -16803,6 +16678,8 @@ export type OrganizationInfoQuery = {
           };
         }>
       | undefined;
+    admins?: Array<{ __typename?: 'User'; id: string }> | undefined;
+    owners?: Array<{ __typename?: 'User'; id: string }> | undefined;
   };
 };
 
@@ -17331,50 +17208,11 @@ export type UserAvatarsQuery = {
   }>;
 };
 
-export type UserCardsContainerQueryVariables = Exact<{
-  ids: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type UserCardsContainerQuery = {
-  __typename?: 'Query';
-  usersById: Array<{
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-    };
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
-            | undefined;
-        }
-      | undefined;
-  }>;
-};
-
 export type UserCardFragment = {
   __typename?: 'User';
   id: string;
   nameID: string;
   isContactable: boolean;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -17935,15 +17773,6 @@ export type UserCardQuery = {
     id: string;
     nameID: string;
     isContactable: boolean;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          id: string;
-          credentials?:
-            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;

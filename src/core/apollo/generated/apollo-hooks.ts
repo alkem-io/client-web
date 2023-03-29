@@ -1461,14 +1461,6 @@ export const UserCardFragmentDoc = gql`
     id
     nameID
     isContactable
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
     profile {
       id
       displayName
@@ -1755,14 +1747,7 @@ export const OrganizationInfoFragmentDoc = gql`
     associates @include(if: $includeAssociates) {
       id
       nameID
-      agent {
-        id
-        credentials {
-          id
-          type
-          resourceID
-        }
-      }
+      isContactable
       profile {
         id
         displayName
@@ -1778,6 +1763,12 @@ export const OrganizationInfoFragmentDoc = gql`
           tags
         }
       }
+    }
+    admins @include(if: $includeAssociates) {
+      id
+    }
+    owners @include(if: $includeAssociates) {
+      id
     }
   }
   ${VisualUriFragmentDoc}
@@ -14344,6 +14335,77 @@ export function refetchOpportunityCommunityContributorsQuery(
   return { query: OpportunityCommunityContributorsDocument, variables: variables };
 }
 
+export const ContributingOrganizationsDocument = gql`
+  query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+    organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useContributingOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useContributingOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributingOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributingOrganizationsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
+ *      filterCredentials: // value for 'filterCredentials'
+ *   },
+ * });
+ */
+export function useContributingOrganizationsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >(ContributingOrganizationsDocument, options);
+}
+
+export function useContributingOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >(ContributingOrganizationsDocument, options);
+}
+
+export type ContributingOrganizationsQueryHookResult = ReturnType<typeof useContributingOrganizationsQuery>;
+export type ContributingOrganizationsLazyQueryHookResult = ReturnType<typeof useContributingOrganizationsLazyQuery>;
+export type ContributingOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributingOrganizationsQuery,
+  SchemaTypes.ContributingOrganizationsQueryVariables
+>;
+export function refetchContributingOrganizationsQuery(variables?: SchemaTypes.ContributingOrganizationsQueryVariables) {
+  return { query: ContributingOrganizationsDocument, variables: variables };
+}
+
 export const ContributingUsersDocument = gql`
   query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
     users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
@@ -14420,77 +14482,6 @@ export type ContributingUsersQueryResult = Apollo.QueryResult<
 >;
 export function refetchContributingUsersQuery(variables?: SchemaTypes.ContributingUsersQueryVariables) {
   return { query: ContributingUsersDocument, variables: variables };
-}
-
-export const ContributingOrganizationsDocument = gql`
-  query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
-    organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useContributingOrganizationsQuery__
- *
- * To run a query within a React component, call `useContributingOrganizationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributingOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributingOrganizationsQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      shuffle: // value for 'shuffle'
- *      filterCredentials: // value for 'filterCredentials'
- *   },
- * });
- */
-export function useContributingOrganizationsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ContributingOrganizationsQuery,
-    SchemaTypes.ContributingOrganizationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ContributingOrganizationsQuery,
-    SchemaTypes.ContributingOrganizationsQueryVariables
-  >(ContributingOrganizationsDocument, options);
-}
-
-export function useContributingOrganizationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributingOrganizationsQuery,
-    SchemaTypes.ContributingOrganizationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ContributingOrganizationsQuery,
-    SchemaTypes.ContributingOrganizationsQueryVariables
-  >(ContributingOrganizationsDocument, options);
-}
-
-export type ContributingOrganizationsQueryHookResult = ReturnType<typeof useContributingOrganizationsQuery>;
-export type ContributingOrganizationsLazyQueryHookResult = ReturnType<typeof useContributingOrganizationsLazyQuery>;
-export type ContributingOrganizationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributingOrganizationsQuery,
-  SchemaTypes.ContributingOrganizationsQueryVariables
->;
-export function refetchContributingOrganizationsQuery(variables?: SchemaTypes.ContributingOrganizationsQueryVariables) {
-  return { query: ContributingOrganizationsDocument, variables: variables };
 }
 
 export const CreateGroupOnCommunityDocument = gql`
@@ -17448,92 +17439,6 @@ export type UserAvatarsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserAvatarsQuery(variables: SchemaTypes.UserAvatarsQueryVariables) {
   return { query: UserAvatarsDocument, variables: variables };
-}
-
-export const UserCardsContainerDocument = gql`
-  query userCardsContainer($ids: [UUID!]!) {
-    usersById(IDs: $ids) {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        location {
-          city
-          country
-        }
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-        tagsets {
-          id
-          name
-          tags
-        }
-      }
-      agent {
-        id
-        credentials {
-          id
-          resourceID
-          type
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useUserCardsContainerQuery__
- *
- * To run a query within a React component, call `useUserCardsContainerQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserCardsContainerQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserCardsContainerQuery({
- *   variables: {
- *      ids: // value for 'ids'
- *   },
- * });
- */
-export function useUserCardsContainerQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UserCardsContainerQuery,
-    SchemaTypes.UserCardsContainerQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
-    UserCardsContainerDocument,
-    options
-  );
-}
-
-export function useUserCardsContainerLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UserCardsContainerQuery,
-    SchemaTypes.UserCardsContainerQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserCardsContainerQuery, SchemaTypes.UserCardsContainerQueryVariables>(
-    UserCardsContainerDocument,
-    options
-  );
-}
-
-export type UserCardsContainerQueryHookResult = ReturnType<typeof useUserCardsContainerQuery>;
-export type UserCardsContainerLazyQueryHookResult = ReturnType<typeof useUserCardsContainerLazyQuery>;
-export type UserCardsContainerQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserCardsContainerQuery,
-  SchemaTypes.UserCardsContainerQueryVariables
->;
-export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
-  return { query: UserCardsContainerDocument, variables: variables };
 }
 
 export const AssignUserToGroupDocument = gql`

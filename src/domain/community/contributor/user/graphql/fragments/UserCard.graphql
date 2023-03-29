@@ -2,14 +2,6 @@ fragment UserCard on User {
   id
   nameID
   isContactable
-  agent {
-    id
-    credentials {
-      id
-      type
-      resourceID
-    }
-  }
   profile {
     id
     displayName

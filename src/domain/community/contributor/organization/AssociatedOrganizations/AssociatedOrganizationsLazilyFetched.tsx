@@ -5,11 +5,11 @@ import AssociatedOrganizationsDashboardSection, {
 import OrganizationCard from '../OrganizationCard/OrganizationCard';
 import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
 
-interface AssociatedOrganizationsFetchingViewProps
+interface AssociatedOrganizationsLazilyFetchedProps
   extends Omit<
     AssociatedOrganizationsDashboardSectionProps<
       OrganizationCardLazilyFetchedProps,
-      OrganizationCardLazilyFetchedProps
+      OrganizationCardLazilyFetchedProps & { key: string }
     >,
     'organizations' | 'organizationCardComponent'
   > {
@@ -32,12 +32,15 @@ const OrganizationCardLazilyFetched = ({ nameID, enableLeave }: OrganizationCard
   );
 };
 
-export const AssociatedOrganizationsLazilyFetched: FC<AssociatedOrganizationsFetchingViewProps> = ({
+export const AssociatedOrganizationsLazilyFetched: FC<AssociatedOrganizationsLazilyFetchedProps> = ({
   organizationNameIDs,
   enableLeave,
   ...viewProps
 }) => {
-  const organizations = organizationNameIDs.map(nameID => ({ nameID, enableLeave }), [organizationNameIDs]);
+  const organizations = organizationNameIDs.map(
+    nameID => ({ key: nameID, nameID, enableLeave }),
+    [organizationNameIDs]
+  );
 
   return (
     <AssociatedOrganizationsDashboardSection

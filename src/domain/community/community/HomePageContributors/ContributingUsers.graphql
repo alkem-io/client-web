@@ -22,17 +22,3 @@ query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [A
     }
   }
 }
-
-query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
-  organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-  }
-}

@@ -4,7 +4,6 @@ import { ContributorCardProps } from '../../../../../common/components/composite
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
 import { RoleType } from '../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
-import useUserCardRoleName from '../../user/hooks/useUserCardRoleName';
 import {
   useRolesOrganizationQuery,
   useSendMessageToOrganizationMutation,
@@ -18,12 +17,14 @@ import {
   SocialNetworkEnum,
   toSocialNetworkEnum,
 } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
-import {
-  AuthorizationPrivilege,
-  OrganizationInfoFragment,
-  User,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
+import { useTranslation } from 'react-i18next';
+import {
+  ADMIN_TRANSLATION_KEY,
+  MEMBER_TRANSLATION_KEY,
+  OWNER_TRANSLATION_KEY,
+} from '../../user/constants/translation.constants';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -57,10 +58,33 @@ export interface OrganizationPageContainerProps
 
 const NO_PRIVILEGES = [];
 
+const roleChecks = [
+  {
+    collection: 'owners',
+    translation: OWNER_TRANSLATION_KEY,
+  },
+  {
+    collection: 'admins',
+    translation: ADMIN_TRANSLATION_KEY,
+  },
+] as const;
+
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
   const { organizationId, organizationNameId, loading, organization, canReadUsers } = useOrganization();
 
-  const usersWithRoles = useUserCardRoleName((organization?.associates || []) as User[], organizationId);
+  const { t } = useTranslation();
+
+  const usersWithRoles = organization?.associates?.map(user => {
+    const roleType =
+      roleChecks.find(({ collection }) => {
+        return organization[collection]?.some(u => u.id === user.id);
+      })?.translation ?? MEMBER_TRANSLATION_KEY;
+
+    return {
+      ...user,
+      roleName: t(roleType),
+    };
+  });
 
   const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
@@ -83,11 +107,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [organization]);
 
   const links = useMemo(() => {
-    let result = (organization?.profile.references || [])
-      .filter(x => !isSocialNetworkSupported(x.name))
-      .map(s => s.uri);
-
-    return result;
+    return (organization?.profile.references ?? []).filter(x => !isSocialNetworkSupported(x.name)).map(s => s.uri);
   }, [organization]);
 
   const keywords = useMemo(
@@ -109,7 +129,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const associates = useMemo<ContributorCardProps[]>(() => {
     return (
-      usersWithRoles.map<ContributorCardProps>(x => ({
+      usersWithRoles?.map<ContributorCardProps>(x => ({
         id: x.id,
         displayName: x.profile.displayName,
         roleName: x.roleName,
