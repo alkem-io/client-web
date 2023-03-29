@@ -31,23 +31,20 @@ interface CreateTemplateDialogProps<SubmittedValues extends {}> {
   onSubmit: (values: SubmittedValues) => void;
 }
 
-interface EditTemplateDialogProps<T extends Template, SubmittedValues extends {}> {
+interface EditTemplateDialogProps<T extends Template, V extends TemplateValue, SubmittedValues extends {}> {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: SubmittedValues) => void;
   onDelete: () => void;
   template: T | undefined;
+  getTemplateValue: (template: T) => void;
+  templateValue: V | undefined;
 }
 
 export interface TemplatePreviewProps<T extends Template, V extends TemplateValue> {
   template: T;
-  /**
-   * getTemplateValue will trigger the lazyQuery to retrieve the template value.
-   * Some Templates like PostTemplates come with all the data already in template so calling this function
-   * is not needed, but in general call this function when you need templateValue filled with the actual template data.
-   */
-  getTemplateValue?: (template: T) => void;
-  templateValue?: V | undefined;
+  getTemplateValue: (template: T) => void;
+  templateValue: V | undefined;
 }
 
 export interface MutationHook<Variables, MutationResult> {
@@ -72,7 +69,7 @@ type AdminTemplatesSectionProps<
   DialogProps extends {}
 > = Omit<
   DialogProps,
-  keyof CreateTemplateDialogProps<SubmittedValues> | keyof EditTemplateDialogProps<T, SubmittedValues>
+  keyof CreateTemplateDialogProps<SubmittedValues> | keyof EditTemplateDialogProps<T, V, SubmittedValues>
 > & {
   headerText: string;
   importDialogHeaderText: string;
@@ -96,7 +93,7 @@ type AdminTemplatesSectionProps<
   importedTemplateValue?: V | undefined;
   createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
   editTemplateDialogComponent: ComponentType<
-    DialogProps & EditTemplateDialogProps<T, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+    DialogProps & EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
   >;
   // TODO instead of mutations let's just pass callbacks - mutations have options which make the type too complicated for using in generics.
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
@@ -135,13 +132,15 @@ const AdminTemplatesSection = <
   createTemplateDialogComponent,
   editTemplateDialogComponent,
   canImportTemplates,
+  // Some Templates (Post, InnovationFlow...) come with the value included, and some others (Whiteboards) need to call this function to retrieve the data
+  getTemplateValue = () => {},
   ...dialogProps
 }: AdminTemplatesSectionProps<T, Q, V, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
   const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
     CreateTemplateDialogProps<SubmittedValues>
   >;
   const EditTemplateDialog = editTemplateDialogComponent as ComponentType<
-    EditTemplateDialogProps<T, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
+    EditTemplateDialogProps<T, V, SubmittedValues & { tags?: string[]; tagsetId: string | undefined }>
   >;
 
   const { t } = useTranslation();
@@ -335,6 +334,8 @@ const AdminTemplatesSection = <
           template={selectedTemplate}
           onSubmit={handleTemplateUpdate}
           onDelete={() => setDeletingTemplateId(selectedTemplate.id)}
+          getTemplateValue={getTemplateValue}
+          templateValue={dialogProps.templateValue}
         />
       )}
       {selectedTemplate && (
@@ -346,7 +347,7 @@ const AdminTemplatesSection = <
         >
           <TemplatePreview
             template={selectedTemplate}
-            getTemplateValue={dialogProps.getTemplateValue}
+            getTemplateValue={getTemplateValue}
             templateValue={dialogProps.templateValue}
           />
         </TemplateViewDialog>
