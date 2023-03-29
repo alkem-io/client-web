@@ -412,7 +412,7 @@
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "closed": "This Callout is closed. You can still comment on the individual cards.",
     "delete-confirm-title": "Delete Callout?",
-    "delete-confirm-text": "All aspects, whiteboards and messages under the Callout will also be deleted.",
+    "delete-confirm-text": "All cards, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries."
   },
@@ -576,7 +576,7 @@
   },
   "aspect-templates": {
     "aspect-template": "Card template",
-    "default-description": "Default Card description",
+    "default-description": "Default Card content",
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
@@ -723,7 +723,7 @@
     "callout-creation": {
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
-      "card-type-label": "Card type",
+      "card-type-label": "Card label",
       "info-step": {
         "title": "Details",
         "description": "Description",
@@ -757,8 +757,8 @@
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Card Type",
-        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share."
+        "label": "Card label",
+        "type-help-text-short": "Please choose the Card label that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
@@ -1225,9 +1225,9 @@
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘Import’ to add it to your Template set.",
+              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "no-templates": "Couldn't find any Template of this type",
+              "no-templates": "No Hub templates found, find further platform templates below",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -1466,8 +1466,8 @@
         "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "",
-          "body": "Each Hub is a community with a dedicated space to connect, collaborate and innovate on your Challenges. Explore membership options.",
-          "body1": "Visibility: Public Hubs are fully visible to everyone. For private Hubs, the content is only available after becoming a member."
+          "body": "Each Hub is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
+          "body1": "For Users, Hubs are free to join. Explore the membership options, including for public and private Hubs."
         },
         "my-hubs": {
           "header": "My Hubs ({{myHubsCount}})"
@@ -1777,7 +1777,7 @@
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
     },
     "forum": {
-      "title": "Questions, suggestions, or feedback? Get in touch with other users of the platform!",
+      "title": "Questions, suggestions, or feedback? Get in touch with the Alkemio team or other users of the platform!",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
     }
@@ -1833,13 +1833,13 @@
     "new": "New Card",
     "edit": "Edit Card",
     "type": {
-      "title": "Card Type",
+      "title": "Card label",
       "help-text": "What type of information do you want to share?"
     },
     "cardLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the Card’s location. Moving the Card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move Cards within the same Hub, Challenge or Opportunity.",
+      "reminder": "Be careful changing the card’s location. Moving the card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move cards within the same Hub, Challenge or Opportunity.",
       "success": "Successfully moved card to the new Callout.",
       "error": "Something went wrong when moving the card, please try again."
     }
@@ -1870,7 +1870,7 @@
     "sign-in": "Please sign in to see the users that are associated with this organization."
   },
   "hubs-filter": {
-    "current-filter": "Current filter: ",
+    "current-filter": "Choose the topics you care most about! Current filter: ",
     "show-all": "Show All",
     "other": "Other",
     "config": [
