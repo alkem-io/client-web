@@ -24,7 +24,6 @@ import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDeskt
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
-import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { useConfig } from '../../../platform/config/useConfig';
 import { useNavigate } from 'react-router-dom';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
@@ -131,11 +130,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
           },
         });
       },
-      refetchQueries: [
-        refetchPlatformDiscussionQuery({
-          discussionId,
-        }),
-      ],
       variables: {
         input: {
           discussionID: discussionId,
@@ -168,8 +162,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   };
 
   const [deleteComment] = useDeleteCommentMutation({
-    update: (cache, { data }) =>
-      data?.removeMessageFromDiscussion && evictFromCache(cache, String(data.removeMessageFromDiscussion), 'Message'),
     refetchQueries: [
       refetchPlatformDiscussionQuery({
         discussionId: discussionId!,

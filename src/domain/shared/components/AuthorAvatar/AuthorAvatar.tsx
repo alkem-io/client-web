@@ -24,7 +24,6 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
                 displayName={author.displayName}
                 avatarSrc={author.avatarUrl}
                 tags={author.tags || []}
-                roleName={author.roleName}
                 city={author.city}
                 country={author.country}
                 url={author.url}

@@ -1,9 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, Navigate, useResolvedPath } from 'react-router-dom';
 import { useTransactionScope } from '../../../../core/analytics/useSentry';
-import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
+import NonAdminRedirect from '../../../../core/routing/NonAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
@@ -16,17 +15,7 @@ export const AdminRoute: FC = () => {
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], [url]);
 
   return (
-    <RestrictedRoute
-      requiredCredentials={[
-        AuthorizationCredential.GlobalAdmin,
-        AuthorizationCredential.HubAdmin,
-        AuthorizationCredential.OrganizationAdmin,
-        AuthorizationCredential.ChallengeAdmin,
-        AuthorizationCredential.GlobalAdminCommunity,
-        AuthorizationCredential.OrganizationOwner,
-        AuthorizationCredential.OpportunityAdmin,
-      ]}
-    >
+    <NonAdminRedirect>
       <Routes>
         <Route index element={<Navigate to="hubs" replace />} />
         <Route path="hubs/*" element={<HubsRoute paths={currentPaths} />} />
@@ -36,6 +25,6 @@ export const AdminRoute: FC = () => {
         <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
-    </RestrictedRoute>
+    </NonAdminRedirect>
   );
 };

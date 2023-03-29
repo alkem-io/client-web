@@ -26,16 +26,14 @@ const ChallengeContributorsDialogContent: FC<ContributorsDialogContentProps> = (
   );
 
   return (
-    <>
-      <CommunityContributorsView
-        organizations={useOrganizationCardProps(memberOrganizations)}
-        users={useUserCardProps(memberUsers, hubId)}
-        organizationsCount={memberOrganizations?.length}
-        usersCount={memberUsers?.length}
-        noOrganizationsView={<NoOrganizations type={'member'} />}
-        loading={loading}
-      />
-    </>
+    <CommunityContributorsView
+      organizations={useOrganizationCardProps(memberOrganizations)}
+      users={useUserCardProps(memberUsers)}
+      organizationsCount={memberOrganizations?.length}
+      usersCount={memberUsers?.length}
+      noOrganizationsView={<NoOrganizations type={'member'} />}
+      loading={loading}
+    />
   );
 };
 
