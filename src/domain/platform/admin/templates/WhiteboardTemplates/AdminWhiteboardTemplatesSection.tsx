@@ -117,7 +117,8 @@ const AdminWhiteboardTemplatesSection = ({
       importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialogWithCanvases}
       editTemplateDialogComponent={EditWhiteboardTemplateDialogWithCanvases}
-      useCreateTemplateMutation={useCreateWhiteboardTemplateMutation}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
       useUpdateTemplateMutation={
         useUpdateWhiteboardTemplateMutation as MutationHook<
           Partial<WhiteboardTemplateFormSubmittedValues> & { templateId: string },
