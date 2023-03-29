@@ -50,9 +50,6 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
     console.log('messageReceived:', subscriptionData.communicationDiscussionMessageReceived.message);
     discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
   },
-  onUpdate: subEntity => {
-    console.log('onSubEntityUpdate', subEntity);
-  },
 });
 
 interface DiscussionPageProps {}
