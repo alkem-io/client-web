@@ -44,7 +44,10 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
 >({
   subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
   getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
-  updateSubEntity: (discussion, subscriptionData) => {
+  updateSubEntity: (discussion, subscriptionData, previousSubEntity) => {
+    console.log('updateSubEntity:', previousSubEntity);
+    console.log('discussion:', discussion, discussion?.messages, discussion?.messages?.length);
+    console.log('messageReceived:', subscriptionData.communicationDiscussionMessageReceived.message);
     discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
   },
 });
@@ -69,6 +72,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     skip: !discussionId,
   });
   useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
+  console.log('render', data?.platform.communication.discussion);
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
@@ -99,6 +103,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         : undefined,
     [rawDiscussion, authors]
   );
+
+  console.log('discussion', discussion);
 
   const [postComment] = usePostDiscussionCommentMutation();
 
