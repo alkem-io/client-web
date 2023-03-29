@@ -44,8 +44,14 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
 >({
   subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
   getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
-  updateSubEntity: (discussion, subscriptionData) => {
+  updateSubEntity: (discussion, subscriptionData, previousSubEntity) => {
+    console.log('updateSubEntity:', previousSubEntity);
+    console.log('discussion:', discussion, discussion?.messages, discussion?.messages?.length);
+    console.log('messageReceived:', subscriptionData.communicationDiscussionMessageReceived.message);
     discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
+  },
+  onSubEntityUpdate: subEntity => {
+    console.log('onSubEntityUpdate', subEntity);
   },
 });
 

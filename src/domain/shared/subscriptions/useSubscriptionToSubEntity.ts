@@ -5,7 +5,12 @@ import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMo
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
   getSubscriptionVariables?: (subEntity: SubEntity) => SubEntitySubscriptionVariables | undefined;
-  updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
+  updateSubEntity: (
+    subEntity: SubEntity | undefined,
+    subscriptionData: SubEntitySubscription,
+    prev: SubEntity | null | undefined
+  ) => void;
+  onSubEntityUpdate?: (subEntity: SubEntity | null | undefined) => void;
 }
 
 /**
@@ -47,10 +52,12 @@ const createUseSubscriptionToSubEntityHook =
       document: options.subscriptionDocument,
       variables,
       updateQuery: (prev, { subscriptionData }) => {
-        return produce(prev, next => {
+        const nextValue = produce(prev, next => {
           const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
-          options.updateSubEntity(nextSubEntity, subscriptionData.data);
+          options.updateSubEntity(nextSubEntity, subscriptionData.data, getSubEntity(prev));
         });
+        options.onSubEntityUpdate?.(getSubEntity(nextValue));
+        return nextValue;
       },
       ...subscriptionOptions,
       skip,
