@@ -81,13 +81,12 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
               </Box>
               <Filter data={comments}>
                 {filteredComments => {
-                  console.log('filteredComments', filteredComments);
                   if (filteredComments.length === 0) return null;
                   return (
                     <Box marginTop={2}>
                       <Grid container spacing={3}>
-                        {filteredComments.map((c, i) => (
-                          <Grid item xs={12} key={i}>
+                        {filteredComments.map(c => (
+                          <Grid item xs={12} key={c.id}>
                             <MessageView
                               message={c}
                               canDelete={canDeleteComment(c.author?.id)}

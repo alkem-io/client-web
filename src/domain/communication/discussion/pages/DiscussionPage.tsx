@@ -24,7 +24,6 @@ import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDeskt
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import BackButton from '../../../../core/ui/actions/BackButton';
 import { FEATURE_SUBSCRIPTIONS } from '../../../platform/config/features.constants';
-import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { useConfig } from '../../../platform/config/useConfig';
 import { useNavigate } from 'react-router-dom';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
@@ -44,10 +43,7 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
 >({
   subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
   getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
-  updateSubEntity: (discussion, subscriptionData, previousSubEntity) => {
-    console.log('updateSubEntity:', previousSubEntity);
-    console.log('discussion:', discussion, discussion?.messages, discussion?.messages?.length);
-    console.log('messageReceived:', subscriptionData.communicationDiscussionMessageReceived.message);
+  updateSubEntity: (discussion, subscriptionData) => {
     discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
   },
 });
@@ -72,7 +68,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     skip: !discussionId,
   });
   useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
-  console.log('render', data?.platform.communication.discussion);
 
   const rawDiscussion = data?.platform.communication.discussion;
   const authors = useAuthorsDetails(
@@ -103,8 +98,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         : undefined,
     [rawDiscussion, authors]
   );
-
-  console.log('discussion', discussion);
 
   const [postComment] = usePostDiscussionCommentMutation();
 
@@ -137,11 +130,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
           },
         });
       },
-      refetchQueries: [
-        refetchPlatformDiscussionQuery({
-          discussionId,
-        }),
-      ],
       variables: {
         input: {
           discussionID: discussionId,
@@ -174,8 +162,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   };
 
   const [deleteComment] = useDeleteCommentMutation({
-    update: (cache, { data }) =>
-      data?.removeMessageFromDiscussion && evictFromCache(cache, String(data.removeMessageFromDiscussion), 'Message'),
     refetchQueries: [
       refetchPlatformDiscussionQuery({
         discussionId: discussionId!,
