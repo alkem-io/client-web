@@ -56,6 +56,13 @@ const EditWhiteboardTemplateDialog = ({
     tags: template.profile.tagset?.tags,
   };
 
+  const handleSubmit = (values: WhiteboardTemplateFormSubmittedValues) => {
+    return onSubmit({
+      ...values,
+      tagsetId: template.profile.tagset?.id,
+    });
+  };
+
   return (
     <Dialog
       open={open}
@@ -68,7 +75,7 @@ const EditWhiteboardTemplateDialog = ({
         initialValues={values}
         visual={template.profile.visual}
         canvases={canvases}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         getParentCalloutId={getParentCalloutId}
         actions={
           <>

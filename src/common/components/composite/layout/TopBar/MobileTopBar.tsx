@@ -17,6 +17,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Divider from '@mui/material/Divider';
 import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MeetingRoomOutlinedIcon from '@mui/icons-material/MeetingRoomOutlined';
@@ -30,8 +31,9 @@ import SearchBar from './SearchBar';
 import { ReactComponent as LogoSmallImage } from './alkemio-logo-small.svg';
 import { ROUTE_HOME } from '../../../../../domain/platform/routes/constants';
 import HelpDialog from '../../../../../core/help/dialog/HelpDialog';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
-export const MobileTopBarHeight = 7;
+export const MobileTopBarHeightGutters = 3;
 
 const MobileTopBar = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -53,7 +55,7 @@ const MobileTopBar = () => {
 
   return (
     <Box
-      height={theme => theme.spacing(MobileTopBarHeight)}
+      height={gutters(MobileTopBarHeightGutters)}
       display="flex"
       gap={2}
       alignItems="center"
@@ -149,7 +151,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              {t('authentication.sign-in')}
+              {t('topbar.sign-in')}
             </MenuItem>
             <Divider />
           </>
@@ -165,6 +167,12 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             <GroupOutlinedIcon />
           </ListItemIcon>
           {t('common.contributors')}
+        </MenuItem>
+        <MenuItem component={RouterLink} to="/forum">
+          <ListItemIcon>
+            <ForumOutlinedIcon />
+          </ListItemIcon>
+          {t('common.forum')}
         </MenuItem>
         {user && (
           <MenuItem component={RouterLink} to={buildUserProfileUrl(user.nameID)}>

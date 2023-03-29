@@ -30,6 +30,13 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
     tags: template.profile.tagset?.tags,
   };
 
+  const handleSubmit = (values: PostTemplateFormSubmittedValues) => {
+    return onSubmit({
+      ...values,
+      tagsetId: template.profile.tagset?.id,
+    });
+  };
+
   return (
     <Dialog
       open={open}
@@ -41,7 +48,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
         title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
         visual={template.profile.visual}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         actions={
           <>
             <DeleteButton onClick={onDelete} />

@@ -22,6 +22,7 @@ export interface TemplateInfoValues {
 
 export interface TemplateInfoSubmittedValues {
   profile: CreateProfileInput;
+  tags: string[];
 }
 
 interface TemplateFormProps<Values extends TemplateInfoValues> {

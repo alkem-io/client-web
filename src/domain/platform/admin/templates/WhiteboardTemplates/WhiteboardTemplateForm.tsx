@@ -16,9 +16,9 @@ export interface WhiteboardTemplateFormValues {
 
 export interface WhiteboardTemplateFormSubmittedValues {
   value: string;
-  tags?: string[];
   visualUri?: string;
   profile: CreateProfileInput;
+  tags?: string[];
 }
 
 interface WhiteboardTemplateFormProps {
