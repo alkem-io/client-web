@@ -17,7 +17,7 @@ import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmit
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
+  onSubmit: (values: WhiteboardTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
   getTemplateValue: (template: AdminWhiteboardTemplateFragment) => void;

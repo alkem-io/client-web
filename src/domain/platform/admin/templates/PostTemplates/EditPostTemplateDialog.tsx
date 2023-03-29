@@ -10,7 +10,7 @@ import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmit
 interface EditPostTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: PostTemplateFormSubmittedValues) => void;
+  onSubmit: (values: PostTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminPostTemplateFragment | undefined;
 }
