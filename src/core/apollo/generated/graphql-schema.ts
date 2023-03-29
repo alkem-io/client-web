@@ -19251,6 +19251,34 @@ export type InnovationPackFullCanvasTemplateWithValueQuery = {
   };
 };
 
+export type AdminInnovationPacksListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AdminInnovationPacksListQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      innovationPacks: Array<{
+        __typename?: 'InnovatonPack';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }>;
+    };
+  };
+};
+
+export type DeleteInnovationPackMutationVariables = Exact<{
+  innovationPackId: Scalars['UUID_NAMEID'];
+}>;
+
+export type DeleteInnovationPackMutation = {
+  __typename?: 'Mutation';
+  deleteInnovationPack: { __typename?: 'InnovatonPack'; id: string };
+};
+
 export type UpdateInnovationTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;

@@ -1,0 +1,21 @@
+query AdminInnovationPacksList {
+  platform {
+    id
+    library {
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+}
+
+mutation deleteInnovationPack($innovationPackId: UUID_NAMEID!) {
+  deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
+    id
+  }
+}

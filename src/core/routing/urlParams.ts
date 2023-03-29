@@ -16,6 +16,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   aspectNameId?: string;
   canvasNameId?: string;
   calendarEventNameId?: string;
+  innovationPackNameId?: string;
 }
 
 export const nameOfUrl = nameof<UrlParams>();

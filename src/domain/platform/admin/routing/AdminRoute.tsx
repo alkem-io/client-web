@@ -8,6 +8,7 @@ import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
 import { HubsRoute } from '../hub/routing/HubsRoute';
+import AdminInnovationPacksRoutes from '../templates/InnovationPacks/admin/AdminInnovationPackRoutes';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -32,6 +33,7 @@ export const AdminRoute: FC = () => {
         <Route path="users/*" element={<UsersRoute />} />
         <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
         <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />
+        <Route path="innovation-packs/*" element={<AdminInnovationPacksRoutes />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </RestrictedRoute>
