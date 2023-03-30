@@ -1,4 +1,4 @@
-import { JourneyPageLayout, EntityPageLayoutProps } from '../../../../challenge/common/JourneyPageLayout';
+import { EntityPageLayout, EntityPageLayoutProps } from '../../../../challenge/common/EntityPageLayout';
 import OrganizationPageBanner from './OrganizationPageBanner';
 import { PropsWithChildren } from 'react';
 import OrganizationTabs from './OrganizationTabs';
@@ -8,7 +8,7 @@ interface OrganizationPageLayoutProps
 
 const OrganizationPageLayout = (props: PropsWithChildren<OrganizationPageLayoutProps>) => {
   return (
-    <JourneyPageLayout
+    <EntityPageLayout
       {...props}
       pageBannerComponent={OrganizationPageBanner}
       tabsComponent={OrganizationTabs}

@@ -7,7 +7,7 @@ import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
 import { nameOfUrl } from '../../../../core/routing/urlParams';
-import { EntityPageLayoutHolder } from '../../common/JourneyPageLayout';
+import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import OpportunityAboutPage from '../pages/OpportunityAboutPage';

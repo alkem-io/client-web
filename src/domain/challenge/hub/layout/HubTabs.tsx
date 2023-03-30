@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { EntityTabsProps } from '../../common/JourneyPageLayout';
+import { EntityTabsProps } from '../../common/EntityPageLayout';
 import EntityPageTabs, { ActionDefinition } from '../../../shared/layout/EntityPageTabs';
 import { useHub } from '../HubContext/useHub';
 import { buildAdminHubUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';

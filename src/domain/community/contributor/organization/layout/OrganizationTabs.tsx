@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../../../common/utils/urlBuilders';
 import { useOrganization } from '../hooks/useOrganization';
 import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
-import { EntityTabsProps } from '../../../../challenge/common/JourneyPageLayout';
+import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
 import ProfileTabs from '../../../../shared/layout/ProfileTabs';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { BadgeOutlined } from '@mui/icons-material';
