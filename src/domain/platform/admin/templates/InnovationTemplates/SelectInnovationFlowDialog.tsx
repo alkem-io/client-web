@@ -10,7 +10,7 @@ import { InnovationFlowTemplateSegment } from '../../components/Common/Innovatio
 import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
 import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 
-export interface InnovationFlowTemplateInfo {
+export interface InnovationFlowTemplateProfile {
   id: string;
   displayName: string;
 }
@@ -18,7 +18,7 @@ export interface InnovationFlowTemplate {
   definition: string;
   id: string;
   type: InnovationFlowType;
-  profile: InnovationFlowTemplateInfo;
+  profile: InnovationFlowTemplateProfile;
 }
 export interface SelectInnovationFlowFormValuesType {
   innovationFlowTemplateID: string;
