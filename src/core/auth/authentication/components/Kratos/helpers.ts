@@ -8,7 +8,7 @@ import {
 } from '@ory/kratos-client';
 import { FormEvent } from 'react';
 import { UiNodeAnchor, UiNodeInput } from './UiNodeTypes';
-import { KRATOS_REQUIRED_FIELDS } from './constants';
+import { KRATOS_REQUIRED_FIELDS, KRATOS_RETURN_TO_PLATFORM_LINK_ID } from './constants';
 
 export function isUiNodeAnchorAttributes(pet: UiNodeAttributes): pet is UiNodeAnchorAttributes {
   return (pet as UiNodeAnchorAttributes).href !== undefined;
@@ -104,3 +104,5 @@ export const isSubmitButton = (node: UiNode): node is UiNodeInput =>
 
 export const isHiddenInput = (node: UiNode): node is UiNodeInput =>
   isInputNode(node) && node.attributes.type === 'hidden';
+
+export const isReturnToPlatformLink = (link: UiNodeAnchor) => link.meta.label?.id === KRATOS_RETURN_TO_PLATFORM_LINK_ID;

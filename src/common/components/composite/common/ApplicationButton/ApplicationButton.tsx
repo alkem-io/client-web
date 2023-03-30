@@ -2,7 +2,7 @@ import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { buildLoginUrl } from '../../../../utils/urlBuilders';
+import { useLoginUrl } from '../../../../utils/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';
@@ -105,6 +105,8 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
        <li>"Membership not available"</li>
      </ol>
    */
+  const loginUrl = useLoginUrl(applyUrl?.replace('/apply', ''));
+
   const applicationButton = useMemo(() => {
     if (loading) {
       return <Button disabled startIcon={<CircularProgress size={24} />} />;
@@ -112,7 +114,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
 
     if (!isAuthenticated) {
       return (
-        <Button variant="contained" component={RouterLink} to={buildLoginUrl(applyUrl?.replace('/apply', ''))}>
+        <Button variant="contained" component={RouterLink} to={loginUrl}>
           {t('components.application-button.apply-not-signed')}
         </Button>
       );
@@ -212,6 +214,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     canApplyToParentCommunity,
     canJoinParentCommunity,
     parentApplicationState,
+    loginUrl,
     t,
   ]);
 

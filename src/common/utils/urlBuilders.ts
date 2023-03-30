@@ -1,4 +1,8 @@
-import { AUTH_LOGIN_PATH, AUTH_REQUIRED_PATH } from '../../core/auth/authentication/constants/authentication.constants';
+import { useEffect, useRef } from 'react';
+import {
+  AUTH_LOGIN_PATH,
+  STORAGE_KEY_SIGN_UP_RETURN_URL,
+} from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import {
   CoreEntityIdTypes,
@@ -36,11 +40,14 @@ export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
-export const buildAuthenticationRequiredURL = (returnUrl?: string) =>
-  returnUrl ? `${AUTH_REQUIRED_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_REQUIRED_PATH;
-
-export const buildLoginUrl = (returnUrl?: string) =>
-  returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
+export const useLoginUrl = (returnUrl?: string) => {
+  const signUpReturnUrl = useRef(sessionStorage.getItem(STORAGE_KEY_SIGN_UP_RETURN_URL)).current;
+  useEffect(() => {
+    sessionStorage.removeItem(STORAGE_KEY_SIGN_UP_RETURN_URL);
+  }, []);
+  const loginReturnUrl = signUpReturnUrl ?? returnUrl;
+  return loginReturnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(loginReturnUrl)}` : AUTH_LOGIN_PATH;
+};
 
 export const buildHubApplyUrl = (hubNameId: string) => `${buildHubUrl(hubNameId)}/apply`;
 

@@ -9,6 +9,7 @@ import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageC
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle, BlockTitle } from '../../../ui/typography';
 import { SelfServiceVerificationFlow } from '@ory/kratos-client';
+import { restoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
 
 interface RegisterPageProps {
   flow?: string;
@@ -35,7 +36,12 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
         <FixedHeightLogo />
         <PageTitle>{t('pages.verification.header')}</PageTitle>
         {!hideVerificationMessage(verificationFlow) && <BlockTitle>{t('pages.verification.message')}</BlockTitle>}
-        <KratosUI ui={verificationFlow?.ui} />
+        <KratosUI
+          ui={verificationFlow?.ui}
+          onClickReturnToPlatform={() => {
+            restoreSignUpReturnUrl();
+          }}
+        />
       </AuthPageContentContainer>
     </KratosForm>
   );
