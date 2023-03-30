@@ -40,10 +40,12 @@ export interface CalloutCreationDialogProps {
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
 }
 
-export interface TemplateInfo {
+export interface TemplateProfile {
   description?: string;
   displayName: string;
-  tags?: string[];
+  tagset?: {
+    tags: string[];
+  };
   visual?: {
     uri: string;
   };
@@ -52,13 +54,14 @@ export interface TemplateInfo {
 export interface CalloutPostTemplate {
   defaultDescription: string;
   type: string;
-  profile: TemplateInfo;
+  profile: TemplateProfile;
+  tags?: string[];
 }
 
 export interface CalloutWhiteboardTemplate {
   id?: string;
   value: string;
-  profile: TemplateInfo;
+  profile: TemplateProfile;
 }
 
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
