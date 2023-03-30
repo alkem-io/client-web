@@ -10,14 +10,14 @@ import ConfirmationDialog, {
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import { createCardTemplateFromTemplateSet } from '../../utils/createCardTemplateFromTemplateSet';
-import { AspectTemplateFragment, CanvasTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { createPostTemplateFromTemplateSet } from '../../utils/createPostTemplateFromTemplateSet';
+import { PostTemplateFragment, WhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import {
-  useHubTemplatesCanvasTemplateWithValueLazyQuery,
-  useInnovationPackFullCanvasTemplateWithValueLazyQuery,
+  useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
+  useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { createCanvasTemplateForCalloutCreation } from '../../utils/createCanvasTemplateForCalloutCreation';
+import { createWhiteboardTemplateForCalloutCreation } from '../../utils/createWhiteboardTemplateForCalloutCreation';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -27,7 +27,7 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutEditType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   calloutNames: string[];
-  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
+  templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
@@ -48,14 +48,17 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     ...callout,
     displayName: callout.profile.displayName,
     description: callout.profile.description,
-    cardTemplateType: callout.cardTemplate?.type,
-    canvasTemplateData: { id: callout.canvasTemplate?.id, displayName: callout.canvasTemplate?.profile.displayName },
+    postTemplateType: callout.postTemplate?.type,
+    whiteboardTemplateData: {
+      id: callout.whiteboardTemplate?.id,
+      displayName: callout.whiteboardTemplate?.profile.displayName,
+    },
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
-  const [fetchCanvasValueFromHub] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
-  const [fetchCanvasValueFromLibrary] = useInnovationPackFullCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -65,10 +68,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(newCallout, templates.cardTemplates);
+    const calloutPostTemplate = createPostTemplateFromTemplateSet(newCallout, templates.postTemplates);
     const getCanvasValueFromHub = async () => {
       const result = await fetchCanvasValueFromHub({
-        variables: { hubId: hubNameId!, canvasTemplateId: newCallout.canvasTemplateData?.id! },
+        variables: { hubId: hubNameId!, whiteboardTemplateId: newCallout.whiteboardTemplateData?.id! },
       });
       return result.data?.hub.templates;
     };
@@ -76,23 +79,23 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     const getCanvasValueFromLibrary = async () => {
       const result = await fetchCanvasValueFromLibrary({
         variables: {
-          innovationPackId: newCallout.canvasTemplateData?.innovationPackId!,
-          canvasTemplateId: newCallout.canvasTemplateData?.id!,
+          innovationPackId: newCallout.whiteboardTemplateData?.innovationPackId!,
+          whiteboardTemplateId: newCallout.whiteboardTemplateData?.id!,
         },
       });
       return result.data?.platform.library.innovationPack?.templates;
     };
 
     const fetchCanvasValue = async () => {
-      if (!newCallout.canvasTemplateData?.origin) return undefined;
-      return newCallout.canvasTemplateData?.origin === 'Hub'
+      if (!newCallout.whiteboardTemplateData?.origin) return undefined;
+      return newCallout.whiteboardTemplateData?.origin === 'Hub'
         ? await getCanvasValueFromHub()
         : await getCanvasValueFromLibrary();
     };
 
     const queryResult = await fetchCanvasValue();
 
-    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
+    const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult?.whiteboardTemplate);
 
     await onCalloutEdit({
       id: callout.id,
@@ -101,8 +104,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         description: newCallout.description,
       },
       state: newCallout.state,
-      cardTemplate: calloutCardTemplate,
-      canvasTemplate: calloutCanvasTemplate,
+      postTemplate: calloutPostTemplate,
+      whiteboardTemplate: calloutWhiteboardTemplate,
     });
     setLoading(false);
   }, [callout, fetchCanvasValueFromHub, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);

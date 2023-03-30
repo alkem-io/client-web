@@ -30,8 +30,8 @@ import canvasSchema from '../validation/canvasSchema';
 import isCanvasValueEqual from '../utils/isCanvasValueEqual';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { PageTitle } from '../../../../core/ui/typography';
-import CanvasTemplatesLibrary from '../CanvasTemplatesLibrary/CanvasTemplatesLibrary';
-import { CanvasTemplateWithValue } from '../CanvasTemplatesLibrary/CanvasTemplate';
+import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
+import { WhiteboardTemplateWithValue } from '../WhiteboardTemplatesLibrary/WhiteboardTemplate';
 import mergeCanvas from '../utils/mergeCanvas';
 import { error as logError } from '../../../../services/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -200,7 +200,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
     actions.onCancel(canvas!);
   };
 
-  const handleImportTemplate = async (template: CanvasTemplateWithValue) => {
+  const handleImportTemplate = async (template: WhiteboardTemplateWithValue) => {
     const canvasApi = await excalidrawApiRef.current?.readyPromise;
     if (canvasApi && options.canEdit && options.checkedOutByMe) {
       try {
@@ -268,7 +268,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
                     size="small"
                     maxWidth={gutters(30)}
                   />
-                  <CanvasTemplatesLibrary onSelectTemplate={handleImportTemplate} />
+                  <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />
                 </>
               ) : (
                 <>

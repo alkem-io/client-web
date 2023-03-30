@@ -1,0 +1,90 @@
+query TemplatesForCalloutCreation($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      postTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+      whiteboardTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+    }
+  }
+}
+
+query PostTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      postTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+    }
+  }
+}
+
+query WhiteboardTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplates {
+        id
+        profile {
+          ...ProfileDisplayName
+        }
+      }
+    }
+  }
+}
+
+fragment ProfileDisplayName on Profile {
+  id
+  displayName
+}
+
+query PostTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      postTemplate(ID: $id) {
+        id
+        type
+        defaultDescription
+        profile {
+          id
+          description
+          tagset {
+            id
+            tags
+          }
+        }
+      }
+    }
+  }
+}
+
+query WhiteboardTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $id) {
+        id
+        value
+      }
+    }
+  }
+}

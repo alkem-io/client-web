@@ -1,4 +1,4 @@
-import { AdminLifecycleTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import InnovationTemplateForm, {
   InnovationTemplateFormSubmittedValues,
@@ -15,7 +15,7 @@ interface EditInnovationTemplateDialogProps {
   onClose: DialogProps['onClose'];
   onSubmit: (values: InnovationTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
-  template: AdminLifecycleTemplateFragment | undefined;
+  template: AdminInnovationFlowTemplateFragment | undefined;
 }
 
 const EditInnovationTemplateDialog = ({

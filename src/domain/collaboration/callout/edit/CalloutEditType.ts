@@ -1,14 +1,14 @@
 import { Callout } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutFormInput } from '../CalloutForm';
-import { CalloutCanvasTemplate, CalloutCardTemplate } from '../creation-dialog/CalloutCreationDialog';
+import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
 
-export type CalloutEditType = Omit<CalloutFormInput, 'cardTemplateType' | 'canvasTemplateData' | 'type'> & {
+export type CalloutEditType = Omit<CalloutFormInput, 'postTemplateType' | 'whiteboardTemplateData' | 'type'> & {
   id: Callout['id'];
   profile: {
     displayName?: string;
     description?: string;
   };
 } & {
-  cardTemplate?: CalloutCardTemplate;
-  canvasTemplate?: CalloutCanvasTemplate;
+  postTemplate?: CalloutPostTemplate;
+  whiteboardTemplate?: CalloutWhiteboardTemplate;
 };

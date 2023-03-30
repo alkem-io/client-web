@@ -43,15 +43,15 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               displayName: callout.profile.displayName,
             },
             state: callout.state,
-            cardTemplate: callout.cardTemplate
+            postTemplate: callout.postTemplate
               ? {
-                  type: callout.cardTemplate.type,
-                  defaultDescription: callout.cardTemplate.defaultDescription,
-                  profileData: callout.cardTemplate.profile,
+                  type: callout.postTemplate.type,
+                  defaultDescription: callout.postTemplate.defaultDescription,
+                  profileData: callout.postTemplate.profile,
                 }
               : undefined,
-            canvasTemplate: callout.canvasTemplate
-              ? { value: callout.canvasTemplate.value, profileData: callout.canvasTemplate.profile }
+            whiteboardTemplate: callout.whiteboardTemplate
+              ? { value: callout.whiteboardTemplate.value, profileData: callout.whiteboardTemplate.profile }
               : undefined,
           },
         },

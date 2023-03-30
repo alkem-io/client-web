@@ -9,8 +9,8 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
     state
     type
     visibility
-    ...CalloutCardTemplate
-    ...CalloutCanvasTemplate
+    ...CalloutPostTemplate
+    ...CalloutWhiteboardTemplate
   }
 }
 
