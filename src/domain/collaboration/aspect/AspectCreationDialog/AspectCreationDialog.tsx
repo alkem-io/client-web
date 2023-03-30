@@ -31,7 +31,6 @@ export interface CardCreationPostTemplateProfile {
 export interface CardCreationPostTemplate {
   type: string | undefined;
   defaultDescription: string | undefined;
-  // profile: CardCreationPostTemplateProfile;
   tags: string[] | undefined;
   visualUri: string | undefined;
 }
