@@ -14,7 +14,7 @@ import { MessagesRoute } from '../../domain/communication/messages/routing/Messa
 import OrganizationRoute from '../../domain/community/contributor/organization/routing/OrganizationRoute';
 import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from './Restricted';
-import NonAdminRedirect from './NonAdminRedirect';
+import NoIdentityRedirect from './NoIdentityRedirect';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
@@ -93,9 +93,9 @@ export const TopLevelRoutes: FC = () => {
           path={`/user/:${nameOfUrl.userNameId}/*`}
           element={
             <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
-              <NonAdminRedirect>
+              <NoIdentityRedirect>
                 <UserRoute />
-              </NonAdminRedirect>
+              </NoIdentityRedirect>
             </WithApmTransaction>
           }
         />
@@ -138,9 +138,9 @@ export const TopLevelRoutes: FC = () => {
           path="/messages"
           element={
             <WithApmTransaction path="/messages">
-              <NonAdminRedirect>
+              <NoIdentityRedirect>
                 <MessagesRoute />
-              </NonAdminRedirect>
+              </NoIdentityRedirect>
             </WithApmTransaction>
           }
         />
