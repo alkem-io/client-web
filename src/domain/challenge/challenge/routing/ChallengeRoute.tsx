@@ -13,7 +13,7 @@ import { CommunityContextProvider } from '../../../community/community/Community
 import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';
 import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
-import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
+import { EntityPageLayoutHolder } from '../../common/JourneyPageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
@@ -74,7 +74,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           <ApplyRoute
             paths={currentPaths}
             type={ApplicationTypeEnum.challenge}
-            entityPageLayout={ChallengePageLayout}
+            journeyPageLayoutComponent={ChallengePageLayout}
           />
         }
       />

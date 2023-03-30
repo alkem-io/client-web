@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '@mui/styles';
-import { EntityTabsProps } from '../../challenge/common/EntityPageLayout';
+import { EntityTabsProps } from '../../challenge/common/JourneyPageLayout';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';

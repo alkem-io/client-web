@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { EntityTabsProps } from '../../common/EntityPageLayout';
+import { EntityTabsProps } from '../../common/JourneyPageLayout';
 import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
 
 export interface OpportunityTabsProps extends EntityTabsProps {}

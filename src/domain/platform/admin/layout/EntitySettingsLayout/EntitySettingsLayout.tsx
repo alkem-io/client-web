@@ -3,7 +3,7 @@ import { SettingsSection } from './constants';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
+import { EntityTabsProps } from '../../../../challenge/common/JourneyPageLayout';
 import SettingsPageContent from './SettingsPageContent';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../../../../../core/ui/grid/constants';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
-import EntityPageLayout from '../../../../challenge/common/EntityPageLayout/EntityPageLayout';
+import JourneyPageLayout from '../../../../challenge/common/JourneyPageLayout/JourneyPageLayout';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
@@ -49,7 +49,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   const paddingBottom = isMobile ? 6 : 0;
 
   return (
-    <EntityPageLayout currentSection={EntityPageSection.Settings} entityTypeName={entityTypeName} {...props}>
+    <JourneyPageLayout currentSection={EntityPageSection.Settings} entityTypeName={entityTypeName} {...props}>
       <Box>
         <Box maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
           <EntitySettingsTabs
@@ -74,7 +74,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
           </GridProvider>
         </Box>
       </Box>
-    </EntityPageLayout>
+    </JourneyPageLayout>
   );
 };
 

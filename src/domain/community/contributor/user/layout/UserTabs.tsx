@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { EntityTabsProps } from '../../../../challenge/common/EntityPageLayout';
+import { EntityTabsProps } from '../../../../challenge/common/JourneyPageLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';

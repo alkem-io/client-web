@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../../../challenge/common/EntityPageLayout';
+import { JourneyPageLayout, EntityPageLayoutProps } from '../../../../challenge/common/JourneyPageLayout';
 import UserPageBanner from './UserPageBanner';
 import { PropsWithChildren } from 'react';
 import UserTabs from './UserTabs';
@@ -8,9 +8,9 @@ interface UserPageLayoutProps
 
 const UserPageLayout = (props: PropsWithChildren<UserPageLayoutProps>) => {
   return (
-    <EntityPageLayout {...props} pageBannerComponent={UserPageBanner} tabsComponent={UserTabs} entityTypeName="user">
+    <JourneyPageLayout {...props} pageBannerComponent={UserPageBanner} tabsComponent={UserTabs} entityTypeName="user">
       {props.children}
-    </EntityPageLayout>
+    </JourneyPageLayout>
   );
 };
 

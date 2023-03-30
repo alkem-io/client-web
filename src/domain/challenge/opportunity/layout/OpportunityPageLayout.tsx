@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
+import { JourneyPageLayout, EntityPageLayoutProps } from '../../common/JourneyPageLayout';
 import OpportunityPageBanner from './OpportunityPageBanner';
 import OpportunityTabs from './OpportunityTabs';
 import { PropsWithChildren } from 'react';
@@ -8,7 +8,7 @@ interface OpportunityPageLayoutProps
 
 const OpportunityPageLayout = (props: PropsWithChildren<OpportunityPageLayoutProps>) => {
   return (
-    <EntityPageLayout
+    <JourneyPageLayout
       {...props}
       pageBannerComponent={OpportunityPageBanner}
       tabsComponent={OpportunityTabs}

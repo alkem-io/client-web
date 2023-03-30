@@ -1,13 +1,14 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
+import { JourneyPageLayout } from '../../common/JourneyPageLayout';
 import HubPageBanner from './HubPageBanner';
 import HubTabs from './HubTabs';
 import { PropsWithChildren } from 'react';
 import SearchDialog from '../../../platform/search/SearchDialog';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 import { useHub } from '../HubContext/useHub';
+import { JourneyPageLayoutProps } from '../../common/JourneyPageLayout/JourneyPageLayout';
 
 export interface HubPageLayoutProps
-  extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
+  extends Omit<JourneyPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
   searchDisabled?: boolean;
 }
 
@@ -16,7 +17,7 @@ const HubPageLayout = ({ searchDisabled = false, ...props }: PropsWithChildren<H
 
   return (
     <>
-      <EntityPageLayout {...props} pageBannerComponent={HubPageBanner} tabsComponent={HubTabs} entityTypeName="hub" />
+      <JourneyPageLayout {...props} pageBannerComponent={HubPageBanner} tabsComponent={HubTabs} entityTypeName="hub" />
       {!searchDisabled && <SearchDialog searchRoute={`${buildHubUrl(hubNameId)}/search`} />}
     </>
   );

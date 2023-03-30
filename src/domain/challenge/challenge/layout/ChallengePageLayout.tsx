@@ -1,4 +1,4 @@
-import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
+import { JourneyPageLayout, EntityPageLayoutProps } from '../../common/JourneyPageLayout';
 import ChallengePageBanner from './ChallengePageBanner';
 import ChallengeTabs from './ChallengeTabs';
 import { PropsWithChildren } from 'react';
@@ -8,7 +8,7 @@ export interface ChallengePageLayoutProps
 
 const ChallengePageLayout = (props: PropsWithChildren<ChallengePageLayoutProps>) => {
   return (
-    <EntityPageLayout
+    <JourneyPageLayout
       {...props}
       pageBannerComponent={ChallengePageBanner}
       tabsComponent={ChallengeTabs}

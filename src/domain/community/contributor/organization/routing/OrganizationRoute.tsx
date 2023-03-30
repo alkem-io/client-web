@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router';
 import { Loading } from '../../../../../common/components/core';
-import { EntityPageLayoutHolder } from '../../../../challenge/common/EntityPageLayout';
+import { EntityPageLayoutHolder } from '../../../../challenge/common/JourneyPageLayout';
 import { useOrganization } from '../hooks/useOrganization';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import OrganizationPage from '../pages/OrganizationPage';

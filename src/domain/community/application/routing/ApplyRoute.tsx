@@ -5,17 +5,17 @@ import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyPage from '../pages/ApplyPage';
 import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
-import { EntityPageLayoutHolder } from '../../../challenge/common/EntityPageLayout';
+import { EntityPageLayoutHolder } from '../../../challenge/common/JourneyPageLayout';
 import { ChallengePageLayoutProps } from '../../../challenge/challenge/layout/ChallengePageLayout';
 import { HubPageLayoutProps } from '../../../challenge/hub/layout/HubPageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface Props extends PageProps {
   type: ApplicationTypeEnum;
-  entityPageLayout: ComponentType<HubPageLayoutProps | ChallengePageLayoutProps>;
+  journeyPageLayoutComponent: ComponentType<HubPageLayoutProps | ChallengePageLayoutProps>;
 }
 
-const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type }) => {
+const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageLayout, type }) => {
   return (
     <Routes>
       <Route path="/" element={<EntityPageLayoutHolder />}>
@@ -23,9 +23,9 @@ const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type
           index
           element={
             <RestrictedRoute>
-              <EntityPageLayout currentSection={EntityPageSection.Dashboard}>
+              <JourneyPageLayout currentSection={EntityPageSection.Dashboard} disableUnauthorizedDialog>
                 <ApplyPage paths={paths} type={type} />
-              </EntityPageLayout>
+              </JourneyPageLayout>
             </RestrictedRoute>
           }
         />
