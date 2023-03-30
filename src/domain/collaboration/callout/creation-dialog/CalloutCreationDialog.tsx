@@ -2,24 +2,24 @@ import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import {
-  AspectTemplateFragment,
+  PostTemplateFragment,
   CalloutState,
   CalloutType,
-  CanvasTemplateFragment,
+  WhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import { CalloutIcon } from '../icon/CalloutIcon';
-import CalloutForm, { CalloutFormOutput, CanvasTemplateData } from '../CalloutForm';
-import { createCardTemplateFromTemplateSet } from '../utils/createCardTemplateFromTemplateSet';
+import CalloutForm, { CalloutFormOutput, WhiteboardTemplateData } from '../CalloutForm';
+import { createPostTemplateFromTemplateSet } from '../utils/createPostTemplateFromTemplateSet';
 import {
-  useHubTemplatesCanvasTemplateWithValueLazyQuery,
-  useInnovationPackFullCanvasTemplateWithValueLazyQuery,
+  useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
+  useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { createCanvasTemplateForCalloutCreation } from '../utils/createCanvasTemplateForCalloutCreation';
+import { createWhiteboardTemplateForCalloutCreation } from '../utils/createWhiteboardTemplateForCalloutCreation';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -27,8 +27,8 @@ export type CalloutCreationDialogFields = {
   templateId?: string;
   type?: CalloutType;
   state?: CalloutState;
-  cardTemplateType?: string;
-  canvasTemplateData?: CanvasTemplateData;
+  postTemplateType?: string;
+  whiteboardTemplateData?: WhiteboardTemplateData;
 };
 
 export interface CalloutCreationDialogProps {
@@ -37,7 +37,7 @@ export interface CalloutCreationDialogProps {
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
   isCreating: boolean;
   calloutNames: string[];
-  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
+  templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
 }
 
 export interface TemplateInfo {
@@ -49,13 +49,13 @@ export interface TemplateInfo {
   };
 }
 
-export interface CalloutCardTemplate {
+export interface CalloutPostTemplate {
   defaultDescription: string;
   type: string;
   profile: TemplateInfo;
 }
 
-export interface CalloutCanvasTemplate {
+export interface CalloutWhiteboardTemplate {
   id?: string;
   value: string;
   profile: TemplateInfo;
@@ -74,11 +74,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
 
-  const [fetchCanvasValueFromHub] = useHubTemplatesCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
-  const [fetchCanvasValueFromLibrary] = useInnovationPackFullCanvasTemplateWithValueLazyQuery({
+  const [fetchCanvasValueFromLibrary] = useInnovationPackFullWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
   });
 
@@ -91,25 +91,25 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
-    const calloutCardTemplate = createCardTemplateFromTemplateSet(callout, templates.cardTemplates);
+    const calloutPostTemplate = createPostTemplateFromTemplateSet(callout, templates.postTemplates);
 
     const getCanvasValueFromHub = async () => {
-      if (!callout.canvasTemplateData?.id) return undefined;
+      if (!callout.whiteboardTemplateData?.id) return undefined;
 
       const result = await fetchCanvasValueFromHub({
-        variables: { hubId: hubNameId!, canvasTemplateId: callout.canvasTemplateData?.id },
+        variables: { hubId: hubNameId!, whiteboardTemplateId: callout.whiteboardTemplateData?.id },
       });
 
       return result.data?.hub.templates;
     };
 
     const getCanvasValueFromLibrary = async () => {
-      if (!callout.canvasTemplateData?.id || !callout.canvasTemplateData?.innovationPackId) return undefined;
+      if (!callout.whiteboardTemplateData?.id || !callout.whiteboardTemplateData?.innovationPackId) return undefined;
 
       const result = await fetchCanvasValueFromLibrary({
         variables: {
-          innovationPackId: callout.canvasTemplateData?.innovationPackId,
-          canvasTemplateId: callout.canvasTemplateData?.id,
+          innovationPackId: callout.whiteboardTemplateData?.innovationPackId,
+          whiteboardTemplateId: callout.whiteboardTemplateData?.id,
         },
       });
 
@@ -117,9 +117,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     };
 
     const queryResult =
-      callout.canvasTemplateData?.origin === 'Hub' ? await getCanvasValueFromHub() : await getCanvasValueFromLibrary();
+      callout.whiteboardTemplateData?.origin === 'Hub'
+        ? await getCanvasValueFromHub()
+        : await getCanvasValueFromLibrary();
 
-    const calloutCanvasTemplate = createCanvasTemplateForCalloutCreation(queryResult?.canvasTemplate);
+    const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult?.whiteboardTemplate);
     const newCallout: CalloutCreationType = {
       profile: {
         displayName: callout.displayName!,
@@ -127,8 +129,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       },
       type: callout.type!,
       state: callout.state!,
-      cardTemplate: calloutCardTemplate,
-      canvasTemplate: calloutCanvasTemplate,
+      postTemplate: calloutPostTemplate,
+      whiteboardTemplate: calloutWhiteboardTemplate,
     };
 
     const result = await onSaveAsDraft(newCallout);

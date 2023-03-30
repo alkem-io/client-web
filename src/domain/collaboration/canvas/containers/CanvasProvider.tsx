@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
-  useCanvasTemplatesQuery,
+  useWhiteboardTemplatesQuery,
   useChallengeCanvasFromCalloutQuery,
   useHubCanvasFromCalloutQuery,
   useOpportunityCanvasFromCalloutQuery,
@@ -9,7 +9,7 @@ import {
 import {
   CanvasDetailsFragment,
   CollaborationWithCanvasDetailsFragment,
-  CreateCanvasCanvasTemplateFragment,
+  CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { getCanvasCallout } from './getCanvasCallout';
 
@@ -23,7 +23,7 @@ export type TemplateQuery = {
 
 export interface IProvidedEntities {
   canvas: CanvasDetailsFragment | undefined;
-  templates: CreateCanvasCanvasTemplateFragment[];
+  templates: CreateCanvasWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
 }
@@ -42,7 +42,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     canvasNameId = '',
   } = useUrlParams();
 
-  const { data: canvasTemplates, loading: loadingTemplates } = useCanvasTemplatesQuery({
+  const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
     variables: { hubId },
   });
 
@@ -74,7 +74,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
 
   const canvas = callout?.canvases?.find(canvas => canvas.nameID === canvasNameId) ?? undefined;
 
-  const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
+  const templates = whiteboardTemplates?.hub.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;
 
   return (

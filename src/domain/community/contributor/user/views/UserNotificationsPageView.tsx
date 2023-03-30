@@ -31,8 +31,6 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
   const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
   const isAnyGlobalAdmin = userMetadata?.permissions.isPlatformAdmin;
-  const isCommunityAdmin = userMetadata?.isCommunityAdmin;
-  const isAnyOrganizationAdmin = userMetadata?.isOrganizationAdmin;
 
   const { preferences } = entities;
   const { updatePreference } = actions;
@@ -40,13 +38,11 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
 
   const generalGroup = preferences.filter(x => x.definition.group === 'Notification');
   const adminGroup = isAnyGlobalAdmin ? preferences.filter(x => x.definition.group === 'NotificationGlobalAdmin') : [];
-  const communityGroup = isCommunityAdmin
-    ? preferences.filter(x => x.definition.group === 'NotificationCommunityAdmin')
-    : [];
+  // TODO hide when a user doesn't administer any community
+  const communityGroup = preferences.filter(x => x.definition.group === 'NotificationCommunityAdmin');
   const communicationGroup = preferences.filter(x => x.definition.group === 'NotificationCommunication');
-  const orgCommunicationGroup = isAnyOrganizationAdmin
-    ? preferences.filter(x => x.definition.group === 'NotificationOrganizationAdmin')
-    : [];
+  // TODO hide when a user doesn't administer any organization
+  const orgCommunicationGroup = preferences.filter(x => x.definition.group === 'NotificationOrganizationAdmin');
 
   return (
     <Grid container spacing={GUTTER_MUI}>
@@ -92,7 +88,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
           </Box>
         </Grid>
       )}
-      {isAnyOrganizationAdmin && (
+      {orgCommunicationGroup && (
         <Grid item xs={6}>
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.organization-communication.title')}

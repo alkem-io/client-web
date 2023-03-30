@@ -10,13 +10,13 @@ import {
   CalloutType,
   CalloutVisibility,
   CanvasDetailsFragment,
-  CanvasTemplate,
+  WhiteboardTemplate,
   CommentsWithMessagesFragment,
   ContributeTabAspectFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
-import { CalloutCardTemplate } from './creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate } from './creation-dialog/CalloutCreationDialog';
 import { useMemo } from 'react';
 
 interface CalloutChildTypePropName {
@@ -38,8 +38,8 @@ interface CalloutChildPropValue {
 }
 
 type CalloutCardTemplateType = {
-  [CalloutType.Card]: { cardTemplate: CalloutCardTemplate };
-  [CalloutType.Canvas]: { canvasTemplate: CanvasTemplate };
+  [CalloutType.Card]: { postTemplate: CalloutPostTemplate };
+  [CalloutType.Canvas]: { whiteboardTemplate: WhiteboardTemplate };
   [CalloutType.Comments]: {};
 };
 

@@ -85,8 +85,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                   return (
                     <Box marginTop={2}>
                       <Grid container spacing={3}>
-                        {filteredComments.map((c, i) => (
-                          <Grid item xs={12} key={i}>
+                        {filteredComments.map(c => (
+                          <Grid item xs={12} key={c.id}>
                             <MessageView
                               message={c}
                               canDelete={canDeleteComment(c.author?.id)}

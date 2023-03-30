@@ -30,7 +30,7 @@ const EntityDashboardLeadsSection = ({
   const { user } = useUserContext();
 
   const leadOrganizationsMapped = useMemo(
-    () => leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
+    () => leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id)),
     [leadOrganizations, t, user?.user]
   );
 

@@ -17,8 +17,8 @@ import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  CanvasTemplateFragment,
-  CreateCanvasCanvasTemplateFragment,
+  WhiteboardTemplateFragment,
+  CreateCanvasWhiteboardTemplateFragment,
   CreateCanvasOnCalloutInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Loading } from '../../../../common/components/core';
@@ -30,7 +30,7 @@ import canvasSchema from '../validation/canvasSchema';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
-import { useHubTemplatesCanvasTemplateWithValueQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useHubTemplatesWhiteboardTemplateWithValueQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const useStyles = makeStyles(theme => ({
@@ -92,8 +92,8 @@ interface ITemplateStepProps {
     onTemplateSelected: (template: Identifiable) => void;
   };
   entities: {
-    selectedTemplate: CreateCanvasCanvasTemplateFragment | undefined;
-    templates: CanvasTemplateFragment[];
+    selectedTemplate: CreateCanvasWhiteboardTemplateFragment | undefined;
+    templates: WhiteboardTemplateFragment[];
   };
   state: {
     templatesLoading?: boolean;
@@ -166,7 +166,7 @@ const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
 interface ICompletionStepProps {
   entities: {
     displayName: string;
-    template?: CreateCanvasCanvasTemplateFragment;
+    template?: CreateCanvasWhiteboardTemplateFragment;
   };
 }
 
@@ -203,8 +203,8 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
 
 interface CreateCanvasStepsProps {
   entities: {
-    templates: CanvasTemplateFragment[];
-    template?: CreateCanvasCanvasTemplateFragment;
+    templates: WhiteboardTemplateFragment[];
+    template?: CreateCanvasWhiteboardTemplateFragment;
     displayName: string;
   };
   actions: {
@@ -334,7 +334,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
 interface CanvasCreateDialogProps {
   entities: {
     calloutId: string;
-    templates: CanvasTemplateFragment[];
+    templates: WhiteboardTemplateFragment[];
   };
   actions: {
     onCancel: () => void;
@@ -375,14 +375,14 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
     });
   };
 
-  const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesCanvasTemplateWithValueQuery({
+  const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesWhiteboardTemplateWithValueQuery({
     fetchPolicy: 'cache-and-network',
-    variables: { hubId: hubNameId!, canvasTemplateId: selectedTemplateId! },
+    variables: { hubId: hubNameId!, whiteboardTemplateId: selectedTemplateId! },
     skip: !hubNameId || !selectedTemplateId,
   });
 
   const selectedTemplate = entities.templates.find(({ id }) => id === selectedTemplateId);
-  const canvasValue = canvasValueData?.hub.templates?.canvasTemplate?.value ?? '';
+  const canvasValue = canvasValueData?.hub.templates?.whiteboardTemplate?.value ?? '';
   const selectedTemplateWithValue = selectedTemplate ? { ...selectedTemplate, value: canvasValue } : undefined;
 
   return (

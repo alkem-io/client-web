@@ -64,9 +64,9 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });
 
-  const cardTemplates = templatesData?.hub.templates?.aspectTemplates ?? [];
-  const canvasTemplates = templatesData?.hub.templates?.canvasTemplates ?? [];
-  const templates = { cardTemplates, canvasTemplates };
+  const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
+  const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
+  const templates = { postTemplates, whiteboardTemplates };
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 

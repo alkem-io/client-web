@@ -15,7 +15,7 @@ import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dia
 import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutCanvasTemplate, CalloutCardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
 import { CalloutLayoutEvents, CalloutSortProps } from '../callout/Types';
@@ -51,8 +51,8 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     editable?: boolean;
     authorization?: Authorization;
     url: string;
-    cardTemplate?: CalloutCardTemplate;
-    canvasTemplate?: CalloutCanvasTemplate;
+    postTemplate?: CalloutPostTemplate;
+    whiteboardTemplate?: CalloutWhiteboardTemplate;
     authorName?: string;
     authorAvatarUri?: string;
     publishedAt?: string;
@@ -84,9 +84,9 @@ const CalloutLayout = ({
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubNameId! } });
 
-  const cardTemplates = templatesData?.hub.templates?.aspectTemplates ?? [];
-  const canvasTemplates = templatesData?.hub.templates?.canvasTemplates ?? [];
-  const templates = { cardTemplates, canvasTemplates };
+  const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
+  const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
+  const templates = { postTemplates, whiteboardTemplates };
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);

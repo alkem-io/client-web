@@ -7,19 +7,19 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import { LifecycleType } from '../../../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 
-interface CreateAspectTemplateDialogProps {
+interface CreatePostTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
 }
 
-const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreateAspectTemplateDialogProps) => {
+const CreateInnovationTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplateDialogProps) => {
   const { t } = useTranslation();
 
   const values: Partial<InnovationTemplateFormValues> = {
-    type: LifecycleType.Challenge,
+    type: InnovationFlowType.Challenge,
   };
 
   return (

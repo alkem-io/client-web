@@ -86,10 +86,12 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
                   <BlockTitle>{t('components.callout-creation.callout-type-label')}</BlockTitle>
                   <Text>{callout?.type}</Text>
                 </Box>
-                <FormRow>
-                  <BlockTitle>{t('common.notifications')}</BlockTitle>
-                  <FormikSwitch name="sendNotifications" title={t('components.callout-publish.notify-members')} />
-                </FormRow>
+                {callout?.draft && (
+                  <FormRow>
+                    <BlockTitle>{t('common.notifications')}</BlockTitle>
+                    <FormikSwitch name="sendNotifications" title={t('components.callout-publish.notify-members')} />
+                  </FormRow>
+                )}
               </Gutters>
             </DialogContent>
             <Actions padding={gutters()} justifyContent="end">

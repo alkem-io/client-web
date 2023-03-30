@@ -1,10 +1,8 @@
 import { useUserProfileQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { User } from '../../../../../core/apollo/generated/graphql-schema';
-import { useUserMetadataWrapper } from './useUserMetadataWrapper';
+import { toUserMetadata } from './useUserMetadataWrapper';
 
 export const useUserMetadata = (id: string) => {
-  const wrapper = useUserMetadataWrapper();
-
   const { data, loading } = useUserProfileQuery({
     variables: { input: id },
     fetchPolicy: 'cache-and-network',
@@ -16,7 +14,7 @@ export const useUserMetadata = (id: string) => {
   });
 
   return {
-    user: wrapper(data?.user as User, data?.rolesUser, data?.authorization),
+    user: toUserMetadata(data?.user as User, data?.rolesUser, data?.authorization),
     loading,
   };
 };

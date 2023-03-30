@@ -181,7 +181,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
           calloutId={callout.id}
-          cardTemplate={callout.cardTemplate}
+          postTemplate={callout.postTemplate}
           isCreating={isCreatingAspect}
         />
       </>

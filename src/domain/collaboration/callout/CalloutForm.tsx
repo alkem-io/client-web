@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import {
-  AspectTemplateFragment,
+  PostTemplateFragment,
   CalloutState,
   CalloutType,
-  CanvasTemplateFragment,
+  WhiteboardTemplateFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { Grid, Typography } from '@mui/material';
@@ -16,17 +16,17 @@ import FormikInputField from '../../../common/components/composite/forms/FormikI
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
-import CardTemplatesChooser from './creation-dialog/CalloutTemplate/CardTemplateChooser';
+import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
 import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
-import CanvasTemplatesChooser, {
-  CanvasTemplateListItem,
-  LibraryCanvasTemplate,
+import WhiteboardTemplatesChooser, {
+  WhiteboardTemplateListItem,
+  LibraryWhiteboardTemplate,
   TemplateOrigin,
-} from './creation-dialog/CalloutTemplate/CanvasTemplateChooser';
+} from './creation-dialog/CalloutTemplate/WhiteboardTemplateChooser';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
-export type CanvasTemplateData = {
+export type WhiteboardTemplateData = {
   id?: string;
   displayName?: string;
   origin?: TemplateOrigin;
@@ -38,8 +38,8 @@ type FormValueType = {
   description: string;
   type: CalloutType;
   opened: boolean;
-  cardTemplateType?: string;
-  canvasTemplateData?: CanvasTemplateData;
+  postTemplateType?: string;
+  whiteboardTemplateData?: WhiteboardTemplateData;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -50,8 +50,8 @@ export type CalloutFormInput = {
   description?: string;
   type?: CalloutType;
   state?: CalloutState;
-  cardTemplateType?: string;
-  canvasTemplateData?: CanvasTemplateData;
+  postTemplateType?: string;
+  whiteboardTemplateData?: WhiteboardTemplateData;
 };
 
 export type CalloutFormOutput = {
@@ -59,8 +59,8 @@ export type CalloutFormOutput = {
   description: string;
   type: CalloutType;
   state: CalloutState;
-  cardTemplateType?: string;
-  canvasTemplateData?: CanvasTemplateData;
+  postTemplateType?: string;
+  whiteboardTemplateData?: WhiteboardTemplateData;
 };
 
 export interface CalloutFormProps {
@@ -70,7 +70,7 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
   calloutNames: string[];
-  templates: { cardTemplates: AspectTemplateFragment[]; canvasTemplates: CanvasTemplateFragment[] };
+  templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
@@ -83,7 +83,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   children,
 }) => {
   const { t } = useTranslation();
-  const [libraryCanvasTemplates, setLibraryCanvasTemplates] = useState<CanvasTemplateListItem[]>([]);
+  const [libraryWhiteboardTemplates, setLibraryWhiteboardTemplates] = useState<WhiteboardTemplateListItem[]>([]);
 
   const initialValues: FormValueType = useMemo(
     () => ({
@@ -91,10 +91,10 @@ const CalloutForm: FC<CalloutFormProps> = ({
       description: callout?.description ?? '',
       type: callout?.type ?? CalloutType.Comments,
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      cardTemplateType: callout?.cardTemplateType ?? '',
-      canvasTemplateData: callout?.canvasTemplateData ?? {
+      postTemplateType: callout?.postTemplateType ?? '',
+      whiteboardTemplateData: callout?.whiteboardTemplateData ?? {
         id: '',
-        title: '',
+        displayName: '',
         origin: 'Hub',
       },
     }),
@@ -119,14 +119,14 @@ const CalloutForm: FC<CalloutFormProps> = ({
       .min(3, ({ min }) => t('common.field-min-length', { min })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    cardTemplateType: yup
+    postTemplateType: yup
       .string()
       .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
-    canvasTemplateData: yup.object().when('type', {
+    whiteboardTemplateData: yup.object().when('type', {
       is: CalloutType.Canvas,
       then: yup.object().shape({
         id: yup.string().required(),
-        title: yup.string().required(),
+        displayName: yup.string().required(),
         origin: yup.string().optional(),
         innovationPackId: yup.string().optional(),
       }),
@@ -139,21 +139,21 @@ const CalloutForm: FC<CalloutFormProps> = ({
       description: values.description,
       type: values.type,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      cardTemplateType: values.cardTemplateType,
-      canvasTemplateData: values.canvasTemplateData,
+      postTemplateType: values.postTemplateType,
+      whiteboardTemplateData: values.whiteboardTemplateData,
     };
     onChange?.(callout);
   };
 
   const updateLibraryTemplates = useCallback(
-    (template: LibraryCanvasTemplate) => {
-      const newTemplate: CanvasTemplateListItem = { ...template, origin: 'Library' };
-      setLibraryCanvasTemplates([...libraryCanvasTemplates, newTemplate]);
+    (template: LibraryWhiteboardTemplate) => {
+      const newTemplate: WhiteboardTemplateListItem = { ...template, origin: 'Library' };
+      setLibraryWhiteboardTemplates([...libraryWhiteboardTemplates, newTemplate]);
     },
-    [libraryCanvasTemplates]
+    [libraryWhiteboardTemplates]
   );
 
-  const hubTemplates = templates.canvasTemplates.map<CanvasTemplateListItem>(templ => ({
+  const hubTemplates = templates.whiteboardTemplates.map<WhiteboardTemplateListItem>(templ => ({
     ...templ,
     origin: 'Hub',
   }));
@@ -189,9 +189,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <>
                 <SectionSpacer />
                 <FormRow>
-                  <CardTemplatesChooser
-                    name="cardTemplateType"
-                    templates={templates.cardTemplates}
+                  <PostTemplatesChooser
+                    name="postTemplateType"
+                    templates={templates.postTemplates}
                     editMode={editMode}
                   />
                 </FormRow>
@@ -201,9 +201,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <>
                 <SectionSpacer />
                 <FormRow>
-                  <CanvasTemplatesChooser
-                    name="canvasTemplateData"
-                    templates={[...hubTemplates, ...libraryCanvasTemplates]}
+                  <WhiteboardTemplatesChooser
+                    name="whiteboardTemplateData"
+                    templates={[...hubTemplates, ...libraryWhiteboardTemplates]}
                     editMode={editMode}
                     onSelectLibraryTemplate={updateLibraryTemplates}
                   />

@@ -11,7 +11,7 @@ import { ErrorPage } from '../../../../../../core/pages/Errors/ErrorPage';
 import { User } from '../../../../../../core/apollo/generated/graphql-schema';
 import { UserRolesInEntity } from './UserRolesInEntity';
 import { useAuthenticationContext } from '../../../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { UserMetadata, useUserMetadataWrapper } from '../../hooks/useUserMetadataWrapper';
+import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -32,7 +32,6 @@ const UserContext = React.createContext<UserContextValue>({
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
-  const wrapper = useUserMetadataWrapper();
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
   const { data: meHasProfileData, loading: loadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
   // TODO "me" query fetches too much beyond user name
@@ -73,8 +72,9 @@ const UserProvider: FC<{}> = ({ children }) => {
   const loadingMeAndParentQueries = loadingAuthentication || loadingMeHasProfile || loadingMe;
 
   const wrappedMe = useMemo(
-    () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined),
-    [meData, rolesData, wrapper, platformLevelAuthorization]
+    () =>
+      meData?.me ? toUserMetadata(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined,
+    [meData, rolesData, platformLevelAuthorization]
   );
 
   const providedValue = useMemo<UserContextValue>(
