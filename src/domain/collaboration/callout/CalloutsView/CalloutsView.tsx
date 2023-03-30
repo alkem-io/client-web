@@ -87,7 +87,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   }, [callouts]);
 
   const sortedCallouts = useMemo(
-    () => compact(sortedCalloutIds.map(id => callouts?.find(c => c.id === id)!)),
+    () => compact(sortedCalloutIds.map(id => callouts?.find(c => c.id === id))),
     [sortedCalloutIds, callouts]
   );
 
