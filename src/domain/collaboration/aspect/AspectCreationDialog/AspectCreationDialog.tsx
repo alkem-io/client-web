@@ -23,7 +23,7 @@ export type AspectCreationDialogProps = {
   isCreating: boolean;
 } & CoreEntityIdTypes;
 
-export interface CardCreationPostTemplateInfo {
+export interface CardCreationPostTemplateProfile {
   tags: string[] | undefined;
   visualUri: string | undefined;
 }
@@ -31,7 +31,8 @@ export interface CardCreationPostTemplateInfo {
 export interface CardCreationPostTemplate {
   type: string | undefined;
   defaultDescription: string | undefined;
-  info: CardCreationPostTemplateInfo;
+  tags: string[] | undefined;
+  visualUri: string | undefined;
 }
 
 const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
@@ -75,7 +76,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
       ...newAspect,
     });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
-  const tags = postTemplate?.profile?.tags;
+  const tags = postTemplate?.profile?.tagset?.tags;
 
   const renderButtons = () => {
     return (
