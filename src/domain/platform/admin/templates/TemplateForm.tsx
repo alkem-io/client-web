@@ -14,7 +14,7 @@ import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constan
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 
-export interface TemplateInfoValues {
+export interface TemplateProfileValues {
   displayName: string;
   description: string;
   tags: string[];
@@ -25,17 +25,17 @@ export interface TemplateInfoSubmittedValues {
   tags: string[];
 }
 
-interface TemplateFormProps<Values extends TemplateInfoValues> {
+interface TemplateFormProps<Values extends TemplateProfileValues> {
   title: ReactNode;
   initialValues: Partial<Values>;
   visual?: Visual;
   onSubmit: (values: Values & TemplateInfoSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<Values & TemplateInfoValues>) => ReactNode);
-  children: ReactNode | ((formState: FormikProps<Values & TemplateInfoValues>) => ReactNode);
+  actions: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
+  children: ReactNode | ((formState: FormikProps<Values & TemplateProfileValues>) => ReactNode);
   validator: yup.ObjectSchemaDefinition<Partial<Values>>;
 }
 
-const TemplateForm = <Values extends TemplateInfoValues>({
+const TemplateForm = <Values extends TemplateProfileValues>({
   title,
   initialValues,
   visual,
@@ -47,8 +47,8 @@ const TemplateForm = <Values extends TemplateInfoValues>({
   const { t } = useTranslation();
 
   const handleSubmit = useCallback(
-    (values: Partial<Values & TemplateInfoValues>) => {
-      const { displayName, tags, description = '', ...validValues } = values as Values & TemplateInfoValues; // ensured by yup
+    (values: Partial<Values & TemplateProfileValues>) => {
+      const { displayName, tags, description = '', ...validValues } = values as Values & TemplateProfileValues; // ensured by yup
       onSubmit({
         ...validValues,
         tags,

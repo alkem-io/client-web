@@ -10,18 +10,18 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
-import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
+import AdminPostTemplatesSection from '../templates/PostTemplates/AdminPostTemplatesSection';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 import { getAllCanvasesOnCallouts } from '../../../collaboration/canvas/containers/getCanvasCallout';
 import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
   routePrefix: string;
   aspectTemplatesRoutePath: string;
-  canvasTemplatesRoutePath: string;
+  whiteboardTemplatesRoutePath: string;
   innovationTemplatesRoutePath: string;
   edit?: boolean;
 }
@@ -30,11 +30,11 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
   routePrefix,
   aspectTemplatesRoutePath,
-  canvasTemplatesRoutePath,
+  whiteboardTemplatesRoutePath,
   innovationTemplatesRoutePath,
   edit = false,
 }) => {
-  const { aspectTemplateId, canvasTemplateId, innovationTemplateId } = useParams();
+  const { aspectTemplateId, whiteboardTemplateId, innovationTemplateId } = useParams();
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
@@ -51,9 +51,9 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     useInnovationPacksLazyQuery();
 
   const {
-    aspectTemplates,
-    canvasTemplates,
-    lifecycleTemplates,
+    postTemplates,
+    whiteboardTemplates,
+    innovationFlowTemplates,
     id: templatesSetID,
     authorization: templateSetAuth,
   } = hubTemplatesData?.hub.templates ?? {};
@@ -74,39 +74,39 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   const aspectInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
     return innovationPacks?.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.aspectTemplates.length > 0)
+      .filter(pack => pack.templates && pack.templates?.postTemplates.length > 0)
       .map(pack => ({
         ...pack,
-        templates: pack.templates?.aspectTemplates || [],
+        templates: pack.templates?.postTemplates || [],
       }));
   }, [innovationPacks]);
 
   const canvasInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
     return innovationPacks?.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.canvasTemplates.length > 0)
+      .filter(pack => pack.templates && pack.templates?.whiteboardTemplates.length > 0)
       .map(pack => ({
         ...pack,
-        templates: pack.templates?.canvasTemplates || [],
+        templates: pack.templates?.whiteboardTemplates || [],
       }));
   }, [innovationPacks]);
 
   const lifecycleInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
     return innovationPacks?.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.lifecycleTemplates.length > 0)
+      .filter(pack => pack.templates && pack.templates?.innovationFlowTemplates.length > 0)
       .map(pack => ({
         ...pack,
-        templates: pack.templates?.lifecycleTemplates || [],
+        templates: pack.templates?.innovationFlowTemplates || [],
       }));
   }, [innovationPacks]);
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
-      <AdminAspectTemplatesSection
+      <AdminPostTemplatesSection
         templateId={aspectTemplateId}
         templatesSetId={templatesSetID}
-        templates={aspectTemplates}
+        templates={postTemplates}
         onCloseTemplateDialog={backFromTemplateDialog}
         refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
@@ -117,13 +117,13 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         canImportTemplates={canImportTemplates}
       />
       <SectionSpacer />
-      <AdminCanvasTemplatesSection
-        templateId={canvasTemplateId}
+      <AdminWhiteboardTemplatesSection
+        templateId={whiteboardTemplateId}
         templatesSetId={templatesSetID}
-        templates={canvasTemplates}
+        templates={whiteboardTemplates}
         onCloseTemplateDialog={backFromTemplateDialog}
         refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
-        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${canvasTemplatesRoutePath}/${id}`)}
+        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
         edit={edit}
         loadCanvases={loadCanvases}
         canvases={canvases}
@@ -137,7 +137,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
       <AdminInnovationTemplatesSection
         templateId={innovationTemplateId}
         templatesSetId={templatesSetID}
-        templates={lifecycleTemplates}
+        templates={innovationFlowTemplates}
         onCloseTemplateDialog={backFromTemplateDialog}
         refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}

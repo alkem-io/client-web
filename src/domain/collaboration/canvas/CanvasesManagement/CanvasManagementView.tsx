@@ -10,7 +10,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
-  CreateCanvasCanvasTemplateFragment,
+  CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
@@ -28,7 +28,7 @@ export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   calloutId: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvas: CanvasDetailsFragment | undefined;
-  templates: CreateCanvasCanvasTemplateFragment[];
+  templates: CreateCanvasWhiteboardTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
 }

@@ -3,25 +3,25 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../../../../core/routing/useUrlParams';
 import {
   refetchOpportunityLifecycleQuery,
-  useHubLifecycleTemplatesQuery,
+  useHubInnovationFlowTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityInnovationFlowMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
 import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
 import OpportunityLifecycleContainer from '../../../../../challenge/opportunity/containers/OpportunityLifecycleContainer';
-import { LifecycleType } from '../../../../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const OpportunityInnovationFlowView: FC = () => {
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
 
-  const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
+  const { data: hubInnovationFlowTemplates } = useHubInnovationFlowTemplatesQuery({
     variables: { hubId: hubNameId },
   });
-  const innovationFlowTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
+  const innovationFlowTemplates = hubInnovationFlowTemplates?.hub?.templates?.innovationFlowTemplates;
   const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
-    template => template.type === LifecycleType.Opportunity
+    template => template.type === InnovationFlowType.Opportunity
   );
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({

@@ -7,20 +7,20 @@ query AdminHubTemplates($hubId: UUID_NAMEID!) {
         id
         myPrivileges
       }
-      aspectTemplates {
-        ...AdminAspectTemplate
+      postTemplates {
+        ...AdminPostTemplate
       }
-      canvasTemplates {
-        ...AdminCanvasTemplate
+      whiteboardTemplates {
+        ...AdminWhiteboardTemplate
       }
-      lifecycleTemplates {
-        ...AdminLifecycleTemplate
+      innovationFlowTemplates {
+        ...AdminInnovationFlowTemplate
       }
     }
   }
 }
 
-fragment AdminLifecycleTemplate on LifecycleTemplate {
+fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
   id
   definition
   type
@@ -29,7 +29,7 @@ fragment AdminLifecycleTemplate on LifecycleTemplate {
   }
 }
 
-fragment AdminAspectTemplate on AspectTemplate {
+fragment AdminPostTemplate on PostTemplate {
   id
   defaultDescription
   type
@@ -38,14 +38,14 @@ fragment AdminAspectTemplate on AspectTemplate {
   }
 }
 
-fragment AdminCanvasTemplate on CanvasTemplate {
+fragment AdminWhiteboardTemplate on WhiteboardTemplate {
   id
   profile {
     ...ProfileInfoWithVisual
   }
 }
 
-fragment AdminCanvasTemplateValue on CanvasTemplate {
+fragment AdminWhiteboardTemplateValue on WhiteboardTemplate {
   id
   value
 }
@@ -63,13 +63,13 @@ fragment ProfileInfoWithVisual on Profile {
   }
 }
 
-query HubTemplatesAdminCanvasTemplateWithValue($hubId: UUID_NAMEID!, $canvasTemplateId: UUID!) {
+query HubTemplatesAdminWhiteboardTemplateWithValue($hubId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
   hub(ID: $hubId) {
     id
     templates {
       id
-      canvasTemplate(ID: $canvasTemplateId) {
-        ...AdminCanvasTemplateValue
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        ...AdminWhiteboardTemplateValue
       }
     }
   }

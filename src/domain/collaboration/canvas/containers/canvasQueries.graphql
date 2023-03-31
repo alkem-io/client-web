@@ -59,19 +59,19 @@ fragment CheckoutDetails on CanvasCheckout {
   }
 }
 
-query canvasTemplates($hubId: UUID_NAMEID!) {
+query whiteboardTemplates($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     templates {
       id
-      canvasTemplates {
-        ...CreateCanvasCanvasTemplate
+      whiteboardTemplates {
+        ...CreateCanvasWhiteboardTemplate
       }
     }
   }
 }
 
-fragment CreateCanvasCanvasTemplate on CanvasTemplate {
+fragment CreateCanvasWhiteboardTemplate on WhiteboardTemplate {
   id
   profile {
     id

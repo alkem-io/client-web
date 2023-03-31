@@ -8,17 +8,17 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../common
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
 import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { LifecycleType } from '../../../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowType } from '../../../../../core/apollo/generated/graphql-schema';
 
-export interface LifecycleTemplateInfo {
+export interface InnovationFlowTemplateProfile {
   id: string;
   displayName: string;
 }
-export interface LifecycleTemplate {
+export interface InnovationFlowTemplate {
   definition: string;
   id: string;
-  type: LifecycleType;
-  profile: LifecycleTemplateInfo;
+  type: InnovationFlowType;
+  profile: InnovationFlowTemplateProfile;
 }
 export interface SelectInnovationFlowFormValuesType {
   innovationFlowTemplateID: string;
@@ -27,7 +27,7 @@ export interface SelectInnovationFlowFormValuesType {
 export interface SelectInnovationFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  innovationFlowTemplates: LifecycleTemplate[] | undefined;
+  innovationFlowTemplates: InnovationFlowTemplate[] | undefined;
   innovationFlowTemplateID: string | undefined;
   onSubmitForm: (formData: SelectInnovationFlowFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;

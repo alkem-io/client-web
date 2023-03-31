@@ -1,5 +1,4 @@
 import { FC, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useUserContext } from '../../user';
 import {
   refetchUserOrganizationsQuery,
@@ -55,9 +54,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
     [user?.user.id, organizationNameId, disassociateSelfFromOrganization]
   );
 
-  const { t } = useTranslation();
-
-  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationNameId, user?.user, t, {
+  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationNameId, {
     loading,
     error,
   });

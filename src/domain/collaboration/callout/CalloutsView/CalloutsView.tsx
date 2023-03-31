@@ -25,7 +25,7 @@ import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import { sortBy } from 'lodash';
+import { compact, sortBy } from 'lodash';
 import { CalloutSortEvents, CalloutSortProps } from '../Types';
 import UpdateOrder from '../../../../core/utils/UpdateOrder';
 
@@ -64,9 +64,9 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });
 
-  const cardTemplates = templatesData?.hub.templates?.aspectTemplates ?? [];
-  const canvasTemplates = templatesData?.hub.templates?.canvasTemplates ?? [];
-  const templates = { cardTemplates, canvasTemplates };
+  const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
+  const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
+  const templates = { postTemplates, whiteboardTemplates };
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
@@ -87,7 +87,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   }, [callouts]);
 
   const sortedCallouts = useMemo(
-    () => sortedCalloutIds.map(id => callouts?.find(c => c.id === id)!),
+    () => compact(sortedCalloutIds.map(id => callouts?.find(c => c.id === id))),
     [sortedCalloutIds, callouts]
   );
 

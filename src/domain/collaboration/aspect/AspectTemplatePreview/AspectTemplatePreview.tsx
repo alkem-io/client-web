@@ -13,7 +13,7 @@ export interface AspectPreviewProps {
   loading: boolean | undefined;
 }
 
-const AspectTemplatePreview: FC<AspectPreviewProps> = ({
+const PostTemplatePreview: FC<AspectPreviewProps> = ({
   description,
   tags,
   aspectTemplateType,
@@ -58,7 +58,7 @@ const AspectTemplatePreview: FC<AspectPreviewProps> = ({
   );
 };
 
-export default AspectTemplatePreview;
+export default PostTemplatePreview;
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',

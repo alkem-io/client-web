@@ -1,0 +1,93 @@
+query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplates {
+        ...WhiteboardTemplate
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query HubWhiteboardTemplateValue($hubId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $whiteboardTemplateId) {
+        ...WhiteboardTemplate
+        value
+      }
+    }
+  }
+}
+
+query PlatformWhiteboardTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        provider {
+          id
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplate
+          }
+        }
+      }
+    }
+  }
+}
+
+query PlatformWhiteboardTemplateValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        ...InnovationPackWithProvider
+        templates {
+          id
+          whiteboardTemplate(ID: $whiteboardTemplateId) {
+            ...WhiteboardTemplate
+            value
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment InnovationPackWithProvider on InnovatonPack {
+  id
+  nameID
+  provider {
+    id
+    profile {
+      ...TemplateProviderProfile
+    }
+  }
+}
+fragment TemplateProviderProfile on Profile {
+  id
+  displayName
+  visual(type: AVATAR) {
+    ...VisualUri
+  }
+}

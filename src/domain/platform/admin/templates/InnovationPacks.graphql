@@ -24,21 +24,21 @@ query InnovationPacks {
         }
         templates {
           id
-          aspectTemplates {
-            ...AdminAspectTemplate
+          postTemplates {
+            ...AdminPostTemplate
           }
-          canvasTemplates {
-            ...AdminCanvasTemplate
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplate
           }
-          lifecycleTemplates {
-            ...AdminLifecycleTemplate
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
           }
         }
       }
     }
   }
 }
-query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
     library {
@@ -46,8 +46,8 @@ query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTem
       innovationPack(ID: $innovationPackId) {
         id
         templates {
-          canvasTemplate(ID: $canvasTemplateId) {
-            ...AdminCanvasTemplateValue
+          whiteboardTemplate(ID: $whiteboardTemplateId) {
+            ...AdminWhiteboardTemplateValue
           }
         }
       }
@@ -55,7 +55,7 @@ query InnovationPackCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTem
   }
 }
 
-query InnovationPackFullCanvasTemplateWithValue($innovationPackId: UUID!, $canvasTemplateId: UUID!) {
+query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
     library {
@@ -63,8 +63,8 @@ query InnovationPackFullCanvasTemplateWithValue($innovationPackId: UUID!, $canva
       innovationPack(ID: $innovationPackId) {
         id
         templates {
-          canvasTemplate(ID: $canvasTemplateId) {
-            ...CanvasTemplateWithValue
+          whiteboardTemplate(ID: $whiteboardTemplateId) {
+            ...WhiteboardTemplateWithValue
           }
         }
       }

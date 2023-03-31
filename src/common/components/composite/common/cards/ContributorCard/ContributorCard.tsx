@@ -1,7 +1,7 @@
 import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, MouseEventHandler, useCallback, useMemo, useState } from 'react';
+import React, { FC, MouseEventHandler, ReactNode, useCallback, useMemo, useState } from 'react';
 import ConditionalLink from '../../../../core/ConditionalLink';
 import UserCard from '../user-card/UserCard';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
@@ -23,6 +23,7 @@ export interface ContributorCardProps {
   tooltip?: ContributorCardTooltip;
   url: string;
   isContactable?: boolean;
+  roleName?: ReactNode;
 }
 
 const useStyles = makeStyles(_ =>
@@ -56,7 +57,7 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
-  const { id, displayName, avatar, url, tooltip, isContactable } = props;
+  const { id, displayName, avatar, url, tooltip, isContactable, roleName } = props;
   const { t } = useTranslation();
   const [sendMessageToUser] = useSendMessageToUserMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
@@ -98,7 +99,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
                 displayName={displayName}
                 avatarSrc={avatar}
                 tags={tooltip?.tags || []}
-                roleName={tooltip?.roleName}
+                roleName={roleName ?? tooltip?.roleName}
                 city={tooltip?.city}
                 country={tooltip?.country}
                 url=""

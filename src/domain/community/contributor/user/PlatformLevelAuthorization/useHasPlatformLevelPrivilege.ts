@@ -1,10 +1,19 @@
 import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 import { usePlatformLevelAuthorizationQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { ApolloError } from '@apollo/client';
 
-const useHasPlatformLevelPrivilege = (privilege: AuthorizationPrivilege): boolean | undefined => {
-  const { data } = usePlatformLevelAuthorizationQuery();
+interface State {
+  loading: boolean;
+  error?: ApolloError;
+}
+
+type UseHasPlatformLevelPrivilegeProvided = [hasPrivilege: boolean | undefined, state: State];
+
+const useHasPlatformLevelPrivilege = (privilege: AuthorizationPrivilege): UseHasPlatformLevelPrivilegeProvided => {
+  const { data, loading, error } = usePlatformLevelAuthorizationQuery();
   const myPrivileges = data?.authorization.myPrivileges;
-  return myPrivileges?.includes(privilege);
+  const hasPrivilege = myPrivileges?.includes(privilege);
+  return [hasPrivilege, { loading, error }];
 };
 
 export default useHasPlatformLevelPrivilege;

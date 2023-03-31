@@ -1,9 +1,9 @@
-query hubLifecycleTemplates($hubId: UUID_NAMEID!) {
+query hubInnovationFlowTemplates($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     templates {
       id
-      lifecycleTemplates {
+      innovationFlowTemplates {
         definition
         id
         type

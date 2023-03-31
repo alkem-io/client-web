@@ -4,7 +4,7 @@ import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyPage from '../pages/ApplyPage';
-import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
+import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import { EntityPageLayoutHolder } from '../../../challenge/common/EntityPageLayout';
 import { ChallengePageLayoutProps } from '../../../challenge/challenge/layout/ChallengePageLayout';
 import { HubPageLayoutProps } from '../../../challenge/hub/layout/HubPageLayout';
@@ -22,11 +22,11 @@ const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type
         <Route
           index
           element={
-            <RestrictedRoute>
+            <NoIdentityRedirect>
               <EntityPageLayout currentSection={EntityPageSection.Dashboard}>
                 <ApplyPage paths={paths} type={type} />
               </EntityPageLayout>
-            </RestrictedRoute>
+            </NoIdentityRedirect>
           }
         />
         <Route path="*" element={<Error404 />} />

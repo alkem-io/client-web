@@ -23,7 +23,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 
 const OrganizationProvider: FC = ({ children }) => {
   const { organizationNameId: organizationId = '' } = useUrlParams();
-  const canReadUsers = useHasPlatformLevelPrivilege(AuthorizationPrivilege.ReadUsers);
+  const [canReadUsers] = useHasPlatformLevelPrivilege(AuthorizationPrivilege.ReadUsers);
   const { data, loading } = useOrganizationInfoQuery({
     variables: {
       organizationId,
