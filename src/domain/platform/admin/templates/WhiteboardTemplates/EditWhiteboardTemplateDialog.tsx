@@ -8,15 +8,15 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValues,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import Dialog from '@mui/material/Dialog';
+import Dialog from '../../../../../core/ui/dialog/Dialog';
+import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React, { useEffect } from 'react';
-import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
-  onClose: DialogProps['onClose'];
+  onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: WhiteboardTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
@@ -70,8 +70,10 @@ const EditWhiteboardTemplateDialog = ({
       PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
+      <DialogHeader onClose={onClose}>
+        {t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
+      </DialogHeader>
       <WhiteboardTemplateForm
-        displayName={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         visual={template.profile.visual}
         canvases={canvases}

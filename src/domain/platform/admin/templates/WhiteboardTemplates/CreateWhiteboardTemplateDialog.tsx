@@ -3,15 +3,15 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValues,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import Dialog from '@mui/material/Dialog';
+import Dialog from '../../../../../core/ui/dialog/Dialog';
+import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React, { useMemo } from 'react';
-import { DialogProps } from '@mui/material';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
 import { CanvasDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
-  onClose: DialogProps['onClose'];
+  onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
   canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
@@ -35,8 +35,11 @@ const CreateWhiteboardTemplateDialog = ({
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
+      <DialogHeader onClose={onClose}>
+        {t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
+      </DialogHeader>
+
       <WhiteboardTemplateForm
-        displayName={t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         canvases={canvases}
         onSubmit={onSubmit}
