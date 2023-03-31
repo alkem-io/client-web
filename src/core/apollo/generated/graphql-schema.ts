@@ -19367,6 +19367,35 @@ export type UpdateInnovationPackMutation = {
   updateInnovationPack: { __typename?: 'InnovatonPack'; id: string; nameID: string };
 };
 
+export type InnovationPackCanvasTemplateValueQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationPackCanvasTemplateValueQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            id: string;
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string; value: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type UpdateInnovationFlowTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;

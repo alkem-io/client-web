@@ -44,7 +44,6 @@ fragment InnovationPackTemplates on TemplatesSet {
   innovationFlowTemplates {
     ...AdminInnovationFlowTemplate
   }
-
   whiteboardTemplates {
     ...AdminWhiteboardTemplate
   }
@@ -96,5 +95,23 @@ mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
   updateInnovationPack(innovationPackData: $packData) {
     id
     nameID
+  }
+}
+
+query InnovationPackCanvasTemplateValue($innovationPackId: UUID_NAMEID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        templates {
+          id
+          whiteboardTemplates {
+            ...AdminWhiteboardTemplateValue
+          }
+        }
+      }
+    }
   }
 }
