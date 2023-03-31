@@ -7,6 +7,7 @@ import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
 import { HubsRoute } from '../hub/routing/HubsRoute';
+import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
@@ -14,15 +15,17 @@ export const AdminRoute: FC = () => {
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], [url]);
 
   return (
-    <NonAdminRedirect>
-      <Routes>
-        <Route index element={<Navigate to="hubs" replace />} />
-        <Route path="hubs/*" element={<HubsRoute paths={currentPaths} />} />
-        <Route path="users/*" element={<UsersRoute />} />
-        <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
-        <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />
-        <Route path="*" element={<Error404 />} />
-      </Routes>
-    </NonAdminRedirect>
+    <NoIdentityRedirect>
+      <NonAdminRedirect>
+        <Routes>
+          <Route index element={<Navigate to="hubs" replace />} />
+          <Route path="hubs/*" element={<HubsRoute paths={currentPaths} />} />
+          <Route path="users/*" element={<UsersRoute />} />
+          <Route path="authorization/*" element={<GlobalAuthorizationRoute />} />
+          <Route path="organizations/*" element={<AdminOrganizationsRoutes />} />
+          <Route path="*" element={<Error404 />} />
+        </Routes>
+      </NonAdminRedirect>
+    </NoIdentityRedirect>
   );
 };
