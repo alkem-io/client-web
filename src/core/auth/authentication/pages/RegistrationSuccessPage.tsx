@@ -5,7 +5,7 @@ import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageC
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { useUserContext } from '../../../../domain/community/contributor/user';
 import { PageTitle } from '../../../ui/typography';
-import { storeSignUpReturnUrl } from '../utils/SignUpReturnUrl';
+import { useReturnUrl } from '../utils/SignUpReturnUrl';
 
 interface RegistrationSuccessPageProps {}
 
@@ -17,7 +17,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
     <AuthPageContentContainer>
       <FixedHeightLogo />
       <PageTitle>{t('pages.registration-success.header', { firstName: user?.user?.firstName })}</PageTitle>
-      <EmailVerificationNotice onClickReturnToPlatform={storeSignUpReturnUrl} />
+      <EmailVerificationNotice returnUrl={useReturnUrl()} />
     </AuthPageContentContainer>
   );
 };
