@@ -7,10 +7,10 @@ import { AUTH_VERIFY_PATH } from '../../../authentication/constants/authenticati
 import { Button } from '@mui/material';
 
 interface EmailVerificationNoticeProps {
-  onClickReturnToPlatform?: () => void;
+  returnUrl: string;
 }
 
-const EmailVerificationNotice = ({ onClickReturnToPlatform }: EmailVerificationNoticeProps) => {
+const EmailVerificationNotice = ({ returnUrl }: EmailVerificationNoticeProps) => {
   const { t } = useTranslation();
   const tLink = translateWithElements(<Link to="" />);
 
@@ -21,7 +21,7 @@ const EmailVerificationNotice = ({ onClickReturnToPlatform }: EmailVerificationN
           again: { to: AUTH_VERIFY_PATH },
         })}
       </BlockTitle>
-      <Button component={Link} to="/" variant="contained" onClick={onClickReturnToPlatform}>
+      <Button component={Link} to={returnUrl} variant="contained">
         {t('kratos.messages.verification-flow-continue')}
       </Button>
     </>

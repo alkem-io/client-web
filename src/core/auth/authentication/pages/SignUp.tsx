@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
 import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
@@ -8,7 +8,7 @@ import { EmailOutlined } from '@mui/icons-material';
 import { Theme } from '@mui/material/styles';
 import AuthActionButton from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import { _AUTH_REGISTER_PATH, AUTH_LOGIN_PATH, STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
+import { _AUTH_REGISTER_PATH, AUTH_LOGIN_PATH } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
@@ -21,7 +21,7 @@ import KratosForm from '../components/Kratos/KratosForm';
 import { UiContainer } from '@ory/kratos-client';
 import { KRATOS_INPUT_NAME_CSRF, KRATOS_TRAIT_NAME_ACCEPTED_TERMS } from '../components/Kratos/constants';
 import { isInputNode } from '../components/Kratos/helpers';
-import { getReturnUrlKeyForFlow } from '../utils/SignUpReturnUrl';
+import { useStoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);
@@ -67,14 +67,7 @@ const SignUp = () => {
     navigate(AUTH_LOGIN_PATH);
   };
 
-  const returnUrl = useRef(sessionStorage.getItem(STORAGE_KEY_RETURN_URL)).current;
-
-  useEffect(() => {
-    // See src/core/auth/authentication/utils/SignUpReturnUrl.ts for the reason flow.id is here.
-    if (flow?.id && returnUrl) {
-      localStorage.setItem(getReturnUrlKeyForFlow(), returnUrl);
-    }
-  }, [flow?.id]);
+  useStoreSignUpReturnUrl();
 
   return (
     <KratosForm ui={signUpFlow?.ui}>
