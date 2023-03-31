@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useGlobalState } from '../../../state/useGlobalState';
 import { Error404 } from '../../../pages/Errors/Error404';
-import NonAdminRedirect from '../../../routing/NonAdminRedirect';
+import NoIdentityRedirect from '../../../routing/NoIdentityRedirect';
 import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../../state/global/ui/loginNavigationMachine';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
 import ErrorRoute from './ErrorRoute';
@@ -39,9 +39,9 @@ export const IdentityRoute: FC = () => {
       <Route
         path={'settings'}
         element={
-          <NonAdminRedirect>
+          <NoIdentityRedirect>
             <SettingsRoute />
-          </NonAdminRedirect>
+          </NoIdentityRedirect>
         }
       />
       <Route path="*" element={<Error404 />} />

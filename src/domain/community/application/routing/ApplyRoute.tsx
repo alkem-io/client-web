@@ -4,7 +4,7 @@ import { ApplicationTypeEnum } from '../constants/ApplicationType';
 import { PageProps } from '../../../shared/types/PageProps';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import ApplyPage from '../pages/ApplyPage';
-import NonAdminRedirect from '../../../../core/routing/NonAdminRedirect';
+import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
 import { EntityPageLayoutHolder } from '../../../challenge/common/EntityPageLayout';
 import { ChallengePageLayoutProps } from '../../../challenge/challenge/layout/ChallengePageLayout';
 import { HubPageLayoutProps } from '../../../challenge/hub/layout/HubPageLayout';
@@ -22,7 +22,7 @@ const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageL
         <Route
           index
           element={
-            <NonAdminRedirect>
+            <NoIdentityRedirect>
               <JourneyPageLayout currentSection={EntityPageSection.Dashboard} unauthorizedDialogDisabled>
                 <ApplyPage paths={paths} type={type} />
               </JourneyPageLayout>

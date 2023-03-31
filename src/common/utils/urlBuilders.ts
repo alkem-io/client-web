@@ -1,4 +1,4 @@
-import { AUTH_LOGIN_PATH, AUTH_REQUIRED_PATH } from '../../core/auth/authentication/constants/authentication.constants';
+import { AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import {
   CoreEntityIdTypes,
@@ -36,11 +36,9 @@ export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
-export const buildAuthenticationRequiredURL = (returnUrl?: string) =>
-  returnUrl ? `${AUTH_REQUIRED_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_REQUIRED_PATH;
-
-export const buildLoginUrl = (returnUrl?: string) =>
-  returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
+export const buildLoginUrl = (returnUrl?: string) => {
+  return returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
+};
 
 export const buildHubApplyUrl = (hubNameId: string) => `${buildHubUrl(hubNameId)}/apply`;
 

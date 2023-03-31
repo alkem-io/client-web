@@ -6,7 +6,11 @@ import translateWithElements from '../../../../../domain/shared/i18n/TranslateWi
 import { AUTH_VERIFY_PATH } from '../../../authentication/constants/authentication.constants';
 import { Button } from '@mui/material';
 
-const EmailVerificationNotice = () => {
+interface EmailVerificationNoticeProps {
+  returnUrl: string;
+}
+
+const EmailVerificationNotice = ({ returnUrl }: EmailVerificationNoticeProps) => {
   const { t } = useTranslation();
   const tLink = translateWithElements(<Link to="" />);
 
@@ -17,7 +21,7 @@ const EmailVerificationNotice = () => {
           again: { to: AUTH_VERIFY_PATH },
         })}
       </BlockTitle>
-      <Button component={Link} to="/" variant="contained">
+      <Button component={Link} to={returnUrl} variant="contained">
         {t('kratos.messages.verification-flow-continue')}
       </Button>
     </>
