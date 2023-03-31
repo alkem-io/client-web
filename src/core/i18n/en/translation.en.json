@@ -1325,6 +1325,12 @@
         "notifications": {
           "user-removed": "User removed successfully."
         }
+      },
+      "innovation-packs": {
+        "fields": {
+          "provider": "Provider organization"
+        },
+        "back-button": "All innovation packs"
       }
     },
     "feedback": {
