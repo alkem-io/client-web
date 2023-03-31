@@ -5,10 +5,16 @@ import { newReferenceName } from '../../../../../common/utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 
 interface ContextReferenceSegmentProps extends ReferenceSegmentProps {
+  fieldName?: string;
   profileId?: string;
 }
 
-export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ profileId, readOnly, ...rest }) => {
+export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({
+  fieldName,
+  profileId,
+  readOnly,
+  ...rest
+}) => {
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
   const handleAdd = async (push: PushFunc) => {
@@ -30,7 +36,15 @@ export const ContextReferenceSegment: FC<ContextReferenceSegmentProps> = ({ prof
     }
   };
 
-  return <ReferenceSegment onAdd={handleAdd} onRemove={handleRemove} readOnly={!profileId || readOnly} {...rest} />;
+  return (
+    <ReferenceSegment
+      fieldName={fieldName}
+      onAdd={handleAdd}
+      onRemove={handleRemove}
+      readOnly={!profileId || readOnly}
+      {...rest}
+    />
+  );
 };
 
 export default ContextReferenceSegment;
