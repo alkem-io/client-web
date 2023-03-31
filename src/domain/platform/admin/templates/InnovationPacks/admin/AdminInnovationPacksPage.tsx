@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import {
+  refetchAdminInnovationPacksListQuery,
   useAdminInnovationPacksListQuery,
   useDeleteInnovationPackMutation,
 } from '../../../../../../core/apollo/generated/apollo-hooks';
@@ -9,14 +10,14 @@ import SimpleSearchableList from '../../../../../shared/components/SimpleSearcha
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
 
-interface AdminInnovationPacksPageProps {
-  dialog?: 'new';
-}
+interface AdminInnovationPacksPageProps {}
 
 const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
   const { pathname } = useResolvedPath('.');
   const { data, loading } = useAdminInnovationPacksListQuery();
-  const [deleteInnovationPack] = useDeleteInnovationPackMutation();
+  const [deleteInnovationPack] = useDeleteInnovationPackMutation({
+    refetchQueries: [refetchAdminInnovationPacksListQuery()],
+  });
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -28,11 +29,13 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
     });
 
   const notPaginatedList = {
-    data: data?.platform.library.innovationPacks.map(ip => ({
-      value: ip.profile.displayName,
-      url: `${pathname}/${ip.nameID}`,
-      ...ip,
-    })),
+    data: data?.platform.library.innovationPacks
+      .map(ip => ({
+        value: ip.profile.displayName,
+        url: `${pathname}/${ip.nameID}`,
+        ...ip,
+      }))
+      .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
     onDelete: (item: { id: string }) => handleDelete(item.id),
     loading,
     fetchMore: () => Promise.resolve(),

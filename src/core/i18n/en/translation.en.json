@@ -1330,7 +1330,8 @@
         "fields": {
           "provider": "Provider organization"
         },
-        "back-button": "All innovation packs"
+        "back-button": "All innovation packs",
+        "saved-successfully": "Saved Successfully"
       }
     },
     "feedback": {
