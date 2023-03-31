@@ -22,6 +22,8 @@ export interface PostTemplateFormSubmittedValues {
   defaultDescription: string;
   type: string;
   profile: CreateProfileInput;
+  tags?: string[];
+  visualUri?: string;
 }
 
 interface PostTemplateFormProps {

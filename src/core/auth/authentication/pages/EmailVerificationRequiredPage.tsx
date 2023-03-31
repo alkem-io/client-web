@@ -4,6 +4,7 @@ import EmailVerificationNotice from '../../verification/components/EmailVerifica
 import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { PageTitle } from '../../../ui/typography';
+import { useReturnUrl } from '../utils/SignUpReturnUrl';
 
 export const EmailVerificationRequiredPage: FC = () => {
   const { t } = useTranslation();
@@ -12,7 +13,7 @@ export const EmailVerificationRequiredPage: FC = () => {
     <AuthPageContentContainer>
       <FixedHeightLogo />
       <PageTitle>{t('pages.verification-required.header')}</PageTitle>
-      <EmailVerificationNotice />
+      <EmailVerificationNotice returnUrl={useReturnUrl()} />
     </AuthPageContentContainer>
   );
 };

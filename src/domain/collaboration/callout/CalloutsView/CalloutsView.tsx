@@ -25,7 +25,7 @@ import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import { sortBy } from 'lodash';
+import { compact, sortBy } from 'lodash';
 import { CalloutSortEvents, CalloutSortProps } from '../Types';
 import UpdateOrder from '../../../../core/utils/UpdateOrder';
 
@@ -87,7 +87,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
   }, [callouts]);
 
   const sortedCallouts = useMemo(
-    () => sortedCalloutIds.map(id => callouts?.find(c => c.id === id)!),
+    () => compact(sortedCalloutIds.map(id => callouts?.find(c => c.id === id))),
     [sortedCalloutIds, callouts]
   );
 
