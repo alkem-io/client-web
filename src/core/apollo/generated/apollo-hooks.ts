@@ -2078,52 +2078,6 @@ export const CommunityAvailableMemberUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const ProfileInfoWithVisualFragmentDoc = gql`
-  fragment ProfileInfoWithVisual on Profile {
-    id
-    displayName
-    description
-    tagset {
-      id
-      tags
-    }
-    visual(type: CARD) {
-      ...VisualFull
-    }
-  }
-  ${VisualFullFragmentDoc}
-`;
-export const AdminInnovationFlowTemplateFragmentDoc = gql`
-  fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
-    id
-    definition
-    type
-    profile {
-      ...ProfileInfoWithVisual
-    }
-  }
-  ${ProfileInfoWithVisualFragmentDoc}
-`;
-export const AdminPostTemplateFragmentDoc = gql`
-  fragment AdminPostTemplate on PostTemplate {
-    id
-    defaultDescription
-    type
-    profile {
-      ...ProfileInfoWithVisual
-    }
-  }
-  ${ProfileInfoWithVisualFragmentDoc}
-`;
-export const AdminWhiteboardTemplateFragmentDoc = gql`
-  fragment AdminWhiteboardTemplate on WhiteboardTemplate {
-    id
-    profile {
-      ...ProfileInfoWithVisual
-    }
-  }
-  ${ProfileInfoWithVisualFragmentDoc}
-`;
 export const AdminWhiteboardTemplateValueFragmentDoc = gql`
   fragment AdminWhiteboardTemplateValue on WhiteboardTemplate {
     id
@@ -2148,31 +2102,68 @@ export const InnovationPackProfileFragmentDoc = gql`
     }
   }
 `;
+export const ProfileInfoWithVisualFragmentDoc = gql`
+  fragment ProfileInfoWithVisual on Profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      tags
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
+export const AdminPostTemplateFragmentDoc = gql`
+  fragment AdminPostTemplate on PostTemplate {
+    id
+    defaultDescription
+    type
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
+export const AdminInnovationFlowTemplateFragmentDoc = gql`
+  fragment AdminInnovationFlowTemplate on InnovationFlowTemplate {
+    id
+    definition
+    type
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
+export const AdminWhiteboardTemplateFragmentDoc = gql`
+  fragment AdminWhiteboardTemplate on WhiteboardTemplate {
+    id
+    profile {
+      ...ProfileInfoWithVisual
+    }
+  }
+  ${ProfileInfoWithVisualFragmentDoc}
+`;
 export const InnovationPackTemplatesFragmentDoc = gql`
   fragment InnovationPackTemplates on TemplatesSet {
     id
-    innovationFlowTemplates {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
     postTemplates {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...AdminPostTemplate
+    }
+    innovationFlowTemplates {
+      ...AdminInnovationFlowTemplate
     }
     whiteboardTemplates {
-      id
-      profile {
-        id
-        displayName
-      }
+      ...AdminWhiteboardTemplate
     }
   }
+  ${AdminPostTemplateFragmentDoc}
+  ${AdminInnovationFlowTemplateFragmentDoc}
+  ${AdminWhiteboardTemplateFragmentDoc}
 `;
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {

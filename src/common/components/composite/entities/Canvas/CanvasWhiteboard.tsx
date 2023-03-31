@@ -1,5 +1,5 @@
 import { Excalidraw } from '@alkemio/excalidraw';
-import { ExportedDataState, ImportedDataState } from '@alkemio/excalidraw/types/data/types';
+import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import {
   ExcalidrawAPIRefValue,
   ExcalidrawImperativeAPI,
@@ -13,6 +13,7 @@ import { debounce, merge } from 'lodash';
 import React, { forwardRef, useEffect, useMemo, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../../domain/shared/utils/useCombinedRefs';
+import EmptyWhiteboard from './EmptyWhiteboard';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -28,17 +29,6 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
     background: `${theme.palette.primary.dark} !important`,
   },
 }));
-
-const initialExcalidrawState: ImportedDataState = {
-  type: 'excalidraw',
-  version: 2,
-  source: 'https://excalidraw.com',
-  elements: [],
-  appState: {
-    gridSize: null,
-    viewBackgroundColor: '#ffffff',
-  },
-};
 
 export interface CanvasWhiteboardEntities {
   canvas: { id?: string; value: string } | undefined;
@@ -67,7 +57,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
     const data = useMemo(() => {
-      const parsedData = canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState;
+      const parsedData = canvas?.value ? JSON.parse(canvas?.value) : EmptyWhiteboard;
       return {
         ...parsedData,
         zoomToFit: true,

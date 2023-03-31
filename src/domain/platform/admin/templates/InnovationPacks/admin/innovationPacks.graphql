@@ -38,26 +38,15 @@ fragment InnovationPackProfile on Profile {
 }
 fragment InnovationPackTemplates on TemplatesSet {
   id
-  innovationFlowTemplates {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
   postTemplates {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...AdminPostTemplate
   }
+  innovationFlowTemplates {
+    ...AdminInnovationFlowTemplate
+  }
+
   whiteboardTemplates {
-    id
-    profile {
-      id
-      displayName
-    }
+    ...AdminWhiteboardTemplate
   }
 }
 

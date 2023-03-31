@@ -15,6 +15,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   calloutNameId?: string;
   aspectNameId?: string;
   canvasNameId?: string;
+  innovationTemplateId?: string;
   calendarEventNameId?: string;
   innovationPackNameId?: string;
 }
