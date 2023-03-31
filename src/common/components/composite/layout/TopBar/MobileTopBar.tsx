@@ -11,7 +11,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { RouterLink } from '../../../core/RouterLink';
-import { buildLoginUrl, buildUserProfileUrl } from '../../../../utils/urlBuilders';
+import { useLoginUrl, buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Divider from '@mui/material/Divider';
@@ -122,6 +122,8 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
     [i18n]
   );
 
+  const loginUrl = useLoginUrl(pathname);
+
   return (
     <>
       <IconButton
@@ -147,7 +149,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
       >
         {!isAuthenticated && (
           <>
-            <MenuItem component={RouterLink} to={buildLoginUrl(pathname)}>
+            <MenuItem component={RouterLink} to={loginUrl}>
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
