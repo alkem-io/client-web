@@ -26,7 +26,7 @@ const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageL
               <JourneyPageLayout currentSection={EntityPageSection.Dashboard} unauthorizedDialogDisabled>
                 <ApplyPage paths={paths} type={type} />
               </JourneyPageLayout>
-            </NonAdminRedirect>
+            </NoIdentityRedirect>
           }
         />
         <Route path="*" element={<Error404 />} />
