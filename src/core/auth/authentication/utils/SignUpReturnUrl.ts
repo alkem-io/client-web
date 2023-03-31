@@ -1,8 +1,10 @@
 import { STORAGE_KEY_RETURN_URL, STORAGE_KEY_SIGN_UP_RETURN_URL } from '../constants/authentication.constants';
 
 /**
- * Ideally, flowId should be part of the key, but currently Verification flow is completely detached from the flow
- * it was triggered by.
+ * Ideally, returnURL should be stored per each Registration flow, which can be achieved by having registration flowId
+ * being part of the key. The problem is that when restoring, the storage is accessed from the Verification flow.
+ * Currently, Verification flow is completely detached from the Registration flow it was triggered by, and we can't
+ * know the original Registration flow id.
  * flowId should be made a required argument when post-registration Verification flow has some reference to the "parent"
  * (Registration) flow.
  */
