@@ -71,8 +71,6 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
   const [updateInnovationPack, { loading: updating }] = useUpdateInnovationPackMutation();
 
   const handleSubmit = async (formData: InnovationPackFormValues) => {
-    console.log('formData', formData);
-
     if (isNew) {
       const { data } = await createInnovationPack({
         variables: {
