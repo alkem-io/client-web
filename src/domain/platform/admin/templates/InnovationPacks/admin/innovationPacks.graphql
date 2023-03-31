@@ -19,3 +19,93 @@ mutation deleteInnovationPack($innovationPackId: UUID_NAMEID!) {
     id
   }
 }
+
+fragment InnovationPackProfile on Profile {
+  id
+  displayName
+  description
+  tagset {
+    id
+    name
+    tags
+  }
+  references {
+    id
+    name
+    description
+    uri
+  }
+}
+fragment InnovationPackTemplates on TemplatesSet {
+  id
+  innovationFlowTemplates {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+  postTemplates {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+  whiteboardTemplates {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        nameID
+        provider {
+          id
+          nameID
+          profile {
+            id
+            displayName
+          }
+        }
+        profile {
+          ...InnovationPackProfile
+        }
+        templates {
+          ...InnovationPackTemplates
+        }
+      }
+    }
+  }
+  organizations {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+}
+
+mutation createInnovationPack($packData: CreateInnovationPackOnLibraryInput!) {
+  createInnovationPackOnLibrary(packData: $packData) {
+    id
+    nameID
+  }
+}
+
+mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
+  updateInnovationPack(innovationPackData: $packData) {
+    id
+    nameID
+  }
+}

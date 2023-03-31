@@ -2130,6 +2130,50 @@ export const AdminWhiteboardTemplateValueFragmentDoc = gql`
     value
   }
 `;
+export const InnovationPackProfileFragmentDoc = gql`
+  fragment InnovationPackProfile on Profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      description
+      uri
+    }
+  }
+`;
+export const InnovationPackTemplatesFragmentDoc = gql`
+  fragment InnovationPackTemplates on TemplatesSet {
+    id
+    innovationFlowTemplates {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    postTemplates {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    whiteboardTemplates {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {
     authentication {
@@ -10694,7 +10738,7 @@ export function refetchPlatformWhiteboardTemplatesLibraryQuery(
 }
 
 export const PlatformWhiteboardTemplateValueDocument = gql`
-  query PlatformWhiteboardTemplateValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+  query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
     platform {
       id
       library {
@@ -19769,7 +19813,7 @@ export function refetchInnovationPacksQuery(variables?: SchemaTypes.InnovationPa
 }
 
 export const InnovationPackWhiteboardTemplateWithValueDocument = gql`
-  query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+  query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
     platform {
       id
       library {
@@ -19848,7 +19892,7 @@ export function refetchInnovationPackWhiteboardTemplateWithValueQuery(
 }
 
 export const InnovationPackFullWhiteboardTemplateWithValueDocument = gql`
-  query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+  query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
     platform {
       id
       library {
@@ -20042,6 +20086,195 @@ export type DeleteInnovationPackMutationResult = Apollo.MutationResult<SchemaTyp
 export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationPackMutation,
   SchemaTypes.DeleteInnovationPackMutationVariables
+>;
+export const AdminInnovationPackDocument = gql`
+  query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          nameID
+          provider {
+            id
+            nameID
+            profile {
+              id
+              displayName
+            }
+          }
+          profile {
+            ...InnovationPackProfile
+          }
+          templates {
+            ...InnovationPackTemplates
+          }
+        }
+      }
+    }
+    organizations {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+  ${InnovationPackProfileFragmentDoc}
+  ${InnovationPackTemplatesFragmentDoc}
+`;
+
+/**
+ * __useAdminInnovationPackQuery__
+ *
+ * To run a query within a React component, call `useAdminInnovationPackQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminInnovationPackQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdminInnovationPackQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *   },
+ * });
+ */
+export function useAdminInnovationPackQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AdminInnovationPackQuery,
+    SchemaTypes.AdminInnovationPackQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AdminInnovationPackQuery, SchemaTypes.AdminInnovationPackQueryVariables>(
+    AdminInnovationPackDocument,
+    options
+  );
+}
+
+export function useAdminInnovationPackLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AdminInnovationPackQuery,
+    SchemaTypes.AdminInnovationPackQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AdminInnovationPackQuery, SchemaTypes.AdminInnovationPackQueryVariables>(
+    AdminInnovationPackDocument,
+    options
+  );
+}
+
+export type AdminInnovationPackQueryHookResult = ReturnType<typeof useAdminInnovationPackQuery>;
+export type AdminInnovationPackLazyQueryHookResult = ReturnType<typeof useAdminInnovationPackLazyQuery>;
+export type AdminInnovationPackQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminInnovationPackQuery,
+  SchemaTypes.AdminInnovationPackQueryVariables
+>;
+export function refetchAdminInnovationPackQuery(variables: SchemaTypes.AdminInnovationPackQueryVariables) {
+  return { query: AdminInnovationPackDocument, variables: variables };
+}
+
+export const CreateInnovationPackDocument = gql`
+  mutation createInnovationPack($packData: CreateInnovationPackOnLibraryInput!) {
+    createInnovationPackOnLibrary(packData: $packData) {
+      id
+      nameID
+    }
+  }
+`;
+export type CreateInnovationPackMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateInnovationPackMutation,
+  SchemaTypes.CreateInnovationPackMutationVariables
+>;
+
+/**
+ * __useCreateInnovationPackMutation__
+ *
+ * To run a mutation, you first call `useCreateInnovationPackMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInnovationPackMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInnovationPackMutation, { data, loading, error }] = useCreateInnovationPackMutation({
+ *   variables: {
+ *      packData: // value for 'packData'
+ *   },
+ * });
+ */
+export function useCreateInnovationPackMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateInnovationPackMutation,
+    SchemaTypes.CreateInnovationPackMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateInnovationPackMutation,
+    SchemaTypes.CreateInnovationPackMutationVariables
+  >(CreateInnovationPackDocument, options);
+}
+
+export type CreateInnovationPackMutationHookResult = ReturnType<typeof useCreateInnovationPackMutation>;
+export type CreateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.CreateInnovationPackMutation>;
+export type CreateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateInnovationPackMutation,
+  SchemaTypes.CreateInnovationPackMutationVariables
+>;
+export const UpdateInnovationPackDocument = gql`
+  mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
+    updateInnovationPack(innovationPackData: $packData) {
+      id
+      nameID
+    }
+  }
+`;
+export type UpdateInnovationPackMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationPackMutation,
+  SchemaTypes.UpdateInnovationPackMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationPackMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationPackMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationPackMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationPackMutation, { data, loading, error }] = useUpdateInnovationPackMutation({
+ *   variables: {
+ *      packData: // value for 'packData'
+ *   },
+ * });
+ */
+export function useUpdateInnovationPackMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationPackMutation,
+    SchemaTypes.UpdateInnovationPackMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationPackMutation,
+    SchemaTypes.UpdateInnovationPackMutationVariables
+  >(UpdateInnovationPackDocument, options);
+}
+
+export type UpdateInnovationPackMutationHookResult = ReturnType<typeof useUpdateInnovationPackMutation>;
+export type UpdateInnovationPackMutationResult = Apollo.MutationResult<SchemaTypes.UpdateInnovationPackMutation>;
+export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationPackMutation,
+  SchemaTypes.UpdateInnovationPackMutationVariables
 >;
 export const UpdateInnovationFlowTemplateDocument = gql`
   mutation updateInnovationFlowTemplate(
