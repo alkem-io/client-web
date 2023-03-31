@@ -1,0 +1,33 @@
+query JourneyPrivileges(
+  $hubNameId: UUID_NAMEID!
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+)
+{
+  hub(ID: $hubNameId) {
+    id
+    ... on Hub @include(if: $includeHub) {
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

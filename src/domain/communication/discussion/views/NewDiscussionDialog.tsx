@@ -10,7 +10,7 @@ import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-sc
 import DiscussionIcon from './DiscussionIcon';
 import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import Dialog from '../../../../core/ui/dialog/Dialog';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { LoadingButton } from '@mui/lab';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import {
@@ -81,7 +81,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullScreen>
+    <DialogWithGrid open={open} onClose={onClose} fullScreen>
       <DialogHeader onClose={onClose}>{t('pages.forum.new-title')}</DialogHeader>
       <DialogContent>
         <Formik
@@ -132,7 +132,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
           )}
         </Formik>
       </DialogContent>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 
