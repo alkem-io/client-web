@@ -495,6 +495,38 @@ export const MetricsItemFragmentDoc = gql`
     value
   }
 `;
+export const ProfileJourneyDataFragmentDoc = gql`
+  fragment ProfileJourneyData on Profile {
+    id
+    displayName
+    tagline
+    description
+  }
+`;
+export const ContextJourneyDataFragmentDoc = gql`
+  fragment ContextJourneyData on Context {
+    id
+    vision
+    who
+  }
+`;
+export const JourneyCommunityFragmentDoc = gql`
+  fragment JourneyCommunity on Community {
+    id
+    leadUsers {
+      ...DashboardLeadUser
+    }
+    leadOrganizations {
+      ...AssociatedOrganizationDetails
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${DashboardLeadUserFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+`;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -5052,6 +5084,314 @@ export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutatio
   SchemaTypes.CreateFeedbackOnCommunityContextMutation,
   SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
 >;
+export const JourneyCommunityPrivilegesDocument = gql`
+  query JourneyCommunityPrivileges(
+    $hubNameId: UUID_NAMEID!
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      ... on Hub @include(if: $includeHub) {
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        community {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useJourneyCommunityPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useJourneyCommunityPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyCommunityPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyCommunityPrivilegesQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useJourneyCommunityPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >(JourneyCommunityPrivilegesDocument, options);
+}
+
+export function useJourneyCommunityPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.JourneyCommunityPrivilegesQuery,
+    SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+  >(JourneyCommunityPrivilegesDocument, options);
+}
+
+export type JourneyCommunityPrivilegesQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesQuery>;
+export type JourneyCommunityPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyCommunityPrivilegesLazyQuery>;
+export type JourneyCommunityPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyCommunityPrivilegesQuery,
+  SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+>;
+export function refetchJourneyCommunityPrivilegesQuery(
+  variables: SchemaTypes.JourneyCommunityPrivilegesQueryVariables
+) {
+  return { query: JourneyCommunityPrivilegesDocument, variables: variables };
+}
+
+export const JourneyDataDocument = gql`
+  query JourneyData(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $includeCommunity: Boolean = false
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      ... on Hub @include(if: $includeHub) {
+        profile {
+          ...ProfileJourneyData
+        }
+        context {
+          ...ContextJourneyData
+        }
+        community @include(if: $includeCommunity) {
+          ...JourneyCommunity
+        }
+        metrics {
+          ...MetricsItem
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        profile {
+          ...ProfileJourneyData
+        }
+        context {
+          ...ContextJourneyData
+        }
+        community @include(if: $includeCommunity) {
+          ...JourneyCommunity
+        }
+        metrics {
+          ...MetricsItem
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        profile {
+          ...ProfileJourneyData
+        }
+        context {
+          ...ContextJourneyData
+        }
+        community @include(if: $includeCommunity) {
+          ...JourneyCommunity
+        }
+        metrics {
+          ...MetricsItem
+        }
+      }
+    }
+  }
+  ${ProfileJourneyDataFragmentDoc}
+  ${ContextJourneyDataFragmentDoc}
+  ${JourneyCommunityFragmentDoc}
+  ${MetricsItemFragmentDoc}
+`;
+
+/**
+ * __useJourneyDataQuery__
+ *
+ * To run a query within a React component, call `useJourneyDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyDataQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      includeCommunity: // value for 'includeCommunity'
+ *   },
+ * });
+ */
+export function useJourneyDataQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>(
+    JourneyDataDocument,
+    options
+  );
+}
+
+export function useJourneyDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.JourneyDataQuery, SchemaTypes.JourneyDataQueryVariables>(
+    JourneyDataDocument,
+    options
+  );
+}
+
+export type JourneyDataQueryHookResult = ReturnType<typeof useJourneyDataQuery>;
+export type JourneyDataLazyQueryHookResult = ReturnType<typeof useJourneyDataLazyQuery>;
+export type JourneyDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyDataQuery,
+  SchemaTypes.JourneyDataQueryVariables
+>;
+export function refetchJourneyDataQuery(variables: SchemaTypes.JourneyDataQueryVariables) {
+  return { query: JourneyDataDocument, variables: variables };
+}
+
+export const JourneyPrivilegesDocument = gql`
+  query JourneyPrivileges(
+    $hubNameId: UUID_NAMEID!
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      ... on Hub @include(if: $includeHub) {
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useJourneyPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useJourneyPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJourneyPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJourneyPrivilegesQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *   },
+ * });
+ */
+export function useJourneyPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>(
+    JourneyPrivilegesDocument,
+    options
+  );
+}
+
+export function useJourneyPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.JourneyPrivilegesQuery,
+    SchemaTypes.JourneyPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.JourneyPrivilegesQuery, SchemaTypes.JourneyPrivilegesQueryVariables>(
+    JourneyPrivilegesDocument,
+    options
+  );
+}
+
+export type JourneyPrivilegesQueryHookResult = ReturnType<typeof useJourneyPrivilegesQuery>;
+export type JourneyPrivilegesLazyQueryHookResult = ReturnType<typeof useJourneyPrivilegesLazyQuery>;
+export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.JourneyPrivilegesQuery,
+  SchemaTypes.JourneyPrivilegesQueryVariables
+>;
+export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPrivilegesQueryVariables) {
+  return { query: JourneyPrivilegesDocument, variables: variables };
+}
+
 export const HubProviderDocument = gql`
   query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {

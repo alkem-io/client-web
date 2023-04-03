@@ -13,7 +13,13 @@ const DialogContainer = ({ columns, ...paperProps }: DialogContainerProps) => {
   const breakpoint = useCurrentBreakpoint();
 
   return (
-    <GridContainer maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto" flexGrow={1} justifyContent="center">
+    <GridContainer
+      maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
+      marginX="auto"
+      flexGrow={1}
+      justifyContent="center"
+      height="100%"
+    >
       <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
         <GridItem columns={columns}>
           <Paper {...paperProps} />
@@ -23,12 +29,22 @@ const DialogContainer = ({ columns, ...paperProps }: DialogContainerProps) => {
   );
 };
 
-interface DialogProps extends MuiDialogProps {
+interface DialogWithGridProps extends MuiDialogProps {
   columns?: GridItemProps['columns'];
+  fullHeight?: boolean;
 }
 
-const Dialog = ({ columns = 4, ...dialogProps }: DialogProps) => {
-  return <MuiDialog PaperComponent={DialogContainer} PaperProps={{ columns } as PaperProps} {...dialogProps} />;
+const DialogWithGrid = ({ columns = 4, fullHeight = false, ...dialogProps }: DialogWithGridProps) => {
+  const { sx } = dialogProps;
+
+  return (
+    <MuiDialog
+      PaperComponent={DialogContainer}
+      PaperProps={{ columns } as PaperProps}
+      {...dialogProps}
+      sx={{ '.MuiDialog-paper': { maxWidth: 'none', margin: 0, height: fullHeight ? '100%' : 'auto' }, ...sx }}
+    />
+  );
 };
 
-export default Dialog;
+export default DialogWithGrid;

@@ -18,7 +18,7 @@ const classes = {
   bar: `${PREFIX}-bar`,
 };
 
-const TopBarHeightGutters = 4;
+export const TopBarHeightGutters = 4;
 
 const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
