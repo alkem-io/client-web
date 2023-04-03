@@ -4954,6 +4954,7 @@ export type ChallengePageQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -4968,6 +4969,7 @@ export type ChallengePageQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -5280,6 +5282,7 @@ export type ChallengeProfileFragment = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
+                      description?: string | undefined;
                       visual?:
                         | {
                             __typename?: 'Visual';
@@ -5294,6 +5297,7 @@ export type ChallengeProfileFragment = {
                             minWidth: number;
                           }
                         | undefined;
+                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     };
                     authorization?:
                       | {
@@ -7173,6 +7177,7 @@ export type HubPageQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        description?: string | undefined;
                         visual?:
                           | {
                               __typename?: 'Visual';
@@ -7187,6 +7192,7 @@ export type HubPageQuery = {
                               minWidth: number;
                             }
                           | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
                         | {
@@ -7496,6 +7502,7 @@ export type HubPageFragment = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
+                      description?: string | undefined;
                       visual?:
                         | {
                             __typename?: 'Visual';
@@ -7510,6 +7517,7 @@ export type HubPageFragment = {
                             minWidth: number;
                           }
                         | undefined;
+                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     };
                     authorization?:
                       | {
@@ -8515,6 +8523,7 @@ export type OpportunityPageQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -8529,6 +8538,7 @@ export type OpportunityPageQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -8789,6 +8799,7 @@ export type OpportunityPageFragment = {
                       __typename?: 'Profile';
                       id: string;
                       displayName: string;
+                      description?: string | undefined;
                       visual?:
                         | {
                             __typename?: 'Visual';
@@ -8803,6 +8814,7 @@ export type OpportunityPageFragment = {
                             minWidth: number;
                           }
                         | undefined;
+                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     };
                     authorization?:
                       | {
@@ -10985,6 +10997,7 @@ export type DashboardTopCalloutsFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                description?: string | undefined;
                 visual?:
                   | {
                       __typename?: 'Visual';
@@ -10999,6 +11012,7 @@ export type DashboardTopCalloutsFragment = {
                       minWidth: number;
                     }
                   | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
                 | {
@@ -11101,6 +11115,7 @@ export type DashboardTopCalloutFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          description?: string | undefined;
           visual?:
             | {
                 __typename?: 'Visual';
@@ -11115,6 +11130,7 @@ export type DashboardTopCalloutFragment = {
                 minWidth: number;
               }
             | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
         authorization?:
           | {
@@ -11551,6 +11567,7 @@ export type CalloutsQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        description?: string | undefined;
                         visual?:
                           | {
                               __typename?: 'Visual';
@@ -11565,6 +11582,7 @@ export type CalloutsQuery = {
                               minWidth: number;
                             }
                           | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
                         | {
@@ -11724,6 +11742,7 @@ export type CalloutsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -11738,6 +11757,7 @@ export type CalloutsQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -11907,6 +11927,7 @@ export type CalloutsQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -11921,6 +11942,7 @@ export type CalloutsQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -12405,6 +12427,7 @@ export type CollaborationWithCalloutsFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                description?: string | undefined;
                 visual?:
                   | {
                       __typename?: 'Visual';
@@ -12419,6 +12442,7 @@ export type CollaborationWithCalloutsFragment = {
                       minWidth: number;
                     }
                   | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
                 | {
@@ -12557,6 +12581,7 @@ export type CalloutFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          description?: string | undefined;
           visual?:
             | {
                 __typename?: 'Visual';
@@ -12571,6 +12596,7 @@ export type CalloutFragment = {
                 minWidth: number;
               }
             | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
         authorization?:
           | {
@@ -12960,6 +12986,28 @@ export type TemplateProviderProfileFragment = {
   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
+export type CanvasProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  description?: string | undefined;
+  visual?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+};
+
 export type CanvasDetailsFragment = {
   __typename?: 'Canvas';
   id: string;
@@ -12969,6 +13017,7 @@ export type CanvasDetailsFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    description?: string | undefined;
     visual?:
       | {
           __typename?: 'Visual';
@@ -12983,6 +13032,7 @@ export type CanvasDetailsFragment = {
           minWidth: number;
         }
       | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   };
   authorization?:
     | {
@@ -13097,6 +13147,7 @@ export type CalloutWithCanvasFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                description?: string | undefined;
                 visual?:
                   | {
                       __typename?: 'Visual';
@@ -13111,6 +13162,7 @@ export type CalloutWithCanvasFragment = {
                       minWidth: number;
                     }
                   | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
                 | {
@@ -13181,6 +13233,7 @@ export type CollaborationWithCanvasDetailsFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                description?: string | undefined;
                 visual?:
                   | {
                       __typename?: 'Visual';
@@ -13195,6 +13248,7 @@ export type CollaborationWithCanvasDetailsFragment = {
                       minWidth: number;
                     }
                   | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
                 | {
@@ -13277,6 +13331,7 @@ export type HubCanvasFromCalloutQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        description?: string | undefined;
                         visual?:
                           | {
                               __typename?: 'Visual';
@@ -13291,6 +13346,7 @@ export type HubCanvasFromCalloutQuery = {
                               minWidth: number;
                             }
                           | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
                         | {
@@ -13374,6 +13430,7 @@ export type HubCanvasesQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        description?: string | undefined;
                         visual?:
                           | {
                               __typename?: 'Visual';
@@ -13388,6 +13445,7 @@ export type HubCanvasesQuery = {
                               minWidth: number;
                             }
                           | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
                         | {
@@ -13472,6 +13530,7 @@ export type HubCanvasValuesQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        description?: string | undefined;
                         visual?:
                           | {
                               __typename?: 'Visual';
@@ -13486,6 +13545,7 @@ export type HubCanvasValuesQuery = {
                               minWidth: number;
                             }
                           | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
                         | {
@@ -13575,6 +13635,7 @@ export type ChallengeCanvasFromCalloutQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -13589,6 +13650,7 @@ export type ChallengeCanvasFromCalloutQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -13682,6 +13744,7 @@ export type ChallengeCanvasValuesQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -13696,6 +13759,7 @@ export type ChallengeCanvasValuesQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -13790,6 +13854,7 @@ export type OpportunityCanvasFromCalloutQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -13804,6 +13869,7 @@ export type OpportunityCanvasFromCalloutQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -13897,6 +13963,7 @@ export type OpportunityCanvasValuesQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -13911,6 +13978,7 @@ export type OpportunityCanvasValuesQuery = {
                                 minWidth: number;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -13962,6 +14030,109 @@ export type OpportunityCanvasValuesQuery = {
   };
 };
 
+export type HubTemplateCanvasValuesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID'];
+}>;
+
+export type HubTemplateCanvasValuesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          whiteboardTemplate?:
+            | {
+                __typename?: 'WhiteboardTemplate';
+                id: string;
+                value: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type PlatformTemplateCanvasValuesQueryVariables = Exact<{
+  innovationPackId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID'];
+}>;
+
+export type PlatformTemplateCanvasValuesQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPack?:
+        | {
+            __typename?: 'InnovatonPack';
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  whiteboardTemplate?:
+                    | {
+                        __typename?: 'WhiteboardTemplate';
+                        id: string;
+                        value: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                              }
+                            | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        };
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type CreateCanvasOnCalloutMutationVariables = Exact<{
   input: CreateCanvasOnCalloutInput;
 }>;
@@ -13977,6 +14148,7 @@ export type CreateCanvasOnCalloutMutation = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      description?: string | undefined;
       visual?:
         | {
             __typename?: 'Visual';
@@ -13991,6 +14163,7 @@ export type CreateCanvasOnCalloutMutation = {
             minWidth: number;
           }
         | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     };
     authorization?:
       | {
