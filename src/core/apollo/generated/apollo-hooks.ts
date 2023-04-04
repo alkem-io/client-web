@@ -1219,6 +1219,16 @@ export const CalloutFragmentDoc = gql`
       id
       displayName
       description
+      tagset {
+        id
+        tags
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
     state
     sortOrder
@@ -9609,6 +9619,15 @@ export const UpdateCalloutDocument = gql`
         id
         description
         displayName
+        tagset {
+          id
+          tags
+        }
+        references {
+          id
+          name
+          uri
+        }
       }
       state
       type

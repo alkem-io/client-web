@@ -35,6 +35,7 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
+import { Reference, Tagset } from '../../common/profile/Profile';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -44,6 +45,8 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       id: string;
       displayName: string;
       description?: string;
+      references?: Reference[];
+      tagset?: Tagset;
     };
     type: CalloutType;
     state: CalloutState;
@@ -245,6 +248,7 @@ const CalloutLayout = ({
       <CalloutEditDialog
         open={editDialogOpened}
         onClose={handleEditDialogClosed}
+        calloutType={callout.type}
         callout={callout}
         title={`${t('buttons.edit')} ${t('common.callout')}`}
         onCalloutEdit={handleCalloutEdit}

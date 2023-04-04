@@ -19,7 +19,6 @@ export interface ReferenceSegmentProps {
   references: Reference[];
   readOnly?: boolean;
   disabled?: boolean;
-  compactView?: boolean;
   onAdd?: (push: PushFunc) => void;
   onRemove?: (ref: Reference, remove: RemoveFunc) => void;
 }
@@ -34,7 +33,6 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   references,
   readOnly = false,
   disabled = false,
-  compactView = false,
   onAdd,
   onRemove,
 }) => {
@@ -141,16 +139,14 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       </Tooltip>
                     </Box>
                   </Grid>
-                  {!compactView && (
-                    <Grid item xs={12} sx={{ paddingTop: theme => theme.spacing(2) }}>
-                      <FormikInputField
-                        name={`references.${index}.description`}
-                        title={'Description'}
-                        readOnly={readOnly}
-                        disabled={disabled || index === removing}
-                      />
-                    </Grid>
-                  )}
+                  <Grid item xs={12} sx={{ paddingTop: theme => theme.spacing(2) }}>
+                    <FormikInputField
+                      name={`references.${index}.description`}
+                      title={'Description'}
+                      readOnly={readOnly}
+                      disabled={disabled || index === removing}
+                    />
+                  </Grid>
                 </Grid>
                 {references.length > index + 1 && <SectionSpacer double />}
               </React.Fragment>

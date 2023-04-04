@@ -5,19 +5,18 @@ import {
   CalloutState,
   CalloutType,
   WhiteboardTemplateFragment,
+  Tagset,
 } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import FormRow from '../../shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
-import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
 import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
-import CalloutTypeSelect from './creation-dialog/CalloutType/CalloutTypeSelect';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
 import WhiteboardTemplatesChooser, {
   WhiteboardTemplateListItem,
@@ -25,6 +24,12 @@ import WhiteboardTemplatesChooser, {
   TemplateOrigin,
 } from './creation-dialog/CalloutTemplate/WhiteboardTemplateChooser';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
+// import WhiteboardTemplatesLibrary from '../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
+import ReferenceSegment from '../../platform/admin/components/Common/ReferenceSegment';
+import { Reference } from '../../common/profile/Profile';
+import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
 
 export type WhiteboardTemplateData = {
   id?: string;
@@ -37,6 +42,8 @@ type FormValueType = {
   displayName: string;
   description: string;
   type: CalloutType;
+  tagsets: Tagset[];
+  references: Reference[];
   opened: boolean;
   postTemplateType?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
@@ -48,15 +55,20 @@ export type CalloutFormInput = {
   id?: string;
   displayName?: string;
   description?: string;
+  tags?: string[];
+  references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
   postTemplateType?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
+  profileId?: string;
 };
 
 export type CalloutFormOutput = {
   displayName: string;
   description: string;
+  tags: string[];
+  references: Reference[];
   type: CalloutType;
   state: CalloutState;
   postTemplateType?: string;
@@ -64,7 +76,8 @@ export type CalloutFormOutput = {
 };
 
 export interface CalloutFormProps {
-  callout?: CalloutFormInput;
+  calloutType: CalloutType;
+  callout: CalloutFormInput;
   editMode?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
@@ -74,6 +87,7 @@ export interface CalloutFormProps {
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
+  calloutType,
   callout,
   calloutNames,
   templates,
@@ -85,11 +99,21 @@ const CalloutForm: FC<CalloutFormProps> = ({
   const { t } = useTranslation();
   const [libraryWhiteboardTemplates, setLibraryWhiteboardTemplates] = useState<WhiteboardTemplateListItem[]>([]);
 
+  const tagsets: Tagset[] = [
+    {
+      id: '-1',
+      name: 'default',
+      tags: callout?.tags ?? [],
+    },
+  ];
+
   const initialValues: FormValueType = useMemo(
     () => ({
       displayName: callout?.displayName ?? '',
       description: callout?.description ?? '',
-      type: callout?.type ?? CalloutType.Comments,
+      type: calloutType,
+      tagsets,
+      references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       postTemplateType: callout?.postTemplateType ?? '',
       whiteboardTemplateData: callout?.whiteboardTemplateData ?? {
@@ -137,7 +161,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     const callout: CalloutFormOutput = {
       displayName: values.displayName,
       description: values.description,
-      type: values.type,
+      tags: values.tagsets[0].tags,
+      references: values.references,
+      type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       postTemplateType: values.postTemplateType,
       whiteboardTemplateData: values.whiteboardTemplateData,
@@ -174,18 +200,33 @@ const CalloutForm: FC<CalloutFormProps> = ({
               <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
             </FormRow>
             <SectionSpacer />
-            <MarkdownInput
-              name="description"
-              label={t('components.callout-creation.info-step.description')}
-              rows={7}
-              maxLength={MID_TEXT_LENGTH}
-              withCounter
+            <FormRow>
+              <FormikMarkdownField
+                name="description"
+                title={t('components.callout-creation.info-step.description')}
+                rows={7}
+                maxLength={MID_TEXT_LENGTH}
+                withCounter
+              />
+            </FormRow>
+            <FormRow>
+              {editMode && (
+                <ProfileReferenceSegment
+                  compactView
+                  references={formikState.values.references}
+                  profileId={callout?.profileId}
+                />
+              )}
+              {!editMode && <ReferenceSegment compactView references={formikState.values.references} />}
+            </FormRow>
+            <SectionSpacer />
+            <TagsetSegment
+              tagsets={tagsets}
+              title={t('common.tags')}
+              helpText={t('components.aspect-creation.info-step.tags-help-text')}
             />
             <SectionSpacer />
-            <FormRow>
-              <CalloutTypeSelect name="type" disabled={editMode} />
-            </FormRow>
-            {formikState.values.type === CalloutType.Card && (
+            {calloutType === CalloutType.Card && (
               <>
                 <SectionSpacer />
                 <FormRow>
@@ -197,10 +238,11 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 </FormRow>
               </>
             )}
-            {formikState.values.type === CalloutType.Canvas && (
+            {calloutType === CalloutType.Canvas && (
               <>
                 <SectionSpacer />
                 <FormRow>
+                  {/* <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} /> */}
                   <WhiteboardTemplatesChooser
                     name="whiteboardTemplateData"
                     templates={[...hubTemplates, ...libraryWhiteboardTemplates]}
@@ -212,11 +254,6 @@ const CalloutForm: FC<CalloutFormProps> = ({
             )}
             <SectionSpacer />
             <FormRow>
-              {/* TODO: Add this color to pallete to match Formik labels */}
-              <Typography sx={{ color: '#00000099' }}>{t('common.permission')}</Typography>
-              <Typography sx={{ color: '#00000099' }} variant="body2">
-                {t('callout.permission-helptext')}
-              </Typography>
               <FormikSwitch name="opened" title={t('callout.state-permission')} />
             </FormRow>
           </Grid>

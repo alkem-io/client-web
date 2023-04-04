@@ -76,7 +76,6 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
       ...newAspect,
     });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
-  const tags = postTemplate?.profile?.tagset?.tags;
 
   const renderButtons = () => {
     return (
@@ -105,7 +104,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
             onChange={handleFormChange}
             onStatusChanged={handleFormStatusChange}
             descriptionTemplate={postTemplate?.defaultDescription}
-            tags={tags}
+            tags={[]}
           />
         </Box>
       </DialogContent>

@@ -72,7 +72,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
         variables: {
           input: {
             name: tagset.name,
-            tags: [...tagset.tags],
+            tags: [...(tagset.tags ?? [])],
             profileID: profileId,
           },
         },

@@ -554,6 +554,14 @@ export enum AuthorizationPrivilege {
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
 
+export type Branding = {
+  __typename?: 'Branding';
+  /** The logo of this instance of branding */
+  logo: Visual;
+  /** The style configuration */
+  styles?: Maybe<Scalars['String']>;
+};
+
 export type Calendar = {
   __typename?: 'Calendar';
   /** The authorization rules for the entity */
@@ -633,6 +641,8 @@ export type Callout = {
   comments?: Maybe<Comments>;
   /** The user that created this Callout */
   createdBy?: Maybe<User>;
+  /** Callout group. */
+  group?: Maybe<Scalars['String']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
@@ -839,6 +849,7 @@ export type Collaboration = {
 
 export type CollaborationCalloutsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  groups?: InputMaybe<Array<Scalars['String']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
@@ -1209,6 +1220,8 @@ export type CreateCalendarEventOnCalendarInput = {
 
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
+  /** Set callout group for this Callout. */
+  group?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** PostTemplate data for Card Callouts. */
@@ -1218,6 +1231,7 @@ export type CreateCalloutOnCollaborationInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   /** Callout type. */
   type: CalloutType;
   /** WhiteboardTemplate data for whiteboard Callouts. */
@@ -1847,6 +1861,17 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+/** Filter used to filter the data for the Innovation space */
+export type ISelectionFilter = {
+  __typename?: 'ISelectionFilter';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Type of the selection filter, which will also give a hint how to parse its value */
+  type: SelectionFilterType;
+  /** The filter value. Usage and how it can be parsed hinted by the type */
+  value: Scalars['String'];
+};
+
 export type InnovationFlowTemplate = {
   __typename?: 'InnovationFlowTemplate';
   /** The authorization rules for the entity */
@@ -1864,6 +1889,27 @@ export type InnovationFlowTemplate = {
 export enum InnovationFlowType {
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
+}
+
+export type InnovationSpace = {
+  __typename?: 'InnovationSpace';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The branding for this Innovation space */
+  branding?: Maybe<Branding>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The criteria based on which the data is filtered */
+  selectionCriteria: SelectionCriteria;
+  /** Type of innovation space */
+  type: InnovationSpaceType;
+};
+
+export enum InnovationSpaceType {
+  Basic = 'BASIC',
+  Lite = 'LITE',
 }
 
 export type InnovatonPack = {
@@ -3205,6 +3251,8 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
+  /** List of innovation spaces on the platform */
+  innovationSpaces: Array<InnovationSpace>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3710,6 +3758,23 @@ export type SearchResultUserGroup = SearchResult & {
   userGroup: UserGroup;
 };
 
+export type SelectionCriteria = {
+  __typename?: 'SelectionCriteria';
+  filters: Array<ISelectionFilter>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  type: SelectionCriteriaType;
+};
+
+export enum SelectionCriteriaType {
+  And = 'AND',
+  Or = 'OR',
+}
+
+export enum SelectionFilterType {
+  Visibility = 'VISIBILITY',
+}
+
 export type SendMessageOnCalloutInput = {
   /** The Callout the message is being sent to */
   calloutID: Scalars['UUID'];
@@ -3933,6 +3998,8 @@ export type UpdateCalendarEventInput = {
 
 export type UpdateCalloutInput = {
   ID: Scalars['UUID'];
+  /** Set callout group for this Callout. */
+  group?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** CardTemplate data for this Callout. */
@@ -11361,7 +11428,14 @@ export type UpdateCalloutMutation = {
     state: CalloutState;
     type: CalloutType;
     visibility: CalloutVisibility;
-    profile: { __typename?: 'Profile'; id: string; description?: string | undefined; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      description?: string | undefined;
+      displayName: string;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    };
     postTemplate?:
       | {
           __typename?: 'PostTemplate';
@@ -11468,7 +11542,22 @@ export type CalloutsQuery = {
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -11641,6 +11730,16 @@ export type CalloutsQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -11824,6 +11923,16 @@ export type CalloutsQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -12322,7 +12431,22 @@ export type CollaborationWithCalloutsFragment = {
         sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+        };
         canvases?:
           | Array<{
               __typename?: 'Canvas';
@@ -12474,7 +12598,16 @@ export type CalloutFragment = {
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
   canvases?:
     | Array<{
         __typename?: 'Canvas';

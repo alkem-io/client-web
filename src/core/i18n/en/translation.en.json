@@ -745,6 +745,9 @@
       "create-step": {
         "title": "Create",
         "card-template-label": "Choose Card template"
+      },
+      "callout-type": {
+        "title": "What would you like to add?"
       }
     },
     "callout-edit": {

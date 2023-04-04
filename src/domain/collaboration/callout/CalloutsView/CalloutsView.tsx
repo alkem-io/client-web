@@ -55,7 +55,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
     isCalloutCreationDialogOpen,
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
-    handleCalloutDrafted,
+    handleCreateCallout,
     isCreating,
   } = useCalloutCreation();
 
@@ -214,7 +214,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
           <CalloutCreationDialog
             open={isCalloutCreationDialogOpen}
             onClose={handleCreateCalloutClosed}
-            onSaveAsDraft={handleCalloutDrafted}
+            onSaveAsDraft={handleCreateCallout}
             isCreating={isCreating}
             calloutNames={calloutNames}
             templates={templates}

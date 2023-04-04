@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import {
@@ -9,7 +9,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import { CalloutIcon } from '../icon/CalloutIcon';
 import CalloutForm, { CalloutFormOutput, WhiteboardTemplateData } from '../CalloutForm';
@@ -20,15 +20,22 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { createWhiteboardTemplateForCalloutCreation } from '../utils/createWhiteboardTemplateForCalloutCreation';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '../../../../core/ui/grid/utils';
+import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
+import { Reference } from '../../../common/profile/Profile';
 
 export type CalloutCreationDialogFields = {
   description?: string;
   displayName?: string;
-  templateId?: string;
+  tags?: string[];
+  references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
   postTemplateType?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
+  profileId?: string;
 };
 
 export interface CalloutCreationDialogProps {
@@ -76,6 +83,13 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const { hubNameId } = useUrlParams();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
+  const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
+  //   const [isConfirmPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    setSelectedCalloutType(undefined);
+  }, [open]);
 
   const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
     fetchPolicy: 'cache-and-network',
@@ -93,7 +107,15 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   );
   const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
-  const handleSaveAsDraft = useCallback(async () => {
+  const handleSelectCalloutType = (value: CalloutType | undefined) => {
+    setSelectedCalloutType(value);
+  };
+
+  //   const handlePublish = () => {
+  //     setIsConfirmPublishDialogOpen(true);
+  //   };
+
+  const handleSaveCallout = useCallback(async () => {
     const calloutPostTemplate = createPostTemplateFromTemplateSet(callout, templates.postTemplates);
 
     const getCanvasValueFromHub = async () => {
@@ -129,7 +151,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       profile: {
         displayName: callout.displayName!,
         description: callout.description!,
+        referencesData: callout.references!,
       },
+      tags: callout.tags,
       type: callout.type!,
       state: callout.state!,
       postTemplate: calloutPostTemplate,
@@ -150,35 +174,55 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
-      <DialogTitle id="callout-creation-title" onClose={handleClose}>
-        <Box display="flex">
-          <CalloutIcon sx={{ marginRight: 1 }} />
-          {t('components.callout-creation.title')}
-        </Box>
-      </DialogTitle>
-      <DialogContent dividers>
-        <Box paddingY={theme => theme.spacing(2)}>
-          <CalloutForm
-            callout={callout}
-            calloutNames={calloutNames}
-            onChange={handleValueChange}
-            onStatusChanged={handleStatusChange}
-            templates={templates}
-          />
-        </Box>
-      </DialogContent>
-      <DialogActions sx={{ justifyContent: 'end' }}>
-        {onClose && <Button onClick={onClose}>{t('buttons.cancel')}</Button>}
-        <LoadingButton
-          loading={isCreating}
-          loadingIndicator={`${t('buttons.save-draft')}...`}
-          onClick={handleSaveAsDraft}
-          variant="contained"
-          disabled={!isValid}
-        >
-          {t('buttons.save-draft')}
-        </LoadingButton>
-      </DialogActions>
+      {!selectedCalloutType && (
+        <>
+          <DialogHeader onClose={handleClose}>
+            <Box display="flex">{t('components.callout-creation.callout-type.title')}</Box>
+          </DialogHeader>
+          <DialogContent>
+            <Box paddingY={theme => theme.spacing(2)}>
+              <CalloutTypeSelect onSelect={handleSelectCalloutType} />
+            </Box>
+          </DialogContent>
+        </>
+      )}
+      {selectedCalloutType !== undefined && (
+        <>
+          <DialogHeader onClose={handleClose}>
+            <Box display="flex">
+              <CalloutIcon sx={{ marginRight: 1 }} />
+              {t('components.callout-creation.title')}
+            </Box>
+          </DialogHeader>
+          <DialogContent>
+            <Box paddingY={theme => theme.spacing(2)}>
+              <CalloutForm
+                calloutType={selectedCalloutType}
+                callout={callout}
+                calloutNames={calloutNames}
+                onChange={handleValueChange}
+                onStatusChanged={handleStatusChange}
+                templates={templates}
+              />
+            </Box>
+          </DialogContent>
+          <Actions padding={gutters()} justifyContent="end">
+            <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
+            <LoadingButton
+              loading={isCreating}
+              loadingIndicator={`${t('buttons.save-draft')}...`}
+              onClick={handleSaveCallout}
+              variant="contained"
+              disabled={!isValid}
+            >
+              {t('buttons.save-draft')}
+            </LoadingButton>
+            {/* <Button variant="contained" onClick={handlePublish}>
+              {t('buttons.publish')}
+            </Button> */}
+          </Actions>
+        </>
+      )}
     </Dialog>
   );
 };

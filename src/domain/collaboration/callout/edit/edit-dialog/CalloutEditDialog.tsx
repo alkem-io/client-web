@@ -8,23 +8,29 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../common
 import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
-import { CalloutEditType } from '../CalloutEditType';
+import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { createPostTemplateFromTemplateSet } from '../../utils/createPostTemplateFromTemplateSet';
-import { PostTemplateFragment, WhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutType,
+  PostTemplateFragment,
+  WhiteboardTemplateFragment,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { createWhiteboardTemplateForCalloutCreation } from '../../utils/createWhiteboardTemplateForCalloutCreation';
+import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 
 export interface CalloutEditDialogProps {
   open: boolean;
   title: string;
-  callout: CalloutEditType;
+  calloutType: CalloutType;
+  callout: CalloutLayoutProps['callout'];
   onClose: () => void;
-  onDelete: (callout: CalloutEditType) => Promise<void>;
+  onDelete: (callout: CalloutDeleteType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
@@ -33,6 +39,7 @@ export interface CalloutEditDialogProps {
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   open,
   title,
+  calloutType,
   callout,
   onClose,
   onDelete,
@@ -45,9 +52,11 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
-    ...callout,
     displayName: callout.profile.displayName,
     description: callout.profile.description,
+    references: callout.profile.references,
+    profileId: callout.profile.id,
+    tags: callout.profile.tagset?.tags,
     postTemplateType: callout.postTemplate?.type,
     whiteboardTemplateData: {
       id: callout.whiteboardTemplate?.id,
@@ -102,6 +111,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       profile: {
         displayName: newCallout.displayName,
         description: newCallout.description,
+        references: newCallout.references,
+        tagsets: [{ id: callout.profile.tagset?.id, name: 'default', tags: newCallout.tags }],
       },
       state: newCallout.state,
       postTemplate: calloutPostTemplate,
@@ -149,6 +160,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         </DialogTitle>
         <DialogContent dividers>
           <CalloutForm
+            calloutType={calloutType}
             callout={initialValues}
             calloutNames={calloutNames}
             editMode

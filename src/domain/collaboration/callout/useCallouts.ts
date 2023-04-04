@@ -18,6 +18,7 @@ import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import { CalloutPostTemplate } from './creation-dialog/CalloutCreationDialog';
 import { useMemo } from 'react';
+import { Tagset } from '../../common/profile/Profile';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
@@ -62,6 +63,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'state' | 'activity' 
       id: string;
       displayName: string;
       description?: string;
+      tagset?: Tagset;
     };
     draft: boolean;
     editable: boolean;
@@ -130,13 +132,13 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
           draft,
           editable,
           isSubscribedToComments,
-          url:
-            params.hubNameId &&
-            buildCalloutUrl(callout.nameID, {
-              hubNameId: params.hubNameId,
-              challengeNameId: params.challengeNameId,
-              opportunityNameId: params.opportunityNameId,
-            }),
+          url: params.hubNameId
+            ? buildCalloutUrl(callout.nameID, {
+                hubNameId: params.hubNameId,
+                challengeNameId: params.challengeNameId,
+                opportunityNameId: params.opportunityNameId,
+              })
+            : '',
         } as TypedCallout;
       }),
     [collaboration]
