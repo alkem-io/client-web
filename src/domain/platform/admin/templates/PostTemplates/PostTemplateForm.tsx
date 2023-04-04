@@ -28,7 +28,6 @@ export interface PostTemplateFormSubmittedValues {
 }
 
 interface PostTemplateFormProps {
-  title?: ReactNode;
   initialValues: Partial<PostTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: PostTemplateFormSubmittedValues) => void;

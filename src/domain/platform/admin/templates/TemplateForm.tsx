@@ -70,7 +70,12 @@ const TemplateForm = <Values extends TemplateProfileValues>({
   const renderChildren = typeof children === 'function' ? children : () => children;
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+    <Formik
+      enableReinitialize
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationSchema}
+    >
       {formState => (
         <Form>
           <DialogContent>

@@ -106,7 +106,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   return (
     <>
       <CanvasValueContainer
-        canvasDetails={entities.canvas}
         canvasLocation={{
           isContribution: true,
           hubNameId: urlParams.hubNameId,

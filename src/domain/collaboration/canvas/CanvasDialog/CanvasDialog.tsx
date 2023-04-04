@@ -59,6 +59,7 @@ interface CanvasDialogProps<Canvas extends CanvasWithValue> {
     canDelete?: boolean;
     checkedOutByMe: boolean;
     headerActions?: ReactNode;
+    fixedDialogTitle?: ReactNode;
   };
   state?: {
     updatingCanvas?: boolean;
@@ -261,13 +262,17 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
             >
               {options.checkedOutByMe ? (
                 <>
-                  <Box
-                    component={FormikInputField}
-                    title={t('fields.displayName')}
-                    name="displayName"
-                    size="small"
-                    maxWidth={gutters(30)}
-                  />
+                  {options.fixedDialogTitle ? (
+                    options.fixedDialogTitle
+                  ) : (
+                    <Box
+                      component={FormikInputField}
+                      title={t('fields.displayName')}
+                      name="displayName"
+                      size="small"
+                      maxWidth={gutters(30)}
+                    />
+                  )}
                   <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} />
                 </>
               ) : (

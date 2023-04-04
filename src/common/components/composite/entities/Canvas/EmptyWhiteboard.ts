@@ -10,5 +10,6 @@ const EmptyWhiteboard: ImportedDataState = {
     viewBackgroundColor: '#ffffff',
   },
 };
+export const EmptyWhiteboardJSON = JSON.stringify(EmptyWhiteboard);
 
 export default EmptyWhiteboard;
