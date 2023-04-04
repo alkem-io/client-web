@@ -2,6 +2,7 @@ query AdminInnovationPacksList {
   platform {
     id
     library {
+      id
       innovationPacks {
         id
         nameID
@@ -74,6 +75,7 @@ query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
       }
     }
   }
+  # Load organizations together to be able to show the Provider form field combobox
   organizations {
     id
     nameID
@@ -95,23 +97,5 @@ mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
   updateInnovationPack(innovationPackData: $packData) {
     id
     nameID
-  }
-}
-
-query InnovationPackCanvasTemplateValue($innovationPackId: UUID_NAMEID!) {
-  platform {
-    id
-    library {
-      id
-      innovationPack(ID: $innovationPackId) {
-        id
-        templates {
-          id
-          whiteboardTemplates {
-            ...AdminWhiteboardTemplateValue
-          }
-        }
-      }
-    }
   }
 }
