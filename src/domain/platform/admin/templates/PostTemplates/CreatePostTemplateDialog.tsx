@@ -1,6 +1,6 @@
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
 import { useTranslation } from 'react-i18next';
-import Dialog from '../../../../../core/ui/dialog/Dialog';
+import { Dialog } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';

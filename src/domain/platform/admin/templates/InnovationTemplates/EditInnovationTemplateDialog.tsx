@@ -4,7 +4,7 @@ import InnovationTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
 } from './InnovationTemplateForm';
-import Dialog from '../../../../../core/ui/dialog/Dialog';
+import { Dialog } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import DeleteButton from '../../../../shared/components/DeleteButton';

@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useState } from 'react';
 import { Trans } from 'react-i18next';
-import CanvasCreateDialog from '../CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../containers/CanvasActionsContainer';
@@ -84,7 +83,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   const { canvasNameId, calloutId, canvas } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
-  const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
 
   const isCanvasCheckedOutByMe =
@@ -107,7 +105,17 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
 
   return (
     <>
-      <CanvasValueContainer canvasId={canvas?.id} calloutId={calloutId}>
+      <CanvasValueContainer
+        canvasDetails={entities.canvas}
+        canvasLocation={{
+          isContribution: true,
+          hubNameId: urlParams.hubNameId,
+          challengeNameId: urlParams.challengeNameId,
+          opportunityNameId: urlParams.opportunityNameId,
+          calloutId,
+          canvasId: canvas?.id,
+        }}
+      >
         {entities => (
           <CanvasDialog
             entities={{
@@ -133,25 +141,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           />
         )}
       </CanvasValueContainer>
-      <CanvasCreateDialog
-        entities={{
-          calloutId,
-          templates: entities.templates,
-        }}
-        actions={{
-          onCancel: () => setShowCreateCanvasDialog(false),
-          onConfirm: input => {
-            actions.onCreate(input);
-            setShowCreateCanvasDialog(false);
-          },
-        }}
-        options={{
-          show: showCreateCanvasDialog,
-        }}
-        state={{
-          templatesLoading: state.loadingCanvases,
-        }}
-      />
       <ConfirmationDialog
         actions={{
           onCancel: () => setCanvasBeingDeleted(undefined),
