@@ -1,6 +1,6 @@
 import React, { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLoginUrl } from '../../../../utils/urlBuilders';
+import { buildLoginUrl } from '../../../../utils/urlBuilders';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import { ButtonProps } from '@mui/material';
 
@@ -14,7 +14,7 @@ const SignInIcon = ({ buttonComponent: Button, returnUrl }: SignInIconProps) => 
 
   return (
     <Button
-      href={useLoginUrl(returnUrl)}
+      href={buildLoginUrl(returnUrl)}
       aria-label={t('authentication.sign-in')}
       startIcon={<AssignmentIndOutlinedIcon />}
     >

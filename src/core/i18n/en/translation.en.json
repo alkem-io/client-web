@@ -598,6 +598,9 @@
     }
   },
   "components": {
+    "journeyUnauthorizedDialog": {
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Deleting comment",
@@ -1803,7 +1806,7 @@
       "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
-      "verification-flow-continue": "Return to the platform"
+      "verification-flow-continue": "Continue"
     }
   },
   "apollo": {

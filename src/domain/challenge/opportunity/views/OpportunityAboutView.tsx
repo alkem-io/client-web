@@ -1,31 +1,14 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { AboutSection } from '../../common/tabs/About/AboutSection';
-import { MetricType } from '../../../platform/metrics/MetricType';
-import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
-import { useTranslation } from 'react-i18next';
 import { JourneyAboutWithLead } from '../../common/tabs/About/Types';
+import useMetricsItems from '../../../platform/metrics/utils/useMetricsItems';
+import OpportunityMetrics from '../utils/useOpportunityMetricsItems';
 
 interface OpportunityAboutViewProps extends JourneyAboutWithLead {}
 
+// TODO use AboutSection in the Page directly
 export const OpportunityAboutView: FC<OpportunityAboutViewProps> = ({ metrics, ...rest }) => {
-  const { t } = useTranslation();
-
-  const metricsItems: MetricItem[] = useMemo(() => {
-    return [
-      {
-        name: t('common.members'),
-        type: MetricType.Member,
-        count: getMetricCount(metrics, MetricType.Member),
-        color: 'neutralMedium',
-      },
-      {
-        name: t('common.interests'),
-        count: getMetricCount(metrics, MetricType.Relation),
-        color: 'primary',
-      },
-    ];
-  }, [metrics, t]);
+  const metricsItems = useMetricsItems(metrics, OpportunityMetrics);
 
   return <AboutSection journeyTypeName="opportunity" metricsItems={metricsItems} {...rest} />;
 };

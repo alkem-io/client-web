@@ -3,14 +3,7 @@ import { isMatch, some } from 'lodash';
 import { Alert, Box, Button } from '@mui/material';
 import { UiContainer, UiNode, UiText } from '@ory/kratos-client';
 import { useTranslation } from 'react-i18next';
-import {
-  guessVariant,
-  isAnchorNode,
-  isHiddenInput,
-  isInputNode,
-  isReturnToPlatformLink,
-  isSubmitButton,
-} from './Kratos/helpers';
+import { guessVariant, isAnchorNode, isHiddenInput, isInputNode, isSubmitButton } from './Kratos/helpers';
 import KratosButton from './Kratos/KratosButton';
 import KratosCheckbox from './Kratos/KratosCheckbox';
 import KratosHidden from './Kratos/KratosHidden';
@@ -40,7 +33,6 @@ interface KratosUIProps {
    * Remove once we're able to make Kratos keep traits.accepted_terms on error.
    */
   onBeforeSubmit?: () => void;
-  onClickReturnToPlatform?: () => void;
 }
 
 const toAlertVariant = (type: string) => {
@@ -82,7 +74,6 @@ export const KratosUI: FC<KratosUIProps> = ({
   renderAcceptTermsCheckbox = checkbox => <KratosAcceptTermsCheckbox node={checkbox} />,
   children,
   removedFields = KRATOS_REMOVED_FIELDS_DEFAULT,
-  onClickReturnToPlatform,
   ...rest
 }) => {
   const { t } = useTranslation();
@@ -128,11 +119,7 @@ export const KratosUI: FC<KratosUIProps> = ({
   const toUiControl = (node: UiNode, key: number) => {
     if (isAnchorNode(node)) {
       return (
-        <Button
-          href={node.attributes.href}
-          variant="contained"
-          onClick={isReturnToPlatformLink(node) ? onClickReturnToPlatform : undefined}
-        >
+        <Button href={node.attributes.href} variant="contained">
           {kratosT(node.attributes.title)}
         </Button>
       );

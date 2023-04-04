@@ -8,7 +8,7 @@ import { AddPhotoAlternateOutlined } from '@mui/icons-material';
 import DialogHeader from '../../dialog/DialogHeader';
 import Gutters from '../../grid/Gutters';
 import { Actions } from '../../actions/Actions';
-import Dialog from '../../dialog/Dialog';
+import DialogWithGrid from '../../dialog/DialogWithGrid';
 import { useNotification } from '../../notifications/useNotification';
 import { BlockTitle } from '../../typography';
 
@@ -61,7 +61,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
       <IconButton onClick={openDialog} disabled={isDisabled} {...buttonProps}>
         <AddPhotoAlternateOutlined />
       </IconButton>
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
+      <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>
         <DialogHeader onClose={closeDialog}>
           <BlockTitle>{t('components.wysiwyg-editor.image.dialogHeader')}</BlockTitle>
         </DialogHeader>
@@ -78,7 +78,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
             </Gutters>
           </Form>
         </Formik>
-      </Dialog>
+      </DialogWithGrid>
     </>
   );
 };

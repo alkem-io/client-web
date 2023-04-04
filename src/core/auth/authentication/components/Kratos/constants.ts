@@ -15,4 +15,4 @@ export type KratosRemovedFieldAttributes = Partial<UiNodeAttributes>;
 
 export const KRATOS_REMOVED_FIELDS_DEFAULT: readonly KratosRemovedFieldAttributes[] = [{ name: 'traits.picture' }];
 
-export const KRATOS_RETURN_TO_PLATFORM_LINK_ID = 1070009;
+export const KRATOS_VERIFICATION_CONTINUE_LINK_ID = 1070009;

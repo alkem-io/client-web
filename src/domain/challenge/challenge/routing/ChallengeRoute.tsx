@@ -74,7 +74,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           <ApplyRoute
             paths={currentPaths}
             type={ApplicationTypeEnum.challenge}
-            entityPageLayout={ChallengePageLayout}
+            journeyPageLayoutComponent={ChallengePageLayout}
           />
         }
       />

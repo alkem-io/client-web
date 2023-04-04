@@ -7,7 +7,7 @@ import { useQueryParams } from '../../../routing/useQueryParams';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
 import { Box, Button } from '@mui/material';
-import { useLoginUrl } from '../../../../common/utils/urlBuilders';
+import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
 
 interface AuthRequiredPageProps {}
 
@@ -25,7 +25,7 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
         <WrapperTypography variant={'h3'}>{t('pages.authentication-required.subheader')}</WrapperTypography>
       </Box>
       <Box display="flex" marginTop={4} gap={2} justifyContent="center">
-        <Button component={Link} to={useLoginUrl(returnUrl)} variant="outlined" color="primary">
+        <Button component={Link} to={buildLoginUrl(returnUrl)} variant="outlined" color="primary">
           {t('authentication.sign-in')}
         </Button>
         <Button component={Link} to={AUTH_SIGN_UP_PATH} variant="outlined">
