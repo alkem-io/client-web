@@ -4,8 +4,7 @@ import { FormikProps } from 'formik';
 import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
 import TemplateForm from '../TemplateForm';
-import CanvasFormikSelectInput, { Canvas } from './WhiteboardFormikSelectInput';
-import { useTranslation } from 'react-i18next';
+import FormikWhiteboardPreview from './FormikWhiteboardPreview';
 
 export interface WhiteboardTemplateFormValues {
   displayName: string;
@@ -22,33 +21,20 @@ export interface WhiteboardTemplateFormSubmittedValues {
 }
 
 interface WhiteboardTemplateFormProps {
-  displayName: ReactNode;
   initialValues: Partial<WhiteboardTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<WhiteboardTemplateFormValues>) => ReactNode);
-  canvases: Canvas[];
-  getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
+  loading?: boolean;
 }
 
 const validator = {
   value: yup.string().required(),
 };
 
-const WhiteboardTemplateForm = ({
-  displayName,
-  initialValues,
-  visual,
-  onSubmit,
-  actions,
-  canvases,
-  getParentCalloutId,
-}: WhiteboardTemplateFormProps) => {
-  const { t } = useTranslation();
-
+const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, loading }: WhiteboardTemplateFormProps) => {
   return (
     <TemplateForm
-      title={displayName}
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}
@@ -56,12 +42,7 @@ const WhiteboardTemplateForm = ({
       validator={validator}
     >
       <TemplateFormRows>
-        <CanvasFormikSelectInput
-          label={t('common.canvas')}
-          name="value"
-          canvases={canvases}
-          getParentCalloutId={getParentCalloutId}
-        />
+        <FormikWhiteboardPreview name="value" canEdit loading={loading} />
       </TemplateFormRows>
     </TemplateForm>
   );

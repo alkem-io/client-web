@@ -9,6 +9,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
+  CanvasValueFragment,
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
@@ -118,7 +119,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         {entities => (
           <CanvasDialog
             entities={{
-              canvas: entities.canvas,
+              canvas: entities.canvas as CanvasValueFragment & CanvasDetailsFragment,
               lockedBy: lockedByDetailsData?.usersById[0],
             }}
             actions={{

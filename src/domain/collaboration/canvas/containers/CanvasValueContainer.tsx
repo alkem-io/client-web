@@ -10,7 +10,6 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  Canvas,
   CanvasContentUpdatedSubscription,
   CanvasDetailsFragment,
   CanvasValueFragment,
@@ -20,10 +19,14 @@ import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscri
 import findById from '../../../shared/utils/findById';
 import { getCanvasCalloutContainingCanvas } from './getCanvasCallout';
 import { compact } from 'lodash';
-import EmptyWhiteboard from '../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import { EmptyWhiteboardJSON } from '../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+
+export interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
+
+export type CanvasWithoutValue<Canvas extends CanvasWithValue> = Omit<Canvas, 'value'>;
 
 export interface ICanvasValueEntities {
-  canvas?: CanvasValueFragment & CanvasDetailsFragment;
+  canvas?: CanvasWithValue;
 }
 
 export interface CanvasValueContainerState {
@@ -39,6 +42,7 @@ export interface CanvasLocation {
   canvasId?: string;
 
   isNew?: boolean;
+
   isContribution?: boolean;
   isHubTemplate?: boolean;
   isPlatformTemplate?: boolean;
@@ -80,7 +84,7 @@ const validateCanvasLocation = (location: CanvasLocation) => {
 export interface CanvasValueContainerProps
   extends ContainerChildProps<ICanvasValueEntities, {}, CanvasValueContainerState> {
   canvasLocation: CanvasLocation;
-  onCanvasValueLoaded?: (canvas: Canvas) => void;
+  onCanvasValueLoaded?: (canvas: CanvasWithValue) => void;
 }
 
 const useSubscribeToCanvas = UseSubscriptionToSubEntity<
@@ -101,23 +105,19 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
-  const validRequest = validateCanvasLocation(canvasLocation);
-  console.log('validRequest', validRequest, canvasLocation);
+  if (!validateCanvasLocation(canvasLocation)) {
+    throw new Error(`Invalid canvas location: ${JSON.stringify(canvasLocation)}`);
+  }
 
   const { isNew, canvasId, calloutId, hubNameId, challengeNameId, opportunityNameId, innovationPackId } =
     canvasLocation;
 
-  const skipHub =
-    !validRequest || !isNew || !canvasLocation.isContribution || Boolean(challengeNameId) || Boolean(opportunityNameId);
+  const skipHub = isNew || !canvasLocation.isContribution || Boolean(challengeNameId) || Boolean(opportunityNameId);
   const skipChallenge =
-    !validRequest ||
-    !isNew ||
-    !canvasLocation.isContribution ||
-    Boolean(opportunityNameId) ||
-    !Boolean(challengeNameId);
-  const skipOpportunity = !validRequest || !isNew || !canvasLocation.isContribution || !Boolean(opportunityNameId);
-  const skipHubTemplate = !validRequest || !isNew || !canvasLocation.isHubTemplate;
-  const skipPlatformTemplate = !validRequest || !isNew || !canvasLocation.isPlatformTemplate;
+    isNew || !canvasLocation.isContribution || Boolean(opportunityNameId) || !Boolean(challengeNameId);
+  const skipOpportunity = isNew || !canvasLocation.isContribution || !Boolean(opportunityNameId);
+  const skipHubTemplate = isNew || !canvasLocation.isHubTemplate;
+  const skipPlatformTemplate = isNew || !canvasLocation.isPlatformTemplate;
 
   const {
     data: challengeData,
@@ -172,7 +172,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
   const {
     data: hubTemplatesData,
     loading: loadingHubTemplateCanvasValue,
-    subscribeToMore: subHubTemplate,
+    // subscribeToMore: subHubTemplate,
   } = useHubTemplateCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'network-only',
@@ -187,7 +187,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
   const {
     data: platformTemplatesData,
     loading: loadingPlatformTemplateCanvasValue,
-    subscribeToMore: subPlatformTemplate,
+    // subscribeToMore: subPlatformTemplate,
   } = usePlatformTemplateCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'network-only',
@@ -199,38 +199,69 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
     },
   });
 
-  const canvas = useMemo(() => {
+  const data = useMemo<CanvasWithValue | undefined>(() => {
+    if (canvasLocation.isNew) {
+      return {
+        id: '_new',
+        value: EmptyWhiteboardJSON,
+      };
+    }
     if (canvasLocation.isContribution) {
       const sourceArray =
         getCanvasCalloutContainingCanvas(hubData?.hub.collaboration?.callouts, canvasId!)?.canvases ||
         getCanvasCalloutContainingCanvas(challengeData?.hub.challenge.collaboration?.callouts, canvasId!)?.canvases ||
         getCanvasCalloutContainingCanvas(opportunityData?.hub.opportunity.collaboration?.callouts, canvasId!)?.canvases;
 
-      return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined; //!! not nice
+      return sourceArray?.find(c => c.id === canvasId);
     } else if (canvasLocation.isHubTemplate) {
-      return hubTemplatesData?.hub.templates?.whiteboardTemplate as Canvas | undefined; //!!
-    } else if (canvasLocation.isPlatformTemplate) {
-      return platformTemplatesData?.platform.library.innovationPack?.templates?.whiteboardTemplate as
-        | Canvas
-        | undefined; //!!
-    } else if (canvasLocation.isNew) {
+      // Turn a canvas template into something that can be processed as a CanvasWithValue
+      const template = hubTemplatesData?.hub.templates?.whiteboardTemplate;
+      if (!template) {
+        return undefined;
+      }
+      const { id, value, ...templateWithoutValue } = template;
       return {
-        profile: {
-          displayName: 'New canvas template //!!',
-        },
-        createdDate: new Date(),
-        value: JSON.stringify(EmptyWhiteboard),
-      } as Canvas | undefined; //!! this is gonna break...
+        id,
+        nameID: id,
+        value,
+        profile: templateWithoutValue.profile,
+        // checkout : N/A for Whiteboard templates
+        // authorization: // ? maybe needed in the future
+        // createdBy: // ? maybe needed in the future
+        // createdDate: // ? maybe needed in the future
+      };
+    } else if (canvasLocation.isPlatformTemplate) {
+      const template = platformTemplatesData?.platform.library.innovationPack?.templates?.whiteboardTemplate;
+      if (!template) {
+        return undefined;
+      }
+      const { id, value, ...templateWithoutValue } = template;
+      return {
+        id,
+        nameID: id,
+        value,
+        profile: templateWithoutValue.profile,
+      };
     }
-  }, [hubData, challengeData, opportunityData, canvasId]);
+  }, [
+    // deps
+    hubData,
+    challengeData,
+    opportunityData,
+    hubTemplatesData,
+    platformTemplatesData,
+    isNew,
+    canvasId,
+    canvasLocation,
+  ]);
 
   useEffect(() => {
-    if (canvas) {
-      onCanvasValueLoaded?.(canvas);
+    if (data) {
+      onCanvasValueLoaded?.(data);
     }
-  }, [canvas, onCanvasValueLoaded]);
+  }, [data, onCanvasValueLoaded]);
 
-  let skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId; //!! const
+  const skipCanvasSubscription = !canvasId || data?.checkout?.lockedBy === userId;
 
   useSubscribeToCanvas(
     hubData,
@@ -238,7 +269,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
       findById(getCanvasCalloutContainingCanvas(data?.hub.collaboration?.callouts, canvasId!)?.canvases, canvasId!),
     subHub,
     {
-      skip: skipCanvasSubscription,
+      skip: skipHub || skipCanvasSubscription,
     }
   );
 
@@ -250,7 +281,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
         canvasId!
       ),
     subChallenge,
-    { skip: skipCanvasSubscription }
+    { skip: skipChallenge || skipCanvasSubscription }
   );
 
   useSubscribeToCanvas(
@@ -261,14 +292,14 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
         canvasId!
       ),
     subOpportunity,
-    { skip: skipCanvasSubscription }
+    { skip: skipOpportunity || skipCanvasSubscription }
   );
 
-  // Probably there is no subscription to templates
-  skipCanvasSubscription = true;
+  // TODO: There is no subscription to templates, no check-in/check-out process implemented
+  /*
   useSubscribeToCanvas(
     hubTemplatesData,
-    data => data?.hub.templates?.whiteboardTemplate as Canvas, //!!
+    data => data?.hub.templates?.whiteboardTemplate as Canvas,
     subHubTemplate,
     {
       skip: skipCanvasSubscription,
@@ -277,18 +308,18 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
 
   useSubscribeToCanvas(
     platformTemplatesData,
-    data => data?.platform.library.innovationPack?.templates?.whiteboardTemplate as Canvas, //!!
+    data => data?.platform.library.innovationPack?.templates?.whiteboardTemplate as Canvas,
     subPlatformTemplate,
     {
       skip: skipCanvasSubscription,
     }
   );
-
+*/
   return (
     <>
       {children(
         {
-          canvas,
+          canvas: data,
         },
         {
           loadingCanvasValue:

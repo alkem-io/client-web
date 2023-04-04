@@ -8,11 +8,7 @@ import { Delete, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
-import {
-  CanvasDetailsFragment,
-  CanvasValueFragment,
-  LockedByDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { LockedByDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../../common/components/core';
 import { DialogContent } from '../../../../common/components/core/dialog';
@@ -35,10 +31,7 @@ import { WhiteboardTemplateWithValue } from '../WhiteboardTemplatesLibrary/White
 import mergeCanvas from '../utils/mergeCanvas';
 import { error as logError } from '../../../../services/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-
-interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
-
-type CanvasWithoutValue<Canvas extends CanvasWithValue> = Omit<Canvas, 'value'>;
+import { CanvasWithValue, CanvasWithoutValue } from '../containers/CanvasValueContainer';
 
 interface CanvasDialogProps<Canvas extends CanvasWithValue> {
   entities: {
