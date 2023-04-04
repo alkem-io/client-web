@@ -24,6 +24,7 @@ import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhit
 import { RoutePaths } from './AdminInnovationPackRoutes';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 
+const routePrefix = '/admin/innovation-packs'; // TODO: Maybe pass this from the parent
 interface AdminInnovationPackPageProps {
   isNew?: boolean;
   edit?: boolean;
@@ -40,9 +41,8 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
     innovationTemplateId = '',
   } = useUrlParams();
 
-  const routePrefix = `/admin/innovation-packs/${innovationPackNameId}`; //!!
-
-  const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
+  const innovationPackRoute = `${routePrefix}/${innovationPackNameId}`;
+  const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
 
   const { data, loading } = useAdminInnovationPackQuery({
     variables: { innovationPackId: innovationPackNameId },
@@ -135,14 +135,16 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
         loading={isLoading}
       />
       {!isNew && (
-        <Gutters>
+        <Gutters width="100%">
           <AdminPostTemplatesSection
             templateId={aspectNameId}
             templatesSetId={templatesSetID}
             templates={postTemplates}
             onCloseTemplateDialog={backFromTemplateDialog}
             refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)}
+            buildTemplateLink={({ id }) =>
+              buildLink(`${innovationPackRoute}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)
+            }
             edit={edit}
             loadInnovationPacks={() => {}}
             loadingInnovationPacks={isLoading}
@@ -150,16 +152,16 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
             canImportTemplates={false}
           />
           <AdminWhiteboardTemplatesSection
+            whiteboardTemplatesLocation="platform"
             templateId={whiteboardNameId}
             templatesSetId={templatesSetID}
             templates={whiteboardTemplates}
             onCloseTemplateDialog={backFromTemplateDialog}
             refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)}
+            buildTemplateLink={({ id }) =>
+              buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
+            }
             edit={edit}
-            loadCanvases={() => {}}
-            canvases={[]}
-            getParentCalloutId={() => undefined}
             loadInnovationPacks={() => {}}
             loadingInnovationPacks={isLoading}
             innovationPacks={[]}
@@ -171,7 +173,9 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
             templates={innovationFlowTemplates}
             onCloseTemplateDialog={backFromTemplateDialog}
             refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
-            buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)}
+            buildTemplateLink={({ id }) =>
+              buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
+            }
             edit={edit}
             loadInnovationPacks={() => {}}
             loadingInnovationPacks={isLoading}
