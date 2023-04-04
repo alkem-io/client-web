@@ -63,7 +63,7 @@ const AdminWhiteboardTemplatesSection = ({
       templatePreviewComponent={WhiteboardTemplatePreview}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-      //!!
+      // TODO:
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
       useUpdateTemplateMutation={

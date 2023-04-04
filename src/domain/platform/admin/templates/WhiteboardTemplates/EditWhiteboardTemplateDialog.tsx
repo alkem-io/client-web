@@ -14,7 +14,7 @@ import CanvasValueContainer, { CanvasLocation } from '../../../../collaboration/
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: WhiteboardTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void; //!!  & { tagsetId: string | undefined; tags?: string[] }
+  onSubmit: (values: WhiteboardTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
   canvasLocation: CanvasLocation;
@@ -35,8 +35,6 @@ const EditWhiteboardTemplateDialog = ({
   }
 
   const handleSubmit = (values: WhiteboardTemplateFormSubmittedValues) => {
-    console.log('handleSubmitPost', values);
-    console.log(values);
     return onSubmit({
       ...values,
       tagsetId: template.profile.tagset?.id,

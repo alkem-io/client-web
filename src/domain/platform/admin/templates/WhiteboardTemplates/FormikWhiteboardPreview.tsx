@@ -21,7 +21,7 @@ const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
 
 const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEdit, loading }) => {
   const { t } = useTranslation();
-  const [field, , helpers] = useField(name);
+  const [field, , helpers] = useField<string>(name); // value JSON string
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const handleClickEditButton = () => {
@@ -30,7 +30,6 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEd
   };
 
   const canvasFromTemplate = useMemo(() => {
-    console.log('field.value', field.value, 'set type here//!!');
     return {
       id: '__template',
       value: field.value,
@@ -80,7 +79,6 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEd
                   onCheckin: undefined,
                   onCheckout: undefined,
                   onUpdate: canvas => {
-                    console.log('canvas updated!', canvas);
                     helpers.setValue(canvas.value);
                     setEditDialogOpen(false);
                   },
