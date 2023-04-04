@@ -1,7 +1,7 @@
 import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
-import { Dialog } from '@mui/material';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import DeleteButton from '../../../../shared/components/DeleteButton';
@@ -38,7 +38,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
   };
 
   return (
-    <Dialog
+    <DialogWithGrid
       open={open}
       onClose={onClose}
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
@@ -58,7 +58,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
           </>
         }
       />
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

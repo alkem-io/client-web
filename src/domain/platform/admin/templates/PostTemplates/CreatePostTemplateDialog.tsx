@@ -1,6 +1,6 @@
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
 import { useTranslation } from 'react-i18next';
-import { Dialog } from '@mui/material';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
@@ -17,7 +17,7 @@ const CreatePostTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplat
   const values: Partial<PostTemplateFormValues> = {};
 
   return (
-    <Dialog
+    <DialogWithGrid
       open={open}
       onClose={onClose}
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
@@ -31,7 +31,7 @@ const CreatePostTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplat
         onSubmit={onSubmit}
         actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
       />
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 
