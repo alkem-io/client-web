@@ -23,7 +23,7 @@ const AdminInnovationPacksRoutes: FC = () => {
           element={<AdminInnovationPackPage edit />}
         />
         <Route
-          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.canvasNameId}`}
+          path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
           element={<AdminInnovationPackPage edit />}
         />
         <Route

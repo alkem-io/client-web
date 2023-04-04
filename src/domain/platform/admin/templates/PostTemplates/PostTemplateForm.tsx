@@ -10,6 +10,7 @@ import { VERY_LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length
 import TemplateForm from '../TemplateForm';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
+//!! displayName and description are not geting updated, should be nested? there is an any outside here
 export interface PostTemplateFormValues {
   displayName: string;
   description: string;

@@ -70,9 +70,9 @@ export interface CanvasManagementViewProps
     CanvasNavigationMethods {}
 
 const getCanvasShareUrl = (urlParams: UrlParams) => {
-  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.whiteboardNameId) return;
 
-  return buildCanvasUrl(urlParams.calloutNameId, urlParams.canvasNameId, {
+  return buildCanvasUrl(urlParams.calloutNameId, urlParams.whiteboardNameId, {
     hubNameId: urlParams.hubNameId,
     challengeNameId: urlParams.challengeNameId,
     opportunityNameId: urlParams.opportunityNameId,

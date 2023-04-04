@@ -1309,6 +1309,7 @@ export type CreateInnovationPackOnLibraryInput = {
   profileData: CreateProfileInput;
   /** The provider Organization for the InnovationPack */
   providerID: Scalars['UUID_NAMEID'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateLocationInput = {
@@ -1378,7 +1379,6 @@ export type CreateProfileInput = {
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
   /** A memorable short description for this entity. */
   tagline?: InputMaybe<Scalars['String']>;
-  tagsets?: InputMaybe<Array<CreateTagsetInput>>;
 };
 
 export type CreateProjectInput = {
@@ -1408,11 +1408,6 @@ export type CreateRelationOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
   type: Scalars['String'];
-};
-
-export type CreateTagsetInput = {
-  name: Scalars['String'];
-  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateTagsetOnProfileInput = {

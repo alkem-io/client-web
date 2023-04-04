@@ -107,7 +107,9 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
                   profileId={profileId}
                 />
               </>
-            ) : undefined}
+            ) : (
+              <BlockSectionTitle>{t('pages.admin.innovation-packs.save-new-for-details')}</BlockSectionTitle>
+            )}
             <FormRow>
               <Box display="flex" marginY={4} justifyContent="flex-end">
                 <SaveButton loading={loading} onClick={() => handleSubmit()} />

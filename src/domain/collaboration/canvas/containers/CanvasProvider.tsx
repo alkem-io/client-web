@@ -39,7 +39,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
     calloutNameId: calloutId = '',
-    canvasNameId = '',
+    whiteboardNameId: canvasNameId = '',
   } = useUrlParams();
 
   const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
