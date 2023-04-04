@@ -57,7 +57,7 @@ const validateCanvasLocation = (location: CanvasLocation) => {
   if (compact([location.isContribution, location.isHubTemplate, location.isPlatformTemplate]).length !== 1) {
     return false;
   }
-  if (location.isContribution && (!location.hubNameId || !location.calloutId)) {
+  if (location.isContribution && !location.hubNameId) {
     // If it is a contribution, at least hub and callout must be specified
     return false;
   }
@@ -105,19 +105,22 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
-  if (!validateCanvasLocation(canvasLocation)) {
-    throw new Error(`Invalid canvas location: ${JSON.stringify(canvasLocation)}`);
-  }
+  const validLocation = validateCanvasLocation(canvasLocation);
 
   const { isNew, canvasId, calloutId, hubNameId, challengeNameId, opportunityNameId, innovationPackId } =
     canvasLocation;
 
-  const skipHub = isNew || !canvasLocation.isContribution || Boolean(challengeNameId) || Boolean(opportunityNameId);
+  const skipHub =
+    !validLocation || isNew || !canvasLocation.isContribution || Boolean(challengeNameId) || Boolean(opportunityNameId);
   const skipChallenge =
-    isNew || !canvasLocation.isContribution || Boolean(opportunityNameId) || !Boolean(challengeNameId);
-  const skipOpportunity = isNew || !canvasLocation.isContribution || !Boolean(opportunityNameId);
-  const skipHubTemplate = isNew || !canvasLocation.isHubTemplate;
-  const skipPlatformTemplate = isNew || !canvasLocation.isPlatformTemplate;
+    !validLocation ||
+    isNew ||
+    !canvasLocation.isContribution ||
+    Boolean(opportunityNameId) ||
+    !Boolean(challengeNameId);
+  const skipOpportunity = !validLocation || isNew || !canvasLocation.isContribution || !Boolean(opportunityNameId);
+  const skipHubTemplate = !validLocation || isNew || !canvasLocation.isHubTemplate;
+  const skipPlatformTemplate = !validLocation || isNew || !canvasLocation.isPlatformTemplate;
 
   const {
     data: challengeData,
