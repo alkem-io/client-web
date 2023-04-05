@@ -23,6 +23,9 @@ query JourneyData(
       metrics {
         ...MetricsItem
       }
+      host {
+        ...AssociatedOrganizationDetails
+      }
     }
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
@@ -68,6 +71,7 @@ fragment ContextJourneyData on Context {
   id
   vision
   who
+  impact
 }
 
 fragment JourneyCommunity on Community {
