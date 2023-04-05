@@ -26,13 +26,13 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabl
         value={CalloutType.Comments}
         iconComponent={calloutIcons[CalloutType.Comments]}
       >
-        {t('common.discussion')}
+        {t('components.callout-creation.callout-type-select.label', { calloutType: t('common.post') })}
       </RadioButton>
       <RadioButton key={CalloutType.Card} value={CalloutType.Card} iconComponent={calloutIcons[CalloutType.Card]}>
-        {t('common.cards')}
+        {t('components.callout-creation.callout-type-select.label', { calloutType: t('common.posts') })}
       </RadioButton>
       <RadioButton key={CalloutType.Canvas} value={CalloutType.Canvas} iconComponent={calloutIcons[CalloutType.Canvas]}>
-        {t('common.canvases')}
+        {t('components.callout-creation.callout-type-select.label', { calloutType: t('common.canvas') })}
       </RadioButton>
     </RadioButtonGroup>
   );

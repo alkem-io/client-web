@@ -29,7 +29,7 @@ interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCreateCallout: (callout: CalloutCreationType) => Promise<void>;
+  handleCreateCallout: (callout: CalloutCreationType) => Promise<string | undefined>;
   isCreating: boolean;
 }
 
@@ -108,7 +108,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
-      await createCallout({
+      const result = await createCallout({
         variables: {
           calloutData: {
             collaborationID,
@@ -120,7 +120,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
       setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
 
-      return;
+      return result.data?.createCalloutOnCollaboration.id;
     },
     [collaborationID, createCallout]
   );

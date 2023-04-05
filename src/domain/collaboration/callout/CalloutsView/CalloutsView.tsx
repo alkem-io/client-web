@@ -215,6 +215,7 @@ const CalloutsView = ({ entityTypeName, scrollToCallout = false }: CalloutsPageP
             open={isCalloutCreationDialogOpen}
             onClose={handleCreateCalloutClosed}
             onSaveAsDraft={handleCreateCallout}
+            onVisibilityChange={handleVisibilityChange}
             isCreating={isCreating}
             calloutNames={calloutNames}
             templates={templates}

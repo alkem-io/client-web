@@ -6,9 +6,11 @@ import {
   CalloutState,
   CalloutType,
   WhiteboardTemplateFragment,
+  CalloutVisibility,
+  Callout,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import { CalloutIcon } from '../icon/CalloutIcon';
@@ -25,6 +27,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { Reference } from '../../../common/profile/Profile';
+import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -41,7 +44,12 @@ export type CalloutCreationDialogFields = {
 export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
-  onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
+  onSaveAsDraft: (callout: CalloutCreationType) => Promise<string | undefined>;
+  onVisibilityChange: (
+    calloutId: Callout['id'],
+    visibility: CalloutVisibility,
+    sendNotification: boolean
+  ) => Promise<void>;
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
@@ -75,6 +83,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
   onSaveAsDraft,
+  onVisibilityChange,
   isCreating,
   calloutNames,
   templates,
@@ -84,7 +93,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
-  //   const [isConfirmPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
+  const [isConfirmPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
+  const [sendNotification, setSendNotification] = useState(true);
 
   useLayoutEffect(() => {
     if (!open) return;
@@ -111,11 +121,18 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setSelectedCalloutType(value);
   };
 
-  //   const handlePublish = () => {
-  //     setIsConfirmPublishDialogOpen(true);
-  //   };
+  const openPublishDialog = () => setIsConfirmPublishDialogOpen(true);
+  const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
 
-  const handleSaveCallout = useCallback(async () => {
+  const handlePublish = async () => {
+    const result = await handleSaveAsDraftCallout();
+    if (result) {
+      await onVisibilityChange(result, CalloutVisibility.Published, sendNotification);
+    }
+    setIsConfirmPublishDialogOpen(false);
+  };
+
+  const handleSaveAsDraftCallout = useCallback(async () => {
     const calloutPostTemplate = createPostTemplateFromTemplateSet(callout, templates.postTemplates);
 
     const getCanvasValueFromHub = async () => {
@@ -177,7 +194,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       {!selectedCalloutType && (
         <>
           <DialogHeader onClose={handleClose}>
-            <Box display="flex">{t('components.callout-creation.callout-type.title')}</Box>
+            <Box display="flex">{t('components.callout-creation.callout-type-select.title')}</Box>
           </DialogHeader>
           <DialogContent>
             <Box paddingY={theme => theme.spacing(2)}>
@@ -211,16 +228,44 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <LoadingButton
               loading={isCreating}
               loadingIndicator={`${t('buttons.save-draft')}...`}
-              onClick={handleSaveCallout}
+              onClick={handleSaveAsDraftCallout}
               variant="contained"
               disabled={!isValid}
             >
               {t('buttons.save-draft')}
             </LoadingButton>
-            {/* <Button variant="contained" onClick={handlePublish}>
+            <Button variant="contained" onClick={openPublishDialog} disabled={!isValid}>
               {t('buttons.publish')}
-            </Button> */}
+            </Button>
           </Actions>
+          <Dialog open={isConfirmPublishDialogOpen} maxWidth="xs">
+            <DialogHeader onClose={closePublishDialog}>
+              <Box display="flex">{t('buttons.publish')}</Box>
+            </DialogHeader>
+            <DialogContent>
+              <Box paddingY={theme => theme.spacing(2)} />
+              {t('components.callout-creation.publish-dialog.text', { calloutDisplayName: callout.displayName })}
+              <SectionSpacer />
+              <FormControlLabel
+                control={
+                  <Checkbox checked={sendNotification} onChange={() => setSendNotification(!sendNotification)} />
+                }
+                label={t('components.callout-creation.publish-dialog.checkbox-label')}
+              />
+            </DialogContent>
+            <Actions padding={gutters()} justifyContent="end">
+              <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
+              <LoadingButton
+                loading={isCreating}
+                loadingIndicator={`${t('buttons.save-draft')}...`}
+                onClick={handlePublish}
+                variant="contained"
+                disabled={!isValid}
+              >
+                {t('buttons.publish')}
+              </LoadingButton>
+            </Actions>
+          </Dialog>
         </>
       )}
     </Dialog>

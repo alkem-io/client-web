@@ -216,6 +216,8 @@
     "member": "Member",
     "members": "Members",
     "empty-string": "",
+    "post": "Post",
+    "posts": "Posts",
     "discussion": "Discussion",
     "discussions": "Discussions",
     "disassociate": "Disassociate",
@@ -749,8 +751,13 @@
         "title": "Create",
         "card-template-label": "Choose Card template"
       },
-      "callout-type": {
-        "title": "What would you like to add?"
+      "callout-type-select": {
+        "title": "What would you like to add?",
+        "label": "Call for {{calloutType}}"
+      },
+      "publish-dialog": {
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
+        "checkbox-label": "Yes, notify the community."
       }
     },
     "callout-edit": {
