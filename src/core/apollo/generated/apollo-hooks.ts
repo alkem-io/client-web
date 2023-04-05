@@ -5166,6 +5166,9 @@ export const JourneyDataDocument = gql`
         metrics {
           ...MetricsItem
         }
+        host {
+          ...AssociatedOrganizationDetails
+        }
       }
       challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
         id
@@ -5203,6 +5206,7 @@ export const JourneyDataDocument = gql`
   ${ContextJourneyDataFragmentDoc}
   ${JourneyCommunityFragmentDoc}
   ${MetricsItemFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
 `;
 
 /**

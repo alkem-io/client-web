@@ -179,14 +179,12 @@ const JourneyUnauthorizedDialog = ({
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
         <Gutters row flexWrap="wrap">
           <PageContentColumn columns={4}>
-            {communityReadAccess && (
-              <EntityDashboardLeadsSection
-                organizationsHeader={t(leadOrganizationsHeader)}
-                usersHeader={t(leadUsersHeader)}
-                leadUsers={leadUsers}
-                leadOrganizations={leadOrganizations}
-              />
-            )}
+            <EntityDashboardLeadsSection
+              organizationsHeader={t(leadOrganizationsHeader)}
+              usersHeader={t(leadUsersHeader)}
+              leadUsers={leadUsers}
+              leadOrganizations={leadOrganizations}
+            />
             {communityReadAccess && (
               <>
                 <ContactLeadsButton onClick={openContactLeadsDialog}>

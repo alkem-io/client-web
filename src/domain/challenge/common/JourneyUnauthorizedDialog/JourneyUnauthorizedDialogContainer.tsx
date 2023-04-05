@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import {
   useJourneyCommunityPrivilegesQuery,
   useJourneyDataQuery,
@@ -108,6 +108,11 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     [sendMessageToCommunityLeads, community]
   );
 
+  const hostOrganizations = useMemo(
+    () => journeyDataQueryData?.hub.host && [journeyDataQueryData?.hub.host],
+    [journeyDataQueryData]
+  );
+
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: isAuthorized,
     privilegesLoading,
@@ -119,7 +124,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     who: context?.who,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
-    leadOrganizations: community?.leadOrganizations,
+    leadOrganizations: journeyTypeName === 'hub' ? hostOrganizations : community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     loading: privilegesLoading,
   };

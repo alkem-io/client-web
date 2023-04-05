@@ -23,6 +23,9 @@ query JourneyData(
       metrics {
         ...MetricsItem
       }
+      host {
+        ...AssociatedOrganizationDetails
+      }
     }
     challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
       id
