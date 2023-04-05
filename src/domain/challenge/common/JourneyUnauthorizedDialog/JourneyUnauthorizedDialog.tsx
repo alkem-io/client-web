@@ -33,12 +33,13 @@ import ChallengeMetrics from '../../challenge/utils/useChallengeMetricsItems';
 import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsItems';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Theme } from '@mui/material/styles';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 
 interface JourneyUnauthorizedDialogProps extends EntityDashboardLeads {
   journeyTypeName: JourneyTypeName;
   displayName: ReactNode;
   tagline: ReactNode;
-  communityReadAccess: boolean | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: Metric[] | undefined;
   privilegesLoading: boolean;
@@ -90,7 +91,6 @@ const JourneyUnauthorizedDialog = ({
   displayName,
   tagline,
   journeyTypeName,
-  communityReadAccess,
   leadUsers,
   leadOrganizations,
   sendMessageToCommunityLeads,
@@ -145,6 +145,10 @@ const JourneyUnauthorizedDialog = ({
 
   const applicationButtonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
 
+  const breakpoint = useCurrentBreakpoint();
+
+  const isMobile = breakpoint === 'xs';
+
   return (
     <DialogWithGrid
       open={!disabled && !privilegesLoading && !authorized}
@@ -154,11 +158,17 @@ const JourneyUnauthorizedDialog = ({
       BackdropProps={{ sx: { background: gradient, pointerEvents: 'none' } }}
     >
       <Box padding={gutters()}>
-        <Box display="flex" gap={gutters()} alignItems="start">
+        <Box
+          display="flex"
+          gap={gutters()}
+          rowGap={gutters(0.5)}
+          alignItems="start"
+          flexWrap={isMobile ? 'wrap' : 'nowrap'}
+        >
           <DialogHeaderItem minWidth="30%" align="start">
             {canGoBack && <BackButton onClick={() => navigate(-1)} />}
           </DialogHeaderItem>
-          <DialogHeaderItem>
+          <DialogHeaderItem order={isMobile ? 1 : 0}>
             <JourneyIcon fontSize="small" color="primary" />
             <PageTitle paddingY={gutters(0.5)}>{displayName}</PageTitle>
           </DialogHeaderItem>
@@ -179,45 +189,7 @@ const JourneyUnauthorizedDialog = ({
         </Box>
       </PageContentRibbon>
       <Box flexGrow={1} flexShrink={1} minHeight={0} sx={{ overflowY: 'auto', backgroundColor: 'background.default' }}>
-        <Gutters row flexWrap="wrap">
-          <PageContentColumn columns={4}>
-            <EntityDashboardLeadsSection
-              organizationsHeader={t(leadOrganizationsHeader)}
-              usersHeader={t(leadUsersHeader)}
-              leadUsers={leadUsers}
-              leadOrganizations={leadOrganizations}
-            />
-            {communityReadAccess && (
-              <>
-                <ContactLeadsButton onClick={openContactLeadsDialog}>
-                  {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
-                </ContactLeadsButton>
-                <DirectMessageDialog
-                  title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
-                  open={isContactLeadUsersDialogOpen}
-                  onClose={closeContactLeadsDialog}
-                  onSendMessage={sendMessageToCommunityLeads}
-                  messageReceivers={messageReceivers}
-                />
-              </>
-            )}
-            {impact && (
-              <PageContentBlock>
-                <PageContentBlockHeader title={t('context.hub.impact.title')} />
-                <WrapperMarkdown>{impact}</WrapperMarkdown>
-              </PageContentBlock>
-            )}
-            {who && (
-              <PageContentBlock>
-                <PageContentBlockHeader title={t('context.hub.who.title')} />
-                <WrapperMarkdown>{who}</WrapperMarkdown>
-              </PageContentBlock>
-            )}
-            <PageContentBlock>
-              <PageContentBlockHeader title={t('pages.hub.sections.dashboard.activity')} />
-              <ActivityView activity={metricsItems} loading={loading} />
-            </PageContentBlock>
-          </PageContentColumn>
+        <Gutters flexWrap="wrap" flexDirection={isMobile ? 'row' : 'row-reverse'}>
           <PageContentColumn columns={8}>
             {description && (
               <PageContentBlock accent>
@@ -230,6 +202,49 @@ const JourneyUnauthorizedDialog = ({
                 <WrapperMarkdown>{background}</WrapperMarkdown>
               </PageContentBlock>
             )}
+          </PageContentColumn>
+          <PageContentColumn columns={4}>
+            <PageContentBlockSeamless disablePadding order={1}>
+              {impact && (
+                <PageContentBlock>
+                  <PageContentBlockHeader title={t('context.hub.impact.title')} />
+                  <WrapperMarkdown>{impact}</WrapperMarkdown>
+                </PageContentBlock>
+              )}
+              {who && (
+                <PageContentBlock>
+                  <PageContentBlockHeader title={t('context.hub.who.title')} />
+                  <WrapperMarkdown>{who}</WrapperMarkdown>
+                </PageContentBlock>
+              )}
+              <PageContentBlock>
+                <PageContentBlockHeader title={t('pages.hub.sections.dashboard.activity')} />
+                <ActivityView activity={metricsItems} loading={loading} />
+              </PageContentBlock>
+            </PageContentBlockSeamless>
+            <PageContentBlockSeamless disablePadding order={isMobile ? 1 : 0}>
+              <EntityDashboardLeadsSection
+                organizationsHeader={t(leadOrganizationsHeader)}
+                usersHeader={t(leadUsersHeader)}
+                leadUsers={leadUsers}
+                leadOrganizations={leadOrganizations}
+              />
+              {messageReceivers.length !== 0 ||
+                (true && (
+                  <>
+                    <ContactLeadsButton onClick={openContactLeadsDialog}>
+                      {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
+                    </ContactLeadsButton>
+                    <DirectMessageDialog
+                      title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
+                      open={isContactLeadUsersDialogOpen}
+                      onClose={closeContactLeadsDialog}
+                      onSendMessage={sendMessageToCommunityLeads}
+                      messageReceivers={messageReceivers}
+                    />
+                  </>
+                ))}
+            </PageContentBlockSeamless>
           </PageContentColumn>
         </Gutters>
       </Box>

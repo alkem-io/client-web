@@ -13,7 +13,6 @@ import { AuthorizationPrivilege, MetricsItemFragment } from '../../../../core/ap
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
   tagline: string | undefined;
-  communityReadAccess: boolean | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
   privilegesLoading: boolean;
@@ -117,7 +116,6 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: isAuthorized,
     privilegesLoading,
-    communityReadAccess,
     background: profile?.description,
     displayName: profile?.displayName,
     tagline: profile?.tagline,
