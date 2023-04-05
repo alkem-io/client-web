@@ -107,14 +107,11 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   return (
     <>
       <CanvasValueContainer
-        canvasLocation={{
-          isContribution: true,
-          hubNameId: urlParams.hubNameId,
-          challengeNameId: urlParams.challengeNameId,
-          opportunityNameId: urlParams.opportunityNameId,
-          calloutId,
-          canvasId: canvas?.id,
-        }}
+        canvasId={canvas?.id}
+        calloutId={calloutId}
+        hubNameId={urlParams.hubNameId ?? ''}
+        challengeNameId={urlParams.challengeNameId}
+        opportunityNameId={urlParams.opportunityNameId}
       >
         {entities => (
           <CanvasDialog

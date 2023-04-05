@@ -1,5 +1,8 @@
-import React from 'react';
-import { AdminWhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import React, { useEffect } from 'react';
+import {
+  AdminWhiteboardTemplateFragment,
+  AdminWhiteboardTemplateValueFragment,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValues,
@@ -9,7 +12,6 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import DeleteButton from '../../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import CanvasValueContainer, { CanvasLocation } from '../../../../collaboration/canvas/containers/CanvasValueContainer';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
@@ -17,7 +19,8 @@ export interface EditWhiteboardTemplateDialogProps {
   onSubmit: (values: WhiteboardTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminWhiteboardTemplateFragment | undefined;
-  canvasLocation: CanvasLocation;
+  getTemplateValue: (template: AdminWhiteboardTemplateFragment) => void;
+  templateValue: AdminWhiteboardTemplateValueFragment | undefined;
 }
 
 const EditWhiteboardTemplateDialog = ({
@@ -26,13 +29,27 @@ const EditWhiteboardTemplateDialog = ({
   onClose,
   onSubmit,
   onDelete,
-  canvasLocation,
+  getTemplateValue,
+  templateValue,
 }: EditWhiteboardTemplateDialogProps) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!template) return;
+
+    getTemplateValue(template);
+  }, [getTemplateValue, template]);
 
   if (!template) {
     return null;
   }
+
+  const initialValues: Partial<WhiteboardTemplateFormValues> = {
+    value: templateValue?.value,
+    displayName: template.profile.displayName,
+    description: template.profile.description,
+    tags: template.profile.tagset?.tags,
+  };
 
   const handleSubmit = (values: WhiteboardTemplateFormSubmittedValues) => {
     return onSubmit({
@@ -51,31 +68,17 @@ const EditWhiteboardTemplateDialog = ({
       <DialogHeader onClose={onClose}>
         {t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
       </DialogHeader>
-      <CanvasValueContainer canvasLocation={{ ...canvasLocation, canvasId: template.id }}>
-        {({ canvas: canvasValue }, { loadingCanvasValue }) => {
-          const initialValues: Partial<WhiteboardTemplateFormValues> = {
-            value: canvasValue?.value,
-            displayName: template.profile.displayName,
-            description: template.profile.description,
-            tags: template.profile.tagset?.tags,
-          };
-
-          return (
-            <WhiteboardTemplateForm
-              initialValues={initialValues}
-              visual={template?.profile?.visual}
-              onSubmit={handleSubmit}
-              loading={loadingCanvasValue}
-              actions={
-                <>
-                  <DeleteButton onClick={onDelete} />
-                  <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
-                </>
-              }
-            />
-          );
-        }}
-      </CanvasValueContainer>
+      <WhiteboardTemplateForm
+        initialValues={initialValues}
+        visual={template?.profile?.visual}
+        onSubmit={handleSubmit}
+        actions={
+          <>
+            <DeleteButton onClick={onDelete} />
+            <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
+          </>
+        }
+      />
     </DialogWithGrid>
   );
 };

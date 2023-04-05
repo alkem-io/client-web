@@ -7,22 +7,23 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import CanvasValueContainer, { CanvasLocation } from '../../../../collaboration/canvas/containers/CanvasValueContainer';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
-  canvasLocation: CanvasLocation;
 }
 
-const CreateWhiteboardTemplateDialog = ({
-  open,
-  onClose,
-  onSubmit,
-  canvasLocation,
-}: CreateWhiteboardTemplateDialogProps) => {
+const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhiteboardTemplateDialogProps) => {
   const { t } = useTranslation();
+
+  const initialValues: Partial<WhiteboardTemplateFormValues> = {
+    value: JSON.stringify(EmptyWhiteboard),
+    displayName: '',
+    description: '',
+    tags: [],
+  };
 
   return (
     <DialogWithGrid
@@ -34,28 +35,16 @@ const CreateWhiteboardTemplateDialog = ({
       <DialogHeader onClose={onClose}>
         {t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
       </DialogHeader>
-      <CanvasValueContainer canvasLocation={{ ...canvasLocation, isNew: true }}>
-        {({ canvas: canvasValue }, { loadingCanvasValue }) => {
-          const initialValues: Partial<WhiteboardTemplateFormValues> = {
-            value: canvasValue?.value,
-            displayName: '',
-            description: '',
-            tags: [],
-          };
-          return (
-            <WhiteboardTemplateForm
-              initialValues={initialValues}
-              onSubmit={onSubmit}
-              loading={loadingCanvasValue}
-              actions={
-                <>
-                  <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
-                </>
-              }
-            />
-          );
-        }}
-      </CanvasValueContainer>
+
+      <WhiteboardTemplateForm
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        actions={
+          <>
+            <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
+          </>
+        }
+      />
     </DialogWithGrid>
   );
 };

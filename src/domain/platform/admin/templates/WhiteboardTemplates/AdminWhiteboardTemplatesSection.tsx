@@ -43,7 +43,7 @@ const AdminWhiteboardTemplatesSection = ({
   ...props
 }: AdminWhiteboardTemplatesSectionProps) => {
   const { t } = useTranslation();
-  const { hubNameId, innovationPackNameId, whiteboardNameId } = useUrlParams();
+  const { hubNameId, innovationPackNameId } = useUrlParams();
 
   const [fetchWhiteboardTemplateFromHubValue, { data: dataFromHub }] =
     useHubTemplatesAdminWhiteboardTemplateWithValueLazyQuery({
@@ -101,14 +101,6 @@ const AdminWhiteboardTemplatesSection = ({
   return (
     <AdminTemplatesSection
       {...props}
-      canvasLocation={{
-        isContribution: false,
-        isHubTemplate: whiteboardTemplatesLocation === 'hub',
-        isPlatformTemplate: whiteboardTemplatesLocation === 'platform',
-        innovationPackId: innovationPackNameId,
-        hubNameId: hubNameId,
-        canvasId: whiteboardNameId,
-      }}
       headerText={t('pages.admin.generic.sections.templates.canvas-templates')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.canvases'),
