@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, Link } from '@mui/material';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -80,6 +80,12 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
 
   const [fetchWhiteboardTemplateValuePlatform, { loading: loadingPlatformTemplateValue }] =
     usePlatformWhiteboardTemplateValueLazyQuery();
+
+  useEffect(() => {
+    if (!hubNameId) {
+      fetchPlatformTemplates();
+    }
+  }, [hubNameId]);
 
   const platformTemplates = useMemo(
     () =>
