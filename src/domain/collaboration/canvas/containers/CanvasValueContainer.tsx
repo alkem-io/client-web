@@ -25,7 +25,6 @@ export type CanvasWithoutValue<Canvas extends CanvasWithValue> = Omit<Canvas, 'v
 
 export interface ICanvasValueEntities {
   canvas?: CanvasWithValue;
-  //!! canvas?: CanvasValueFragment & CanvasDetailsFragment;
 }
 
 export interface CanvasValueContainerState {
