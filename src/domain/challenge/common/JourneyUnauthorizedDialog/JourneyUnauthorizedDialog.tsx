@@ -46,6 +46,7 @@ interface JourneyUnauthorizedDialogProps extends EntityDashboardLeads {
   description: string | undefined;
   background: string | undefined;
   who: string | undefined;
+  impact: string | undefined;
   loading: boolean;
   disabled?: boolean;
 }
@@ -97,6 +98,7 @@ const JourneyUnauthorizedDialog = ({
   description,
   background,
   who,
+  impact,
   authorized,
   privilegesLoading,
   loading,
@@ -198,6 +200,12 @@ const JourneyUnauthorizedDialog = ({
                   messageReceivers={messageReceivers}
                 />
               </>
+            )}
+            {impact && (
+              <PageContentBlock>
+                <PageContentBlockHeader title={t('context.hub.impact.title')} />
+                <WrapperMarkdown>{impact}</WrapperMarkdown>
+              </PageContentBlock>
             )}
             {who && (
               <PageContentBlock>

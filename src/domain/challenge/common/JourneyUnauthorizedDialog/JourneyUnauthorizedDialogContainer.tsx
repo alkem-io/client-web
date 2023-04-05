@@ -21,6 +21,7 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
   vision: string | undefined;
   background: string | undefined;
   who: string | undefined;
+  impact: string | undefined;
   loading: boolean;
 }
 
@@ -122,6 +123,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     tagline: profile?.tagline,
     vision: context?.vision,
     who: context?.who,
+    impact: context?.impact,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
     leadOrganizations: journeyTypeName === 'hub' ? hostOrganizations : community?.leadOrganizations,

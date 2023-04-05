@@ -497,6 +497,7 @@ export const ContextJourneyDataFragmentDoc = gql`
     id
     vision
     who
+    impact
   }
 `;
 export const JourneyCommunityFragmentDoc = gql`

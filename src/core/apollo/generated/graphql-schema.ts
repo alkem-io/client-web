@@ -6657,7 +6657,15 @@ export type JourneyDataQuery = {
       tagline: string;
       description?: string | undefined;
     };
-    context?: { __typename?: 'Context'; id: string; vision?: string | undefined; who?: string | undefined } | undefined;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          vision?: string | undefined;
+          who?: string | undefined;
+          impact?: string | undefined;
+        }
+      | undefined;
     community?:
       | {
           __typename?: 'Community';
@@ -6730,7 +6738,13 @@ export type JourneyDataQuery = {
         description?: string | undefined;
       };
       context?:
-        | { __typename?: 'Context'; id: string; vision?: string | undefined; who?: string | undefined }
+        | {
+            __typename?: 'Context';
+            id: string;
+            vision?: string | undefined;
+            who?: string | undefined;
+            impact?: string | undefined;
+          }
         | undefined;
       community?:
         | {
@@ -6789,7 +6803,13 @@ export type JourneyDataQuery = {
         description?: string | undefined;
       };
       context?:
-        | { __typename?: 'Context'; id: string; vision?: string | undefined; who?: string | undefined }
+        | {
+            __typename?: 'Context';
+            id: string;
+            vision?: string | undefined;
+            who?: string | undefined;
+            impact?: string | undefined;
+          }
         | undefined;
       community?:
         | {
@@ -6853,6 +6873,7 @@ export type ContextJourneyDataFragment = {
   id: string;
   vision?: string | undefined;
   who?: string | undefined;
+  impact?: string | undefined;
 };
 
 export type JourneyCommunityFragment = {

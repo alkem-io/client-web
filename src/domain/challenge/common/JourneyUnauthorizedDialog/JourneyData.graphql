@@ -71,6 +71,7 @@ fragment ContextJourneyData on Context {
   id
   vision
   who
+  impact
 }
 
 fragment JourneyCommunity on Community {
