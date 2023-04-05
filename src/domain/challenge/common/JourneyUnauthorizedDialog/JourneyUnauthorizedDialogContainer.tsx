@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import {
   useJourneyCommunityPrivilegesQuery,
   useJourneyDataQuery,
@@ -13,7 +13,6 @@ import { AuthorizationPrivilege, MetricsItemFragment } from '../../../../core/ap
 interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLeads {
   displayName: string | undefined;
   tagline: string | undefined;
-  communityReadAccess: boolean | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   metrics: MetricsItemFragment[] | undefined;
   privilegesLoading: boolean;
@@ -21,6 +20,7 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
   vision: string | undefined;
   background: string | undefined;
   who: string | undefined;
+  impact: string | undefined;
   loading: boolean;
 }
 
@@ -108,18 +108,23 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     [sendMessageToCommunityLeads, community]
   );
 
+  const hostOrganizations = useMemo(
+    () => journeyDataQueryData?.hub.host && [journeyDataQueryData?.hub.host],
+    [journeyDataQueryData]
+  );
+
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: isAuthorized,
     privilegesLoading,
-    communityReadAccess,
     background: profile?.description,
     displayName: profile?.displayName,
     tagline: profile?.tagline,
     vision: context?.vision,
     who: context?.who,
+    impact: context?.impact,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
-    leadOrganizations: community?.leadOrganizations,
+    leadOrganizations: journeyTypeName === 'hub' ? hostOrganizations : community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     loading: privilegesLoading,
   };

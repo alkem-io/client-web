@@ -6662,7 +6662,15 @@ export type JourneyDataQuery = {
       tagline: string;
       description?: string | undefined;
     };
-    context?: { __typename?: 'Context'; id: string; vision?: string | undefined; who?: string | undefined } | undefined;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          vision?: string | undefined;
+          who?: string | undefined;
+          impact?: string | undefined;
+        }
+      | undefined;
     community?:
       | {
           __typename?: 'Community';
@@ -6708,6 +6716,22 @@ export type JourneyDataQuery = {
         }
       | undefined;
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | undefined;
     challenge?: {
       __typename?: 'Challenge';
       id: string;
@@ -6719,7 +6743,13 @@ export type JourneyDataQuery = {
         description?: string | undefined;
       };
       context?:
-        | { __typename?: 'Context'; id: string; vision?: string | undefined; who?: string | undefined }
+        | {
+            __typename?: 'Context';
+            id: string;
+            vision?: string | undefined;
+            who?: string | undefined;
+            impact?: string | undefined;
+          }
         | undefined;
       community?:
         | {
@@ -6778,7 +6808,13 @@ export type JourneyDataQuery = {
         description?: string | undefined;
       };
       context?:
-        | { __typename?: 'Context'; id: string; vision?: string | undefined; who?: string | undefined }
+        | {
+            __typename?: 'Context';
+            id: string;
+            vision?: string | undefined;
+            who?: string | undefined;
+            impact?: string | undefined;
+          }
         | undefined;
       community?:
         | {
@@ -6842,6 +6878,7 @@ export type ContextJourneyDataFragment = {
   id: string;
   vision?: string | undefined;
   who?: string | undefined;
+  impact?: string | undefined;
 };
 
 export type JourneyCommunityFragment = {
