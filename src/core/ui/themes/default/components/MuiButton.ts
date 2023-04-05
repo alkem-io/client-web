@@ -35,10 +35,11 @@ const MuiButton: Components<Theme>['MuiButton'] = {
   ],
 
   styleOverrides: {
-    root: {
+    root: ({ theme }) => ({
       display: 'inline-flex',
       width: 'auto',
-    },
+      padding: theme.spacing(0.5, 1.5),
+    }),
   },
   defaultProps: {
     disableRipple: true,
