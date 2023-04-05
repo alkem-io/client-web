@@ -9,7 +9,7 @@ import SimpleCard from '../../../shared/components/SimpleCard';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
+import { CanvasFragmentWithCallout } from '../../callout/useCallouts/useCallouts';
 
 interface CanvasesDashboardPreviewProps extends DashboardGenericSectionProps {
   canvases: CanvasFragmentWithCallout[];

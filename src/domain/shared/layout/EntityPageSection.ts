@@ -2,6 +2,7 @@ export enum EntityPageSection {
   Dashboard = 'dashboard',
   Settings = 'settings',
   About = 'about',
+  Collaboration = 'collaboration',
   Contribute = 'contribute',
   Challenges = 'challenges',
   Opportunities = 'opportunities',

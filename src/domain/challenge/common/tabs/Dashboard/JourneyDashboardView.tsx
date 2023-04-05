@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo, useState } from 'react';
+import React, { ReactElement, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../../shared/components/References/References';
 import { DashboardTopCalloutFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
@@ -58,6 +58,8 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   childEntityTitle?: string;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  childrenLeft?: ReactNode;
+  childrenRight?: ReactNode;
 }
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
@@ -87,6 +89,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   childEntityTitle,
   topCallouts,
   sendMessageToCommunityLeads,
+  childrenLeft,
+  childrenRight,
 }: JourneyDashboardViewProps<ChildEntity>) => {
   const { t } = useTranslation();
   const [isOpenContactLeadUsersDialog, setIsOpenContactLeadUsersDialog] = useState(false);
@@ -174,6 +178,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             memberOrganizationsCount={memberOrganizationsCount}
           />
         )}
+        {childrenLeft}
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
@@ -233,6 +238,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
           </PageContentBlock>
         )}
+        {childrenRight}
       </PageContentColumn>
     </PageContent>
   );

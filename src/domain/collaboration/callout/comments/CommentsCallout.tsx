@@ -1,6 +1,6 @@
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
-import React, { forwardRef, useCallback, useMemo, useState } from 'react';
-import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
+import React, { forwardRef, useCallback, useMemo } from 'react';
+import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
 import CommentsComponent from '../../../shared/components/Comments/CommentsComponent';
 import { useUserContext } from '../../../community/contributor/user';
 import {
@@ -12,29 +12,26 @@ import { Message } from '../../../shared/components/Comments/models/message';
 import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
-import { BaseCalloutProps } from '../Types';
+import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { Dialog, IconButton, useMediaQuery } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Dialog, useMediaQuery } from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { ExpandContentIcon } from '../../../../core/ui/content/ExpandContent';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
-interface CommentsCalloutProps extends BaseCalloutProps {
+interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData;
   };
   calloutNames: string[];
   isSubscribedToComments: boolean;
-  loading?: boolean;
 }
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
-  ({ callout, loading, isSubscribedToComments, contributionsCount, ...calloutLayoutProps }, ref) => {
+  ({ callout, loading, expanded, isSubscribedToComments, contributionsCount, ...calloutLayoutProps }, ref) => {
     const { user: userMetadata, isAuthenticated } = useUserContext();
     const user = userMetadata?.user;
 
@@ -128,9 +125,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const breakpoint = useCurrentBreakpoint();
 
-    const lastMessageOnly = breakpoint === 'xs';
-
-    const [isFullViewDialogOpen, setIsFullViewDialogOpen] = useState(false);
+    const lastMessageOnly = breakpoint === 'xs' && !expanded;
 
     const canFitRegularDialog = useMediaQuery('@media only screen and (min-height: 600px)');
 
@@ -141,13 +136,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
             callout={callout}
             contributionsCount={contributionsCount}
             {...calloutLayoutProps}
-            actions={
-              lastMessageOnly && (
-                <IconButton onClick={() => setIsFullViewDialogOpen(true)}>
-                  <ExpandContentIcon />
-                </IconButton>
-              )
-            }
+            expanded={expanded}
           >
             <CommentsComponent
               messages={messages}
@@ -160,25 +149,16 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
               loading={loading || postingComment || deletingMessage}
               last={lastMessageOnly}
               maxHeight={COMMENTS_CONTAINER_HEIGHT}
-              onClickMore={() => setIsFullViewDialogOpen(true)}
+              onClickMore={() => {}}
             />
           </CalloutLayout>
         </PageContentBlock>
         <Dialog
-          open={isFullViewDialogOpen}
+          open={false}
           PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
           fullScreen={!canFitRegularDialog}
         >
-          <CalloutLayout
-            callout={callout}
-            contributionsCount={contributionsCount}
-            {...calloutLayoutProps}
-            actions={
-              <IconButton onClick={() => setIsFullViewDialogOpen(false)}>
-                <Close />
-              </IconButton>
-            }
-          >
+          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             <CommentsComponent
               messages={messages}
               commentsId={commentsId}

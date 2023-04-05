@@ -13,6 +13,10 @@ import { useTranslation } from 'react-i18next';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -24,6 +28,14 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
   const { t } = useTranslation();
+
+  const { hubNameId } = useUrlParams();
+
+  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
+    useCallouts({
+      hubNameId,
+      calloutGroups: [CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+    });
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -70,6 +82,28 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               )}
               journeyTypeName="hub"
               childEntityTitle={t('common.challenges')}
+              childrenLeft={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutsGroup.HomeLeft]}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  entityTypeName="hub"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                />
+              }
+              childrenRight={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutsGroup.HomeRight]}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  entityTypeName="hub"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                />
+              }
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}

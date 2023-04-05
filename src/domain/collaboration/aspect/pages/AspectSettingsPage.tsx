@@ -18,7 +18,7 @@ import EditVisualsView from '../../../common/visual/views/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { AspectDialogSection } from '../views/AspectDialogSection';
 import { AspectLayout } from '../views/AspectLayoutWithOutlet';
-import useCallouts from '../../callout/useCallouts';
+import useCallouts from '../../callout/useCallouts/useCallouts';
 import { useMoveAspectToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 
