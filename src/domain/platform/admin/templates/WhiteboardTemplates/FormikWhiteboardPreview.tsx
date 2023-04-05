@@ -32,6 +32,8 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEd
   const canvasFromTemplate = useMemo(() => {
     return {
       id: '__template',
+      // Needed to pass yup validation of CanvasDialog
+      profile: { id: '__templateProfile', displayName: '__template' },
       value: field.value,
     };
   }, [field.value]);
