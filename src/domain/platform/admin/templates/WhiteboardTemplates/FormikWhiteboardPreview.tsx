@@ -71,7 +71,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEd
 
               <CanvasDialog
                 entities={{
-                  canvas: { ...canvasFromTemplate, profile: { id: '', displayName: '_template' } },
+                  canvas: canvasFromTemplate,
                   lockedBy: undefined,
                 }}
                 actions={{

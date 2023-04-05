@@ -15,8 +15,8 @@ interface NameSegmentProps {
   required: boolean;
   nameHelpText?: string;
   nameIDHelpText?: string;
-  formikFieldName_Name?: string;
-  formikFieldName_NameId?: string;
+  nameFieldName?: string;
+  nameIdFieldName?: string;
   loading?: boolean;
 }
 
@@ -25,8 +25,8 @@ export const NameSegment: FC<NameSegmentProps> = ({
   required,
   nameHelpText,
   nameIDHelpText,
-  formikFieldName_Name = 'name',
-  formikFieldName_NameId = 'nameID',
+  nameFieldName = 'name',
+  nameIdFieldName = 'nameID',
   loading,
 }) => {
   const { t } = useTranslation();
@@ -35,7 +35,7 @@ export const NameSegment: FC<NameSegmentProps> = ({
     <>
       <FormRow>
         <FormikInputFieldField
-          name={formikFieldName_Name}
+          name={nameFieldName}
           title={t('components.nameSegment.name')}
           required
           helpIconText={nameHelpText}
@@ -44,7 +44,7 @@ export const NameSegment: FC<NameSegmentProps> = ({
       </FormRow>
       <FormRow>
         <FormikInputFieldField
-          name={formikFieldName_NameId}
+          name={nameIdFieldName}
           title={t('components.nameSegment.nameID.title')}
           placeholder={t('components.nameSegment.nameID.placeholder')}
           disabled={disabled}

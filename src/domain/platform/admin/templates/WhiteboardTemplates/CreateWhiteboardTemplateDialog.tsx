@@ -39,11 +39,7 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
       <WhiteboardTemplateForm
         initialValues={initialValues}
         onSubmit={onSubmit}
-        actions={
-          <>
-            <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
-          </>
-        }
+        actions={<FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>}
       />
     </DialogWithGrid>
   );

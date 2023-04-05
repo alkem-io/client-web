@@ -84,7 +84,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
       {({ values: { profile }, handleSubmit }) => {
         return (
           <Grid container gap={2}>
-            <NameSegment disabled={!isNew} required={isNew} formikFieldName_Name="profile.displayName" />
+            <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
             <FormRow>
               <FormikAutocomplete
                 title={t('pages.admin.innovation-packs.fields.provider')}

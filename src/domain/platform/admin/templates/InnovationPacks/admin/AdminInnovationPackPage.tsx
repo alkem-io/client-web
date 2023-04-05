@@ -35,18 +35,13 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotification();
-  const {
-    innovationPackNameId = '',
-    aspectNameId = '',
-    whiteboardNameId = '',
-    innovationTemplateId = '',
-  } = useUrlParams();
+  const { innovationPackNameId, aspectNameId, whiteboardNameId, innovationTemplateId } = useUrlParams();
 
   const innovationPackRoute = `${routePrefix}/${innovationPackNameId}`;
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
 
   const { data, loading } = useAdminInnovationPackQuery({
-    variables: { innovationPackId: innovationPackNameId },
+    variables: { innovationPackId: innovationPackNameId! },
     errorPolicy: 'ignore',
     skip: !innovationPackNameId || isNew,
   });
@@ -93,7 +88,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
       const { data } = await updateInnovationPack({
         variables: {
           packData: {
-            ID: innovationPackNameId,
+            ID: innovationPackNameId!,
             providerOrgID: formData.providerId,
             profileData: {
               displayName: formData.profile.displayName,
@@ -143,7 +138,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
             templatesSetId={templatesSetID}
             templates={postTemplates}
             onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
+            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
             buildTemplateLink={({ id }) =>
               buildLink(`${innovationPackRoute}/${RoutePaths.aspectTemplatesRoutePath}/${id}`)
             }
@@ -159,7 +154,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
             templatesSetId={templatesSetID}
             templates={whiteboardTemplates}
             onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
+            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
             buildTemplateLink={({ id }) =>
               buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
             }
@@ -174,7 +169,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
             templatesSetId={templatesSetID}
             templates={innovationFlowTemplates}
             onCloseTemplateDialog={backFromTemplateDialog}
-            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId })]}
+            refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId: innovationPackNameId! })]}
             buildTemplateLink={({ id }) =>
               buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
             }
