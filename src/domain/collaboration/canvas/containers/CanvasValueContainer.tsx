@@ -19,7 +19,7 @@ import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscri
 import findById from '../../../shared/utils/findById';
 import { getCanvasCalloutContainingCanvas } from './getCanvasCallout';
 import { compact } from 'lodash';
-import { EmptyWhiteboardJSON } from '../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 
 export interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
 
@@ -206,7 +206,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasL
     if (canvasLocation.isNew) {
       return {
         id: '_new',
-        value: EmptyWhiteboardJSON,
+        value: JSON.stringify(EmptyWhiteboard),
       };
     }
     if (canvasLocation.isContribution) {

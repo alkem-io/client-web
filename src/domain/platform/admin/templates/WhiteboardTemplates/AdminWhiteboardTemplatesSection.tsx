@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   useCreateWhiteboardTemplateMutation,
   useDeleteWhiteboardTemplateMutation,
+  useHubTemplatesAdminWhiteboardTemplateWithValueLazyQuery,
+  useInnovationPackWhiteboardTemplateWithValueLazyQuery,
   useUpdateWhiteboardTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -17,7 +19,7 @@ import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 import { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 import { useTranslation } from 'react-i18next';
-import { InnovationPack } from '../InnovationPacks/InnovationPack';
+import { InnovationPack, TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import CanvasImportTemplateCard from './WhitebaordImportTemplateCard';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
@@ -43,6 +45,59 @@ const AdminWhiteboardTemplatesSection = ({
   const { t } = useTranslation();
   const { hubNameId, innovationPackNameId, whiteboardNameId } = useUrlParams();
 
+  const [fetchWhiteboardTemplateFromHubValue, { data: dataFromHub }] =
+    useHubTemplatesAdminWhiteboardTemplateWithValueLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
+
+  const [fetchWhiteboardTemplateFromPlatformValue, { data: dataFromPlatform }] =
+    useInnovationPackWhiteboardTemplateWithValueLazyQuery({
+      fetchPolicy: 'cache-and-network',
+    });
+
+  const getTemplateValue = useCallback(
+    (template: AdminWhiteboardTemplateFragment) => {
+      if (whiteboardTemplatesLocation === 'hub' && hubNameId) {
+        fetchWhiteboardTemplateFromHubValue({ variables: { hubId: hubNameId, whiteboardTemplateId: template.id } });
+      } else if (whiteboardTemplatesLocation === 'platform' && innovationPackNameId) {
+        fetchWhiteboardTemplateFromPlatformValue({
+          variables: { innovationPackId: innovationPackNameId, whiteboardTemplateId: template.id },
+        });
+      }
+    },
+    [hubNameId, innovationPackNameId, fetchWhiteboardTemplateFromHubValue, fetchWhiteboardTemplateFromPlatformValue]
+  );
+
+  const canvasValue = useMemo(() => {
+    switch (whiteboardTemplatesLocation) {
+      case (whiteboardTemplatesLocation = 'hub'):
+        return dataFromHub?.hub.templates?.whiteboardTemplate;
+      case (whiteboardTemplatesLocation = 'platform'):
+        return dataFromPlatform?.platform.library.innovationPack?.templates?.whiteboardTemplate;
+    }
+  }, [
+    whiteboardTemplatesLocation,
+    hubNameId,
+    innovationPackNameId,
+    dataFromHub,
+    dataFromPlatform,
+    fetchWhiteboardTemplateFromHubValue,
+    fetchWhiteboardTemplateFromPlatformValue,
+  ]);
+
+  // Importing only makes sense on hub templates, not on platform templates:
+  const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
+    useInnovationPackWhiteboardTemplateWithValueLazyQuery({ fetchPolicy: 'cache-and-network', errorPolicy: 'all' });
+
+  const getImportedTemplateValue = useCallback(
+    (template: AdminWhiteboardTemplateFragment & TemplateInnovationPackMetaInfo) => {
+      fetchInnovationPackCanvasValue({
+        variables: { innovationPackId: template.innovationPackId, whiteboardTemplateId: template.id },
+      });
+    },
+    [fetchInnovationPackCanvasValue]
+  );
+
   return (
     <AdminTemplatesSection
       {...props}
@@ -60,9 +115,16 @@ const AdminWhiteboardTemplatesSection = ({
       })}
       templateCardComponent={WhiteboardTemplateCard}
       templateImportCardComponent={CanvasImportTemplateCard}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       templatePreviewComponent={WhiteboardTemplatePreview}
+      getTemplateValue={getTemplateValue}
+      getImportedTemplateValue={getImportedTemplateValue}
+      templateValue={canvasValue}
+      importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
+      //getImportedTemplateValue={getImportedTemplateValue}
+      //importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       // TODO:
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreateWhiteboardTemplateMutation as any}
