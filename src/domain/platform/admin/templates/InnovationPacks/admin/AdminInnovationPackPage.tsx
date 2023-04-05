@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
   refetchAdminInnovationPackQuery,
+  refetchAdminInnovationPacksListQuery,
   useAdminInnovationPackQuery,
   useCreateInnovationPackMutation,
   useOrganizationsListQuery,
@@ -83,6 +84,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ isNew = fal
             },
           },
         },
+        refetchQueries: [refetchAdminInnovationPacksListQuery()],
       });
       if (data?.createInnovationPackOnLibrary.nameID) {
         navigate(`../${data?.createInnovationPackOnLibrary.nameID}`);

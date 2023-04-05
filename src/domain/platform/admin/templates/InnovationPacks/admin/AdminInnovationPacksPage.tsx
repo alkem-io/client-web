@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import {
   refetchAdminInnovationPacksListQuery,
@@ -9,6 +9,7 @@ import SearchableListLayout from '../../../../../shared/components/SearchableLis
 import SimpleSearchableList from '../../../../../shared/components/SimpleSearchableList';
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
+import { sortBy } from 'lodash';
 
 interface AdminInnovationPacksPageProps {}
 
@@ -28,14 +29,24 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
       },
     });
 
+  const sortedData = useMemo(
+    () =>
+      sortBy(
+        data?.platform.library.innovationPacks
+          .map(ip => ({
+            value: ip.profile.displayName,
+            url: `${pathname}/${ip.nameID}`,
+            ...ip,
+          }))
+          .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
+        ip => ip.profile.displayName.toLowerCase() // sortBy
+      ),
+    [data, searchTerm]
+  );
+
+  // Arguments to our SimpleSearchableList to make it not paginated
   const notPaginatedList = {
-    data: data?.platform.library.innovationPacks
-      .map(ip => ({
-        value: ip.profile.displayName,
-        url: `${pathname}/${ip.nameID}`,
-        ...ip,
-      }))
-      .filter(ip => !searchTerm || ip.profile.displayName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1),
+    data: sortedData,
     onDelete: (item: { id: string }) => handleDelete(item.id),
     loading,
     fetchMore: () => Promise.resolve(),
