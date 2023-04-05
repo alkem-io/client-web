@@ -229,21 +229,20 @@ const JourneyUnauthorizedDialog = ({
                 leadUsers={leadUsers}
                 leadOrganizations={leadOrganizations}
               />
-              {messageReceivers.length !== 0 ||
-                (true && (
-                  <>
-                    <ContactLeadsButton onClick={openContactLeadsDialog}>
-                      {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
-                    </ContactLeadsButton>
-                    <DirectMessageDialog
-                      title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
-                      open={isContactLeadUsersDialogOpen}
-                      onClose={closeContactLeadsDialog}
-                      onSendMessage={sendMessageToCommunityLeads}
-                      messageReceivers={messageReceivers}
-                    />
-                  </>
-                ))}
+              {messageReceivers.length !== 0 && (
+                <>
+                  <ContactLeadsButton onClick={openContactLeadsDialog}>
+                    {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
+                  </ContactLeadsButton>
+                  <DirectMessageDialog
+                    title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
+                    open={isContactLeadUsersDialogOpen}
+                    onClose={closeContactLeadsDialog}
+                    onSendMessage={sendMessageToCommunityLeads}
+                    messageReceivers={messageReceivers}
+                  />
+                </>
+              )}
             </PageContentBlockSeamless>
           </PageContentColumn>
         </Gutters>
