@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   useCreateWhiteboardTemplateMutation,
   useDeleteWhiteboardTemplateMutation,
@@ -68,22 +68,14 @@ const AdminWhiteboardTemplatesSection = ({
     [hubNameId, innovationPackNameId, fetchWhiteboardTemplateFromHubValue, fetchWhiteboardTemplateFromPlatformValue]
   );
 
-  const canvasValue = useMemo(() => {
+  const getCanvasValue = () => {
     switch (whiteboardTemplatesLocation) {
-      case (whiteboardTemplatesLocation = 'hub'):
+      case 'hub':
         return dataFromHub?.hub.templates?.whiteboardTemplate;
-      case (whiteboardTemplatesLocation = 'platform'):
+      case 'platform':
         return dataFromPlatform?.platform.library.innovationPack?.templates?.whiteboardTemplate;
     }
-  }, [
-    whiteboardTemplatesLocation,
-    hubNameId,
-    innovationPackNameId,
-    dataFromHub,
-    dataFromPlatform,
-    fetchWhiteboardTemplateFromHubValue,
-    fetchWhiteboardTemplateFromPlatformValue,
-  ]);
+  };
 
   // Importing only makes sense on hub templates, not on platform templates:
   const [fetchInnovationPackCanvasValue, { data: importedCanvasValue }] =
@@ -111,7 +103,7 @@ const AdminWhiteboardTemplatesSection = ({
       templatePreviewComponent={WhiteboardTemplatePreview}
       getTemplateValue={getTemplateValue}
       getImportedTemplateValue={getImportedTemplateValue}
-      templateValue={canvasValue}
+      templateValue={getCanvasValue()}
       importedTemplateValue={importedCanvasValue?.platform.library?.innovationPack?.templates?.whiteboardTemplate}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
