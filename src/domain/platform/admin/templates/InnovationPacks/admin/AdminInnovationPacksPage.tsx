@@ -1,5 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useResolvedPath } from 'react-router-dom';
+import { sortBy } from 'lodash';
 import {
   refetchAdminInnovationPacksListQuery,
   useAdminInnovationPacksListQuery,
@@ -9,7 +10,6 @@ import SearchableListLayout from '../../../../../shared/components/SearchableLis
 import SimpleSearchableList from '../../../../../shared/components/SimpleSearchableList';
 import AdminLayout from '../../../layout/toplevel/AdminLayout';
 import { AdminSection } from '../../../layout/toplevel/constants';
-import { sortBy } from 'lodash';
 
 interface AdminInnovationPacksPageProps {}
 
@@ -29,7 +29,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
       },
     });
 
-  const sortedData = useMemo(
+  const innovationPacks = useMemo(
     () =>
       sortBy(
         data?.platform.library.innovationPacks
@@ -44,22 +44,19 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
     [data, searchTerm]
   );
 
-  // Arguments to our SimpleSearchableList to make it not paginated
-  const notPaginatedList = {
-    data: sortedData,
-    onDelete: (item: { id: string }) => handleDelete(item.id),
-    loading,
-    fetchMore: () => Promise.resolve(),
-    pageSize: data?.platform.library.innovationPacks.length ?? 0,
-    searchTerm,
-    onSearchTermChange: setSearchTerm,
-    hasMore: false,
-  };
-
   return (
     <AdminLayout currentTab={AdminSection.InnovationPacks}>
       <SearchableListLayout newLink={`${pathname}/new`}>
-        <SimpleSearchableList {...notPaginatedList} />
+        <SimpleSearchableList
+          data={innovationPacks}
+          onDelete={item => handleDelete(item.id)}
+          loading={loading}
+          fetchMore={() => Promise.resolve()}
+          pageSize={data?.platform.library.innovationPacks.length ?? 0}
+          searchTerm={searchTerm}
+          onSearchTermChange={setSearchTerm}
+          hasMore={false}
+        />
       </SearchableListLayout>
     </AdminLayout>
   );
