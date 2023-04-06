@@ -10,7 +10,6 @@ import ConfirmationDialog, {
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import { createPostTemplateFromTemplateSet } from '../../utils/createPostTemplateFromTemplateSet';
 import {
   CalloutType,
   PostTemplateFragment,
@@ -23,6 +22,7 @@ import {
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { createWhiteboardTemplateForCalloutCreation } from '../../utils/createWhiteboardTemplateForCalloutCreation';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
+import { createCalloutPostTemplate } from '../../utils/createCalloutPostTemplate';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -58,6 +58,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     profileId: callout.profile.id,
     tags: callout.profile.tagset?.tags,
     postTemplateType: callout.postTemplate?.type,
+    postTemplateDefaultDescription: callout.postTemplate?.defaultDescription,
     whiteboardTemplateData: {
       id: callout.whiteboardTemplate?.id,
       displayName: callout.whiteboardTemplate?.profile.displayName,
@@ -77,7 +78,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    const calloutPostTemplate = createPostTemplateFromTemplateSet(newCallout, templates.postTemplates);
+    // const calloutPostTemplate = createPostTemplateFromTemplateSet(newCallout, templates.postTemplates);
+    const calloutPostTemplate = createCalloutPostTemplate(newCallout);
     const getCanvasValueFromHub = async () => {
       const result = await fetchCanvasValueFromHub({
         variables: { hubId: hubNameId!, whiteboardTemplateId: newCallout.whiteboardTemplateData?.id! },

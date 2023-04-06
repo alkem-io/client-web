@@ -15,7 +15,6 @@ import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import { CalloutIcon } from '../icon/CalloutIcon';
 import CalloutForm, { CalloutFormOutput, WhiteboardTemplateData } from '../CalloutForm';
-import { createPostTemplateFromTemplateSet } from '../utils/createPostTemplateFromTemplateSet';
 import {
   useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
@@ -28,6 +27,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { Reference } from '../../../common/profile/Profile';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import { createCalloutPostTemplate } from '../utils/createCalloutPostTemplate';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -37,6 +37,7 @@ export type CalloutCreationDialogFields = {
   type?: CalloutType;
   state?: CalloutState;
   postTemplateType?: string;
+  postTemplateDefaultDescription?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
   profileId?: string;
 };
@@ -133,7 +134,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   };
 
   const handleSaveAsDraftCallout = useCallback(async () => {
-    const calloutPostTemplate = createPostTemplateFromTemplateSet(callout, templates.postTemplates);
+    const calloutPostTemplate = createCalloutPostTemplate(callout);
 
     const getCanvasValueFromHub = async () => {
       if (!callout.whiteboardTemplateData?.id) return undefined;

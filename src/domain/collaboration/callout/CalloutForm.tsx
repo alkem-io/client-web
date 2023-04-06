@@ -16,7 +16,6 @@ import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
-import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
 import WhiteboardTemplatesChooser, {
   WhiteboardTemplateListItem,
@@ -30,6 +29,7 @@ import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegm
 import ReferenceSegment from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
+import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
 
 export type WhiteboardTemplateData = {
   id?: string;
@@ -46,6 +46,7 @@ type FormValueType = {
   references: Reference[];
   opened: boolean;
   postTemplateType?: string;
+  postTemplateDefaultDescription?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
 };
 
@@ -60,6 +61,7 @@ export type CalloutFormInput = {
   type?: CalloutType;
   state?: CalloutState;
   postTemplateType?: string;
+  postTemplateDefaultDescription?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
   profileId?: string;
 };
@@ -72,6 +74,7 @@ export type CalloutFormOutput = {
   type: CalloutType;
   state: CalloutState;
   postTemplateType?: string;
+  postTemplateDefaultDescription?: string;
   whiteboardTemplateData?: WhiteboardTemplateData;
 };
 
@@ -115,7 +118,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      postTemplateType: callout?.postTemplateType ?? '',
+      postTemplateDefaultDescription: callout?.postTemplateDefaultDescription ?? '',
       whiteboardTemplateData: callout?.whiteboardTemplateData ?? {
         id: '',
         displayName: '',
@@ -143,7 +146,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       .min(3, ({ min }) => t('common.field-min-length', { min })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    postTemplateType: yup
+    postTemplateDefaultDescription: yup
       .string()
       .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
     whiteboardTemplateData: yup.object().when('type', {
@@ -166,6 +169,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
       postTemplateType: values.postTemplateType,
+      postTemplateDefaultDescription: values.postTemplateDefaultDescription,
       whiteboardTemplateData: values.whiteboardTemplateData,
     };
     onChange?.(callout);
@@ -227,16 +231,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             />
             <SectionSpacer />
             {calloutType === CalloutType.Card && (
-              <>
-                <SectionSpacer />
-                <FormRow>
-                  <PostTemplatesChooser
-                    name="postTemplateType"
-                    templates={templates.postTemplates}
-                    editMode={editMode}
-                  />
-                </FormRow>
-              </>
+              <PostTemplatesChooser name="postTemplateDefaultDescription" editMode={editMode} />
             )}
             {calloutType === CalloutType.Canvas && (
               <>
