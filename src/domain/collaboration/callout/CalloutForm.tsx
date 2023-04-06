@@ -102,13 +102,16 @@ const CalloutForm: FC<CalloutFormProps> = ({
   const { t } = useTranslation();
   const [libraryWhiteboardTemplates, setLibraryWhiteboardTemplates] = useState<WhiteboardTemplateListItem[]>([]);
 
-  const tagsets: Tagset[] = [
-    {
-      id: '-1',
-      name: 'default',
-      tags: callout?.tags ?? [],
-    },
-  ];
+  const tagsets: Tagset[] = useMemo(
+    () => [
+      {
+        id: '-1',
+        name: 'default',
+        tags: callout?.tags ?? [],
+      },
+    ],
+    [callout?.tags]
+  );
 
   const initialValues: FormValueType = useMemo(
     () => ({

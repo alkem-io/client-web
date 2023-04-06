@@ -11,6 +11,7 @@ import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
+import { Identifiable } from '../../../../shared/types/Identifiable';
 
 export type CalloutCreationType = {
   profile: {
@@ -29,7 +30,7 @@ interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCreateCallout: (callout: CalloutCreationType) => Promise<string | undefined>;
+  handleCreateCallout: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
   isCreating: boolean;
 }
 
@@ -120,7 +121,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
       setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
 
-      return result.data?.createCalloutOnCollaboration.id;
+      return result.data?.createCalloutOnCollaboration;
     },
     [collaborationID, createCallout]
   );

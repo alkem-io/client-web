@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import RadioButtonGroup from '../../../../shared/components/RadioButtons/RadioButtonGroup';
@@ -7,15 +7,14 @@ import calloutIcons from '../../utils/calloutIcons';
 
 interface CalloutTypeSelectProps {
   onSelect: (value: CalloutType | undefined) => void;
+  value: CalloutType | undefined;
   disabled?: boolean;
 }
 
-export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabled = false }) => {
-  const [value, setValue] = useState<CalloutType | undefined>(undefined);
+export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();
 
   const handleChange = (value: CalloutType | undefined) => {
-    setValue(value);
     onSelect(value);
   };
 

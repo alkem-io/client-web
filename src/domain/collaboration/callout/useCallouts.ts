@@ -132,13 +132,13 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
           draft,
           editable,
           isSubscribedToComments,
-          url: params.hubNameId
-            ? buildCalloutUrl(callout.nameID, {
-                hubNameId: params.hubNameId,
-                challengeNameId: params.challengeNameId,
-                opportunityNameId: params.opportunityNameId,
-              })
-            : '',
+          url:
+            params.hubNameId &&
+            buildCalloutUrl(callout.nameID, {
+              hubNameId: params.hubNameId,
+              challengeNameId: params.challengeNameId,
+              opportunityNameId: params.opportunityNameId,
+            }),
         } as TypedCallout;
       }),
     [collaboration]

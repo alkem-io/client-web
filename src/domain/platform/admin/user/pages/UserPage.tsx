@@ -117,7 +117,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
           variables: {
             input: {
               name: tagset.name,
-              tags: [...(tagset.tags ?? [])],
+              tags: tagset.tags,
               profileID: profileId,
             },
           },

@@ -28,6 +28,7 @@ import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { Reference } from '../../../common/profile/Profile';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { createCalloutPostTemplate } from '../utils/createCalloutPostTemplate';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -45,7 +46,7 @@ export type CalloutCreationDialogFields = {
 export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
-  onSaveAsDraft: (callout: CalloutCreationType) => Promise<string | undefined>;
+  onSaveAsDraft: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
   onVisibilityChange: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
@@ -94,7 +95,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
-  const [isConfirmPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
+  const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
 
   useLayoutEffect(() => {
@@ -126,11 +127,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
 
   const handlePublish = async () => {
-    const result = await handleSaveAsDraftCallout();
-    if (result) {
-      await onVisibilityChange(result, CalloutVisibility.Published, sendNotification);
+    const createdCallout = await handleSaveAsDraftCallout();
+    if (createdCallout) {
+      await onVisibilityChange(createdCallout.id, CalloutVisibility.Published, sendNotification);
     }
-    setIsConfirmPublishDialogOpen(false);
+    closePublishDialog();
   };
 
   const handleSaveAsDraftCallout = useCallback(async () => {
@@ -199,7 +200,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           </DialogHeader>
           <DialogContent>
             <Box paddingY={theme => theme.spacing(2)}>
-              <CalloutTypeSelect onSelect={handleSelectCalloutType} />
+              <CalloutTypeSelect value={selectedCalloutType} onSelect={handleSelectCalloutType} />
             </Box>
           </DialogContent>
         </>
@@ -239,7 +240,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               {t('buttons.publish')}
             </Button>
           </Actions>
-          <Dialog open={isConfirmPublishDialogOpen} maxWidth="xs">
+          <Dialog open={isPublishDialogOpen} maxWidth="xs">
             <DialogHeader onClose={closePublishDialog}>
               <Box display="flex">{t('buttons.publish')}</Box>
             </DialogHeader>
