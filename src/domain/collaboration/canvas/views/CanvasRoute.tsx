@@ -10,7 +10,7 @@ export interface CanvasRouteProps {
 }
 
 const CanvasRoute: FC<CanvasRouteProps> = ({ parentPagePath, entityTypeName }) => {
-  const { canvasNameId } = useUrlParams();
+  const { whiteboardNameId: canvasNameId } = useUrlParams();
 
   return (
     <Routes>

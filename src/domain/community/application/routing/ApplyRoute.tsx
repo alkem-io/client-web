@@ -12,10 +12,10 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface Props extends PageProps {
   type: ApplicationTypeEnum;
-  entityPageLayout: ComponentType<HubPageLayoutProps | ChallengePageLayoutProps>;
+  journeyPageLayoutComponent: ComponentType<HubPageLayoutProps | ChallengePageLayoutProps>;
 }
 
-const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type }) => {
+const ApplyRoute: FC<Props> = ({ paths, journeyPageLayoutComponent: JourneyPageLayout, type }) => {
   return (
     <Routes>
       <Route path="/" element={<EntityPageLayoutHolder />}>
@@ -23,9 +23,9 @@ const ApplyRoute: FC<Props> = ({ paths, entityPageLayout: EntityPageLayout, type
           index
           element={
             <NoIdentityRedirect>
-              <EntityPageLayout currentSection={EntityPageSection.Dashboard}>
+              <JourneyPageLayout currentSection={EntityPageSection.Dashboard} unauthorizedDialogDisabled>
                 <ApplyPage paths={paths} type={type} />
-              </EntityPageLayout>
+              </JourneyPageLayout>
             </NoIdentityRedirect>
           }
         />

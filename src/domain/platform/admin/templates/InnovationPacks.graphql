@@ -38,7 +38,7 @@ query InnovationPacks {
     }
   }
 }
-query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
     library {
@@ -55,7 +55,7 @@ query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID!, $white
   }
 }
 
-query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+query InnovationPackFullWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
     library {

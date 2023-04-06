@@ -61,7 +61,9 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
       </Route>
       <Route
         path="apply"
-        element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.hub} entityPageLayout={HubPageLayout} />}
+        element={
+          <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.hub} journeyPageLayoutComponent={HubPageLayout} />
+        }
       />
       <Route
         path={`challenges/:${nameOfUrl.challengeNameId}/*`}

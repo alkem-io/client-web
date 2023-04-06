@@ -39,7 +39,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
     calloutNameId: calloutId = '',
-    canvasNameId = '',
+    whiteboardNameId: canvasId = '',
   } = useUrlParams();
 
   const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
@@ -47,21 +47,21 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
   });
 
   const { data: hubData, loading: loadingHub } = useHubCanvasFromCalloutQuery({
-    variables: { hubId, calloutId, canvasId: canvasNameId },
+    variables: { hubId, calloutId, canvasId },
     skip: !!(challengeId || opportunityId),
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasFromCalloutQuery({
-    variables: { hubId, challengeId, calloutId, canvasId: canvasNameId },
+    variables: { hubId, challengeId, calloutId, canvasId },
     skip: !challengeId || !!opportunityId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasFromCalloutQuery({
-    variables: { hubId, opportunityId, calloutId, canvasId: canvasNameId },
+    variables: { hubId, opportunityId, calloutId, canvasId },
     skip: !opportunityId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
@@ -72,7 +72,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts, calloutId) ??
     getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts, calloutId);
 
-  const canvas = callout?.canvases?.find(canvas => canvas.nameID === canvasNameId) ?? undefined;
+  const canvas = callout?.canvases?.find(canvas => canvas.nameID === canvasId) ?? undefined;
 
   const templates = whiteboardTemplates?.hub.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;

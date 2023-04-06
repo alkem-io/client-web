@@ -8,7 +8,7 @@ import { LinkOutlined } from '@mui/icons-material';
 import DialogHeader from '../../dialog/DialogHeader';
 import Gutters from '../../grid/Gutters';
 import { Actions } from '../../actions/Actions';
-import Dialog from '../../dialog/Dialog';
+import DialogWithGrid from '../../dialog/DialogWithGrid';
 import { useNotification } from '../../notifications/useNotification';
 import { Selection } from 'prosemirror-state';
 import { BlockTitle } from '../../typography';
@@ -115,7 +115,7 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
       >
         <LinkOutlined />
       </IconButton>
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
+      <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>
         <DialogHeader onClose={closeDialog}>
           <BlockTitle>{t('components.wysiwyg-editor.link.dialogHeader')}</BlockTitle>
         </DialogHeader>
@@ -132,7 +132,7 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
             </Gutters>
           </Form>
         </Formik>
-      </Dialog>
+      </DialogWithGrid>
     </>
   );
 };

@@ -250,6 +250,7 @@
     "loading": "Loading...",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
+    "innovation-packs": "Innovation Packs",
     "more": "More",
     "url": "URL",
     "genders": {
@@ -585,7 +586,9 @@
     "hub-templates": "Templates selected by the host of this community",
     "load-platform-templates": "Or click here to browse through all platform templates",
     "platform-templates": "Platform Templates",
-    "error-importing": "Error importing Canvas Template"
+    "error-importing": "Error importing Canvas Template",
+    "edit-template-button": "Edit Template",
+    "edit-dialog-title": "Edit Whiteboard Template"
   },
   "innovation-templates": {
     "innovation-template": "Innovation Flow template",
@@ -598,6 +601,9 @@
     }
   },
   "components": {
+    "journeyUnauthorizedDialog": {
+      "message": "This is a private Community and most of it’s content is restricted to members only. If you want to join, click here to apply."
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Deleting comment",
@@ -1324,6 +1330,14 @@
         "notifications": {
           "user-removed": "User removed successfully."
         }
+      },
+      "innovation-packs": {
+        "fields": {
+          "provider": "Provider organization"
+        },
+        "back-button": "All innovation packs",
+        "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
+        "saved-successfully": "Saved Successfully"
       }
     },
     "feedback": {

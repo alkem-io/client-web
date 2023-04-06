@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, Link } from '@mui/material';
-import { FC, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LibraryIcon } from '../../../../common/icons/LibraryIcon';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -12,7 +12,7 @@ import {
   useHubWhiteboardTemplateValueLazyQuery,
   usePlatformWhiteboardTemplateValueLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import { compact } from 'lodash';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -27,7 +27,7 @@ export interface WhiteboardTemplatesLibraryProps {
 
 const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSelectTemplate }) => {
   const { t } = useTranslation();
-  const { hubId } = useHub();
+  const { hubNameId } = useUrlParams();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const handleClose = () => {
@@ -42,8 +42,9 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   // Hub Templates:
   const { data: hubData, loading: loadingHubTemplates } = useHubWhiteboardTemplatesLibraryQuery({
     variables: {
-      hubId,
+      hubId: hubNameId!,
     },
+    skip: !hubNameId,
   });
 
   const [fetchWhiteboardTemplateValueHub, { loading: loadingHubTemplateValue }] =
@@ -60,7 +61,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   const handlePreviewTemplateHub = async (template: WhiteboardTemplate) => {
     const { data } = await fetchWhiteboardTemplateValueHub({
       variables: {
-        hubId,
+        hubId: hubNameId!,
         whiteboardTemplateId: template.id,
       },
     });
@@ -79,6 +80,12 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
 
   const [fetchWhiteboardTemplateValuePlatform, { loading: loadingPlatformTemplateValue }] =
     usePlatformWhiteboardTemplateValueLazyQuery();
+
+  useEffect(() => {
+    if (!hubNameId) {
+      fetchPlatformTemplates();
+    }
+  }, [hubNameId]);
 
   const platformTemplates = useMemo(
     () =>
@@ -156,13 +163,17 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
         <DialogContent>
           {!previewTemplate && !loadingPreview ? (
             <Gutters>
-              <BlockTitle>{t('canvas-templates.hub-templates')}</BlockTitle>
-              <WhiteboardTemplatesLibraryGallery
-                canvases={hubTemplates}
-                filter={filter}
-                onPreviewTemplate={template => handlePreviewTemplateHub(template)}
-                loading={loadingHubTemplates}
-              />
+              {hubNameId && (
+                <>
+                  <BlockTitle>{t('canvas-templates.hub-templates')}</BlockTitle>
+                  <WhiteboardTemplatesLibraryGallery
+                    canvases={hubTemplates}
+                    filter={filter}
+                    onPreviewTemplate={template => handlePreviewTemplateHub(template)}
+                    loading={loadingHubTemplates}
+                  />
+                </>
+              )}
               {!platformTemplates && !loadingPlatformTemplates ? (
                 <Link
                   component={Caption}
