@@ -22,6 +22,7 @@ interface JourneyUnauthorizedDialogContainerProvided extends EntityDashboardLead
   who: string | undefined;
   impact: string | undefined;
   loading: boolean;
+  error: Error | undefined;
 }
 
 interface JourneyUnauthorizedDialogContainerProps {
@@ -37,7 +38,11 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     throw new Error('Must be within a Hub route.');
   }
 
-  const { data: journeyPrivilegesQueryData, loading: privilegesLoading } = useJourneyPrivilegesQuery({
+  const {
+    data: journeyPrivilegesQueryData,
+    loading: privilegesLoading,
+    error: privilegesError,
+  } = useJourneyPrivilegesQuery({
     variables: {
       hubNameId,
       challengeNameId,
@@ -56,18 +61,23 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
 
   const isAuthorized = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: journeyCommunityPrivilegesQueryData, loading: journeyCommunityPrivilegesLoading } =
-    useJourneyCommunityPrivilegesQuery({
-      variables: {
-        hubNameId,
-        challengeNameId,
-        opportunityNameId,
-        includeHub: journeyTypeName === 'hub',
-        includeChallenge: journeyTypeName === 'challenge',
-        includeOpportunity: journeyTypeName === 'opportunity',
-      },
-      skip: privilegesLoading || isAuthorized,
-    });
+  const shouldSkipJourneyCommunityPrivileges = privilegesLoading || Boolean(privilegesError) || isAuthorized;
+
+  const {
+    data: journeyCommunityPrivilegesQueryData,
+    loading: journeyCommunityPrivilegesLoading,
+    error: journeyCommunityPrivilegesError,
+  } = useJourneyCommunityPrivilegesQuery({
+    variables: {
+      hubNameId,
+      challengeNameId,
+      opportunityNameId,
+      includeHub: journeyTypeName === 'hub',
+      includeChallenge: journeyTypeName === 'challenge',
+      includeOpportunity: journeyTypeName === 'opportunity',
+    },
+    skip: shouldSkipJourneyCommunityPrivileges,
+  });
 
   const { authorization: communityAuthorization } =
     journeyCommunityPrivilegesQueryData?.hub.opportunity?.community ??
@@ -77,7 +87,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
 
   const communityReadAccess = communityAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: journeyDataQueryData } = useJourneyDataQuery({
+  const { data: journeyDataQueryData, error: journeyDataError } = useJourneyDataQuery({
     variables: {
       hubNameId,
       challengeNameId,
@@ -87,7 +97,10 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
       includeOpportunity: journeyTypeName === 'opportunity',
       includeCommunity: communityReadAccess,
     },
-    skip: privilegesLoading || isAuthorized || journeyCommunityPrivilegesLoading,
+    skip:
+      shouldSkipJourneyCommunityPrivileges ||
+      journeyCommunityPrivilegesLoading ||
+      Boolean(journeyCommunityPrivilegesError),
   });
 
   const { profile, context, metrics, community } =
@@ -127,6 +140,7 @@ const JourneyUnauthorizedDialogContainer = ({ journeyTypeName, children }: Journ
     leadOrganizations: journeyTypeName === 'hub' ? hostOrganizations : community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     loading: privilegesLoading,
+    error: privilegesError ?? journeyCommunityPrivilegesError ?? journeyDataError,
   };
 
   return <>{children(provided)}</>;
