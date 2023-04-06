@@ -1,20 +1,18 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import {
   refetchAdminHubTemplatesQuery,
   useAdminHubTemplatesQuery,
-  useHubCanvasesLazyQuery,
   useInnovationPacksLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import AdminPostTemplatesSection from '../templates/PostTemplates/AdminPostTemplatesSection';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import Gutters from '../../../../core/ui/grid/Gutters';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
-import { getAllCanvasesOnCallouts } from '../../../collaboration/canvas/containers/getCanvasCallout';
-import { AuthorizationPrivilege, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
@@ -43,10 +41,6 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     skip: !hubId, // hub id can be an empty string due to some `|| ''` happening above in the tree
   });
 
-  const [loadCanvases, { data: hubCanvasesData }] = useHubCanvasesLazyQuery({
-    variables: { hubId },
-  });
-
   const [loadInnovationPacks, { data: innovationPacks, loading: loadingInnovationPacks }] =
     useInnovationPacksLazyQuery();
 
@@ -58,18 +52,6 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     authorization: templateSetAuth,
   } = hubTemplatesData?.hub.templates ?? {};
   const canImportTemplates = templateSetAuth?.myPrivileges?.includes(AuthorizationPrivilege.Create) ?? false;
-
-  // assuming we'll provide templates for the canvases only from hub callout canvases
-  const canvases = getAllCanvasesOnCallouts(hubCanvasesData?.hub.collaboration?.callouts);
-  const findParentCalloutId = useCallback(
-    (canvasId: string | undefined): string | undefined => {
-      const parentCallout = hubCanvasesData?.hub.collaboration?.callouts?.find(
-        x => x.type === CalloutType.Canvas && x.canvases?.some(x => x.id === canvasId)
-      );
-      return parentCallout?.id;
-    },
-    [hubCanvasesData?.hub.collaboration?.callouts]
-  );
 
   const aspectInnovationPacks = useMemo(() => {
     if (!innovationPacks) return [];
@@ -103,50 +85,48 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
-      <AdminPostTemplatesSection
-        templateId={aspectTemplateId}
-        templatesSetId={templatesSetID}
-        templates={postTemplates}
-        onCloseTemplateDialog={backFromTemplateDialog}
-        refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
-        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
-        edit={edit}
-        loadInnovationPacks={loadInnovationPacks}
-        loadingInnovationPacks={loadingInnovationPacks}
-        innovationPacks={aspectInnovationPacks}
-        canImportTemplates={canImportTemplates}
-      />
-      <SectionSpacer />
-      <AdminWhiteboardTemplatesSection
-        templateId={whiteboardTemplateId}
-        templatesSetId={templatesSetID}
-        templates={whiteboardTemplates}
-        onCloseTemplateDialog={backFromTemplateDialog}
-        refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
-        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
-        edit={edit}
-        loadCanvases={loadCanvases}
-        canvases={canvases}
-        getParentCalloutId={findParentCalloutId}
-        loadInnovationPacks={loadInnovationPacks}
-        loadingInnovationPacks={loadingInnovationPacks}
-        innovationPacks={canvasInnovationPacks}
-        canImportTemplates={canImportTemplates}
-      />
-      <SectionSpacer />
-      <AdminInnovationTemplatesSection
-        templateId={innovationTemplateId}
-        templatesSetId={templatesSetID}
-        templates={innovationFlowTemplates}
-        onCloseTemplateDialog={backFromTemplateDialog}
-        refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
-        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
-        edit={edit}
-        loadInnovationPacks={loadInnovationPacks}
-        loadingInnovationPacks={loadingInnovationPacks}
-        innovationPacks={lifecycleInnovationPacks}
-        canImportTemplates={canImportTemplates}
-      />
+      <Gutters>
+        <AdminPostTemplatesSection
+          templateId={aspectTemplateId}
+          templatesSetId={templatesSetID}
+          templates={postTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={aspectInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminWhiteboardTemplatesSection
+          templateId={whiteboardTemplateId}
+          templatesSetId={templatesSetID}
+          templates={whiteboardTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          whiteboardTemplatesLocation="hub"
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={canvasInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+        <AdminInnovationTemplatesSection
+          templateId={innovationTemplateId}
+          templatesSetId={templatesSetID}
+          templates={innovationFlowTemplates}
+          onCloseTemplateDialog={backFromTemplateDialog}
+          refetchQueries={[refetchAdminHubTemplatesQuery({ hubId })]}
+          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
+          edit={edit}
+          loadInnovationPacks={loadInnovationPacks}
+          loadingInnovationPacks={loadingInnovationPacks}
+          innovationPacks={lifecycleInnovationPacks}
+          canImportTemplates={canImportTemplates}
+        />
+      </Gutters>
     </HubSettingsLayout>
   );
 };

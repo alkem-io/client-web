@@ -16,6 +16,7 @@ import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElem
 import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
 
 export interface ReferenceSegmentProps {
+  fieldName?: string;
   references: Reference[];
   readOnly?: boolean;
   disabled?: boolean;
@@ -31,6 +32,7 @@ export const referenceSegmentValidationObject = yup.object().shape({
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 
 export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
+  fieldName = 'references',
   references,
   readOnly = false,
   disabled = false,
@@ -56,7 +58,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   };
 
   return (
-    <FieldArray name={'references'}>
+    <FieldArray name={fieldName}>
       {({ push, remove }) => (
         <Grid item container rowSpacing={2} columnSpacing={4} key="field-array">
           <Grid container item xs={12} alignItems="center" wrap="nowrap">
@@ -90,7 +92,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                 <Grid container item>
                   <Grid item xs="auto">
                     <FormikInputField
-                      name={`references.${index}.name`}
+                      name={`${fieldName}.${index}.name`}
                       title={t('common.title')}
                       readOnly={readOnly}
                       disabled={disabled || index === removing}
@@ -98,7 +100,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                   </Grid>
                   <Grid item xs sx={{ paddingLeft: theme => theme.spacing(2) }}>
                     <FormikInputField
-                      name={`references.${index}.uri`}
+                      name={`${fieldName}.${index}.uri`}
                       title={t('common.url')}
                       readOnly={readOnly}
                       disabled={disabled || index === removing}
@@ -144,7 +146,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                   {!compactView && (
                     <Grid item xs={12} sx={{ paddingTop: theme => theme.spacing(2) }}>
                       <FormikInputField
-                        name={`references.${index}.description`}
+                        name={`${fieldName}.${index}.description`}
                         title={'Description'}
                         readOnly={readOnly}
                         disabled={disabled || index === removing}

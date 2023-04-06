@@ -49,6 +49,7 @@ const AdminPostTemplatesSection = (props: AdminPostTemplatesSectionProps) => {
       templatePreviewComponent={PostTemplateView}
       createTemplateDialogComponent={CreatePostTemplateDialog}
       editTemplateDialogComponent={EditPostTemplateDialog}
+      // TODO: Remove these
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       useCreateTemplateMutation={useCreatePostTemplateMutation as any}
       useUpdateTemplateMutation={

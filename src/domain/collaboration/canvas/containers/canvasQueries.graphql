@@ -1,13 +1,22 @@
+fragment CanvasProfile on Profile {
+  id
+  displayName
+  description
+  visual(type: CARD) {
+    ...VisualFull
+  }
+  tagset {
+    id
+    tags
+  }
+}
+
 fragment CanvasDetails on Canvas {
   id
   nameID
   createdDate
   profile {
-    id
-    displayName
-    visual(type: CARD) {
-      ...VisualFull
-    }
+    ...CanvasProfile
   }
   authorization {
     id
@@ -239,6 +248,43 @@ query opportunityCanvasValues(
           canvases(IDs: [$canvasId]) {
             ...CanvasDetails
             ...CanvasValue
+          }
+        }
+      }
+    }
+  }
+}
+
+query hubTemplateCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      whiteboardTemplate(ID: $canvasId) {
+        id
+        profile {
+          ...CanvasProfile
+        }
+        value
+      }
+    }
+  }
+}
+
+query platformTemplateCanvasValues($innovationPackId: UUID_NAMEID!, $canvasId: UUID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        templates {
+          id
+          whiteboardTemplate(ID: $canvasId) {
+            id
+            profile {
+              ...CanvasProfile
+            }
+            value
           }
         }
       }

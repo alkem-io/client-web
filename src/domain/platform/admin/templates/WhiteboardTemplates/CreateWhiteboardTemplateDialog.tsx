@@ -3,47 +3,45 @@ import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValues,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
-import Dialog from '@mui/material/Dialog';
-import React, { useMemo } from 'react';
-import { DialogProps } from '@mui/material';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import React from 'react';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
-import { CanvasDetailsFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
-  onClose: DialogProps['onClose'];
+  onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: WhiteboardTemplateFormSubmittedValues) => void;
-  canvases: CanvasDetailsFragment[];
-  getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
-const CreateWhiteboardTemplateDialog = ({
-  canvases,
-  open,
-  onClose,
-  onSubmit,
-  getParentCalloutId,
-}: CreateWhiteboardTemplateDialogProps) => {
+const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhiteboardTemplateDialogProps) => {
   const { t } = useTranslation();
 
-  const values: Partial<WhiteboardTemplateFormValues> = useMemo(() => ({}), []);
+  const initialValues: Partial<WhiteboardTemplateFormValues> = {
+    value: JSON.stringify(EmptyWhiteboard),
+    displayName: '',
+    description: '',
+    tags: [],
+  };
 
   return (
-    <Dialog
+    <DialogWithGrid
       open={open}
       onClose={onClose}
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
+      <DialogHeader onClose={onClose}>
+        {t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
+      </DialogHeader>
+
       <WhiteboardTemplateForm
-        displayName={t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
-        initialValues={values}
-        canvases={canvases}
+        initialValues={initialValues}
         onSubmit={onSubmit}
-        getParentCalloutId={getParentCalloutId}
-        actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
+        actions={<FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>}
       />
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

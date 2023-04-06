@@ -9,6 +9,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
+  CanvasValueFragment,
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
@@ -70,9 +71,9 @@ export interface CanvasManagementViewProps
     CanvasNavigationMethods {}
 
 const getCanvasShareUrl = (urlParams: UrlParams) => {
-  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.whiteboardNameId) return;
 
-  return buildCanvasUrl(urlParams.calloutNameId, urlParams.canvasNameId, {
+  return buildCanvasUrl(urlParams.calloutNameId, urlParams.whiteboardNameId, {
     hubNameId: urlParams.hubNameId,
     challengeNameId: urlParams.challengeNameId,
     opportunityNameId: urlParams.opportunityNameId,
@@ -105,11 +106,17 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
 
   return (
     <>
-      <CanvasValueContainer canvasId={canvas?.id} calloutId={calloutId}>
+      <CanvasValueContainer
+        canvasId={canvas?.id}
+        calloutId={calloutId}
+        hubNameId={urlParams.hubNameId ?? ''}
+        challengeNameId={urlParams.challengeNameId}
+        opportunityNameId={urlParams.opportunityNameId}
+      >
         {entities => (
           <CanvasDialog
             entities={{
-              canvas: entities.canvas,
+              canvas: entities.canvas as CanvasValueFragment & CanvasDetailsFragment,
               lockedBy: lockedByDetailsData?.usersById[0],
             }}
             actions={{

@@ -27,7 +27,6 @@ export interface PostTemplateFormSubmittedValues {
 }
 
 interface PostTemplateFormProps {
-  title: ReactNode;
   initialValues: Partial<PostTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: PostTemplateFormSubmittedValues) => void;
@@ -39,12 +38,11 @@ const validator = {
   type: yup.string().required(),
 };
 
-const PostTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: PostTemplateFormProps) => {
+const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemplateFormProps) => {
   const { t } = useTranslation();
 
   return (
     <TemplateForm
-      title={title}
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}
