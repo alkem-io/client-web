@@ -1,5 +1,4 @@
 import { FC, useEffect, useMemo } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasContentUpdatedDocument,
@@ -15,29 +14,32 @@ import {
   CanvasValueFragment,
   SubscriptionCanvasContentUpdatedArgs,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { TemplateQuery } from './CanvasProvider';
 import UseSubscriptionToSubEntity from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import findById from '../../../shared/utils/findById';
 import { getCanvasCalloutContainingCanvas } from './getCanvasCallout';
+import { JourneyLocation } from '../../../../common/utils/urlBuilders';
+
+export interface CanvasWithValue extends Omit<CanvasValueFragment, 'id'>, Partial<CanvasDetailsFragment> {}
+
+export type CanvasWithoutValue<Canvas extends CanvasWithValue> = Omit<Canvas, 'value'>;
 
 export interface ICanvasValueEntities {
-  canvas?: CanvasValueFragment & CanvasDetailsFragment;
+  canvas?: CanvasWithValue;
 }
 
 export interface CanvasValueContainerState {
   loadingCanvasValue?: boolean;
 }
 
-export interface CanvasValueParams {
+export interface CanvasValueParams extends JourneyLocation {
   canvasId: string | undefined;
   calloutId: string | undefined;
-  params?: TemplateQuery;
 }
 
 export interface CanvasValueContainerProps
   extends ContainerChildProps<ICanvasValueEntities, {}, CanvasValueContainerState>,
     CanvasValueParams {
-  onCanvasValueLoaded?: (canvas: Canvas) => void;
+  onCanvasValueLoaded?: (canvas: CanvasWithValue) => void;
 }
 
 const useSubscribeToCanvas = UseSubscriptionToSubEntity<
@@ -58,31 +60,18 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
   children,
   canvasId,
   calloutId,
-  params,
+  hubNameId,
+  challengeNameId,
+  opportunityNameId,
   onCanvasValueLoaded,
 }) => {
-  const {
-    hubNameId: hubId = '',
-    challengeNameId: challengeId = '',
-    opportunityNameId: opportunityId = '',
-  } = useUrlParams();
-  let queryOpportunityId: string | undefined = opportunityId;
-  let queryChallengeId: string | undefined = challengeId;
-  let queryHubId: string | undefined = hubId;
-
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
 
-  if (params) {
-    queryOpportunityId = params?.opportunityId;
-    queryChallengeId = params?.challengeId;
-    queryHubId = params?.hubId;
-  }
-
-  const skipHub = !Boolean(calloutId) || Boolean(queryChallengeId) || Boolean(queryOpportunityId) || !Boolean(canvasId);
+  const skipHub = !Boolean(calloutId) || Boolean(challengeNameId) || Boolean(opportunityNameId) || !Boolean(canvasId);
   const skipChallenge =
-    !Boolean(calloutId) || Boolean(queryOpportunityId) || !Boolean(queryChallengeId) || !Boolean(canvasId);
-  const skipOpportunity = !Boolean(calloutId) || !Boolean(queryOpportunityId) || !Boolean(canvasId);
+    !Boolean(calloutId) || Boolean(opportunityNameId) || !Boolean(challengeNameId) || !Boolean(canvasId);
+  const skipOpportunity = !Boolean(calloutId) || !Boolean(opportunityNameId) || !Boolean(canvasId);
 
   const {
     data: challengeData,
@@ -94,12 +83,13 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     nextFetchPolicy: 'cache-and-network',
     skip: skipChallenge,
     variables: {
-      hubId: queryHubId,
-      challengeId: queryChallengeId || '',
+      hubId: hubNameId!,
+      challengeId: challengeNameId!,
       canvasId: canvasId!,
       calloutId: calloutId!,
     },
   });
+
   const {
     data: opportunityData,
     loading: loadingOpportunityCanvasValue,
@@ -110,8 +100,8 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     nextFetchPolicy: 'cache-and-network',
     skip: skipOpportunity,
     variables: {
-      hubId: queryHubId,
-      opportunityId: queryOpportunityId || '',
+      hubId: hubNameId!,
+      opportunityId: opportunityNameId!,
       calloutId: calloutId!,
       canvasId: canvasId!,
     },
@@ -127,7 +117,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     nextFetchPolicy: 'cache-and-network',
     skip: skipHub,
     variables: {
-      hubId: queryHubId,
+      hubId: hubNameId!,
       canvasId: canvasId!,
       calloutId: calloutId!,
     },

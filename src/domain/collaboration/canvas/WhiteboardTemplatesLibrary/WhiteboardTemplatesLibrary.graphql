@@ -55,7 +55,7 @@ query PlatformWhiteboardTemplatesLibrary {
   }
 }
 
-query PlatformWhiteboardTemplateValue($innovationPackId: UUID!, $whiteboardTemplateId: UUID!) {
+query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
     library {
