@@ -79,8 +79,8 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
       rawDiscussion
         ? {
             id: rawDiscussion.id,
-            title: rawDiscussion.title,
-            description: rawDiscussion.description,
+            title: rawDiscussion.profile.displayName,
+            description: rawDiscussion.profile.description,
             category: rawDiscussion.category,
             myPrivileges: rawDiscussion.authorization?.myPrivileges,
             author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,

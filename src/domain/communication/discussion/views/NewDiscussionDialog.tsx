@@ -68,8 +68,10 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
       variables: {
         input: {
           communicationID: communicationId,
-          description: values.description,
-          title: values.title,
+          profile: {
+            description: values.description,
+            displayName: values.title,
+          },
           category: values.category!,
         },
       },

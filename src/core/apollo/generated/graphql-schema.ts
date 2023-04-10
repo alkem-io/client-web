@@ -336,14 +336,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -965,10 +957,8 @@ export type CommunicationCreateDiscussionInput = {
   category: DiscussionCategory;
   /** The identifier for the Communication entity the Discussion is being created on. */
   communicationID: Scalars['UUID'];
-  /** The description for the Discussion */
-  description?: InputMaybe<Scalars['String']>;
-  /** The title for the Discussion */
-  title: Scalars['String'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CommunicationDiscussionMessageReceived = {
@@ -1231,6 +1221,7 @@ export type CreateCalloutOnCollaborationInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   /** Callout type. */
   type: CalloutType;
   /** WhiteboardTemplate data for whiteboard Callouts. */
@@ -1601,16 +1592,16 @@ export type Discussion = {
   commentsCount: Scalars['Float'];
   /** The id of the user that created this discussion */
   createdBy?: Maybe<Scalars['UUID']>;
-  /** The description of this Discussion. */
-  description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Messages for this Discussion. */
   messages?: Maybe<Array<Message>>;
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The Profile for this Discussion. */
+  profile: Profile;
   /** The timestamp for the creation of this Discussion. */
   timestamp?: Maybe<Scalars['Float']>;
-  /** The title of the Discussion. */
-  title: Scalars['String'];
 };
 
 export enum DiscussionCategory {
@@ -1806,16 +1797,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -4104,9 +4085,10 @@ export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
   category?: InputMaybe<DiscussionCategory>;
-  /** The description for the Discussion */
-  description?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateEcosystemModelInput = {
@@ -14917,12 +14899,11 @@ export type CreateDiscussionMutation = {
   createDiscussion: {
     __typename?: 'Discussion';
     id: string;
-    title: string;
-    description: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
     commentsCount: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -14966,7 +14947,7 @@ export type DeleteDiscussionMutationVariables = Exact<{
 
 export type DeleteDiscussionMutation = {
   __typename?: 'Mutation';
-  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+  deleteDiscussion: { __typename?: 'Discussion'; id: string };
 };
 
 export type DeleteCommentMutationVariables = Exact<{
@@ -14978,26 +14959,14 @@ export type DeleteCommentMutation = { __typename?: 'Mutation'; removeMessageFrom
 export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
-  title: string;
-  description: string;
   createdBy?: string | undefined;
   timestamp?: number | undefined;
   category: DiscussionCategory;
   commentsCount: number;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-};
-
-export type DiscussionDetailsNoAuthFragment = {
-  __typename?: 'Discussion';
-  id: string;
-  title: string;
-  description: string;
-  createdBy?: string | undefined;
-  timestamp?: number | undefined;
-  category: DiscussionCategory;
-  commentsCount: number;
 };
 
 export type PlatformDiscussionsQueryVariables = Exact<{ [key: string]: never }>;
@@ -15023,12 +14992,30 @@ export type PlatformDiscussionsQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            title: string;
-            description: string;
+            nameID: string;
             category: DiscussionCategory;
             timestamp?: number | undefined;
             commentsCount: number;
             createdBy?: string | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagline: string;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>;
+            };
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -15067,8 +15054,6 @@ export type PlatformDiscussionQuery = {
         | {
             __typename?: 'Discussion';
             id: string;
-            title: string;
-            description: string;
             createdBy?: string | undefined;
             timestamp?: number | undefined;
             category: DiscussionCategory;
@@ -15100,6 +15085,7 @@ export type PlatformDiscussionQuery = {
                     | undefined;
                 }>
               | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
             authorization?:
               | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -15118,12 +15104,30 @@ export type CommunicationDiscussionUpdatedSubscription = {
   communicationDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
-    title: string;
-    description: string;
+    nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
     commentsCount: number;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>;
+    };
   };
 };
 

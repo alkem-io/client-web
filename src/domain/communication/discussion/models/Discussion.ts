@@ -9,7 +9,7 @@ export interface Discussion {
   myPrivileges: AuthorizationPrivilege[] | undefined;
   author?: Author;
   authors: Author[];
-  description: string;
+  description?: string;
   createdAt: Date | undefined;
   comments?: Comment[];
   commentsCount: number;

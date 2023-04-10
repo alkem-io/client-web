@@ -1,7 +1,10 @@
 fragment DiscussionDetails on Discussion {
   id
-  title
-  description
+  profile {
+    id
+    displayName
+    description
+  }
   createdBy
   timestamp
   category
@@ -9,16 +12,6 @@ fragment DiscussionDetails on Discussion {
   authorization {
     myPrivileges
   }
-}
-
-fragment DiscussionDetailsNoAuth on Discussion {
-  id
-  title
-  description
-  createdBy
-  timestamp
-  category
-  commentsCount
 }
 
 query platformDiscussions {
@@ -34,8 +27,16 @@ query platformDiscussions {
       }
       discussions {
         id
-        title
-        description
+        nameID
+        profile {
+          id
+          displayName
+          description
+          tagline
+          visuals {
+            ...VisualFull
+          }
+        }
         category
         timestamp
         commentsCount
