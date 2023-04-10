@@ -1,5 +1,6 @@
 fragment DiscussionDetails on Discussion {
   id
+  nameID
   profile {
     id
     displayName

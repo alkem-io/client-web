@@ -14899,6 +14899,7 @@ export type CreateDiscussionMutation = {
   createDiscussion: {
     __typename?: 'Discussion';
     id: string;
+    nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
@@ -14959,6 +14960,7 @@ export type DeleteCommentMutation = { __typename?: 'Mutation'; removeMessageFrom
 export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
+  nameID: string;
   createdBy?: string | undefined;
   timestamp?: number | undefined;
   category: DiscussionCategory;
@@ -15054,6 +15056,7 @@ export type PlatformDiscussionQuery = {
         | {
             __typename?: 'Discussion';
             id: string;
+            nameID: string;
             createdBy?: string | undefined;
             timestamp?: number | undefined;
             category: DiscussionCategory;

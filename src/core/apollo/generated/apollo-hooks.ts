@@ -1423,6 +1423,7 @@ export const AspectsOnCalloutFragmentDoc = gql`
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
+    nameID
     profile {
       id
       displayName

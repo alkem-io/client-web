@@ -78,6 +78,7 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
         ?.filter(d => categorySelected === ALL_CATEGORIES || d.category === categorySelected)
         .map<Discussion>(d => ({
           id: d.id,
+          nameID: d.nameID,
           title: d.profile.displayName,
           category: d.category,
           myPrivileges: d.authorization?.myPrivileges,
