@@ -78,7 +78,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
     });
     onClose();
     if (data?.createDiscussion) {
-      navigate(buildDiscussionUrl('/forum', data.createDiscussion.id), { replace: true });
+      navigate(buildDiscussionUrl('/forum', data.createDiscussion.nameID), { replace: true });
     }
   };
 
