@@ -103,7 +103,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const [postComment] = usePostDiscussionCommentMutation();
 
   const handlePostComment = (post: string) => {
-    if (!discussionNameId) {
+    if (!discussion) {
       return;
     }
 
@@ -133,7 +133,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
       },
       variables: {
         input: {
-          discussionID: discussionNameId,
+          discussionID: discussion.id,
           message: post,
         },
       },
@@ -171,13 +171,13 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   });
 
   const handleDeleteComment = async () => {
-    if (!discussionNameId || !deleteCommentId) {
+    if (!deleteCommentId || !discussion) {
       return;
     }
     await deleteComment({
       variables: {
         messageData: {
-          discussionID: discussionNameId,
+          discussionID: discussion.id,
           messageID: deleteCommentId,
         },
       },
