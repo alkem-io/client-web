@@ -1395,6 +1395,7 @@
     },
     "search": {
       "placeholder": "Search...",
+      "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "search-suggestions": "Search suggestions:",
       "suggestions-array": [

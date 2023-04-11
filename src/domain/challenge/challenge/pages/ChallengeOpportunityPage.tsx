@@ -73,6 +73,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
                 displayName={opportunity.profile.displayName}
                 tagline={opportunity.profile.tagline!}
                 vision={opportunity.context?.vision!}
+                innovationFlowState={opportunity.lifecycle?.state}
                 tags={opportunity.profile.tagset?.tags!}
                 bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)!}
                 journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}

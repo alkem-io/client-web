@@ -19,13 +19,21 @@ export const CharacterCounter = ({
   separator = ' / ',
   disabled = false,
   maxLength,
+  flexWrap,
   children,
   ...rest
 }: PropsWithChildren<CharacterCounterProps>) => {
   const color = maxLength && count > maxLength ? 'negative.main' : undefined;
 
   return (
-    <Box display="flex" justifyContent={children ? 'space-between' : 'end'} gap={gutters()}>
+    <Box
+      display="flex"
+      justifyContent={children ? 'space-between' : 'end'}
+      gap={gutters()}
+      rowGap={0}
+      alignItems="start"
+      flexWrap={flexWrap}
+    >
       {children}
       {!disabled && (
         <Caption color={color} {...rest}>

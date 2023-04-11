@@ -6,6 +6,7 @@ import SearchResultCardChooser from './SearchResultCardChooser';
 import { SearchResultMetaType } from './SearchView';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
+import { useTranslation } from 'react-i18next';
 
 interface ResultSectionProps {
   title: ReactNode;
@@ -27,11 +28,13 @@ const SearchResultSection: FC<ResultSectionProps> = ({
   loading,
 }) => {
   const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
-
+  const { t } = useTranslation();
+  const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined
   return (
     <PageContentBlock>
       <PageContentBlockHeader
         title={titleWithCount}
+        disclaimer={resultDisclaimer}
         actions={
           <EntityFilter
             title={filterTitle}
