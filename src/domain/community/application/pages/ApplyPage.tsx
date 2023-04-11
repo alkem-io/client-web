@@ -25,7 +25,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { PageTitle, BlockTitle } from '../../../../core/ui/typography';
 import SaveButton from '../../../../core/ui/actions/SaveButton';
 import PageContent from '../../../../core/ui/content/PageContent';
-import Section from '../../../shared/components/Section/Section';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {
@@ -128,7 +128,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
   return (
     <PageContent>
-      <Section sx={{ width: '100%' }}>
+      <PageContentBlock>
         {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
         {loading && <Loading text={t('pages.hub.application.loading')} />}
         {!loading && !hasApplied && (
@@ -200,7 +200,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
             </Formik>
           </>
         )}
-      </Section>
+      </PageContentBlock>
     </PageContent>
   );
 };
