@@ -259,7 +259,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
               <LoadingButton
                 loading={isCreating}
-                loadingIndicator={`${t('buttons.save-draft')}...`}
+                loadingIndicator={`${t('buttons.publish')}...`}
                 onClick={handlePublish}
                 variant="contained"
                 disabled={!isValid}
