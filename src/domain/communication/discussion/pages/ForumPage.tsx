@@ -78,12 +78,13 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
         ?.filter(d => categorySelected === ALL_CATEGORIES || d.category === categorySelected)
         .map<Discussion>(d => ({
           id: d.id,
-          title: d.title,
+          nameID: d.nameID,
+          title: d.profile.displayName,
           category: d.category,
           myPrivileges: d.authorization?.myPrivileges,
           author: d.createdBy ? authors.getAuthor(d.createdBy) : undefined,
           authors: authors.authors ?? [],
-          description: d.description,
+          description: d.profile.description,
           createdAt: d.timestamp ? new Date(d.timestamp) : undefined,
           commentsCount: d.commentsCount,
         })) ?? []

@@ -1433,8 +1433,12 @@ export const AspectsOnCalloutFragmentDoc = gql`
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
-    title
-    description
+    nameID
+    profile {
+      id
+      displayName
+      description
+    }
     createdBy
     timestamp
     category
@@ -1442,17 +1446,6 @@ export const DiscussionDetailsFragmentDoc = gql`
     authorization {
       myPrivileges
     }
-  }
-`;
-export const DiscussionDetailsNoAuthFragmentDoc = gql`
-  fragment DiscussionDetailsNoAuth on Discussion {
-    id
-    title
-    description
-    createdBy
-    timestamp
-    category
-    commentsCount
   }
 `;
 export const ApplicationInfoFragmentDoc = gql`
@@ -12931,7 +12924,6 @@ export const DeleteDiscussionDocument = gql`
   mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
     deleteDiscussion(deleteData: $deleteData) {
       id
-      title
     }
   }
 `;
@@ -13036,8 +13028,16 @@ export const PlatformDiscussionsDocument = gql`
         }
         discussions {
           id
-          title
-          description
+          nameID
+          profile {
+            id
+            displayName
+            description
+            tagline
+            visuals {
+              ...VisualFull
+            }
+          }
           category
           timestamp
           commentsCount
@@ -13051,6 +13051,7 @@ export const PlatformDiscussionsDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -13184,14 +13185,23 @@ export const CommunicationDiscussionUpdatedDocument = gql`
   subscription communicationDiscussionUpdated($communicationID: UUID!) {
     communicationDiscussionUpdated(communicationID: $communicationID) {
       id
-      title
-      description
+      nameID
+      profile {
+        id
+        displayName
+        description
+        tagline
+        visuals {
+          ...VisualFull
+        }
+      }
       createdBy
       timestamp
       category
       commentsCount
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 
 /**
