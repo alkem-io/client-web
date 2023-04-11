@@ -68,15 +68,17 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
       variables: {
         input: {
           communicationID: communicationId,
-          description: values.description,
-          title: values.title,
+          profile: {
+            description: values.description,
+            displayName: values.title,
+          },
           category: values.category!,
         },
       },
     });
     onClose();
     if (data?.createDiscussion) {
-      navigate(buildDiscussionUrl('/forum', data.createDiscussion.id), { replace: true });
+      navigate(buildDiscussionUrl('/forum', data.createDiscussion.nameID), { replace: true });
     }
   };
 

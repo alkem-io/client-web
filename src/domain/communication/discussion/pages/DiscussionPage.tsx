@@ -51,7 +51,7 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
 interface DiscussionPageProps {}
 
 export const DiscussionPage: FC<DiscussionPageProps> = () => {
-  const { discussionId } = useUrlParams();
+  const { discussionNameId } = useUrlParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();
@@ -63,9 +63,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
     subscribeToMore,
   } = usePlatformDiscussionQuery({
     variables: {
-      discussionId: discussionId!,
+      discussionId: discussionNameId!,
     },
-    skip: !discussionId,
+    skip: !discussionNameId,
   });
   useDiscussionMessagesSubscription(data, data => data?.platform.communication.discussion, subscribeToMore);
 
@@ -79,8 +79,9 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
       rawDiscussion
         ? {
             id: rawDiscussion.id,
-            title: rawDiscussion.title,
-            description: rawDiscussion.description,
+            nameID: rawDiscussion.nameID,
+            title: rawDiscussion.profile.displayName,
+            description: rawDiscussion.profile.description,
             category: rawDiscussion.category,
             myPrivileges: rawDiscussion.authorization?.myPrivileges,
             author: rawDiscussion.createdBy ? authors.getAuthor(rawDiscussion.createdBy) : undefined,
@@ -102,7 +103,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const [postComment] = usePostDiscussionCommentMutation();
 
   const handlePostComment = (post: string) => {
-    if (!discussionId) {
+    if (!discussion) {
       return;
     }
 
@@ -113,7 +114,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
         }
         cache.modify({
           id: cache.identify({
-            id: discussionId,
+            id: discussionNameId,
             __typename: 'Discussion',
           }),
           fields: {
@@ -132,7 +133,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
       },
       variables: {
         input: {
-          discussionID: discussionId,
+          discussionID: discussion.id,
           message: post,
         },
       },
@@ -164,19 +165,19 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
   const [deleteComment] = useDeleteCommentMutation({
     refetchQueries: [
       refetchPlatformDiscussionQuery({
-        discussionId: discussionId!,
+        discussionId: discussionNameId!,
       }),
     ],
   });
 
   const handleDeleteComment = async () => {
-    if (!discussionId || !deleteCommentId) {
+    if (!deleteCommentId || !discussion) {
       return;
     }
     await deleteComment({
       variables: {
         messageData: {
-          discussionID: discussionId,
+          discussionID: discussion.id,
           messageID: deleteCommentId,
         },
       },
@@ -205,7 +206,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             currentUserId={user?.user.id}
             discussion={discussion}
             onPostComment={handlePostComment}
-            onDeleteDiscussion={() => setDeleteDiscussionId(discussionId)}
+            onDeleteDiscussion={() => setDeleteDiscussionId(discussion.id)}
             onDeleteComment={(id: string) => setDeleteCommentId(id)}
           />
         )}
