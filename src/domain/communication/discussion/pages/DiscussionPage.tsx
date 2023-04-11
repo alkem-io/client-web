@@ -206,7 +206,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
             currentUserId={user?.user.id}
             discussion={discussion}
             onPostComment={handlePostComment}
-            onDeleteDiscussion={() => setDeleteDiscussionId(discussionNameId)}
+            onDeleteDiscussion={() => setDeleteDiscussionId(discussion.id)}
             onDeleteComment={(id: string) => setDeleteCommentId(id)}
           />
         )}
