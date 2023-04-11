@@ -2,6 +2,7 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import {
+  Box,
   FormControl,
   FormGroup,
   FormHelperText,
@@ -10,15 +11,22 @@ import {
   InputProps,
   OutlinedInput,
   OutlinedInputProps,
+  Popper,
+  styled,
+  Tooltip,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import CharacterCounter from '../../../../common/components/composite/common/CharacterCounter/CharacterCounter';
 import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../i18n/ValidationMessageTranslation';
 import { CommentInputField, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
 import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { Caption } from '../../../../core/ui/typography';
+import HelpIcon from '@mui/icons-material/Help';
+import { useTranslation } from 'react-i18next';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
 
@@ -35,6 +43,10 @@ const getCursorPositionInMention = (
   };
 };
 
+const PreFormatedPopper = styled(Popper)(() => ({
+  whiteSpace: 'pre-wrap',
+}));
+
 /**
  * Material styles wrapper, with the border and the Send arrow IconButton and the char counter
  */
@@ -48,6 +60,7 @@ interface FormikCommentInputFieldProps extends InputProps {
   withCounter?: boolean;
   submitOnReturnKey?: boolean;
   size?: OutlinedInputProps['size'];
+  compact?: boolean;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
@@ -60,6 +73,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   withCounter = false,
   submitOnReturnKey = false,
   size = 'medium',
+  compact = false,
 }) => {
   const ref = useRef<HTMLElement>(null);
   const emojiButtonRef = useRef(null);
@@ -69,6 +83,8 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
 
   const [field, meta, helpers] = useField<string>(name);
   const { submitForm } = useFormikContext();
+
+  const { t } = useTranslation();
 
   const isError = Boolean(meta.error);
   const helperText = useMemo(() => {
@@ -126,77 +142,144 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
     setEmojiSelectorOpen(false);
   };
 
+  const buttons = (
+    <>
+      <IconButton
+        ref={emojiButtonRef}
+        aria-label="Insert emoji"
+        size="small"
+        onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
+        disabled={inactive || readOnly}
+      >
+        <EmojiEmotionsOutlinedIcon fontSize="small" />
+      </IconButton>
+      <EmojiSelector
+        open={isEmojiSelectorOpen}
+        onClose={() => setEmojiSelectorOpen(false)}
+        anchorElement={emojiButtonRef.current}
+        onEmojiClick={emojiClick}
+      />
+      <IconButton
+        aria-label="Mention someone"
+        size="small"
+        onClick={mentionButtonClick}
+        disabled={inactive || readOnly}
+      >
+        <AlternateEmailIcon fontSize="small" />
+      </IconButton>
+    </>
+  );
+
+  const helpButton = (
+    <Tooltip
+      title={
+        <Box padding={gutters(0.5)}>
+          <Caption>{t('components.post-comment.tooltip.markdown-help')}</Caption>
+        </Box>
+      }
+      arrow
+      placement="right"
+      PopperComponent={PreFormatedPopper}
+      aria-label="tooltip-markdown"
+    >
+      <HelpIcon color="primary" />
+    </Tooltip>
+  );
+
   return (
-    <FormGroup>
-      <FormControl>
-        <OutlinedInput
-          ref={ref}
-          multiline
-          size={size}
-          sx={theme => ({
-            '::before': {
-              content: '""',
-              position: 'absolute',
-              left: 0,
-              borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
-              backgroundColor: theme.palette.background.default,
-              width: theme.spacing(6.5),
-              height: '100%',
-            },
-          })}
-          startAdornment={
-            <InputAdornment position="start">
-              <IconButton
-                ref={emojiButtonRef}
-                aria-label="Insert emoji"
-                size="small"
-                onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
-                disabled={inactive || readOnly}
-                sx={theme => ({ marginLeft: theme.spacing(-1) })}
-              >
-                <EmojiEmotionsOutlinedIcon fontSize="small" />
-              </IconButton>
-              <EmojiSelector
-                open={isEmojiSelectorOpen}
-                onClose={() => setEmojiSelectorOpen(false)}
-                anchorElement={emojiButtonRef.current}
-                onEmojiClick={emojiClick}
-              />
-              <IconButton
-                aria-label="Mention someone"
-                size="small"
-                onClick={mentionButtonClick}
-                disabled={inactive || readOnly}
-              >
-                <AlternateEmailIcon fontSize="small" />
-              </IconButton>
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton aria-label="post comment" size="small" type="submit" disabled={inactive}>
-                <SendIcon />
-              </IconButton>
-            </InputAdornment>
-          }
-          aria-describedby="filled-weight-helper-text"
-          inputComponent={CommentInputField}
-          inputProps={{
-            value: field.value,
-            onValueChange: (newValue: string) => helpers.setValue(newValue),
-            onBlur: () => helpers.setTouched(true),
-            inactive,
-            readOnly,
-            maxLength,
-            onReturnKey: submitOnReturnKey ? submitForm : undefined,
-            popperAnchor: ref.current,
-          }}
-        />
-      </FormControl>
-      <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={!withCounter}>
-        <FormHelperText error={isError}>{helperText}</FormHelperText>
-      </CharacterCounter>
-    </FormGroup>
+    <Box display="flex" flexDirection="row" gap={gutters(0.5)}>
+      <FormGroup
+        sx={{
+          flexGrow: 1,
+          flexShrink: 1,
+        }}
+      >
+        <FormControl>
+          <OutlinedInput
+            ref={ref}
+            multiline
+            size={size}
+            sx={theme => ({
+              '::before': compact
+                ? undefined
+                : {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
+                    backgroundColor: theme.palette.background.default,
+                    width: theme.spacing(6.5),
+                    height: '100%',
+                  },
+            })}
+            startAdornment={
+              !compact && (
+                <InputAdornment
+                  position="start"
+                  sx={{
+                    '& > :first-child': theme => ({
+                      marginLeft: theme.spacing(-1),
+                    }),
+                  }}
+                >
+                  {buttons}
+                </InputAdornment>
+              )
+            }
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton aria-label="post comment" size="small" type="submit" disabled={inactive}>
+                  <SendIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+            aria-describedby="filled-weight-helper-text"
+            inputComponent={CommentInputField}
+            inputProps={{
+              value: field.value,
+              onValueChange: (newValue: string) => helpers.setValue(newValue),
+              onBlur: () => helpers.setTouched(true),
+              inactive,
+              readOnly,
+              maxLength,
+              onReturnKey: submitOnReturnKey ? submitForm : undefined,
+              popperAnchor: ref.current,
+            }}
+            fullWidth
+          />
+        </FormControl>
+        <CharacterCounter
+          count={field.value?.length}
+          maxLength={maxLength}
+          disabled={!withCounter}
+          flexWrap={compact ? 'wrap' : 'nowrap'}
+        >
+          {compact && (
+            <Box
+              display="flex"
+              alignItems="center"
+              paddingX={theme => theme.spacing(0.5)}
+              marginY={theme => theme.spacing(0.5)}
+              sx={{ backgroundColor: 'background.default' }}
+              borderRadius={theme => `${theme.shape.borderRadius}px`}
+            >
+              {buttons}
+              <Box display="flex" width={gutters(1.5)} justifyContent="center">
+                {helpButton}
+              </Box>
+            </Box>
+          )}
+          <FormHelperText error={isError} sx={{ order: compact ? 1 : 0 }}>
+            {helperText}
+          </FormHelperText>
+        </CharacterCounter>
+      </FormGroup>
+      {!compact && (
+        <Box display="flex" alignItems="center" height={gutters(2)}>
+          {helpButton}
+        </Box>
+      )}
+    </Box>
   );
 };
 

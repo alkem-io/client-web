@@ -1,22 +1,17 @@
 import React, { FC } from 'react';
 import { FetchResult } from '@apollo/client';
-import { Avatar, AvatarProps, Box, Popper, styled, Tooltip } from '@mui/material';
+import { Avatar, AvatarProps, Box, styled } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import HelpIcon from '@mui/icons-material/Help';
 import { useUserContext } from '../../../community/contributor/user';
 import FormikCommentInputField from './FormikCommentInputField';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Caption } from '../../../../core/ui/typography';
+import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
   width: theme.avatarSizeXs,
-}));
-
-const PreFormatedPopper = styled(Popper)(() => ({
-  whiteSpace: 'pre-wrap',
 }));
 
 export interface PostMessageToCommentsFormProps {
@@ -59,6 +54,10 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
     }
   };
 
+  const breakpoint = useCurrentBreakpoint();
+
+  const isCompact = breakpoint === 'xs';
+
   return (
     <Box display="flex" alignItems="start" gap={gutters(0.5)} marginBottom={gutters(-1)}>
       <UserAvatar src={userAvatarUri} variant="rounded" />
@@ -85,25 +84,11 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
                 sx={{
                   height: gutters(2),
                 }}
+                compact={isCompact}
               />
             </Form>
           )}
         </Formik>
-      </Box>
-      <Box display="flex" alignItems="center" height={gutters(2)}>
-        <Tooltip
-          title={
-            <Box padding={gutters(0.5)}>
-              <Caption>{t('components.post-comment.tooltip.markdown-help')}</Caption>
-            </Box>
-          }
-          arrow
-          placement="right"
-          PopperComponent={PreFormatedPopper}
-          aria-label={'tooltip-markdown'}
-        >
-          <HelpIcon color="primary" />
-        </Tooltip>
       </Box>
     </Box>
   );
