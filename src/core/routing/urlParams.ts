@@ -11,7 +11,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   applicationId?: string;
   userNameId?: string;
   role?: AuthorizationCredential;
-  discussionId?: string;
+  discussionNameId?: string;
   calloutNameId?: string;
   aspectNameId?: string;
   whiteboardNameId?: string;
