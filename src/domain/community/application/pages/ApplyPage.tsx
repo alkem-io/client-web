@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
@@ -23,6 +23,9 @@ import getApplicationTypeKey from '../../../../common/utils/translation/getAppli
 import { PageProps } from '../../../shared/types/PageProps';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { PageTitle, BlockTitle } from '../../../../core/ui/typography';
+import SaveButton from '../../../../core/ui/actions/SaveButton';
+import PageContent from '../../../../core/ui/content/PageContent';
+import Section from '../../../shared/components/Section/Section';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {
@@ -124,83 +127,81 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
   const entityNameKey = getApplicationTypeKey(type);
 
   return (
-    <Container maxWidth="xl">
-      {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
-      {loading && <Loading text={t('pages.hub.application.loading')} />}
-      {!loading && !hasApplied && (
-        <Box marginY={4}>
-          <PageTitle>{t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
-        </Box>
-      )}
-      {!loading && (
-        <div className={styles.logoDiv}>
-          {avatar && <Image src={avatar} alt="Alkemio" />}
-          {!hasApplied && <span>{tagline}</span>}
-        </div>
-      )}
-      {!loading && !hasApplied && (
-        <Box marginY={5}>
-          {description ? (
-            <WrapperMarkdown>{description}</WrapperMarkdown>
-          ) : (
-            <BlockTitle> {t('pages.hub.application.subheader')}</BlockTitle>
-          )}
-        </Box>
-      )}
-      {hasApplied ? (
-        <div className={styles.thankYouDiv}>
-          <BlockTitle>
-            {t('pages.hub.application.finish')}
-            {communityName}
-          </BlockTitle>
-          <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
-        </div>
-      ) : (
-        <>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            enableReinitialize
-            onSubmit={async values => onSubmit(values)}
-          >
-            {({ handleSubmit }) => {
-              return (
-                <>
-                  <Grid container spacing={2}>
-                    {questions.map((x, i) => (
-                      <Grid item key={i} xs={12}>
-                        <FormikInputField
-                          key={i}
-                          title={x.question}
-                          name={`['${x.question}']`} // Formik can work with nested objects. Avoid nesting when a question contains dot.- https://formik.org/docs/guides/arrays#avoid-nesting
-                          rows={2}
-                          multiline
-                          required={x.required}
-                          autoComplete="on"
-                          autoCapitalize="sentences"
-                          autoCorrect="on"
-                          maxLength={x.maxLength}
-                          withCounter
-                        />
+    <PageContent>
+      <Section sx={{ width: '100%' }}>
+        {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
+        {loading && <Loading text={t('pages.hub.application.loading')} />}
+        {!loading && !hasApplied && (
+          <Box marginY={4}>
+            <PageTitle>{t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
+          </Box>
+        )}
+        {!loading && (
+          <div className={styles.logoDiv}>
+            {avatar && <Image src={avatar} alt="Alkemio" />}
+            {!hasApplied && <span>{tagline}</span>}
+          </div>
+        )}
+        {!loading && !hasApplied && (
+          <Box marginY={5}>
+            {description ? (
+              <WrapperMarkdown>{description}</WrapperMarkdown>
+            ) : (
+              <BlockTitle> {t('pages.hub.application.subheader')}</BlockTitle>
+            )}
+          </Box>
+        )}
+        {hasApplied ? (
+          <div className={styles.thankYouDiv}>
+            <BlockTitle>
+              {t('pages.hub.application.finish')}
+              {communityName}
+            </BlockTitle>
+            <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
+          </div>
+        ) : (
+          <>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              enableReinitialize
+              onSubmit={async values => onSubmit(values)}
+            >
+              {({ handleSubmit }) => {
+                return (
+                  <>
+                    <Grid container spacing={2}>
+                      {questions.map((x, i) => (
+                        <Grid item key={i} xs={12}>
+                          <FormikInputField
+                            key={i}
+                            title={x.question}
+                            name={`['${x.question}']`} // Formik can work with nested objects. Avoid nesting when a question contains dot.- https://formik.org/docs/guides/arrays#avoid-nesting
+                            rows={2}
+                            multiline
+                            required={x.required}
+                            autoComplete="on"
+                            autoCapitalize="sentences"
+                            autoCorrect="on"
+                            maxLength={x.maxLength}
+                            withCounter
+                          />
+                        </Grid>
+                      ))}
+                      <Grid item>
+                        <SaveButton type="submit" loading={isCreationLoading} onClick={() => handleSubmit()}>
+                          {t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
+                        </SaveButton>
                       </Grid>
-                    ))}
-                    <Grid item>
-                      <WrapperButton
-                        variant="primary"
-                        type="submit"
-                        disabled={isCreationLoading}
-                        onClick={() => handleSubmit()}
-                        text={t(`buttons.${isCreationLoading ? 'processing' : 'apply'}` as const)}
-                      />
                     </Grid>
-                  </Grid>
-                </>
-              );
-            }}
-          </Formik>
-        </>
-      )}
-    </Container>
+                  </>
+                );
+              }}
+            </Formik>
+          </>
+        )}
+      </Section>
+    </PageContent>
   );
 };
 

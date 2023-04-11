@@ -53,7 +53,7 @@ const useSideBannerStyles = makeStyles(theme => ({
   },
 }));
 
-export interface SectionProps {
+export interface SectionProps extends PaperProps {
   bannerUrl?: string;
   alwaysShowBanner?: boolean;
   bannerOverlay?: React.ReactNode;
@@ -72,6 +72,7 @@ const Section: FC<SectionProps> = ({
   children,
   sideBanner = false,
   sideBannerRight = false,
+  ...containerProps
 }) => {
   const normalStyles = useNormalStyles();
   const sideBannerStyles = useSideBannerStyles();
@@ -82,7 +83,13 @@ const Section: FC<SectionProps> = ({
 
   return (
     <>
-      <Paper elevation={0} variant="outlined" classes={classes?.section} className={styles.container}>
+      <Paper
+        elevation={0}
+        variant="outlined"
+        classes={classes?.section}
+        className={styles.container}
+        {...containerProps}
+      >
         {bannerUrl ? (
           <Box position="relative" className={styles.bannerContainer} sx={sideBannerRight ? { order: 2 } : null}>
             <img src={bannerUrl} alt="banner" onLoad={() => setBannerLoading(false)} className={styles.bannerImage} />
