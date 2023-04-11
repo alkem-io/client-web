@@ -29,8 +29,7 @@ const SearchResultSection: FC<ResultSectionProps> = ({
 }) => {
   const titleWithCount = useMemo(() => `${title} (${results.length})`, [title, results.length]);
   const { t } = useTranslation();
-  let resultDisclaimer: string | undefined = undefined;
-  if (results.length >= 8) resultDisclaimer = t('pages.search.results-disclaimer');
+  const resultDisclaimer = results.length >= 8 ? t('pages.search.results-disclaimer') : undefined
   return (
     <PageContentBlock>
       <PageContentBlockHeader
