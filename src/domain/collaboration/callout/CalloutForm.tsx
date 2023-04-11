@@ -128,7 +128,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         origin: 'Hub',
       },
     }),
-    [callout?.id]
+    [callout?.id, tagsets]
   );
 
   const uniqueNameValidator = yup
