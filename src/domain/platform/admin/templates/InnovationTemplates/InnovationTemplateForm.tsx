@@ -49,7 +49,7 @@ const InnovationTemplateForm = ({
   visual,
   onSubmit,
   actions,
-  editMode,
+  editMode = false,
 }: InnovationTemplateFormProps) => {
   const { t } = useTranslation();
 
@@ -72,7 +72,7 @@ const InnovationTemplateForm = ({
     >
       {({ values }) => (
         <FormRows>
-          <FormikSelect name="type" values={types} title={t('innovation-templates.type.title')} disabled={!!editMode} />
+          <FormikSelect name="type" values={types} title={t('innovation-templates.type.title')} disabled={editMode} />
           <FormikInputField
             name="definition"
             title={t('innovation-templates.definition.title')}
