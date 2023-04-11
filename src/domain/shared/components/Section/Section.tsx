@@ -65,6 +65,7 @@ export interface SectionProps {
 }
 /**
  * @deprecated
+ * Better use PageContent and PageContentBlock
  */
 const Section: FC<SectionProps> = ({
   bannerUrl,
