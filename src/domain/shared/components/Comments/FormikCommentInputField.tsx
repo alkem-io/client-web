@@ -60,7 +60,7 @@ interface FormikCommentInputFieldProps extends InputProps {
   withCounter?: boolean;
   submitOnReturnKey?: boolean;
   size?: OutlinedInputProps['size'];
-  compact?: boolean;
+  compactMode?: boolean;
 }
 
 export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
@@ -73,7 +73,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   withCounter = false,
   submitOnReturnKey = false,
   size = 'medium',
-  compact = false,
+  compactMode = false,
 }) => {
   const ref = useRef<HTMLElement>(null);
   const emojiButtonRef = useRef(null);
@@ -200,7 +200,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
             multiline
             size={size}
             sx={theme => ({
-              '::before': compact
+              '::before': compactMode
                 ? undefined
                 : {
                     content: '""',
@@ -213,7 +213,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                   },
             })}
             startAdornment={
-              !compact && (
+              !compactMode && (
                 <InputAdornment
                   position="start"
                   sx={{
@@ -252,9 +252,9 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
           count={field.value?.length}
           maxLength={maxLength}
           disabled={!withCounter}
-          flexWrap={compact ? 'wrap' : 'nowrap'}
+          flexWrap={compactMode ? 'wrap' : 'nowrap'}
         >
-          {compact && (
+          {compactMode && (
             <Box
               display="flex"
               alignItems="center"
@@ -269,12 +269,12 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               </Box>
             </Box>
           )}
-          <FormHelperText error={isError} sx={{ order: compact ? 1 : 0 }}>
+          <FormHelperText error={isError} sx={{ order: compactMode ? 1 : 0 }}>
             {helperText}
           </FormHelperText>
         </CharacterCounter>
       </FormGroup>
-      {!compact && (
+      {!compactMode && (
         <Box display="flex" alignItems="center" height={gutters(2)}>
           {helpButton}
         </Box>

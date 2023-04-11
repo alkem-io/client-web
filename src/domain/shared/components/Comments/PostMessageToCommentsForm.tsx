@@ -84,7 +84,7 @@ const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
                 sx={{
                   height: gutters(2),
                 }}
-                compact={isCompact}
+                compactMode={isCompact}
               />
             </Form>
           )}
