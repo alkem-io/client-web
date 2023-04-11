@@ -4,12 +4,10 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanner';
 import { toSocialNetworkEnum } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import { isSocialLink } from '../../../../shared/components/SocialLinks/SocialLinks';
-import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 
 const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
-  const { user: currentUser } = useUserContext();
 
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
   const userId = userMetadata?.user.id;
@@ -56,7 +54,7 @@ const UserPageBanner: FC = () => {
         avatarUrl={profile.visual?.uri}
         loading={loading}
         onSendMessage={handleSendMessage}
-        isContactable={isContactable && currentUser?.user.id !== userId}
+        isContactable={isContactable}
       />
     );
   } else {
