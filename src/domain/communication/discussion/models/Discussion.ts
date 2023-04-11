@@ -4,12 +4,13 @@ import { Message as Comment } from '../../../shared/components/Comments/models/m
 
 export interface Discussion {
   id: string;
+  nameID: string;
   title: string;
   category: DiscussionCategory;
   myPrivileges: AuthorizationPrivilege[] | undefined;
   author?: Author;
   authors: Author[];
-  description: string;
+  description?: string;
   createdAt: Date | undefined;
   comments?: Comment[];
   commentsCount: number;

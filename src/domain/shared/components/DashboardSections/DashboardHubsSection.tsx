@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import HubCard, { HubCardProps } from '../../../challenge/hub/HubCard/HubCard';
@@ -44,7 +44,7 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
-      <CardsLayout items={hubs} disablePadding cards={false}>
+      <ScrollableCardsLayout items={hubs} cards={false}>
         {hub => (
           <HubCard
             bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
@@ -59,7 +59,7 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
             {...getHubCardProps?.(hub)}
           />
         )}
-      </CardsLayout>
+      </ScrollableCardsLayout>
     </PageContentBlock>
   );
 };

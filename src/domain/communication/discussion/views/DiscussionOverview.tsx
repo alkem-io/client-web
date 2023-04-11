@@ -19,10 +19,10 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const navigate = useNavigate();
   const { pathname } = useResolvedPath('..');
 
-  const { id, title, createdAt, author, authors = [], commentsCount, category } = discussion;
+  const { nameID, title, createdAt, author, authors = [], commentsCount, category } = discussion;
 
   return (
-    <ListItemButton disableGutters onClick={() => navigate(buildDiscussionUrl(pathname, id))}>
+    <ListItemButton disableGutters onClick={() => navigate(buildDiscussionUrl(pathname, nameID))}>
       <ListItemIcon sx={{ justifyContent: 'center' }}>
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>
