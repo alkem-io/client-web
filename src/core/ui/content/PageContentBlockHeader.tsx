@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { BlockTitle } from '../typography';
+import { BlockTitle, CaptionSmall } from '../typography';
 import { ReactNode } from 'react';
 import { GUTTER_PX } from '../grid/constants';
 
@@ -13,7 +13,7 @@ const PageContentBlockHeader = ({ title, actions, disclaimer }: PageContentBlock
   return (
     <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" height={GUTTER_PX}>
       <BlockTitle>{title}</BlockTitle>
-      {disclaimer && <BlockTitle>{disclaimer}</BlockTitle>}
+      {disclaimer && <CaptionSmall>{disclaimer}</CaptionSmall>}
       {actions && <Box>{actions}</Box>}
     </Box>
   );
