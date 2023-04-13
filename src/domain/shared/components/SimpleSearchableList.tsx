@@ -10,7 +10,7 @@ import ListItemLink from './SearchableList/ListItemLink';
 import { times } from 'lodash';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
-  data: Item[];
+  data: Item[] | undefined;
   edit?: boolean;
   active?: number | string;
   onDelete?: (item: Item) => void;

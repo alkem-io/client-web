@@ -1,15 +1,15 @@
 import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
-import Dialog from '@mui/material/Dialog';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
 
 interface EditPostTemplateDialogProps {
   open: boolean;
-  onClose: DialogProps['onClose'];
+  onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: PostTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
   template: AdminPostTemplateFragment | undefined;
@@ -38,14 +38,16 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
   };
 
   return (
-    <Dialog
+    <DialogWithGrid
       open={open}
       onClose={onClose}
       PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
+      <DialogHeader onClose={onClose}>
+        {t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
+      </DialogHeader>
       <PostTemplateForm
-        title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
         visual={template.profile.visual}
         onSubmit={handleSubmit}
@@ -56,7 +58,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
           </>
         }
       />
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useState } from 'react';
 import { Trans } from 'react-i18next';
-import CanvasCreateDialog from '../CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../containers/CanvasActionsContainer';
@@ -10,6 +9,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import {
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
+  CanvasValueFragment,
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
@@ -71,9 +71,9 @@ export interface CanvasManagementViewProps
     CanvasNavigationMethods {}
 
 const getCanvasShareUrl = (urlParams: UrlParams) => {
-  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.whiteboardNameId) return;
 
-  return buildCanvasUrl(urlParams.calloutNameId, urlParams.canvasNameId, {
+  return buildCanvasUrl(urlParams.calloutNameId, urlParams.whiteboardNameId, {
     hubNameId: urlParams.hubNameId,
     challengeNameId: urlParams.challengeNameId,
     opportunityNameId: urlParams.opportunityNameId,
@@ -84,7 +84,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   const { canvasNameId, calloutId, canvas } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
-  const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
 
   const isCanvasCheckedOutByMe =
@@ -107,11 +106,17 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
 
   return (
     <>
-      <CanvasValueContainer canvasId={canvas?.id} calloutId={calloutId}>
+      <CanvasValueContainer
+        canvasId={canvas?.id}
+        calloutId={calloutId}
+        hubNameId={urlParams.hubNameId ?? ''}
+        challengeNameId={urlParams.challengeNameId}
+        opportunityNameId={urlParams.opportunityNameId}
+      >
         {entities => (
           <CanvasDialog
             entities={{
-              canvas: entities.canvas,
+              canvas: entities.canvas as CanvasValueFragment & CanvasDetailsFragment,
               lockedBy: lockedByDetailsData?.usersById[0],
             }}
             actions={{
@@ -133,25 +138,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           />
         )}
       </CanvasValueContainer>
-      <CanvasCreateDialog
-        entities={{
-          calloutId,
-          templates: entities.templates,
-        }}
-        actions={{
-          onCancel: () => setShowCreateCanvasDialog(false),
-          onConfirm: input => {
-            actions.onCreate(input);
-            setShowCreateCanvasDialog(false);
-          },
-        }}
-        options={{
-          show: showCreateCanvasDialog,
-        }}
-        state={{
-          templatesLoading: state.loadingCanvases,
-        }}
-      />
       <ConfirmationDialog
         actions={{
           onCancel: () => setCanvasBeingDeleted(undefined),

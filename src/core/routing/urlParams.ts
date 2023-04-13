@@ -11,11 +11,13 @@ export default interface UrlParams extends Record<string, string | undefined> {
   applicationId?: string;
   userNameId?: string;
   role?: AuthorizationCredential;
-  discussionId?: string;
+  discussionNameId?: string;
   calloutNameId?: string;
   aspectNameId?: string;
-  canvasNameId?: string;
+  whiteboardNameId?: string;
+  innovationTemplateId?: string;
   calendarEventNameId?: string;
+  innovationPackNameId?: string;
 }
 
 export const nameOfUrl = nameof<UrlParams>();

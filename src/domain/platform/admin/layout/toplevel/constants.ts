@@ -8,6 +8,7 @@ export enum AdminSection {
   Hub = 'hubs',
   User = 'users',
   Organization = 'organizations',
+  InnovationPacks = 'innovation-packs',
   Authorization = 'authorization',
 }
 
@@ -25,6 +26,11 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
   {
     section: AdminSection.Organization,
     route: '/admin/organizations',
+    icon: ForumOutlinedIcon,
+  },
+  {
+    section: AdminSection.InnovationPacks,
+    route: '/admin/innovation-packs',
     icon: ForumOutlinedIcon,
   },
   {

@@ -27,11 +27,11 @@ export interface InnovationTemplateFormSubmittedValues {
 }
 
 interface InnovationTemplateFormProps {
-  title: ReactNode;
   initialValues: Partial<InnovationTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<InnovationTemplateFormValues>) => ReactNode);
+  editMode?: boolean;
 }
 
 const validator = {
@@ -44,7 +44,13 @@ const validator = {
   type: yup.string().oneOf(Object.values(InnovationFlowType)),
 };
 
-const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: InnovationTemplateFormProps) => {
+const InnovationTemplateForm = ({
+  initialValues,
+  visual,
+  onSubmit,
+  actions,
+  editMode = false,
+}: InnovationTemplateFormProps) => {
   const { t } = useTranslation();
 
   const types = useMemo(
@@ -58,7 +64,6 @@ const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, action
 
   return (
     <TemplateForm
-      title={title}
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}
@@ -67,7 +72,7 @@ const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, action
     >
       {({ values }) => (
         <FormRows>
-          <FormikSelect name="type" values={types} title={t('innovation-templates.type.title')} />
+          <FormikSelect name="type" values={types} title={t('innovation-templates.type.title')} disabled={editMode} />
           <FormikInputField
             name="definition"
             title={t('innovation-templates.definition.title')}

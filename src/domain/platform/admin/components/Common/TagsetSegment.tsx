@@ -8,6 +8,7 @@ import { toTagsetTitle } from '../../../../../common/utils/toTagsetTitle';
 import { TagsInput } from '../../../../../common/components/core';
 
 interface TagsSegmentProps {
+  fieldName?: string;
   tagsets: Tagset[];
   template?: TagsetTemplate[];
   readOnly?: boolean;
@@ -25,6 +26,7 @@ export const tagsetSegmentValidationObject = yup.object().shape({
 export const tagsetSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
 export const TagsetSegment: FC<TagsSegmentProps> = ({
+  fieldName = 'tagsets',
   tagsets,
   readOnly = false,
   template,
@@ -42,12 +44,12 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
   );
 
   return (
-    <FieldArray name={'tagsets'}>
+    <FieldArray name={fieldName}>
       {() =>
         tagsets.map((tagSet, index) => (
           <TagsetField
             key={index}
-            name={`tagsets[${index}].tags`}
+            name={`${fieldName}[${index}].tags`}
             title={toTagsetTitle(tagSet, title)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}

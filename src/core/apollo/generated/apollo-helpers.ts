@@ -318,11 +318,6 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
-export type ApplicationTemplateFieldPolicy = {
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-  questions?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type AspectKeySpecifier = (
   | 'authorization'
   | 'callout'
@@ -877,11 +872,11 @@ export type DiscussionKeySpecifier = (
   | 'category'
   | 'commentsCount'
   | 'createdBy'
-  | 'description'
   | 'id'
   | 'messages'
+  | 'nameID'
+  | 'profile'
   | 'timestamp'
-  | 'title'
   | DiscussionKeySpecifier
 )[];
 export type DiscussionFieldPolicy = {
@@ -889,11 +884,11 @@ export type DiscussionFieldPolicy = {
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
@@ -1004,17 +999,6 @@ export type HubFieldPolicy = {
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type HubAspectTemplateKeySpecifier = (
-  | 'defaultDescription'
-  | 'type'
-  | 'typeDescription'
-  | HubAspectTemplateKeySpecifier
-)[];
-export type HubAspectTemplateFieldPolicy = {
-  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ISearchResultsKeySpecifier = (
   | 'contributionResults'
@@ -2384,10 +2368,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
   };
-  ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
-    fields?: ApplicationTemplateFieldPolicy;
-  };
   Aspect?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AspectKeySpecifier | (() => undefined | AspectKeySpecifier);
     fields?: AspectFieldPolicy;
@@ -2627,10 +2607,6 @@ export type StrictTypedTypePolicies = {
   Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
-  };
-  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
-    fields?: HubAspectTemplateFieldPolicy;
   };
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);

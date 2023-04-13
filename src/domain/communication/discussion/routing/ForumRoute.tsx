@@ -13,7 +13,7 @@ export const ForumRoute: FC<ForumRouteProps> = () => {
       <Route path={'/'}>
         <Route index element={<ForumPage />} />
         <Route path="/new" element={<ForumPage dialog="new" />} />
-        <Route path={`discussion/:${nameOfUrl.discussionId}`} element={<DiscussionPage />} />
+        <Route path={`discussion/:${nameOfUrl.discussionNameId}`} element={<DiscussionPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

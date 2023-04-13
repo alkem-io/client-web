@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '../../../../common/utils/validator';
 import { Form, Formik, FormikProps } from 'formik';
-import { DialogActions, DialogContent, Typography } from '@mui/material';
+import { DialogActions, DialogContent } from '@mui/material';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { TagsetField } from '../components/Common/TagsetSegment';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
@@ -26,7 +26,6 @@ export interface TemplateInfoSubmittedValues {
 }
 
 interface TemplateFormProps<Values extends TemplateProfileValues> {
-  title: ReactNode;
   initialValues: Partial<Values>;
   visual?: Visual;
   onSubmit: (values: Values & TemplateInfoSubmittedValues) => void;
@@ -36,7 +35,6 @@ interface TemplateFormProps<Values extends TemplateProfileValues> {
 }
 
 const TemplateForm = <Values extends TemplateProfileValues>({
-  title,
   initialValues,
   visual,
   onSubmit,
@@ -72,12 +70,14 @@ const TemplateForm = <Values extends TemplateProfileValues>({
   const renderChildren = typeof children === 'function' ? children : () => children;
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+    <Formik
+      enableReinitialize
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationSchema}
+    >
       {formState => (
         <Form>
-          <Typography variant="h3" sx={{ px: 3, pt: 5 }}>
-            {title}
-          </Typography>
           <DialogContent>
             <FormCols>
               <TemplateFormRows>

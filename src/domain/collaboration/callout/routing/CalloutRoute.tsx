@@ -23,7 +23,7 @@ const CalloutRoute: FC<CalloutRouteProps> = ({ parentPagePath, entityTypeName })
         }
       />
       <Route
-        path={`canvases/:${nameOfUrl.canvasNameId}/*`}
+        path={`canvases/:${nameOfUrl.whiteboardNameId}/*`}
         element={<CanvasRoute parentPagePath={parentPagePath} entityTypeName={entityTypeName} />}
       />
     </Routes>

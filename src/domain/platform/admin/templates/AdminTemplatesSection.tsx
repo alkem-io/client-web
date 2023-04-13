@@ -183,6 +183,7 @@ const AdminTemplatesSection = <
               tags,
             },
           ],
+          ...values['profile'],
         },
       },
       refetchQueries,
