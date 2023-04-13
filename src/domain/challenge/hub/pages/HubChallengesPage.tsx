@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -14,10 +14,13 @@ import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/use
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
-import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubentitiesView';
+import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import ChallengesCardContainer from '../containers/ChallengesCardContainer';
 import { useHub } from '../HubContext/useHub';
 import HubPageLayout from '../layout/HubPageLayout';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 
 export interface HubChallengesPageProps {}
 
@@ -51,11 +54,17 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
     [navigate, createChallenge, hubNameId]
   );
 
+  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
+    useCallouts({
+      hubNameId,
+      calloutGroups: [CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+    });
+
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>
       <ChallengesCardContainer hubNameId={hubNameId}>
         {(entities, state) => (
-          <JourneySubentitiesView
+          <ChildJourneyView
             hubNameId={hubNameId}
             childEntities={entities.challenges}
             childEntitiesIcon={<ChallengeIcon />}
@@ -88,6 +97,17 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 onClose={() => setCreateDialogOpen(false)}
                 OnCreate={handleCreate}
                 formComponent={CreateChallengeForm}
+              />
+            }
+            childrenLeft={
+              <CalloutsGroupView
+                callouts={groupedCallouts[CalloutsGroup.ChallengesLeft]}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                entityTypeName="hub"
+                sortOrder={calloutsSortOrder}
+                calloutNames={calloutNames}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
               />
             }
           />

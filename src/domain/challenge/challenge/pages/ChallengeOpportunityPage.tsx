@@ -11,7 +11,7 @@ import { JourneyCreationDialog } from '../../../shared/components/JorneyCreation
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubentitiesView';
+import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import { useHub } from '../../hub/HubContext/useHub';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
@@ -58,7 +58,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
       <OpportunityCardsContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
         {(entities, state) => (
-          <JourneySubentitiesView
+          <ChildJourneyView
             hubNameId={hubNameId}
             childEntities={entities.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
