@@ -29,6 +29,7 @@ import { Reference } from '../../../common/profile/Profile';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { createCalloutPostTemplate } from '../utils/createCalloutPostTemplate';
 import { Identifiable } from '../../../shared/types/Identifiable';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -205,7 +206,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           </DialogContent>
         </>
       )}
-      {selectedCalloutType !== undefined && (
+      {selectedCalloutType && (
         <>
           <DialogHeader onClose={handleClose}>
             <Box display="flex">
@@ -213,20 +214,17 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               {t('components.callout-creation.title')}
             </Box>
           </DialogHeader>
-          <DialogContent>
-            <Box paddingY={theme => theme.spacing(2)}>
-              <CalloutForm
-                calloutType={selectedCalloutType}
-                callout={callout}
-                calloutNames={calloutNames}
-                onChange={handleValueChange}
-                onStatusChanged={handleStatusChange}
-                templates={templates}
-              />
-            </Box>
-          </DialogContent>
-          <Actions padding={gutters()} justifyContent="end">
+          <CalloutForm
+            calloutType={selectedCalloutType}
+            callout={callout}
+            calloutNames={calloutNames}
+            onChange={handleValueChange}
+            onStatusChanged={handleStatusChange}
+            templates={templates}
+          />
+          <Actions padding={gutters()}>
             <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
+            <FlexSpacer />
             <LoadingButton
               loading={isCreating}
               loadingIndicator={`${t('buttons.save-draft')}...`}

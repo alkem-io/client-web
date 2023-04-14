@@ -4,7 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
 import PostTemplatePreviewCard from './PostTemplateCardPreview';
 import { useField } from 'formik';
-import FormRow from '../../../../shared/layout/FormLayout/FormRow';
+import FormRow from '../../../../../common/components/FormLayout/FormRow';
 import { Caption, CardText } from '../../../../../core/ui/typography';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';

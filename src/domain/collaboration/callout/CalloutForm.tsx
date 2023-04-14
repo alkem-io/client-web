@@ -1,26 +1,24 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import {
-  PostTemplateFragment,
   CalloutState,
   CalloutType,
-  WhiteboardTemplateFragment,
+  PostTemplateFragment,
   Tagset,
+  WhiteboardTemplateFragment,
 } from '../../../core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
-import { Grid } from '@mui/material';
-import FormRow from '../../shared/layout/FormLayout';
+import FormRow from '../../../common/components/FormLayout';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../shared/components/Section/Section';
 import { MID_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
 import { FormikSwitch } from '../../../common/components/composite/forms/FormikSwitch';
 import { displayNameValidator } from '../../../common/utils/validator/displayNameValidator';
 import WhiteboardTemplatesChooser, {
-  WhiteboardTemplateListItem,
   LibraryWhiteboardTemplate,
   TemplateOrigin,
+  WhiteboardTemplateListItem,
 } from './creation-dialog/CalloutTemplate/WhiteboardTemplateChooser';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -30,6 +28,8 @@ import ReferenceSegment from '../../platform/admin/components/Common/ReferenceSe
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
 import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
+import Gutters from '../../../core/ui/grid/Gutters';
+import { gutters } from '../../../core/ui/grid/utils';
 
 export type WhiteboardTemplateData = {
   id?: string;
@@ -201,60 +201,48 @@ const CalloutForm: FC<CalloutFormProps> = ({
     >
       {formikState => (
         <>
-          <Grid container spacing={2}>
+          <Gutters>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-            <FormRow cols={1}>
-              <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
-            </FormRow>
-            <SectionSpacer />
-            <FormRow>
-              <FormikMarkdownField
-                name="description"
-                title={t('components.callout-creation.info-step.description')}
-                rows={7}
-                maxLength={MID_TEXT_LENGTH}
-                withCounter
+            <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
+            <FormikMarkdownField
+              name="description"
+              title={t('components.callout-creation.info-step.description')}
+              rows={7}
+              maxLength={MID_TEXT_LENGTH}
+              withCounter
+            />
+            {editMode && (
+              <ProfileReferenceSegment
+                compactMode
+                references={formikState.values.references}
+                profileId={callout?.profileId}
+                marginTop={gutters(-1)}
               />
-            </FormRow>
-            <FormRow>
-              {editMode && (
-                <ProfileReferenceSegment
-                  compactView
-                  references={formikState.values.references}
-                  profileId={callout?.profileId}
-                />
-              )}
-              {!editMode && <ReferenceSegment compactView references={formikState.values.references} />}
-            </FormRow>
-            <SectionSpacer />
+            )}
+            {!editMode && (
+              <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
+            )}
             <TagsetSegment
               tagsets={tagsets}
               title={t('common.tags')}
               helpText={t('components.aspect-creation.info-step.tags-help-text')}
             />
-            <SectionSpacer />
             {calloutType === CalloutType.Card && (
               <PostTemplatesChooser name="postTemplateDefaultDescription" editMode={editMode} />
             )}
             {calloutType === CalloutType.Canvas && (
-              <>
-                <SectionSpacer />
-                <FormRow>
-                  {/* <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} /> */}
-                  <WhiteboardTemplatesChooser
-                    name="whiteboardTemplateData"
-                    templates={[...hubTemplates, ...libraryWhiteboardTemplates]}
-                    editMode={editMode}
-                    onSelectLibraryTemplate={updateLibraryTemplates}
-                  />
-                </FormRow>
-              </>
+              <FormRow>
+                {/* <WhiteboardTemplatesLibrary onSelectTemplate={handleImportTemplate} /> */}
+                <WhiteboardTemplatesChooser
+                  name="whiteboardTemplateData"
+                  templates={[...hubTemplates, ...libraryWhiteboardTemplates]}
+                  editMode={editMode}
+                  onSelectLibraryTemplate={updateLibraryTemplates}
+                />
+              </FormRow>
             )}
-            <SectionSpacer />
-            <FormRow>
-              <FormikSwitch name="opened" title={t('callout.state-permission')} />
-            </FormRow>
-          </Grid>
+            <FormikSwitch name="opened" title={t('callout.state-permission')} />
+          </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>
       )}
