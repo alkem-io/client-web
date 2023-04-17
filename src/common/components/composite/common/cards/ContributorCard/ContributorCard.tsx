@@ -1,7 +1,7 @@
 import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { FC, MouseEventHandler, ReactNode, useCallback, useMemo, useState } from 'react';
 import ConditionalLink from '../../../../core/ConditionalLink';
 import UserCard from '../user-card/UserCard';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
@@ -62,6 +62,13 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
   const [sendMessageToUser] = useSendMessageToUserMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
 
+  const closeMessageUserDialog = () => setIsMessageUserDialogOpen(false);
+  const openMessageUserDialog: MouseEventHandler<HTMLButtonElement> = event => {
+    event.stopPropagation();
+    event.preventDefault();
+    setIsMessageUserDialogOpen(true);
+  };
+
   const messageReceivers = [{ title: displayName, avatarUri: avatar, city: tooltip?.city, country: tooltip?.country }];
 
   const handleSendMessage = useCallback(
@@ -98,7 +105,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
                 country={tooltip?.country}
                 url=""
                 isContactable={isContactable}
-                onContact={() => setIsMessageUserDialogOpen(true)}
+                onContact={openMessageUserDialog}
               />
             }
             classes={{ tooltip: styles.tooltip }}
@@ -127,7 +134,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
       <DirectMessageDialog
         title={t('send-message-dialog.direct-message-title')}
         open={isMessageUserDialogOpen}
-        onClose={() => setIsMessageUserDialogOpen(false)}
+        onClose={closeMessageUserDialog}
         onSendMessage={handleSendMessage}
         messageReceivers={messageReceivers}
       />

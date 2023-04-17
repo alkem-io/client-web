@@ -74,7 +74,8 @@ const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) =
               country={user.country}
               city={user.city}
               url={user.url}
-              onContact={() =>
+              onContact={event => {
+                event.stopPropagation();
                 setDirectMessageReceivers([
                   {
                     id: user.id,
@@ -83,8 +84,8 @@ const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) =
                     city: user.city,
                     country: user.country,
                   },
-                ])
-              }
+                ]);
+              }}
             />
           </Grid>
         ))}
