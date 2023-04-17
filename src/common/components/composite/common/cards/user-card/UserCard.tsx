@@ -2,18 +2,7 @@ import { FC, ReactNode } from 'react';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
-import {
-  Avatar,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  IconButton,
-  IconButtonProps,
-  Skeleton,
-  SvgIcon,
-  Typography,
-} from '@mui/material';
+import { Avatar, Box, Card, CardContent, Grid, IconButton, Skeleton, SvgIcon, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import TagsComponent from '../../../../../../domain/shared/components/TagsComponent/TagsComponent';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
@@ -61,7 +50,7 @@ export interface UserCardProps {
   country?: string;
   loading?: boolean;
   isContactable?: boolean;
-  onContact?: IconButtonProps['onClick'];
+  onContact?: () => void;
 }
 
 const ElevatedCard = withElevationOnHover(Card);
@@ -110,7 +99,19 @@ const UserCard: FC<UserCardProps> = ({
                     {displayName}
                   </Typography>
                   {isContactable && (
-                    <IconButton onClick={onContact}>
+                    <IconButton
+                      onClick={
+                        onContact
+                          ? event => {
+                              // Needs these two in some cases when UserCard
+                              // is in a tooltip or in another dialog:
+                              event.preventDefault();
+                              event.stopPropagation();
+                              onContact();
+                            }
+                          : undefined
+                      }
+                    >
                       <EmailOutlinedIcon />
                     </IconButton>
                   )}

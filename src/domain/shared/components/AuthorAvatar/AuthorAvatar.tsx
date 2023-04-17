@@ -51,10 +51,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
                 city={author.city}
                 country={author.country}
                 url={author.url}
-                onContact={event => {
-                  event.preventDefault();
-                  setContactDialogVisible(true);
-                }}
+                onContact={() => setContactDialogVisible(true)}
               />
             }
             PopperProps={{
