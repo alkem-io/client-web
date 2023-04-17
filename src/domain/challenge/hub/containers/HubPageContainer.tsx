@@ -118,12 +118,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  // const aspects = getAspectsFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const aspectsCount = useAspectsCount(_hub?.hub.metrics);
-
-  // const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const canvasesCount = useCanvasesCount(_hub?.hub.metrics);
-
   const membersCount = getMetricCount(_hub?.hub.metrics, MetricType.Member);
   const memberUsersCount = membersCount - (_hub?.hub.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community, { memberUsersCount });
@@ -163,9 +159,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           isAuthenticated,
           isMember,
           challenges,
-          // aspects,
           aspectsCount,
-          // canvases,
           canvasesCount,
           references,
           recommendations,
