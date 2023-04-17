@@ -85,6 +85,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               childrenLeft={
                 <CalloutsGroupView
                   callouts={groupedCallouts[CalloutsGroup.HomeLeft]}
+                  hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
                   entityTypeName="hub"
@@ -96,6 +97,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               childrenRight={
                 <CalloutsGroupView
                   callouts={groupedCallouts[CalloutsGroup.HomeRight]}
+                  hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
                   entityTypeName="hub"

@@ -74,7 +74,6 @@ export type TypedCallout = Pick<
     draft: boolean;
     editable: boolean;
     isSubscribedToComments: boolean;
-    // url: string;
   };
 
 interface UseCalloutsParams extends OptionalCoreEntityIds {

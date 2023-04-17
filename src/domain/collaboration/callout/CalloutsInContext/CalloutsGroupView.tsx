@@ -3,15 +3,16 @@ import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
 import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
 import AddContentButton from '../../../../core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
-import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
+  hubId: string;
   canCreateCallout: boolean;
 }
 
 const CalloutsGroupView = ({
   callouts,
+  hubId,
   entityTypeName,
   calloutNames,
   scrollToCallout,
@@ -27,9 +28,6 @@ const CalloutsGroupView = ({
     handleCalloutDrafted,
     isCreating,
   } = useCalloutCreation();
-
-  // TODO pass with props
-  const { hubId } = useHub();
 
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });

@@ -43,9 +43,7 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
-  // aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  // canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;

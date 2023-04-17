@@ -102,6 +102,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             childrenLeft={
               <CalloutsGroupView
                 callouts={groupedCallouts[CalloutsGroup.ChallengesLeft]}
+                hubId={hubNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
                 entityTypeName="hub"

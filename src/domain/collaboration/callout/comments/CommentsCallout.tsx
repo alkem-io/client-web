@@ -14,7 +14,6 @@ import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCac
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { Dialog, useMediaQuery } from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
@@ -31,7 +30,10 @@ interface CommentsCalloutProps extends BaseCalloutViewProps {
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
-  ({ callout, loading, expanded, isSubscribedToComments, contributionsCount, ...calloutLayoutProps }, ref) => {
+  (
+    { callout, loading, expanded, isSubscribedToComments, contributionsCount, onExpand, ...calloutLayoutProps },
+    ref
+  ) => {
     const { user: userMetadata, isAuthenticated } = useUserContext();
     const user = userMetadata?.user;
 
@@ -127,51 +129,30 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
 
     const lastMessageOnly = breakpoint === 'xs' && !expanded;
 
-    const canFitRegularDialog = useMediaQuery('@media only screen and (min-height: 600px)');
-
     return (
-      <>
-        <PageContentBlock ref={ref} disablePadding disableGap>
-          <CalloutLayout
-            callout={callout}
-            contributionsCount={contributionsCount}
-            {...calloutLayoutProps}
-            expanded={expanded}
-          >
-            <CommentsComponent
-              messages={messages}
-              commentsId={commentsId}
-              canReadMessages={canReadMessages}
-              canPostMessages={canPostMessages}
-              handlePostMessage={handlePostMessage}
-              canDeleteMessage={canDeleteMessage}
-              handleDeleteMessage={handleDeleteMessage}
-              loading={loading || postingComment || deletingMessage}
-              last={lastMessageOnly}
-              maxHeight={COMMENTS_CONTAINER_HEIGHT}
-              onClickMore={() => {}}
-            />
-          </CalloutLayout>
-        </PageContentBlock>
-        <Dialog
-          open={false}
-          PaperProps={{ sx: { padding: 0, display: 'flex', flexDirection: 'column' } }}
-          fullScreen={!canFitRegularDialog}
+      <PageContentBlock ref={ref} disablePadding disableGap>
+        <CalloutLayout
+          callout={callout}
+          contributionsCount={contributionsCount}
+          {...calloutLayoutProps}
+          expanded={expanded}
+          onExpand={onExpand}
         >
-          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
-            <CommentsComponent
-              messages={messages}
-              commentsId={commentsId}
-              canReadMessages={canReadMessages}
-              canPostMessages={canPostMessages}
-              handlePostMessage={handlePostMessage}
-              canDeleteMessage={canDeleteMessage}
-              handleDeleteMessage={handleDeleteMessage}
-              loading={loading || postingComment || deletingMessage}
-            />
-          </CalloutLayout>
-        </Dialog>
-      </>
+          <CommentsComponent
+            messages={messages}
+            commentsId={commentsId}
+            canReadMessages={canReadMessages}
+            canPostMessages={canPostMessages}
+            handlePostMessage={handlePostMessage}
+            canDeleteMessage={canDeleteMessage}
+            handleDeleteMessage={handleDeleteMessage}
+            loading={loading || postingComment || deletingMessage}
+            last={lastMessageOnly}
+            maxHeight={COMMENTS_CONTAINER_HEIGHT}
+            onClickMore={onExpand}
+          />
+        </CalloutLayout>
+      </PageContentBlock>
     );
   }
 );

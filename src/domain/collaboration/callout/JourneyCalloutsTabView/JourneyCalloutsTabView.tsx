@@ -54,15 +54,16 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
 
   const { hubId } = useHub();
 
-  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
-  const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });
+  const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery({
+    variables: { hubId },
+  });
 
   const postTemplates = templatesData?.hub.templates?.postTemplates ?? [];
   const whiteboardTemplates = templatesData?.hub.templates?.whiteboardTemplates ?? [];
   const templates = { postTemplates, whiteboardTemplates };
 
   const handleCreate = () => {
-    getTemplates();
+    fetchTemplates();
     handleCreateCalloutOpened();
   };
 
