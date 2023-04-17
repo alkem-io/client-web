@@ -100,17 +100,11 @@ const UserCard: FC<UserCardProps> = ({
                   </Typography>
                   {isContactable && (
                     <IconButton
-                      onClick={
-                        onContact
-                          ? event => {
-                              // Needs these two in some cases when UserCard
-                              // is in a tooltip or in another dialog:
-                              event.preventDefault();
-                              event.stopPropagation();
-                              onContact();
-                            }
-                          : undefined
-                      }
+                      onClick={event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onContact?.();
+                      }}
                     >
                       <EmailOutlinedIcon />
                     </IconButton>
