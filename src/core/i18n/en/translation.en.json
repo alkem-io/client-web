@@ -1787,6 +1787,10 @@
       "organization-communication": {
         "title": "Organization mentions and messaging",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage"
+      },
+      "forum": {
+        "title": "Forum",
+        "subtitle": "This section allows you to select your preferences regarding activities in the Forum"
       }
     },
     "help-dialog": {
