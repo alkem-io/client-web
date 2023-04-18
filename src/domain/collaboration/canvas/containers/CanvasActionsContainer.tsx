@@ -159,6 +159,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
               file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
               uploadData: {
                 visualID: canvas.profile.visual?.id,
+                alternativeText: '',
               },
             },
           }),
