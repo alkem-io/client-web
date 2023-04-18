@@ -8,4 +8,5 @@ fragment VisualFull on Visual {
   maxWidth
   minHeight
   minWidth
+  alternativeText
 }
