@@ -1,6 +1,6 @@
 import { Callout, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { CalloutEditType } from './edit/CalloutEditType';
-import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
+import { CoreEntityIdTypes } from '../../shared/types/CoreEntityIds';
 
 export interface CalloutSortEvents {
   onMoveUp: (calloutId: string) => void;
@@ -24,9 +24,13 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
   onCalloutDelete: (callout: CalloutEditType) => Promise<void>;
 }
 
-export interface BaseCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+export interface BaseCalloutViewProps extends CoreEntityIdTypes, CalloutLayoutEvents, Partial<CalloutSortProps> {
   calloutNames: string[];
   contributionsCount: number;
   loading?: boolean;
   canCreate?: boolean;
+  expanded?: boolean;
+  calloutUri: string;
+  onExpand?: () => void;
+  onClose?: () => void;
 }

@@ -90,7 +90,7 @@ export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
 };
 
 export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation) => {
-  const calloutUrl = `/${EntityPageSection.Contribute}/callouts/${calloutNameId}`;
+  const calloutUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;
 };
 

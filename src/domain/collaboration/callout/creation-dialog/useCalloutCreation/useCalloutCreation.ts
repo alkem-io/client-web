@@ -22,7 +22,7 @@ export type CalloutCreationType = {
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
 };
 
-interface CalloutCreationUtils {
+export interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
