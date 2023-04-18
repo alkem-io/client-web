@@ -38,7 +38,7 @@ const HubCommunityPage = () => {
   const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
     useCallouts({
       hubNameId,
-      calloutGroups: [CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+      calloutGroups: [CalloutsGroup.CommunityLeft, CalloutsGroup.CommunityRight],
     });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
