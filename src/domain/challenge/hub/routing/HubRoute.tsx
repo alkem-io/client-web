@@ -19,6 +19,7 @@ import ContributePage from '../../../collaboration/contribute/ContributePage';
 import HubPageLayout from '../layout/HubPageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import HubSearchPage from '../pages/HubSearchPage';
+import HubCollaborationPage from '../HubCollaborationPage/HubCollaborationPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
@@ -37,23 +38,24 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
+        <Route path={`${routes.Collaboration}/:calloutNameId`} element={<HubCollaborationPage />} />
         <Route path={`${routes.Dashboard}/calendar`} element={<HubDashboardPage dialog="calendar" />} />
         <Route
           path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
           element={<HubDashboardPage dialog="calendar" />}
         />
-        <Route path={routes.Contribute} element={<ContributePage entityTypeName="hub" />} />
+        <Route path={routes.Contribute} element={<ContributePage journeyTypeName="hub" />} />
         <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage />} />
         <Route path={routes.Search} element={<HubSearchPage />} />
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<ContributePage entityTypeName="hub" scrollToCallout />}
+          element={<ContributePage journeyTypeName="hub" scrollToCallout />}
         />
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <ContributePage entityTypeName="hub">
+            <ContributePage journeyTypeName="hub">
               <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="hub" />
             </ContributePage>
           }

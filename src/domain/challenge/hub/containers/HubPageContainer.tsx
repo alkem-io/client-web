@@ -24,11 +24,6 @@ import { WithId } from '../../../../types/WithId';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../../collaboration/canvas/utils/canvasesCount';
-import {
-  getAspectsFromPublishedCallouts,
-  getCanvasesFromPublishedCallouts,
-} from '../../../collaboration/callout/utils/getPublishedCallouts';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 
@@ -48,9 +43,7 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   activities: ActivityLogResultType[] | undefined;
   activityLoading: boolean;
-  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;
@@ -125,12 +118,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  const aspects = getAspectsFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const aspectsCount = useAspectsCount(_hub?.hub.metrics);
-
-  const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const canvasesCount = useCanvasesCount(_hub?.hub.metrics);
-
   const membersCount = getMetricCount(_hub?.hub.metrics, MetricType.Member);
   const memberUsersCount = membersCount - (_hub?.hub.community?.memberOrganizations?.length ?? 0);
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community, { memberUsersCount });
@@ -170,9 +159,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           isAuthenticated,
           isMember,
           challenges,
-          aspects,
           aspectsCount,
-          canvases,
           canvasesCount,
           references,
           recommendations,
