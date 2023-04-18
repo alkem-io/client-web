@@ -1,7 +1,7 @@
 {
   "notifications": {
     "release-updates": {
-      "text": "Er is een nieuwe versie van het platform!  <a href=\"https://alkemio.foundation/releases\">Klik hier</a> om meer te lezen over de laatste updates."
+      "text": "Er is een nieuwe versie van het platform!  <klikhier>Klik hier</klikhier> om meer te lezen over de laatste updates."
     }
   },
   "cookie": {
