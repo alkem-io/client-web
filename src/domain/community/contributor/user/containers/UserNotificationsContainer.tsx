@@ -63,7 +63,7 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     });
   };
 
-  const preferences = useMemo(() => sortBy(data?.user.preferences || [], x => x.definition.displayName), [data]);
+  const preferences = useMemo(() => sortBy(data?.user.preferences ?? [], x => x.definition.displayName), [data]);
 
   return (
     <>
