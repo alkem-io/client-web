@@ -8,7 +8,7 @@ import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikM
 import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
 import DiscussionIcon from './DiscussionIcon';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { LoadingButton } from '@mui/lab';
@@ -60,7 +60,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
   const validationSchema = yup.object().shape({
     title: yup.string().trim().max(SMALL_TEXT_LENGTH).required(t('forms.validations.required')),
     category: yup.string().nullable().required(t('forms.validations.required')),
-    description: MarkdownValidator(MID_TEXT_LENGTH).trim().required(t('forms.validations.required')),
+    description: MarkdownValidator(LONG_TEXT_LENGTH).trim().required(t('forms.validations.required')),
   });
 
   const handleSubmit = async (values: formValues) => {
@@ -121,7 +121,7 @@ const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, comm
                     multiline
                     disabled={isSubmitting}
                     withCounter
-                    maxLength={MID_TEXT_LENGTH}
+                    maxLength={LONG_TEXT_LENGTH}
                   />
                 </Grid>
                 <Grid item>
