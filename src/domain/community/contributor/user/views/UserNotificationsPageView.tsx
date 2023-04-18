@@ -43,6 +43,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
   const communicationGroup = preferences.filter(x => x.definition.group === 'NotificationCommunication');
   // TODO hide when a user doesn't administer any organization
   const orgCommunicationGroup = preferences.filter(x => x.definition.group === 'NotificationOrganizationAdmin');
+  const forumGroup = preferences.filter(x => x.definition.group === 'NotificationForum');
 
   return (
     <Grid container spacing={GUTTER_MUI}>
@@ -62,43 +63,50 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
             loading={loading}
             onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
           />
+          {orgCommunicationGroup && (
+            <PreferenceSection
+              headerText={t('pages.user-notifications-settings.organization-communication.title')}
+              subHeaderText={t('pages.user-notifications-settings.organization-communication.subtitle')}
+              preferences={orgCommunicationGroup}
+              loading={loading}
+              onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+            />
+          )}
         </Box>
       </Grid>
-      {!!(adminGroup.length || communityGroup.length) && (
-        <Grid item xs={6}>
-          <Box display="flex" gap={gutters()} flexDirection="column">
-            {adminGroup.length > 0 && (
-              <PreferenceSection
-                headerText={t('pages.user-notifications-settings.user-administration.title')}
-                subHeaderText={t('pages.user-notifications-settings.user-administration.subtitle')}
-                preferences={adminGroup}
-                loading={loading}
-                onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
-              />
-            )}
-            {communityGroup.length > 0 && (
-              <PreferenceSection
-                headerText={t('pages.user-notifications-settings.community-administration.title')}
-                subHeaderText={t('pages.user-notifications-settings.community-administration.subtitle')}
-                preferences={communityGroup}
-                loading={loading}
-                onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
-              />
-            )}
-          </Box>
-        </Grid>
-      )}
-      {orgCommunicationGroup && (
-        <Grid item xs={6}>
+      <Grid item xs={6}>
+        <Box display="flex" gap={gutters()} flexDirection="column">
           <PreferenceSection
-            headerText={t('pages.user-notifications-settings.organization-communication.title')}
-            subHeaderText={t('pages.user-notifications-settings.organization-communication.subtitle')}
-            preferences={orgCommunicationGroup}
+            headerText={t('pages.user-notifications-settings.forum.title')}
+            subHeaderText={t('pages.user-notifications-settings.forum.subtitle')}
+            preferences={forumGroup}
             loading={loading}
             onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
           />
-        </Grid>
-      )}
+          {!!(adminGroup.length || communityGroup.length) && (
+            <>
+              {adminGroup.length > 0 && (
+                <PreferenceSection
+                  headerText={t('pages.user-notifications-settings.user-administration.title')}
+                  subHeaderText={t('pages.user-notifications-settings.user-administration.subtitle')}
+                  preferences={adminGroup}
+                  loading={loading}
+                  onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+                />
+              )}
+              {communityGroup.length > 0 && (
+                <PreferenceSection
+                  headerText={t('pages.user-notifications-settings.community-administration.title')}
+                  subHeaderText={t('pages.user-notifications-settings.community-administration.subtitle')}
+                  preferences={communityGroup}
+                  loading={loading}
+                  onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+                />
+              )}
+            </>
+          )}
+        </Box>
+      </Grid>
     </Grid>
   );
 };

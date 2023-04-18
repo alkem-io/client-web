@@ -34,13 +34,14 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) 
   const [selectedFile, setSelectedFile] = useState<File>();
 
   const handleVisualUpload = useCallback(
-    async (file: File) => {
+    async (file: File, altText: string) => {
       if (visual) {
         uploadVisual({
           variables: {
             file,
             uploadData: {
               visualID: visual.id,
+              alternativeText: altText,
             },
           },
         });

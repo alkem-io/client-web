@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { Message } from '../../../shared/components/Comments/models/message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
@@ -110,7 +110,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                   onPostComment={comment => onPostComment?.(comment)}
                   title={t('components.post-comment.fields.description.title')}
                   placeholder={t('components.post-comment.fields.description.placeholder')}
-                  maxLength={MID_TEXT_LENGTH}
+                  maxLength={LONG_TEXT_LENGTH}
                 />
               )}
               {!canPost && (
