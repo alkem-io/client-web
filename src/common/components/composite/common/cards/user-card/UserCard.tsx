@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
@@ -50,7 +50,7 @@ export interface UserCardProps {
   country?: string;
   loading?: boolean;
   isContactable?: boolean;
-  onContact?: MouseEventHandler<HTMLButtonElement>;
+  onContact?: () => void;
 }
 
 const ElevatedCard = withElevationOnHover(Card);
@@ -99,7 +99,13 @@ const UserCard: FC<UserCardProps> = ({
                     {displayName}
                   </Typography>
                   {isContactable && (
-                    <IconButton onClick={onContact}>
+                    <IconButton
+                      onClick={event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onContact?.();
+                      }}
+                    >
                       <EmailOutlinedIcon />
                     </IconButton>
                   )}
