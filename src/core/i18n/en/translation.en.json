@@ -1355,17 +1355,26 @@
       "avatar": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "??"
+        "description2": "??",
+        "description": "Description: {{alternativeText}}"
       },
       "banner": {
-        "title": "Banner",
+        "title": "Page banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on dashboard tab"
+        "description2": "Usage: Banner on dashboard tab",
+        "description": "Description: {{alternativeText}}"
       },
       "banner-narrow": {
-        "title": "Banner for cards",
+        "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on cards"
+        "description2": "Usage: Banner on cards",
+        "description": "Description: {{alternativeText}}"
+      },
+      "form": {
+        "altText": {
+          "placeholder": "Example: Multiple snow covered mountains",
+          "helpText": "Please describe this image for people who are unable to see it."
+        }
       }
     },
     "contributors": {

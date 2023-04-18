@@ -19,6 +19,7 @@ export const VisualFullFragmentDoc = gql`
     maxWidth
     minHeight
     minWidth
+    alternativeText
   }
 `;
 export const AspectCardFragmentDoc = gql`
@@ -12804,6 +12805,7 @@ export const UploadVisualDocument = gql`
     uploadImageOnVisual(file: $file, uploadData: $uploadData) {
       id
       uri
+      alternativeText
     }
   }
 `;
