@@ -3,7 +3,7 @@ import {
   OrganizationCardFragment,
   OrganizationVerificationEnum,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { OrganizationCardProps } from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
+import { OrganizationCardProps } from '../../contributor/organization/OrganizationCardSquare/OrganizationCardSquare';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
 import { Identifiable } from '../../../shared/types/Identifiable';

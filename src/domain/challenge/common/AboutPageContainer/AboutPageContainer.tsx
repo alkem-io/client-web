@@ -12,7 +12,7 @@ import {
   ReferenceDetailsFragment,
   Tagset,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ContainerChildProps } from '../../../../core/container/container';

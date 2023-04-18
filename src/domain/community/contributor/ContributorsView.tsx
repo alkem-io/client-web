@@ -2,10 +2,10 @@ import React, { FC, forwardRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Grid, styled } from '@mui/material';
 import { times } from 'lodash';
-import ContributorCard, {
+import ContributorCardSquare, {
   ContributorCardProps,
   ContributorCardSkeleton,
-} from '../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+} from './ContributorCardSquare/ContributorCardSquare';
 import { PaginatedResult } from './ContributorsSearch/ContributorsSearchContainer';
 import {
   OrganizationContributorFragment,
@@ -120,7 +120,7 @@ const ContributorsView: FC<ContributorsViewProps> = ({
               {!orgs?.loading &&
                 orgs?.items?.map(organizationToContributorCard).map(org => (
                   <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={org.id}>
-                    <ContributorCard {...org} />
+                    <ContributorCardSquare {...org} />
                   </Grid>
                 ))}
               {!orgs?.loading && orgs?.hasMore && (
@@ -147,7 +147,7 @@ const ContributorsView: FC<ContributorsViewProps> = ({
               {!users?.loading &&
                 users?.items?.map(userToContributorCard).map(user => (
                   <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={user.id}>
-                    <ContributorCard {...user} />
+                    <ContributorCardSquare {...user} />
                   </Grid>
                 ))}
               {!users?.loading && users?.hasMore && (

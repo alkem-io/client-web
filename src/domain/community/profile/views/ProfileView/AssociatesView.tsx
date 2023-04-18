@@ -1,9 +1,9 @@
 import { Grid, Link } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContributorCard, {
+import ContributorCardSquare, {
   ContributorCardProps,
-} from '../../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+} from '../../../contributor/ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
@@ -42,7 +42,7 @@ export const AssociatesView: FC<AssociatesViewProps> = ({
           <>
             {associatesToShow.map(associate => (
               <Grid key={associate.id} item xs={2}>
-                <ContributorCard {...associate} />
+                <ContributorCardSquare {...associate} />
               </Grid>
             ))}
             <Grid item container justifyContent="flex-end">

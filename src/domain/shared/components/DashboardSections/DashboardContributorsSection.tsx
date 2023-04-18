@@ -1,9 +1,9 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import ContributorCard, {
+import ContributorCardSquare, {
   ContributorCardProps,
   ContributorCardSkeleton,
-} from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+} from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -41,7 +41,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
         {contributors.map(c => {
           return (
             <Grid item flexBasis={'10%'} key={c.id}>
-              <ContributorCard {...c} />
+              <ContributorCardSquare {...c} />
             </Grid>
           );
         })}

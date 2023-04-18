@@ -1,5 +1,5 @@
 import { WithId } from '../../../../types/WithId';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,

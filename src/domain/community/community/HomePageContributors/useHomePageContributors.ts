@@ -8,7 +8,7 @@ import {
 import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 

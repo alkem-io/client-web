@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
-import { ContributorCardProps } from '../../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../ContributorCardSquare/ContributorCardSquare';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
 import { RoleType } from '../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';

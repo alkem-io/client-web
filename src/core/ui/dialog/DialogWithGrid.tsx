@@ -12,7 +12,7 @@ interface DialogContainerProps extends PaperProps {
   onClose?: MouseEventHandler;
 }
 
-const DialogContainer = ({ columns, centeredVertically, onClose, ...paperProps }: DialogContainerProps) => {
+const DialogContainer = ({ columns, centeredVertically, onClose, children, ...paperProps }: DialogContainerProps) => {
   const breakpoint = useCurrentBreakpoint();
 
   const handleContainerClick: MouseEventHandler = event => {
@@ -20,6 +20,8 @@ const DialogContainer = ({ columns, centeredVertically, onClose, ...paperProps }
       onClose?.(event);
     }
   };
+
+  const containerColumns = breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP;
 
   return (
     <GridContainer
@@ -31,9 +33,11 @@ const DialogContainer = ({ columns, centeredVertically, onClose, ...paperProps }
       alignItems={centeredVertically ? 'center' : 'start'}
       onClick={handleContainerClick}
     >
-      <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
+      <GridProvider columns={containerColumns} force>
         <GridItem columns={columns}>
-          <Paper {...paperProps} />
+          <Paper {...paperProps}>
+            <GridProvider columns={columns ?? containerColumns}>{children}</GridProvider>
+          </Paper>
         </GridItem>
       </GridProvider>
     </GridContainer>
