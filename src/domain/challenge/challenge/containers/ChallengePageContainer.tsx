@@ -27,7 +27,10 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
+import {
+  AspectFragmentWithCallout,
+  CanvasFragmentWithCallout,
+} from '../../../collaboration/callout/useCallouts/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
 

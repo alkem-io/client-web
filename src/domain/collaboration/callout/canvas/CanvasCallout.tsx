@@ -13,14 +13,14 @@ import { Skeleton } from '@mui/material';
 import CanvasCard from './CanvasCard';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCardCanvas } from './types';
-import { BaseCalloutProps } from '../Types';
+import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import CanvasDialog from '../../canvas/CanvasDialog/CanvasDialog';
 
-interface CanvasCalloutProps extends BaseCalloutProps {
+interface CanvasCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCardCanvas[];
     whiteboardTemplate: WhiteboardTemplate;
@@ -82,6 +82,7 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
                 deps={[hubNameId, challengeNameId, opportunityNameId]}
                 createButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
+                cards={false}
               >
                 {canvas =>
                   canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />

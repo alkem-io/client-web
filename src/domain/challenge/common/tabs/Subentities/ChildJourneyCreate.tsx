@@ -7,17 +7,13 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import getJourneyChildrenTranslationKey from '../../../../../common/utils/translation/getJourneyChildrenTranslationKey';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
-interface JourneySubentityCreateProps {
+interface ChildJourneyCreateProps {
   canCreateSubentity: boolean;
   onCreateSubentity?: () => void;
   journeyTypeName: JourneyTypeName;
 }
 
-const JourneySubentityCreate = ({
-  journeyTypeName,
-  canCreateSubentity,
-  onCreateSubentity,
-}: JourneySubentityCreateProps) => {
+const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSubentity }: ChildJourneyCreateProps) => {
   const { t } = useTranslation();
 
   return (
@@ -39,4 +35,4 @@ const JourneySubentityCreate = ({
   );
 };
 
-export default JourneySubentityCreate;
+export default ChildJourneyCreate;

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { IconButton, Menu } from '@mui/material';
@@ -15,10 +15,10 @@ import CalloutVisibilityChangeDialog from '../callout/edit/visibility-change-dia
 import CalloutEditDialog from '../callout/edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from '../callout/edit/CalloutEditType';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
-import { CalloutWhiteboardTemplate, CalloutPostTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
+import { CalloutPostTemplate, CalloutWhiteboardTemplate } from '../callout/creation-dialog/CalloutCreationDialog';
 import CalloutBlockMarginal from '../callout/Contribute/CalloutBlockMarginal';
 import { BlockTitle } from '../../../core/ui/typography';
-import { CalloutLayoutEvents, CalloutSortProps } from '../callout/Types';
+import { CalloutLayoutEvents, CalloutSortProps } from '../callout/CalloutViewTypes';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
@@ -30,11 +30,13 @@ import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
   CheckCircleOutlined,
+  Close,
   EditOutlined,
   UnpublishedOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
+import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
 import { Reference, Tagset } from '../../common/profile/Profile';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
@@ -53,7 +55,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
-    url: string;
     postTemplate?: CalloutPostTemplate;
     whiteboardTemplate?: CalloutWhiteboardTemplate;
     authorName?: string;
@@ -62,12 +63,14 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   };
   calloutNames: string[];
   contributionsCount: number;
-  actions?: ReactNode;
+  expanded?: boolean;
+  calloutUri: string;
+  onExpand?: () => void;
+  onClose?: () => void;
 }
 
 const CalloutLayout = ({
   callout,
-  actions,
   children,
   onVisibilityChange,
   onCalloutEdit,
@@ -80,6 +83,10 @@ const CalloutLayout = ({
   onMoveDown,
   onMoveToTop,
   onMoveToBottom,
+  calloutUri,
+  expanded = false,
+  onExpand,
+  onClose,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -157,7 +164,9 @@ const CalloutLayout = ({
       <DialogHeader
         actions={
           <>
-            {actions}
+            <IconButton onClick={expanded ? onClose : onExpand}>
+              {expanded ? <Close /> : <ExpandContentIcon />}
+            </IconButton>
             {callout.editable && (
               <IconButton
                 id="callout-settings-button"
@@ -169,7 +178,7 @@ const CalloutLayout = ({
                 <SettingsOutlinedIcon />
               </IconButton>
             )}
-            <ShareButton url={callout.url} entityTypeName="callout" />
+            <ShareButton url={calloutUri} entityTypeName="callout" />
           </>
         }
         titleContainerProps={{ flexDirection: 'column' }}
@@ -211,30 +220,34 @@ const CalloutLayout = ({
         >
           {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
         </MenuItemWithIcon>
-        <MenuItemWithIcon iconComponent={ArrowUpwardOutlined} onClick={handleMove(onMoveUp)} disabled={topCallout}>
-          {t('buttons.moveUp')}
-        </MenuItemWithIcon>
-        <MenuItemWithIcon
-          iconComponent={ArrowDownwardOutlined}
-          onClick={handleMove(onMoveDown)}
-          disabled={bottomCallout}
-        >
-          {t('buttons.moveDown')}
-        </MenuItemWithIcon>
-        <MenuItemWithIcon
-          iconComponent={VerticalAlignTopOutlined}
-          onClick={handleMove(onMoveToTop)}
-          disabled={topCallout}
-        >
-          {t('buttons.moveToTop')}
-        </MenuItemWithIcon>
-        <MenuItemWithIcon
-          iconComponent={VerticalAlignBottomOutlined}
-          onClick={handleMove(onMoveToBottom)}
-          disabled={bottomCallout}
-        >
-          {t('buttons.moveToBottom')}
-        </MenuItemWithIcon>
+        {!expanded && (
+          <>
+            <MenuItemWithIcon iconComponent={ArrowUpwardOutlined} onClick={handleMove(onMoveUp)} disabled={topCallout}>
+              {t('buttons.moveUp')}
+            </MenuItemWithIcon>
+            <MenuItemWithIcon
+              iconComponent={ArrowDownwardOutlined}
+              onClick={handleMove(onMoveDown)}
+              disabled={bottomCallout}
+            >
+              {t('buttons.moveDown')}
+            </MenuItemWithIcon>
+            <MenuItemWithIcon
+              iconComponent={VerticalAlignTopOutlined}
+              onClick={handleMove(onMoveToTop)}
+              disabled={topCallout}
+            >
+              {t('buttons.moveToTop')}
+            </MenuItemWithIcon>
+            <MenuItemWithIcon
+              iconComponent={VerticalAlignBottomOutlined}
+              onClick={handleMove(onMoveToBottom)}
+              disabled={bottomCallout}
+            >
+              {t('buttons.moveToBottom')}
+            </MenuItemWithIcon>
+          </>
+        )}
       </Menu>
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}

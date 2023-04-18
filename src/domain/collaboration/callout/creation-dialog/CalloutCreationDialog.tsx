@@ -48,7 +48,7 @@ export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
-  onVisibilityChange: (
+  onVisibilityChange?: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
     sendNotification: boolean
@@ -130,7 +130,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handlePublish = async () => {
     const createdCallout = await handleSaveAsDraftCallout();
     if (createdCallout) {
-      await onVisibilityChange(createdCallout.id, CalloutVisibility.Published, sendNotification);
+      //!! Change visibility when just created??!
+      await onVisibilityChange?.(createdCallout.id, CalloutVisibility.Published, sendNotification);
     }
     closePublishDialog();
   };

@@ -752,23 +752,21 @@ export const HubPageFragmentDoc = gql`
         myPrivileges
       }
     }
-    ... on Hub {
-      collaboration {
-        ...DashboardTopCallouts
-      }
-      community {
-        ...EntityDashboardCommunity
-      }
-      challenges(limit: 3, shuffle: true) {
-        ...ChallengeCard
-      }
-      timeline {
+    collaboration {
+      ...DashboardTopCallouts
+    }
+    community {
+      ...EntityDashboardCommunity
+    }
+    challenges(limit: 3, shuffle: true) {
+      ...ChallengeCard
+    }
+    timeline {
+      id
+      authorization {
         id
-        authorization {
-          id
-          anonymousReadAccess
-          myPrivileges
-        }
+        anonymousReadAccess
+        myPrivileges
       }
     }
   }
@@ -1259,6 +1257,7 @@ export const CalloutFragmentDoc = gql`
     id
     nameID
     type
+    group
     profile {
       id
       displayName
@@ -1303,7 +1302,7 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts {
+    callouts(groups: $calloutGroups) {
       ...Callout
     }
   }
@@ -8359,6 +8358,105 @@ export function refetchOpportunityWithActivityQuery(variables: SchemaTypes.Oppor
   return { query: OpportunityWithActivityDocument, variables: variables };
 }
 
+export const CalloutPageCalloutDocument = gql`
+  query CalloutPageCallout(
+    $calloutNameId: UUID_NAMEID!
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      collaboration @include(if: $includeHub) {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          ...Callout
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            ...Callout
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            ...Callout
+          }
+        }
+      }
+    }
+  }
+  ${CalloutFragmentDoc}
+`;
+
+/**
+ * __useCalloutPageCalloutQuery__
+ *
+ * To run a query within a React component, call `useCalloutPageCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutPageCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutPageCalloutQuery({
+ *   variables: {
+ *      calloutNameId: // value for 'calloutNameId'
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCalloutPageCalloutQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutPageCalloutQuery,
+    SchemaTypes.CalloutPageCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutPageCalloutQuery, SchemaTypes.CalloutPageCalloutQueryVariables>(
+    CalloutPageCalloutDocument,
+    options
+  );
+}
+
+export function useCalloutPageCalloutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutPageCalloutQuery,
+    SchemaTypes.CalloutPageCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutPageCalloutQuery, SchemaTypes.CalloutPageCalloutQueryVariables>(
+    CalloutPageCalloutDocument,
+    options
+  );
+}
+
+export type CalloutPageCalloutQueryHookResult = ReturnType<typeof useCalloutPageCalloutQuery>;
+export type CalloutPageCalloutLazyQueryHookResult = ReturnType<typeof useCalloutPageCalloutLazyQuery>;
+export type CalloutPageCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutPageCalloutQuery,
+  SchemaTypes.CalloutPageCalloutQueryVariables
+>;
+export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPageCalloutQueryVariables) {
+  return { query: CalloutPageCalloutDocument, variables: variables };
+}
+
 export const HubAspectDocument = gql`
   query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -10275,6 +10373,50 @@ export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
+export const CalloutMessageReceivedDocument = gql`
+  subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
+    calloutMessageReceived(calloutIDs: $calloutIDs) {
+      commentsID
+      message {
+        ...MessageDetails
+      }
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalloutMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useCalloutMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutMessageReceivedSubscription({
+ *   variables: {
+ *      calloutIDs: // value for 'calloutIDs'
+ *   },
+ * });
+ */
+export function useCalloutMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalloutMessageReceivedSubscription,
+    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalloutMessageReceivedSubscription,
+    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
+  >(CalloutMessageReceivedDocument, options);
+}
+
+export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
+export type CalloutMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
 export const CalloutsDocument = gql`
   query Callouts(
     $hubNameId: UUID_NAMEID!
@@ -10283,6 +10425,7 @@ export const CalloutsDocument = gql`
     $includeOpportunity: Boolean = false
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
+    $calloutGroups: [String!]
   ) {
     hub(ID: $hubNameId) {
       id
@@ -10331,6 +10474,7 @@ export const CalloutsDocument = gql`
  *      includeOpportunity: // value for 'includeOpportunity'
  *      challengeNameId: // value for 'challengeNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
+ *      calloutGroups: // value for 'calloutGroups'
  *   },
  * });
  */
@@ -10816,50 +10960,6 @@ export function refetchPrivilegesOnOpportunityCollaborationQuery(
   return { query: PrivilegesOnOpportunityCollaborationDocument, variables: variables };
 }
 
-export const CalloutMessageReceivedDocument = gql`
-  subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
-    calloutMessageReceived(calloutIDs: $calloutIDs) {
-      commentsID
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCalloutMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useCalloutMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalloutMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutMessageReceivedSubscription({
- *   variables: {
- *      calloutIDs: // value for 'calloutIDs'
- *   },
- * });
- */
-export function useCalloutMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalloutMessageReceivedSubscription,
-    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalloutMessageReceivedSubscription,
-    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
-  >(CalloutMessageReceivedDocument, options);
-}
-
-export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
-export type CalloutMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
 export const HubWhiteboardTemplatesLibraryDocument = gql`
   query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {

@@ -5,6 +5,7 @@ query Callouts(
   $includeOpportunity: Boolean = false
   $challengeNameId: UUID_NAMEID = "mockid"
   $opportunityNameId: UUID_NAMEID = "mockid"
+  $calloutGroups: [String!]
 ) {
   hub(ID: $hubNameId) {
     id
@@ -138,7 +139,7 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts {
+  callouts(groups: $calloutGroups) {
     ...Callout
   }
 }
@@ -147,6 +148,7 @@ fragment Callout on Callout {
   id
   nameID
   type
+  group
   profile {
     id
     displayName
