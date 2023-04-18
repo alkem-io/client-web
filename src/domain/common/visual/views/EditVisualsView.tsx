@@ -25,9 +25,11 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
           <BlockSectionTitle>
             {t('pages.visual-edit.banner.description1', { width: banner?.maxWidth, height: banner?.maxHeight })}
           </BlockSectionTitle>
-          <BlockSectionTitle>
-            {t('pages.visual-edit.banner.description', { alternativeText: banner?.alternativeText })}
-          </BlockSectionTitle>
+          {banner?.alternativeText && (
+            <BlockSectionTitle>
+              {t('pages.visual-edit.banner.description', { alternativeText: banner?.alternativeText })}
+            </BlockSectionTitle>
+          )}
         </Box>
       </Box>
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
@@ -40,9 +42,11 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
               height: bannerNarrow?.maxHeight,
             })}
           </BlockSectionTitle>
-          <BlockSectionTitle>
-            {t('pages.visual-edit.banner-narrow.description', { alternativeText: bannerNarrow?.alternativeText })}
-          </BlockSectionTitle>
+          {bannerNarrow?.alternativeText && (
+            <BlockSectionTitle>
+              {t('pages.visual-edit.banner-narrow.description', { alternativeText: bannerNarrow?.alternativeText })}
+            </BlockSectionTitle>
+          )}
         </Box>
       </Box>
     </>

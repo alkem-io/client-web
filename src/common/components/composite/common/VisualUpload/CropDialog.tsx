@@ -55,12 +55,7 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
   };
 
   const validationSchema = yup.object().shape({
-    altText: yup
-      .string()
-      .trim()
-      .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-      .required(t('forms.validations.required')),
+    altText: yup.string().trim().max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
   });
 
   const onCropChange = (crop: Crop, _percentCrop: Crop) => {
@@ -195,18 +190,22 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
       {...rest}
     >
       <DialogContent>
-        <Box display="flex" justifyContent="center" sx={{ backgroundColor: t => t.palette.grey[800] }}>
-          {src && <ReactCrop src={src} crop={crop} onChange={onCropChange} onImageLoaded={onLoad} />}
-        </Box>
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSave}>
           <Form>
             <Gutters>
-              <FormikInputField
-                title={t('common.description')}
-                name="altText"
-                withCounter
-                maxLength={SMALL_TEXT_LENGTH}
-              />
+              <Box display="flex" justifyContent="center" sx={{ backgroundColor: t => t.palette.grey[800] }}>
+                {src && <ReactCrop src={src} crop={crop} onChange={onCropChange} onImageLoaded={onLoad} />}
+              </Box>
+              <Box>
+                <FormikInputField
+                  title={t('common.description')}
+                  placeholder={t('pages.visual-edit.form.altText.placeholder')}
+                  name="altText"
+                  withCounter
+                  maxLength={SMALL_TEXT_LENGTH}
+                  helpIconText={t('pages.visual-edit.form.altText.helpText')}
+                />
+              </Box>
               <Actions justifyContent="space-between">
                 <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
                 <Button type="submit" variant="contained">
