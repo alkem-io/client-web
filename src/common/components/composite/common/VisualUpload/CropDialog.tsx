@@ -9,7 +9,7 @@ import Resizer from 'react-image-file-resizer';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import FormikInputField from '../../forms/FormikInputField';
 import { Actions } from '../../../../../core/ui/actions/Actions';
-import { SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { ALT_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { MessageWithPayload } from '../../../../../domain/shared/i18n/ValidationMessageTranslation';
 
 interface CropDialogConfig {
@@ -55,7 +55,7 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
   };
 
   const validationSchema = yup.object().shape({
-    altText: yup.string().trim().max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    altText: yup.string().trim().max(ALT_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
   });
 
   const onCropChange = (crop: Crop, _percentCrop: Crop) => {
@@ -202,7 +202,7 @@ export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...r
                   placeholder={t('pages.visual-edit.form.altText.placeholder')}
                   name="altText"
                   withCounter
-                  maxLength={SMALL_TEXT_LENGTH}
+                  maxLength={ALT_TEXT_LENGTH}
                   helpIconText={t('pages.visual-edit.form.altText.helpText')}
                 />
               </Box>
