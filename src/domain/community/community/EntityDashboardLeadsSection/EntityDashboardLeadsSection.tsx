@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import OrganizationCardSquare, {
+import OrganizationCardHorizontal, {
   OrganizationCardProps,
-} from '../../contributor/organization/OrganizationCardSquare/OrganizationCardSquare';
+} from '../../contributor/organization/OrganizationCardHorizontal/OrganizationCardHorizontal';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../contributor/user';
@@ -12,7 +12,9 @@ import { mapToAssociatedOrganization } from '../../contributor/organization/Asso
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
-const OrganizationCardTransparent = (props: OrganizationCardProps) => <OrganizationCardSquare {...props} transparent />;
+const OrganizationCardTransparent = (props: OrganizationCardProps) => (
+  <OrganizationCardHorizontal {...props} transparent />
+);
 
 interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   organizationsHeader: string;

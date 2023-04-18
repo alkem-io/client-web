@@ -35,11 +35,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-/**
- * @deprecated
- * TODO figure out what components use it, change to ContributorCardSquare
- */
-const OrganizationCardSquare: FC<OrganizationCardProps> = ({
+const OrganizationCardHorizontal: FC<OrganizationCardProps> = ({
   name,
   avatar,
   description = '',
@@ -116,4 +112,4 @@ const OrganizationCardSquare: FC<OrganizationCardProps> = ({
   );
 };
 
-export default OrganizationCardSquare;
+export default OrganizationCardHorizontal;
