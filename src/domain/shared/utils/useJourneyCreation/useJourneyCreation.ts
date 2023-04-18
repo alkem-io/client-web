@@ -204,7 +204,6 @@ export const useJourneyCreation = () => {
                   maxWidth: 1,
                   minHeight: 1,
                   minWidth: 1,
-                  alternativeText: '',
                 },
               ],
               tagset: {
