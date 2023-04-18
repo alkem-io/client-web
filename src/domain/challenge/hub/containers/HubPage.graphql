@@ -68,23 +68,21 @@ fragment HubPage on Hub {
       myPrivileges
     }
   }
-  ... on Hub {
-    collaboration {
-      ...DashboardTopCallouts
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
-    timeline {
+  collaboration {
+    ...DashboardTopCallouts
+  }
+  community {
+    ...EntityDashboardCommunity
+  }
+  challenges(limit: 3, shuffle: true) {
+    ...ChallengeCard
+  }
+  timeline {
+    id
+    authorization {
       id
-      authorization {
-        id
-        anonymousReadAccess
-        myPrivileges
-      }
+      anonymousReadAccess
+      myPrivileges
     }
   }
 }

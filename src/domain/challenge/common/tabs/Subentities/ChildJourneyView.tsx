@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
 import { ValueType } from '../../../../../common/components/core/card-filter/filterFn';
@@ -16,7 +16,7 @@ import CardsLayout from '../../../../../core/ui/card/CardsLayout/CardsLayout';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { NameableEntity } from '../../../../shared/types/NameableEntity';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import JourneySubentityCreate from './JourneySubentityCreate';
+import ChildJourneyCreate from './ChildJourneyCreate';
 import { Loading } from '../../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
@@ -25,7 +25,7 @@ export interface JourneySubentitiesState {
   error?: ApolloError;
 }
 
-export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntity> extends Partial<CoreEntityIdTypes> {
+export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> extends Partial<CoreEntityIdTypes> {
   journeyTypeName: JourneyTypeName;
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
@@ -38,9 +38,10 @@ export interface JourneySubentitiesViewProps<ChildEntity extends NameableEntity>
   childEntityOnCreate?: () => void;
   createSubentityDialog?: ReactElement;
   state: JourneySubentitiesState;
+  childrenLeft?: ReactNode;
 }
 
-const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
+const ChildJourneyView = <ChildEntity extends NameableEntity>({
   hubNameId,
   journeyTypeName,
   childEntities = [],
@@ -54,14 +55,15 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
   childEntityOnCreate,
   createSubentityDialog,
   state,
-}: JourneySubentitiesViewProps<ChildEntity>) => {
+  childrenLeft,
+}: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={t(`common.${journeyTypeName}` as const)}>
       <PageContent>
         <PageContentColumn columns={4}>
-          <JourneySubentityCreate
+          <ChildJourneyCreate
             journeyTypeName={journeyTypeName}
             canCreateSubentity={childEntityCreateAccess}
             onCreateSubentity={childEntityOnCreate}
@@ -86,6 +88,7 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
               })}
             />
           </PageContentBlock>
+          {childrenLeft}
         </PageContentColumn>
         <PageContentColumn columns={8}>
           {state.loading && <Loading />}
@@ -124,4 +127,4 @@ const JourneySubentitiesView = <ChildEntity extends NameableEntity>({
   );
 };
 
-export default JourneySubentitiesView;
+export default ChildJourneyView;

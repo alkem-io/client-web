@@ -1,4 +1,4 @@
-import { CanvasFragmentWithCallout } from '../useCallouts';
+import { CanvasFragmentWithCallout } from '../useCallouts/useCallouts';
 
 type NeededFields = 'id' | 'nameID' | 'profile' | 'calloutNameId' | 'createdDate';
 
