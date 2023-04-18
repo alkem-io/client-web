@@ -1,0 +1,73 @@
+query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      postTemplates {
+        ...PostTemplate
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+#query HubPostTemplateValue($hubId: UUID_NAMEID!, $postTemplateId: UUID!) {
+#  hub(ID: $hubId) {
+#    id
+#    templates {
+#      id
+#      postTemplate(ID: $postTemplateId) {
+#        ...PostTemplate
+#      }
+#    }
+#  }
+#}
+
+query PlatformPostTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        provider {
+          id
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          postTemplates {
+            ...PostTemplate
+          }
+        }
+      }
+    }
+  }
+}
+
+# query PlatformPostTemplateValue($innovationPackId: UUID_NAMEID!, $postTemplateId: UUID!) {
+#   platform {
+#     id
+#     library {
+#       id
+#       innovationPack(ID: $innovationPackId) {
+#         ...InnovationPackWithProvider
+#         templates {
+#           id
+#           postTemplate(ID: $postTemplateId) {
+#             ...PostTemplate
+#           }
+#         }
+#       }
+#     }
+#   }
+# }

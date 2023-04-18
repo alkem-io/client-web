@@ -20,6 +20,7 @@ import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplate
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
 import { EmptyWhiteboard2 } from '../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 
 type FormValueType = {
@@ -29,8 +30,7 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
-  postTemplateType?: string;
-  postTemplateDefaultDescription?: string;
+  postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
 };
 
@@ -44,8 +44,7 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  postTemplateType?: string;
-  postTemplateDefaultDescription?: string;
+  postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   profileId?: string;
 };
@@ -57,8 +56,7 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
-  postTemplateType?: string;
-  postTemplateDefaultDescription?: string;
+  postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
 };
 
@@ -102,7 +100,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      postTemplateDefaultDescription: callout?.postTemplateDefaultDescription ?? '',
+      postTemplateData: callout?.postTemplateData ?? {
+        profile: {
+          displayName: '__template', //!!
+        },
+        defaultDescription: '',
+        type: '',
+      },
       whiteboardTemplateData: callout?.whiteboardTemplateData ?? {
         profile: {
           displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
@@ -131,9 +135,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
       .min(3, ({ min }) => t('common.field-min-length', { min })),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
-    postTemplateDefaultDescription: yup
-      .string()
-      .when('type', { is: CalloutType.Card, then: yup.string().required(t('common.field-required')) }),
+    postTemplateData: yup.object().when('type', {
+      is: CalloutType.Card,
+      then: yup.object().shape({
+        defaultDescription: yup.string().required(t('common.field-required')),
+        //type: yup.string().required(t('common.field-required')),
+      }),
+    }),
     whiteboardTemplateData: yup.object().when('type', {
       is: CalloutType.Canvas,
       then: yup.object().shape({
@@ -153,8 +161,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: values.references,
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      postTemplateType: values.postTemplateType,
-      postTemplateDefaultDescription: values.postTemplateDefaultDescription,
+      postTemplateData: values.postTemplateData,
       whiteboardTemplateData: values.whiteboardTemplateData,
     };
     onChange?.(callout);
@@ -196,9 +203,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               title={t('common.tags')}
               helpText={t('components.aspect-creation.info-step.tags-help-text')}
             />
-            {calloutType === CalloutType.Card && (
-              <PostTemplatesChooser name="postTemplateDefaultDescription" editMode={editMode} />
-            )}
+            {calloutType === CalloutType.Card && <PostTemplatesChooser name="postTemplateData" />}
             {calloutType === CalloutType.Canvas && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
             <FormikSwitch name="opened" title={t('callout.state-permission')} />
           </Gutters>

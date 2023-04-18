@@ -26,10 +26,10 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { Reference } from '../../../common/profile/Profile';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
-import { createCalloutPostTemplate } from '../utils/createCalloutPostTemplate';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
+import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 
 export type CalloutCreationDialogFields = {
@@ -39,8 +39,7 @@ export type CalloutCreationDialogFields = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
-  postTemplateType?: string;
-  postTemplateDefaultDescription?: string;
+  postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   profileId?: string;
 };
@@ -138,10 +137,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   };
 
   const handleSaveAsDraftCallout = useCallback(async () => {
-    //!! See what these two were doing
-    const calloutPostTemplate = createCalloutPostTemplate(callout);
-    //const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult...);
-
     const newCallout: CalloutCreationType = {
       profile: {
         displayName: callout.displayName!,
@@ -151,7 +146,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       tags: callout.tags,
       type: callout.type!,
       state: callout.state!,
-      postTemplate: calloutPostTemplate,
+      postTemplate: callout.postTemplateData,
       whiteboardTemplate: callout.whiteboardTemplateData,
     };
 

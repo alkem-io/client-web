@@ -21,7 +21,6 @@ import {
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
-import { createCalloutPostTemplate } from '../../utils/createCalloutPostTemplate';
 import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 
 export interface CalloutEditDialogProps {
@@ -57,8 +56,13 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     references: callout.profile.references,
     profileId: callout.profile.id,
     tags: callout.profile.tagset?.tags,
-    postTemplateType: callout.postTemplate?.type,
-    postTemplateDefaultDescription: callout.postTemplate?.defaultDescription,
+    postTemplateData: {
+      profile: {
+        displayName: '_template',
+      },
+      defaultDescription: callout.postTemplate?.defaultDescription ?? '',
+      type: callout.postTemplate?.type ?? '',
+    },
     whiteboardTemplateData: {
       value: callout.whiteboardTemplate?.value ?? JSON.stringify(EmptyWhiteboard),
       profile: {
@@ -80,7 +84,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    const calloutPostTemplate = createCalloutPostTemplate(newCallout);
 
     await onCalloutEdit({
       id: callout.id,
@@ -91,7 +94,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         tagsets: [{ id: callout.profile.tagset?.id, name: 'default', tags: newCallout.tags }],
       },
       state: newCallout.state,
-      postTemplate: calloutPostTemplate,
+      postTemplate: newCallout.postTemplateData,
       whiteboardTemplate: newCallout.whiteboardTemplateData,
     });
     setLoading(false);
