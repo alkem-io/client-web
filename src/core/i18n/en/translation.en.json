@@ -745,11 +745,14 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Default text",
+        "card-template-label": "Default text:",
         "card-template-text": "Add default text to the posts, for example questions that you like people to answer.",
         "card-template-default-description": "Default description",
+        "whiteboard-template-label": "Template:",
+        "whiteboard-empty-template": "Empty Template",
+        "whiteboard-custom-template": "Custom Template",
+        "whiteboard-reset-template": "Reset Empty Template",
         "no-card-template-selected": "Please select a card template",
-        "canvas-template-label": "Whiteboard Template",
         "no-canvas-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
@@ -758,7 +761,11 @@
       },
       "callout-type-select": {
         "title": "What would you like to add?",
-        "label": "Call for {{calloutType}}"
+        "label": {
+          "post": "Post",
+          "posts": "Call for Posts",
+          "whiteboards": "Call for Whiteboards"
+        }
       },
       "publish-dialog": {
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",

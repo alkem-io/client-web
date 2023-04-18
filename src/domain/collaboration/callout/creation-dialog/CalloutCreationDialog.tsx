@@ -14,13 +14,12 @@ import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import { CalloutIcon } from '../icon/CalloutIcon';
-import CalloutForm, { CalloutFormOutput, WhiteboardTemplateData } from '../CalloutForm';
+import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import {
   useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { createWhiteboardTemplateForCalloutCreation } from '../utils/createWhiteboardTemplateForCalloutCreation';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -30,6 +29,8 @@ import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { createCalloutPostTemplate } from '../utils/createCalloutPostTemplate';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -40,7 +41,7 @@ export type CalloutCreationDialogFields = {
   state?: CalloutState;
   postTemplateType?: string;
   postTemplateDefaultDescription?: string;
-  whiteboardTemplateData?: WhiteboardTemplateData;
+  whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   profileId?: string;
 };
 
@@ -137,37 +138,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   };
 
   const handleSaveAsDraftCallout = useCallback(async () => {
+    //!! See what these two were doing
     const calloutPostTemplate = createCalloutPostTemplate(callout);
+    //const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult...);
 
-    const getCanvasValueFromHub = async () => {
-      if (!callout.whiteboardTemplateData?.id) return undefined;
-
-      const result = await fetchCanvasValueFromHub({
-        variables: { hubId: hubNameId!, whiteboardTemplateId: callout.whiteboardTemplateData?.id },
-      });
-
-      return result.data?.hub.templates;
-    };
-
-    const getCanvasValueFromLibrary = async () => {
-      if (!callout.whiteboardTemplateData?.id || !callout.whiteboardTemplateData?.innovationPackId) return undefined;
-
-      const result = await fetchCanvasValueFromLibrary({
-        variables: {
-          innovationPackId: callout.whiteboardTemplateData?.innovationPackId,
-          whiteboardTemplateId: callout.whiteboardTemplateData?.id,
-        },
-      });
-
-      return result.data?.platform.library.innovationPack?.templates;
-    };
-
-    const queryResult =
-      callout.whiteboardTemplateData?.origin === 'Hub'
-        ? await getCanvasValueFromHub()
-        : await getCanvasValueFromLibrary();
-
-    const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult?.whiteboardTemplate);
     const newCallout: CalloutCreationType = {
       profile: {
         displayName: callout.displayName!,
@@ -178,7 +152,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       type: callout.type!,
       state: callout.state!,
       postTemplate: calloutPostTemplate,
-      whiteboardTemplate: calloutWhiteboardTemplate,
+      whiteboardTemplate: callout.whiteboardTemplateData,
     };
 
     const result = await onSaveAsDraft(newCallout);
@@ -194,16 +168,16 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   }, [onClose]);
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
+    <Dialog open={open} maxWidth={selectedCalloutType ? 'md' : undefined} aria-labelledby="callout-creation-title">
       {!selectedCalloutType && (
         <>
           <DialogHeader onClose={handleClose}>
             <Box display="flex">{t('components.callout-creation.callout-type-select.title')}</Box>
           </DialogHeader>
           <DialogContent>
-            <Box paddingY={theme => theme.spacing(2)}>
+            <Gutters>
               <CalloutTypeSelect value={selectedCalloutType} onSelect={handleSelectCalloutType} />
-            </Box>
+            </Gutters>
           </DialogContent>
         </>
       )}
@@ -221,7 +195,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             calloutNames={calloutNames}
             onChange={handleValueChange}
             onStatusChanged={handleStatusChange}
-            templates={templates}
           />
           <Actions padding={gutters()}>
             <Button onClick={handleClose}>{t('buttons.cancel')}</Button>

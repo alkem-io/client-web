@@ -41,6 +41,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   rows,
   withCounter,
   maxLength,
+  fullWidth,
   attachFile = false,
   ...rest
 }) => {
@@ -68,7 +69,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   }
 
   return (
-    <Box>
+    <Box width={fullWidth ? '100%' : undefined}>
       <TextField
         name={name}
         placeholder={placeholder}

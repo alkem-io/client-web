@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { Grid, Button } from '@mui/material';
+import { Grid, Button, Box } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
 import PostTemplatePreviewCard from './PostTemplateCardPreview';
@@ -16,7 +16,6 @@ import AspectImportTemplateCard from '../../../../platform/admin/templates/PostT
 
 interface PostTemplatesChooserProps {
   name: string;
-  // templates: PostTemplateFragment[];
   editMode?: boolean;
 }
 
@@ -61,15 +60,22 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
   return (
     <>
       <FormRow>
-        <Caption>{t('components.callout-creation.template-step.card-template-label')}</Caption>
-        <CardText>{t('components.callout-creation.template-step.card-template-text')}</CardText>
-        <Button
-          onClick={openImportTemplateDialog}
-          sx={{ marginRight: theme => theme.spacing(1) }}
-          startIcon={<LibraryIcon />}
-        >
-          {t('buttons.find-template')}
-        </Button>
+        <Box>
+          <Caption>
+            {t('components.callout-creation.template-step.card-template-label')}
+            <CardText display="inline" marginLeft={1}>
+              {t('components.callout-creation.template-step.card-template-text')}
+            </CardText>
+          </Caption>
+
+          <Button
+            onClick={openImportTemplateDialog}
+            sx={{ marginRight: theme => theme.spacing(1) }}
+            startIcon={<LibraryIcon />}
+          >
+            {t('buttons.find-template')}
+          </Button>
+        </Box>
         <SectionSpacer />
         <Grid container>
           <FormRow>

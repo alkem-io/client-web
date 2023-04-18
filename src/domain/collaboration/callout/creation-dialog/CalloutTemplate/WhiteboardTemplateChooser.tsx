@@ -1,132 +1,63 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
-import { WhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import {
-  useHubTemplatesWhiteboardTemplateWithValueQuery,
-  useInnovationPackWhiteboardTemplateWithValueQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import WhiteboardTemplatesList from './WhiteboardTemplatesList';
-import { CardText, Text } from '../../../../../core/ui/typography/components';
-import { Button } from '@mui/material';
+import { Caption, CardText } from '../../../../../core/ui/typography/components';
+import { Box, Button } from '@mui/material';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import WhiteboardTemplatesLibrary from '../../../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
+import { WhiteboardTemplateWithValue } from '../../../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplate';
+import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
-const FORM_TEXT_COLOR = '#00000099';
 interface WhiteboardTemplatesChooserProps {
   name: string;
-  templates: WhiteboardTemplateListItem[];
-  editMode?: boolean;
-  onSelectLibraryTemplate: (template: LibraryWhiteboardTemplate) => void;
 }
 
-export type TemplateOrigin = 'Hub' | 'Library';
-export type LibraryWhiteboardTemplate = {
-  id: string;
-  profile: {
-    displayName: string;
-  };
-  innovationPackId: string;
-};
-export type WhiteboardTemplateWithOrigin = WhiteboardTemplateFragment & {
-  origin: TemplateOrigin;
-  innovationPackId?: string;
-};
-
-export type WhiteboardTemplateListItem = {
-  id: string;
-  profile: {
-    displayName: string;
-  };
-  origin: TemplateOrigin;
-  innovationPackId?: string;
-};
-
-export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = ({
-  name,
-  templates,
-  editMode = false,
-  onSelectLibraryTemplate: updateLibraryTemplates,
-}) => {
-  const [field, , helpers] = useField(name);
-  const { hubNameId } = useUrlParams();
-  const [isTemplateChooserVisible, setIsTemplateChooserVisible] = useState(!editMode);
-
-  const selectedTemplate = templates.find(template => template.profile.displayName === field.value.displayName);
-
-  const { data: canvasValueData, loading: isCanvasValueLoading } = useHubTemplatesWhiteboardTemplateWithValueQuery({
-    fetchPolicy: 'cache-and-network',
-    variables: { hubId: hubNameId!, whiteboardTemplateId: selectedTemplate?.id! },
-    skip: !hubNameId || !selectedTemplate?.id || selectedTemplate?.origin === 'Library',
-  });
-
-  const { data: libraryCanvasValueData, loading: isLibraryCanvasValueLoading } =
-    useInnovationPackWhiteboardTemplateWithValueQuery({
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        innovationPackId: selectedTemplate?.innovationPackId!,
-        whiteboardTemplateId: selectedTemplate?.id!,
-      },
-      skip: !selectedTemplate?.innovationPackId || !selectedTemplate?.id || selectedTemplate?.origin === 'Hub',
-    });
-
-  const canvasValue =
-    canvasValueData?.hub.templates?.whiteboardTemplate?.value ??
-    libraryCanvasValueData?.platform.library.innovationPack?.templates?.whiteboardTemplate?.value ??
-    '';
-  const selectedTemplateWithValue = useMemo(
-    () => (selectedTemplate ? { ...selectedTemplate, value: canvasValue } : undefined),
-    [selectedTemplate, canvasValue]
-  );
-
+export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = ({ name }) => {
   const { t } = useTranslation();
+  const [field, , helpers] = useField<WhiteboardTemplateFormSubmittedValues>(name);
+  const handleResetWhiteboardTemplate = () => {
+    helpers.setValue({
+      profile: {
+        displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
+      },
+      value: JSON.stringify(EmptyWhiteboard),
+    });
+  };
+
+  const handleChange = (newValue: string) => {
+    helpers.setValue({
+      profile: {
+        displayName: t('components.callout-creation.template-step.whiteboard-custom-template'),
+      },
+      value: newValue,
+    });
+  };
+
+  const handleSelectTemplate = (template: WhiteboardTemplateWithValue) => {
+    helpers.setValue({
+      profile: { displayName: template.displayName },
+      value: template.value,
+    });
+  };
 
   return (
     <>
-      {/* TODO: Add this color to pallete to match Formik labels */}
-      <Text sx={{ color: FORM_TEXT_COLOR }}>
-        {t('components.callout-creation.template-step.canvas-template-label')}
-      </Text>
-      {editMode ? (
-        <>
-          <CardText sx={{ color: FORM_TEXT_COLOR }}>
-            {t('components.callout-edit.canvas-template-edit-help-text')}
+      <Box display="flex" alignItems="center">
+        <Caption>
+          {t('components.callout-creation.template-step.whiteboard-template-label')}
+          <CardText display="inline" marginLeft={1}>
+            {field.value.profile.displayName}
           </CardText>
-          {!isTemplateChooserVisible && (
-            <Button
-              startIcon={<ChangeCircleIcon />}
-              variant="contained"
-              onClick={() => setIsTemplateChooserVisible(true)}
-              sx={{ margin: theme => theme.spacing(1) }}
-            >
-              {t('buttons.change-field', { field: t('common.template') })}
-            </Button>
-          )}
-          {isTemplateChooserVisible && (
-            <WhiteboardTemplatesList
-              entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
-              actions={{
-                onSelect: helpers.setValue,
-                updateLibraryTemplates,
-              }}
-              state={{
-                canvasLoading: isCanvasValueLoading || isLibraryCanvasValueLoading,
-              }}
-            />
-          )}
-        </>
-      ) : (
-        <WhiteboardTemplatesList
-          entities={{ templates, selectedTemplate: selectedTemplateWithValue }}
-          actions={{
-            onSelect: helpers.setValue,
-            updateLibraryTemplates,
-          }}
-          state={{
-            canvasLoading: isCanvasValueLoading || isLibraryCanvasValueLoading,
-          }}
-        />
-      )}
+        </Caption>
+        <Button onClick={handleResetWhiteboardTemplate} sx={{ marginLeft: 'auto' }} startIcon={<RestartAltIcon />}>
+          {t('components.callout-creation.template-step.whiteboard-reset-template')}
+        </Button>
+        <WhiteboardTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
+      </Box>
+      <FormikWhiteboardPreview name={`${name}.value`} canEdit onChangeValue={handleChange} maxHeight={gutters(12)} />
     </>
   );
 };

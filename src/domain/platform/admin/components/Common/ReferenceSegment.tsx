@@ -14,6 +14,7 @@ import FormikInputField from '../../../../../common/components/composite/forms/F
 import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
 import Gutters from '../../../../../core/ui/grid/Gutters';
+import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;
@@ -45,6 +46,8 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { platform } = useConfig();
+  const breakpoint = useCurrentBreakpoint();
+  const isMobile = ['xs', 'sm'].includes(breakpoint);
   const [removingItems, setRemovingItems] = useState<Partial<Record<number, boolean>>>({});
   const [adding, setAdding] = useState(false);
 
@@ -90,53 +93,54 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
           ) : (
             references?.map((attachment, index) => (
               <Gutters key={attachment.id} disablePadding>
-                <Gutters row disablePadding alignItems="start">
+                <Gutters row={!isMobile} disablePadding alignItems="start">
                   <FormikInputField
                     name={`${fieldName}.${index}.name`}
                     title={t('common.title')}
                     readOnly={readOnly}
                     disabled={disabled || isRemoving(index)}
+                    fullWidth={isMobile}
                   />
-                  <FormikInputField
-                    name={`${fieldName}.${index}.uri`}
-                    title={t('common.url')}
-                    readOnly={readOnly}
-                    disabled={disabled || isRemoving(index)}
-                    attachFile
-                    helperText={
-                      attachment.uri === ''
-                        ? tLinks('components.referenceSegment.url-helper-text', {
-                            terms: { href: platform?.terms },
-                          })
-                        : undefined
-                    }
-                  />
-                  <Tooltip
-                    title={t('components.referenceSegment.tooltips.remove-reference') || ''}
-                    id={'remove a reference'}
-                    placement={'bottom'}
-                  >
-                    <IconButton
-                      aria-label="Remove"
-                      onClick={() => {
-                        // TODO When onRemove doesn't have this callback signature anymore
-                        // TODO remove branching and use `try { ... } finally { setRemoving(index, false) }`
-                        if (onRemove) {
-                          setRemoving(index, true);
-                          onRemove(attachment, (success: boolean) => {
-                            if (success) remove(index);
-                            setRemoving(index, false);
-                          });
-                        } else {
-                          remove(index);
-                        }
-                      }}
+                  <Box display="flex" flexDirection="row">
+                    <FormikInputField
+                      name={`${fieldName}.${index}.uri`}
+                      title={t('common.url')}
+                      readOnly={readOnly}
                       disabled={disabled || isRemoving(index)}
-                      size="large"
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  </Tooltip>
+                      attachFile
+                      helperText={tLinks('components.referenceSegment.url-helper-text', {
+                        terms: { href: platform?.terms },
+                      })}
+                    />
+                    <Box>
+                      <Tooltip
+                        title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                        id={'remove a reference'}
+                        placement={'bottom'}
+                      >
+                        <IconButton
+                          aria-label="Remove"
+                          onClick={() => {
+                            // TODO When onRemove doesn't have this callback signature anymore
+                            // TODO remove branching and use `try { ... } finally { setRemoving(index, false) }`
+                            if (onRemove) {
+                              setRemoving(index, true);
+                              onRemove(attachment, (success: boolean) => {
+                                if (success) remove(index);
+                                setRemoving(index, false);
+                              });
+                            } else {
+                              remove(index);
+                            }
+                          }}
+                          disabled={disabled || isRemoving(index)}
+                          size="large"
+                        >
+                          <DeleteOutline />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
                 </Gutters>
                 {!compactMode && (
                   <Box>

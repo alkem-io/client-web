@@ -20,9 +20,9 @@ import {
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { createWhiteboardTemplateForCalloutCreation } from '../../utils/createWhiteboardTemplateForCalloutCreation';
 import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
 import { createCalloutPostTemplate } from '../../utils/createCalloutPostTemplate';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -60,8 +60,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     postTemplateType: callout.postTemplate?.type,
     postTemplateDefaultDescription: callout.postTemplate?.defaultDescription,
     whiteboardTemplateData: {
-      id: callout.whiteboardTemplate?.id,
-      displayName: callout.whiteboardTemplate?.profile.displayName,
+      value: callout.whiteboardTemplate?.value ?? JSON.stringify(EmptyWhiteboard),
+      profile: {
+        displayName: callout.whiteboardTemplate?.profile.displayName ?? 'Custom Template //!!',
+      },
     },
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
@@ -78,35 +80,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    // const calloutPostTemplate = createPostTemplateFromTemplateSet(newCallout, templates.postTemplates);
     const calloutPostTemplate = createCalloutPostTemplate(newCallout);
-    const getCanvasValueFromHub = async () => {
-      const result = await fetchCanvasValueFromHub({
-        variables: { hubId: hubNameId!, whiteboardTemplateId: newCallout.whiteboardTemplateData?.id! },
-      });
-      return result.data?.hub.templates;
-    };
-
-    const getCanvasValueFromLibrary = async () => {
-      const result = await fetchCanvasValueFromLibrary({
-        variables: {
-          innovationPackId: newCallout.whiteboardTemplateData?.innovationPackId!,
-          whiteboardTemplateId: newCallout.whiteboardTemplateData?.id!,
-        },
-      });
-      return result.data?.platform.library.innovationPack?.templates;
-    };
-
-    const fetchCanvasValue = async () => {
-      if (!newCallout.whiteboardTemplateData?.origin) return undefined;
-      return newCallout.whiteboardTemplateData?.origin === 'Hub'
-        ? await getCanvasValueFromHub()
-        : await getCanvasValueFromLibrary();
-    };
-
-    const queryResult = await fetchCanvasValue();
-
-    const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult?.whiteboardTemplate);
 
     await onCalloutEdit({
       id: callout.id,
@@ -118,7 +92,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       },
       state: newCallout.state,
       postTemplate: calloutPostTemplate,
-      whiteboardTemplate: calloutWhiteboardTemplate,
+      whiteboardTemplate: newCallout.whiteboardTemplateData,
     });
     setLoading(false);
   }, [callout, fetchCanvasValueFromHub, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);
@@ -168,19 +142,10 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
-            templates={templates}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
-          {/* TODO "negative" is not a valid Button.color */}
-          {/* @ts-ignore */}
-          <LoadingButton
-            loading={loading}
-            disabled={loading}
-            variant="outlined"
-            color="negative"
-            onClick={handleDialogDelete}
-          >
+          <LoadingButton loading={loading} disabled={loading} variant="outlined" onClick={handleDialogDelete}>
             {t('buttons.delete')}
           </LoadingButton>
           <LoadingButton loading={loading} disabled={!valid || loading} variant="contained" onClick={handleSave}>
