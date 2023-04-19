@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import ContributorCardSquare, { ContributorCardProps } from '../ContributorCardSquare/ContributorCardSquare';
+import ContributorCardSquare, { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -11,13 +11,13 @@ export enum ContributorType {
 }
 
 interface CommunityContributorsBlockWideContentProps {
-  users: ContributorCardProps[] | undefined;
-  organizations: ContributorCardProps[] | undefined;
+  users: ContributorCardSquareProps[] | undefined;
+  organizations: ContributorCardSquareProps[] | undefined;
   nested?: boolean;
   contributorType: ContributorType;
   filter: string[];
 }
-const filterFn = (filter: string[]) => (element: ContributorCardProps) => {
+const filterFn = (filter: string[]) => (element: ContributorCardSquareProps) => {
   return filter.length === 0 || filter.some(term => element.displayName.toLowerCase().includes(term.toLowerCase()));
 };
 

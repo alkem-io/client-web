@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import ContributorCardSquare, {
-  ContributorCardProps,
+  ContributorCardSquareProps,
   ContributorCardSkeleton,
 } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
@@ -15,7 +15,7 @@ const MAX_ITEMS_TO_SHOW = 16;
 export interface DashboardContributorsSectionSectionProps {
   headerText: string;
   entities: {
-    contributors: WithId<ContributorCardProps>[];
+    contributors: WithId<ContributorCardSquareProps>[];
   };
   loading: boolean;
 }

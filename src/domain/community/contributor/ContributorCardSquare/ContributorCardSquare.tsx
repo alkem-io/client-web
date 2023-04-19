@@ -16,7 +16,7 @@ interface ContributorCardTooltip {
   country?: string;
 }
 
-export interface ContributorCardProps {
+export interface ContributorCardSquareProps {
   id: string;
   avatar: string;
   displayName: string;
@@ -55,7 +55,7 @@ const useStyles = makeStyles(_ =>
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
-export const ContributorCardSquare: FC<ContributorCardProps> = props => {
+export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const styles = useStyles();
   const { id, displayName, avatar, url, tooltip, isContactable, roleName } = props;
   const { t } = useTranslation();

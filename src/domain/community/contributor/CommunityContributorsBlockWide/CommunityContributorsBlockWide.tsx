@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ContributorCardProps } from '../ContributorCardSquare/ContributorCardSquare';
+import { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
@@ -13,8 +13,8 @@ import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '../../../platform/search/MultipleSelect';
 
 interface CommunityContributorsBlockWideProps {
-  users: ContributorCardProps[] | undefined;
-  organizations: ContributorCardProps[] | undefined;
+  users: ContributorCardSquareProps[] | undefined;
+  organizations: ContributorCardSquareProps[] | undefined;
 }
 
 const config = [

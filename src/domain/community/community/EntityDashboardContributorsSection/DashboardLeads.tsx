@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { WithId } from '../../../../types/WithId';
-import { ContributorCardProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
+import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import LeadUserCard, { LeadUserCardProps } from '../LeadUserCard/LeadUserCard';
 import { Identifiable } from '../../../shared/types/Identifiable';
 
 interface DashboardLeadsProps {
-  users: WithId<ContributorCardProps>[] | undefined;
+  users: WithId<ContributorCardSquareProps>[] | undefined;
 }
 
 const DashboardLeads = ({ users }: DashboardLeadsProps) => {

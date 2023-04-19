@@ -3,11 +3,11 @@ import { Grid } from '@mui/material';
 import { WithId } from '../../../../types/WithId';
 import {
   ContributorCardSquare,
-  ContributorCardProps,
+  ContributorCardSquareProps,
 } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 
 export interface DashboardContributingUsersProps {
-  users: WithId<ContributorCardProps>[] | undefined;
+  users: WithId<ContributorCardSquareProps>[] | undefined;
 }
 
 const DashboardContributingUsers = ({ users }: DashboardContributingUsersProps) => {

@@ -2,7 +2,7 @@ import { Grid, Link } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorCardSquare, {
-  ContributorCardProps,
+  ContributorCardSquareProps,
 } from '../../../contributor/ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -12,7 +12,7 @@ const ASSOCIATE_CARDS_COUNT = 12;
 
 interface AssociatesViewProps {
   canReadUsers: boolean;
-  associates: ContributorCardProps[];
+  associates: ContributorCardSquareProps[];
   totalCount: number;
   count?: number;
 }

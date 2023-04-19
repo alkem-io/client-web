@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button, Grid, styled } from '@mui/material';
 import { times } from 'lodash';
 import ContributorCardSquare, {
-  ContributorCardProps,
+  ContributorCardSquareProps,
   ContributorCardSkeleton,
 } from './ContributorCardSquare/ContributorCardSquare';
 import { PaginatedResult } from './ContributorsSearch/ContributorsSearchContainer';
@@ -29,7 +29,7 @@ const ScrollerBox = styled(Box)(({ theme }) => ({
   paddingRight: theme.spacing(1),
 }));
 
-const userToContributorCard = (user: UserContributorFragment): ContributorCardProps => {
+const userToContributorCard = (user: UserContributorFragment): ContributorCardSquareProps => {
   return {
     id: user.id,
     displayName: user.userProfile.displayName,
@@ -44,7 +44,7 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardPr
   };
 };
 
-const organizationToContributorCard = (org: OrganizationContributorFragment): ContributorCardProps => {
+const organizationToContributorCard = (org: OrganizationContributorFragment): ContributorCardSquareProps => {
   return {
     id: org.id,
     displayName: org.orgProfile.displayName,
