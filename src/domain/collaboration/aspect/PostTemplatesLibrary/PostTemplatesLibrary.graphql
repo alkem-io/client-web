@@ -17,18 +17,6 @@ query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
   }
 }
 
-#query HubPostTemplateValue($hubId: UUID_NAMEID!, $postTemplateId: UUID!) {
-#  hub(ID: $hubId) {
-#    id
-#    templates {
-#      id
-#      postTemplate(ID: $postTemplateId) {
-#        ...PostTemplate
-#      }
-#    }
-#  }
-#}
-
 query PlatformPostTemplatesLibrary {
   platform {
     id
@@ -53,21 +41,3 @@ query PlatformPostTemplatesLibrary {
     }
   }
 }
-
-# query PlatformPostTemplateValue($innovationPackId: UUID_NAMEID!, $postTemplateId: UUID!) {
-#   platform {
-#     id
-#     library {
-#       id
-#       innovationPack(ID: $innovationPackId) {
-#         ...InnovationPackWithProvider
-#         templates {
-#           id
-#           postTemplate(ID: $postTemplateId) {
-#             ...PostTemplate
-#           }
-#         }
-#       }
-#     }
-#   }
-# }

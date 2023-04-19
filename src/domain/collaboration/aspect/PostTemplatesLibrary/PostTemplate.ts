@@ -3,9 +3,9 @@ import {
   InnovationPackWithProviderFragment,
   TemplateProviderProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-export interface PostTemplate extends Identifiable {
+export interface PostTemplate extends TemplateBase {
   displayName: string;
   description: string;
   visualUri: string | undefined;
@@ -23,7 +23,7 @@ export interface PostTemplate extends Identifiable {
   type: string;
 }
 
-// PostTemplates include the value
+// PostTemplate includes the value
 export interface PostTemplateWithValue extends PostTemplate {}
 
 export const PostTemplateMapper = (

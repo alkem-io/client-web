@@ -577,12 +577,13 @@
     }
   },
   "aspect-templates": {
+    "template-library": "Template Library: Cards",
     "aspect-template": "Card template",
     "default-description": "Default Card content",
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "template-library": "Template Library",
+    "template-library": "Template Library: Whiteboards",
     "filter-placeholder": "Search Templates...",
     "canvas-template": "Whiteboard template",
     "hub-templates": "Templates selected by the host of this community",

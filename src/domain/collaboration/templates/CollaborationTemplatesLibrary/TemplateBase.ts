@@ -8,7 +8,6 @@ export interface TemplateBase extends Identifiable {
 export interface TemplateBaseWithValue extends TemplateBase {}
 
 export interface TemplateCardBaseProps<Template extends TemplateBase> {
-  key?: string;
   template?: Template;
   loading?: boolean;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;

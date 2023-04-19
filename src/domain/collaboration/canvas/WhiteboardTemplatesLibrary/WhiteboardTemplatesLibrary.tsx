@@ -18,11 +18,11 @@ export interface WhiteboardTemplatesLibraryProps {
 }
 
 const applyFilter = (filter: string[], templates: WhiteboardTemplate[] | undefined) => {
-  return templates?.filter(canvas => {
+  return templates?.filter(whiteboard => {
     if (!filter || filter.length === 0) return true;
-    const canvasString =
-      `${canvas.displayName} ${canvas.provider.displayName} ${canvas.innovationPack.displayName}`.toLowerCase();
-    return filter.some(term => canvasString.includes(term.toLowerCase()));
+    const whiteboardString =
+      `${whiteboard.displayName} ${whiteboard.provider.displayName} ${whiteboard.innovationPack.displayName}`.toLowerCase();
+    return filter.some(term => whiteboardString.includes(term.toLowerCase()));
   });
 };
 
@@ -39,8 +39,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       },
     });
 
-  const [fetchWhiteboardTemplateValueHub, { loading: loadingTemplateValueFromHub }] =
-    useHubWhiteboardTemplateValueLazyQuery();
+  const [fetchTemplateValueHub, { loading: loadingTemplateValueFromHub }] = useHubWhiteboardTemplateValueLazyQuery();
 
   const templatesFromHub = useMemo(
     () =>
@@ -54,7 +53,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   );
 
   const fetchTemplateFromHubValue = async (template: WhiteboardTemplate) => {
-    const { data } = await fetchWhiteboardTemplateValueHub({
+    const { data } = await fetchTemplateValueHub({
       variables: {
         hubId: hubNameId!,
         whiteboardTemplateId: template.id,
@@ -73,7 +72,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   const [fetchPlatformTemplates, { data: platformData, loading: loadingTemplatesFromPlatform }] =
     usePlatformWhiteboardTemplatesLibraryLazyQuery();
 
-  const [fetchWhiteboardTemplateValuePlatform, { loading: loadingTemplateValueFromPlatform }] =
+  const [fetchTemplateValuePlatform, { loading: loadingTemplateValueFromPlatform }] =
     usePlatformWhiteboardTemplateValueLazyQuery();
 
   const templatesFromPlatform = useMemo(
@@ -92,7 +91,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
   );
 
   const fetchTemplateFromPlatformValue = async (template: WhiteboardTemplate) => {
-    const { data } = await fetchWhiteboardTemplateValuePlatform({
+    const { data } = await fetchTemplateValuePlatform({
       variables: {
         innovationPackId: template.innovationPack.id!,
         whiteboardTemplateId: template.id,

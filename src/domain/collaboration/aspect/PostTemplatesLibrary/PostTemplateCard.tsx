@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material';
+import { CardContent, Skeleton } from '@mui/material';
 import { FC } from 'react';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
@@ -7,14 +7,11 @@ import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import { InnovationPackIcon } from '../../../platform/admin/templates/InnovationPacks/InnovationPackIcon';
-import { PostTemplate } from './PostTemplate';
+import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 import { AspectIcon } from '../icon/AspectIcon';
+import { PostTemplate } from './PostTemplate';
 
-interface PostTemplateCardProps {
-  template: PostTemplate | undefined;
-  loading?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-}
+interface PostTemplateCardProps extends TemplateCardBaseProps<PostTemplate> {}
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClick }) => {
   return (
@@ -25,8 +22,7 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClic
           {template?.provider?.displayName}
         </CardHeaderCaption>
       </CardHeader>
-      <p>Default desc: {template?.defaultDescription} //!!</p>
-      <p>Type: {template?.type}</p>
+      <CardContent>{template?.description}</CardContent>
       <CardImage src={template?.visualUri} alt={template?.displayName} defaultImageSvg={<AspectIcon />} />
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
