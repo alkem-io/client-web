@@ -17,10 +17,10 @@ export interface MultipleSelectProps {
   disabled?: boolean;
   minLength?: number;
   autoFocus?: boolean;
+  size?: 'medium' | 'small' | 'xsmall';
   inputProps?: {
     inputRef?: Ref<HTMLInputElement | null>;
     onBlur?: InputBaseProps['onBlur'];
-    size?: InputBaseProps['size'];
   };
   containerProps?: BoxProps;
 }
@@ -60,6 +60,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   disabled,
   minLength = 2,
   autoFocus,
+  size = 'medium',
   inputProps,
   containerProps,
   children,
@@ -147,7 +148,12 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
             sx: { backgroundColor: theme => theme.palette.common.white, '& input': { flex: 2 } },
           }}
           autoFocus={autoFocus}
-          sx={{ width: '100%' }}
+          // Size xsmall is a special case, input will have `small` size and we set the height with CSS
+          sx={theme => ({
+            width: '100%',
+            '.MuiInputBase-root': { height: size === 'xsmall' ? theme.spacing(3) : undefined },
+          })}
+          size={size === 'xsmall' ? 'small' : size}
           {...inputProps}
         />
       </Tooltip>

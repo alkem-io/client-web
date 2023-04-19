@@ -15,19 +15,24 @@ interface CommunityContributorsBlockWideContentProps {
   organizations: ContributorCardProps[] | undefined;
   nested?: boolean;
   contributorType: ContributorType;
+  filter: string[];
 }
+const filterFn = (filter: string[]) => (element: ContributorCardProps) => {
+  return filter.length === 0 || filter.some(term => element.displayName.toLowerCase().includes(term.toLowerCase()));
+};
 
 const CommunityContributorsBlockWideContent = ({
   nested = false,
   users,
   organizations,
   contributorType,
+  filter,
 }: CommunityContributorsBlockWideContentProps) => {
   return (
     // TODO disablePadding={nested} after pull
     <Gutters row padding={nested ? 0 : gutters()}>
       {contributorType === ContributorType.People &&
-        users?.map(user => (
+        users?.filter(filterFn(filter)).map(user => (
           <GridItem key={user.id} columns={1}>
             <Box>
               <ContributorCardSquare {...user} />
@@ -35,7 +40,7 @@ const CommunityContributorsBlockWideContent = ({
           </GridItem>
         ))}
       {contributorType === ContributorType.Organizations &&
-        organizations?.map(organization => (
+        organizations?.filter(filterFn(filter)).map(organization => (
           <GridItem key={organization.id} columns={1}>
             <Box>
               <ContributorCardSquare {...organization} />

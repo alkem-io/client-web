@@ -157,7 +157,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
             containerProps={{
               marginLeft: 'auto',
             }}
-            inputProps={{ size: 'small' }}
+            size="small"
           />
         </DialogHeader>
         <DialogContent>

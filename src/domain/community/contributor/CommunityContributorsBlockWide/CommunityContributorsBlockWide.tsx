@@ -10,6 +10,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWideContent, { ContributorType } from './CommunityContributorsBlockWideContent';
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
+import MultipleSelect from '../../../platform/search/MultipleSelect';
 
 interface CommunityContributorsBlockWideProps {
   users: ContributorCardProps[] | undefined;
@@ -33,6 +34,7 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
   const { t } = useTranslation();
 
   const [contributorType, setContributorType] = useState(ContributorType.People);
+  const [filter, onFilterChange] = useState<string[]>([]);
 
   const contributorTypeToggleOptions = config.map(configItem => ({
     label: t(configItem.label),
@@ -48,6 +50,15 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           actions={
             <>
               <AltToggle value={contributorType} options={contributorTypeToggleOptions} onChange={setContributorType} />
+              <MultipleSelect
+                onChange={onFilterChange}
+                value={filter}
+                minLength={2}
+                containerProps={{
+                  marginLeft: theme => theme.spacing(2),
+                }}
+                size="xsmall"
+              />
             </>
           }
         />
@@ -55,6 +66,7 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           users={users}
           organizations={organizations}
           contributorType={contributorType}
+          filter={filter}
           nested
         />
         <Actions justifyContent="end">
@@ -71,6 +83,7 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           users={users}
           organizations={organizations}
           contributorType={contributorType}
+          filter={filter}
         />
       </DialogWithGrid>
     </>
