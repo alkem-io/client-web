@@ -11,7 +11,7 @@ import {
   EntityDashboardLeads,
 } from '../../../../community/community/EntityDashboardContributorsSection/Types';
 import { MetricItem } from '../../../../../common/components/composite/common/MetricsPanel/Metrics';
-import PageContentColumn, { PageContentColumnProps } from '../../../../../core/ui/content/PageContentColumn';
+import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
@@ -56,8 +56,6 @@ export interface AboutSectionProps extends EntityDashboardContributors, EntityDa
 
 const BLOCK_HEIGHT_GUTTERS = 13;
 
-const RightColumn = (props: Omit<PageContentColumnProps, 'columns'>) => <PageContentColumn {...props} columns={8} />;
-const LeftColumn = (props: Omit<PageContentColumnProps, 'columns'>) => <PageContentColumn {...props} columns={4} />;
 const FixedHeightContentBlock = (props: PageContentBlockProps) => (
   <PageContentBlock {...props} sx={{ maxHeight: gutters(BLOCK_HEIGHT_GUTTERS) }} />
 );
@@ -139,7 +137,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
   return (
     <>
       <PageContent>
-        <LeftColumn>
+        <PageContentColumn columns={4}>
           <PageContentBlock accent>
             <PageContentBlockHeader title={name} />
             <Tagline>{tagline}</Tagline>
@@ -177,8 +175,8 @@ export const AboutSection: FC<AboutSectionProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </LeftColumn>
-        <RightColumn>
+        </PageContentColumn>
+        <PageContentColumn columns={8}>
           <FixedHeightContentBlock>
             <PageContentBlockHeaderWithDialogAction
               title={t(`context.${journeyTypeName}.vision.title` as const)}
@@ -218,7 +216,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
               <ActivityView activity={metricsItems} loading={loading} />
             </PageContentBlock>
           )}
-        </RightColumn>
+        </PageContentColumn>
       </PageContent>
       <Dialog open={isDialogOpen} fullWidth maxWidth={false} onClose={closeDialog}>
         <DialogTitle onClose={closeDialog}>{t('common.context')}</DialogTitle>

@@ -7,7 +7,7 @@ import HubContributorsDialogContent from '../../../community/community/entities/
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import HubPageLayout from '../layout/HubPageLayout';
-import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
+import HubDashboardView from '../HubDashboardView/HubDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
@@ -42,7 +42,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
       <HubPageContainer>
         {entities => (
           <>
-            <JourneyDashboardView
+            <HubDashboardView
               vision={entities.hub?.context?.vision}
               hubNameId={entities.hub?.nameID}
               communityId={entities.hub?.community?.id}

@@ -851,6 +851,8 @@
       "join": "Join",
       "join-parent": "Join parent",
       "parent-pending": "Parent application pending",
+      "applyTo": "Apply to",
+      "extendedMessage": "{{join}} our Community and start making change!",
       "dialog-apply-parent": {
         "title": "Want to join the parent Hub?",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
