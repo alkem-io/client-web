@@ -3,9 +3,9 @@ import {
   InnovationPackWithProviderFragment,
   TemplateProviderProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../shared/types/Identifiable';
+import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-export interface WhiteboardTemplate extends Identifiable {
+export interface WhiteboardTemplate extends TemplateBase {
   displayName: string;
   description: string;
   visualUri: string | undefined;
