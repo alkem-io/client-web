@@ -116,6 +116,11 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     !permissions.hubReadAccess || !permissions.readUsers
   );
 
+  const relevantActivities = useMemo(
+    () => activities?.filter(activity => activity.__typename !== 'ActivityLogEntryMemberJoined'),
+    [activities]
+  );
+
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
   const aspectsCount = useAspectsCount(_hub?.hub.metrics);
@@ -163,7 +168,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvasesCount,
           references,
           recommendations,
-          activities,
+          activities: relevantActivities,
           activityLoading,
           ...contributors,
           hostOrganizations,

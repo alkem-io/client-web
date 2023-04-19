@@ -167,6 +167,7 @@
     "description": "Description",
     "events": "Events",
     "about": "About",
+    "aboutThis": "About this {{entity}}",
     "explore": "Contribute",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
@@ -247,6 +248,7 @@
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",
+    "welcome": "Welcome",
     "preview": "Preview",
     "help": "Help",
     "loading": "Loading...",
@@ -1178,7 +1180,8 @@
       "sections": {
         "dashboard": {
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
-          "about": "About this {{entity}}"
+          "about": "About this {{entity}}",
+          "memberOf": "You’re a member of this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."

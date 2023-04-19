@@ -1,8 +1,13 @@
 import React, { ReactElement, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../shared/components/References/References';
-import { DashboardTopCalloutFragment, Reference } from '../../../../core/apollo/generated/graphql-schema';
-import { buildCalloutUrl, buildJourneyUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
+import {
+  AssociatedOrganizationDetailsFragment,
+  DashboardTopCalloutFragment,
+  HubWelcomeBlockOrganizationFragment,
+  Reference,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { buildCalloutUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
@@ -11,15 +16,12 @@ import {
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
-import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
-import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
 import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../JourneyTypeName';
@@ -36,16 +38,21 @@ import {
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { Button, ButtonProps, IconButton, Theme } from '@mui/material';
+import { Button, ButtonProps, IconButton, Theme, Tooltip } from '@mui/material';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
-import { Close } from '@mui/icons-material';
+import { Close, HowToRegOutlined, InfoOutlined } from '@mui/icons-material';
+import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
+import { gutters } from '../../../../core/ui/grid/utils';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
-    EntityDashboardLeads,
+    Omit<EntityDashboardLeads, 'leadOrganizations'>,
     Partial<CoreEntityIdTypes> {
   displayName: ReactNode;
   tagline: ReactNode;
@@ -53,13 +60,12 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   description: string | undefined;
   who: string | undefined;
   impact: string | undefined;
-
   vision?: string;
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;
-  community?: unknown;
+  leadOrganizations: (HubWelcomeBlockOrganizationFragment & AssociatedOrganizationDetailsFragment)[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
@@ -143,9 +149,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   const showActivities = activities || activityLoading;
 
   const isHub = journeyTypeName === 'hub';
-  const leadOrganizationsHeader = isHub
-    ? 'pages.hub.sections.dashboard.organization'
-    : 'community.leading-organizations';
   const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
 
   const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
@@ -166,6 +169,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+
+  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
   return (
     <>
@@ -189,20 +194,45 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
           }}
         </ApplicationButtonContainer>
         <PageContentColumn columns={4}>
-          <JourneyDashboardVision vision={vision} journeyTypeName={journeyTypeName} />
-          <ShareButton
-            title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
-            url={journeyLocation && buildJourneyUrl(journeyLocation)}
-            entityTypeName={journeyTypeName}
-          />
-          {communityReadAccess && (
-            <EntityDashboardLeadsSection
-              usersHeader={t(leadUsersHeader)}
-              organizationsHeader={t(leadOrganizationsHeader)}
-              leadUsers={leadUsers}
-              leadOrganizations={leadOrganizations}
-            />
-          )}
+          <PageContentBlock accent>
+            <ApplicationButtonContainer>
+              {({ applicationButtonProps }) => (
+                <PageContentBlockHeader
+                  title={`${t('common.welcome')}!`}
+                  actions={
+                    applicationButtonProps.isMember && (
+                      <Tooltip
+                        title={
+                          <Caption>
+                            {t('pages.generic.sections.dashboard.memberOf', { entity: translatedJourneyTypeName })}
+                          </Caption>
+                        }
+                        placement="left"
+                      >
+                        <HowToRegOutlined />
+                      </Tooltip>
+                    )
+                  }
+                />
+              )}
+            </ApplicationButtonContainer>
+            <OverflowGradient maxHeight={gutters(11)}>
+              <WrapperMarkdown>{vision}</WrapperMarkdown>
+            </OverflowGradient>
+            <Gutters row disablePadding>
+              {leadUsers?.slice(0, 2).map(user => (
+                <HubWelcomeSectionContributor key={user.id} profile={user.profile} />
+              ))}
+            </Gutters>
+            <Gutters row disablePadding>
+              {leadOrganizations?.slice(0, 2).map(org => (
+                <HubWelcomeSectionContributor key={org.id} profile={org.profile} />
+              ))}
+            </Gutters>
+          </PageContentBlock>
+          <FullWidthButton startIcon={<InfoOutlined />} onClick={() => setIsAboutDialogOpen(true)} variant="contained">
+            {t('common.aboutThis', { entity: translatedJourneyTypeName })}
+          </FullWidthButton>
           {communityReadAccess && (
             <ContactLeadsButton onClick={openContactLeadsDialog}>
               {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}

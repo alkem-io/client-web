@@ -674,6 +674,19 @@ export const WhiteboardTemplateWithValueFragmentDoc = gql`
   }
   ${WhiteboardTemplateFragmentDoc}
 `;
+export const HubWelcomeBlockOrganizationFragmentDoc = gql`
+  fragment HubWelcomeBlockOrganization on Organization {
+    id
+    profile {
+      displayName
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+`;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -728,6 +741,7 @@ export const HubPageFragmentDoc = gql`
       myPrivileges
     }
     host {
+      ...HubWelcomeBlockOrganization
       ...AssociatedOrganizationDetails
     }
     profile {
@@ -773,6 +787,7 @@ export const HubPageFragmentDoc = gql`
       }
     }
   }
+  ${HubWelcomeBlockOrganizationFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
