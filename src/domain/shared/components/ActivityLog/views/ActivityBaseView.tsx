@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
@@ -14,6 +14,8 @@ export interface ActivityBaseViewProps {
   action: string;
   url?: string;
   loading?: boolean;
+  parentIcon?: ReactNode;
+  parentDisplayName: string;
 }
 
 export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
@@ -23,9 +25,16 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   children,
   url,
   loading,
+  parentIcon,
+  parentDisplayName,
 }) => {
   const { t } = useTranslation();
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
+
+  const parentDetails =
+    parentDisplayName && parentIcon
+      ? t('components.activity-log-view.parent-details', { displayName: parentDisplayName })
+      : undefined;
 
   const title = useMemo(
     () => (
@@ -36,7 +45,8 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
         ) : (
           author?.displayName ?? t('common.user')
         )}{' '}
-        {action}
+        {action} {parentIcon}
+        {parentDetails}
       </>
     ),
     [formattedTime, author?.displayName, action, author?.url, t]

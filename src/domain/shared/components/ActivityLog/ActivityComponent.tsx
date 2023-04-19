@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import {
   ActivityEventType,
@@ -29,6 +29,7 @@ import {
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
+import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -71,7 +72,12 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
     return (
       <>
         {activities.map(activity => (
-          <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} key={activity.id} />
+          <ActivityViewChooser
+            activity={activity}
+            journeyLocation={journeyLocation}
+            key={activity.id}
+            parentIcon={<ChallengeIcon />}
+          />
         ))}
       </>
     );
@@ -83,6 +89,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
 interface ActivityViewChooserProps {
   activity: ActivityLogResultType;
   journeyLocation: JourneyLocation;
+  parentIcon: ReactNode;
 }
 
 const ActivityViewChooser = ({
@@ -90,6 +97,7 @@ const ActivityViewChooser = ({
   ...rest
 }: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {
   const author = buildAuthorFromUser(activity.triggeredBy);
+  rest.parentIcon = activity.child ? rest.parentIcon : undefined;
   switch (activity.type) {
     case ActivityEventType.CalloutPublished:
       const activityCalloutPublished = activity as ActivityLogResult<ActivityLogCalloutPublishedFragment>;

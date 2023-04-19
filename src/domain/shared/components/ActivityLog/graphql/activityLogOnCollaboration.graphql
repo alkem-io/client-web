@@ -5,6 +5,9 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     createdDate
     description
     type
+    child
+    parentNameID
+    parentDisplayName
     __typename
     triggeredBy {
       id

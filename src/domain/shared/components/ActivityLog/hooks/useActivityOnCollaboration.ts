@@ -44,7 +44,7 @@ export const useActivityOnCollaboration = (
     loading,
     subscribeToMore,
   } = useActivityLogOnCollaborationQuery({
-    variables: { queryData: { collaborationID: collaborationID!, limit: LATEST_ACTIVITIES_COUNT } },
+    variables: { queryData: { collaborationID: collaborationID!, limit: LATEST_ACTIVITIES_COUNT, includeChild: true } },
     skip: !collaborationID || skipCondition,
     fetchPolicy: 'cache-and-network',
   });
