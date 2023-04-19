@@ -15,6 +15,7 @@ export type AddReferenceFunc = (reference: {
   description?: string;
 }) => void;
 
+// TODO Refactor. No refs to callback callbacks!
 export const useEditReference = () => {
   const remove = useRef<PushFunc | undefined>();
   const push = useRef<RemoveFunc | undefined>();

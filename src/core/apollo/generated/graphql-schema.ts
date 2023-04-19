@@ -336,6 +336,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1797,6 +1805,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -4293,6 +4311,7 @@ export type UpdateUserPreferenceInput = {
 };
 
 export type UpdateVisualInput = {
+  alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
   visualID: Scalars['String'];
 };
@@ -4473,6 +4492,7 @@ export type VerifiedCredentialClaim = {
 export type Visual = {
   __typename?: 'Visual';
   allowedTypes: Array<Scalars['String']>;
+  alternativeText?: Maybe<Scalars['String']>;
   /** Aspect ratio width / height. */
   aspectRatio: Scalars['Float'];
   /** The authorization rules for the entity */
@@ -4498,6 +4518,7 @@ export enum VisualType {
 }
 
 export type VisualUploadImageInput = {
+  alternativeText?: InputMaybe<Scalars['String']>;
   visualID: Scalars['String'];
 };
 
@@ -4829,6 +4850,7 @@ export type ChallengePageQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       };
@@ -4909,6 +4931,7 @@ export type ChallengePageQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -4946,6 +4969,7 @@ export type ChallengePageQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -5091,6 +5115,7 @@ export type ChallengePageQuery = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }>;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -5162,6 +5187,7 @@ export type ChallengeProfileFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
@@ -5237,6 +5263,7 @@ export type ChallengeProfileFragment = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }>;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -5274,6 +5301,7 @@ export type ChallengeProfileFragment = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -5415,6 +5443,7 @@ export type ChallengeProfileFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -5520,6 +5549,7 @@ export type ChallengeInfoFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     location?:
       | {
@@ -5589,6 +5619,7 @@ export type OpportunitiesOnChallengeFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -5847,6 +5878,7 @@ export type ChallengeInfoQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         location?:
           | {
@@ -5966,6 +5998,7 @@ export type ChallengeProfileInfoQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
@@ -6031,6 +6064,7 @@ export type OpportunityCreatedSubscription = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -6127,6 +6161,7 @@ export type AboutPageNonMembersQuery = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
     };
     host?:
@@ -6189,6 +6224,7 @@ export type AboutPageNonMembersQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
       };
       authorization?:
@@ -6240,6 +6276,7 @@ export type AboutPageNonMembersQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
       };
       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string } | undefined;
@@ -7013,6 +7050,7 @@ export type HubProviderQuery = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
       location?:
         | {
@@ -7101,6 +7139,7 @@ export type HubInfoFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     location?:
       | {
@@ -7547,6 +7586,7 @@ export type HubPageQuery = {
                           maxWidth: number;
                           minHeight: number;
                           minWidth: number;
+                          alternativeText?: string | undefined;
                         }>;
                         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                         references?:
@@ -7584,6 +7624,7 @@ export type HubPageQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -7872,6 +7913,7 @@ export type HubPageFragment = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }>;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -7909,6 +7951,7 @@ export type HubPageFragment = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -8124,6 +8167,7 @@ export type HubDetailsFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     location?:
       | {
@@ -8234,6 +8278,7 @@ export type CreateHubMutation = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
       location?:
         | {
@@ -8326,6 +8371,7 @@ export type UpdateHubMutation = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
       location?:
         | {
@@ -8507,6 +8553,7 @@ export type HubGroupQuery = {
                   maxWidth: number;
                   minHeight: number;
                   minWidth: number;
+                  alternativeText?: string | undefined;
                 }
               | undefined;
             references?:
@@ -8844,6 +8891,7 @@ export type OpportunityPageQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -8881,6 +8929,7 @@ export type OpportunityPageQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -9120,6 +9169,7 @@ export type OpportunityPageFragment = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }>;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -9157,6 +9207,7 @@ export type OpportunityPageFragment = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -9354,6 +9405,7 @@ export type OpportunityProviderQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
@@ -9409,6 +9461,7 @@ export type OpportunityProviderFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
@@ -9469,6 +9522,7 @@ export type OpportunityCardFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9531,6 +9585,7 @@ export type CreateOpportunityMutation = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9746,6 +9801,7 @@ export type OpportunityCardsQuery = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }>;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9941,6 +9997,7 @@ export type OpportunityProfileInfoQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         location?:
           | {
@@ -10098,7 +10155,22 @@ export type CalloutPageCalloutQuery = {
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -10109,6 +10181,7 @@ export type CalloutPageCalloutQuery = {
                         __typename?: 'Profile';
                         id: string;
                         displayName: string;
+                        description?: string | undefined;
                         visual?:
                           | {
                               __typename?: 'Visual';
@@ -10121,8 +10194,10 @@ export type CalloutPageCalloutQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
                         | {
@@ -10268,6 +10343,16 @@ export type CalloutPageCalloutQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -10279,6 +10364,7 @@ export type CalloutPageCalloutQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -10291,8 +10377,10 @@ export type CalloutPageCalloutQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -10448,6 +10536,16 @@ export type CalloutPageCalloutQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -10459,6 +10557,7 @@ export type CalloutPageCalloutQuery = {
                           __typename?: 'Profile';
                           id: string;
                           displayName: string;
+                          description?: string | undefined;
                           visual?:
                             | {
                                 __typename?: 'Visual';
@@ -10471,8 +10570,10 @@ export type CalloutPageCalloutQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
                           | {
@@ -10604,6 +10705,102 @@ export type CalloutPageCalloutQuery = {
               | undefined;
           }
         | undefined;
+    };
+  };
+};
+
+export type HubPostTemplatesLibraryQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubPostTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type PlatformPostTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformPostTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovatonPack';
+        id: string;
+        nameID: string;
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              postTemplates: Array<{
+                __typename?: 'PostTemplate';
+                id: string;
+                defaultDescription: string;
+                type: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }>;
+            }
+          | undefined;
+      }>;
     };
   };
 };
@@ -11212,6 +11409,7 @@ export type HubAspectSettingsQuery = {
                           maxWidth: number;
                           minHeight: number;
                           minWidth: number;
+                          alternativeText?: string | undefined;
                         }>;
                       };
                     }>
@@ -11293,6 +11491,7 @@ export type ChallengeAspectSettingsQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                         };
                       }>
@@ -11375,6 +11574,7 @@ export type OpportunityAspectSettingsQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                         };
                       }>
@@ -11422,6 +11622,7 @@ export type AspectSettingsFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
   };
 };
@@ -11465,6 +11666,7 @@ export type AspectSettingsCalloutFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
         };
       }>
@@ -11683,6 +11885,7 @@ export type AspectCardFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
@@ -11720,6 +11923,7 @@ export type ContributeTabAspectFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
@@ -11858,6 +12062,7 @@ export type DashboardTopCalloutsFragment = {
                   maxWidth: number;
                   minHeight: number;
                   minWidth: number;
+                  alternativeText?: string | undefined;
                 }>;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 references?:
@@ -11895,6 +12100,7 @@ export type DashboardTopCalloutsFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -11976,6 +12182,7 @@ export type DashboardTopCalloutFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
@@ -12013,6 +12220,7 @@ export type DashboardTopCalloutFragment = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12334,7 +12542,14 @@ export type UpdateCalloutMutation = {
     state: CalloutState;
     type: CalloutType;
     visibility: CalloutVisibility;
-    profile: { __typename?: 'Profile'; id: string; description?: string | undefined; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      description?: string | undefined;
+      displayName: string;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    };
     postTemplate?:
       | {
           __typename?: 'PostTemplate';
@@ -12478,7 +12693,22 @@ export type CalloutsQuery = {
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -12502,6 +12732,7 @@ export type CalloutsQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12654,6 +12885,16 @@ export type CalloutsQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -12678,6 +12919,7 @@ export type CalloutsQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12840,6 +13082,16 @@ export type CalloutsQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -12864,6 +13116,7 @@ export type CalloutsQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13058,6 +13311,7 @@ export type HubCalloutAspectsSubscriptionQuery = {
                           maxWidth: number;
                           minHeight: number;
                           minWidth: number;
+                          alternativeText?: string | undefined;
                         }>;
                         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                         references?:
@@ -13139,6 +13393,7 @@ export type ChallengeCalloutAspectsSubscriptionQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -13221,6 +13476,7 @@ export type OpportunityCalloutAspectsSubscriptionQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -13341,7 +13597,22 @@ export type CollaborationWithCalloutsFragment = {
         sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+        };
         canvases?:
           | Array<{
               __typename?: 'Canvas';
@@ -13365,6 +13636,7 @@ export type CollaborationWithCalloutsFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13496,7 +13768,16 @@ export type CalloutFragment = {
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
   canvases?:
     | Array<{
         __typename?: 'Canvas';
@@ -13520,6 +13801,7 @@ export type CalloutFragment = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13894,6 +14176,7 @@ export type CanvasProfileFragment = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13921,6 +14204,7 @@ export type CanvasDetailsFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14051,6 +14335,7 @@ export type CalloutWithCanvasFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14137,6 +14422,7 @@ export type CollaborationWithCanvasDetailsFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14235,6 +14521,7 @@ export type HubCanvasFromCalloutQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14334,6 +14621,7 @@ export type HubCanvasesQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14434,6 +14722,7 @@ export type HubCanvasValuesQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14539,6 +14828,7 @@ export type ChallengeCanvasFromCalloutQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14648,6 +14938,7 @@ export type ChallengeCanvasValuesQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14758,6 +15049,7 @@ export type OpportunityCanvasFromCalloutQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14867,6 +15159,7 @@ export type OpportunityCanvasValuesQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14957,6 +15250,7 @@ export type HubTemplateCanvasValuesQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -15010,6 +15304,7 @@ export type PlatformTemplateCanvasValuesQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -15052,6 +15347,7 @@ export type CreateCanvasOnCalloutMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -15198,6 +15494,7 @@ export type AspectsOnCalloutFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
@@ -15251,6 +15548,7 @@ export type CalloutAspectCreatedSubscription = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
@@ -15396,7 +15694,7 @@ export type UploadVisualMutationVariables = Exact<{
 
 export type UploadVisualMutation = {
   __typename?: 'Mutation';
-  uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string };
+  uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
 };
 
 export type VisualFullFragment = {
@@ -15410,6 +15708,7 @@ export type VisualFullFragment = {
   maxWidth: number;
   minHeight: number;
   minWidth: number;
+  alternativeText?: string | undefined;
 };
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
@@ -15564,6 +15863,7 @@ export type PlatformDiscussionsQuery = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }>;
             };
             authorization?:
@@ -15677,6 +15977,7 @@ export type CommunicationDiscussionUpdatedSubscription = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
     };
   };
@@ -17920,6 +18221,7 @@ export type OrganizationProfileInfoFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
@@ -17994,6 +18296,7 @@ export type UpdateOrganizationMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
@@ -18049,6 +18352,7 @@ export type OrganizationGroupQuery = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 references?:
@@ -18162,6 +18466,7 @@ export type OrganizationProfileInfoQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
@@ -18316,6 +18621,7 @@ export type GroupInfoFragment = {
               maxWidth: number;
               minHeight: number;
               minWidth: number;
+              alternativeText?: string | undefined;
             }
           | undefined;
         references?:
@@ -18385,6 +18691,7 @@ export type UserDetailsFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
     references?:
@@ -18512,6 +18819,7 @@ export type CreateUserMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18562,6 +18870,7 @@ export type CreateUserNewRegistrationMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18677,6 +18986,7 @@ export type UpdateUserMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18796,6 +19106,7 @@ export type UserQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18923,6 +19234,7 @@ export type UserProfileQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -19083,6 +19395,7 @@ export type MeQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -19800,6 +20113,7 @@ export type AdminHubTemplatesQuery = {
                     maxWidth: number;
                     minHeight: number;
                     minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
             };
@@ -19825,6 +20139,7 @@ export type AdminHubTemplatesQuery = {
                     maxWidth: number;
                     minHeight: number;
                     minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
             };
@@ -19852,6 +20167,7 @@ export type AdminHubTemplatesQuery = {
                     maxWidth: number;
                     minHeight: number;
                     minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
             };
@@ -19884,6 +20200,7 @@ export type AdminInnovationFlowTemplateFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
   };
@@ -19912,6 +20229,7 @@ export type AdminPostTemplateFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
   };
@@ -19938,6 +20256,7 @@ export type AdminWhiteboardTemplateFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
   };
@@ -19963,6 +20282,7 @@ export type ProfileInfoWithVisualFragment = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }
     | undefined;
 };
@@ -20042,6 +20362,7 @@ export type InnovationPacksQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -20067,6 +20388,7 @@ export type InnovationPacksQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -20094,6 +20416,7 @@ export type InnovationPacksQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -20243,6 +20566,7 @@ export type InnovationPackTemplatesFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
     };
@@ -20270,6 +20594,7 @@ export type InnovationPackTemplatesFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
     };
@@ -20295,6 +20620,7 @@ export type InnovationPackTemplatesFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
     };
@@ -20369,6 +20695,7 @@ export type AdminInnovationPackQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -20396,6 +20723,7 @@ export type AdminInnovationPackQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -20421,6 +20749,7 @@ export type AdminInnovationPackQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };

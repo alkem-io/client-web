@@ -19,6 +19,7 @@ export const VisualFullFragmentDoc = gql`
     maxWidth
     minHeight
     minWidth
+    alternativeText
   }
 `;
 export const AspectCardFragmentDoc = gql`
@@ -1262,6 +1263,16 @@ export const CalloutFragmentDoc = gql`
       id
       displayName
       description
+      tagset {
+        id
+        tags
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
     state
     sortOrder
@@ -8447,6 +8458,165 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
   return { query: CalloutPageCalloutDocument, variables: variables };
 }
 
+export const HubPostTemplatesLibraryDocument = gql`
+  query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        postTemplates {
+          ...PostTemplate
+        }
+      }
+      host {
+        id
+        nameID
+        profile {
+          ...TemplateProviderProfile
+        }
+      }
+    }
+  }
+  ${PostTemplateFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
+`;
+
+/**
+ * __useHubPostTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `useHubPostTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPostTemplatesLibraryQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubPostTemplatesLibraryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPostTemplatesLibraryQuery, SchemaTypes.HubPostTemplatesLibraryQueryVariables>(
+    HubPostTemplatesLibraryDocument,
+    options
+  );
+}
+
+export function useHubPostTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >(HubPostTemplatesLibraryDocument, options);
+}
+
+export type HubPostTemplatesLibraryQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryQuery>;
+export type HubPostTemplatesLibraryLazyQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryLazyQuery>;
+export type HubPostTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPostTemplatesLibraryQuery,
+  SchemaTypes.HubPostTemplatesLibraryQueryVariables
+>;
+export function refetchHubPostTemplatesLibraryQuery(variables: SchemaTypes.HubPostTemplatesLibraryQueryVariables) {
+  return { query: HubPostTemplatesLibraryDocument, variables: variables };
+}
+
+export const PlatformPostTemplatesLibraryDocument = gql`
+  query PlatformPostTemplatesLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          id
+          nameID
+          provider {
+            id
+            profile {
+              ...TemplateProviderProfile
+            }
+          }
+          templates {
+            id
+            postTemplates {
+              ...PostTemplate
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+  ${PostTemplateFragmentDoc}
+`;
+
+/**
+ * __usePlatformPostTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `usePlatformPostTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformPostTemplatesLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformPostTemplatesLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >(PlatformPostTemplatesLibraryDocument, options);
+}
+
+export function usePlatformPostTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >(PlatformPostTemplatesLibraryDocument, options);
+}
+
+export type PlatformPostTemplatesLibraryQueryHookResult = ReturnType<typeof usePlatformPostTemplatesLibraryQuery>;
+export type PlatformPostTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof usePlatformPostTemplatesLibraryLazyQuery
+>;
+export type PlatformPostTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformPostTemplatesLibraryQuery,
+  SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+>;
+export function refetchPlatformPostTemplatesLibraryQuery(
+  variables?: SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+) {
+  return { query: PlatformPostTemplatesLibraryDocument, variables: variables };
+}
+
 export const HubAspectDocument = gql`
   query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -10091,6 +10261,15 @@ export const UpdateCalloutDocument = gql`
         id
         description
         displayName
+        tagset {
+          id
+          tags
+        }
+        references {
+          id
+          name
+          uri
+        }
       }
       state
       type
@@ -12804,6 +12983,7 @@ export const UploadVisualDocument = gql`
     uploadImageOnVisual(file: $file, uploadData: $uploadData) {
       id
       uri
+      alternativeText
     }
   }
 `;

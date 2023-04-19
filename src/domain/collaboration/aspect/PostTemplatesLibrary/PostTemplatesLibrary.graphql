@@ -1,0 +1,43 @@
+query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      postTemplates {
+        ...PostTemplate
+      }
+    }
+    host {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query PlatformPostTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        provider {
+          id
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          postTemplates {
+            ...PostTemplate
+          }
+        }
+      }
+    }
+  }
+}
