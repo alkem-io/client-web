@@ -29,8 +29,7 @@ const CommunityContributorsBlockWideContent = ({
   filter,
 }: CommunityContributorsBlockWideContentProps) => {
   return (
-    // TODO disablePadding={nested} after pull
-    <Gutters row padding={nested ? 0 : gutters()}>
+    <Gutters row padding={nested ? 0 : gutters()} disablePadding={nested}>
       {contributorType === ContributorType.People &&
         users?.filter(filterFn(filter)).map(user => (
           <GridItem key={user.id} columns={1}>
