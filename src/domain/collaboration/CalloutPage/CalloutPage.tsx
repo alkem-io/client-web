@@ -11,7 +11,6 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import useCanGoBack from '../../../core/routing/useCanGoBack';
-import { Location } from 'history';
 
 interface CalloutPageProps {
   journeyTypeName: JourneyTypeName;
@@ -28,7 +27,7 @@ export interface LocationStateCachedCallout {
 const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProps) => {
   const { calloutNameId, hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
-  const { state } = useLocation() as Location & { state: LocationStateCachedCallout };
+  const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 
   if (!hubNameId) {
     throw new Error('Must be within a Hub');
@@ -68,7 +67,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProp
 
   const typedCallout = useMemo(() => {
     if (!callout) {
-      return state[LocationStateKeyCachedCallout];
+      return locationState[LocationStateKeyCachedCallout];
     }
 
     const draft = callout.visibility === CalloutVisibility.Draft;
@@ -81,7 +80,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProp
       canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
       comments: { ...callout.comments, calloutNameId: callout.nameID },
     } as unknown as TypedCallout;
-  }, [callout, state]);
+  }, [callout, locationState]);
 
   const canGoBack = useCanGoBack();
 
