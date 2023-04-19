@@ -16,8 +16,8 @@ import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import CalloutsView from './CalloutsView';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
+import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 
 interface JourneyCalloutsTabViewProps {
   entityTypeName: EntityTypeName;
@@ -101,12 +101,15 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
-            <CalloutsView
+            <CalloutsGroupView
               callouts={ungroupedCallouts}
-              entityTypeName={entityTypeName}
+              hubId={hubNameId!}
+              canCreateCallout={canCreateCallout}
+              loading={loading}
+              entityTypeName="hub"
               sortOrder={calloutsSortOrder}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
               calloutNames={calloutNames}
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
               scrollToCallout={scrollToCallout}
             />
           </PageContentColumn>
