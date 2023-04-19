@@ -4,6 +4,7 @@ export enum EntityPageSection {
   About = 'about',
   Collaboration = 'collaboration',
   Contribute = 'contribute',
+  KnowledgeBase = 'knowledge-base',
   Challenges = 'challenges',
   Opportunities = 'opportunities',
   Agreements = 'agreements',

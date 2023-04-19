@@ -39,6 +39,7 @@ export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> exten
   createSubentityDialog?: ReactElement;
   state: JourneySubentitiesState;
   childrenLeft?: ReactNode;
+  childrenRight?: ReactNode;
 }
 
 const ChildJourneyView = <ChildEntity extends NameableEntity>({
@@ -56,6 +57,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
   createSubentityDialog,
   state,
   childrenLeft,
+  childrenRight,
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
@@ -120,6 +122,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
               )}
             </PageContentBlock>
           )}
+          {childrenRight}
           {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
         </PageContentColumn>
       </PageContent>
