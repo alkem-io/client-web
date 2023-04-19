@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
 import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
 import AddContentButton from '../../../../core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
-import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutFormTemplatesFromHubLazyQuery,
+  useUpdateCalloutVisibilityMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
   hubId: string;
@@ -41,6 +45,18 @@ const CalloutsGroupView = ({
     handleCreateCalloutOpened();
   };
 
+  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
+  const handleVisibilityChange = useCallback(
+    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
+      await updateCalloutVisibility({
+        variables: {
+          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
+        },
+      });
+    },
+    [updateCalloutVisibility]
+  );
+
   return (
     <>
       <CalloutsView
@@ -57,6 +73,7 @@ const CalloutsGroupView = ({
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
         onSaveAsDraft={handleCreateCallout}
+        onVisibilityChange={handleVisibilityChange}
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}

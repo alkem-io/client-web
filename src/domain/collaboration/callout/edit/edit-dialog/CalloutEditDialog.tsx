@@ -52,7 +52,9 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
     displayName: callout.profile.displayName,
+    type: callout.type,
     description: callout.profile.description,
+    state: callout.state,
     references: callout.profile.references,
     profileId: callout.profile.id,
     tags: callout.profile.tagset?.tags,

@@ -25,7 +25,6 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { Reference } from '../../../common/profile/Profile';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -48,7 +47,7 @@ export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
-  onVisibilityChange?: (
+  onVisibilityChange: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
     sendNotification: boolean
@@ -131,7 +130,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handlePublish = async () => {
     const createdCallout = await handleSaveAsDraftCallout();
     if (createdCallout) {
-      await onVisibilityChange?.(createdCallout.id, CalloutVisibility.Published, sendNotification);
+      await onVisibilityChange(createdCallout.id, CalloutVisibility.Published, sendNotification);
     }
     closePublishDialog();
   };
@@ -146,8 +145,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       tags: callout.tags,
       type: callout.type!,
       state: callout.state!,
-      postTemplate: callout.postTemplateData,
-      whiteboardTemplate: callout.whiteboardTemplateData,
+      postTemplate: callout.type === CalloutType.Card ? callout.postTemplateData : undefined,
+      whiteboardTemplate: callout.type === CalloutType.Canvas ? callout.whiteboardTemplateData : undefined,
     };
 
     const result = await onSaveAsDraft(newCallout);
@@ -212,15 +211,15 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               <Box display="flex">{t('buttons.publish')}</Box>
             </DialogHeader>
             <DialogContent>
-              <Box paddingY={theme => theme.spacing(2)} />
-              {t('components.callout-creation.publish-dialog.text', { calloutDisplayName: callout.displayName })}
-              <SectionSpacer />
-              <FormControlLabel
-                control={
-                  <Checkbox checked={sendNotification} onChange={() => setSendNotification(!sendNotification)} />
-                }
-                label={t('components.callout-creation.publish-dialog.checkbox-label')}
-              />
+              <Gutters>
+                {t('components.callout-creation.publish-dialog.text', { calloutDisplayName: callout.displayName })}
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={sendNotification} onChange={() => setSendNotification(!sendNotification)} />
+                  }
+                  label={t('components.callout-creation.publish-dialog.checkbox-label')}
+                />
+              </Gutters>
             </DialogContent>
             <Actions padding={gutters()} justifyContent="end">
               <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
