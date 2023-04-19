@@ -1,0 +1,17 @@
+fragment InnovationPackWithProvider on InnovatonPack {
+  id
+  nameID
+  provider {
+    id
+    profile {
+      ...TemplateProviderProfile
+    }
+  }
+}
+fragment TemplateProviderProfile on Profile {
+  id
+  displayName
+  visual(type: AVATAR) {
+    ...VisualUri
+  }
+}

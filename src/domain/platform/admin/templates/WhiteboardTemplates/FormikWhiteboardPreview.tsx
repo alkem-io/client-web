@@ -1,4 +1,4 @@
-import { Box, Button, Skeleton, styled } from '@mui/material';
+import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
 import CanvasWhiteboard from '../../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
@@ -6,9 +6,10 @@ import CanvasDialog from '../../../../collaboration/canvas/CanvasDialog/CanvasDi
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
 
-interface FormikWhiteboardPreviewProps {
+interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Canvas value
   canEdit: boolean;
+  onChangeValue?: (value: string) => void;
   loading?: boolean;
 }
 
@@ -19,7 +20,13 @@ const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
   zIndex: 10,
 }));
 
-const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEdit, loading }) => {
+const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
+  name,
+  canEdit,
+  onChangeValue,
+  loading,
+  ...containerProps
+}) => {
   const { t } = useTranslation();
   const [field, , helpers] = useField<string>(name); // value JSON string
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -46,6 +53,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEd
       flexBasis={theme => theme.spacing(60)}
       onClick={editDialogOpen ? undefined : preventSubmittingFormOnWhiteboardControlClick}
       position="relative"
+      {...containerProps}
     >
       {!loading ? (
         <>
@@ -82,6 +90,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({ name, canEd
                   onCheckout: undefined,
                   onUpdate: canvas => {
                     helpers.setValue(canvas.value);
+                    onChangeValue?.(canvas.value);
                     setEditDialogOpen(false);
                   },
                   onDelete: undefined,

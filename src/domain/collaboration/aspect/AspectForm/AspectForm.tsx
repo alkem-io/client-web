@@ -13,7 +13,7 @@ import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admi
 import { PushFunc, RemoveFunc } from '../../../shared/Reference/useEditReference';
 import { Reference } from '../../../common/profile/Profile';
 import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
-import FormRow from '../../../shared/layout/FormLayout';
+import FormRow from '../../../../common/components/FormLayout';
 import { displayNameValidator } from '../../../../common/utils/validator';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';

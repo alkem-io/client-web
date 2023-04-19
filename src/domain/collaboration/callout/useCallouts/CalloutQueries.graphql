@@ -153,6 +153,16 @@ fragment Callout on Callout {
     id
     displayName
     description
+    tagset {
+      id
+      tags
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
   }
   state
   sortOrder

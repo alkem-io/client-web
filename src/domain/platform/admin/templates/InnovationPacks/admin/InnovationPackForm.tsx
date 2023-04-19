@@ -9,7 +9,7 @@ import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import { MID_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { BlockSectionTitle } from '../../../../../../core/ui/typography';
-import FormRow from '../../../../../shared/layout/FormLayout/FormRow';
+import FormRow from '../../../../../../common/components/FormLayout/FormRow';
 import ContextReferenceSegment from '../../../components/Common/ContextReferenceSegment';
 import { NameSegment, nameSegmentSchema } from '../../../components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../components/Common/ReferenceSegment';

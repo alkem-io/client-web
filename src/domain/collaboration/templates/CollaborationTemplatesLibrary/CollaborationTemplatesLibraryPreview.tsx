@@ -1,29 +1,36 @@
 import { Box, Button, Grid, Skeleton, useTheme } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WhiteboardTemplateWithValue } from './WhiteboardTemplate';
-import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { BlockSectionTitle } from '../../../../core/ui/typography/components';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
+import { TemplateBase, TemplateBaseWithValue, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
 
-export interface WhiteboardTemplatesLibraryPreviewProps {
+export interface CollaborationTemplatesLibraryPreviewProps<
+  Template extends TemplateBase,
+  TemplateValue extends TemplateBaseWithValue
+> {
   onClose: () => void;
-  template?: WhiteboardTemplateWithValue;
+  template?: TemplateValue;
+  templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateValue>>;
   loading?: boolean;
-  importedTemplateValue?: string | undefined;
   actions?: ReactNode;
 }
 
-const WhiteboardTemplatesLibraryPreview: FC<WhiteboardTemplatesLibraryPreviewProps> = ({
+const CollaborationTemplatesLibraryPreview = <
+  Template extends TemplateBase,
+  TemplateValue extends TemplateBaseWithValue
+>({
   template,
+  templateCardComponent: TemplateCard,
+  templatePreviewComponent: TemplatePreview,
   loading,
   actions,
   onClose,
-}) => {
+}: CollaborationTemplatesLibraryPreviewProps<Template, TemplateValue>) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -31,7 +38,7 @@ const WhiteboardTemplatesLibraryPreview: FC<WhiteboardTemplatesLibraryPreviewPro
     <Grid container spacing={2}>
       <Grid item xs={12} sm={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <GridProvider columns={3}>
-          <WhiteboardTemplateCard template={template} loading={loading} />
+          <TemplateCard template={template as Template | undefined} loading={loading} />
         </GridProvider>
         <Box sx={{ display: 'flex', marginY: theme.spacing(2), justifyContent: 'end' }}>
           <Button startIcon={<ArrowBackIcon />} variant="text" onClick={() => onClose()}>
@@ -52,28 +59,11 @@ const WhiteboardTemplatesLibraryPreview: FC<WhiteboardTemplatesLibraryPreviewPro
           {loading && <Skeleton />}
         </Box>
         <Box height={theme.spacing(40)}>
-          {template?.value ? (
-            <CanvasWhiteboard
-              entities={{
-                canvas: template,
-              }}
-              actions={{}}
-              options={{
-                viewModeEnabled: true,
-                UIOptions: {
-                  canvasActions: {
-                    export: false,
-                  },
-                },
-              }}
-            />
-          ) : (
-            <Skeleton height={theme.spacing(40)} />
-          )}
+          {!loading ? <TemplatePreview template={template} /> : <Skeleton height={theme.spacing(40)} />}
         </Box>
       </Grid>
     </Grid>
   );
 };
 
-export default WhiteboardTemplatesLibraryPreview;
+export default CollaborationTemplatesLibraryPreview;

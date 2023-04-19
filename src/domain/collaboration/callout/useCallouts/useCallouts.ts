@@ -23,6 +23,7 @@ import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 import { compact, groupBy, sortBy } from 'lodash';
 import { LazyQueryHookOptions } from '@apollo/client/react/types/types';
 import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
+import { Tagset } from '../../../common/profile/Profile';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
@@ -70,6 +71,7 @@ export type TypedCallout = Pick<
       id: string;
       displayName: string;
       description?: string;
+      tagset?: Tagset;
     };
     draft: boolean;
     editable: boolean;
