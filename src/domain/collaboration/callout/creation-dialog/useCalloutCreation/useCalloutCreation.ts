@@ -10,12 +10,16 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
+import { Reference } from '../../../../common/profile/Profile';
+import { Identifiable } from '../../../../shared/types/Identifiable';
 
 export type CalloutCreationType = {
   profile: {
     description: string;
     displayName: string;
+    referencesData: Reference[];
   };
+  tags?: string[];
   type: CalloutType;
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
@@ -26,7 +30,7 @@ export interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCalloutDrafted: (callout: CalloutCreationType) => Promise<void>;
+  handleCreateCallout: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
   isCreating: boolean;
 }
 
@@ -97,7 +101,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     setIsCalloutCreationDialogOpen(true);
   }, []);
   const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
-  const handleCalloutDrafted = useCallback(
+  const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
       if (!collaborationID) {
         return;
@@ -105,7 +109,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
-      await createCallout({
+      const result = await createCallout({
         variables: {
           calloutData: {
             collaborationID,
@@ -117,7 +121,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
       setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
 
-      return;
+      return result.data?.createCalloutOnCollaboration;
     },
     [collaborationID, createCallout]
   );
@@ -126,7 +130,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     isCalloutCreationDialogOpen,
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
-    handleCalloutDrafted,
+    handleCreateCallout,
     isCreating,
   };
 };

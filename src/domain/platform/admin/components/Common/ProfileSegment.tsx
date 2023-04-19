@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import FormRow from '../../../../shared/layout/FormLayout';
+import FormRow from '../../../../../common/components/FormLayout';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export const profileSegmentSchema = yup.object().shape({

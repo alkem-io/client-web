@@ -12,7 +12,7 @@ import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { BlockTitle, Text, PageTitle } from '../../../../../core/ui/typography/components';
 import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import FormRow from '../../../../shared/layout/FormLayout/FormRow';
+import FormRow from '../../../../../common/components/FormLayout/FormRow';
 import { FormikSwitch } from '../../../../../common/components/composite/forms/FormikSwitch';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import Gutters from '../../../../../core/ui/grid/Gutters';

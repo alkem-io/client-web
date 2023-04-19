@@ -216,6 +216,8 @@
     "member": "Member",
     "members": "Members",
     "empty-string": "",
+    "post": "Post",
+    "posts": "Posts",
     "discussion": "Discussion",
     "discussions": "Discussions",
     "disassociate": "Disassociate",
@@ -575,12 +577,13 @@
     }
   },
   "aspect-templates": {
+    "template-library": "Template Library: Cards",
     "aspect-template": "Card template",
     "default-description": "Default Card content",
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "template-library": "Template Library",
+    "template-library": "Template Library: Whiteboards",
     "filter-placeholder": "Search Templates...",
     "canvas-template": "Whiteboard template",
     "hub-templates": "Templates selected by the host of this community",
@@ -729,6 +732,7 @@
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
       "card-type-label": "Card label",
+      "custom-template": "Custom Template",
       "info-step": {
         "title": "Details",
         "description": "Description",
@@ -743,14 +747,30 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Card Template",
+        "card-template-label": "Default text:",
+        "card-template-text": "Add default text to the posts, for example questions that you like people to answer.",
+        "card-template-default-description": "Default description",
+        "whiteboard-template-label": "Template:",
+        "whiteboard-empty-template": "Empty Template",
+        "whiteboard-reset-template": "Reset Empty Template",
         "no-card-template-selected": "Please select a card template",
-        "canvas-template-label": "Whiteboard Template",
         "no-canvas-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
         "title": "Create",
         "card-template-label": "Choose Card template"
+      },
+      "callout-type-select": {
+        "title": "What would you like to add?",
+        "label": {
+          "post": "Post",
+          "posts": "Call for Posts",
+          "whiteboards": "Call for Whiteboards"
+        }
+      },
+      "publish-dialog": {
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
+        "checkbox-label": "Yes, notify the community."
       }
     },
     "callout-edit": {

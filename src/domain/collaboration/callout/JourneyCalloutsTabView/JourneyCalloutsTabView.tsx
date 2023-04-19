@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -14,10 +14,14 @@ import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribu
 import calloutIcons from '../utils/calloutIcons';
 import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
-import { useCalloutFormTemplatesFromHubLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutFormTemplatesFromHubLazyQuery,
+  useUpdateCalloutVisibilityMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 import CalloutsView from './CalloutsView';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
+import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface JourneyCalloutsTabViewProps {
   entityTypeName: EntityTypeName;
@@ -48,7 +52,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
     isCalloutCreationDialogOpen,
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
-    handleCalloutDrafted,
+    handleCreateCallout,
     isCreating,
   } = useCalloutCreation();
 
@@ -66,6 +70,18 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
     fetchTemplates();
     handleCreateCalloutOpened();
   };
+
+  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation();
+  const handleVisibilityChange = useCallback(
+    async (calloutId: string, visibility: CalloutVisibility, sendNotification: boolean) => {
+      await updateCalloutVisibility({
+        variables: {
+          calloutData: { calloutID: calloutId, visibility: visibility, sendNotification: sendNotification },
+        },
+      });
+    },
+    [updateCalloutVisibility]
+  );
 
   return (
     <>
@@ -115,7 +131,8 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
-        onSaveAsDraft={handleCalloutDrafted}
+        onSaveAsDraft={handleCreateCallout}
+        onVisibilityChange={handleVisibilityChange}
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
