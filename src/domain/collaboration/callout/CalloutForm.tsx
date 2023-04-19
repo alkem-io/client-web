@@ -19,7 +19,7 @@ import { ProfileReferenceSegment } from '../../platform/admin/components/Common/
 import PostTemplatesChooser from './creation-dialog/CalloutTemplate/PostTemplateChooser';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
-import { EmptyWhiteboard2 } from '../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
+import EmptyWhiteboard from '../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 
@@ -111,7 +111,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: {
           displayName: t('components.callout-creation.template-step.whiteboard-empty-template'),
         },
-        value: JSON.stringify(EmptyWhiteboard2),
+        value: JSON.stringify(EmptyWhiteboard),
       },
     }),
     [callout?.id, tagsets]
