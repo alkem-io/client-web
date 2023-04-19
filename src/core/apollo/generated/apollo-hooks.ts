@@ -747,6 +747,8 @@ export const HubPageFragmentDoc = gql`
     context {
       id
       vision
+      who
+      impact
       authorization {
         id
         anonymousReadAccess

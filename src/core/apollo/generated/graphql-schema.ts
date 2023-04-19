@@ -7532,6 +7532,8 @@ export type HubPageQuery = {
           __typename?: 'Context';
           id: string;
           vision?: string | undefined;
+          who?: string | undefined;
+          impact?: string | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -7859,6 +7861,8 @@ export type HubPageFragment = {
         __typename?: 'Context';
         id: string;
         vision?: string | undefined;
+        who?: string | undefined;
+        impact?: string | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';

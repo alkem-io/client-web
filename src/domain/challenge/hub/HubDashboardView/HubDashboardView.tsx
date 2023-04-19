@@ -36,14 +36,24 @@ import {
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { Button, ButtonProps, Theme } from '@mui/material';
+import { Button, ButtonProps, IconButton, Theme } from '@mui/material';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
+import { Metric } from '../../../platform/metrics/utils/getMetricCount';
+import { Close } from '@mui/icons-material';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
     EntityDashboardLeads,
     Partial<CoreEntityIdTypes> {
+  displayName: ReactNode;
+  tagline: ReactNode;
+  metrics: Metric[] | undefined;
+  description: string | undefined;
+  who: string | undefined;
+  impact: string | undefined;
+
   vision?: string;
   communityId?: string;
   organization?: unknown;
@@ -65,6 +75,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   childrenLeft?: ReactNode;
   childrenRight?: ReactNode;
+  loading: boolean;
 }
 
 const FullWidthButton = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
@@ -76,6 +87,13 @@ const FullWidthButton = <D extends React.ElementType = ButtonTypeMap['defaultCom
 
 const JourneyDashboardView = <ChildEntity extends Identifiable>({
   vision = '',
+  displayName,
+  tagline,
+  metrics,
+  description,
+  who,
+  impact,
+  loading,
   hubNameId,
   challengeNameId,
   opportunityNameId,
@@ -147,132 +165,156 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
+  const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
+
   return (
-    <PageContent>
-      <ApplicationButtonContainer>
-        {({ applicationButtonProps }, { loading }) => {
-          if (loading || applicationButtonProps.isMember) {
-            return null;
-          }
+    <>
+      <PageContent>
+        <ApplicationButtonContainer>
+          {({ applicationButtonProps }, { loading }) => {
+            if (loading || applicationButtonProps.isMember) {
+              return null;
+            }
 
-          return (
-            <PageContentColumn columns={12}>
-              <ApplicationButton
-                {...applicationButtonProps}
-                loading={loading}
-                component={FullWidthButton}
-                extended={hasExtendedApplicationButton}
-              />
-            </PageContentColumn>
-          );
-        }}
-      </ApplicationButtonContainer>
-      <PageContentColumn columns={4}>
-        <JourneyDashboardVision vision={vision} journeyTypeName={journeyTypeName} />
-        <ShareButton
-          title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
-          url={journeyLocation && buildJourneyUrl(journeyLocation)}
-          entityTypeName={journeyTypeName}
-        />
-        {communityReadAccess && (
-          <EntityDashboardLeadsSection
-            usersHeader={t(leadUsersHeader)}
-            organizationsHeader={t(leadOrganizationsHeader)}
-            leadUsers={leadUsers}
-            leadOrganizations={leadOrganizations}
+            return (
+              <PageContentColumn columns={12}>
+                <ApplicationButton
+                  {...applicationButtonProps}
+                  loading={loading}
+                  component={FullWidthButton}
+                  extended={hasExtendedApplicationButton}
+                />
+              </PageContentColumn>
+            );
+          }}
+        </ApplicationButtonContainer>
+        <PageContentColumn columns={4}>
+          <JourneyDashboardVision vision={vision} journeyTypeName={journeyTypeName} />
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
+            url={journeyLocation && buildJourneyUrl(journeyLocation)}
+            entityTypeName={journeyTypeName}
           />
-        )}
-        {communityReadAccess && (
-          <ContactLeadsButton onClick={openContactLeadsDialog}>
-            {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
-          </ContactLeadsButton>
-        )}
-        <DirectMessageDialog
-          title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
-          open={isOpenContactLeadUsersDialog}
-          onClose={closeContactLeadsDialog}
-          onSendMessage={sendMessageToCommunityLeads}
-          messageReceivers={messageReceivers}
-        />
-        {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('components.referenceSegment.title')} />
-          <References references={references} />
-          {/* TODO figure out the URL for references */}
-          <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
-        </PageContentBlock>
-        {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
-        {communityReadAccess && (
-          <EntityDashboardContributorsSection
-            memberUsers={memberUsers}
-            memberUsersCount={memberUsersCount}
-            memberOrganizations={memberOrganizations}
-            memberOrganizationsCount={memberOrganizationsCount}
+          {communityReadAccess && (
+            <EntityDashboardLeadsSection
+              usersHeader={t(leadUsersHeader)}
+              organizationsHeader={t(leadOrganizationsHeader)}
+              leadUsers={leadUsers}
+              leadOrganizations={leadOrganizations}
+            />
+          )}
+          {communityReadAccess && (
+            <ContactLeadsButton onClick={openContactLeadsDialog}>
+              {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
+            </ContactLeadsButton>
+          )}
+          <DirectMessageDialog
+            title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
+            open={isOpenContactLeadUsersDialog}
+            onClose={closeContactLeadsDialog}
+            onSendMessage={sendMessageToCommunityLeads}
+            messageReceivers={messageReceivers}
           />
-        )}
-        {childrenLeft}
-      </PageContentColumn>
-
-      <PageContentColumn columns={8}>
-        {hasRecommendations && (
-          <PageContentBlock halfWidth>
-            <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
-            <References references={validRecommendations} icon={RecommendationIcon} />
-          </PageContentBlock>
-        )}
-        {hasTopCallouts && (
-          <PageContentBlock halfWidth={hasRecommendations}>
-            <PageContentBlockHeader title={t('components.top-callouts.title')} />
-            {topCallouts?.map(callout => (
-              <TopCalloutDetails
-                key={callout.id}
-                title={callout.profile.displayName}
-                description={callout.profile.description || ''}
-                activity={callout.activity}
-                type={callout.type}
-                calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
-              />
-            ))}
-          </PageContentBlock>
-        )}
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('components.activity-log-section.title')} />
-          {readUsersAccess && entityReadAccess && showActivities && (
-            <>
-              <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-              <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
-            </>
-          )}
-          {!entityReadAccess && readUsersAccess && (
-            <Caption>
-              {t('components.activity-log-section.activity-join-error-message', {
-                journeyType: t(`common.${journeyTypeName}` as const),
-              })}
-            </Caption>
-          )}
-          {!readUsersAccess && entityReadAccess && (
-            <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
-          )}
-          {!entityReadAccess && !readUsersAccess && (
-            <Caption>
-              {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
-                journeyType: t(`common.${journeyTypeName}` as const),
-              })}
-            </Caption>
-          )}
-        </PageContentBlock>
-        {entityReadAccess && renderChildEntityCard && childEntityTitle && (
+          {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
           <PageContentBlock>
-            <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
-            <ScrollableCardsLayout items={childEntities} deps={[hubNameId]}>
-              {renderChildEntityCard}
-            </ScrollableCardsLayout>
-            <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
+            <PageContentBlockHeader title={t('components.referenceSegment.title')} />
+            <References references={references} />
+            {/* TODO figure out the URL for references */}
+            <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
           </PageContentBlock>
-        )}
-        {childrenRight}
-      </PageContentColumn>
-    </PageContent>
+          {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
+          {communityReadAccess && (
+            <EntityDashboardContributorsSection
+              memberUsers={memberUsers}
+              memberUsersCount={memberUsersCount}
+              memberOrganizations={memberOrganizations}
+              memberOrganizationsCount={memberOrganizationsCount}
+            />
+          )}
+          {childrenLeft}
+        </PageContentColumn>
+
+        <PageContentColumn columns={8}>
+          {hasRecommendations && (
+            <PageContentBlock halfWidth>
+              <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
+              <References references={validRecommendations} icon={RecommendationIcon} />
+            </PageContentBlock>
+          )}
+          {hasTopCallouts && (
+            <PageContentBlock halfWidth={hasRecommendations}>
+              <PageContentBlockHeader title={t('components.top-callouts.title')} />
+              {topCallouts?.map(callout => (
+                <TopCalloutDetails
+                  key={callout.id}
+                  title={callout.profile.displayName}
+                  description={callout.profile.description || ''}
+                  activity={callout.activity}
+                  type={callout.type}
+                  calloutUri={journeyLocation && buildCalloutUrl(callout.nameID, journeyLocation)}
+                />
+              ))}
+            </PageContentBlock>
+          )}
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('components.activity-log-section.title')} />
+            {readUsersAccess && entityReadAccess && showActivities && (
+              <>
+                <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
+                <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
+              </>
+            )}
+            {!entityReadAccess && readUsersAccess && (
+              <Caption>
+                {t('components.activity-log-section.activity-join-error-message', {
+                  journeyType: t(`common.${journeyTypeName}` as const),
+                })}
+              </Caption>
+            )}
+            {!readUsersAccess && entityReadAccess && (
+              <Caption>{t('components.activity-log-section.activity-sign-in-error-message')}</Caption>
+            )}
+            {!entityReadAccess && !readUsersAccess && (
+              <Caption>
+                {t('components.activity-log-section.activity-sign-in-and-join-error-message', {
+                  journeyType: t(`common.${journeyTypeName}` as const),
+                })}
+              </Caption>
+            )}
+          </PageContentBlock>
+          {entityReadAccess && renderChildEntityCard && childEntityTitle && (
+            <PageContentBlock>
+              <PageContentBlockHeader title={withOptionalCount(childEntityTitle, childEntitiesCount)} />
+              <ScrollableCardsLayout items={childEntities} deps={[hubNameId]}>
+                {renderChildEntityCard}
+              </ScrollableCardsLayout>
+              <SeeMore subject={childEntityTitle} to={getChildJourneyRoute(journeyTypeName)} />
+            </PageContentBlock>
+          )}
+          {childrenRight}
+        </PageContentColumn>
+      </PageContent>
+      <JourneyAboutDialog
+        open={isAboutDialogOpen}
+        journeyTypeName="hub"
+        displayName={displayName}
+        tagline={tagline}
+        sendMessageToCommunityLeads={sendMessageToCommunityLeads}
+        metrics={metrics}
+        description={vision}
+        background={description}
+        who={who}
+        impact={impact}
+        loading={loading}
+        leadUsers={leadUsers}
+        leadOrganizations={leadOrganizations}
+        endButton={
+          <IconButton onClick={() => setIsAboutDialogOpen(false)}>
+            <Close />
+          </IconButton>
+        }
+      />
+    </>
   );
 };
 

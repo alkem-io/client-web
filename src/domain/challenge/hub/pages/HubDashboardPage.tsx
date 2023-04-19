@@ -40,11 +40,18 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
       <HubPageContainer>
-        {entities => (
+        {(entities, state) => (
           <>
             <HubDashboardView
               vision={entities.hub?.context?.vision}
               hubNameId={entities.hub?.nameID}
+              displayName={entities.hub?.profile.displayName}
+              tagline={entities.hub?.profile.tagline}
+              description={entities.hub?.profile.description}
+              who={entities.hub?.context?.who}
+              impact={entities.hub?.context?.impact}
+              metrics={entities.hub?.metrics}
+              loading={state.loading}
               communityId={entities.hub?.community?.id}
               childEntities={entities.challenges}
               childEntitiesCount={entities.challengesCount}
