@@ -5,6 +5,15 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
       id
       description
       displayName
+      tagset {
+        id
+        tags
+      }
+      references {
+        id
+        name
+        uri
+      }
     }
     state
     type

@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material';
+import { CardContent, Skeleton } from '@mui/material';
 import { FC } from 'react';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
@@ -7,22 +7,23 @@ import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import { InnovationPackIcon } from '../../../platform/admin/templates/InnovationPacks/InnovationPackIcon';
-import { CanvasIcon } from '../icon/CanvasIcon';
-import { WhiteboardTemplate } from './WhiteboardTemplate';
 import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { AspectIcon } from '../icon/AspectIcon';
+import { PostTemplate } from './PostTemplate';
 
-interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<WhiteboardTemplate> {}
+interface PostTemplateCardProps extends TemplateCardBaseProps<PostTemplate> {}
 
-const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, loading, onClick }) => {
+const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClick }) => {
   return (
     <ContributeCard onClick={onClick}>
-      <CardHeader title={template?.displayName} iconComponent={CanvasIcon}>
+      <CardHeader title={template?.displayName} iconComponent={AspectIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption noWrap logoUrl={template?.provider?.avatarUri}>
           {template?.provider?.displayName}
         </CardHeaderCaption>
       </CardHeader>
-      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImageSvg={<CanvasIcon />} />
+      <CardContent>{template?.description}</CardContent>
+      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImageSvg={<AspectIcon />} />
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{template?.innovationPack.displayName}</Caption>
@@ -33,4 +34,4 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, loa
   );
 };
 
-export default WhiteboardTemplateCard;
+export default PostTemplateCard;
