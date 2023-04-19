@@ -4,8 +4,8 @@ import { Visual } from '../../../../core/apollo/generated/graphql-schema';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
 import { getVisualByType } from '../utils/visuals.utils';
 import { VisualName } from '../constants/visuals.constants';
-import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
 
 export interface EditVisualsViewProps {
   visuals?: Visual[];
@@ -21,24 +21,32 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
         <VisualUpload visual={banner} />
         <Box paddingLeft={2}>
-          <Typography variant={'h4'}>{t('pages.visual-edit.banner.title')}</Typography>
-          <Typography variant={'subtitle2'}>
+          <BlockSectionTitle>{t('pages.visual-edit.banner.title')}</BlockSectionTitle>
+          <BlockSectionTitle>
             {t('pages.visual-edit.banner.description1', { width: banner?.maxWidth, height: banner?.maxHeight })}
-          </Typography>
-          <Typography variant={'subtitle1'}>{t('pages.visual-edit.banner.description2')}</Typography>
+          </BlockSectionTitle>
+          {banner?.alternativeText && (
+            <BlockSectionTitle>
+              {t('pages.visual-edit.banner.description', { alternativeText: banner?.alternativeText })}
+            </BlockSectionTitle>
+          )}
         </Box>
       </Box>
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
         <VisualUpload visual={bannerNarrow} />
         <Box paddingLeft={2}>
-          <Typography variant={'h4'}>{t('pages.visual-edit.banner-narrow.title')}</Typography>
-          <Typography variant={'subtitle2'}>
+          <BlockSectionTitle>{t('pages.visual-edit.banner-narrow.title')}</BlockSectionTitle>
+          <BlockSectionTitle>
             {t('pages.visual-edit.banner-narrow.description1', {
               width: bannerNarrow?.maxWidth,
               height: bannerNarrow?.maxHeight,
             })}
-          </Typography>
-          <Typography variant={'subtitle1'}>{t('pages.visual-edit.banner-narrow.description2')}</Typography>
+          </BlockSectionTitle>
+          {bannerNarrow?.alternativeText && (
+            <BlockSectionTitle>
+              {t('pages.visual-edit.banner-narrow.description', { alternativeText: bannerNarrow?.alternativeText })}
+            </BlockSectionTitle>
+          )}
         </Box>
       </Box>
     </>

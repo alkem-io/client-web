@@ -6,7 +6,7 @@ import {
   useUserNotificationsPreferencesQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../../core/container/container';
-import { Preference, PreferenceType, UserPreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
+import { Preference, UserPreferenceType } from '../../../../../core/apollo/generated/graphql-schema';
 
 export interface UserNotificationsContainerEntities {
   preferences: Preference[];
@@ -26,8 +26,6 @@ export interface UserNotificationsContainerProps
     UserNotificationsContainerActions,
     UserNotificationsContainerState
   > {}
-
-const excludeNotifications = [PreferenceType.NotificationCommunicationDiscussionResponse];
 
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
   const { userNameId = '' } = useUrlParams();
@@ -65,14 +63,7 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     });
   };
 
-  const preferences = useMemo(
-    () =>
-      sortBy(
-        (data?.user.preferences || []).filter(p => !excludeNotifications.includes(p.definition.type)),
-        x => x.definition.displayName
-      ),
-    [data]
-  );
+  const preferences = useMemo(() => sortBy(data?.user.preferences ?? [], x => x.definition.displayName), [data]);
 
   return (
     <>

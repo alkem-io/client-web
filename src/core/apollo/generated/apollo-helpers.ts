@@ -2235,6 +2235,7 @@ export type VerifiedCredentialClaimFieldPolicy = {
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
+  | 'alternativeText'
   | 'aspectRatio'
   | 'authorization'
   | 'id'
@@ -2248,6 +2249,7 @@ export type VisualKeySpecifier = (
 )[];
 export type VisualFieldPolicy = {
   allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  alternativeText?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
