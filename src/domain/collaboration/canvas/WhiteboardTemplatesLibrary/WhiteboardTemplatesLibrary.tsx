@@ -9,7 +9,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { WhiteboardTemplate, WhiteboardTemplateMapper, WhiteboardTemplateWithValue } from './WhiteboardTemplate';
+import { WhiteboardTemplate, whiteboardTemplateMapper, WhiteboardTemplateWithValue } from './WhiteboardTemplate';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 
@@ -19,7 +19,9 @@ export interface WhiteboardTemplatesLibraryProps {
 
 const applyFilter = (filter: string[], templates: WhiteboardTemplate[] | undefined) => {
   return templates?.filter(whiteboard => {
-    if (!filter || filter.length === 0) return true;
+    if (filter.length === 0) {
+      return true;
+    }
     const whiteboardString =
       `${whiteboard.displayName} ${whiteboard.provider.displayName} ${whiteboard.innovationPack.displayName}`.toLowerCase();
     return filter.some(term => whiteboardString.includes(term.toLowerCase()));
@@ -46,7 +48,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
       applyFilter(
         filter,
         hubData?.hub.templates?.whiteboardTemplates.map<WhiteboardTemplate>(template =>
-          WhiteboardTemplateMapper(template, hubData?.hub.host?.profile)
+          whiteboardTemplateMapper(template, hubData?.hub.host?.profile)
         )
       ),
     [hubData, filter]
@@ -62,7 +64,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     const templateValue = data?.hub.templates?.whiteboardTemplate;
     if (templateValue) {
       return {
-        ...WhiteboardTemplateMapper(templateValue, hubData?.hub.host?.profile),
+        ...whiteboardTemplateMapper(templateValue, hubData?.hub.host?.profile),
         value: templateValue.value,
       };
     }
@@ -82,7 +84,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
         platformData?.platform.library.innovationPacks.flatMap(ip =>
           compact(
             ip.templates?.whiteboardTemplates.map<WhiteboardTemplate>(template =>
-              WhiteboardTemplateMapper(template, ip.provider?.profile, ip)
+              whiteboardTemplateMapper(template, ip.provider?.profile, ip)
             )
           )
         )
@@ -101,7 +103,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ onSel
     const templateValue = ip?.templates?.whiteboardTemplate;
     if (templateValue) {
       return {
-        ...WhiteboardTemplateMapper(templateValue, ip?.provider?.profile, ip),
+        ...whiteboardTemplateMapper(templateValue, ip?.provider?.profile, ip),
         value: templateValue.value,
       };
     }

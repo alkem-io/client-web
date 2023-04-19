@@ -24,7 +24,7 @@ export interface WhiteboardTemplateWithValue extends WhiteboardTemplate {
   value: string;
 }
 
-export const WhiteboardTemplateMapper = (
+export const whiteboardTemplateMapper = (
   template: WhiteboardTemplateFragment,
   profile?: TemplateProviderProfileFragment,
   innovationPack?: InnovationPackWithProviderFragment

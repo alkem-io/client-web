@@ -26,7 +26,7 @@ export interface PostTemplate extends TemplateBase {
 // PostTemplate includes the value
 export interface PostTemplateWithValue extends PostTemplate {}
 
-export const PostTemplateMapper = (
+export const postTemplateMapper = (
   template: PostTemplateFragment,
   profile?: TemplateProviderProfileFragment,
   innovationPack?: InnovationPackWithProviderFragment

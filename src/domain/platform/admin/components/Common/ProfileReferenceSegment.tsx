@@ -11,7 +11,7 @@ interface ProfileReferenceSegmentProps extends ReferenceSegmentProps {
 export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ profileId, readOnly, ...rest }) => {
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
-  // TODO REMOVE CALLBACK FROM SIGNATURE! //!!??
+  // TODO REMOVE CALLBACK FROM SIGNATURE!
   const handleAdd = async (push: PushFunc) => {
     setPush(push);
     if (profileId) {
@@ -24,7 +24,7 @@ export const ProfileReferenceSegment: FC<ProfileReferenceSegmentProps> = ({ prof
     }
   };
 
-  // TODO REMOVE CALLBACK FROM SIGNATURE! //!!??
+  // TODO REMOVE CALLBACK FROM SIGNATURE!
   const handleRemove = async (ref: Reference, removeFn: RemoveFunc) => {
     setRemove(removeFn);
     if (ref.id) {

@@ -100,8 +100,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [sendNotification, setSendNotification] = useState(true);
 
   useLayoutEffect(() => {
-    if (!open) return;
-    setSelectedCalloutType(undefined);
+    if (open) {
+      setSelectedCalloutType(undefined);
+    }
   }, [open]);
 
   const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
@@ -130,7 +131,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const handlePublish = async () => {
     const createdCallout = await handleSaveAsDraftCallout();
     if (createdCallout) {
-      //!! Change visibility when just created??!
       await onVisibilityChange?.(createdCallout.id, CalloutVisibility.Published, sendNotification);
     }
     closePublishDialog();

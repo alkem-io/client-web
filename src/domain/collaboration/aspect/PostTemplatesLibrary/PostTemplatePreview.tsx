@@ -14,6 +14,9 @@ const PostTemplatePreview: FC<PostTemplatePreviewProps> = ({ template }) => {
       <BlockTitle>{t('components.callout-creation.template-step.card-template-default-description')}</BlockTitle>
       <BlockSectionTitle>{template?.defaultDescription}</BlockSectionTitle>
       {/*
+        // Type is not visible in the design, but it's a property from the Cards that we may want to enable in the future,
+        // the rest of the code is ready to handle it, it's just hidden:
+
         <BlockTitle>{t('components.callout-creation.template-step.type')}</BlockTitle>
         <BlockSectionTitle>{template?.type}</BlockSectionTitle>
       */}

@@ -12,7 +12,6 @@ import WhiteboardTemplatesChooser from './creation-dialog/CalloutTemplate/Whiteb
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
-// import WhiteboardTemplatesLibrary from '../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import ReferenceSegment from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
@@ -102,9 +101,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       postTemplateData: callout?.postTemplateData ?? {
         profile: {
-          displayName: '__template', //!!
+          displayName: '',
         },
-        defaultDescription: '',
+        defaultDescription: 'default descccc',
         type: '',
       },
       whiteboardTemplateData: callout?.whiteboardTemplateData ?? {

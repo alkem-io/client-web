@@ -58,7 +58,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     tags: callout.profile.tagset?.tags,
     postTemplateData: {
       profile: {
-        displayName: '_template',
+        displayName: '',
       },
       defaultDescription: callout.postTemplate?.defaultDescription ?? '',
       type: callout.postTemplate?.type ?? '',
@@ -66,7 +66,8 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     whiteboardTemplateData: {
       value: callout.whiteboardTemplate?.value ?? JSON.stringify(EmptyWhiteboard),
       profile: {
-        displayName: callout.whiteboardTemplate?.profile.displayName ?? 'Custom Template //!!',
+        displayName:
+          callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
   };

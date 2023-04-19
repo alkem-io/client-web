@@ -15,26 +15,28 @@ interface PostTemplatesChooserProps {
 
 export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) => {
   const { t } = useTranslation();
-  const [field, , helpers] = useField<PostTemplateFormSubmittedValues>(name);
+  const [, , helpers] = useField<PostTemplateFormSubmittedValues>(name);
 
   const handleSelectTemplate = (template: PostTemplateWithValue) => {
     helpers.setValue({
       profile: {
-        displayName: t('components.callout-creation.template-step.whiteboard-custom-template'),
+        displayName: t('components.callout-creation.custom-template'),
       },
       defaultDescription: template.defaultDescription,
       type: template.type,
     });
   };
-  console.log(field);
+
   return (
     <>
       <Box display="flex" alignItems="center">
-        <Caption>{t('components.callout-creation.template-step.card-template-label')}</Caption>
-        <CardText display="inline" marginLeft={1}>
-          {t('components.callout-creation.template-step.card-template-text')}
-        </CardText>
-        <PostTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
+        <Box>
+          <Caption>{t('components.callout-creation.template-step.card-template-label')}</Caption>
+          <CardText>{t('components.callout-creation.template-step.card-template-text')}</CardText>
+        </Box>
+        <Box sx={{ marginLeft: 'auto' }}>
+          <PostTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
+        </Box>
       </Box>
       <FormikMarkdownField
         name={`${name}.defaultDescription`}

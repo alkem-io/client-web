@@ -30,7 +30,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
   const handleChange = (newValue: string) => {
     helpers.setValue({
       profile: {
-        displayName: t('components.callout-creation.template-step.whiteboard-custom-template'),
+        displayName: t('components.callout-creation.custom-template'),
       },
       value: newValue,
     });
@@ -46,16 +46,20 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
   return (
     <>
       <Box display="flex" alignItems="center">
-        <Caption>
-          {t('components.callout-creation.template-step.whiteboard-template-label')}
-          <CardText display="inline" marginLeft={1}>
-            {field.value.profile.displayName}
-          </CardText>
-        </Caption>
-        <Button onClick={handleResetWhiteboardTemplate} sx={{ marginLeft: 'auto' }} startIcon={<RestartAltIcon />}>
-          {t('components.callout-creation.template-step.whiteboard-reset-template')}
-        </Button>
-        <WhiteboardTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
+        <Box>
+          <Caption>
+            {t('components.callout-creation.template-step.whiteboard-template-label')}
+            <CardText display="inline" marginLeft={1}>
+              {field.value.profile.displayName}
+            </CardText>
+          </Caption>
+        </Box>
+        <Box sx={{ marginLeft: 'auto' }}>
+          <Button onClick={handleResetWhiteboardTemplate} startIcon={<RestartAltIcon />}>
+            {t('components.callout-creation.template-step.whiteboard-reset-template')}
+          </Button>
+          <WhiteboardTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
+        </Box>
       </Box>
       <FormikWhiteboardPreview name={`${name}.value`} canEdit onChangeValue={handleChange} maxHeight={gutters(12)} />
     </>

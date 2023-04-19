@@ -732,6 +732,7 @@
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
       "card-type-label": "Card label",
+      "custom-template": "Custom Template",
       "info-step": {
         "title": "Details",
         "description": "Description",
@@ -751,7 +752,6 @@
         "card-template-default-description": "Default description",
         "whiteboard-template-label": "Template:",
         "whiteboard-empty-template": "Empty Template",
-        "whiteboard-custom-template": "Custom Template",
         "whiteboard-reset-template": "Reset Empty Template",
         "no-card-template-selected": "Please select a card template",
         "no-canvas-template-selected": "Please select a whiteboard template"

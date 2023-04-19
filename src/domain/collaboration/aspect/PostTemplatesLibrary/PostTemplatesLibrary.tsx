@@ -7,7 +7,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { PostTemplate, PostTemplateMapper, PostTemplateWithValue } from './PostTemplate';
+import { PostTemplate, postTemplateMapper, PostTemplateWithValue } from './PostTemplate';
 import PostTemplateCard from './PostTemplateCard';
 import PostTemplatePreview from './PostTemplatePreview';
 
@@ -17,7 +17,9 @@ export interface PostTemplatesLibraryProps {
 
 const applyFilter = (filter: string[], templates: PostTemplate[] | undefined) => {
   return templates?.filter(post => {
-    if (!filter || filter.length === 0) return true;
+    if (filter.length === 0) {
+      return true;
+    }
     const postString =
       `${post.displayName} ${post.provider.displayName} ${post.innovationPack.displayName}`.toLowerCase();
     return filter.some(term => postString.includes(term.toLowerCase()));
@@ -42,7 +44,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       applyFilter(
         filter,
         hubData?.hub.templates?.postTemplates.map<PostTemplate>(template =>
-          PostTemplateMapper(template, hubData?.hub.host?.profile)
+          postTemplateMapper(template, hubData?.hub.host?.profile)
         )
       ),
     [hubData, filter]
@@ -59,7 +61,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
         platformData?.platform.library.innovationPacks.flatMap(ip =>
           compact(
             ip.templates?.postTemplates.map<PostTemplate>(template =>
-              PostTemplateMapper(template, ip.provider?.profile, ip)
+              postTemplateMapper(template, ip.provider?.profile, ip)
             )
           )
         )
@@ -67,9 +69,11 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
     [platformData]
   );
 
+  // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like with Whiteboards
   const postTemplateValue = (template: PostTemplate): Promise<PostTemplateWithValue> => {
     return Promise.resolve(template);
   };
+
   return (
     <CollaborationTemplatesLibrary
       dialogTitle={t('aspect-templates.template-library')}
