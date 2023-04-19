@@ -15,34 +15,34 @@ import { TemplateBase, TemplateBaseWithValue, TemplateCardBaseProps, TemplatePre
 
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
-  TemplateValue extends TemplateBaseWithValue
+  TemplateWithValue extends TemplateBaseWithValue
 > {
   dialogTitle: string;
-  onSelectTemplate: (template: TemplateValue) => void;
+  onSelectTemplate: (template: TemplateWithValue) => void;
   // Components:
   templateCardComponent: ComponentType<TemplateCardBaseProps<Template>>;
-  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateValue>>;
+  templatePreviewComponent: ComponentType<TemplatePreviewBaseProps<TemplateWithValue>>;
 
   // Filtering
   filter?: string[];
   onFilterChange: (terms: string[]) => void;
 
   // Data
-  fetchHubTemplatesOnLoad: boolean;
+  fetchHubTemplatesOnLoad?: boolean;
   fetchTemplatesFromHub?: () => void;
   templatesFromHub?: Template[];
   loadingTemplatesFromHub?: boolean;
   loadingTemplateValueFromHub?: boolean;
-  fetchTemplateFromHubValue?: (template: Template) => Promise<TemplateValue | undefined>;
+  fetchTemplateFromHubValue?: (template: Template) => Promise<TemplateWithValue | undefined>;
 
   fetchTemplatesFromPlatform?: () => void;
   templatesFromPlatform?: Template[];
   loadingTemplatesFromPlatform?: boolean;
   loadingTemplateValueFromPlatform?: boolean;
-  fetchTemplateFromPlatformValue?: (template: Template) => Promise<TemplateValue | undefined>;
+  fetchTemplateFromPlatformValue?: (template: Template) => Promise<TemplateWithValue | undefined>;
 }
 
-const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateValue extends TemplateBaseWithValue>({
+const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWithValue extends TemplateBaseWithValue>({
   dialogTitle,
   onSelectTemplate,
   templateCardComponent,
@@ -60,7 +60,7 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateVa
   loadingTemplatesFromPlatform,
   loadingTemplateValueFromPlatform,
   fetchTemplateFromPlatformValue,
-}: CollaborationTemplatesLibraryProps<Template, TemplateValue>) => {
+}: CollaborationTemplatesLibraryProps<Template, TemplateWithValue>) => {
   const { t } = useTranslation();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -70,7 +70,7 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateVa
   };
 
   // Show gallery or show preview of this template:
-  const [previewTemplate, setPreviewTemplate] = useState<TemplateValue>();
+  const [previewTemplate, setPreviewTemplate] = useState<TemplateWithValue>();
 
   // Load Hub Templates by default:
   useEffect(() => {

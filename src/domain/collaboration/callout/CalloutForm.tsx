@@ -103,7 +103,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: {
           displayName: '',
         },
-        defaultDescription: 'default descccc',
+        defaultDescription: '',
         type: '',
       },
       whiteboardTemplateData: callout?.whiteboardTemplateData ?? {

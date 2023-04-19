@@ -16,10 +16,10 @@ export interface PostTemplatesLibraryProps {
 }
 
 const applyFilter = (filter: string[], templates: PostTemplate[] | undefined) => {
+  if (filter.length === 0) {
+    return templates;
+  }
   return templates?.filter(post => {
-    if (filter.length === 0) {
-      return true;
-    }
     const postString =
       `${post.displayName} ${post.provider.displayName} ${post.innovationPack.displayName}`.toLowerCase();
     return filter.some(term => postString.includes(term.toLowerCase()));
@@ -70,7 +70,7 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
   );
 
   // Post templates include the value (defaultDescription and type), so no need to go to the server and fetch like with Whiteboards
-  const postTemplateValue = (template: PostTemplate): Promise<PostTemplateWithValue> => {
+  const getPostTemplateValue = (template: PostTemplate): Promise<PostTemplateWithValue> => {
     return Promise.resolve(template);
   };
 
@@ -87,12 +87,12 @@ const PostTemplatesLibrary: FC<PostTemplatesLibraryProps> = ({ onSelectTemplate 
       templatesFromHub={templatesFromHub}
       loadingTemplatesFromHub={loadingTemplatesFromHub}
       loadingTemplateValueFromHub={false}
-      fetchTemplateFromHubValue={template => postTemplateValue(template)}
+      fetchTemplateFromHubValue={template => getPostTemplateValue(template)}
       fetchTemplatesFromPlatform={fetchPlatformTemplates}
       templatesFromPlatform={templatesFromPlatform}
       loadingTemplatesFromPlatform={loadingTemplatesFromPlatform}
       loadingTemplateValueFromPlatform={false}
-      fetchTemplateFromPlatformValue={template => postTemplateValue(template)}
+      fetchTemplateFromPlatformValue={template => getPostTemplateValue(template)}
     />
   );
 };

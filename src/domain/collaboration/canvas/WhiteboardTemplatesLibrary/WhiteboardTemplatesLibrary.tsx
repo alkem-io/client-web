@@ -18,10 +18,10 @@ export interface WhiteboardTemplatesLibraryProps {
 }
 
 const applyFilter = (filter: string[], templates: WhiteboardTemplate[] | undefined) => {
+  if (filter.length === 0) {
+    return templates;
+  }
   return templates?.filter(whiteboard => {
-    if (filter.length === 0) {
-      return true;
-    }
     const whiteboardString =
       `${whiteboard.displayName} ${whiteboard.provider.displayName} ${whiteboard.innovationPack.displayName}`.toLowerCase();
     return filter.some(term => whiteboardString.includes(term.toLowerCase()));
