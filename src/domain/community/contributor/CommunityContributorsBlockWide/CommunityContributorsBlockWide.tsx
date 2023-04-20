@@ -3,7 +3,7 @@ import { ContributorCardSquareProps } from '../ContributorCardSquare/Contributor
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { ButtonBase } from '@mui/material';
+import { ButtonBase, useMediaQuery } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '../../../../core/ui/actions/Actions';
@@ -11,6 +11,8 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWideContent, { ContributorType } from './CommunityContributorsBlockWideContent';
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '../../../platform/search/MultipleSelect';
+import { times } from 'lodash';
+import { Theme } from '@mui/material/styles';
 
 interface CommunityContributorsBlockWideProps {
   users: ContributorCardSquareProps[] | undefined;
@@ -28,6 +30,8 @@ const config = [
   },
 ] as const;
 
+const COMPACT_VIEW_ITEMS_LIMIT = 3 * 8; // 3 rows on Desktop
+
 const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContributorsBlockWideProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -40,6 +44,16 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
     label: t(configItem.label),
     value: configItem.value,
   }));
+
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+
+  // @ts-ignore
+  users =
+    users &&
+    times(100, id => ({
+      ...users?.[0],
+      id: `id_${id}`,
+    }));
 
   return (
     <>
@@ -63,8 +77,8 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           }
         />
         <CommunityContributorsBlockWideContent
-          users={users}
-          organizations={organizations}
+          users={users?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
+          organizations={organizations?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
           contributorType={contributorType}
           filter={filter}
           nested
@@ -75,7 +89,12 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           </ButtonBase>
         </Actions>
       </PageContentBlock>
-      <DialogWithGrid open={isDialogOpen} columns={12} onClose={() => setIsDialogOpen(false)}>
+      <DialogWithGrid
+        open={isDialogOpen}
+        columns={12}
+        onClose={() => setIsDialogOpen(false)}
+        fullScreen={isSmallScreen}
+      >
         <DialogHeader onClose={() => setIsDialogOpen(false)}>
           <BlockTitle>{t('pages.generic.sections.community.contributors')}</BlockTitle>
         </DialogHeader>
