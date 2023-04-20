@@ -7,6 +7,7 @@ import GridItem from '../../../../core/ui/grid/GridItem';
 import UserCard from '../../../../common/components/composite/common/cards/user-card/UserCard';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
+import { useTranslation } from 'react-i18next';
 
 interface HubWelcomeSectionContributorProps {
   profile: {
@@ -21,6 +22,8 @@ interface HubWelcomeSectionContributorProps {
 }
 
 const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContributorProps) => {
+  const { t } = useTranslation();
+
   return (
     <SwapColors>
       <GridItem columns={2}>
@@ -42,7 +45,7 @@ const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContrib
               <Avatar
                 src={profile.visual?.uri}
                 aria-label="User avatar"
-                alt={`${profile.displayName}\`s avatar`}
+                alt={t('common.avatar-of', { user: profile.displayName })}
                 variant="square"
               >
                 {profile.displayName[0]}
