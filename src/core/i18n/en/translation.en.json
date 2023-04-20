@@ -808,7 +808,7 @@
         "title": "Visuals",
         "headline": "Congratulations, you have now successfully created an Card!",
         "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
-        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding references and a Banner for the Dashboard card."
+        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding attachments and a Banner for the Dashboard card."
       }
     },
     "visual-upload": {
@@ -1400,8 +1400,8 @@
     },
     "contributors": {
       "search": {
-        "title": "See who's contributing",
-        "subtitle": "Explore the organizations and users that are contributing to Challenges.",
+        "title": "Search for talent and expertise that can help you with your Challenge!",
+        "subtitle": "Find other people and organizations, for example based on skills or interests.",
         "placeholder": "Search..."
       },
       "organizations": {
