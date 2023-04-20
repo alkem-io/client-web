@@ -115,6 +115,7 @@ const HubCommunityPage = () => {
             sortOrder={calloutsSortOrder}
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
+            group={CalloutsGroup.CommunityLeft}
           />
         </PageContentColumn>
         <PageContentColumn columns={8}>
@@ -132,6 +133,7 @@ const HubCommunityPage = () => {
             sortOrder={calloutsSortOrder}
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
+            group={CalloutsGroup.CommunityRight}
           />
         </PageContentColumn>
       </PageContent>

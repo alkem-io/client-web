@@ -92,6 +92,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  group={CalloutsGroup.HomeLeft}
                 />
               }
               childrenRight={
@@ -104,6 +105,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  group={CalloutsGroup.HomeRight}
                 />
               }
             />
