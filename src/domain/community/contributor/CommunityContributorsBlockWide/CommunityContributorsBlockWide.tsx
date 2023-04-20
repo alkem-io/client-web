@@ -11,7 +11,6 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWideContent, { ContributorType } from './CommunityContributorsBlockWideContent';
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '../../../platform/search/MultipleSelect';
-import { times } from 'lodash';
 import { Theme } from '@mui/material/styles';
 
 interface CommunityContributorsBlockWideProps {
@@ -46,14 +45,6 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
   }));
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-
-  // @ts-ignore
-  users =
-    users &&
-    times(100, id => ({
-      ...users?.[0],
-      id: `id_${id}`,
-    }));
 
   return (
     <>
