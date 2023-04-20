@@ -44,11 +44,9 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
           element={<HubDashboardPage dialog="calendar" />}
         />
-        <Route path={routes.Contribute} element={<ContributePage journeyTypeName="hub" />} />
-        <Route path={routes.KnowledgeBase} element={<ContributePage journeyTypeName="hub" />} />
         <Route path={routes.Community} element={<HubCommunityPage />} />
-        <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage />} />
+        <Route path={routes.KnowledgeBase} element={<ContributePage journeyTypeName="hub" />} />
         <Route path={routes.Search} element={<HubSearchPage />} />
         <Route
           path={`${routes.KnowledgeBase}/callouts/:${nameOfUrl.calloutNameId}`}
