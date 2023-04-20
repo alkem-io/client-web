@@ -5,12 +5,6 @@ import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
 import { OpportunityIcon } from '../../../challenge/opportunity/icon/OpportunityIcon';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
-export enum JourneyType {
-  Hub = 'hub',
-  Challenge = 'challenge',
-  Opportunity = 'opportunity',
-}
-
 const journeyIcon: Record<JourneyTypeName, ComponentType<SvgIconProps>> = {
   hub: HubIcon,
   challenge: ChallengeIcon,

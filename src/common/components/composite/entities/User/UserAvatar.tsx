@@ -10,6 +10,9 @@ export interface UserAvatarProps extends ButtonProps {
   buttonComponent?: ComponentType<ButtonProps>;
 }
 
+/**
+ * @deprecated - Use UserAvatar from /core
+ */
 const UserAvatar = forwardRef<HTMLButtonElement, UserAvatarProps>(
   ({ name, buttonComponent: Button = MUIButton, src, className, ...buttonProps }, ref) => {
     return (

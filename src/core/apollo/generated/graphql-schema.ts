@@ -7677,6 +7677,8 @@ export type HubPageQuery = {
             displayName: string;
             description?: string | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -7696,6 +7698,8 @@ export type HubPageQuery = {
           __typename?: 'Context';
           id: string;
           vision?: string | undefined;
+          who?: string | undefined;
+          impact?: string | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -7851,6 +7855,7 @@ export type HubPageQuery = {
                   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 };
               }>
             | undefined;
@@ -8004,6 +8009,8 @@ export type HubPageFragment = {
           displayName: string;
           description?: string | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -8023,6 +8030,8 @@ export type HubPageFragment = {
         __typename?: 'Context';
         id: string;
         vision?: string | undefined;
+        who?: string | undefined;
+        impact?: string | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -8178,6 +8187,7 @@ export type HubPageFragment = {
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
             }>
           | undefined;
@@ -8269,6 +8279,14 @@ export type HubPageFragment = {
           | undefined;
       }
     | undefined;
+};
+
+export type HubWelcomeBlockContributorProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
 };
 
 export type AdminHubFragment = {

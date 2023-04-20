@@ -57,7 +57,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
   const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
     useCallouts({
       hubNameId,
-      calloutGroups: [CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+      calloutGroups: [CalloutsGroup.ChallengesLeft, CalloutsGroup.ChallengesRight],
     });
 
   return (
@@ -109,6 +109,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                group={CalloutsGroup.ChallengesLeft}
               />
             }
           />

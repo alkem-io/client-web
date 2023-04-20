@@ -695,6 +695,21 @@ export const WhiteboardTemplateWithValueFragmentDoc = gql`
   }
   ${WhiteboardTemplateFragmentDoc}
 `;
+export const HubWelcomeBlockContributorProfileFragmentDoc = gql`
+  fragment HubWelcomeBlockContributorProfile on Profile {
+    id
+    displayName
+    location {
+      id
+      city
+      country
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+`;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -750,6 +765,9 @@ export const HubPageFragmentDoc = gql`
     }
     host {
       ...AssociatedOrganizationDetails
+      profile {
+        ...HubWelcomeBlockContributorProfile
+      }
     }
     profile {
       id
@@ -768,6 +786,8 @@ export const HubPageFragmentDoc = gql`
     context {
       id
       vision
+      who
+      impact
       authorization {
         id
         anonymousReadAccess
@@ -779,6 +799,11 @@ export const HubPageFragmentDoc = gql`
     }
     community {
       ...EntityDashboardCommunity
+      leadUsers {
+        profile {
+          ...HubWelcomeBlockContributorProfile
+        }
+      }
     }
     challenges(limit: 3, shuffle: true) {
       ...ChallengeCard
@@ -793,6 +818,7 @@ export const HubPageFragmentDoc = gql`
     }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
+  ${HubWelcomeBlockContributorProfileFragmentDoc}
   ${VisualUriFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
