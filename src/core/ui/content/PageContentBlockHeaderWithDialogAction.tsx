@@ -12,6 +12,7 @@ const iconSize = (theme: Theme) => theme.spacing(2);
 const PageContentBlockHeaderWithDialogAction = ({
   onDialogOpen,
   actions,
+  topActions,
   ...headerProps
 }: PageContentBlockHeaderWithDialogActionProps) => {
   const dialogAction = (
@@ -23,9 +24,10 @@ const PageContentBlockHeaderWithDialogAction = ({
   return (
     <PageContentBlockHeader
       {...headerProps}
-      actions={
+      actions={actions}
+      topActions={
         <>
-          {actions}
+          {topActions}
           {dialogAction}
         </>
       }

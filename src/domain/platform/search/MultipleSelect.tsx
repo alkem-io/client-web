@@ -145,7 +145,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 </IconButton>
               </>
             ),
-            sx: { backgroundColor: theme => theme.palette.common.white, '& input': { flex: 2 } },
+            sx: {
+              backgroundColor: theme => theme.palette.common.white,
+              '& input': { flex: 2, minWidth: theme => theme.spacing(10) },
+            },
           }}
           autoFocus={autoFocus}
           // Size xsmall is a special case, input will have `small` size and we set the height with CSS
