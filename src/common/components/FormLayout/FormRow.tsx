@@ -26,6 +26,9 @@ const useColumnMode = (props: PropsWithChildren<FormRowProps>) => {
   return !sizeProperties.some(prop => prop in props);
 };
 
+/**
+ * @deprecated
+ */
 const FormRow = (props: PropsWithChildren<FormRowProps>) => {
   if (useColumnMode(props)) {
     const columns: number = 'cols' in props && typeof props.cols === 'number' && props.cols >= 1 ? props!.cols : 1;

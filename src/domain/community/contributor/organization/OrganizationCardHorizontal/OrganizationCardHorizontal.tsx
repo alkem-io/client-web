@@ -2,10 +2,10 @@ import { Avatar, Box, CardHeader, Skeleton, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
-import OneLineMarkdown from '../../../../../../core/ui/markdown/OneLineMarkdown';
-import CircleTag from '../../../../core/CircleTag';
-import LinkCard from '../../../../core/LinkCard/LinkCard';
-import VerifiedStatus from '../../VerifiedStatus/VerifiedStatus';
+import OneLineMarkdown from '../../../../../core/ui/markdown/OneLineMarkdown';
+import CircleTag from '../../../../../common/components/core/CircleTag';
+import LinkCard from '../../../../../common/components/core/LinkCard/LinkCard';
+import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 
 export interface OrganizationCardProps {
   name?: string;
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const OrganizationCard: FC<OrganizationCardProps> = ({
+const OrganizationCardHorizontal: FC<OrganizationCardProps> = ({
   name,
   avatar,
   description = '',
@@ -112,4 +112,4 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   );
 };
 
-export default OrganizationCard;
+export default OrganizationCardHorizontal;

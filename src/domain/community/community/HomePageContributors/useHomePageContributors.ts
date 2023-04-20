@@ -8,7 +8,7 @@ import {
 import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualAvatar } from '../../../common/visual/utils/visuals.utils';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
 import { AuthorizationCredential } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -38,9 +38,9 @@ const useHomePageContributors = () => {
     skip: loadingUserContext,
   });
 
-  const contributors: WithId<ContributorCardProps>[] = useMemo(() => {
+  const contributors: WithId<ContributorCardSquareProps>[] = useMemo(() => {
     const users = usersData?.users ?? [];
-    const usersCards = users.map<ContributorCardProps>(user => ({
+    const usersCards = users.map<ContributorCardSquareProps>(user => ({
       id: user.id,
       avatar: user.profile.visual?.uri || '',
       displayName: user.profile.displayName,
@@ -54,7 +54,7 @@ const useHomePageContributors = () => {
     }));
 
     const organizations = organizationsData?.organizations ?? [];
-    const organizationsCards = organizations.map<ContributorCardProps>(org => ({
+    const organizationsCards = organizations.map<ContributorCardSquareProps>(org => ({
       id: org.id,
       avatar: getVisualAvatar(org?.profile.visual) || '',
       displayName: org.profile.displayName,

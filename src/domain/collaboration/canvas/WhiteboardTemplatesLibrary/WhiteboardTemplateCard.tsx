@@ -9,12 +9,9 @@ import { Caption } from '../../../../core/ui/typography/components';
 import { InnovationPackIcon } from '../../../platform/admin/templates/InnovationPacks/InnovationPackIcon';
 import { CanvasIcon } from '../icon/CanvasIcon';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
+import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
 
-interface WhiteboardTemplateCardProps {
-  template: WhiteboardTemplate | undefined;
-  loading?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-}
+interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<WhiteboardTemplate> {}
 
 const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, loading, onClick }) => {
   return (

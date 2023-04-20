@@ -1,11 +1,11 @@
 import React, { FC, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
-import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
-import { EntityPageSection } from './EntityPageSection';
+import HeaderNavigationTabs from '../../shared/components/PageHeader/HeaderNavigationTabs';
+import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
-import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
-import { ShareDialog } from '../components/ShareDialog/ShareDialog';
+import HeaderNavigationButton from '../../shared/components/PageHeader/HeaderNavigationButton';
+import { ShareDialog } from '../../shared/components/ShareDialog/ShareDialog';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -29,7 +29,7 @@ import {
 } from '@mui/icons-material';
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
 import { useNavigate } from 'react-router-dom';
-import getEntityColor from '../utils/getEntityColor';
+import getEntityColor from '../../shared/utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
 import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
 
@@ -71,7 +71,7 @@ interface ShareCapableNavigator extends Navigator {
   canShare(data?: ShareData | undefined): boolean;
 }
 
-const EntityPageTabs: FC<EntityPageTabsProps> = ({
+const HubPageTabs: FC<EntityPageTabsProps> = ({
   currentTab,
   showSettings,
   settingsUrl,
@@ -152,8 +152,8 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
               icon={<DashboardOutlined />}
             />
             <BottomNavigationAction
-              value={EntityPageSection.Contribute}
-              label={t('common.contribute')}
+              value={EntityPageSection.Community}
+              label={t('common.community')}
               icon={<CalloutIcon />}
             />
             {subEntityTab && (
@@ -254,9 +254,9 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
           to={`${rootUrl}/${EntityPageSection.Dashboard}`}
         />
         <HeaderNavigationTab
-          label={t('common.explore')}
-          value={EntityPageSection.Contribute}
-          to={`${rootUrl}/${EntityPageSection.Contribute}`}
+          label={t('common.community')}
+          value={EntityPageSection.Community}
+          to={`${rootUrl}/${EntityPageSection.Community}`}
         />
         {subEntityTab && (
           <HeaderNavigationTab
@@ -283,4 +283,4 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   );
 };
 
-export default EntityPageTabs;
+export default HubPageTabs;
