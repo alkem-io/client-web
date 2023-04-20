@@ -122,6 +122,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                group={CalloutsGroup.ChallengesRight}
               />
             }
           />
