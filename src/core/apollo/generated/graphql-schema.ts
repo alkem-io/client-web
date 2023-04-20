@@ -336,14 +336,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1805,16 +1797,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -7678,7 +7660,7 @@ export type HubPageQuery = {
             description?: string | undefined;
             visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -7855,7 +7837,6 @@ export type HubPageQuery = {
                   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 };
               }>
             | undefined;
@@ -8010,7 +7991,7 @@ export type HubPageFragment = {
           description?: string | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -8187,7 +8168,6 @@ export type HubPageFragment = {
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
             }>
           | undefined;
@@ -8286,7 +8266,7 @@ export type HubWelcomeBlockContributorProfileFragment = {
   id: string;
   displayName: string;
   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
 };
 
 export type AdminHubFragment = {
