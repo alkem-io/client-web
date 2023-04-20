@@ -8,6 +8,8 @@ import { Author } from '../../AuthorAvatar/models/author';
 import { Caption } from '../../../../../core/ui/typography';
 import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
 
+const PARENT_NAME_MAX_LENGTH = 20;
+
 export interface ActivityBaseViewProps {
   author: Author | undefined;
   createdDate: Date | string;
@@ -31,8 +33,13 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   const { t } = useTranslation();
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
 
+  const truncatedParentName =
+    parentDisplayName.length > PARENT_NAME_MAX_LENGTH
+      ? parentDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('...')
+      : parentDisplayName;
+
   const parentDetails = childActivityIcon
-    ? t('components.activity-log-view.parent-details', { displayName: parentDisplayName })
+    ? t('components.activity-log-view.parent-details', { displayName: truncatedParentName })
     : undefined;
 
   const title = useMemo(
