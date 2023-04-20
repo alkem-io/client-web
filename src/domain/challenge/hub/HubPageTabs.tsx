@@ -165,8 +165,8 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
               />
             )}
             <BottomNavigationAction
-              value={EntityPageSection.Contribute}
-              label={t('pages.hub.sections.contribute.header')}
+              value={EntityPageSection.KnowledgeBase}
+              label={t('pages.hub.sections.knowledge-base.header')}
               icon={<SchoolOutlined />}
             />
             {!showSettings && shareUrl && (

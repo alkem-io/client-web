@@ -1572,7 +1572,10 @@
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
         },
         "contribute": {
-          "header": "Knowledge Base"
+          "header": "Contribute"
+        },
+        "knowledge-base": {
+          "header": "Knowledge base"
         }
       }
     },

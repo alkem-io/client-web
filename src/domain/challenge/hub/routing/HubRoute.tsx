@@ -20,6 +20,7 @@ import Redirect from '../../../../core/routing/Redirect';
 import HubSearchPage from '../pages/HubSearchPage';
 import HubCollaborationPage from '../HubCollaborationPage/HubCollaborationPage';
 import HubCommunityPage from '../HubCommunityPage/HubCommunityPage';
+import KnowledgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
@@ -46,7 +47,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         />
         <Route path={routes.Community} element={<HubCommunityPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage />} />
-        <Route path={routes.KnowledgeBase} element={<ContributePage journeyTypeName="hub" />} />
+        <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="hub" />} />
         <Route path={routes.Search} element={<HubSearchPage />} />
         <Route
           path={`${routes.KnowledgeBase}/callouts/:${nameOfUrl.calloutNameId}`}
