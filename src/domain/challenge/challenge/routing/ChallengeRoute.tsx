@@ -21,6 +21,7 @@ import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
+import ChallengeCollaborationPage from '../ChallengeCollaborationPage/ChallengeCollaborationPage';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -54,6 +55,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
+        <Route path={`${routes.Collaboration}/:calloutNameId`} element={<ChallengeCollaborationPage />} />
 
         <Route
           path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
