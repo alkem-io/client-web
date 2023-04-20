@@ -5,8 +5,10 @@ import HubDashboardPage from '../pages/HubDashboardPage';
 import HubChallengesPage from '../pages/HubChallengesPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 
-const getPageRoute = (calloutGroup: string | undefined): EntityPageSection => {
+const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
     case CalloutsGroup.HomeLeft:
     case CalloutsGroup.HomeRight:
@@ -19,6 +21,16 @@ const getPageRoute = (calloutGroup: string | undefined): EntityPageSection => {
 };
 
 const HubCollaborationPage = () => {
+  const { hubNameId } = useUrlParams();
+
+  if (!hubNameId) {
+    throw new Error('Must be within a Hub');
+  }
+
+  const getPageRoute = (calloutGroup: string | undefined) => {
+    return `${buildHubUrl(hubNameId)}/${getPageSection(calloutGroup)}`;
+  };
+
   return (
     <CalloutPage journeyTypeName="hub" parentRoute={getPageRoute}>
       {calloutGroup => {
