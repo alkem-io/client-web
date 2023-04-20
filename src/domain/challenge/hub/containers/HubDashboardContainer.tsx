@@ -69,7 +69,7 @@ export interface HubPageContainerProps
 const EMPTY = [];
 const NO_PRIVILEGES = [];
 
-export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
+export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { hubId, hubNameId, loading: loadingHub, isPrivate } = useHub();
   const { user, isAuthenticated } = useUserContext();
 
@@ -184,4 +184,4 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   );
 };
 
-export default HubPageContainer;
+export default HubDashboardContainer;

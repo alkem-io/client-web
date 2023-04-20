@@ -1,18 +1,21 @@
-import React, { ReactElement, ReactNode, useMemo, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import References from '../../../shared/components/References/References';
 import {
   AssociatedOrganizationDetailsFragment,
+  DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
-  HubWelcomeBlockOrganizationFragment,
+  HubWelcomeBlockContributorProfileFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { buildCalloutUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
-import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
-  EntityDashboardContributors,
-  EntityDashboardLeads,
-} from '../../../community/community/EntityDashboardContributorsSection/Types';
+  buildCalloutUrl,
+  buildOrganizationUrl,
+  buildUserProfileUrl,
+  JourneyLocation,
+} from '../../../../common/utils/urlBuilders';
+import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
@@ -31,11 +34,6 @@ import getChildJourneyRoute from '../../common/utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
 import { Caption } from '../../../../core/ui/typography/components';
-import ContactLeadsButton from '../../../community/community/ContactLeadsButton/ContactLeadsButton';
-import {
-  DirectMessageDialog,
-  MessageReceiverChipData,
-} from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { Button, ButtonProps, IconButton, Theme, Tooltip } from '@mui/material';
@@ -50,9 +48,12 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
 
+interface HubWelcomeBlockContributor {
+  profile: HubWelcomeBlockContributorProfileFragment;
+}
+
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
-    Omit<EntityDashboardLeads, 'leadOrganizations'>,
     Partial<CoreEntityIdTypes> {
   displayName: ReactNode;
   tagline: ReactNode;
@@ -65,7 +66,8 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   organization?: unknown;
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;
-  leadOrganizations: (HubWelcomeBlockOrganizationFragment & AssociatedOrganizationDetailsFragment)[] | undefined;
+  leadOrganizations: (HubWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
+  leadUsers: (HubWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
   activities: ActivityLogResultType[] | undefined;
@@ -129,13 +131,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   childrenRight,
 }: JourneyDashboardViewProps<ChildEntity>) => {
   const { t } = useTranslation();
-  const [isOpenContactLeadUsersDialog, setIsOpenContactLeadUsersDialog] = useState(false);
-  const openContactLeadsDialog = () => {
-    setIsOpenContactLeadUsersDialog(true);
-  };
-  const closeContactLeadsDialog = () => {
-    setIsOpenContactLeadUsersDialog(false);
-  };
 
   const journeyLocation: JourneyLocation | undefined =
     typeof hubNameId === 'undefined'
@@ -148,23 +143,9 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
 
   const showActivities = activities || activityLoading;
 
-  const isHub = journeyTypeName === 'hub';
-  const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
-
   const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
   const hasRecommendations = validRecommendations.length > 0;
   const hasTopCallouts = (topCallouts ?? []).length > 0;
-  const messageReceivers = useMemo(
-    () =>
-      (leadUsers ?? []).map<MessageReceiverChipData>(user => ({
-        id: user.id,
-        title: user.profile.displayName,
-        country: user.profile.location?.country,
-        city: user.profile.location?.city,
-        avatarUri: user.profile.visual?.uri,
-      })),
-    [leadUsers]
-  );
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -202,6 +183,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
                   actions={
                     applicationButtonProps.isMember && (
                       <Tooltip
+                        arrow
                         title={
                           <Caption>
                             {t('pages.generic.sections.dashboard.memberOf', { entity: translatedJourneyTypeName })}
@@ -221,30 +203,26 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             </OverflowGradient>
             <Gutters row disablePadding>
               {leadUsers?.slice(0, 2).map(user => (
-                <HubWelcomeSectionContributor key={user.id} profile={user.profile} />
+                <HubWelcomeSectionContributor
+                  key={user.id}
+                  profile={user.profile}
+                  url={buildUserProfileUrl(user.nameID)}
+                />
               ))}
             </Gutters>
             <Gutters row disablePadding>
               {leadOrganizations?.slice(0, 2).map(org => (
-                <HubWelcomeSectionContributor key={org.id} profile={org.profile} />
+                <HubWelcomeSectionContributor
+                  key={org.id}
+                  profile={org.profile}
+                  url={buildOrganizationUrl(org.nameID)}
+                />
               ))}
             </Gutters>
           </PageContentBlock>
           <FullWidthButton startIcon={<InfoOutlined />} onClick={() => setIsAboutDialogOpen(true)} variant="contained">
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
-          {communityReadAccess && (
-            <ContactLeadsButton onClick={openContactLeadsDialog}>
-              {t('buttons.contact-leads', { contact: t(leadUsersHeader) })}
-            </ContactLeadsButton>
-          )}
-          <DirectMessageDialog
-            title={t('send-message-dialog.community-message-title', { contact: t(leadUsersHeader) })}
-            open={isOpenContactLeadUsersDialog}
-            onClose={closeContactLeadsDialog}
-            onSendMessage={sendMessageToCommunityLeads}
-            messageReceivers={messageReceivers}
-          />
           {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.referenceSegment.title')} />

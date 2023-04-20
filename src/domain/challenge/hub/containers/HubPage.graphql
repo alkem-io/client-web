@@ -43,8 +43,10 @@ fragment HubPage on Hub {
     myPrivileges
   }
   host {
-    ...HubWelcomeBlockOrganization
     ...AssociatedOrganizationDetails
+    profile {
+      ...HubWelcomeBlockContributorProfile
+    }
   }
   profile {
     id
@@ -76,6 +78,11 @@ fragment HubPage on Hub {
   }
   community {
     ...EntityDashboardCommunity
+    leadUsers {
+       profile {
+         ...HubWelcomeBlockContributorProfile
+       }
+    }
   }
   challenges(limit: 3, shuffle: true) {
     ...ChallengeCard
@@ -90,14 +97,16 @@ fragment HubPage on Hub {
   }
 }
 
-fragment HubWelcomeBlockOrganization on Organization {
+fragment HubWelcomeBlockContributorProfile on Profile {
   id
-  profile {
-    displayName
-    location {
-      id
-      city
-      country
-    }
+  displayName
+  location {
+    id
+    city
+    country
+  }
+  tagset {
+    id
+    tags
   }
 }

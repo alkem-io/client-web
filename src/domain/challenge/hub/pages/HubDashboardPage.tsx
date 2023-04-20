@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import HubPageContainer from '../containers/HubPageContainer';
+import HubDashboardContainer from '../containers/HubDashboardContainer';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import HubContributorsDialogContent from '../../../community/community/entities/HubContributorsDialogContent';
@@ -39,7 +39,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
-      <HubPageContainer>
+      <HubDashboardContainer>
         {(entities, state) => (
           <>
             <HubDashboardView
@@ -130,7 +130,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
             )}
           </>
         )}
-      </HubPageContainer>
+      </HubDashboardContainer>
     </HubPageLayout>
   );
 };
