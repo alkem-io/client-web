@@ -112,6 +112,19 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 group={CalloutsGroup.ChallengesLeft}
               />
             }
+            childrenRight={
+              <CalloutsGroupView
+                callouts={groupedCallouts[CalloutsGroup.ChallengesRight]}
+                hubId={hubNameId}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                entityTypeName="hub"
+                sortOrder={calloutsSortOrder}
+                calloutNames={calloutNames}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                group={CalloutsGroup.ChallengesRight}
+              />
+            }
           />
         )}
       </ChallengesCardContainer>

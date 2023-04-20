@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import CardFilter from '../../../../../common/components/core/card-filter/CardFilter';
 import { ValueType } from '../../../../../common/components/core/card-filter/filterFn';
 import ErrorBlock from '../../../../../common/components/core/ErrorBlock';
 import getJourneyChildrenTranslationKey from '../../../../../common/utils/translation/getJourneyChildrenTranslationKey';
@@ -19,6 +18,7 @@ import { JourneyTypeName } from '../../../JourneyTypeName';
 import ChildJourneyCreate from './ChildJourneyCreate';
 import { Loading } from '../../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
+import JourneyFilter from '../../JourneyFilter/JourneyFilter';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -39,6 +39,7 @@ export interface ChildJourneyViewProps<ChildEntity extends NameableEntity> exten
   createSubentityDialog?: ReactElement;
   state: JourneySubentitiesState;
   childrenLeft?: ReactNode;
+  childrenRight?: ReactNode;
 }
 
 const ChildJourneyView = <ChildEntity extends NameableEntity>({
@@ -49,13 +50,13 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
   childEntityReadAccess,
   renderChildEntityCard,
   childEntityValueGetter,
-  childEntityTagsGetter,
   getChildEntityUrl,
   childEntityCreateAccess = false,
   childEntityOnCreate,
   createSubentityDialog,
   state,
   childrenLeft,
+  childrenRight,
 }: ChildJourneyViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
@@ -105,21 +106,21 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
           {!state.loading && childEntities.length > 0 && (
             <PageContentBlock>
               {childEntityReadAccess && renderChildEntityCard && (
-                <CardFilter
+                <JourneyFilter
                   data={childEntities}
                   valueGetter={childEntityValueGetter}
-                  tagsValueGetter={childEntityTagsGetter}
-                  keepOpen={false}
+                  title={t('common.all-entities', { entityType: t('common.challenges'), count: childEntities.length })}
                 >
                   {filteredEntities => (
                     <CardsLayout items={filteredEntities} deps={[hubNameId]} disablePadding>
                       {renderChildEntityCard}
                     </CardsLayout>
                   )}
-                </CardFilter>
+                </JourneyFilter>
               )}
             </PageContentBlock>
           )}
+          {childrenRight}
           {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
         </PageContentColumn>
       </PageContent>
