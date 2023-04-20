@@ -1,8 +1,8 @@
 import { Box, BoxProps } from '@mui/material';
 import { PlaceOutlined } from '@mui/icons-material';
-import { compact } from 'lodash';
 import { Caption } from '../typography';
 import { COUNTRIES } from '../../../domain/common/location/countries.constants';
+import getLocationString from './getLocationString';
 
 interface LocationCardSegmentProps {
   city?: string;
@@ -12,7 +12,7 @@ interface LocationCardSegmentProps {
 const LocationCardSegment = ({ city, countryCode, ...containerProps }: LocationCardSegmentProps & BoxProps) => {
   const countryName = COUNTRIES.find(({ code }) => code === countryCode)?.name;
 
-  const locationString = compact([city, countryName]).join(', ');
+  const locationString = getLocationString({ city, country: countryName });
 
   return (
     <Box display="flex" alignItems="center" {...containerProps}>

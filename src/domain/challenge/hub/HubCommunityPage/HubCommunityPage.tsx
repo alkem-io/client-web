@@ -25,6 +25,7 @@ import { useHubCommunityPageQuery } from '../../../../core/apollo/generated/apol
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
+import { ActivityEventType } from '../../../../core/apollo/generated/graphql-schema';
 
 const HubCommunityPage = () => {
   const { hubNameId } = useUrlParams();
@@ -74,7 +75,7 @@ const HubCommunityPage = () => {
   const { activities } = useActivityOnCollaboration(data?.hub.collaboration?.id);
 
   const relevantActivities = activities?.filter(activityItem => {
-    return activityItem.__typename === 'ActivityLogEntryMemberJoined';
+    return activityItem.type === ActivityEventType.MemberJoined;
   });
 
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.hub.community);

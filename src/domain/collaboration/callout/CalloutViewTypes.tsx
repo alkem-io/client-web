@@ -1,6 +1,7 @@
 import { Callout, CalloutVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
 import { CoreEntityIdTypes } from '../../shared/types/CoreEntityIds';
+import { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
 
 export interface CalloutSortEvents {
   onMoveUp: (calloutId: string) => void;
@@ -33,4 +34,5 @@ export interface BaseCalloutViewProps extends CoreEntityIdTypes, CalloutLayoutEv
   calloutUri: string;
   onExpand?: () => void;
   onClose?: () => void;
+  blockProps?: Partial<PageContentBlockProps>;
 }
