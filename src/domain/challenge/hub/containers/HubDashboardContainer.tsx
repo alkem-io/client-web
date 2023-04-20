@@ -10,6 +10,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  ActivityEventType,
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ChallengeCardFragment,
@@ -117,7 +118,7 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
   );
 
   const relevantActivities = useMemo(
-    () => activities?.filter(activity => activity.__typename !== 'ActivityLogEntryMemberJoined'),
+    () => activities?.filter(activity => activity.type !== ActivityEventType.MemberJoined),
     [activities]
   );
 
