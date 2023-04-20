@@ -1,14 +1,14 @@
 import { WithId } from '../../../../types/WithId';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface EntityDashboardContributors {
-  memberUsers: WithId<ContributorCardProps>[] | undefined;
+  memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
   memberUsersCount: number | undefined;
-  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
+  memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
 }
 

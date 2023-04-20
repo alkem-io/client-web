@@ -12,7 +12,7 @@ import {
   ReferenceDetailsFragment,
   Tagset,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -33,9 +33,9 @@ export interface AboutPageContainerEntities {
   lifecycle?: LifecycleContextTabFragment;
   permissions: AboutPagePermissions;
   metrics: MetricsItemFragment[] | undefined;
-  memberUsers: WithId<ContributorCardProps>[] | undefined;
+  memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
   memberUsersCount: number | undefined;
-  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
+  memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
   leadUsers: DashboardLeadUserFragment[] | undefined;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
-import EntityPageTabs, { ActionDefinition } from '../../../shared/layout/EntityPageTabs';
+import HubPageTabs, { ActionDefinition } from '../HubPageTabs';
 import { useHub } from '../HubContext/useHub';
 import { buildAdminHubUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -35,7 +35,7 @@ const HubTabs = (props: EntityTabsProps) => {
   }, [props.currentTab]);
 
   return (
-    <EntityPageTabs
+    <HubPageTabs
       {...props}
       entityTypeName="hub"
       showSettings={permissions.viewerCanUpdate}

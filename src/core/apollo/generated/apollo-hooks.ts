@@ -529,6 +529,27 @@ export const JourneyCommunityFragmentDoc = gql`
   ${DashboardLeadUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
 `;
+export const CommunityPageCommunityFragmentDoc = gql`
+  fragment CommunityPageCommunity on Community {
+    id
+    leadUsers {
+      ...DashboardLeadUser
+    }
+    memberUsers {
+      ...DashboardContributingUser
+    }
+    leadOrganizations {
+      ...AssociatedOrganizationDetails
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
+    }
+  }
+  ${DashboardLeadUserFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
+`;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -991,6 +1012,224 @@ export const NewOpportunityFragmentDoc = gql`
       id
       displayName
     }
+  }
+`;
+export const ActivityLogMemberJoinedFragmentDoc = gql`
+  fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
+    communityType
+    community {
+      id
+      displayName
+    }
+    user {
+      id
+      nameID
+      firstName
+      lastName
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutPublishedFragmentDoc = gql`
+  fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
+    callout {
+      id
+      nameID
+      type
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    card {
+      id
+      nameID
+      type
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutCardCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    card {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    canvas {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogChallengeCreatedFragmentDoc = gql`
+  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+    challenge {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+      }
+    }
+  }
+`;
+export const ActivityLogOpportunityCreatedFragmentDoc = gql`
+  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+    opportunity {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+      }
+    }
+  }
+`;
+export const ActivityLogOnCollaborationFragmentDoc = gql`
+  fragment ActivityLogOnCollaboration on ActivityLogEntry {
+    id
+    collaborationID
+    createdDate
+    description
+    type
+    __typename
+    triggeredBy {
+      id
+      nameID
+      firstName
+      lastName
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutCardCreated {
+      ...ActivityLogCalloutCardCreated
+    }
+    ... on ActivityLogEntryCalloutCardComment {
+      ...ActivityLogCalloutCardComment
+    }
+    ... on ActivityLogEntryCalloutCanvasCreated {
+      ...ActivityLogCalloutCanvasCreated
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
+    }
+  }
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutCardCreatedFragmentDoc}
+  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+`;
+export const ActivityLogUpdateSentFragmentDoc = gql`
+  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+    updates {
+      id
+    }
+    message
   }
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -2538,224 +2777,6 @@ export const ReferenceDetailsFragmentDoc = gql`
     name
     uri
     description
-  }
-`;
-export const ActivityLogMemberJoinedFragmentDoc = gql`
-  fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-    communityType
-    community {
-      id
-      displayName
-    }
-    user {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-        location {
-          id
-          city
-          country
-        }
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutPublishedFragmentDoc = gql`
-  fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
-    callout {
-      id
-      nameID
-      type
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
-  fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-    card {
-      id
-      nameID
-      type
-      profile {
-        id
-        displayName
-        description
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutCardCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-    card {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
-  fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-    canvas {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogChallengeCreatedFragmentDoc = gql`
-  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
-    challenge {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-      }
-    }
-  }
-`;
-export const ActivityLogOpportunityCreatedFragmentDoc = gql`
-  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
-    opportunity {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-      }
-    }
-  }
-`;
-export const ActivityLogOnCollaborationFragmentDoc = gql`
-  fragment ActivityLogOnCollaboration on ActivityLogEntry {
-    id
-    collaborationID
-    createdDate
-    description
-    type
-    __typename
-    triggeredBy {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-        location {
-          id
-          city
-          country
-        }
-      }
-    }
-    ... on ActivityLogEntryMemberJoined {
-      ...ActivityLogMemberJoined
-    }
-    ... on ActivityLogEntryCalloutPublished {
-      ...ActivityLogCalloutPublished
-    }
-    ... on ActivityLogEntryCalloutCardCreated {
-      ...ActivityLogCalloutCardCreated
-    }
-    ... on ActivityLogEntryCalloutCardComment {
-      ...ActivityLogCalloutCardComment
-    }
-    ... on ActivityLogEntryCalloutCanvasCreated {
-      ...ActivityLogCalloutCanvasCreated
-    }
-    ... on ActivityLogEntryCalloutDiscussionComment {
-      ...ActivityLogCalloutDiscussionComment
-    }
-    ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogChallengeCreated
-    }
-    ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogOpportunityCreated
-    }
-  }
-  ${ActivityLogMemberJoinedFragmentDoc}
-  ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
-  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
-  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
-`;
-export const ActivityLogUpdateSentFragmentDoc = gql`
-  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
-    updates {
-      id
-    }
-    message
   }
 `;
 export const EventProfileFragmentDoc = gql`
@@ -5398,6 +5419,74 @@ export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
 >;
 export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPrivilegesQueryVariables) {
   return { query: JourneyPrivilegesDocument, variables: variables };
+}
+
+export const HubCommunityPageDocument = gql`
+  query HubCommunityPage($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      community {
+        ...CommunityPageCommunity
+      }
+      collaboration {
+        id
+      }
+    }
+  }
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${CommunityPageCommunityFragmentDoc}
+`;
+
+/**
+ * __useHubCommunityPageQuery__
+ *
+ * To run a query within a React component, call `useHubCommunityPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCommunityPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubCommunityPageQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useHubCommunityPageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCommunityPageQuery, SchemaTypes.HubCommunityPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubCommunityPageQuery, SchemaTypes.HubCommunityPageQueryVariables>(
+    HubCommunityPageDocument,
+    options
+  );
+}
+
+export function useHubCommunityPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubCommunityPageQuery,
+    SchemaTypes.HubCommunityPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubCommunityPageQuery, SchemaTypes.HubCommunityPageQueryVariables>(
+    HubCommunityPageDocument,
+    options
+  );
+}
+
+export type HubCommunityPageQueryHookResult = ReturnType<typeof useHubCommunityPageQuery>;
+export type HubCommunityPageLazyQueryHookResult = ReturnType<typeof useHubCommunityPageLazyQuery>;
+export type HubCommunityPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCommunityPageQuery,
+  SchemaTypes.HubCommunityPageQueryVariables
+>;
+export function refetchHubCommunityPageQuery(variables: SchemaTypes.HubCommunityPageQueryVariables) {
+  return { query: HubCommunityPageDocument, variables: variables };
 }
 
 export const HubProviderDocument = gql`
@@ -8456,6 +8545,174 @@ export type CalloutPageCalloutQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPageCalloutQueryVariables) {
   return { query: CalloutPageCalloutDocument, variables: variables };
+}
+
+export const ActivityCreatedDocument = gql`
+  subscription activityCreated($collaborationID: UUID!) {
+    activityCreated(collaborationID: $collaborationID) {
+      activity {
+        ...ActivityLogOnCollaboration
+      }
+    }
+  }
+  ${ActivityLogOnCollaborationFragmentDoc}
+`;
+
+/**
+ * __useActivityCreatedSubscription__
+ *
+ * To run a query within a React component, call `useActivityCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityCreatedSubscription({
+ *   variables: {
+ *      collaborationID: // value for 'collaborationID'
+ *   },
+ * });
+ */
+export function useActivityCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ActivityCreatedSubscription,
+    SchemaTypes.ActivityCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ActivityCreatedSubscription,
+    SchemaTypes.ActivityCreatedSubscriptionVariables
+  >(ActivityCreatedDocument, options);
+}
+
+export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
+export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
+export const ActivityLogOnCollaborationDocument = gql`
+  query activityLogOnCollaboration($queryData: ActivityLogInput!) {
+    activityLogOnCollaboration(queryData: $queryData) {
+      id
+      collaborationID
+      createdDate
+      description
+      type
+      __typename
+      triggeredBy {
+        id
+        nameID
+        firstName
+        lastName
+        profile {
+          id
+          displayName
+          visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+      ... on ActivityLogEntryMemberJoined {
+        ...ActivityLogMemberJoined
+      }
+      ... on ActivityLogEntryCalloutPublished {
+        ...ActivityLogCalloutPublished
+      }
+      ... on ActivityLogEntryCalloutCardCreated {
+        ...ActivityLogCalloutCardCreated
+      }
+      ... on ActivityLogEntryCalloutCardComment {
+        ...ActivityLogCalloutCardComment
+      }
+      ... on ActivityLogEntryCalloutCanvasCreated {
+        ...ActivityLogCalloutCanvasCreated
+      }
+      ... on ActivityLogEntryCalloutDiscussionComment {
+        ...ActivityLogCalloutDiscussionComment
+      }
+      ... on ActivityLogEntryChallengeCreated {
+        ...ActivityLogChallengeCreated
+      }
+      ... on ActivityLogEntryOpportunityCreated {
+        ...ActivityLogOpportunityCreated
+      }
+      ... on ActivityLogEntryUpdateSent {
+        ...ActivityLogUpdateSent
+      }
+    }
+  }
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutCardCreatedFragmentDoc}
+  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogUpdateSentFragmentDoc}
+`;
+
+/**
+ * __useActivityLogOnCollaborationQuery__
+ *
+ * To run a query within a React component, call `useActivityLogOnCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivityLogOnCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityLogOnCollaborationQuery({
+ *   variables: {
+ *      queryData: // value for 'queryData'
+ *   },
+ * });
+ */
+export function useActivityLogOnCollaborationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >(ActivityLogOnCollaborationDocument, options);
+}
+
+export function useActivityLogOnCollaborationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >(ActivityLogOnCollaborationDocument, options);
+}
+
+export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
+export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
+export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ActivityLogOnCollaborationQuery,
+  SchemaTypes.ActivityLogOnCollaborationQueryVariables
+>;
+export function refetchActivityLogOnCollaborationQuery(
+  variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
+) {
+  return { query: ActivityLogOnCollaborationDocument, variables: variables };
 }
 
 export const HubPostTemplatesLibraryDocument = gql`
@@ -21997,174 +22254,6 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
 >;
-export const ActivityCreatedDocument = gql`
-  subscription activityCreated($collaborationID: UUID!) {
-    activityCreated(collaborationID: $collaborationID) {
-      activity {
-        ...ActivityLogOnCollaboration
-      }
-    }
-  }
-  ${ActivityLogOnCollaborationFragmentDoc}
-`;
-
-/**
- * __useActivityCreatedSubscription__
- *
- * To run a query within a React component, call `useActivityCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useActivityCreatedSubscription({
- *   variables: {
- *      collaborationID: // value for 'collaborationID'
- *   },
- * });
- */
-export function useActivityCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.ActivityCreatedSubscription,
-    SchemaTypes.ActivityCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.ActivityCreatedSubscription,
-    SchemaTypes.ActivityCreatedSubscriptionVariables
-  >(ActivityCreatedDocument, options);
-}
-
-export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
-export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
-export const ActivityLogOnCollaborationDocument = gql`
-  query activityLogOnCollaboration($queryData: ActivityLogInput!) {
-    activityLogOnCollaboration(queryData: $queryData) {
-      id
-      collaborationID
-      createdDate
-      description
-      type
-      __typename
-      triggeredBy {
-        id
-        nameID
-        firstName
-        lastName
-        profile {
-          id
-          displayName
-          visual(type: AVATAR) {
-            id
-            uri
-          }
-          tagsets {
-            id
-            tags
-          }
-          location {
-            id
-            city
-            country
-          }
-        }
-      }
-      ... on ActivityLogEntryMemberJoined {
-        ...ActivityLogMemberJoined
-      }
-      ... on ActivityLogEntryCalloutPublished {
-        ...ActivityLogCalloutPublished
-      }
-      ... on ActivityLogEntryCalloutCardCreated {
-        ...ActivityLogCalloutCardCreated
-      }
-      ... on ActivityLogEntryCalloutCardComment {
-        ...ActivityLogCalloutCardComment
-      }
-      ... on ActivityLogEntryCalloutCanvasCreated {
-        ...ActivityLogCalloutCanvasCreated
-      }
-      ... on ActivityLogEntryCalloutDiscussionComment {
-        ...ActivityLogCalloutDiscussionComment
-      }
-      ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
-      }
-      ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
-      }
-      ... on ActivityLogEntryUpdateSent {
-        ...ActivityLogUpdateSent
-      }
-    }
-  }
-  ${ActivityLogMemberJoinedFragmentDoc}
-  ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
-  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
-  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
-  ${ActivityLogUpdateSentFragmentDoc}
-`;
-
-/**
- * __useActivityLogOnCollaborationQuery__
- *
- * To run a query within a React component, call `useActivityLogOnCollaborationQuery` and pass it any options that fit your needs.
- * When your component renders, `useActivityLogOnCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useActivityLogOnCollaborationQuery({
- *   variables: {
- *      queryData: // value for 'queryData'
- *   },
- * });
- */
-export function useActivityLogOnCollaborationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >(ActivityLogOnCollaborationDocument, options);
-}
-
-export function useActivityLogOnCollaborationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >(ActivityLogOnCollaborationDocument, options);
-}
-
-export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
-export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
-export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
-  SchemaTypes.ActivityLogOnCollaborationQuery,
-  SchemaTypes.ActivityLogOnCollaborationQueryVariables
->;
-export function refetchActivityLogOnCollaborationQuery(
-  variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
-) {
-  return { query: ActivityLogOnCollaborationDocument, variables: variables };
-}
-
 export const PostCommentDocument = gql`
   mutation PostComment($messageData: CommentsSendMessageInput!) {
     sendComment(messageData: $messageData) {

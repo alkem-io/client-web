@@ -2,12 +2,12 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { WithId } from '../../../../types/WithId';
 import {
-  ContributorCard,
-  ContributorCardProps,
-} from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+  ContributorCardSquare,
+  ContributorCardSquareProps,
+} from '../../contributor/ContributorCardSquare/ContributorCardSquare';
 
 export interface DashboardContributingUsersProps {
-  users: WithId<ContributorCardProps>[] | undefined;
+  users: WithId<ContributorCardSquareProps>[] | undefined;
 }
 
 const DashboardContributingUsers = ({ users }: DashboardContributingUsersProps) => {
@@ -15,7 +15,7 @@ const DashboardContributingUsers = ({ users }: DashboardContributingUsersProps) 
     <Grid container spacing={2}>
       {users?.map(user => (
         <Grid key={user.id} item xs={3}>
-          <ContributorCard {...user} />
+          <ContributorCardSquare {...user} />
         </Grid>
       ))}
     </Grid>

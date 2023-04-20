@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
-import EntityPageTabs from '../../../shared/layout/EntityPageTabs';
+import JourneyPageTabs from '../../common/JourneyPageTabs';
 
 export interface OpportunityTabsProps extends EntityTabsProps {}
 
@@ -12,7 +12,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
   const settingsUrl = buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
 
   return (
-    <EntityPageTabs
+    <JourneyPageTabs
       {...props}
       entityTypeName="opportunity"
       showSettings={permissions.viewerCanUpdate}

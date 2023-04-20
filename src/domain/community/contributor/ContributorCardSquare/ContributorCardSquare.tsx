@@ -2,12 +2,12 @@ import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, ReactNode, useCallback, useMemo, useState } from 'react';
-import ConditionalLink from '../../../../core/ConditionalLink';
-import UserCard from '../user-card/UserCard';
-import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
+import ConditionalLink from '../../../../common/components/core/ConditionalLink';
+import UserCard from '../../../../common/components/composite/common/cards/user-card/UserCard';
+import withElevationOnHover from '../../../shared/components/withElevationOnHover';
 import { useTranslation } from 'react-i18next';
-import { useSendMessageToUserMutation } from '../../../../../../core/apollo/generated/apollo-hooks';
-import { DirectMessageDialog } from '../../../../../../domain/communication/messaging/DirectMessaging/DirectMessageDialog';
+import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -16,7 +16,7 @@ interface ContributorCardTooltip {
   country?: string;
 }
 
-export interface ContributorCardProps {
+export interface ContributorCardSquareProps {
   id: string;
   avatar: string;
   displayName: string;
@@ -55,7 +55,7 @@ const useStyles = makeStyles(_ =>
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
-export const ContributorCard: FC<ContributorCardProps> = props => {
+export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const styles = useStyles();
   const { id, displayName, avatar, url, tooltip, isContactable, roleName } = props;
   const { t } = useTranslation();
@@ -146,4 +146,4 @@ export const ContributorCardSkeleton = () => {
   );
 };
 
-export default ContributorCard;
+export default ContributorCardSquare;
