@@ -12,6 +12,7 @@ import CommunityContributorsBlockWideContent, { ContributorType } from './Commun
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '../../../platform/search/MultipleSelect';
 import { Theme } from '@mui/material/styles';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CommunityContributorsBlockWideProps {
   users: ContributorCardSquareProps[] | undefined;
@@ -53,20 +54,24 @@ const CommunityContributorsBlockWide = ({ users, organizations }: CommunityContr
           title={t('pages.generic.sections.community.contributors')}
           onDialogOpen={() => setIsDialogOpen(true)}
           actions={
-            <>
-              <AltToggle value={contributorType} options={contributorTypeToggleOptions} onChange={setContributorType} />
-              <MultipleSelect
-                onChange={onFilterChange}
-                value={filter}
-                minLength={2}
-                containerProps={{
-                  marginLeft: theme => theme.spacing(2),
-                }}
-                size="xsmall"
-              />
-            </>
+            <MultipleSelect
+              onChange={onFilterChange}
+              value={filter}
+              minLength={2}
+              containerProps={{
+                marginLeft: theme => theme.spacing(2),
+              }}
+              size="xsmall"
+            />
           }
-        />
+        >
+          <AltToggle
+            value={contributorType}
+            options={contributorTypeToggleOptions}
+            onChange={setContributorType}
+            sx={{ height: gutters() }}
+          />
+        </PageContentBlockHeaderWithDialogAction>
         <CommunityContributorsBlockWideContent
           users={users?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}
           organizations={organizations?.slice(0, COMPACT_VIEW_ITEMS_LIMIT)}

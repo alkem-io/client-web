@@ -1,3 +1,4 @@
+import React, { PropsWithChildren } from 'react';
 import { IconButton } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { ExpandContentIcon } from './ExpandContent';
@@ -12,9 +13,8 @@ const iconSize = (theme: Theme) => theme.spacing(2);
 const PageContentBlockHeaderWithDialogAction = ({
   onDialogOpen,
   actions,
-  topActions,
   ...headerProps
-}: PageContentBlockHeaderWithDialogActionProps) => {
+}: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const dialogAction = (
     <IconButton onClick={onDialogOpen} sx={{ svg: { width: iconSize, height: iconSize } }}>
       <ExpandContentIcon />
@@ -24,10 +24,9 @@ const PageContentBlockHeaderWithDialogAction = ({
   return (
     <PageContentBlockHeader
       {...headerProps}
-      actions={actions}
-      topActions={
+      actions={
         <>
-          {topActions}
+          {actions}
           {dialogAction}
         </>
       }
