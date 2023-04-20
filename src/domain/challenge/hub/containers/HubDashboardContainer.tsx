@@ -21,11 +21,11 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../../../types/WithId';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../../collaboration/canvas/utils/canvasesCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
-import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
 export interface HubContainerEntities {
   hub: HubPageFragment | undefined;
@@ -47,9 +47,9 @@ export interface HubContainerEntities {
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;
-  memberUsers: WithId<ContributorCardProps>[] | undefined;
+  memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
   memberUsersCount: number | undefined;
-  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
+  memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
@@ -139,6 +139,7 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
   const communityId = _hub?.hub.community?.id ?? '';
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+
   const handleSendMessageToCommunityLeads = useCallback(
     async (messageText: string) => {
       await sendMessageToCommunityLeads({

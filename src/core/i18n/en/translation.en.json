@@ -141,6 +141,7 @@
     "permission": "Permission",
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
+    "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
     "inspiration": "Inspiration",
@@ -226,6 +227,7 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
+    "people": "People",
     "settings": "Settings",
     "search": "Search...",
     "reference": "Reference",
@@ -1187,9 +1189,8 @@
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
           "leading-contributors": "Leading Contributors",
-          "contributors": "Contributors"
+          "contributors": "Who's involved"
         },
         "explore": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
