@@ -14,7 +14,7 @@ export interface ActivityBaseViewProps {
   action: string;
   url?: string;
   loading?: boolean;
-  parentIcon?: ReactNode;
+  childActivityIcon?: ReactNode;
   parentDisplayName: string;
 }
 
@@ -25,16 +25,15 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   children,
   url,
   loading,
-  parentIcon,
+  childActivityIcon,
   parentDisplayName,
 }) => {
   const { t } = useTranslation();
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
 
-  const parentDetails =
-    parentDisplayName && parentIcon
-      ? t('components.activity-log-view.parent-details', { displayName: parentDisplayName })
-      : undefined;
+  const parentDetails = childActivityIcon
+    ? t('components.activity-log-view.parent-details', { displayName: parentDisplayName })
+    : undefined;
 
   const title = useMemo(
     () => (
@@ -45,11 +44,11 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
         ) : (
           author?.displayName ?? t('common.user')
         )}{' '}
-        {action} {parentIcon}
+        {action} {childActivityIcon}
         {parentDetails}
       </>
     ),
-    [formattedTime, author?.displayName, action, author?.url, t]
+    [formattedTime, author?.displayName, action, author?.url, t, childActivityIcon, parentDetails]
   );
 
   return (

@@ -1,14 +1,14 @@
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import { AspectIcon } from '../../aspect/icon/AspectIcon';
-import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
-import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import FilterNoneIcon from '@mui/icons-material/FilterNone';
+import NotesIcon from '@mui/icons-material/Notes';
 
 const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
-  [CalloutType.Card]: AspectIcon,
-  [CalloutType.Canvas]: CanvasIcon,
-  [CalloutType.Comments]: ForumOutlinedIcon,
+  [CalloutType.Card]: LibraryBooksIcon,
+  [CalloutType.Canvas]: FilterNoneIcon,
+  [CalloutType.Comments]: NotesIcon,
 };
 
 export default calloutIcons;

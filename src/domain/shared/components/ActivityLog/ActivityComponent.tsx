@@ -1,5 +1,5 @@
-import React, { FC, ReactNode, useMemo } from 'react';
-import { Box, styled } from '@mui/material';
+import React, { ComponentType, FC, ReactNode, useMemo } from 'react';
+import { Box, styled, SvgIconProps } from '@mui/material';
 import {
   ActivityEventType,
   ActivityLogCalloutCanvasCreatedFragment,
@@ -29,7 +29,7 @@ import {
 import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
-import { ChallengeIcon } from '../../../challenge/challenge/icon/ChallengeIcon';
+import journeyIcon from '../JourneyIcon/JourneyIcon';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -71,14 +71,31 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
 
     return (
       <>
-        {activities.map(activity => (
-          <ActivityViewChooser
-            activity={activity}
-            journeyLocation={journeyLocation}
-            key={activity.id}
-            parentIcon={<ChallengeIcon />}
-          />
-        ))}
+        {activities.map(activity => {
+          let ParentIcon: ComponentType<SvgIconProps> | undefined;
+          const newJourneyLocation = { ...journeyLocation };
+
+          if (activity.child) {
+            // update the location per activity - if it's a child drill one level down
+            // update the parent icon per activity
+            if (journeyLocation.challengeNameId) {
+              ParentIcon = journeyIcon['opportunity'];
+              newJourneyLocation.opportunityNameId = activity.parentNameID;
+            } else {
+              ParentIcon = journeyIcon['challenge'];
+              newJourneyLocation.challengeNameId = activity.parentNameID;
+            }
+          }
+
+          return (
+            <ActivityViewChooser
+              activity={activity}
+              journeyLocation={newJourneyLocation}
+              key={activity.id}
+              childActivityIcon={ParentIcon && <ParentIcon sx={{ verticalAlign: 'bottom' }} fontSize={'small'} />}
+            />
+          );
+        })}
       </>
     );
   }, [activities, journeyLocation]);
@@ -89,7 +106,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
 interface ActivityViewChooserProps {
   activity: ActivityLogResultType;
   journeyLocation: JourneyLocation;
-  parentIcon: ReactNode;
+  childActivityIcon?: ReactNode;
 }
 
 const ActivityViewChooser = ({
@@ -97,7 +114,6 @@ const ActivityViewChooser = ({
   ...rest
 }: ActivityViewChooserProps): React.ReactElement<ActivityViewProps> => {
   const author = buildAuthorFromUser(activity.triggeredBy);
-  rest.parentIcon = activity.child ? rest.parentIcon : undefined;
   switch (activity.type) {
     case ActivityEventType.CalloutPublished:
       const activityCalloutPublished = activity as ActivityLogResult<ActivityLogCalloutPublishedFragment>;

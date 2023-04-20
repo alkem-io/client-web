@@ -10,6 +10,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
+  ActivityEventType,
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ChallengeCardFragment,
@@ -21,11 +22,11 @@ import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { useAspectsCount } from '../../../collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../../../types/WithId';
-import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../../collaboration/canvas/utils/canvasesCount';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog';
-import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
 export interface HubContainerEntities {
   hub: HubPageFragment | undefined;
@@ -47,9 +48,9 @@ export interface HubContainerEntities {
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   recommendations: Reference[] | undefined;
-  memberUsers: WithId<ContributorCardProps>[] | undefined;
+  memberUsers: WithId<ContributorCardSquareProps>[] | undefined;
   memberUsersCount: number | undefined;
-  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
+  memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
@@ -69,7 +70,7 @@ export interface HubPageContainerProps
 const EMPTY = [];
 const NO_PRIVILEGES = [];
 
-export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
+export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { hubId, hubNameId, loading: loadingHub, isPrivate } = useHub();
   const { user, isAuthenticated } = useUserContext();
 
@@ -116,6 +117,11 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     !permissions.hubReadAccess || !permissions.readUsers
   );
 
+  const relevantActivities = useMemo(
+    () => activities?.filter(activity => activity.type !== ActivityEventType.MemberJoined),
+    [activities]
+  );
+
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
   const aspectsCount = useAspectsCount(_hub?.hub.metrics);
@@ -134,6 +140,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const communityId = _hub?.hub.community?.id ?? '';
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
+
   const handleSendMessageToCommunityLeads = useCallback(
     async (messageText: string) => {
       await sendMessageToCommunityLeads({
@@ -163,7 +170,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvasesCount,
           references,
           recommendations,
-          activities,
+          activities: relevantActivities,
           activityLoading,
           ...contributors,
           hostOrganizations,
@@ -179,4 +186,4 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   );
 };
 
-export default HubPageContainer;
+export default HubDashboardContainer;

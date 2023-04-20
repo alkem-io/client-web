@@ -1,7 +1,8 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
 import { Box, IconButton, SvgIconProps, Typography } from '@mui/material';
+import { styled } from '@mui/material';
 
-const iconButtonSize = 105;
+const iconButtonSize = 140;
 
 export interface RadioButtonProps<Value> {
   value: Value;
@@ -10,6 +11,14 @@ export interface RadioButtonProps<Value> {
   iconComponent: ComponentType<SvgIconProps>;
   onClick?: (value: Value) => void;
 }
+
+const StyledButton = styled(IconButton)(({ theme }) => ({
+  width: iconButtonSize,
+  height: iconButtonSize,
+  padding: theme.spacing(2),
+  border: `1px solid ${theme.palette.neutralMedium.main}`,
+  borderRadius: theme.shape.borderRadius,
+}));
 
 const RadioButton = <Value,>({
   value,
@@ -20,12 +29,8 @@ const RadioButton = <Value,>({
   children,
 }: PropsWithChildren<RadioButtonProps<Value>>) => {
   return (
-    <IconButton
+    <StyledButton
       sx={theme => ({
-        width: iconButtonSize,
-        height: iconButtonSize,
-        border: '1px solid #B3B3B3',
-        borderRadius: '5px',
         background: selected ? theme.palette.primary.main : undefined,
         '&:hover': selected
           ? {
@@ -37,7 +42,7 @@ const RadioButton = <Value,>({
       aria-label="comments"
       onClick={onClick && (() => onClick(value))}
     >
-      <Box display="flex" flexDirection="column" alignContent="center">
+      <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
         <Icon
           sx={theme => ({
             color: selected ? theme.palette.background.default : theme.palette.primary.main,
@@ -53,7 +58,7 @@ const RadioButton = <Value,>({
           {children}
         </Typography>
       </Box>
-    </IconButton>
+    </StyledButton>
   );
 };
 

@@ -20,6 +20,7 @@ import HubPageLayout from '../layout/HubPageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import HubSearchPage from '../pages/HubSearchPage';
 import HubCollaborationPage from '../HubCollaborationPage/HubCollaborationPage';
+import HubCommunityPage from '../HubCommunityPage/HubCommunityPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
@@ -45,6 +46,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           element={<HubDashboardPage dialog="calendar" />}
         />
         <Route path={routes.Contribute} element={<ContributePage journeyTypeName="hub" />} />
+        <Route path={routes.Community} element={<HubCommunityPage />} />
         <Route path={routes.About} element={<HubAboutPage />} />
         <Route path={routes.Challenges} element={<HubChallengesPage />} />
         <Route path={routes.Search} element={<HubSearchPage />} />

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useField } from 'formik';
-import { FormHelperText, TextField, TextFieldProps } from '@mui/material';
+import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
 import TranslationKey from '../../../../types/TranslationKey';
@@ -41,6 +41,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   rows,
   withCounter,
   maxLength,
+  fullWidth,
   attachFile = false,
   ...rest
 }) => {
@@ -68,7 +69,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   }
 
   return (
-    <>
+    <Box width={fullWidth ? '100%' : undefined}>
       <TextField
         name={name}
         placeholder={placeholder}
@@ -100,7 +101,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
       <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={!withCounter}>
         <FormHelperText error={isError}>{helperText}</FormHelperText>
       </CharacterCounter>
-    </>
+    </Box>
   );
 };
 

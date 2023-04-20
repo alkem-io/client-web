@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import HubPageContainer from '../containers/HubPageContainer';
+import HubDashboardContainer from '../containers/HubDashboardContainer';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import HubContributorsDialogContent from '../../../community/community/entities/HubContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import HubPageLayout from '../layout/HubPageLayout';
-import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
+import HubDashboardView from '../HubDashboardView/HubDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
 import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
@@ -39,12 +39,19 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
-      <HubPageContainer>
-        {entities => (
+      <HubDashboardContainer>
+        {(entities, state) => (
           <>
-            <JourneyDashboardView
+            <HubDashboardView
               vision={entities.hub?.context?.vision}
               hubNameId={entities.hub?.nameID}
+              displayName={entities.hub?.profile.displayName}
+              tagline={entities.hub?.profile.tagline}
+              description={entities.hub?.profile.description}
+              who={entities.hub?.context?.who}
+              impact={entities.hub?.context?.impact}
+              metrics={entities.hub?.metrics}
+              loading={state.loading}
               communityId={entities.hub?.community?.id}
               childEntities={entities.challenges}
               childEntitiesCount={entities.challengesCount}
@@ -92,6 +99,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  group={CalloutsGroup.HomeLeft}
                 />
               }
               childrenRight={
@@ -104,6 +112,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  group={CalloutsGroup.HomeRight}
                 />
               }
             />
@@ -123,7 +132,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
             )}
           </>
         )}
-      </HubPageContainer>
+      </HubDashboardContainer>
     </HubPageLayout>
   );
 };

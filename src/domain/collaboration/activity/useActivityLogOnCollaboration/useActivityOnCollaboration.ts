@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
-import { ActivityLogResultType } from '../ActivityComponent';
+import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
 import {
   ActivityCreatedDocument,
   useActivityLogOnCollaborationQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { LATEST_ACTIVITIES_COUNT } from '../constants';
-import createUseSubscriptionToSubEntityHook from '../../../subscriptions/useSubscriptionToSubEntity';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { LATEST_ACTIVITIES_COUNT } from '../../../shared/components/ActivityLog/constants';
+import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/useSubscriptionToSubEntity';
 import {
   ActivityCreatedSubscription,
   ActivityCreatedSubscriptionVariables,
   ActivityLogOnCollaborationFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '../../../../core/apollo/generated/graphql-schema';
 
 const useActivityOnCollaborationSubscription = (collaborationID: string) =>
   createUseSubscriptionToSubEntityHook<
@@ -35,7 +35,7 @@ interface ActivityOnCollaborationReturnType {
   loading: boolean;
 }
 
-export const useActivityOnCollaboration = (
+const useActivityOnCollaboration = (
   collaborationID: string | undefined,
   skipCondition?: boolean
 ): ActivityOnCollaborationReturnType => {
@@ -68,3 +68,5 @@ export const useActivityOnCollaboration = (
     loading,
   };
 };
+
+export default useActivityOnCollaboration;
