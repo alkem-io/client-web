@@ -31,7 +31,16 @@ const COMMENTS_CONTAINER_HEIGHT = 400;
 
 const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
   (
-    { callout, loading, expanded, isSubscribedToComments, contributionsCount, onExpand, ...calloutLayoutProps },
+    {
+      callout,
+      loading,
+      expanded,
+      isSubscribedToComments,
+      contributionsCount,
+      onExpand,
+      blockProps,
+      ...calloutLayoutProps
+    },
     ref
   ) => {
     const { user: userMetadata, isAuthenticated } = useUserContext();
@@ -130,7 +139,7 @@ const CommentsCallout = forwardRef<HTMLDivElement, CommentsCalloutProps>(
     const lastMessageOnly = breakpoint === 'xs' && !expanded;
 
     return (
-      <PageContentBlock ref={ref} disablePadding disableGap>
+      <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
         <CalloutLayout
           callout={callout}
           contributionsCount={contributionsCount}

@@ -35,6 +35,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
       challengeNameId,
       opportunityNameId,
       contributionsCount,
+      blockProps,
       ...calloutLayoutProps
     },
     ref
@@ -156,7 +157,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     return (
       <>
-        <PageContentBlock ref={containerRef} disablePadding disableGap>
+        <PageContentBlock ref={containerRef} disablePadding disableGap {...blockProps}>
           <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             <ScrollableCardsLayout
               items={loading || !inView ? [undefined, undefined] : aspects ?? []}
