@@ -10,13 +10,14 @@ import HubPageLayout from '../layout/HubPageLayout';
 import HubDashboardView from '../HubDashboardView/HubDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -76,6 +77,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
                   bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
+                  bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
                   displayName={challenge.profile.displayName}
                   tags={challenge.profile.tagset?.tags!}
                   tagline={challenge.profile.tagline!}
