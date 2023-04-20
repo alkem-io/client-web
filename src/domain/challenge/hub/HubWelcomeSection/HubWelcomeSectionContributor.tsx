@@ -16,13 +16,15 @@ interface HubWelcomeSectionContributorProps {
       uri: string;
     };
     location?: Location;
-    tagset?: { tags: string[] };
+    tagsets?: { tags: string[] }[];
   };
   url: string;
 }
 
 const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContributorProps) => {
   const { t } = useTranslation();
+
+  const tags = profile.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : [];
 
   return (
     <SwapColors>
@@ -33,7 +35,7 @@ const HubWelcomeSectionContributor = ({ url, profile }: HubWelcomeSectionContrib
             <UserCard
               displayName={profile.displayName}
               avatarSrc={profile.visual?.uri}
-              tags={profile.tagset?.tags ?? []}
+              tags={tags}
               city={profile.location?.city}
               country={profile.location?.country}
             />

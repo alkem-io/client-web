@@ -704,7 +704,7 @@ export const HubWelcomeBlockContributorProfileFragmentDoc = gql`
       city
       country
     }
-    tagset {
+    tagsets {
       id
       tags
     }
