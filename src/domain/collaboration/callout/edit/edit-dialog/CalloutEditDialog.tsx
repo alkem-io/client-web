@@ -72,6 +72,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
           callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
       },
     },
+    group: callout.group,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
@@ -99,6 +100,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       state: newCallout.state,
       postTemplate: newCallout.postTemplateData,
       whiteboardTemplate: newCallout.whiteboardTemplateData,
+      group: newCallout.group,
     });
     setLoading(false);
   }, [callout, fetchCanvasValueFromHub, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);
