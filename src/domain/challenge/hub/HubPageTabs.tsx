@@ -267,9 +267,9 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
           />
         )}
         <HeaderNavigationTab
-          label={t('common.about')}
-          value={EntityPageSection.About}
-          to={`${rootUrl}/${EntityPageSection.About}`}
+          label={t('common.knowledge-base')}
+          value={EntityPageSection.KnowledgeBase}
+          to={`${rootUrl}/${EntityPageSection.KnowledgeBase}`}
         />
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />

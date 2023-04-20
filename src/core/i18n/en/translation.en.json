@@ -137,6 +137,7 @@
     }
   },
   "common": {
+    "knowledge-base": "Knowledge base",
     "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
