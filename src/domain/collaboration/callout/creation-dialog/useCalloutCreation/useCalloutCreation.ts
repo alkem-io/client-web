@@ -24,7 +24,7 @@ export type CalloutCreationType = {
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  group: string;
+  group?: string;
 };
 
 export interface CalloutCreationUtils {
