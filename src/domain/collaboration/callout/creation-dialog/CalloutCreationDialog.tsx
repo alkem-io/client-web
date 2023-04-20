@@ -149,7 +149,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       state: callout.state!,
       postTemplate: callout.type === CalloutType.Card ? callout.postTemplateData : undefined,
       whiteboardTemplate: callout.type === CalloutType.Canvas ? callout.whiteboardTemplateData : undefined,
-      group: group ?? '',
+      group,
     };
 
     const result = await onSaveAsDraft(newCallout);
