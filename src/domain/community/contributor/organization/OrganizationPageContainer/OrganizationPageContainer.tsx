@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
-import { ContributorCardProps } from '../../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
 import { RoleType } from '../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
@@ -32,7 +32,7 @@ export interface OrganizationContainerEntities {
   links: string[];
   capabilities: string[];
   keywords: string[];
-  associates: ContributorCardProps[];
+  associates: ContributorCardSquareProps[];
   contributions: ContributionItem[];
   permissions: {
     canEdit: boolean;
@@ -127,9 +127,9 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     canReadUsers,
   };
 
-  const associates = useMemo<ContributorCardProps[]>(() => {
+  const associates = useMemo<ContributorCardSquareProps[]>(() => {
     return (
-      usersWithRoles?.map<ContributorCardProps>(x => ({
+      usersWithRoles?.map<ContributorCardSquareProps>(x => ({
         id: x.id,
         displayName: x.profile.displayName,
         roleName: x.roleName,

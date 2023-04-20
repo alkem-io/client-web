@@ -12,6 +12,7 @@ import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-sch
 interface CalloutsGroupProps extends CalloutsViewProps {
   hubId: string;
   canCreateCallout: boolean;
+  group?: string;
 }
 
 const CalloutsGroupView = ({
@@ -24,6 +25,7 @@ const CalloutsGroupView = ({
   loading,
   onSortOrderUpdate,
   canCreateCallout,
+  group,
 }: CalloutsGroupProps) => {
   const {
     isCalloutCreationDialogOpen,
@@ -77,6 +79,7 @@ const CalloutsGroupView = ({
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
+        group={group}
       />
     </>
   );

@@ -136,7 +136,7 @@ const CollaborationTemplatesLibrary = <Template extends TemplateBase, TemplateWi
             containerProps={{
               marginLeft: 'auto',
             }}
-            inputProps={{ size: 'small' }}
+            size="small"
           />
         </DialogHeader>
         <DialogContent>

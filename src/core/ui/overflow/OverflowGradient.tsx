@@ -8,7 +8,7 @@ export interface OverflowGradientProps extends BoxProps {
   backgroundColor?: BackgroundColor;
 }
 
-const OverflowGradient = ({ lastLine = false, backgroundColor, ...props }: OverflowGradientProps) => {
+const OverflowGradient = ({ lastLine = false, backgroundColor, sx, ...props }: OverflowGradientProps) => {
   const [hasOverflow, setHasOverflow] = useState(false);
 
   const updateOverflow = (el: HTMLDivElement | null) => {
@@ -36,6 +36,7 @@ const OverflowGradient = ({ lastLine = false, backgroundColor, ...props }: Overf
               background: overflowBorderGradient(lastLine ? '-90deg' : '0', backgroundColor),
             }
           : undefined,
+        ...sx,
       }}
       {...props}
     />

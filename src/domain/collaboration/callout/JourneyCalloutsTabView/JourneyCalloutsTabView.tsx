@@ -19,8 +19,8 @@ import {
   useUpdateCalloutVisibilityMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
-import CalloutsView from './CalloutsView';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
+import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
 interface JourneyCalloutsTabViewProps {
@@ -117,12 +117,15 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
           </PageContentColumn>
 
           <PageContentColumn columns={8}>
-            <CalloutsView
+            <CalloutsGroupView
               callouts={ungroupedCallouts}
-              entityTypeName={entityTypeName}
+              hubId={hubNameId!}
+              canCreateCallout={canCreateCallout}
+              loading={loading}
+              entityTypeName="hub"
               sortOrder={calloutsSortOrder}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
               calloutNames={calloutNames}
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
               scrollToCallout={scrollToCallout}
             />
           </PageContentColumn>

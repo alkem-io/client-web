@@ -10,9 +10,17 @@ interface DialogContainerProps extends PaperProps {
   columns?: GridItemProps['columns'];
   centeredVertically?: boolean;
   onClose?: MouseEventHandler;
+  fullScreen?: boolean;
 }
 
-const DialogContainer = ({ columns, centeredVertically, onClose, ...paperProps }: DialogContainerProps) => {
+const DialogContainer = ({
+  columns,
+  centeredVertically,
+  onClose,
+  children,
+  fullScreen,
+  ...paperProps
+}: DialogContainerProps) => {
   const breakpoint = useCurrentBreakpoint();
 
   const handleContainerClick: MouseEventHandler = event => {
@@ -20,6 +28,8 @@ const DialogContainer = ({ columns, centeredVertically, onClose, ...paperProps }
       onClose?.(event);
     }
   };
+
+  const containerColumns = breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP;
 
   return (
     <GridContainer
@@ -30,10 +40,13 @@ const DialogContainer = ({ columns, centeredVertically, onClose, ...paperProps }
       height="100%"
       alignItems={centeredVertically ? 'center' : 'start'}
       onClick={handleContainerClick}
+      disablePadding={fullScreen}
     >
-      <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
+      <GridProvider columns={containerColumns} force>
         <GridItem columns={columns}>
-          <Paper {...paperProps} />
+          <Paper {...paperProps}>
+            <GridProvider columns={columns ?? containerColumns}>{children}</GridProvider>
+          </Paper>
         </GridItem>
       </GridProvider>
     </GridContainer>
@@ -51,6 +64,7 @@ const DialogWithGrid = ({
   fullHeight = false,
   centeredVertically = true,
   onClose,
+  fullScreen,
   ...dialogProps
 }: DialogWithGridProps) => {
   const { sx } = dialogProps;
@@ -58,10 +72,19 @@ const DialogWithGrid = ({
   return (
     <MuiDialog
       PaperComponent={DialogContainer}
-      PaperProps={{ columns, centeredVertically } as PaperProps}
+      PaperProps={{ columns, centeredVertically, fullScreen } as PaperProps}
       onClose={onClose}
+      fullScreen={fullScreen}
       {...dialogProps}
-      sx={{ '.MuiDialog-paper': { maxWidth: 'none', margin: 0, height: fullHeight ? '100%' : 'auto' }, ...sx }}
+      sx={{
+        '.MuiDialog-paper': {
+          maxWidth: 'none',
+          margin: 0,
+          height: fullHeight ? '100%' : 'auto',
+          maxHeight: fullScreen ? '100vh' : undefined,
+        },
+        ...sx,
+      }}
     />
   );
 };

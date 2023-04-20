@@ -55,6 +55,7 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
+  group?: string;
 }
 
 export interface TemplateProfile {
@@ -89,6 +90,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   isCreating,
   calloutNames,
   templates,
+  group,
 }) => {
   const { t } = useTranslation();
   const { hubNameId } = useUrlParams();
@@ -147,6 +149,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       state: callout.state!,
       postTemplate: callout.type === CalloutType.Card ? callout.postTemplateData : undefined,
       whiteboardTemplate: callout.type === CalloutType.Canvas ? callout.whiteboardTemplateData : undefined,
+      group,
     };
 
     const result = await onSaveAsDraft(newCallout);

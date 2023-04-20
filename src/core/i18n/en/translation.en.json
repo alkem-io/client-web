@@ -137,10 +137,12 @@
     }
   },
   "common": {
+    "knowledge-base": "Knowledge base",
     "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
+    "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
     "inspiration": "Inspiration",
@@ -167,6 +169,7 @@
     "description": "Description",
     "events": "Events",
     "about": "About",
+    "aboutThis": "About this {{entity}}",
     "explore": "Contribute",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
@@ -182,6 +185,7 @@
     "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
+    "all-entities": "All {{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
@@ -225,6 +229,7 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
+    "people": "People",
     "settings": "Settings",
     "search": "Search...",
     "reference": "Reference",
@@ -247,6 +252,7 @@
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",
+    "welcome": "Welcome",
     "preview": "Preview",
     "help": "Help",
     "loading": "Loading...",
@@ -806,7 +812,7 @@
         "title": "Visuals",
         "headline": "Congratulations, you have now successfully created an Card!",
         "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
-        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding references and a Banner for the Dashboard card."
+        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding attachments and a Banner for the Dashboard card."
       }
     },
     "visual-upload": {
@@ -851,6 +857,8 @@
       "join": "Join",
       "join-parent": "Join parent",
       "parent-pending": "Parent application pending",
+      "applyTo": "Apply to",
+      "extendedMessage": "{{join}} our Community and start making change!",
       "dialog-apply-parent": {
         "title": "Want to join the parent Hub?",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
@@ -1176,15 +1184,15 @@
       "sections": {
         "dashboard": {
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
-          "about": "About this {{entity}}"
+          "about": "About this {{entity}}",
+          "memberOf": "You’re a member of this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
           "leading-contributors": "Leading Contributors",
-          "contributors": "Contributors"
+          "contributors": "Who's involved"
         },
         "explore": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
@@ -1399,8 +1407,8 @@
     },
     "contributors": {
       "search": {
-        "title": "See who's contributing",
-        "subtitle": "Explore the organizations and users that are contributing to Challenges.",
+        "title": "Find talent and expertise!",
+        "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
         "placeholder": "Search..."
       },
       "organizations": {
@@ -1562,6 +1570,12 @@
           "body": "",
           "no-data": "No challenges available for this hub",
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
+        },
+        "contribute": {
+          "header": "Contribute"
+        },
+        "knowledge-base": {
+          "header": "Knowledge base"
         }
       }
     },
