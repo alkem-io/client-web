@@ -184,6 +184,7 @@
     "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
+    "all-entities": "All {{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
