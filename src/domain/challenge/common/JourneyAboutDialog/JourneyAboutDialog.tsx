@@ -4,7 +4,6 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import { Box, BoxProps } from '@mui/material';
 import React, { ReactNode, useMemo, useState } from 'react';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
-import { HubOutlined } from '@mui/icons-material';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -20,8 +19,6 @@ import {
   MessageReceiverChipData,
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import ActivityView from '../../../platform/metrics/views/MetricsView';
-import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
-import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
 import useMetricsItems from '../../../platform/metrics/utils/useMetricsItems';
 import HubMetrics from '../../hub/Metrics/HubMetrics';
@@ -30,6 +27,7 @@ import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsIte
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
@@ -54,17 +52,6 @@ interface DialogHeaderItemProps extends BoxProps {
 
 const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps) => {
   return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
-};
-
-const getJourneyIconComponent = (journeyTypeName: JourneyTypeName) => {
-  switch (journeyTypeName) {
-    case 'hub':
-      return HubOutlined;
-    case 'challenge':
-      return ChallengeIcon;
-    case 'opportunity':
-      return OpportunityIcon;
-  }
 };
 
 const getMetricsSpec = (journeyTypeName: JourneyTypeName) => {
@@ -131,7 +118,7 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  const JourneyIcon = getJourneyIconComponent(journeyTypeName);
+  const JourneyIcon = journeyIcon[journeyTypeName];
 
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(journeyTypeName));
 
