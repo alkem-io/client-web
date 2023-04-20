@@ -4,4 +4,5 @@ export enum CalloutsGroup {
   CommunityLeft = 'COMMUNITY_1',
   CommunityRight = 'COMMUNITY_2',
   ChallengesLeft = 'CHALLENGES_1',
+  ChallengesRight = 'CHALLENGES_2',
 }
