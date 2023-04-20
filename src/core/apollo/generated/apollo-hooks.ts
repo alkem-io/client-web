@@ -2866,8 +2866,11 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const UploadFileDocument = gql`
-  mutation UploadFile($file: Upload!) {
-    uploadFile(file: $file)
+  mutation UploadFile($file: Upload!, $uploadData: StorageSpaceUploadFileInput!) {
+    uploadFileOnReference(uploadData: $uploadData, file: $file) {
+      id
+      uri
+    }
   }
 `;
 export type UploadFileMutationFn = Apollo.MutationFunction<
@@ -2889,6 +2892,7 @@ export type UploadFileMutationFn = Apollo.MutationFunction<
  * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
  *   variables: {
  *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
  *   },
  * });
  */

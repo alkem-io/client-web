@@ -31,7 +31,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
   const [uploadFile, { loading }] = useUploadFileMutation({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
-      onUpload?.(data.uploadFile);
+      onUpload?.(data.uploadFileOnReference.uri);
     },
   });
 
@@ -42,7 +42,14 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
       notify(t('components.file-upload.file-size-error', { limit: MB_LIMIT }), 'error');
       return;
     }
-    await uploadFile({ variables: { file: selectedFile } });
+    await uploadFile({
+      variables: {
+        file: selectedFile,
+        uploadData: {
+          referenceID: '4ef379dd-7331-4f56-8253-b659a2e69e1a', // todo: pass in the right reference ID
+        },
+      },
+    });
     handleClose();
   };
 

@@ -421,9 +421,8 @@ export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
   credentialName?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type BrandingKeySpecifier = ('logo' | 'styles' | BrandingKeySpecifier)[];
+export type BrandingKeySpecifier = ('styles' | BrandingKeySpecifier)[];
 export type BrandingFieldPolicy = {
-  logo?: FieldPolicy<any> | FieldReadFunction<any>;
   styles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalendarKeySpecifier = ('authorization' | 'event' | 'events' | 'id' | CalendarKeySpecifier)[];
@@ -586,6 +585,7 @@ export type ChallengeKeySpecifier = (
   | 'opportunities'
   | 'preferences'
   | 'profile'
+  | 'storageSpace'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
@@ -603,6 +603,7 @@ export type ChallengeFieldPolicy = {
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageSpace?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'hubID' | ChallengeCreatedKeySpecifier)[];
 export type ChallengeCreatedFieldPolicy = {
@@ -890,6 +891,25 @@ export type DiscussionFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type DocumentKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'displayName'
+  | 'id'
+  | 'mimeType'
+  | 'size'
+  | 'tagset'
+  | DocumentKeySpecifier
+)[];
+export type DocumentFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
   | 'authorization'
@@ -958,7 +978,6 @@ export type HubKeySpecifier = (
   | 'context'
   | 'group'
   | 'groups'
-  | 'groupsWithTag'
   | 'host'
   | 'id'
   | 'metrics'
@@ -969,6 +988,7 @@ export type HubKeySpecifier = (
   | 'profile'
   | 'project'
   | 'projects'
+  | 'storageSpace'
   | 'templates'
   | 'timeline'
   | 'visibility'
@@ -985,7 +1005,6 @@ export type HubFieldPolicy = {
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
-  groupsWithTag?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -996,6 +1015,7 @@ export type HubFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1079,6 +1099,7 @@ export type LibraryKeySpecifier = (
   | 'id'
   | 'innovationPack'
   | 'innovationPacks'
+  | 'storageSpace'
   | LibraryKeySpecifier
 )[];
 export type LibraryFieldPolicy = {
@@ -1086,6 +1107,7 @@ export type LibraryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageSpace?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
   | 'id'
@@ -1197,7 +1219,7 @@ export type MutationKeySpecifier = (
   | 'deleteChallenge'
   | 'deleteCollaboration'
   | 'deleteDiscussion'
-  | 'deleteFile'
+  | 'deleteDocument'
   | 'deleteHub'
   | 'deleteInnovationFlowTemplate'
   | 'deleteInnovationPack'
@@ -1258,6 +1280,7 @@ export type MutationKeySpecifier = (
   | 'updateChallengeInnovationFlow'
   | 'updateCommunityApplicationForm'
   | 'updateDiscussion'
+  | 'updateDocument'
   | 'updateEcosystemModel'
   | 'updateHub'
   | 'updateHubVisibility'
@@ -1277,7 +1300,7 @@ export type MutationKeySpecifier = (
   | 'updateUserGroup'
   | 'updateVisual'
   | 'updateWhiteboardTemplate'
-  | 'uploadFile'
+  | 'uploadFileOnReference'
   | 'uploadImageOnVisual'
   | MutationKeySpecifier
 )[];
@@ -1343,7 +1366,7 @@ export type MutationFieldPolicy = {
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteFile?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1404,6 +1427,7 @@ export type MutationFieldPolicy = {
   updateChallengeInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1423,7 +1447,7 @@ export type MutationFieldPolicy = {
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  uploadFile?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
@@ -1491,6 +1515,7 @@ export type OrganizationKeySpecifier = (
   | 'owners'
   | 'preferences'
   | 'profile'
+  | 'storageSpace'
   | 'verification'
   | 'website'
   | OrganizationKeySpecifier
@@ -1511,6 +1536,7 @@ export type OrganizationFieldPolicy = {
   owners?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1560,12 +1586,20 @@ export type PaginatedUsersFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformKeySpecifier = ('authorization' | 'communication' | 'id' | 'library' | PlatformKeySpecifier)[];
+export type PlatformKeySpecifier = (
+  | 'authorization'
+  | 'communication'
+  | 'id'
+  | 'library'
+  | 'storageSpace'
+  | PlatformKeySpecifier
+)[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageSpace?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformLocationsKeySpecifier = (
   | 'about'
@@ -2038,6 +2072,25 @@ export type ServiceMetadataFieldPolicy = {
 export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
 export type StorageConfigFieldPolicy = {
   file?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageSpaceKeySpecifier = (
+  | 'allowedMimeTypes'
+  | 'authorization'
+  | 'document'
+  | 'documents'
+  | 'id'
+  | 'maxFileSize'
+  | 'size'
+  | StorageSpaceKeySpecifier
+)[];
+export type StorageSpaceFieldPolicy = {
+  allowedMimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
+  documents?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
   | 'activityCreated'
@@ -2574,6 +2627,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
     fields?: DiscussionFieldPolicy;
   };
+  Document?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | DocumentKeySpecifier | (() => undefined | DocumentKeySpecifier);
+    fields?: DocumentFieldPolicy;
+  };
   EcosystemModel?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | EcosystemModelKeySpecifier | (() => undefined | EcosystemModelKeySpecifier);
     fields?: EcosystemModelFieldPolicy;
@@ -2831,6 +2888,10 @@ export type StrictTypedTypePolicies = {
   StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);
     fields?: StorageConfigFieldPolicy;
+  };
+  StorageSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageSpaceKeySpecifier | (() => undefined | StorageSpaceKeySpecifier);
+    fields?: StorageSpaceFieldPolicy;
   };
   Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);

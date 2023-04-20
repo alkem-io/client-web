@@ -548,8 +548,6 @@ export enum AuthorizationPrivilege {
 
 export type Branding = {
   __typename?: 'Branding';
-  /** The logo of this instance of branding */
-  logo: Visual;
   /** The style configuration */
   styles?: Maybe<Scalars['String']>;
 };
@@ -788,6 +786,8 @@ export type Challenge = {
   preferences: Array<Preference>;
   /** The Profile for the  Challenge. */
   profile: Profile;
+  /** The StorageSpace with documents in use by this Challenge */
+  storageSpace?: Maybe<StorageSpace>;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -1517,9 +1517,8 @@ export type DeleteDiscussionInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteFileInput = {
-  /** IPFS Content Identifier (CID) of the file, e.g. Qmde6CnXDGGe7Dynz1pnxgNARtdVBme9YBwNbo4HJiRy2W */
-  CID: Scalars['CID'];
+export type DeleteDocumentInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteHubInput = {
@@ -1630,6 +1629,24 @@ export type DiscussionSendMessageInput = {
   message: Scalars['String'];
 };
 
+export type Document = {
+  __typename?: 'Document';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The user that created this Document */
+  createdBy?: Maybe<User>;
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Mime type for this Document. */
+  mimeType: MimeType;
+  /** Size of the Document. */
+  size: Scalars['Float'];
+  /** The tagset in use on this Document. */
+  tagset: Tagset;
+};
+
 export type EcosystemModel = {
   __typename?: 'EcosystemModel';
   /** A list of ActorGroups */
@@ -1731,8 +1748,6 @@ export type Hub = {
   group: UserGroup;
   /** The User Groups on this Hub */
   groups: Array<UserGroup>;
-  /** All groups on this Hub that have the provided tag */
-  groupsWithTag: Array<UserGroup>;
   /** The Hub host. */
   host?: Maybe<Organization>;
   /** The ID of the entity */
@@ -1753,6 +1768,8 @@ export type Hub = {
   project: Project;
   /** All projects within this hub */
   projects: Array<Project>;
+  /** The StorageSpace with documents in use by this Hub */
+  storageSpace?: Maybe<StorageSpace>;
   /** The templates in use by this Hub */
   templates?: Maybe<TemplatesSet>;
   /** The timeline with events in use by this Hub */
@@ -1781,10 +1798,6 @@ export type HubCommunityArgs = {
 
 export type HubGroupArgs = {
   ID: Scalars['UUID'];
-};
-
-export type HubGroupsWithTagArgs = {
-  tag: Scalars['String'];
 };
 
 export type HubOpportunitiesArgs = {
@@ -1919,6 +1932,8 @@ export type Library = {
   innovationPack?: Maybe<InnovatonPack>;
   /** Platform level library. */
   innovationPacks: Array<InnovatonPack>;
+  /** The StorageSpace with documents in use by this User */
+  storageSpace?: Maybe<StorageSpace>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -1973,6 +1988,18 @@ export type Metadata = {
   /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
 };
+
+export enum MimeType {
+  Bmp = 'BMP',
+  Gif = 'GIF',
+  Jpeg = 'JPEG',
+  Jpg = 'JPG',
+  Pdf = 'PDF',
+  Png = 'PNG',
+  Svg = 'SVG',
+  Webp = 'WEBP',
+  Xpng = 'XPNG',
+}
 
 export type MoveAspectInput = {
   /** ID of the Aspect to move. */
@@ -2105,8 +2132,8 @@ export type Mutation = {
   deleteCollaboration: Collaboration;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
-  /** Removes a file. */
-  deleteFile: Scalars['Boolean'];
+  /** Deletes the specified Document. */
+  deleteDocument: Document;
   /** Deletes the specified Hub. */
   deleteHub: Hub;
   /** Deletes the specified InnovationFlowTemplate. */
@@ -2227,6 +2254,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
+  /** Updates the specified Document. */
+  updateDocument: Document;
   /** Updates the specified EcosystemModel. */
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
@@ -2265,8 +2294,8 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified WhiteboardTemplate. */
   updateWhiteboardTemplate: WhiteboardTemplate;
-  /** Uploads a file. */
-  uploadFile: Scalars['String'];
+  /** Create a new Document on the Storage and return the value as part of the returned Reference. */
+  uploadFileOnReference: Reference;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -2503,8 +2532,8 @@ export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
 };
 
-export type MutationDeleteFileArgs = {
-  deleteData: DeleteFileInput;
+export type MutationDeleteDocumentArgs = {
+  deleteData: DeleteDocumentInput;
 };
 
 export type MutationDeleteHubArgs = {
@@ -2747,6 +2776,10 @@ export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
 
+export type MutationUpdateDocumentArgs = {
+  documentData: UpdateDocumentInput;
+};
+
 export type MutationUpdateEcosystemModelArgs = {
   ecosystemModelData: UpdateEcosystemModelInput;
 };
@@ -2823,8 +2856,9 @@ export type MutationUpdateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: UpdateWhiteboardTemplateInput;
 };
 
-export type MutationUploadFileArgs = {
+export type MutationUploadFileOnReferenceArgs = {
   file: Scalars['Upload'];
+  uploadData: StorageSpaceUploadFileInput;
 };
 
 export type MutationUploadImageOnVisualArgs = {
@@ -2921,6 +2955,8 @@ export type Organization = Groupable & {
   preferences: Array<Preference>;
   /** The profile for this organization. */
   profile: Profile;
+  /** The StorageSpace with documents in use by this Organization */
+  storageSpace?: Maybe<StorageSpace>;
   verification: OrganizationVerification;
   /** Organization website */
   website?: Maybe<Scalars['String']>;
@@ -3018,6 +3054,8 @@ export type Platform = {
   id: Scalars['UUID'];
   /** The Innovation Library for the platform */
   library: Library;
+  /** The StorageSpace with documents in use by Users + Organizations on the Platform. */
+  storageSpace?: Maybe<StorageSpace>;
 };
 
 export type PlatformLocations = {
@@ -3788,6 +3826,37 @@ export type StorageConfig = {
   file: FileStorageConfig;
 };
 
+export type StorageSpace = {
+  __typename?: 'StorageSpace';
+  /** Mime types allowed to be stored on this StorageSpace. */
+  allowedMimeTypes: Array<Scalars['String']>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** A single Document */
+  document?: Maybe<Document>;
+  /** The list of Documents for this StorageSpace. */
+  documents: Array<Document>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Maximum allowed file size on this StorageSpace. */
+  maxFileSize: Scalars['Float'];
+  /** The aggregate size of all Documents for this StorageSpace. */
+  size: Scalars['Float'];
+};
+
+export type StorageSpaceDocumentArgs = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type StorageSpaceDocumentsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type StorageSpaceUploadFileInput = {
+  referenceID: Scalars['String'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   activityCreated: ActivityCreatedSubscriptionResult;
@@ -4090,6 +4159,13 @@ export type UpdateDiscussionInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateDocumentInput = {
+  ID: Scalars['UUID'];
+  /** The display name for the Document. */
+  displayName: Scalars['String'];
+  tagset?: InputMaybe<UpdateTagsetInput>;
 };
 
 export type UpdateEcosystemModelInput = {
@@ -4518,9 +4594,13 @@ export type WhiteboardTemplate = {
 
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload'];
+  uploadData: StorageSpaceUploadFileInput;
 }>;
 
-export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
+export type UploadFileMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
+};
 
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
