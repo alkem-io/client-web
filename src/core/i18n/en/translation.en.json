@@ -1400,8 +1400,8 @@
     },
     "contributors": {
       "search": {
-        "title": "Search for talent and expertise that can help you with your Challenge!",
-        "subtitle": "Find other people and organizations, for example based on skills or interests.",
+        "title": "Find talent and expertise!",
+        "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
         "placeholder": "Search..."
       },
       "organizations": {
