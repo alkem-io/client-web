@@ -1950,5 +1950,15 @@
   },
   "hubSearch": {
     "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
+  },
+  "visuals-alt-text": {
+    "banner": {
+      "page": {
+        "text": "Page banner: {{altText}}"
+      },
+      "card": {
+        "text": "Card banner: {{altText}}"
+      }
+    }
   }
 }

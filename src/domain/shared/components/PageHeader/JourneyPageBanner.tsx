@@ -135,6 +135,7 @@ export interface JourneyPageBannerProps {
   title?: string;
   tagline?: string;
   bannerUrl?: string;
+  bannerAltText?: string;
   showBreadcrumbs?: boolean;
   loading?: boolean;
   journeyTypeName: JourneyTypeName | 'admin';
@@ -148,10 +149,12 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   title,
   tagline,
   bannerUrl,
+  bannerAltText,
   showBreadcrumbs,
   journeyTypeName,
   loading: dataLoading = false,
 }) => {
+  const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
@@ -164,7 +167,6 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
   const theme = useTheme();
 
   const titleBackgroundColor = getEntityColor(theme, journeyTypeName);
-  // const titleForegroundColor = journeyTypeName === 'opportunity' ? theme.palette.hub.main : theme.palette.common.white;
 
   return (
     <Root ref={containerReference}>
@@ -177,7 +179,7 @@ const JourneyPageBanner: FC<JourneyPageBannerProps> = ({
           </TopNotices>
           <ImageBlurredSides
             src={bannerUrl}
-            alt={`${title} - Banner image`}
+            alt={t('visuals-alt-text.banner.page.text', { altText: bannerAltText })}
             onLoad={() => setImageLoading(false)}
             onError={imageLoadError}
             blurRadius={2}
