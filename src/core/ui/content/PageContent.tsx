@@ -2,9 +2,13 @@ import { Box, BoxProps, useMediaQuery, useTheme } from '@mui/material';
 import { GRID_COLUMNS_DESKTOP, GRID_COLUMNS_MOBILE, MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import useCurrentBreakpoint from '../utils/useCurrentBreakpoint';
-import GridContainer from '../grid/GridContainer';
+import GridContainer, { GridContainerProps } from '../grid/GridContainer';
 
-const PageContent = ({ children, sx, ...props }: BoxProps) => {
+interface PageContentProps extends BoxProps {
+  gridContainerProps?: GridContainerProps;
+}
+
+const PageContent = ({ children, sx, gridContainerProps, ...props }: PageContentProps) => {
   const breakpoint = useCurrentBreakpoint();
 
   const theme = useTheme();
@@ -15,7 +19,7 @@ const PageContent = ({ children, sx, ...props }: BoxProps) => {
 
   return (
     <Box flexGrow={1} sx={{ backgroundColor: 'background.default', paddingBottom, ...sx }} {...props}>
-      <GridContainer maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto">
+      <GridContainer maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto" {...gridContainerProps}>
         <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
           {children}
         </GridProvider>

@@ -11,9 +11,9 @@ const useUserCardProps = (data: UserCardFragment[] | undefined): SearchableUserC
 
     return data.map(user => ({
       id: user.id,
-      tags: user?.profile.tagsets?.flatMap(x => x.tags),
+      tags: user.profile.tagsets?.flatMap(x => x.tags),
       displayName: user.profile.displayName,
-      avatarSrc: user?.profile.visual?.uri,
+      avatarSrc: user.profile.visual?.uri,
       city: user.profile.location?.city,
       country: user.profile.location?.country,
       url: buildUserProfileUrl(user.nameID),

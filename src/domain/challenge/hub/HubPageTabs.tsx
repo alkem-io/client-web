@@ -22,8 +22,8 @@ import {
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import {
   DashboardOutlined,
-  InfoOutlined,
   MoreVertOutlined,
+  SchoolOutlined,
   SettingsOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
@@ -164,7 +164,11 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
                 disabled={subEntityTab.disabled}
               />
             )}
-            <BottomNavigationAction value={EntityPageSection.About} label={t('common.about')} icon={<InfoOutlined />} />
+            <BottomNavigationAction
+              value={EntityPageSection.Contribute}
+              label={t('pages.hub.sections.contribute.header')}
+              icon={<SchoolOutlined />}
+            />
             {!showSettings && shareUrl && (
               <BottomNavigationAction
                 value={NavigationActions.Share}

@@ -7,7 +7,7 @@ import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
-import { PersonOutlined } from '@mui/icons-material';
+import { AddOutlined, PersonOutlined } from '@mui/icons-material';
 import RootThemeProvider from '../../../../../core/ui/themes/RootThemeProvider';
 
 export interface ApplicationButtonProps {
@@ -28,6 +28,7 @@ export interface ApplicationButtonProps {
   onJoin: () => void;
   loading: boolean;
   component?: typeof MuiButton;
+  extended?: boolean;
 }
 
 export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElement, ApplicationButtonProps>(
@@ -50,6 +51,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       onJoin,
       loading = false,
       component: Button = MuiButton,
+      extended = false,
     },
     ref
   ) => {
@@ -109,7 +111,11 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
        <li>"Membership not available"</li>
      </ol>
    */
-    const applicationButton = useMemo(() => {
+
+    const getButtonLabel = (verb: string) =>
+      extended ? t('components.application-button.extendedMessage', { join: verb }) : verb;
+
+    const renderApplicationButton = () => {
       if (loading) {
         return <Button ref={ref as Ref<HTMLButtonElement>} disabled startIcon={<CircularProgress size={24} />} />;
       }
@@ -156,16 +162,31 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
       if (canJoinCommunity) {
         return (
-          <Button ref={ref as Ref<HTMLButtonElement>} onClick={handleClickJoin} variant="contained">
-            {t('components.application-button.join')}
+          <Button
+            ref={ref as Ref<HTMLButtonElement>}
+            startIcon={extended ? <AddOutlined /> : undefined}
+            onClick={handleClickJoin}
+            variant="contained"
+            sx={extended ? { textTransform: 'none' } : undefined}
+          >
+            {getButtonLabel(t('components.application-button.join'))}
           </Button>
         );
       }
 
       if (canApplyToCommunity && applyUrl) {
+        const verb = extended ? t('components.application-button.applyTo') : t('buttons.apply');
+
         return (
-          <Button ref={ref as Ref<HTMLAnchorElement>} component={RouterLink} variant="contained" to={applyUrl}>
-            {t('buttons.apply')}
+          <Button
+            ref={ref as Ref<HTMLAnchorElement>}
+            component={RouterLink}
+            startIcon={extended ? <AddOutlined /> : undefined}
+            variant="contained"
+            to={applyUrl}
+            sx={extended ? { textTransform: 'none' } : undefined}
+          >
+            {getButtonLabel(verb)}
           </Button>
         );
       }
@@ -218,21 +239,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
           {t('components.application-button.apply-disabled')}
         </Button>
       );
-    }, [
-      Button,
-      loading,
-      isAuthenticated,
-      isMember,
-      applicationState,
-      canJoinCommunity,
-      canApplyToCommunity,
-      isParentMember,
-      applyUrl,
-      canApplyToParentCommunity,
-      canJoinParentCommunity,
-      parentApplicationState,
-      t,
-    ]);
+    };
 
     const dialogVariant = useMemo(
       () => (isApplicationPending(parentApplicationState) ? 'dialog-parent-app-pending' : 'dialog-apply-parent'),
@@ -241,7 +248,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
 
     return (
       <>
-        {applicationButton}
+        {renderApplicationButton()}
         <RootThemeProvider>
           <PreApplicationDialog
             open={isApplyDialogOpen}
