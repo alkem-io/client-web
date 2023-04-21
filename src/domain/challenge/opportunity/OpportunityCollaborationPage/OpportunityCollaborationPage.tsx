@@ -4,8 +4,17 @@ import ContributePage from '../../../collaboration/contribute/ContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
+import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
 
-const OpportunityCollaborationPage = () => {
+const renderPage = (calloutGroup: string | undefined) => {
+  switch (calloutGroup) {
+    // Add handling for groups here
+    default:
+      return <ContributePage journeyTypeName="opportunity" />;
+  }
+};
+
+const OpportunityCollaborationPage = (props: CollaborationPageProps) => {
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   if (!hubNameId || !challengeNameId || !opportunityNameId) {
@@ -19,17 +28,7 @@ const OpportunityCollaborationPage = () => {
     }
   };
 
-  return (
-    <CalloutPage journeyTypeName="opportunity" parentRoute={getPageRoute}>
-      {calloutGroup => {
-        switch (calloutGroup) {
-          // Add handling for groups here
-          default:
-            return <ContributePage journeyTypeName="hub" />;
-        }
-      }}
-    </CalloutPage>
-  );
+  return <CalloutPage journeyTypeName="opportunity" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default OpportunityCollaborationPage;
