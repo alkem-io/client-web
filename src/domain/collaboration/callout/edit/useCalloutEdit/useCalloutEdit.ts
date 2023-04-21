@@ -54,6 +54,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
               })),
             },
             state: callout.state,
+            group: callout.group,
             postTemplate: callout.postTemplate
               ? {
                   type: callout.postTemplate.type,

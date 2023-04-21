@@ -14,6 +14,7 @@ export type CalloutEditType = Omit<
     references?: Reference[];
     tagsets?: Tagset[];
   };
+  group?: string;
 } & {
   postTemplate?: CalloutPostTemplate;
   whiteboardTemplate?: CalloutWhiteboardTemplate;

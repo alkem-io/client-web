@@ -10557,6 +10557,7 @@ export const UpdateCalloutDocument = gql`
         }
       }
       state
+      group
       type
       visibility
       ...CalloutPostTemplate
