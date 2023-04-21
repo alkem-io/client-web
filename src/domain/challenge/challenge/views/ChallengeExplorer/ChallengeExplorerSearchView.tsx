@@ -56,6 +56,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                       challengeId={challenge.id}
                       challengeNameId={challenge.nameID}
                       bannerUri={challenge.imageUrl}
+                      bannerAltText={challenge.imageAltText}
                       displayName={challenge.displayName}
                       tags={challenge.tags}
                       tagline={challenge.tagline}

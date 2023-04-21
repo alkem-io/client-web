@@ -9,20 +9,13 @@ interface KnowledgeBasePageProps {
   scrollToCallout?: boolean;
 }
 
-const KnowledgeBasePage = ({
-  journeyTypeName,
-  scrollToCallout = false,
-  children,
-}: PropsWithChildren<KnowledgeBasePageProps>) => {
+const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWithChildren<KnowledgeBasePageProps>) => {
   const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
   return (
-    <>
-      <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
-        <JourneyCalloutsGroupTabView scrollToCallout={scrollToCallout} entityTypeName={journeyTypeName} />
-      </PageLayout>
-      {children}
-    </>
+    <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
+      <JourneyCalloutsGroupTabView scrollToCallout={scrollToCallout} entityTypeName={journeyTypeName} />
+    </PageLayout>
   );
 };
 

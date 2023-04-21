@@ -345,6 +345,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1806,6 +1814,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -13730,6 +13748,7 @@ export type UpdateCalloutMutation = {
     __typename?: 'Callout';
     id: string;
     state: CalloutState;
+    group?: string | undefined;
     type: CalloutType;
     visibility: CalloutVisibility;
     profile: {
@@ -19257,7 +19276,9 @@ export type OrganizationInfoFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    visual?:
+      | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+      | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
     location?:
@@ -19285,7 +19306,9 @@ export type OrganizationInfoFragment = {
           id: string;
           displayName: string;
           location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          visual?:
+            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>
@@ -19317,7 +19340,9 @@ export type OrganizationInfoQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      visual?:
+        | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       location?:
@@ -19345,7 +19370,9 @@ export type OrganizationInfoQuery = {
             id: string;
             displayName: string;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            visual?:
+              | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+              | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>

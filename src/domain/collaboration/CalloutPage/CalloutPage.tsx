@@ -12,10 +12,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import useCanGoBack from '../../../core/routing/useCanGoBack';
 
-interface CalloutPageProps {
+interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
-  children: (calloutGroup: string | undefined) => ReactNode;
+  parentPagePath: string;
+}
+
+export interface CalloutPageProps {
+  journeyTypeName: JourneyTypeName;
+  renderPage: (calloutGroup: string | undefined) => ReactNode;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
+  children?: (props: CalloutLocation) => ReactNode;
 }
 
 export const LocationStateKeyCachedCallout = 'LocationStateKeyCachedCallout';
@@ -24,7 +30,7 @@ export interface LocationStateCachedCallout {
   [LocationStateKeyCachedCallout]?: TypedCallout;
 }
 
-const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProps) => {
+const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
   const { calloutNameId, hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
@@ -90,10 +96,10 @@ const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProp
 
   const calloutGroup = typedCallout.group;
 
-  const parentRouteUri = typeof parentRoute === 'function' ? parentRoute(calloutGroup) : parentRoute;
+  const parentPagePath = typeof parentRoute === 'function' ? parentRoute(calloutGroup) : parentRoute;
 
   const handleClose = () => {
-    canGoBack ? navigate(-1) : navigate(parentRouteUri);
+    canGoBack ? navigate(-1) : navigate(parentPagePath);
   };
 
   const calloutUri = buildCalloutUrl(typedCallout.nameID, {
@@ -104,7 +110,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProp
 
   return (
     <>
-      {children(calloutGroup)}
+      {renderPage(calloutGroup)}
       <DialogWithGrid open columns={12} onClose={handleClose}>
         <CalloutView
           callout={typedCallout}
@@ -122,6 +128,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, children }: CalloutPageProp
           expanded
         />
       </DialogWithGrid>
+      {children?.({ parentPagePath, journeyTypeName })}
     </>
   );
 };

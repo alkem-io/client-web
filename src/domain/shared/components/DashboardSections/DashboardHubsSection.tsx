@@ -6,8 +6,9 @@ import HubCard, { HubCardProps } from '../../../challenge/hub/HubCard/HubCard';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 type NeededFields = 'nameID' | 'authorization' | 'id' | 'visibility';
 
@@ -45,20 +46,25 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
       <ScrollableCardsLayout items={hubs} cards={false}>
-        {hub => (
-          <HubCard
-            bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
-            hubId={hub.id}
-            displayName={hub.profile.displayName}
-            journeyUri={buildHubUrl(hub.nameID)}
-            vision={hub.context?.vision!}
-            membersCount={getMetricCount(hub.metrics, MetricType.Member)}
-            tagline={hub.profile.tagline!}
-            tags={hub.profile.tagset?.tags!}
-            hubVisibility={hub.visibility}
-            {...getHubCardProps?.(hub)}
-          />
-        )}
+        {hub => {
+          const visual = getVisualByType(VisualName.BANNER, hub.profile?.visuals);
+
+          return (
+            <HubCard
+              bannerUri={visual?.uri}
+              bannerAltText={visual?.alternativeText}
+              hubId={hub.id}
+              displayName={hub.profile.displayName}
+              journeyUri={buildHubUrl(hub.nameID)}
+              vision={hub.context?.vision!}
+              membersCount={getMetricCount(hub.metrics, MetricType.Member)}
+              tagline={hub.profile.tagline!}
+              tags={hub.profile.tagset?.tags!}
+              hubVisibility={hub.visibility}
+              {...getHubCardProps?.(hub)}
+            />
+          );
+        }}
       </ScrollableCardsLayout>
     </PageContentBlock>
   );

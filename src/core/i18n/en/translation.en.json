@@ -422,7 +422,16 @@
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All cards, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
-    "permission-helptext": "Use the switch below to close this callout for new entries."
+    "permission-helptext": "Use the switch below to close this callout for new entries.",
+    "callout-location": "Location: ",
+    "callout-groups": {
+      "HomeLeft": "Dashboard Left",
+      "HomeRight": "Dashboard Right",
+      "CommunityLeft": "Community Left",
+      "CommunityRight": "Community Right",
+      "ChallengesLeft": "Challenges Left",
+      "ChallengesRight": "Challenges Right"
+    }
   },
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
@@ -1964,5 +1973,23 @@
   },
   "hubSearch": {
     "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
+  },
+  "visuals-alt-text": {
+    "banner": {
+      "page": {
+        "text": "Page banner: {{altText}}"
+      },
+      "card": {
+        "text": "Card banner: {{altText}}"
+      },
+      "whiteboard": {
+        "text": "Card banner showing a preview of {{displayName}} whiteboard"
+      }
+    },
+    "avatar": {
+      "contributor": {
+        "text": "{{displayName}}'s avatar: {{altText}}"
+      }
+    }
   }
 }

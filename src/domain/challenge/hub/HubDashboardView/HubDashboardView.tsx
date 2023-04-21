@@ -228,7 +228,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <PageContentBlockHeader title={t('components.referenceSegment.title')} />
             <References references={references} />
             {/* TODO figure out the URL for references */}
-            <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
           </PageContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
           {communityReadAccess && (
