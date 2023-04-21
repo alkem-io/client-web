@@ -10,6 +10,7 @@ interface CalloutTypeSelectProps {
   value: CalloutType | undefined;
   disabled?: boolean;
 }
+const availableCalloutTypes = [CalloutType.Comments, CalloutType.Card, CalloutType.Canvas];
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();
@@ -20,19 +21,11 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
 
   return (
     <RadioButtonGroup value={value} disabled={disabled} onChange={handleChange}>
-      <RadioButton
-        key={CalloutType.Comments}
-        value={CalloutType.Comments}
-        iconComponent={calloutIcons[CalloutType.Comments]}
-      >
-        {t('components.callout-creation.callout-type-select.label.post')}
-      </RadioButton>
-      <RadioButton key={CalloutType.Card} value={CalloutType.Card} iconComponent={calloutIcons[CalloutType.Card]}>
-        {t('components.callout-creation.callout-type-select.label.posts')}
-      </RadioButton>
-      <RadioButton key={CalloutType.Canvas} value={CalloutType.Canvas} iconComponent={calloutIcons[CalloutType.Canvas]}>
-        {t('components.callout-creation.callout-type-select.label.whiteboards')}
-      </RadioButton>
+      {availableCalloutTypes.map(calloutType => (
+        <RadioButton key={calloutType} value={calloutType} iconComponent={calloutIcons[calloutType]}>
+          {t(`components.calloutTypeSelect.label.${calloutType}` as const)}
+        </RadioButton>
+      ))}
     </RadioButtonGroup>
   );
 };

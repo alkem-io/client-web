@@ -78,7 +78,7 @@ const DialogWithGrid = ({
       {...dialogProps}
       sx={{
         '.MuiDialog-paper': {
-          maxWidth: 'none',
+          maxWidth: '100vw',
           margin: 0,
           height: fullHeight ? '100%' : 'auto',
           maxHeight: fullScreen ? '100vh' : undefined,

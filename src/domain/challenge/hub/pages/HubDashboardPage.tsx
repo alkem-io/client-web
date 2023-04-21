@@ -62,10 +62,6 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               readUsersAccess={entities.permissions.readUsers}
               references={entities.references}
               recommendations={entities.recommendations}
-              memberUsers={entities.memberUsers}
-              memberUsersCount={entities.memberUsersCount}
-              memberOrganizations={entities.memberOrganizations}
-              memberOrganizationsCount={entities.memberOrganizationsCount}
               leadUsers={entities.hub?.community?.leadUsers}
               leadOrganizations={entities.hostOrganizations}
               activities={entities.activities}
