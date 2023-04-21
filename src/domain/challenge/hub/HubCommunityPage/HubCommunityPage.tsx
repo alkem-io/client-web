@@ -78,7 +78,10 @@ const HubCommunityPage = () => {
     return activityItem.type === ActivityEventType.MemberJoined;
   });
 
-  const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.hub.community);
+  const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.hub.community, {
+    memberUsersLimit: 0,
+    memberOrganizationsLimit: 0,
+  });
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.hub.community?.id);
 
