@@ -8576,8 +8576,8 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
 }
 
 export const ActivityCreatedDocument = gql`
-  subscription activityCreated($collaborationID: UUID!) {
-    activityCreated(collaborationID: $collaborationID) {
+  subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
+    activityCreated(input: $input) {
       activity {
         ...ActivityLogOnCollaboration
       }
@@ -8598,7 +8598,7 @@ export const ActivityCreatedDocument = gql`
  * @example
  * const { data, loading, error } = useActivityCreatedSubscription({
  *   variables: {
- *      collaborationID: // value for 'collaborationID'
+ *      input: // value for 'input'
  *   },
  * });
  */

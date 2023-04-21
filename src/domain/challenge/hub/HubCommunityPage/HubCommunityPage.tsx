@@ -72,10 +72,8 @@ const HubCommunityPage = () => {
 
   const hostOrganizations = useMemo(() => data?.hub.host && [data?.hub.host], [data?.hub.host]);
 
-  const { activities } = useActivityOnCollaboration(data?.hub.collaboration?.id);
-
-  const relevantActivities = activities?.filter(activityItem => {
-    return activityItem.type === ActivityEventType.MemberJoined;
+  const { activities } = useActivityOnCollaboration(data?.hub.collaboration?.id, {
+    types: [ActivityEventType.MemberJoined],
   });
 
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.hub.community);
@@ -123,7 +121,7 @@ const HubCommunityPage = () => {
           <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
           <PageContentBlock>
             <PageContentBlockHeader title={t('common.activity')} />
-            <ActivityComponent activities={relevantActivities} journeyLocation={journeyLocation} />
+            <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
           </PageContentBlock>
           <CalloutsGroupView
             callouts={groupedCallouts[CalloutsGroup.CommunityRight]}
