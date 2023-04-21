@@ -1980,12 +1980,6 @@
     "avatar": {
       "contributor": {
         "text": "{{displayName}}'s avatar: {{altText}}"
-      },
-      "user": {
-        "text": "Avatar for user: {{altText}}"
-      },
-      "organization": {
-        "text": "Avatar for organization: {{altText}}"
       }
     }
   }

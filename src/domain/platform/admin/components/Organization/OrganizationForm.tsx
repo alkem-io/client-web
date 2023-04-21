@@ -221,7 +221,10 @@ export const OrganizationForm: FC<Props> = ({
                   avatar={
                     <VisualUpload
                       visual={visual}
-                      altText={t('visuals-alt-text.avatar.organization.text', { altText: visual?.alternativeText })}
+                      altText={t('visuals-alt-text.avatar.contributor.text', {
+                        displayName,
+                        altText: visual?.alternativeText,
+                      })}
                     />
                   }
                 >

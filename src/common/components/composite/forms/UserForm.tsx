@@ -193,7 +193,10 @@ export const UserForm: FC<UserProps> = ({
                     <Grid item container justifyContent="center">
                       <VisualUpload
                         visual={avatar}
-                        altText={t('visuals-alt-text.avatar.user.text', { altText: avatar?.alternativeText })}
+                        altText={t('visuals-alt-text.avatar.contributor.text', {
+                          displayName,
+                          altText: avatar?.alternativeText,
+                        })}
                       />
                     </Grid>
                   </Grid>
