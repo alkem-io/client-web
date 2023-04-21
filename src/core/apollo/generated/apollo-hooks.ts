@@ -14583,12 +14583,6 @@ export const ChallengeApplicationDocument = gql`
         profile {
           id
           displayName
-          tagline
-          visuals {
-            id
-            uri
-            name
-          }
         }
         community {
           id
@@ -14658,10 +14652,6 @@ export const HubApplicationDocument = gql`
       profile {
         id
         displayName
-        tagline
-        visuals {
-          ...VisualUri
-        }
       }
       community {
         id
@@ -14669,7 +14659,6 @@ export const HubApplicationDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
 `;
 
 /**
