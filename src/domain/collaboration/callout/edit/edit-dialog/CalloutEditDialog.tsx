@@ -145,8 +145,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             {t('components.calloutEdit.titleWithType', {
               type: t(`components.calloutTypeSelect.label.${calloutType}` as const),
             })}
-
-            {CalloutIcon && <CalloutIcon />}
           </Box>
         </DialogHeader>
         <DialogContent dividers>
