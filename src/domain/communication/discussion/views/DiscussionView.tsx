@@ -58,7 +58,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
   } as Message;
 
   const { pathname } = useResolvedPath('..');
-  const disucussionUrl = buildDiscussionUrl(pathname, nameID);
+  const discussionUrl = buildDiscussionUrl(pathname, nameID);
 
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
@@ -66,7 +66,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
         <Grid item>
           <Box display="flex" justifyContent="space-between">
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
-            <ShareButton url={disucussionUrl} entityTypeName="callout" />
+            <ShareButton url={discussionUrl} entityTypeName="callout" />
           </Box>
           <MessageView
             message={initialComment}
