@@ -23,12 +23,12 @@ import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
 
-interface JourneyCalloutsTabViewProps {
+interface JourneyCalloutsGroupTabViewProps {
   entityTypeName: EntityTypeName;
   scrollToCallout?: boolean;
 }
 
-const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCalloutsTabViewProps) => {
+const JourneyCalloutsGroupTabView = ({ entityTypeName, scrollToCallout }: JourneyCalloutsGroupTabViewProps) => {
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   if (!hubNameId) {
@@ -144,4 +144,4 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
   );
 };
 
-export default JourneyCalloutsTabView;
+export default JourneyCalloutsGroupTabView;

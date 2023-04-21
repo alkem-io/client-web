@@ -2,15 +2,23 @@ import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-
-const getPageRoute = (calloutGroup: string | undefined): EntityPageSection => {
-  switch (calloutGroup) {
-    default:
-      return EntityPageSection.Contribute;
-  }
-};
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 
 const ChallengeCollaborationPage = () => {
+  const { hubNameId, challengeNameId } = useUrlParams();
+
+  if (!hubNameId || !challengeNameId) {
+    throw new Error('Must be within a Challenge');
+  }
+
+  const getPageRoute = (calloutGroup: string | undefined) => {
+    switch (calloutGroup) {
+      default:
+        return `${buildChallengeUrl(hubNameId, challengeNameId)}/${EntityPageSection.Contribute}`;
+    }
+  };
+
   return (
     <CalloutPage journeyTypeName="challenge" parentRoute={getPageRoute}>
       {calloutGroup => {

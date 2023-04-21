@@ -79,9 +79,9 @@ fragment HubPage on Hub {
   community {
     ...EntityDashboardCommunity
     leadUsers {
-       profile {
-         ...HubWelcomeBlockContributorProfile
-       }
+      profile {
+        ...HubWelcomeBlockContributorProfile
+      }
     }
   }
   challenges(limit: 3, shuffle: true) {
@@ -105,7 +105,7 @@ fragment HubWelcomeBlockContributorProfile on Profile {
     city
     country
   }
-  tagset {
+  tagsets {
     id
     tags
   }

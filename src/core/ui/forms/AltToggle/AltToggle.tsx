@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Stack, Switch } from '@mui/material';
+import { Stack, StackProps, Switch } from '@mui/material';
 import { Caption } from '../../typography';
 
 interface AltToggleOption<Value> {
@@ -13,7 +13,13 @@ interface TwoSideToggleProps<Value1, Value2> {
   onChange: (nextValue: Value1 | Value2) => void;
 }
 
-const AltToggle = <Value1, Value2>({ value, options, onChange }: TwoSideToggleProps<Value1, Value2>) => {
+const AltToggle = <Value1, Value2>({
+  value,
+  options,
+  onChange,
+  sx,
+  ...stackProps
+}: TwoSideToggleProps<Value1, Value2> & Omit<StackProps, 'onChange'>) => {
   const [leftOption, rightOption] = options;
 
   const isLeftOptionSelected = value === leftOption.value;
@@ -37,7 +43,9 @@ const AltToggle = <Value1, Value2>({ value, options, onChange }: TwoSideTogglePr
         '.MuiSwitch-thumb': {
           backgroundColor: theme => theme.palette.primary.main,
         },
+        ...sx,
       }}
+      {...stackProps}
     >
       <Caption>{leftOption.label}</Caption>
       <Switch checked={!isLeftOptionSelected} onChange={handleChange} />
