@@ -52,6 +52,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
     };
     type: CalloutType;
     state: CalloutState;
+    group?: string;
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
