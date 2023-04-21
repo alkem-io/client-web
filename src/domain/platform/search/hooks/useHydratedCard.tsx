@@ -19,7 +19,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/contributor/user/constants/RoleType';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
 import { SearchResultMetaType, SearchResultT } from '../SearchView';
@@ -32,6 +32,7 @@ import CardContent from '../../../../core/ui/card/CardContent';
 import ContributingOrganizationCard from '../../../community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
 import CardParentJourneySegment from '../../../challenge/common/HubChildJourneyCard/CardParentJourneySegment';
 import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 const _hydrateUserCard = (data: SearchResultT<SearchResultUserFragment>) => {
   if (!data?.user) {
@@ -100,7 +101,7 @@ const _hydrateHubCard = (
   }
   const hub = data.hub;
   const tagline = hub.profile?.tagline || '';
-  const image = getVisualBannerNarrow(hub.profile.visuals);
+  const visual = getVisualByType(VisualName.BANNER, hub.profile?.visuals);
   const name = hub.profile.displayName;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
@@ -114,7 +115,8 @@ const _hydrateHubCard = (
 
   return (
     <SearchHubCard
-      bannerUri={image}
+      bannerUri={visual?.uri}
+      bannerAltText={visual?.alternativeText}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -138,7 +140,7 @@ const useHydrateChallengeCard = (
   const challenge = data.challenge;
   const containingHub = data.hub;
   const tagline = challenge.profile.tagline || '';
-  const image = getVisualBannerNarrow(challenge.profile.visuals);
+  const visual = getVisualByType(VisualName.BANNER, challenge.profile?.visuals);
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
@@ -157,7 +159,8 @@ const useHydrateChallengeCard = (
 
   return (
     <SearchChallengeCard
-      bannerUri={image}
+      bannerUri={visual?.uri}
+      bannerAltText={visual?.alternativeText}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -191,7 +194,7 @@ const useHydrateOpportunityCard = (
   const containingChallenge = data.challenge;
   const containingHub = data.hub;
   const tagline = opportunity.profile.tagline || '';
-  const image = getVisualBannerNarrow(opportunity.profile.visuals);
+  const visual = getVisualByType(VisualName.BANNER, opportunity.profile?.visuals);
   const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
@@ -210,7 +213,8 @@ const useHydrateOpportunityCard = (
 
   return (
     <SearchOpportunityCard
-      bannerUri={image}
+      bannerUri={visual?.uri}
+      bannerAltText={visual?.alternativeText}
       member={!!isMember}
       displayName={name}
       tagline={tagline}

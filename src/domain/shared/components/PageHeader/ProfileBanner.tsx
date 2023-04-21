@@ -131,6 +131,7 @@ export interface ProfileBannerProps {
   phone?: string;
   socialLinks?: SocialLinkItem[];
   avatarUrl?: string;
+  avatarAltText?: string;
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
   loading: boolean;
   onSendMessage: (text: string) => Promise<void>;
@@ -147,6 +148,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   phone,
   socialLinks,
   avatarUrl,
+  avatarAltText,
   loading: dataLoading = false,
   onSendMessage,
   isContactable = true,
@@ -179,7 +181,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
                   sx={{ height: '100%', width: '100%', position: 'absolute' }}
                 />
               )}
-              <Image src={avatarUrl} onLoad={() => setImageLoading(false)} onError={imageLoadError}>
+              <Image src={avatarUrl} alt={avatarAltText} onLoad={() => setImageLoading(false)} onError={imageLoadError}>
                 {title ? title[0] : ''}
               </Image>
             </ImageWrapper>

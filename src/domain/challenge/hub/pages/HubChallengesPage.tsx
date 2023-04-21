@@ -6,7 +6,7 @@ import {
   journeyCardValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -21,6 +21,7 @@ import HubPageLayout from '../layout/HubPageLayout';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface HubChallengesPageProps {}
 
@@ -77,6 +78,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             renderChildEntityCard={challenge => (
               <ChallengeCard
                 bannerUri={getVisualBannerNarrow(challenge.profile.visuals)!}
+                bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
                 displayName={challenge.profile.displayName}
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}

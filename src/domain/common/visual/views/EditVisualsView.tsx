@@ -19,7 +19,10 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
   return (
     <>
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
-        <VisualUpload visual={banner} />
+        <VisualUpload
+          visual={banner}
+          altText={t('pages.visual-edit.banner.description', { alternativeText: banner?.alternativeText })}
+        />
         <Box paddingLeft={2}>
           <BlockSectionTitle>{t('pages.visual-edit.banner.title')}</BlockSectionTitle>
           <BlockSectionTitle>
@@ -33,7 +36,10 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
         </Box>
       </Box>
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
-        <VisualUpload visual={bannerNarrow} />
+        <VisualUpload
+          visual={bannerNarrow}
+          altText={t('pages.visual-edit.banner-narrow.description', { alternativeText: bannerNarrow?.alternativeText })}
+        />
         <Box paddingLeft={2}>
           <BlockSectionTitle>{t('pages.visual-edit.banner-narrow.title')}</BlockSectionTitle>
           <BlockSectionTitle>

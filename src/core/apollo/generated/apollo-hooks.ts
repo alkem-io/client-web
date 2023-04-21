@@ -2036,6 +2036,7 @@ export const OrganizationInfoFragmentDoc = gql`
       description
       visual(type: AVATAR) {
         ...VisualUri
+        alternativeText
       }
       tagsets {
         id
@@ -2069,6 +2070,7 @@ export const OrganizationInfoFragmentDoc = gql`
         }
         visual(type: AVATAR) {
           ...VisualUri
+          alternativeText
         }
         tagsets {
           id
@@ -10555,6 +10557,7 @@ export const UpdateCalloutDocument = gql`
         }
       }
       state
+      group
       type
       visibility
       ...CalloutPostTemplate
