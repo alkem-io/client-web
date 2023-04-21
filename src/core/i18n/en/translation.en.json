@@ -1972,6 +1972,20 @@
       },
       "card": {
         "text": "Card banner: {{altText}}"
+      },
+      "whiteboard": {
+        "text": "Card banner showing a preview of {{displayName}} whiteboard"
+      }
+    },
+    "avatar": {
+      "contributor": {
+        "text": "{{displayName}}'s avatar: {{altText}}"
+      },
+      "user": {
+        "text": "Avatar for user: {{altText}}"
+      },
+      "organization": {
+        "text": "Avatar for organization: {{altText}}"
       }
     }
   }

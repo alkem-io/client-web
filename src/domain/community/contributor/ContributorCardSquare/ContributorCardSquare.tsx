@@ -19,6 +19,7 @@ interface ContributorCardTooltip {
 export interface ContributorCardSquareProps {
   id: string;
   avatar: string;
+  avatarAltText?: string;
   displayName: string;
   tooltip?: ContributorCardTooltip;
   url: string;
@@ -57,7 +58,7 @@ const ElevatedPaper = withElevationOnHover(Paper);
 
 export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const styles = useStyles();
-  const { id, displayName, avatar, url, tooltip, isContactable, roleName } = props;
+  const { id, displayName, avatar, avatarAltText, url, tooltip, isContactable, roleName } = props;
   const { t } = useTranslation();
   const [sendMessageToUser] = useSendMessageToUserMutation();
   const [isMessageUserDialogOpen, setIsMessageUserDialogOpen] = useState(false);
@@ -92,11 +93,11 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
               <UserCard
                 displayName={displayName}
                 avatarSrc={avatar}
+                avatarAltText={avatarAltText}
                 tags={tooltip?.tags || []}
                 roleName={roleName ?? tooltip?.roleName}
                 city={tooltip?.city}
                 country={tooltip?.country}
-                url=""
                 isContactable={isContactable}
                 onContact={() => setIsMessageUserDialogOpen(true)}
               />

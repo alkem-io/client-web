@@ -17,7 +17,7 @@ fragment OrganizationInfo on Organization {
     displayName
     description
     visual(type: AVATAR) {
-      ...VisualUri
+      ...VisualFull
     }
     tagsets {
       id
@@ -50,7 +50,7 @@ fragment OrganizationInfo on Organization {
         city
       }
       visual(type: AVATAR) {
-        ...VisualUri
+        ...VisualFull
       }
       tagsets {
         id

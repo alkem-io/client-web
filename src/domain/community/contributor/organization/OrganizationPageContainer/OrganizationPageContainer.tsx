@@ -134,6 +134,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         displayName: x.profile.displayName,
         roleName: x.roleName,
         avatar: x.profile.visual?.uri || '',
+        avatarAltText: x.profile.visual?.alternativeText,
         tooltip: {
           city: x.profile.location?.city || '',
           country: x.profile.location?.country && COUNTRIES_BY_CODE[x.profile.location?.country],
