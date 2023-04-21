@@ -14,7 +14,11 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
     case CalloutsGroup.HomeLeft:
     case CalloutsGroup.HomeRight:
       return EntityPageSection.Dashboard;
+    case CalloutsGroup.CommunityLeft:
+    case CalloutsGroup.CommunityRight:
+      return EntityPageSection.Community;
     case CalloutsGroup.ChallengesLeft:
+    case CalloutsGroup.ChallengesRight:
       return EntityPageSection.Challenges;
     default:
       return EntityPageSection.KnowledgeBase;

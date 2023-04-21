@@ -13,7 +13,7 @@ import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
-import { CalloutIcon } from '../icon/CalloutIcon';
+import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import {
   useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
@@ -164,12 +164,14 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({});
   }, [onClose]);
 
+  const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
+
   return (
     <Dialog open={open} maxWidth={selectedCalloutType ? 'md' : undefined} aria-labelledby="callout-creation-title">
       {!selectedCalloutType && (
         <>
           <DialogHeader onClose={handleClose}>
-            <Box display="flex">{t('components.callout-creation.callout-type-select.title')}</Box>
+            <Box display="flex">{t('components.calloutTypeSelect.title')}</Box>
           </DialogHeader>
           <DialogContent>
             <Gutters>
@@ -181,9 +183,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       {selectedCalloutType && (
         <>
           <DialogHeader onClose={handleClose}>
-            <Box display="flex">
-              <CalloutIcon sx={{ marginRight: 1 }} />
-              {t('components.callout-creation.title')}
+            <Box display="flex" alignItems="center" gap={1}>
+              {CalloutIcon && <CalloutIcon />}
+              {t('components.callout-creation.titleWithType', {
+                type: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
+              })}
             </Box>
           </DialogHeader>
           <CalloutForm
