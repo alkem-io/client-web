@@ -103,6 +103,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(
     collaborationID,
+    [],
     !permissions.challengeReadAccess || !permissions.readUsers
   );
 

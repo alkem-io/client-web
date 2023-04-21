@@ -9,17 +9,18 @@ import createUseSubscriptionToSubEntityHook from '../../../shared/subscriptions/
 import {
   ActivityCreatedSubscription,
   ActivityCreatedSubscriptionVariables,
+  ActivityEventType,
   ActivityLogOnCollaborationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
-const useActivityOnCollaborationSubscription = (collaborationID: string) =>
+const useActivityOnCollaborationSubscription = (collaborationID: string, types?: ActivityEventType[]) =>
   createUseSubscriptionToSubEntityHook<
     Array<ActivityLogOnCollaborationFragment>,
     ActivityCreatedSubscription,
     ActivityCreatedSubscriptionVariables
   >({
     subscriptionDocument: ActivityCreatedDocument,
-    getSubscriptionVariables: () => ({ collaborationID }),
+    getSubscriptionVariables: () => ({ input: { collaborationID, types } }),
     updateSubEntity: (subEntity, { activityCreated }) => {
       if (!subEntity) {
         return;
@@ -37,6 +38,7 @@ interface ActivityOnCollaborationReturnType {
 
 const useActivityOnCollaboration = (
   collaborationID: string | undefined,
+  types?: ActivityEventType[],
   skipCondition?: boolean
 ): ActivityOnCollaborationReturnType => {
   const {
@@ -44,12 +46,12 @@ const useActivityOnCollaboration = (
     loading,
     subscribeToMore,
   } = useActivityLogOnCollaborationQuery({
-    variables: { queryData: { collaborationID: collaborationID!, limit: LATEST_ACTIVITIES_COUNT } },
+    variables: { queryData: { collaborationID: collaborationID!, limit: LATEST_ACTIVITIES_COUNT, types } },
     skip: !collaborationID || skipCondition,
     fetchPolicy: 'cache-and-network',
   });
 
-  useActivityOnCollaborationSubscription(collaborationID!)(
+  useActivityOnCollaborationSubscription(collaborationID!, types)(
     activityLogData,
     data => data?.activityLogOnCollaboration,
     subscribeToMore,

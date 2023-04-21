@@ -142,6 +142,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const { activities, loading: activityLoading } = useActivityOnCollaboration(
     collaborationID,
+    [],
     !permissions.opportunityReadAccess || !permissions.readUsers
   );
 

@@ -32,6 +32,13 @@ export type Apm = {
   rumEnabled: Scalars['Boolean'];
 };
 
+export type ActivityCreatedSubscriptionInput = {
+  /** The collaboration on which to subscribe for new activity */
+  collaborationID: Scalars['UUID'];
+  /** Which activity types to include in the results. Returns all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
+};
+
 export type ActivityCreatedSubscriptionResult = {
   __typename?: 'ActivityCreatedSubscriptionResult';
   /** The newly created activity */
@@ -234,6 +241,8 @@ export type ActivityLogInput = {
   collaborationID: Scalars['UUID'];
   /** The number of ActivityLog entries to return; if omitted return all. */
   limit?: InputMaybe<Scalars['Float']>;
+  /** Which activity types to include in the results. Returns all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type Actor = {
@@ -3816,7 +3825,7 @@ export type Subscription = {
 };
 
 export type SubscriptionActivityCreatedArgs = {
-  collaborationID: Scalars['UUID'];
+  input: ActivityCreatedSubscriptionInput;
 };
 
 export type SubscriptionAspectCommentsMessageReceivedArgs = {
@@ -10872,7 +10881,7 @@ export type CalloutPageCalloutQuery = {
 };
 
 export type ActivityCreatedSubscriptionVariables = Exact<{
-  collaborationID: Scalars['UUID'];
+  input: ActivityCreatedSubscriptionInput;
 }>;
 
 export type ActivityCreatedSubscription = {

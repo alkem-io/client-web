@@ -112,14 +112,12 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
     readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
 
+  const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
+
   const { activities, loading: activityLoading } = useActivityOnCollaboration(
     collaborationID || '',
+    activityTypes,
     !permissions.hubReadAccess || !permissions.readUsers
-  );
-
-  const relevantActivities = useMemo(
-    () => activities?.filter(activity => activity.type !== ActivityEventType.MemberJoined),
-    [activities]
   );
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
@@ -170,7 +168,7 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
           canvasesCount,
           references,
           recommendations,
-          activities: relevantActivities,
+          activities,
           activityLoading,
           ...contributors,
           hostOrganizations,
