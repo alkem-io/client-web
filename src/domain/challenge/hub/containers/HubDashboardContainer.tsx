@@ -114,11 +114,10 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
 
   const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(
-    collaborationID || '',
-    activityTypes,
-    !permissions.hubReadAccess || !permissions.readUsers
-  );
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '', {
+    skipCondition: !permissions.hubReadAccess || !permissions.readUsers,
+    types: activityTypes,
+  });
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 

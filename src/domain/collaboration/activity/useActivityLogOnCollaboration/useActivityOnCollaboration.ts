@@ -38,9 +38,9 @@ interface ActivityOnCollaborationReturnType {
 
 const useActivityOnCollaboration = (
   collaborationID: string | undefined,
-  types?: ActivityEventType[],
-  skipCondition?: boolean
+  options: { types?: ActivityEventType[]; skipCondition?: boolean }
 ): ActivityOnCollaborationReturnType => {
+  const { types, skipCondition } = options;
   const {
     data: activityLogData,
     loading,

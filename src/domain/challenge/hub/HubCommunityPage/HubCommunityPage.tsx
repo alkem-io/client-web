@@ -72,7 +72,9 @@ const HubCommunityPage = () => {
 
   const hostOrganizations = useMemo(() => data?.hub.host && [data?.hub.host], [data?.hub.host]);
 
-  const { activities } = useActivityOnCollaboration(data?.hub.collaboration?.id, [ActivityEventType.MemberJoined]);
+  const { activities } = useActivityOnCollaboration(data?.hub.collaboration?.id, {
+    types: [ActivityEventType.MemberJoined],
+  });
 
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.hub.community);
 
