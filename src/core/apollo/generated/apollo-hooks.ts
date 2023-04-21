@@ -2035,7 +2035,8 @@ export const OrganizationInfoFragmentDoc = gql`
       displayName
       description
       visual(type: AVATAR) {
-        ...VisualFull
+        ...VisualUri
+        alternativeText
       }
       tagsets {
         id
@@ -2068,7 +2069,8 @@ export const OrganizationInfoFragmentDoc = gql`
           city
         }
         visual(type: AVATAR) {
-          ...VisualFull
+          ...VisualUri
+          alternativeText
         }
         tagsets {
           id
@@ -2083,7 +2085,7 @@ export const OrganizationInfoFragmentDoc = gql`
       id
     }
   }
-  ${VisualFullFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${FullLocationFragmentDoc}
 `;
 export const OrganizationDetailsFragmentDoc = gql`
