@@ -101,10 +101,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(
-    collaborationID,
-    !permissions.challengeReadAccess || !permissions.readUsers
-  );
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
+    skipCondition: !permissions.challengeReadAccess || !permissions.readUsers,
+  });
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read

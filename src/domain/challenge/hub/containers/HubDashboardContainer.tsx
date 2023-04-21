@@ -112,15 +112,12 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
     readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(
-    collaborationID || '',
-    !permissions.hubReadAccess || !permissions.readUsers
-  );
+  const activityTypes = Object.values(ActivityEventType).filter(x => x !== ActivityEventType.MemberJoined);
 
-  const relevantActivities = useMemo(
-    () => activities?.filter(activity => activity.type !== ActivityEventType.MemberJoined),
-    [activities]
-  );
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID || '', {
+    skipCondition: !permissions.hubReadAccess || !permissions.readUsers,
+    types: activityTypes,
+  });
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
@@ -170,7 +167,7 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
           canvasesCount,
           references,
           recommendations,
-          activities: relevantActivities,
+          activities,
           activityLoading,
           ...contributors,
           hostOrganizations,

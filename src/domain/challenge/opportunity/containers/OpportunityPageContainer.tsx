@@ -140,10 +140,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [opportunityPrivileges, communityPrivileges, platformPrivileges]);
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(
-    collaborationID,
-    !permissions.opportunityReadAccess || !permissions.readUsers
-  );
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
+    skipCondition: !permissions.opportunityReadAccess || !permissions.readUsers,
+  });
 
   const { context, profile, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);

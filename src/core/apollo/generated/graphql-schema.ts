@@ -32,6 +32,13 @@ export type Apm = {
   rumEnabled: Scalars['Boolean'];
 };
 
+export type ActivityCreatedSubscriptionInput = {
+  /** The collaboration on which to subscribe for new activity */
+  collaborationID: Scalars['UUID'];
+  /** Which activity types to include in the results. Returns all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
+};
+
 export type ActivityCreatedSubscriptionResult = {
   __typename?: 'ActivityCreatedSubscriptionResult';
   /** The newly created activity */
@@ -234,6 +241,8 @@ export type ActivityLogInput = {
   collaborationID: Scalars['UUID'];
   /** The number of ActivityLog entries to return; if omitted return all. */
   limit?: InputMaybe<Scalars['Float']>;
+  /** Which activity types to include in the results. Returns all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type Actor = {
@@ -334,6 +343,14 @@ export type ApplicationForRoleResult = {
   state: Scalars['String'];
   /** Date of last update */
   updatedDate: Scalars['DateTime'];
+};
+
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
 };
 
 export type Aspect = {
@@ -1797,6 +1814,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -3816,7 +3843,7 @@ export type Subscription = {
 };
 
 export type SubscriptionActivityCreatedArgs = {
-  collaborationID: Scalars['UUID'];
+  input: ActivityCreatedSubscriptionInput;
 };
 
 export type SubscriptionAspectCommentsMessageReceivedArgs = {
@@ -10872,7 +10899,7 @@ export type CalloutPageCalloutQuery = {
 };
 
 export type ActivityCreatedSubscriptionVariables = Exact<{
-  collaborationID: Scalars['UUID'];
+  input: ActivityCreatedSubscriptionInput;
 }>;
 
 export type ActivityCreatedSubscription = {
@@ -13721,6 +13748,7 @@ export type UpdateCalloutMutation = {
     __typename?: 'Callout';
     id: string;
     state: CalloutState;
+    group?: string | undefined;
     type: CalloutType;
     visibility: CalloutVisibility;
     profile: {
@@ -19248,7 +19276,9 @@ export type OrganizationInfoFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    visual?:
+      | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+      | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
     location?:
@@ -19276,7 +19306,9 @@ export type OrganizationInfoFragment = {
           id: string;
           displayName: string;
           location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          visual?:
+            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>
@@ -19308,7 +19340,9 @@ export type OrganizationInfoQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      visual?:
+        | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       location?:
@@ -19336,7 +19370,9 @@ export type OrganizationInfoQuery = {
             id: string;
             displayName: string;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            visual?:
+              | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+              | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>
