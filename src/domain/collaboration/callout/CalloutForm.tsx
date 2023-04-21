@@ -21,6 +21,10 @@ import { gutters } from '../../../core/ui/grid/utils';
 import EmptyWhiteboard from '../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 import { PostTemplateFormSubmittedValues } from '../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
+import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
+import { CalloutsGroup } from './CalloutsInContext/CalloutsGroup';
+import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
+import { FormControlLabel } from '@mui/material';
 
 type FormValueType = {
   displayName: string;
@@ -29,6 +33,7 @@ type FormValueType = {
   tagsets: Tagset[];
   references: Reference[];
   opened: boolean;
+  group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
 };
@@ -43,6 +48,7 @@ export type CalloutFormInput = {
   references?: Reference[];
   type?: CalloutType;
   state?: CalloutState;
+  group?: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
   profileId?: string;
@@ -55,6 +61,7 @@ export type CalloutFormOutput = {
   references: Reference[];
   type: CalloutType;
   state: CalloutState;
+  group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
 };
@@ -99,6 +106,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       tagsets,
       references: callout?.references ?? [],
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
+      group: callout?.group ?? '',
       postTemplateData: callout?.postTemplateData ?? {
         profile: {
           displayName: '',
@@ -160,11 +168,22 @@ const CalloutForm: FC<CalloutFormProps> = ({
       references: values.references,
       type: calloutType,
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
+      group: values.group,
       postTemplateData: values.postTemplateData,
       whiteboardTemplateData: values.whiteboardTemplateData,
     };
     onChange?.(callout);
   };
+
+  const calloutsGroups = useMemo<FormikSelectValue[]>(() => {
+    if (editMode) {
+      return (Object.keys(CalloutsGroup) as Array<keyof typeof CalloutsGroup>).map(key => ({
+        id: CalloutsGroup[key],
+        name: t(`callout.callout-groups.${key}` as const),
+      }));
+    }
+    return [];
+  }, [editMode]);
 
   return (
     <Formik
@@ -205,6 +224,14 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {calloutType === CalloutType.Card && <PostTemplatesChooser name="postTemplateData" />}
             {calloutType === CalloutType.Canvas && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
             <FormikSwitch name="opened" title={t('callout.state-permission')} />
+            {editMode && (
+              <FormControlLabel
+                sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
+                labelPlacement="start"
+                control={<FormikSelect name="group" values={calloutsGroups} />}
+                label={t('callout.callout-location')}
+              />
+            )}
           </Gutters>
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>
