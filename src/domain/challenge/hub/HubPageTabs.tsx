@@ -165,8 +165,8 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
               />
             )}
             <BottomNavigationAction
-              value={EntityPageSection.Contribute}
-              label={t('pages.hub.sections.contribute.header')}
+              value={EntityPageSection.KnowledgeBase}
+              label={t('pages.hub.sections.knowledge-base.header')}
               icon={<SchoolOutlined />}
             />
             {!showSettings && shareUrl && (
@@ -271,9 +271,9 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
           />
         )}
         <HeaderNavigationTab
-          label={t('pages.hub.sections.contribute.header')}
-          value={EntityPageSection.Contribute}
-          to={`${rootUrl}/${EntityPageSection.Contribute}`}
+          label={t('common.knowledge-base')}
+          value={EntityPageSection.KnowledgeBase}
+          to={`${rootUrl}/${EntityPageSection.KnowledgeBase}`}
         />
         {actions?.map((action, index) => (
           <HeaderNavigationButton key={index} icon={action.icon} onClick={action.onClick} value={action.section} />

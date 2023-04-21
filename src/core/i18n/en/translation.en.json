@@ -137,6 +137,7 @@
     }
   },
   "common": {
+    "knowledge-base": "Knowledge base",
     "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
@@ -184,6 +185,7 @@
     "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
+    "all-entities": "All {{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
@@ -1571,7 +1573,10 @@
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
         },
         "contribute": {
-          "header": "Knowledge Base"
+          "header": "Contribute"
+        },
+        "knowledge-base": {
+          "header": "Knowledge base"
         }
       }
     },
