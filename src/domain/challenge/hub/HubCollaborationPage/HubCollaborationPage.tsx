@@ -7,6 +7,7 @@ import ContributePage from '../../../collaboration/contribute/ContributePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
+import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
@@ -20,7 +21,19 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
   }
 };
 
-const HubCollaborationPage = () => {
+const renderPage = (calloutGroup: string | undefined) => {
+  switch (calloutGroup) {
+    case CalloutsGroup.HomeLeft:
+    case CalloutsGroup.HomeRight:
+      return <HubDashboardPage />;
+    case CalloutsGroup.ChallengesLeft:
+      return <HubChallengesPage />;
+    default:
+      return <ContributePage journeyTypeName="hub" />;
+  }
+};
+
+const HubCollaborationPage = (props: CollaborationPageProps) => {
   const { hubNameId } = useUrlParams();
 
   if (!hubNameId) {
@@ -31,21 +44,7 @@ const HubCollaborationPage = () => {
     return `${buildHubUrl(hubNameId)}/${getPageSection(calloutGroup)}`;
   };
 
-  return (
-    <CalloutPage journeyTypeName="hub" parentRoute={getPageRoute}>
-      {calloutGroup => {
-        switch (calloutGroup) {
-          case CalloutsGroup.HomeLeft:
-          case CalloutsGroup.HomeRight:
-            return <HubDashboardPage />;
-          case CalloutsGroup.ChallengesLeft:
-            return <HubChallengesPage />;
-          default:
-            return <ContributePage journeyTypeName="hub" />;
-        }
-      }}
-    </CalloutPage>
-  );
+  return <CalloutPage journeyTypeName="hub" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default HubCollaborationPage;

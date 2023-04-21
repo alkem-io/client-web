@@ -55,19 +55,10 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
-        <Route path={`${routes.Collaboration}/:calloutNameId`} element={<ChallengeCollaborationPage />} />
-
+        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCollaborationPage />} />
         <Route
-          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<ContributePage journeyTypeName="challenge" scrollToCallout />}
-        />
-        <Route
-          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={
-            <ContributePage journeyTypeName="challenge">
-              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
-            </ContributePage>
-          }
+          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+          element={<ChallengeCollaborationPage>{props => <CalloutRoute {...props} />}</ChallengeCollaborationPage>}
         />
       </Route>
       <Route

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import AspectDashboardPage from '../pages/AspectDashboardPage';
 import AspectSettingsPage from '../pages/AspectSettingsPage';
@@ -10,7 +10,7 @@ import { AspectLayoutHolder } from './AspectLayoutWithOutlet';
 
 export interface AspectRouteProps {
   parentPagePath: string;
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
 }
 
 const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath }) => {

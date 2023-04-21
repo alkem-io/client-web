@@ -14,7 +14,6 @@ import { routes } from '../routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import HubDashboardPage from '../pages/HubDashboardPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
 import HubPageLayout from '../layout/HubPageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import HubSearchPage from '../pages/HubSearchPage';
@@ -39,7 +38,11 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
-        <Route path={`${routes.Collaboration}/:calloutNameId`} element={<HubCollaborationPage />} />
+        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<HubCollaborationPage />} />
+        <Route
+          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+          element={<HubCollaborationPage>{props => <CalloutRoute {...props} />}</HubCollaborationPage>}
+        />
         <Route path={`${routes.Dashboard}/calendar`} element={<HubDashboardPage dialog="calendar" />} />
         <Route
           path={`${routes.Dashboard}/calendar/:${nameOfUrl.calendarEventNameId}`}
@@ -49,18 +52,6 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={routes.Challenges} element={<HubChallengesPage />} />
         <Route path={routes.KnowledgeBase} element={<KnowledgeBasePage journeyTypeName="hub" />} />
         <Route path={routes.Search} element={<HubSearchPage />} />
-        <Route
-          path={`${routes.KnowledgeBase}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<ContributePage journeyTypeName="hub" scrollToCallout />}
-        />
-        <Route
-          path={`${routes.KnowledgeBase}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={
-            <ContributePage journeyTypeName="hub">
-              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.KnowledgeBase}`} entityTypeName="hub" />
-            </ContributePage>
-          }
-        />
       </Route>
       <Route
         path="apply"

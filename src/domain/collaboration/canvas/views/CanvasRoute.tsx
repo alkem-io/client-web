@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import CanvasesView from '../EntityCanvasPage/CanvasesView';
 
 export interface CanvasRouteProps {
   parentPagePath: string;
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
 }
 
-const CanvasRoute: FC<CanvasRouteProps> = ({ parentPagePath, entityTypeName }) => {
+const CanvasRoute: FC<CanvasRouteProps> = ({ parentPagePath, journeyTypeName }) => {
   const { whiteboardNameId: canvasNameId } = useUrlParams();
 
   return (
@@ -17,7 +17,7 @@ const CanvasRoute: FC<CanvasRouteProps> = ({ parentPagePath, entityTypeName }) =
       <Route
         path="/"
         element={
-          <CanvasesView canvasNameId={canvasNameId} parentUrl={parentPagePath} entityTypeName={entityTypeName} />
+          <CanvasesView canvasNameId={canvasNameId} parentUrl={parentPagePath} entityTypeName={journeyTypeName} />
         }
       />
     </Routes>
