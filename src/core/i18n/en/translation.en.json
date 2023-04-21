@@ -1973,5 +1973,23 @@
   },
   "hubSearch": {
     "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
+  },
+  "visuals-alt-text": {
+    "banner": {
+      "page": {
+        "text": "Page banner: {{altText}}"
+      },
+      "card": {
+        "text": "Card banner: {{altText}}"
+      },
+      "whiteboard": {
+        "text": "Card banner showing a preview of {{displayName}} whiteboard"
+      }
+    },
+    "avatar": {
+      "contributor": {
+        "text": "{{displayName}}'s avatar: {{altText}}"
+      }
+    }
   }
 }

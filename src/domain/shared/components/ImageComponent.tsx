@@ -7,9 +7,10 @@ interface ImageComponentProps {
   width: number | string;
   height: number | string;
   src?: string;
+  altText?: string;
 }
 
-const ImageComponent: FC<ImageComponentProps> = ({ width, height, src }) => {
+const ImageComponent: FC<ImageComponentProps> = ({ width, height, src, altText }) => {
   const { t } = useTranslation();
 
   const sx: SxProps = {
@@ -23,7 +24,7 @@ const ImageComponent: FC<ImageComponentProps> = ({ width, height, src }) => {
   };
 
   return src ? (
-    <img src={src} width={width} height={height} alt={''} />
+    <img src={src} width={width} height={height} alt={altText} />
   ) : (
     <Box sx={sx}>{t('components.visual-upload.no-data')}</Box>
   );

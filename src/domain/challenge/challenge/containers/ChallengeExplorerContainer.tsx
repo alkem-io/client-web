@@ -8,9 +8,10 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { HubVisibility, SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchResultT } from '../../../platform/search/SearchView';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export type SimpleChallenge = {
   id: string;
@@ -23,6 +24,7 @@ export type SimpleChallenge = {
   displayName: string;
   tagline: string;
   imageUrl: string | undefined;
+  imageAltText: string | undefined;
   tags: string[];
   roles: string[];
   vision: string;
@@ -111,6 +113,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubTagline: hub.profile.tagline || '',
         displayName: ch.profile.displayName,
         imageUrl: getVisualBannerNarrow(ch.profile.visuals),
+        imageAltText: getVisualByType(VisualName.BANNER, ch.profile?.visuals)?.alternativeText,
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
@@ -149,6 +152,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubVisibility: hub.visibility,
         displayName: ch.profile.displayName,
         imageUrl: getVisualBannerNarrow(ch.profile.visuals),
+        imageAltText: getVisualByType(VisualName.BANNER, ch.profile?.visuals)?.alternativeText,
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],

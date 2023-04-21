@@ -8,6 +8,7 @@ import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
 import CardImage from '../../../../core/ui/card/CardImage';
 import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
 import { CanvasCardCanvas } from './types';
+import { useTranslation } from 'react-i18next';
 
 interface CanvasCardProps {
   canvas: CanvasCardCanvas | undefined;
@@ -35,6 +36,7 @@ const CanvasDefaultImage = () => {
 };
 
 const CanvasCard = ({ canvas, onClick }: CanvasCardProps) => {
+  const { t } = useTranslation();
   const handleClick = useCallback(() => canvas && onClick(canvas), [onClick, canvas]);
 
   return (
@@ -44,7 +46,7 @@ const CanvasCard = ({ canvas, onClick }: CanvasCardProps) => {
         <CardImage
           aspectRatio={CANVAS_IMAGE_ASPECT_RATIO}
           src={canvas?.profile?.visual?.uri}
-          alt={canvas.profile.displayName}
+          alt={t('visuals-alt-text.banner.whiteboard.text', { displayName: canvas.profile.displayName })}
         />
       ) : (
         <CanvasDefaultImage />
