@@ -64,6 +64,9 @@ const mapOrganizationToContributorCardProps = (
   isContactable: true,
 });
 
+const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | undefined =>
+  limit && items ? items.slice(0, limit) : items;
+
 const useCommunityMembersAsCardProps = (
   community: CommunityMembers | undefined,
   options: Options = {}
@@ -75,14 +78,15 @@ const useCommunityMembersAsCardProps = (
   } = options;
 
   const memberUsers: WithId<ContributorCardSquareProps>[] | undefined = useMemo(
-    () => community?.memberUsers?.slice(0, memberUsersLimit).map(mapUserToContributorCardProps),
+    () => applyLimit(community?.memberUsers, memberUsersLimit)?.map(mapUserToContributorCardProps),
     [community?.memberUsers, memberUsersLimit]
   );
 
   const memberUsersCount = options.memberUsersCount ?? community?.memberUsers?.length;
 
   const memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined = useMemo(
-    () => community?.memberOrganizations?.slice(0, memberOrganizationsLimit).map(mapOrganizationToContributorCardProps),
+    () =>
+      applyLimit(community?.memberOrganizations, memberOrganizationsLimit)?.map(mapOrganizationToContributorCardProps),
     [community?.memberOrganizations, memberOrganizationsLimit]
   );
 
