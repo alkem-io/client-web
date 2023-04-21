@@ -38,6 +38,8 @@ import {
 } from '@mui/icons-material';
 import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
 import { Reference, Tagset } from '../../common/profile/Profile';
+import References from '../../shared/components/References/References';
+import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -203,6 +205,10 @@ const CalloutLayout = ({
         <Box sx={{ wordWrap: 'break-word' }}>
           <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
         </Box>
+        <References compact references={callout.profile.references} />
+        {callout.profile.tagset?.tags && callout.profile.tagset?.tags.length > 0 ? (
+          <TagsComponent tags={callout.profile.tagset?.tags} />
+        ) : undefined}
         {children}
       </Gutters>
       {calloutNotOpenStateName && (
