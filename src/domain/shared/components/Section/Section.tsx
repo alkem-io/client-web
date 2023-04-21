@@ -63,7 +63,10 @@ export interface SectionProps {
   sideBanner?: boolean;
   sideBannerRight?: boolean;
 }
-
+/**
+ * @deprecated
+ * Better use PageContent and PageContentBlock
+ */
 const Section: FC<SectionProps> = ({
   bannerUrl,
   alwaysShowBanner,

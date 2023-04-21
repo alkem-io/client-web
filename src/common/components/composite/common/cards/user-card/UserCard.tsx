@@ -1,4 +1,4 @@
-import { FC, MouseEventHandler, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonIcon from '@mui/icons-material/Person';
@@ -7,6 +7,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import TagsComponent from '../../../../../../domain/shared/components/TagsComponent/TagsComponent';
 import withElevationOnHover from '../../../../../../domain/shared/components/withElevationOnHover';
 import ConditionalLink from '../../../../core/ConditionalLink';
+import { useTranslation } from 'react-i18next';
 
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
@@ -42,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 export interface UserCardProps {
   id?: string;
   avatarSrc?: string;
+  avatarAltText?: string;
   displayName?: string;
   tags?: string[];
   url?: string;
@@ -50,13 +52,14 @@ export interface UserCardProps {
   country?: string;
   loading?: boolean;
   isContactable?: boolean;
-  onContact?: MouseEventHandler<HTMLButtonElement>;
+  onContact?: () => void;
 }
 
 const ElevatedCard = withElevationOnHover(Card);
 
 const UserCard: FC<UserCardProps> = ({
   avatarSrc,
+  avatarAltText,
   displayName = '',
   city,
   country,
@@ -68,7 +71,7 @@ const UserCard: FC<UserCardProps> = ({
   onContact,
 }) => {
   const styles = useStyles();
-
+  const { t } = useTranslation();
   const location = [city, country].filter(x => !!x).join(', ');
   return (
     <ConditionalLink condition={!!url} to={url} aria-label="user-card">
@@ -84,7 +87,10 @@ const UserCard: FC<UserCardProps> = ({
                 className={styles.avatar}
                 src={avatarSrc}
                 aria-label="User avatar"
-                alt={`${displayName}\`s avatar`}
+                alt={t('visuals-alt-text.avatar.contributor.text', {
+                  displayName,
+                  altText: avatarAltText,
+                })}
                 variant="rounded"
               >
                 {displayName[0]}
@@ -99,7 +105,13 @@ const UserCard: FC<UserCardProps> = ({
                     {displayName}
                   </Typography>
                   {isContactable && (
-                    <IconButton onClick={onContact}>
+                    <IconButton
+                      onClick={event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onContact?.();
+                      }}
+                    >
                       <EmailOutlinedIcon />
                     </IconButton>
                   )}

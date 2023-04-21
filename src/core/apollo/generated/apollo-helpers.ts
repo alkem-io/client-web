@@ -877,11 +877,11 @@ export type DiscussionKeySpecifier = (
   | 'category'
   | 'commentsCount'
   | 'createdBy'
-  | 'description'
   | 'id'
   | 'messages'
+  | 'nameID'
+  | 'profile'
   | 'timestamp'
-  | 'title'
   | DiscussionKeySpecifier
 )[];
 export type DiscussionFieldPolicy = {
@@ -889,11 +889,11 @@ export type DiscussionFieldPolicy = {
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   commentsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
@@ -2235,6 +2235,7 @@ export type VerifiedCredentialClaimFieldPolicy = {
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
+  | 'alternativeText'
   | 'aspectRatio'
   | 'authorization'
   | 'id'
@@ -2248,6 +2249,7 @@ export type VisualKeySpecifier = (
 )[];
 export type VisualFieldPolicy = {
   allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  alternativeText?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;

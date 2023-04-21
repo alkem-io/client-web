@@ -1,3 +1,4 @@
+import React, { PropsWithChildren } from 'react';
 import { IconButton } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { ExpandContentIcon } from './ExpandContent';
@@ -13,7 +14,7 @@ const PageContentBlockHeaderWithDialogAction = ({
   onDialogOpen,
   actions,
   ...headerProps
-}: PageContentBlockHeaderWithDialogActionProps) => {
+}: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const dialogAction = (
     <IconButton onClick={onDialogOpen} sx={{ svg: { width: iconSize, height: iconSize } }}>
       <ExpandContentIcon />

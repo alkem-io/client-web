@@ -13,7 +13,7 @@ import { CalloutState, CreateAspectOnCalloutInput } from '../../../../core/apoll
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
 import AspectCard, { AspectCardAspect } from './AspectCard';
-import { BaseCalloutProps } from '../Types';
+import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
@@ -22,7 +22,7 @@ import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends BaseCalloutProps {
+interface AspectCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
 }
 
@@ -35,6 +35,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
       challengeNameId,
       opportunityNameId,
       contributionsCount,
+      blockProps,
       ...calloutLayoutProps
     },
     ref
@@ -48,7 +49,7 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     const { ref: intersectionObserverRef, inView } = useInView();
 
     const { subscriptionEnabled, aspects, loading } = useAspectCreatedOnCalloutSubscription({
-      hubNameId: hubNameId || '',
+      hubNameId,
       calloutId: callout.id,
       challengeNameId,
       opportunityNameId,
@@ -156,13 +157,14 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     return (
       <>
-        <PageContentBlock ref={containerRef} disablePadding disableGap>
+        <PageContentBlock ref={containerRef} disablePadding disableGap {...blockProps}>
           <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             <ScrollableCardsLayout
               items={loading || !inView ? [undefined, undefined] : aspects ?? []}
               deps={[hubNameId, challengeNameId, opportunityNameId]}
               createButton={!isMobile && createButton}
               maxHeight={gutters(22)}
+              cards={false}
             >
               {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
             </ScrollableCardsLayout>

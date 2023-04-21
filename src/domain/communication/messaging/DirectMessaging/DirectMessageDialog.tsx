@@ -4,7 +4,7 @@ import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogContent from '../../../../common/components/core/dialog/DialogContent';
+import DialogContent from '../../../../core/ui/dialog/DialogContent';
 import { Caption, PageTitle } from '../../../../core/ui/typography/components';
 import SendButton from '../../../shared/components/SendButton';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';

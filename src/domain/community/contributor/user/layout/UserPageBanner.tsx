@@ -4,13 +4,12 @@ import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import ProfileBanner from '../../../../shared/components/PageHeader/ProfileBanner';
 import { toSocialNetworkEnum } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
 import { isSocialLink } from '../../../../shared/components/SocialLinks/SocialLinks';
-import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
+import { useTranslation } from 'react-i18next';
 
 const UserPageBanner: FC = () => {
   const { userNameId = '' } = useUrlParams();
-  const { user: currentUser } = useUserContext();
-
+  const { t } = useTranslation();
   const { user: userMetadata, loading } = useUserMetadata(userNameId);
   const userId = userMetadata?.user.id;
   const [sendMessageToUser] = useSendMessageToUserMutation();
@@ -54,9 +53,13 @@ const UserPageBanner: FC = () => {
         phone={phone}
         socialLinks={socialLinks}
         avatarUrl={profile.visual?.uri}
+        avatarAltText={t('visuals-alt-text.avatar.contributor.text', {
+          displayName: profile.displayName,
+          altText: profile.visual?.alternativeText,
+        })}
         loading={loading}
         onSendMessage={handleSendMessage}
-        isContactable={isContactable && currentUser?.user.id !== userId}
+        isContactable={isContactable}
       />
     );
   } else {

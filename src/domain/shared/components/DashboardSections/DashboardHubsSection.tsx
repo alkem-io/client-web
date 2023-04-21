@@ -1,13 +1,14 @@
 import React, { FC, ReactNode } from 'react';
-import CardsLayout from '../../../../core/ui/card/CardsLayout/CardsLayout';
+import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import HubCard, { HubCardProps } from '../../../challenge/hub/HubCard/HubCard';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 type NeededFields = 'nameID' | 'authorization' | 'id' | 'visibility';
 
@@ -44,22 +45,27 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
     <PageContentBlock {...props}>
       <PageContentBlockHeader title={headerText} actions={primaryAction} />
       {children}
-      <CardsLayout items={hubs} disablePadding cards={false}>
-        {hub => (
-          <HubCard
-            bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
-            hubId={hub.id}
-            displayName={hub.profile.displayName}
-            journeyUri={buildHubUrl(hub.nameID)}
-            vision={hub.context?.vision!}
-            membersCount={getMetricCount(hub.metrics, MetricType.Member)}
-            tagline={hub.profile.tagline!}
-            tags={hub.profile.tagset?.tags!}
-            hubVisibility={hub.visibility}
-            {...getHubCardProps?.(hub)}
-          />
-        )}
-      </CardsLayout>
+      <ScrollableCardsLayout items={hubs} cards={false}>
+        {hub => {
+          const visual = getVisualByType(VisualName.BANNER, hub.profile?.visuals);
+
+          return (
+            <HubCard
+              bannerUri={visual?.uri}
+              bannerAltText={visual?.alternativeText}
+              hubId={hub.id}
+              displayName={hub.profile.displayName}
+              journeyUri={buildHubUrl(hub.nameID)}
+              vision={hub.context?.vision!}
+              membersCount={getMetricCount(hub.metrics, MetricType.Member)}
+              tagline={hub.profile.tagline!}
+              tags={hub.profile.tagset?.tags!}
+              hubVisibility={hub.visibility}
+              {...getHubCardProps?.(hub)}
+            />
+          );
+        }}
+      </ScrollableCardsLayout>
     </PageContentBlock>
   );
 };

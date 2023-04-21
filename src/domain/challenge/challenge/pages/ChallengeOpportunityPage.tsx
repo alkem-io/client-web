@@ -6,12 +6,12 @@ import {
   journeyCardValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubentitiesView';
+import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import { useHub } from '../../hub/HubContext/useHub';
 import { CreateOpportunityForm } from '../../opportunity/forms/CreateOpportunityForm';
 import { OpportunityIcon } from '../../opportunity/icon/OpportunityIcon';
@@ -19,6 +19,7 @@ import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 import OpportunityCardsContainer from '../containers/OpportunityCardsContainer';
 import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface ChallengeOpportunityPageProps {}
 
@@ -58,7 +59,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
     <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
       <OpportunityCardsContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
         {(entities, state) => (
-          <JourneySubentitiesView
+          <ChildJourneyView
             hubNameId={hubNameId}
             childEntities={entities.opportunities ?? undefined}
             childEntitiesIcon={<OpportunityIcon />}
@@ -73,8 +74,10 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
                 displayName={opportunity.profile.displayName}
                 tagline={opportunity.profile.tagline!}
                 vision={opportunity.context?.vision!}
+                innovationFlowState={opportunity.lifecycle?.state}
                 tags={opportunity.profile.tagset?.tags!}
-                bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)!}
+                bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)}
+                bannerAltText={getVisualByType(VisualName.BANNER, opportunity.profile?.visuals)?.alternativeText}
                 journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}
                 hubVisibility={visibility}
               />

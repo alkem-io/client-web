@@ -25,10 +25,13 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
+import {
+  AspectFragmentWithCallout,
+  CanvasFragmentWithCallout,
+} from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
-import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 
@@ -137,10 +140,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [opportunityPrivileges, communityPrivileges, platformPrivileges]);
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(
-    collaborationID,
-    !permissions.opportunityReadAccess || !permissions.readUsers
-  );
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
+    skipCondition: !permissions.opportunityReadAccess || !permissions.readUsers,
+  });
 
   const { context, profile, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);

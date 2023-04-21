@@ -1,18 +1,23 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import HubPageContainer from '../containers/HubPageContainer';
+import HubDashboardContainer from '../containers/HubDashboardContainer';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import HubContributorsDialogContent from '../../../community/community/entities/HubContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import HubPageLayout from '../layout/HubPageLayout';
-import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
+import HubDashboardView from '../HubDashboardView/HubDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -25,14 +30,29 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
 
   const { t } = useTranslation();
 
+  const { hubNameId } = useUrlParams();
+
+  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
+    useCallouts({
+      hubNameId,
+      calloutGroups: [CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+    });
+
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
-      <HubPageContainer>
-        {entities => (
+      <HubDashboardContainer>
+        {(entities, state) => (
           <>
-            <JourneyDashboardView
+            <HubDashboardView
               vision={entities.hub?.context?.vision}
               hubNameId={entities.hub?.nameID}
+              displayName={entities.hub?.profile.displayName}
+              tagline={entities.hub?.profile.tagline}
+              description={entities.hub?.profile.description}
+              who={entities.hub?.context?.who}
+              impact={entities.hub?.context?.impact}
+              metrics={entities.hub?.metrics}
+              loading={state.loading}
               communityId={entities.hub?.community?.id}
               childEntities={entities.challenges}
               childEntitiesCount={entities.challengesCount}
@@ -57,6 +77,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
                   bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
+                  bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
                   displayName={challenge.profile.displayName}
                   tags={challenge.profile.tagset?.tags!}
                   tagline={challenge.profile.tagline!}
@@ -70,6 +91,32 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               )}
               journeyTypeName="hub"
               childEntityTitle={t('common.challenges')}
+              childrenLeft={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutsGroup.HomeLeft]}
+                  hubId={hubNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  entityTypeName="hub"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  group={CalloutsGroup.HomeLeft}
+                />
+              }
+              childrenRight={
+                <CalloutsGroupView
+                  callouts={groupedCallouts[CalloutsGroup.HomeRight]}
+                  hubId={hubNameId!}
+                  canCreateCallout={canCreateCallout}
+                  loading={loading}
+                  entityTypeName="hub"
+                  sortOrder={calloutsSortOrder}
+                  calloutNames={calloutNames}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  group={CalloutsGroup.HomeRight}
+                />
+              }
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
@@ -87,7 +134,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
             )}
           </>
         )}
-      </HubPageContainer>
+      </HubDashboardContainer>
     </HubPageLayout>
   );
 };

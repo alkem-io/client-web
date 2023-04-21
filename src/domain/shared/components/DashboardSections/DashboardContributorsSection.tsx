@@ -1,9 +1,9 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import ContributorCard, {
-  ContributorCardProps,
+import ContributorCardSquare, {
+  ContributorCardSquareProps,
   ContributorCardSkeleton,
-} from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+} from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -15,7 +15,7 @@ const MAX_ITEMS_TO_SHOW = 16;
 export interface DashboardContributorsSectionSectionProps {
   headerText: string;
   entities: {
-    contributors: WithId<ContributorCardProps>[];
+    contributors: WithId<ContributorCardSquareProps>[];
   };
   loading: boolean;
 }
@@ -41,7 +41,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
         {contributors.map(c => {
           return (
             <Grid item flexBasis={'10%'} key={c.id}>
-              <ContributorCard {...c} />
+              <ContributorCardSquare {...c} />
             </Grid>
           );
         })}

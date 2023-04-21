@@ -27,9 +27,12 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../../collaboration/callout/utils/getPublishedCallouts';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../../collaboration/callout/useCallouts';
+import {
+  AspectFragmentWithCallout,
+  CanvasFragmentWithCallout,
+} from '../../../collaboration/callout/useCallouts/useCallouts';
 import { ActivityLogResultType } from '../../../shared/components/ActivityLog/ActivityComponent';
-import { useActivityOnCollaboration } from '../../../shared/components/ActivityLog/hooks/useActivityOnCollaboration';
+import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -98,10 +101,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     readUsers: platformPrivileges.includes(AuthorizationPrivilege.ReadUsers),
   };
 
-  const { activities, loading: activityLoading } = useActivityOnCollaboration(
-    collaborationID,
-    !permissions.challengeReadAccess || !permissions.readUsers
-  );
+  const { activities, loading: activityLoading } = useActivityOnCollaboration(collaborationID, {
+    skipCondition: !permissions.challengeReadAccess || !permissions.readUsers,
+  });
 
   const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read

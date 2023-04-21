@@ -44,6 +44,9 @@ fragment HubPage on Hub {
   }
   host {
     ...AssociatedOrganizationDetails
+    profile {
+      ...HubWelcomeBlockContributorProfile
+    }
   }
   profile {
     id
@@ -62,29 +65,48 @@ fragment HubPage on Hub {
   context {
     id
     vision
+    who
+    impact
     authorization {
       id
       anonymousReadAccess
       myPrivileges
     }
   }
-  ... on Hub {
-    collaboration {
-      ...DashboardTopCallouts
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-    challenges(limit: 3, shuffle: true) {
-      ...ChallengeCard
-    }
-    timeline {
-      id
-      authorization {
-        id
-        anonymousReadAccess
-        myPrivileges
+  collaboration {
+    ...DashboardTopCallouts
+  }
+  community {
+    ...EntityDashboardCommunity
+    leadUsers {
+      profile {
+        ...HubWelcomeBlockContributorProfile
       }
     }
+  }
+  challenges(limit: 3, shuffle: true) {
+    ...ChallengeCard
+  }
+  timeline {
+    id
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+}
+
+fragment HubWelcomeBlockContributorProfile on Profile {
+  id
+  displayName
+  location {
+    id
+    city
+    country
+  }
+  tagsets {
+    id
+    tags
   }
 }

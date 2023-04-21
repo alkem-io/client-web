@@ -17,7 +17,7 @@ import VisualUpload from '../common/VisualUpload/VisualUpload';
 import { FormikInputField } from './FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../domain/common/location/countries.constants';
-import FormRow from '../../../../domain/shared/layout/FormLayout';
+import FormRow from '../../FormLayout';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
@@ -191,7 +191,13 @@ export const UserForm: FC<UserProps> = ({
                 <Grid container spacing={4}>
                   <Grid item xs={12} md="auto">
                     <Grid item container justifyContent="center">
-                      <VisualUpload visual={avatar} />
+                      <VisualUpload
+                        visual={avatar}
+                        altText={t('visuals-alt-text.avatar.contributor.text', {
+                          displayName,
+                          altText: avatar?.alternativeText,
+                        })}
+                      />
                     </Grid>
                   </Grid>
                   <Grid item xs>

@@ -137,10 +137,12 @@
     }
   },
   "common": {
+    "knowledge-base": "Knowledge base",
     "or": "Or",
     "permission": "Permission",
     "permissions": "Permissions",
     "error-generic": "Error occurred while loading",
+    "activity": "Activity",
     "avatar": "Avatar",
     "avatar-of": "Avatar of {{user}}",
     "inspiration": "Inspiration",
@@ -167,6 +169,7 @@
     "description": "Description",
     "events": "Events",
     "about": "About",
+    "aboutThis": "About this {{entity}}",
     "explore": "Contribute",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
@@ -182,6 +185,7 @@
     "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
+    "all-entities": "All {{entityType}} ({{count}})",
     "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
@@ -216,6 +220,8 @@
     "member": "Member",
     "members": "Members",
     "empty-string": "",
+    "post": "Post",
+    "posts": "Posts",
     "discussion": "Discussion",
     "discussions": "Discussions",
     "disassociate": "Disassociate",
@@ -223,6 +229,7 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
+    "people": "People",
     "settings": "Settings",
     "search": "Search...",
     "reference": "Reference",
@@ -245,6 +252,7 @@
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",
+    "welcome": "Welcome",
     "preview": "Preview",
     "help": "Help",
     "loading": "Loading...",
@@ -414,7 +422,16 @@
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All cards, whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
-    "permission-helptext": "Use the switch below to close this callout for new entries."
+    "permission-helptext": "Use the switch below to close this callout for new entries.",
+    "callout-location": "Location: ",
+    "callout-groups": {
+      "HomeLeft": "Dashboard Left",
+      "HomeRight": "Dashboard Right",
+      "CommunityLeft": "Community Left",
+      "CommunityRight": "Community Right",
+      "ChallengesLeft": "Challenges Left",
+      "ChallengesRight": "Challenges Right"
+    }
   },
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
@@ -575,12 +592,13 @@
     }
   },
   "aspect-templates": {
+    "template-library": "Template Library: Cards",
     "aspect-template": "Card template",
     "default-description": "Default Card content",
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
-    "template-library": "Template Library",
+    "template-library": "Template Library: Whiteboards",
     "filter-placeholder": "Search Templates...",
     "canvas-template": "Whiteboard template",
     "hub-templates": "Templates selected by the host of this community",
@@ -729,6 +747,7 @@
       "title": "Create a new Callout",
       "callout-type-label": "Callout type",
       "card-type-label": "Card label",
+      "custom-template": "Custom Template",
       "info-step": {
         "title": "Details",
         "description": "Description",
@@ -743,14 +762,30 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Card Template",
+        "card-template-label": "Default text:",
+        "card-template-text": "Add default text to the posts, for example questions that you like people to answer.",
+        "card-template-default-description": "Default description",
+        "whiteboard-template-label": "Template:",
+        "whiteboard-empty-template": "Empty Template",
+        "whiteboard-reset-template": "Reset Empty Template",
         "no-card-template-selected": "Please select a card template",
-        "canvas-template-label": "Whiteboard Template",
         "no-canvas-template-selected": "Please select a whiteboard template"
       },
       "create-step": {
         "title": "Create",
         "card-template-label": "Choose Card template"
+      },
+      "callout-type-select": {
+        "title": "What would you like to add?",
+        "label": {
+          "post": "Post",
+          "posts": "Call for Posts",
+          "whiteboards": "Call for Whiteboards"
+        }
+      },
+      "publish-dialog": {
+        "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
+        "checkbox-label": "Yes, notify the community."
       }
     },
     "callout-edit": {
@@ -786,7 +821,7 @@
         "title": "Visuals",
         "headline": "Congratulations, you have now successfully created an Card!",
         "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
-        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding references and a Banner for the Dashboard card."
+        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding attachments and a Banner for the Dashboard card."
       }
     },
     "visual-upload": {
@@ -831,6 +866,8 @@
       "join": "Join",
       "join-parent": "Join parent",
       "parent-pending": "Parent application pending",
+      "applyTo": "Apply to",
+      "extendedMessage": "{{join}} our Community and start making change!",
       "dialog-apply-parent": {
         "title": "Want to join the parent Hub?",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
@@ -1156,15 +1193,15 @@
       "sections": {
         "dashboard": {
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!",
-          "about": "About this {{entity}}"
+          "about": "About this {{entity}}",
+          "memberOf": "You’re a member of this {{entity}}"
         },
         "about": {
           "description": "Here you can explore the context of this {{entity}}, as well as the community."
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
           "leading-contributors": "Leading Contributors",
-          "contributors": "Contributors"
+          "contributors": "Who's involved"
         },
         "explore": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
@@ -1355,23 +1392,32 @@
       "avatar": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "??"
+        "description2": "??",
+        "description": "Description: {{alternativeText}}"
       },
       "banner": {
-        "title": "Banner",
+        "title": "Page banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on dashboard tab"
+        "description2": "Usage: Banner on dashboard tab",
+        "description": "Description: {{alternativeText}}"
       },
       "banner-narrow": {
-        "title": "Banner for cards",
+        "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on cards"
+        "description2": "Usage: Banner on cards",
+        "description": "Description: {{alternativeText}}"
+      },
+      "form": {
+        "altText": {
+          "placeholder": "Example: Multiple snow covered mountains",
+          "helpText": "Please describe this image for people who are unable to see it."
+        }
       }
     },
     "contributors": {
       "search": {
-        "title": "See who's contributing",
-        "subtitle": "Explore the organizations and users that are contributing to Challenges.",
+        "title": "Find talent and expertise!",
+        "subtitle": "Search for other people and organizations that can help you with your Challenge, for example based on skills or interests.",
         "placeholder": "Search..."
       },
       "organizations": {
@@ -1383,6 +1429,7 @@
     },
     "search": {
       "placeholder": "Search...",
+      "results-disclaimer": "Showing the first 8 results. Soon, you’ll be able to see all, but for now, please specify your search terms.",
       "max-tags-reached": "You have reached the limit of {{max}} terms to search for",
       "search-suggestions": "Search suggestions:",
       "suggestions-array": [
@@ -1532,6 +1579,12 @@
           "body": "",
           "no-data": "No challenges available for this hub",
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
+        },
+        "contribute": {
+          "header": "Contribute"
+        },
+        "knowledge-base": {
+          "header": "Knowledge base"
         }
       }
     },
@@ -1777,6 +1830,10 @@
       "organization-communication": {
         "title": "Organization mentions and messaging",
         "subtitle": "This section allows you to select your preferences regarding mentions and direct messaging to organizations you manage"
+      },
+      "forum": {
+        "title": "Forum",
+        "subtitle": "This section allows you to select your preferences regarding activities in the Forum"
       }
     },
     "help-dialog": {
@@ -1916,5 +1973,23 @@
   },
   "hubSearch": {
     "journeyFilterTitle": "$t(common.challenges) & $t(common.opportunities)"
+  },
+  "visuals-alt-text": {
+    "banner": {
+      "page": {
+        "text": "Page banner: {{altText}}"
+      },
+      "card": {
+        "text": "Card banner: {{altText}}"
+      },
+      "whiteboard": {
+        "text": "Card banner showing a preview of {{displayName}} whiteboard"
+      }
+    },
+    "avatar": {
+      "contributor": {
+        "text": "{{displayName}}'s avatar: {{altText}}"
+      }
+    }
   }
 }

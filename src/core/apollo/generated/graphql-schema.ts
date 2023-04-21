@@ -32,6 +32,13 @@ export type Apm = {
   rumEnabled: Scalars['Boolean'];
 };
 
+export type ActivityCreatedSubscriptionInput = {
+  /** The collaboration on which to subscribe for new activity */
+  collaborationID: Scalars['UUID'];
+  /** Which activity types to include in the results. Returns all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
+};
+
 export type ActivityCreatedSubscriptionResult = {
   __typename?: 'ActivityCreatedSubscriptionResult';
   /** The newly created activity */
@@ -234,6 +241,8 @@ export type ActivityLogInput = {
   collaborationID: Scalars['UUID'];
   /** The number of ActivityLog entries to return; if omitted return all. */
   limit?: InputMaybe<Scalars['Float']>;
+  /** Which activity types to include in the results. Returns all by default. */
+  types?: InputMaybe<Array<ActivityEventType>>;
 };
 
 export type Actor = {
@@ -965,10 +974,8 @@ export type CommunicationCreateDiscussionInput = {
   category: DiscussionCategory;
   /** The identifier for the Communication entity the Discussion is being created on. */
   communicationID: Scalars['UUID'];
-  /** The description for the Discussion */
-  description?: InputMaybe<Scalars['String']>;
-  /** The title for the Discussion */
-  title: Scalars['String'];
+  profile: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CommunicationDiscussionMessageReceived = {
@@ -1231,6 +1238,7 @@ export type CreateCalloutOnCollaborationInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
   /** Callout type. */
   type: CalloutType;
   /** WhiteboardTemplate data for whiteboard Callouts. */
@@ -1601,16 +1609,16 @@ export type Discussion = {
   commentsCount: Scalars['Float'];
   /** The id of the user that created this discussion */
   createdBy?: Maybe<Scalars['UUID']>;
-  /** The description of this Discussion. */
-  description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Messages for this Discussion. */
   messages?: Maybe<Array<Message>>;
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The Profile for this Discussion. */
+  profile: Profile;
   /** The timestamp for the creation of this Discussion. */
   timestamp?: Maybe<Scalars['Float']>;
-  /** The title of the Discussion. */
-  title: Scalars['String'];
 };
 
 export enum DiscussionCategory {
@@ -3143,7 +3151,6 @@ export enum PreferenceType {
   NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
-  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
   NotificationCommunicationMessage = 'NOTIFICATION_COMMUNICATION_MESSAGE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
@@ -3155,6 +3162,8 @@ export enum PreferenceType {
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationForumDiscussionComment = 'NOTIFICATION_FORUM_DISCUSSION_COMMENT',
+  NotificationForumDiscussionCreated = 'NOTIFICATION_FORUM_DISCUSSION_CREATED',
   NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
   NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
   NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
@@ -3834,7 +3843,7 @@ export type Subscription = {
 };
 
 export type SubscriptionActivityCreatedArgs = {
-  collaborationID: Scalars['UUID'];
+  input: ActivityCreatedSubscriptionInput;
 };
 
 export type SubscriptionAspectCommentsMessageReceivedArgs = {
@@ -4104,9 +4113,10 @@ export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
   category?: InputMaybe<DiscussionCategory>;
-  /** The description for the Discussion */
-  description?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
 };
 
 export type UpdateEcosystemModelInput = {
@@ -4310,6 +4320,7 @@ export type UpdateUserPreferenceInput = {
 };
 
 export type UpdateVisualInput = {
+  alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
   visualID: Scalars['String'];
 };
@@ -4420,7 +4431,6 @@ export enum UserPreferenceType {
   NotificationCanvasCreated = 'NOTIFICATION_CANVAS_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
-  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
   NotificationCommunicationMessage = 'NOTIFICATION_COMMUNICATION_MESSAGE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
@@ -4432,6 +4442,8 @@ export enum UserPreferenceType {
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
+  NotificationForumDiscussionComment = 'NOTIFICATION_FORUM_DISCUSSION_COMMENT',
+  NotificationForumDiscussionCreated = 'NOTIFICATION_FORUM_DISCUSSION_CREATED',
   NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
   NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
   NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
@@ -4489,6 +4501,7 @@ export type VerifiedCredentialClaim = {
 export type Visual = {
   __typename?: 'Visual';
   allowedTypes: Array<Scalars['String']>;
+  alternativeText?: Maybe<Scalars['String']>;
   /** Aspect ratio width / height. */
   aspectRatio: Scalars['Float'];
   /** The authorization rules for the entity */
@@ -4514,6 +4527,7 @@ export enum VisualType {
 }
 
 export type VisualUploadImageInput = {
+  alternativeText?: InputMaybe<Scalars['String']>;
   visualID: Scalars['String'];
 };
 
@@ -4845,6 +4859,7 @@ export type ChallengePageQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       };
@@ -4925,6 +4940,7 @@ export type ChallengePageQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -4962,6 +4978,7 @@ export type ChallengePageQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -5107,6 +5124,7 @@ export type ChallengePageQuery = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }>;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -5178,6 +5196,7 @@ export type ChallengeProfileFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
@@ -5253,6 +5272,7 @@ export type ChallengeProfileFragment = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }>;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -5290,6 +5310,7 @@ export type ChallengeProfileFragment = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -5431,6 +5452,7 @@ export type ChallengeProfileFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -5536,6 +5558,7 @@ export type ChallengeInfoFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     location?:
       | {
@@ -5605,6 +5628,7 @@ export type OpportunitiesOnChallengeFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
         };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -5863,6 +5887,7 @@ export type ChallengeInfoQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         location?:
           | {
@@ -5982,6 +6007,7 @@ export type ChallengeProfileInfoQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
@@ -6047,6 +6073,7 @@ export type OpportunityCreatedSubscription = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -6143,6 +6170,7 @@ export type AboutPageNonMembersQuery = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
     };
     host?:
@@ -6205,6 +6233,7 @@ export type AboutPageNonMembersQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
       };
       authorization?:
@@ -6256,6 +6285,7 @@ export type AboutPageNonMembersQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
       };
       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string } | undefined;
@@ -6954,6 +6984,170 @@ export type JourneyPrivilegesQuery = {
   };
 };
 
+export type HubCommunityPageQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCommunityPageQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          leadUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                };
+              }>
+            | undefined;
+          memberUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                isContactable: boolean;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                };
+              }>
+            | undefined;
+          leadOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+                verification: {
+                  __typename?: 'OrganizationVerification';
+                  id: string;
+                  status: OrganizationVerificationEnum;
+                };
+                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              }>
+            | undefined;
+          memberOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+    collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+  };
+};
+
+export type CommunityPageCommunityFragment = {
+  __typename?: 'Community';
+  id: string;
+  leadUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        };
+      }>
+    | undefined;
+  memberUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        isContactable: boolean;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        };
+      }>
+    | undefined;
+  leadOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }>
+    | undefined;
+  memberOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>
+    | undefined;
+};
+
 export type HubProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -7029,6 +7223,7 @@ export type HubProviderQuery = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
       location?:
         | {
@@ -7117,6 +7312,7 @@ export type HubInfoFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     location?:
       | {
@@ -7470,6 +7666,59 @@ export type HubPageQuery = {
     id: string;
     nameID: string;
     visibility: HubVisibility;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    authorization?:
+      | {
+          __typename?: 'Authorization';
+          id: string;
+          anonymousReadAccess: boolean;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          vision?: string | undefined;
+          who?: string | undefined;
+          impact?: string | undefined;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                anonymousReadAccess: boolean;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
     collaboration?:
       | {
           __typename?: 'Collaboration';
@@ -7514,6 +7763,7 @@ export type HubPageQuery = {
                           maxWidth: number;
                           minHeight: number;
                           minWidth: number;
+                          alternativeText?: string | undefined;
                         }>;
                         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                         references?:
@@ -7551,6 +7801,7 @@ export type HubPageQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -7704,55 +7955,6 @@ export type HubPageQuery = {
             | undefined;
         }
       | undefined;
-    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-    authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
-      | undefined;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-        }
-      | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      tagline: string;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-    };
-    context?:
-      | {
-          __typename?: 'Context';
-          id: string;
-          vision?: string | undefined;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                anonymousReadAccess: boolean;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -7795,6 +7997,59 @@ export type HubPageFragment = {
   id: string;
   nameID: string;
   visibility: HubVisibility;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        anonymousReadAccess: boolean;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+      }
+    | undefined;
+  host?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }
+    | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagline: string;
+    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  };
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        vision?: string | undefined;
+        who?: string | undefined;
+        impact?: string | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              anonymousReadAccess: boolean;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
   collaboration?:
     | {
         __typename?: 'Collaboration';
@@ -7839,6 +8094,7 @@ export type HubPageFragment = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }>;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -7876,6 +8132,7 @@ export type HubPageFragment = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -8029,55 +8286,14 @@ export type HubPageFragment = {
           | undefined;
       }
     | undefined;
-  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
-    | undefined;
-  host?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      }
-    | undefined;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagline: string;
-    visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  };
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        vision?: string | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              anonymousReadAccess: boolean;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
+};
+
+export type HubWelcomeBlockContributorProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
 };
 
 export type AdminHubFragment = {
@@ -8140,6 +8356,7 @@ export type HubDetailsFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     location?:
       | {
@@ -8250,6 +8467,7 @@ export type CreateHubMutation = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
       location?:
         | {
@@ -8342,6 +8560,7 @@ export type UpdateHubMutation = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
       location?:
         | {
@@ -8523,6 +8742,7 @@ export type HubGroupQuery = {
                   maxWidth: number;
                   minHeight: number;
                   minWidth: number;
+                  alternativeText?: string | undefined;
                 }
               | undefined;
             references?:
@@ -8860,6 +9080,7 @@ export type OpportunityPageQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -8897,6 +9118,7 @@ export type OpportunityPageQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -9136,6 +9358,7 @@ export type OpportunityPageFragment = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }>;
                       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                       references?:
@@ -9173,6 +9396,7 @@ export type OpportunityPageFragment = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -9370,6 +9594,7 @@ export type OpportunityProviderQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
@@ -9425,6 +9650,7 @@ export type OpportunityProviderFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
@@ -9485,6 +9711,7 @@ export type OpportunityCardFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9547,6 +9774,7 @@ export type CreateOpportunityMutation = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }>;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9762,6 +9990,7 @@ export type OpportunityCardsQuery = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }>;
             };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -9957,6 +10186,7 @@ export type OpportunityProfileInfoQuery = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         location?:
           | {
@@ -10081,6 +10311,1705 @@ export type OpportunityWithActivityQuery = {
           metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
         }>
       | undefined;
+  };
+};
+
+export type CalloutPageCalloutQueryVariables = Exact<{
+  calloutNameId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  includeHub?: InputMaybe<Scalars['Boolean']>;
+  includeChallenge?: InputMaybe<Scalars['Boolean']>;
+  includeOpportunity?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CalloutPageCalloutQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                type: CalloutType;
+                group?: string | undefined;
+                state: CalloutState;
+                sortOrder: number;
+                activity: number;
+                visibility: CalloutVisibility;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
+                canvases?:
+                  | Array<{
+                      __typename?: 'Canvas';
+                      id: string;
+                      nameID: string;
+                      createdDate: Date;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        visual?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                      };
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
+                          }
+                        | undefined;
+                      checkout?:
+                        | {
+                            __typename?: 'CanvasCheckout';
+                            id: string;
+                            lockedBy: string;
+                            status: CanvasCheckoutStateEnum;
+                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                      createdBy?:
+                        | {
+                            __typename?: 'User';
+                            id: string;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            };
+                          }
+                        | undefined;
+                    }>
+                  | undefined;
+                comments?:
+                  | {
+                      __typename?: 'Comments';
+                      id: string;
+                      commentsCount: number;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
+                          }
+                        | undefined;
+                      messages?:
+                        | Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            message: string;
+                            timestamp: number;
+                            sender?:
+                              | {
+                                  __typename?: 'User';
+                                  id: string;
+                                  nameID: string;
+                                  firstName: string;
+                                  lastName: string;
+                                  profile: {
+                                    __typename?: 'Profile';
+                                    id: string;
+                                    displayName: string;
+                                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                    tagsets?:
+                                      | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                                      | undefined;
+                                    location?:
+                                      | { __typename?: 'Location'; id: string; city: string; country: string }
+                                      | undefined;
+                                  };
+                                }
+                              | undefined;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                postTemplate?:
+                  | {
+                      __typename?: 'PostTemplate';
+                      id: string;
+                      type: string;
+                      defaultDescription: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
+                whiteboardTemplate?:
+                  | {
+                      __typename?: 'WhiteboardTemplate';
+                      id: string;
+                      value: string;
+                      profile: {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        description?: string | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      };
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+    challenge?: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  type: CalloutType;
+                  group?: string | undefined;
+                  state: CalloutState;
+                  sortOrder: number;
+                  activity: number;
+                  visibility: CalloutVisibility;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
+                  canvases?:
+                    | Array<{
+                        __typename?: 'Canvas';
+                        id: string;
+                        nameID: string;
+                        createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        };
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        checkout?:
+                          | {
+                              __typename?: 'CanvasCheckout';
+                              id: string;
+                              lockedBy: string;
+                              status: CanvasCheckoutStateEnum;
+                              lifecycle: {
+                                __typename?: 'Lifecycle';
+                                id: string;
+                                nextEvents?: Array<string> | undefined;
+                              };
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                            }
+                          | undefined;
+                        createdBy?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              };
+                            }
+                          | undefined;
+                      }>
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        commentsCount: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              timestamp: number;
+                              sender?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    nameID: string;
+                                    firstName: string;
+                                    lastName: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                          }>
+                                        | undefined;
+                                      location?:
+                                        | { __typename?: 'Location'; id: string; city: string; country: string }
+                                        | undefined;
+                                    };
+                                  }
+                                | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  postTemplate?:
+                    | {
+                        __typename?: 'PostTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                  whiteboardTemplate?:
+                    | {
+                        __typename?: 'WhiteboardTemplate';
+                        id: string;
+                        value: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+    opportunity?: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  type: CalloutType;
+                  group?: string | undefined;
+                  state: CalloutState;
+                  sortOrder: number;
+                  activity: number;
+                  visibility: CalloutVisibility;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                  };
+                  canvases?:
+                    | Array<{
+                        __typename?: 'Canvas';
+                        id: string;
+                        nameID: string;
+                        createdDate: Date;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          visual?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                        };
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        checkout?:
+                          | {
+                              __typename?: 'CanvasCheckout';
+                              id: string;
+                              lockedBy: string;
+                              status: CanvasCheckoutStateEnum;
+                              lifecycle: {
+                                __typename?: 'Lifecycle';
+                                id: string;
+                                nextEvents?: Array<string> | undefined;
+                              };
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                            }
+                          | undefined;
+                        createdBy?:
+                          | {
+                              __typename?: 'User';
+                              id: string;
+                              profile: {
+                                __typename?: 'Profile';
+                                id: string;
+                                displayName: string;
+                                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                              };
+                            }
+                          | undefined;
+                      }>
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        commentsCount: number;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              timestamp: number;
+                              sender?:
+                                | {
+                                    __typename?: 'User';
+                                    id: string;
+                                    nameID: string;
+                                    firstName: string;
+                                    lastName: string;
+                                    profile: {
+                                      __typename?: 'Profile';
+                                      id: string;
+                                      displayName: string;
+                                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                                      tagsets?:
+                                        | Array<{
+                                            __typename?: 'Tagset';
+                                            id: string;
+                                            name: string;
+                                            tags: Array<string>;
+                                          }>
+                                        | undefined;
+                                      location?:
+                                        | { __typename?: 'Location'; id: string; city: string; country: string }
+                                        | undefined;
+                                    };
+                                  }
+                                | undefined;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  postTemplate?:
+                    | {
+                        __typename?: 'PostTemplate';
+                        id: string;
+                        type: string;
+                        defaultDescription: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                  whiteboardTemplate?:
+                    | {
+                        __typename?: 'WhiteboardTemplate';
+                        id: string;
+                        value: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        };
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ActivityCreatedSubscriptionVariables = Exact<{
+  input: ActivityCreatedSubscriptionInput;
+}>;
+
+export type ActivityCreatedSubscription = {
+  __typename?: 'Subscription';
+  activityCreated: {
+    __typename?: 'ActivityCreatedSubscriptionResult';
+    activity:
+      | {
+          __typename: 'ActivityLogEntryCalloutCanvasCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+          canvas: {
+            __typename?: 'Canvas';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutCardComment';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+          card: {
+            __typename?: 'Aspect';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutCardCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+          card: {
+            __typename?: 'Aspect';
+            id: string;
+            nameID: string;
+            type: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutDiscussionComment';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryCalloutPublished';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            nameID: string;
+            type: CalloutType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryChallengeCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          challenge: {
+            __typename?: 'Challenge';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryMemberJoined';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          communityType: string;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          community: { __typename?: 'Community'; id: string; displayName: string };
+          user: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryOpportunityCreated';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+          opportunity: {
+            __typename?: 'Opportunity';
+            id: string;
+            nameID: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+          };
+        }
+      | {
+          __typename: 'ActivityLogEntryUpdateSent';
+          id: string;
+          collaborationID: string;
+          createdDate: Date;
+          description: string;
+          type: ActivityEventType;
+          triggeredBy: {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          };
+        };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment = {
+  __typename: 'ActivityLogEntryCalloutCanvasCreated';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  canvas: {
+    __typename?: 'Canvas';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment = {
+  __typename: 'ActivityLogEntryCalloutCardComment';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
+  __typename: 'ActivityLogEntryCalloutCardCreated';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    type: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragment = {
+  __typename: 'ActivityLogEntryCalloutDiscussionComment';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
+  __typename: 'ActivityLogEntryCalloutPublished';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
+  __typename: 'ActivityLogEntryChallengeCreated';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  challenge: {
+    __typename?: 'Challenge';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
+  __typename: 'ActivityLogEntryMemberJoined';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  communityType: string;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  community: { __typename?: 'Community'; id: string; displayName: string };
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
+  __typename: 'ActivityLogEntryOpportunityCreated';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+  opportunity: {
+    __typename?: 'Opportunity';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+  };
+};
+
+type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
+  __typename: 'ActivityLogEntryUpdateSent';
+  id: string;
+  collaborationID: string;
+  createdDate: Date;
+  description: string;
+  type: ActivityEventType;
+  triggeredBy: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+};
+
+export type ActivityLogOnCollaborationFragment =
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment
+  | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
+
+export type ActivityLogOnCollaborationQueryVariables = Exact<{
+  queryData: ActivityLogInput;
+}>;
+
+export type ActivityLogOnCollaborationQuery = {
+  __typename?: 'Query';
+  activityLogOnCollaboration: Array<
+    | {
+        __typename: 'ActivityLogEntryCalloutCanvasCreated';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+        canvas: {
+          __typename?: 'Canvas';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutCardComment';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+        card: {
+          __typename?: 'Aspect';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutCardCreated';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+        card: {
+          __typename?: 'Aspect';
+          id: string;
+          nameID: string;
+          type: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutDiscussionComment';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryCalloutPublished';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          nameID: string;
+          type: CalloutType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryChallengeCreated';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        challenge: {
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryMemberJoined';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        communityType: string;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        community: { __typename?: 'Community'; id: string; displayName: string };
+        user: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryOpportunityCreated';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        opportunity: {
+          __typename?: 'Opportunity';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+        };
+      }
+    | {
+        __typename: 'ActivityLogEntryUpdateSent';
+        id: string;
+        collaborationID: string;
+        createdDate: Date;
+        description: string;
+        type: ActivityEventType;
+        message: string;
+        triggeredBy: {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          };
+        };
+        updates: { __typename?: 'Updates'; id: string };
+      }
+  >;
+};
+
+export type ActivityLogMemberJoinedFragment = {
+  __typename?: 'ActivityLogEntryMemberJoined';
+  communityType: string;
+  community: { __typename?: 'Community'; id: string; displayName: string };
+  user: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+    };
+  };
+};
+
+export type ActivityLogCalloutPublishedFragment = {
+  __typename?: 'ActivityLogEntryCalloutPublished';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type ActivityLogCalloutCardCreatedFragment = {
+  __typename?: 'ActivityLogEntryCalloutCardCreated';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    type: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  };
+};
+
+export type ActivityLogCalloutCardCommentFragment = {
+  __typename?: 'ActivityLogEntryCalloutCardComment';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  card: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type ActivityLogCalloutCanvasCreatedFragment = {
+  __typename?: 'ActivityLogEntryCalloutCanvasCreated';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+  canvas: {
+    __typename?: 'Canvas';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type ActivityLogChallengeCreatedFragment = {
+  __typename?: 'ActivityLogEntryChallengeCreated';
+  challenge: {
+    __typename?: 'Challenge';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+  };
+};
+
+export type ActivityLogOpportunityCreatedFragment = {
+  __typename?: 'ActivityLogEntryOpportunityCreated';
+  opportunity: {
+    __typename?: 'Opportunity';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+  };
+};
+
+export type ActivityLogCalloutDiscussionCommentFragment = {
+  __typename?: 'ActivityLogEntryCalloutDiscussionComment';
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type ActivityLogUpdateSentFragment = {
+  __typename?: 'ActivityLogEntryUpdateSent';
+  message: string;
+  updates: { __typename?: 'Updates'; id: string };
+};
+
+export type HubPostTemplatesLibraryQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubPostTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type PlatformPostTemplatesLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformPostTemplatesLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovatonPack';
+        id: string;
+        nameID: string;
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              postTemplates: Array<{
+                __typename?: 'PostTemplate';
+                id: string;
+                defaultDescription: string;
+                type: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }>;
+            }
+          | undefined;
+      }>;
+    };
   };
 };
 
@@ -10688,6 +12617,7 @@ export type HubAspectSettingsQuery = {
                           maxWidth: number;
                           minHeight: number;
                           minWidth: number;
+                          alternativeText?: string | undefined;
                         }>;
                       };
                     }>
@@ -10769,6 +12699,7 @@ export type ChallengeAspectSettingsQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                         };
                       }>
@@ -10851,6 +12782,7 @@ export type OpportunityAspectSettingsQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                         };
                       }>
@@ -10898,6 +12830,7 @@ export type AspectSettingsFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
   };
 };
@@ -10941,6 +12874,7 @@ export type AspectSettingsCalloutFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
         };
       }>
@@ -11159,6 +13093,7 @@ export type AspectCardFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
@@ -11196,6 +13131,7 @@ export type ContributeTabAspectFragment = {
       maxWidth: number;
       minHeight: number;
       minWidth: number;
+      alternativeText?: string | undefined;
     }>;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
@@ -11334,6 +13270,7 @@ export type DashboardTopCalloutsFragment = {
                   maxWidth: number;
                   minHeight: number;
                   minWidth: number;
+                  alternativeText?: string | undefined;
                 }>;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 references?:
@@ -11371,6 +13308,7 @@ export type DashboardTopCalloutsFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -11452,6 +13390,7 @@ export type DashboardTopCalloutFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
@@ -11489,6 +13428,7 @@ export type DashboardTopCalloutFragment = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -11808,9 +13748,17 @@ export type UpdateCalloutMutation = {
     __typename?: 'Callout';
     id: string;
     state: CalloutState;
+    group?: string | undefined;
     type: CalloutType;
     visibility: CalloutVisibility;
-    profile: { __typename?: 'Profile'; id: string; description?: string | undefined; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      description?: string | undefined;
+      displayName: string;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    };
     postTemplate?:
       | {
           __typename?: 'PostTemplate';
@@ -11885,6 +13833,41 @@ export type RemoveCommentFromCalloutMutationVariables = Exact<{
 
 export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeComment: string };
 
+export type CalloutMessageReceivedSubscriptionVariables = Exact<{
+  calloutIDs: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type CalloutMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  calloutMessageReceived: {
+    __typename?: 'CalloutMessageReceived';
+    commentsID: string;
+    message: {
+      __typename?: 'Message';
+      id: string;
+      message: string;
+      timestamp: number;
+      sender?:
+        | {
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+            };
+          }
+        | undefined;
+    };
+  };
+};
+
 export type CalloutsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   includeHub?: InputMaybe<Scalars['Boolean']>;
@@ -11892,6 +13875,7 @@ export type CalloutsQueryVariables = Exact<{
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  calloutGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 export type CalloutsQuery = {
@@ -11913,11 +13897,27 @@ export type CalloutsQuery = {
                 id: string;
                 nameID: string;
                 type: CalloutType;
+                group?: string | undefined;
                 state: CalloutState;
                 sortOrder: number;
                 activity: number;
                 visibility: CalloutVisibility;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  references?:
+                    | Array<{
+                        __typename?: 'Reference';
+                        id: string;
+                        name: string;
+                        uri: string;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
+                };
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -11941,6 +13941,7 @@ export type CalloutsQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12083,6 +14084,7 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
+                  group?: string | undefined;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
@@ -12092,6 +14094,16 @@ export type CalloutsQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -12116,6 +14128,7 @@ export type CalloutsQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12268,6 +14281,7 @@ export type CalloutsQuery = {
                   id: string;
                   nameID: string;
                   type: CalloutType;
+                  group?: string | undefined;
                   state: CalloutState;
                   sortOrder: number;
                   activity: number;
@@ -12277,6 +14291,16 @@ export type CalloutsQuery = {
                     id: string;
                     displayName: string;
                     description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
                   };
                   canvases?:
                     | Array<{
@@ -12301,6 +14325,7 @@ export type CalloutsQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12495,6 +14520,7 @@ export type HubCalloutAspectsSubscriptionQuery = {
                           maxWidth: number;
                           minHeight: number;
                           minWidth: number;
+                          alternativeText?: string | undefined;
                         }>;
                         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                         references?:
@@ -12576,6 +14602,7 @@ export type ChallengeCalloutAspectsSubscriptionQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -12658,6 +14685,7 @@ export type OpportunityCalloutAspectsSubscriptionQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }>;
                           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                           references?:
@@ -12773,11 +14801,27 @@ export type CollaborationWithCalloutsFragment = {
         id: string;
         nameID: string;
         type: CalloutType;
+        group?: string | undefined;
         state: CalloutState;
         sortOrder: number;
         activity: number;
         visibility: CalloutVisibility;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+        };
         canvases?:
           | Array<{
               __typename?: 'Canvas';
@@ -12801,6 +14845,7 @@ export type CollaborationWithCalloutsFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -12927,11 +14972,21 @@ export type CalloutFragment = {
   id: string;
   nameID: string;
   type: CalloutType;
+  group?: string | undefined;
   state: CalloutState;
   sortOrder: number;
   activity: number;
   visibility: CalloutVisibility;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
   canvases?:
     | Array<{
         __typename?: 'Canvas';
@@ -12955,6 +15010,7 @@ export type CalloutFragment = {
                 maxWidth: number;
                 minHeight: number;
                 minWidth: number;
+                alternativeText?: string | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13102,41 +15158,6 @@ export type CalloutWhiteboardTemplateFragment = {
         };
       }
     | undefined;
-};
-
-export type CalloutMessageReceivedSubscriptionVariables = Exact<{
-  calloutIDs: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type CalloutMessageReceivedSubscription = {
-  __typename?: 'Subscription';
-  calloutMessageReceived: {
-    __typename?: 'CalloutMessageReceived';
-    commentsID: string;
-    message: {
-      __typename?: 'Message';
-      id: string;
-      message: string;
-      timestamp: number;
-      sender?:
-        | {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          }
-        | undefined;
-    };
-  };
 };
 
 export type HubWhiteboardTemplatesLibraryQueryVariables = Exact<{
@@ -13364,6 +15385,7 @@ export type CanvasProfileFragment = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13391,6 +15413,7 @@ export type CanvasDetailsFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13521,6 +15544,7 @@ export type CalloutWithCanvasFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13607,6 +15631,7 @@ export type CollaborationWithCanvasDetailsFragment = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13705,6 +15730,7 @@ export type HubCanvasFromCalloutQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13804,6 +15830,7 @@ export type HubCanvasesQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -13904,6 +15931,7 @@ export type HubCanvasValuesQuery = {
                               maxWidth: number;
                               minHeight: number;
                               minWidth: number;
+                              alternativeText?: string | undefined;
                             }
                           | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14009,6 +16037,7 @@ export type ChallengeCanvasFromCalloutQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14118,6 +16147,7 @@ export type ChallengeCanvasValuesQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14228,6 +16258,7 @@ export type OpportunityCanvasFromCalloutQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14337,6 +16368,7 @@ export type OpportunityCanvasValuesQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14427,6 +16459,7 @@ export type HubTemplateCanvasValuesQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14480,6 +16513,7 @@ export type PlatformTemplateCanvasValuesQuery = {
                                 maxWidth: number;
                                 minHeight: number;
                                 minWidth: number;
+                                alternativeText?: string | undefined;
                               }
                             | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14522,6 +16556,7 @@ export type CreateCanvasOnCalloutMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -14668,6 +16703,7 @@ export type AspectsOnCalloutFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }>;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
           references?:
@@ -14721,6 +16757,7 @@ export type CalloutAspectCreatedSubscription = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }>;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         references?:
@@ -14866,7 +16903,7 @@ export type UploadVisualMutationVariables = Exact<{
 
 export type UploadVisualMutation = {
   __typename?: 'Mutation';
-  uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string };
+  uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
 };
 
 export type VisualFullFragment = {
@@ -14880,6 +16917,7 @@ export type VisualFullFragment = {
   maxWidth: number;
   minHeight: number;
   minWidth: number;
+  alternativeText?: string | undefined;
 };
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
@@ -14917,12 +16955,12 @@ export type CreateDiscussionMutation = {
   createDiscussion: {
     __typename?: 'Discussion';
     id: string;
-    title: string;
-    description: string;
+    nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
     commentsCount: number;
+    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -14966,7 +17004,7 @@ export type DeleteDiscussionMutationVariables = Exact<{
 
 export type DeleteDiscussionMutation = {
   __typename?: 'Mutation';
-  deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
+  deleteDiscussion: { __typename?: 'Discussion'; id: string };
 };
 
 export type DeleteCommentMutationVariables = Exact<{
@@ -14978,26 +17016,15 @@ export type DeleteCommentMutation = { __typename?: 'Mutation'; removeMessageFrom
 export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
-  title: string;
-  description: string;
+  nameID: string;
   createdBy?: string | undefined;
   timestamp?: number | undefined;
   category: DiscussionCategory;
   commentsCount: number;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-};
-
-export type DiscussionDetailsNoAuthFragment = {
-  __typename?: 'Discussion';
-  id: string;
-  title: string;
-  description: string;
-  createdBy?: string | undefined;
-  timestamp?: number | undefined;
-  category: DiscussionCategory;
-  commentsCount: number;
 };
 
 export type PlatformDiscussionsQueryVariables = Exact<{ [key: string]: never }>;
@@ -15023,12 +17050,31 @@ export type PlatformDiscussionsQuery = {
         | Array<{
             __typename?: 'Discussion';
             id: string;
-            title: string;
-            description: string;
+            nameID: string;
             category: DiscussionCategory;
             timestamp?: number | undefined;
             commentsCount: number;
             createdBy?: string | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagline: string;
+              visuals: Array<{
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }>;
+            };
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -15067,8 +17113,7 @@ export type PlatformDiscussionQuery = {
         | {
             __typename?: 'Discussion';
             id: string;
-            title: string;
-            description: string;
+            nameID: string;
             createdBy?: string | undefined;
             timestamp?: number | undefined;
             category: DiscussionCategory;
@@ -15100,6 +17145,7 @@ export type PlatformDiscussionQuery = {
                     | undefined;
                 }>
               | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
             authorization?:
               | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -15118,12 +17164,31 @@ export type CommunicationDiscussionUpdatedSubscription = {
   communicationDiscussionUpdated: {
     __typename?: 'Discussion';
     id: string;
-    title: string;
-    description: string;
+    nameID: string;
     createdBy?: string | undefined;
     timestamp?: number | undefined;
     category: DiscussionCategory;
     commentsCount: number;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline: string;
+      visuals: Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }>;
+    };
   };
 };
 
@@ -17211,7 +19276,9 @@ export type OrganizationInfoFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    visual?:
+      | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+      | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
     location?:
@@ -17239,7 +19306,9 @@ export type OrganizationInfoFragment = {
           id: string;
           displayName: string;
           location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          visual?:
+            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
       }>
@@ -17271,7 +19340,9 @@ export type OrganizationInfoQuery = {
       id: string;
       displayName: string;
       description?: string | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      visual?:
+        | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       location?:
@@ -17299,7 +19370,9 @@ export type OrganizationInfoQuery = {
             id: string;
             displayName: string;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            visual?:
+              | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+              | undefined;
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
           };
         }>
@@ -17365,6 +19438,7 @@ export type OrganizationProfileInfoFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
@@ -17439,6 +19513,7 @@ export type UpdateOrganizationMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
@@ -17494,6 +19569,7 @@ export type OrganizationGroupQuery = {
                       maxWidth: number;
                       minHeight: number;
                       minWidth: number;
+                      alternativeText?: string | undefined;
                     }
                   | undefined;
                 references?:
@@ -17607,6 +19683,7 @@ export type OrganizationProfileInfoQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
@@ -17761,6 +19838,7 @@ export type GroupInfoFragment = {
               maxWidth: number;
               minHeight: number;
               minWidth: number;
+              alternativeText?: string | undefined;
             }
           | undefined;
         references?:
@@ -17830,6 +19908,7 @@ export type UserDetailsFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
     references?:
@@ -17957,6 +20036,7 @@ export type CreateUserMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18007,6 +20087,7 @@ export type CreateUserNewRegistrationMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18122,6 +20203,7 @@ export type UpdateUserMutation = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18241,6 +20323,7 @@ export type UserQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18368,6 +20451,7 @@ export type UserProfileQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -18528,6 +20612,7 @@ export type MeQuery = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
       references?:
@@ -19245,6 +21330,7 @@ export type AdminHubTemplatesQuery = {
                     maxWidth: number;
                     minHeight: number;
                     minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
             };
@@ -19270,6 +21356,7 @@ export type AdminHubTemplatesQuery = {
                     maxWidth: number;
                     minHeight: number;
                     minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
             };
@@ -19297,6 +21384,7 @@ export type AdminHubTemplatesQuery = {
                     maxWidth: number;
                     minHeight: number;
                     minWidth: number;
+                    alternativeText?: string | undefined;
                   }
                 | undefined;
             };
@@ -19329,6 +21417,7 @@ export type AdminInnovationFlowTemplateFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
   };
@@ -19357,6 +21446,7 @@ export type AdminPostTemplateFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
   };
@@ -19383,6 +21473,7 @@ export type AdminWhiteboardTemplateFragment = {
           maxWidth: number;
           minHeight: number;
           minWidth: number;
+          alternativeText?: string | undefined;
         }
       | undefined;
   };
@@ -19408,6 +21499,7 @@ export type ProfileInfoWithVisualFragment = {
         maxWidth: number;
         minHeight: number;
         minWidth: number;
+        alternativeText?: string | undefined;
       }
     | undefined;
 };
@@ -19487,6 +21579,7 @@ export type InnovationPacksQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -19512,6 +21605,7 @@ export type InnovationPacksQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -19539,6 +21633,7 @@ export type InnovationPacksQuery = {
                         maxWidth: number;
                         minHeight: number;
                         minWidth: number;
+                        alternativeText?: string | undefined;
                       }
                     | undefined;
                 };
@@ -19688,6 +21783,7 @@ export type InnovationPackTemplatesFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
     };
@@ -19715,6 +21811,7 @@ export type InnovationPackTemplatesFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
     };
@@ -19740,6 +21837,7 @@ export type InnovationPackTemplatesFragment = {
             maxWidth: number;
             minHeight: number;
             minWidth: number;
+            alternativeText?: string | undefined;
           }
         | undefined;
     };
@@ -19814,6 +21912,7 @@ export type AdminInnovationPackQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -19841,6 +21940,7 @@ export type AdminInnovationPackQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -19866,6 +21966,7 @@ export type AdminInnovationPackQuery = {
                             maxWidth: number;
                             minHeight: number;
                             minWidth: number;
+                            alternativeText?: string | undefined;
                           }
                         | undefined;
                     };
@@ -20661,1025 +22762,6 @@ export type CreateRelationMutationVariables = Exact<{
 export type CreateRelationMutation = {
   __typename?: 'Mutation';
   createRelationOnCollaboration: { __typename?: 'Relation'; id: string };
-};
-
-export type ActivityCreatedSubscriptionVariables = Exact<{
-  collaborationID: Scalars['UUID'];
-}>;
-
-export type ActivityCreatedSubscription = {
-  __typename?: 'Subscription';
-  activityCreated: {
-    __typename?: 'ActivityCreatedSubscriptionResult';
-    activity:
-      | {
-          __typename: 'ActivityLogEntryCalloutCanvasCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-          canvas: {
-            __typename?: 'Canvas';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryCalloutCardComment';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-          card: {
-            __typename?: 'Aspect';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryCalloutCardCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-          card: {
-            __typename?: 'Aspect';
-            id: string;
-            nameID: string;
-            type: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryCalloutDiscussionComment';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryCalloutPublished';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          callout: {
-            __typename?: 'Callout';
-            id: string;
-            nameID: string;
-            type: CalloutType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryChallengeCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          challenge: {
-            __typename?: 'Challenge';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryMemberJoined';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          communityType: string;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          community: { __typename?: 'Community'; id: string; displayName: string };
-          user: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryOpportunityCreated';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-          opportunity: {
-            __typename?: 'Opportunity';
-            id: string;
-            nameID: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-          };
-        }
-      | {
-          __typename: 'ActivityLogEntryUpdateSent';
-          id: string;
-          collaborationID: string;
-          createdDate: Date;
-          description: string;
-          type: ActivityEventType;
-          triggeredBy: {
-            __typename?: 'User';
-            id: string;
-            nameID: string;
-            firstName: string;
-            lastName: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-              location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-            };
-          };
-        };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment = {
-  __typename: 'ActivityLogEntryCalloutCanvasCreated';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-  canvas: {
-    __typename?: 'Canvas';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment = {
-  __typename: 'ActivityLogEntryCalloutCardComment';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-  card: {
-    __typename?: 'Aspect';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment = {
-  __typename: 'ActivityLogEntryCalloutCardCreated';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-  card: {
-    __typename?: 'Aspect';
-    id: string;
-    nameID: string;
-    type: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragment = {
-  __typename: 'ActivityLogEntryCalloutDiscussionComment';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment = {
-  __typename: 'ActivityLogEntryCalloutPublished';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    type: CalloutType;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment = {
-  __typename: 'ActivityLogEntryChallengeCreated';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  challenge: {
-    __typename?: 'Challenge';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment = {
-  __typename: 'ActivityLogEntryMemberJoined';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  communityType: string;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  community: { __typename?: 'Community'; id: string; displayName: string };
-  user: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment = {
-  __typename: 'ActivityLogEntryOpportunityCreated';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-  opportunity: {
-    __typename?: 'Opportunity';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-  };
-};
-
-type ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment = {
-  __typename: 'ActivityLogEntryUpdateSent';
-  id: string;
-  collaborationID: string;
-  createdDate: Date;
-  description: string;
-  type: ActivityEventType;
-  triggeredBy: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-};
-
-export type ActivityLogOnCollaborationFragment =
-  | ActivityLogOnCollaboration_ActivityLogEntryCalloutCanvasCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryCalloutCardComment_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryCalloutCardCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryCalloutDiscussionComment_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryCalloutPublished_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryChallengeCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryMemberJoined_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryOpportunityCreated_Fragment
-  | ActivityLogOnCollaboration_ActivityLogEntryUpdateSent_Fragment;
-
-export type ActivityLogOnCollaborationQueryVariables = Exact<{
-  queryData: ActivityLogInput;
-}>;
-
-export type ActivityLogOnCollaborationQuery = {
-  __typename?: 'Query';
-  activityLogOnCollaboration: Array<
-    | {
-        __typename: 'ActivityLogEntryCalloutCanvasCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-        canvas: {
-          __typename?: 'Canvas';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryCalloutCardComment';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-        card: {
-          __typename?: 'Aspect';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryCalloutCardCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-        card: {
-          __typename?: 'Aspect';
-          id: string;
-          nameID: string;
-          type: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryCalloutDiscussionComment';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryCalloutPublished';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          nameID: string;
-          type: CalloutType;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryChallengeCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        challenge: {
-          __typename?: 'Challenge';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryMemberJoined';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        communityType: string;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        community: { __typename?: 'Community'; id: string; displayName: string };
-        user: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryOpportunityCreated';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        opportunity: {
-          __typename?: 'Opportunity';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-        };
-      }
-    | {
-        __typename: 'ActivityLogEntryUpdateSent';
-        id: string;
-        collaborationID: string;
-        createdDate: Date;
-        description: string;
-        type: ActivityEventType;
-        message: string;
-        triggeredBy: {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          firstName: string;
-          lastName: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-          };
-        };
-        updates: { __typename?: 'Updates'; id: string };
-      }
-  >;
-};
-
-export type ActivityLogMemberJoinedFragment = {
-  __typename?: 'ActivityLogEntryMemberJoined';
-  communityType: string;
-  community: { __typename?: 'Community'; id: string; displayName: string };
-  user: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
-  };
-};
-
-export type ActivityLogCalloutPublishedFragment = {
-  __typename?: 'ActivityLogEntryCalloutPublished';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    type: CalloutType;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type ActivityLogCalloutCardCreatedFragment = {
-  __typename?: 'ActivityLogEntryCalloutCardCreated';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-  card: {
-    __typename?: 'Aspect';
-    id: string;
-    nameID: string;
-    type: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  };
-};
-
-export type ActivityLogCalloutCardCommentFragment = {
-  __typename?: 'ActivityLogEntryCalloutCardComment';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-  card: {
-    __typename?: 'Aspect';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type ActivityLogCalloutCanvasCreatedFragment = {
-  __typename?: 'ActivityLogEntryCalloutCanvasCreated';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-  canvas: {
-    __typename?: 'Canvas';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type ActivityLogChallengeCreatedFragment = {
-  __typename?: 'ActivityLogEntryChallengeCreated';
-  challenge: {
-    __typename?: 'Challenge';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-  };
-};
-
-export type ActivityLogOpportunityCreatedFragment = {
-  __typename?: 'ActivityLogEntryOpportunityCreated';
-  opportunity: {
-    __typename?: 'Opportunity';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-  };
-};
-
-export type ActivityLogCalloutDiscussionCommentFragment = {
-  __typename?: 'ActivityLogEntryCalloutDiscussionComment';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type ActivityLogUpdateSentFragment = {
-  __typename?: 'ActivityLogEntryUpdateSent';
-  message: string;
-  updates: { __typename?: 'Updates'; id: string };
 };
 
 export type CommentsWithMessagesFragment = {

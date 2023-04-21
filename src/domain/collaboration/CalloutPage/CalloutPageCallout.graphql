@@ -1,0 +1,37 @@
+query CalloutPageCallout(
+  $calloutNameId: UUID_NAMEID!
+  $hubNameId: UUID_NAMEID!
+  $challengeNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $opportunityNameId: UUID_NAMEID = "mockid" # workaround for mandatory param
+  $includeHub: Boolean = false
+  $includeChallenge: Boolean = false
+  $includeOpportunity: Boolean = false
+) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration @include(if: $includeHub) {
+      id
+      callouts(IDs: [$calloutNameId]) {
+        ...Callout
+      }
+    }
+    challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          ...Callout
+        }
+      }
+    }
+    opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      id
+      collaboration {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          ...Callout
+        }
+      }
+    }
+  }
+}

@@ -21,6 +21,7 @@ import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
+import ChallengeCollaborationPage from '../ChallengeCollaborationPage/ChallengeCollaborationPage';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -51,21 +52,13 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
-        <Route path={routes.Contribute} element={<ContributePage entityTypeName="challenge" />} />
+        <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
-
+        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCollaborationPage />} />
         <Route
-          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<ContributePage entityTypeName="challenge" scrollToCallout />}
-        />
-        <Route
-          path={`${routes.Contribute}/callouts/:${nameOfUrl.calloutNameId}/*`}
-          element={
-            <ContributePage entityTypeName="challenge">
-              <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Contribute}`} entityTypeName="challenge" />
-            </ContributePage>
-          }
+          path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
+          element={<ChallengeCollaborationPage>{props => <CalloutRoute {...props} />}</ChallengeCollaborationPage>}
         />
       </Route>
       <Route

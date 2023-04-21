@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,7 +6,7 @@ import {
   journeyCardValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -14,10 +14,14 @@ import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/use
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
 import { ChallengeIcon } from '../../challenge/icon/ChallengeIcon';
-import JourneySubentitiesView from '../../common/tabs/Subentities/JourneySubentitiesView';
+import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
 import ChallengesCardContainer from '../containers/ChallengesCardContainer';
 import { useHub } from '../HubContext/useHub';
 import HubPageLayout from '../layout/HubPageLayout';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface HubChallengesPageProps {}
 
@@ -51,11 +55,17 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
     [navigate, createChallenge, hubNameId]
   );
 
+  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
+    useCallouts({
+      hubNameId,
+      calloutGroups: [CalloutsGroup.ChallengesLeft, CalloutsGroup.ChallengesRight],
+    });
+
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>
       <ChallengesCardContainer hubNameId={hubNameId}>
         {(entities, state) => (
-          <JourneySubentitiesView
+          <ChildJourneyView
             hubNameId={hubNameId}
             childEntities={entities.challenges}
             childEntitiesIcon={<ChallengeIcon />}
@@ -68,6 +78,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             renderChildEntityCard={challenge => (
               <ChallengeCard
                 bannerUri={getVisualBannerNarrow(challenge.profile.visuals)!}
+                bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
                 displayName={challenge.profile.displayName}
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}
@@ -88,6 +99,32 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 onClose={() => setCreateDialogOpen(false)}
                 OnCreate={handleCreate}
                 formComponent={CreateChallengeForm}
+              />
+            }
+            childrenLeft={
+              <CalloutsGroupView
+                callouts={groupedCallouts[CalloutsGroup.ChallengesLeft]}
+                hubId={hubNameId}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                entityTypeName="hub"
+                sortOrder={calloutsSortOrder}
+                calloutNames={calloutNames}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                group={CalloutsGroup.ChallengesLeft}
+              />
+            }
+            childrenRight={
+              <CalloutsGroupView
+                callouts={groupedCallouts[CalloutsGroup.ChallengesRight]}
+                hubId={hubNameId}
+                canCreateCallout={canCreateCallout}
+                loading={loading}
+                entityTypeName="hub"
+                sortOrder={calloutsSortOrder}
+                calloutNames={calloutNames}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                group={CalloutsGroup.ChallengesRight}
               />
             }
           />

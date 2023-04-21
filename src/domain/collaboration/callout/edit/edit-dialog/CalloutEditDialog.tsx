@@ -8,23 +8,28 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../common
 import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
-import { CalloutEditType } from '../CalloutEditType';
+import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import { createPostTemplateFromTemplateSet } from '../../utils/createPostTemplateFromTemplateSet';
-import { PostTemplateFragment, WhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutType,
+  PostTemplateFragment,
+  WhiteboardTemplateFragment,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
   useInnovationPackFullWhiteboardTemplateWithValueLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { createWhiteboardTemplateForCalloutCreation } from '../../utils/createWhiteboardTemplateForCalloutCreation';
+import { CalloutLayoutProps } from '../../../CalloutBlock/CalloutLayout';
+import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 
 export interface CalloutEditDialogProps {
   open: boolean;
   title: string;
-  callout: CalloutEditType;
+  calloutType: CalloutType;
+  callout: CalloutLayoutProps['callout'];
   onClose: () => void;
-  onDelete: (callout: CalloutEditType) => Promise<void>;
+  onDelete: (callout: CalloutDeleteType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
@@ -33,6 +38,7 @@ export interface CalloutEditDialogProps {
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   open,
   title,
+  calloutType,
   callout,
   onClose,
   onDelete,
@@ -45,14 +51,28 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const initialValues: CalloutFormInput = {
-    ...callout,
     displayName: callout.profile.displayName,
+    type: callout.type,
     description: callout.profile.description,
-    postTemplateType: callout.postTemplate?.type,
-    whiteboardTemplateData: {
-      id: callout.whiteboardTemplate?.id,
-      displayName: callout.whiteboardTemplate?.profile.displayName,
+    state: callout.state,
+    references: callout.profile.references,
+    profileId: callout.profile.id,
+    tags: callout.profile.tagset?.tags,
+    postTemplateData: {
+      profile: {
+        displayName: '',
+      },
+      defaultDescription: callout.postTemplate?.defaultDescription ?? '',
+      type: callout.postTemplate?.type ?? '',
     },
+    whiteboardTemplateData: {
+      value: callout.whiteboardTemplate?.value ?? JSON.stringify(EmptyWhiteboard),
+      profile: {
+        displayName:
+          callout.whiteboardTemplate?.profile.displayName ?? t('components.callout-creation.custom-template'),
+      },
+    },
+    group: callout.group,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
   const [fetchCanvasValueFromHub] = useHubTemplatesWhiteboardTemplateWithValueLazyQuery({
@@ -68,44 +88,19 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
 
   const handleSave = useCallback(async () => {
     setLoading(true);
-    const calloutPostTemplate = createPostTemplateFromTemplateSet(newCallout, templates.postTemplates);
-    const getCanvasValueFromHub = async () => {
-      const result = await fetchCanvasValueFromHub({
-        variables: { hubId: hubNameId!, whiteboardTemplateId: newCallout.whiteboardTemplateData?.id! },
-      });
-      return result.data?.hub.templates;
-    };
-
-    const getCanvasValueFromLibrary = async () => {
-      const result = await fetchCanvasValueFromLibrary({
-        variables: {
-          innovationPackId: newCallout.whiteboardTemplateData?.innovationPackId!,
-          whiteboardTemplateId: newCallout.whiteboardTemplateData?.id!,
-        },
-      });
-      return result.data?.platform.library.innovationPack?.templates;
-    };
-
-    const fetchCanvasValue = async () => {
-      if (!newCallout.whiteboardTemplateData?.origin) return undefined;
-      return newCallout.whiteboardTemplateData?.origin === 'Hub'
-        ? await getCanvasValueFromHub()
-        : await getCanvasValueFromLibrary();
-    };
-
-    const queryResult = await fetchCanvasValue();
-
-    const calloutWhiteboardTemplate = createWhiteboardTemplateForCalloutCreation(queryResult?.whiteboardTemplate);
 
     await onCalloutEdit({
       id: callout.id,
       profile: {
         displayName: newCallout.displayName,
         description: newCallout.description,
+        references: newCallout.references,
+        tagsets: [{ id: callout.profile.tagset?.id, name: 'default', tags: newCallout.tags }],
       },
       state: newCallout.state,
-      postTemplate: calloutPostTemplate,
-      whiteboardTemplate: calloutWhiteboardTemplate,
+      postTemplate: newCallout.postTemplateData,
+      whiteboardTemplate: newCallout.whiteboardTemplateData,
+      group: newCallout.group,
     });
     setLoading(false);
   }, [callout, fetchCanvasValueFromHub, newCallout, hubNameId, onCalloutEdit, templates, fetchCanvasValueFromLibrary]);
@@ -149,24 +144,16 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
         </DialogTitle>
         <DialogContent dividers>
           <CalloutForm
+            calloutType={calloutType}
             callout={initialValues}
             calloutNames={calloutNames}
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
-            templates={templates}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
-          {/* TODO "negative" is not a valid Button.color */}
-          {/* @ts-ignore */}
-          <LoadingButton
-            loading={loading}
-            disabled={loading}
-            variant="outlined"
-            color="negative"
-            onClick={handleDialogDelete}
-          >
+          <LoadingButton loading={loading} disabled={loading} variant="outlined" onClick={handleDialogDelete}>
             {t('buttons.delete')}
           </LoadingButton>
           <LoadingButton loading={loading} disabled={!valid || loading} variant="contained" onClick={handleSave}>

@@ -19,6 +19,7 @@ export const VisualFullFragmentDoc = gql`
     maxWidth
     minHeight
     minWidth
+    alternativeText
   }
 `;
 export const AspectCardFragmentDoc = gql`
@@ -528,6 +529,27 @@ export const JourneyCommunityFragmentDoc = gql`
   ${DashboardLeadUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
 `;
+export const CommunityPageCommunityFragmentDoc = gql`
+  fragment CommunityPageCommunity on Community {
+    id
+    leadUsers {
+      ...DashboardLeadUser
+    }
+    memberUsers {
+      ...DashboardContributingUser
+    }
+    leadOrganizations {
+      ...AssociatedOrganizationDetails
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
+    }
+  }
+  ${DashboardLeadUserFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
+`;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
     id
@@ -673,6 +695,21 @@ export const WhiteboardTemplateWithValueFragmentDoc = gql`
   }
   ${WhiteboardTemplateFragmentDoc}
 `;
+export const HubWelcomeBlockContributorProfileFragmentDoc = gql`
+  fragment HubWelcomeBlockContributorProfile on Profile {
+    id
+    displayName
+    location {
+      id
+      city
+      country
+    }
+    tagsets {
+      id
+      tags
+    }
+  }
+`;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -728,6 +765,9 @@ export const HubPageFragmentDoc = gql`
     }
     host {
       ...AssociatedOrganizationDetails
+      profile {
+        ...HubWelcomeBlockContributorProfile
+      }
     }
     profile {
       id
@@ -746,33 +786,39 @@ export const HubPageFragmentDoc = gql`
     context {
       id
       vision
+      who
+      impact
       authorization {
         id
         anonymousReadAccess
         myPrivileges
       }
     }
-    ... on Hub {
-      collaboration {
-        ...DashboardTopCallouts
-      }
-      community {
-        ...EntityDashboardCommunity
-      }
-      challenges(limit: 3, shuffle: true) {
-        ...ChallengeCard
-      }
-      timeline {
-        id
-        authorization {
-          id
-          anonymousReadAccess
-          myPrivileges
+    collaboration {
+      ...DashboardTopCallouts
+    }
+    community {
+      ...EntityDashboardCommunity
+      leadUsers {
+        profile {
+          ...HubWelcomeBlockContributorProfile
         }
+      }
+    }
+    challenges(limit: 3, shuffle: true) {
+      ...ChallengeCard
+    }
+    timeline {
+      id
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
       }
     }
   }
   ${AssociatedOrganizationDetailsFragmentDoc}
+  ${HubWelcomeBlockContributorProfileFragmentDoc}
   ${VisualUriFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
@@ -992,6 +1038,224 @@ export const NewOpportunityFragmentDoc = gql`
       id
       displayName
     }
+  }
+`;
+export const ActivityLogMemberJoinedFragmentDoc = gql`
+  fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
+    communityType
+    community {
+      id
+      displayName
+    }
+    user {
+      id
+      nameID
+      firstName
+      lastName
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutPublishedFragmentDoc = gql`
+  fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
+    callout {
+      id
+      nameID
+      type
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    card {
+      id
+      nameID
+      type
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutCardCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    card {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
+  fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+    canvas {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
+  fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
+    callout {
+      id
+      nameID
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export const ActivityLogChallengeCreatedFragmentDoc = gql`
+  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
+    challenge {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+      }
+    }
+  }
+`;
+export const ActivityLogOpportunityCreatedFragmentDoc = gql`
+  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
+    opportunity {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        tagline
+      }
+    }
+  }
+`;
+export const ActivityLogOnCollaborationFragmentDoc = gql`
+  fragment ActivityLogOnCollaboration on ActivityLogEntry {
+    id
+    collaborationID
+    createdDate
+    description
+    type
+    __typename
+    triggeredBy {
+      id
+      nameID
+      firstName
+      lastName
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+        location {
+          id
+          city
+          country
+        }
+      }
+    }
+    ... on ActivityLogEntryMemberJoined {
+      ...ActivityLogMemberJoined
+    }
+    ... on ActivityLogEntryCalloutPublished {
+      ...ActivityLogCalloutPublished
+    }
+    ... on ActivityLogEntryCalloutCardCreated {
+      ...ActivityLogCalloutCardCreated
+    }
+    ... on ActivityLogEntryCalloutCardComment {
+      ...ActivityLogCalloutCardComment
+    }
+    ... on ActivityLogEntryCalloutCanvasCreated {
+      ...ActivityLogCalloutCanvasCreated
+    }
+    ... on ActivityLogEntryCalloutDiscussionComment {
+      ...ActivityLogCalloutDiscussionComment
+    }
+    ... on ActivityLogEntryChallengeCreated {
+      ...ActivityLogChallengeCreated
+    }
+    ... on ActivityLogEntryOpportunityCreated {
+      ...ActivityLogOpportunityCreated
+    }
+  }
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutCardCreatedFragmentDoc}
+  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+`;
+export const ActivityLogUpdateSentFragmentDoc = gql`
+  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
+    updates {
+      id
+    }
+    message
   }
 `;
 export const MessageDetailsFragmentDoc = gql`
@@ -1259,10 +1523,21 @@ export const CalloutFragmentDoc = gql`
     id
     nameID
     type
+    group
     profile {
       id
       displayName
       description
+      tagset {
+        id
+        tags
+      }
+      references {
+        id
+        name
+        uri
+        description
+      }
     }
     state
     sortOrder
@@ -1293,7 +1568,7 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts {
+    callouts(groups: $calloutGroups) {
       ...Callout
     }
   }
@@ -1423,8 +1698,12 @@ export const AspectsOnCalloutFragmentDoc = gql`
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
-    title
-    description
+    nameID
+    profile {
+      id
+      displayName
+      description
+    }
     createdBy
     timestamp
     category
@@ -1432,17 +1711,6 @@ export const DiscussionDetailsFragmentDoc = gql`
     authorization {
       myPrivileges
     }
-  }
-`;
-export const DiscussionDetailsNoAuthFragmentDoc = gql`
-  fragment DiscussionDetailsNoAuth on Discussion {
-    id
-    title
-    description
-    createdBy
-    timestamp
-    category
-    commentsCount
   }
 `;
 export const ApplicationInfoFragmentDoc = gql`
@@ -1768,6 +2036,7 @@ export const OrganizationInfoFragmentDoc = gql`
       description
       visual(type: AVATAR) {
         ...VisualUri
+        alternativeText
       }
       tagsets {
         id
@@ -1801,6 +2070,7 @@ export const OrganizationInfoFragmentDoc = gql`
         }
         visual(type: AVATAR) {
           ...VisualUri
+          alternativeText
         }
         tagsets {
           id
@@ -2535,224 +2805,6 @@ export const ReferenceDetailsFragmentDoc = gql`
     name
     uri
     description
-  }
-`;
-export const ActivityLogMemberJoinedFragmentDoc = gql`
-  fragment ActivityLogMemberJoined on ActivityLogEntryMemberJoined {
-    communityType
-    community {
-      id
-      displayName
-    }
-    user {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-        location {
-          id
-          city
-          country
-        }
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutPublishedFragmentDoc = gql`
-  fragment ActivityLogCalloutPublished on ActivityLogEntryCalloutPublished {
-    callout {
-      id
-      nameID
-      type
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutCardCreatedFragmentDoc = gql`
-  fragment ActivityLogCalloutCardCreated on ActivityLogEntryCalloutCardCreated {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-    card {
-      id
-      nameID
-      type
-      profile {
-        id
-        displayName
-        description
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutCardCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutCardComment on ActivityLogEntryCalloutCardComment {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-    card {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutCanvasCreatedFragmentDoc = gql`
-  fragment ActivityLogCalloutCanvasCreated on ActivityLogEntryCalloutCanvasCreated {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-    canvas {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogCalloutDiscussionCommentFragmentDoc = gql`
-  fragment ActivityLogCalloutDiscussionComment on ActivityLogEntryCalloutDiscussionComment {
-    callout {
-      id
-      nameID
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export const ActivityLogChallengeCreatedFragmentDoc = gql`
-  fragment ActivityLogChallengeCreated on ActivityLogEntryChallengeCreated {
-    challenge {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-      }
-    }
-  }
-`;
-export const ActivityLogOpportunityCreatedFragmentDoc = gql`
-  fragment ActivityLogOpportunityCreated on ActivityLogEntryOpportunityCreated {
-    opportunity {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        tagline
-      }
-    }
-  }
-`;
-export const ActivityLogOnCollaborationFragmentDoc = gql`
-  fragment ActivityLogOnCollaboration on ActivityLogEntry {
-    id
-    collaborationID
-    createdDate
-    description
-    type
-    __typename
-    triggeredBy {
-      id
-      nameID
-      firstName
-      lastName
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-        location {
-          id
-          city
-          country
-        }
-      }
-    }
-    ... on ActivityLogEntryMemberJoined {
-      ...ActivityLogMemberJoined
-    }
-    ... on ActivityLogEntryCalloutPublished {
-      ...ActivityLogCalloutPublished
-    }
-    ... on ActivityLogEntryCalloutCardCreated {
-      ...ActivityLogCalloutCardCreated
-    }
-    ... on ActivityLogEntryCalloutCardComment {
-      ...ActivityLogCalloutCardComment
-    }
-    ... on ActivityLogEntryCalloutCanvasCreated {
-      ...ActivityLogCalloutCanvasCreated
-    }
-    ... on ActivityLogEntryCalloutDiscussionComment {
-      ...ActivityLogCalloutDiscussionComment
-    }
-    ... on ActivityLogEntryChallengeCreated {
-      ...ActivityLogChallengeCreated
-    }
-    ... on ActivityLogEntryOpportunityCreated {
-      ...ActivityLogOpportunityCreated
-    }
-  }
-  ${ActivityLogMemberJoinedFragmentDoc}
-  ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
-  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
-  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
-`;
-export const ActivityLogUpdateSentFragmentDoc = gql`
-  fragment ActivityLogUpdateSent on ActivityLogEntryUpdateSent {
-    updates {
-      id
-    }
-    message
   }
 `;
 export const EventProfileFragmentDoc = gql`
@@ -5395,6 +5447,74 @@ export type JourneyPrivilegesQueryResult = Apollo.QueryResult<
 >;
 export function refetchJourneyPrivilegesQuery(variables: SchemaTypes.JourneyPrivilegesQueryVariables) {
   return { query: JourneyPrivilegesDocument, variables: variables };
+}
+
+export const HubCommunityPageDocument = gql`
+  query HubCommunityPage($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      community {
+        ...CommunityPageCommunity
+      }
+      collaboration {
+        id
+      }
+    }
+  }
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${CommunityPageCommunityFragmentDoc}
+`;
+
+/**
+ * __useHubCommunityPageQuery__
+ *
+ * To run a query within a React component, call `useHubCommunityPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCommunityPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubCommunityPageQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useHubCommunityPageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCommunityPageQuery, SchemaTypes.HubCommunityPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubCommunityPageQuery, SchemaTypes.HubCommunityPageQueryVariables>(
+    HubCommunityPageDocument,
+    options
+  );
+}
+
+export function useHubCommunityPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubCommunityPageQuery,
+    SchemaTypes.HubCommunityPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubCommunityPageQuery, SchemaTypes.HubCommunityPageQueryVariables>(
+    HubCommunityPageDocument,
+    options
+  );
+}
+
+export type HubCommunityPageQueryHookResult = ReturnType<typeof useHubCommunityPageQuery>;
+export type HubCommunityPageLazyQueryHookResult = ReturnType<typeof useHubCommunityPageLazyQuery>;
+export type HubCommunityPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCommunityPageQuery,
+  SchemaTypes.HubCommunityPageQueryVariables
+>;
+export function refetchHubCommunityPageQuery(variables: SchemaTypes.HubCommunityPageQueryVariables) {
+  return { query: HubCommunityPageDocument, variables: variables };
 }
 
 export const HubProviderDocument = gql`
@@ -8356,6 +8476,432 @@ export function refetchOpportunityWithActivityQuery(variables: SchemaTypes.Oppor
   return { query: OpportunityWithActivityDocument, variables: variables };
 }
 
+export const CalloutPageCalloutDocument = gql`
+  query CalloutPageCallout(
+    $calloutNameId: UUID_NAMEID!
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID = "mockid"
+    $opportunityNameId: UUID_NAMEID = "mockid"
+    $includeHub: Boolean = false
+    $includeChallenge: Boolean = false
+    $includeOpportunity: Boolean = false
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      collaboration @include(if: $includeHub) {
+        id
+        callouts(IDs: [$calloutNameId]) {
+          ...Callout
+        }
+      }
+      challenge(ID: $challengeNameId) @include(if: $includeChallenge) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            ...Callout
+          }
+        }
+      }
+      opportunity(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+        id
+        collaboration {
+          id
+          callouts(IDs: [$calloutNameId]) {
+            ...Callout
+          }
+        }
+      }
+    }
+  }
+  ${CalloutFragmentDoc}
+`;
+
+/**
+ * __useCalloutPageCalloutQuery__
+ *
+ * To run a query within a React component, call `useCalloutPageCalloutQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutPageCalloutQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutPageCalloutQuery({
+ *   variables: {
+ *      calloutNameId: // value for 'calloutNameId'
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      includeHub: // value for 'includeHub'
+ *      includeChallenge: // value for 'includeChallenge'
+ *      includeOpportunity: // value for 'includeOpportunity'
+ *   },
+ * });
+ */
+export function useCalloutPageCalloutQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutPageCalloutQuery,
+    SchemaTypes.CalloutPageCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutPageCalloutQuery, SchemaTypes.CalloutPageCalloutQueryVariables>(
+    CalloutPageCalloutDocument,
+    options
+  );
+}
+
+export function useCalloutPageCalloutLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutPageCalloutQuery,
+    SchemaTypes.CalloutPageCalloutQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutPageCalloutQuery, SchemaTypes.CalloutPageCalloutQueryVariables>(
+    CalloutPageCalloutDocument,
+    options
+  );
+}
+
+export type CalloutPageCalloutQueryHookResult = ReturnType<typeof useCalloutPageCalloutQuery>;
+export type CalloutPageCalloutLazyQueryHookResult = ReturnType<typeof useCalloutPageCalloutLazyQuery>;
+export type CalloutPageCalloutQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutPageCalloutQuery,
+  SchemaTypes.CalloutPageCalloutQueryVariables
+>;
+export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPageCalloutQueryVariables) {
+  return { query: CalloutPageCalloutDocument, variables: variables };
+}
+
+export const ActivityCreatedDocument = gql`
+  subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
+    activityCreated(input: $input) {
+      activity {
+        ...ActivityLogOnCollaboration
+      }
+    }
+  }
+  ${ActivityLogOnCollaborationFragmentDoc}
+`;
+
+/**
+ * __useActivityCreatedSubscription__
+ *
+ * To run a query within a React component, call `useActivityCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityCreatedSubscription({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useActivityCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ActivityCreatedSubscription,
+    SchemaTypes.ActivityCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ActivityCreatedSubscription,
+    SchemaTypes.ActivityCreatedSubscriptionVariables
+  >(ActivityCreatedDocument, options);
+}
+
+export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
+export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
+export const ActivityLogOnCollaborationDocument = gql`
+  query activityLogOnCollaboration($queryData: ActivityLogInput!) {
+    activityLogOnCollaboration(queryData: $queryData) {
+      id
+      collaborationID
+      createdDate
+      description
+      type
+      __typename
+      triggeredBy {
+        id
+        nameID
+        firstName
+        lastName
+        profile {
+          id
+          displayName
+          visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+          location {
+            id
+            city
+            country
+          }
+        }
+      }
+      ... on ActivityLogEntryMemberJoined {
+        ...ActivityLogMemberJoined
+      }
+      ... on ActivityLogEntryCalloutPublished {
+        ...ActivityLogCalloutPublished
+      }
+      ... on ActivityLogEntryCalloutCardCreated {
+        ...ActivityLogCalloutCardCreated
+      }
+      ... on ActivityLogEntryCalloutCardComment {
+        ...ActivityLogCalloutCardComment
+      }
+      ... on ActivityLogEntryCalloutCanvasCreated {
+        ...ActivityLogCalloutCanvasCreated
+      }
+      ... on ActivityLogEntryCalloutDiscussionComment {
+        ...ActivityLogCalloutDiscussionComment
+      }
+      ... on ActivityLogEntryChallengeCreated {
+        ...ActivityLogChallengeCreated
+      }
+      ... on ActivityLogEntryOpportunityCreated {
+        ...ActivityLogOpportunityCreated
+      }
+      ... on ActivityLogEntryUpdateSent {
+        ...ActivityLogUpdateSent
+      }
+    }
+  }
+  ${ActivityLogMemberJoinedFragmentDoc}
+  ${ActivityLogCalloutPublishedFragmentDoc}
+  ${ActivityLogCalloutCardCreatedFragmentDoc}
+  ${ActivityLogCalloutCardCommentFragmentDoc}
+  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
+  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
+  ${ActivityLogChallengeCreatedFragmentDoc}
+  ${ActivityLogOpportunityCreatedFragmentDoc}
+  ${ActivityLogUpdateSentFragmentDoc}
+`;
+
+/**
+ * __useActivityLogOnCollaborationQuery__
+ *
+ * To run a query within a React component, call `useActivityLogOnCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivityLogOnCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityLogOnCollaborationQuery({
+ *   variables: {
+ *      queryData: // value for 'queryData'
+ *   },
+ * });
+ */
+export function useActivityLogOnCollaborationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >(ActivityLogOnCollaborationDocument, options);
+}
+
+export function useActivityLogOnCollaborationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >(ActivityLogOnCollaborationDocument, options);
+}
+
+export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
+export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
+export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ActivityLogOnCollaborationQuery,
+  SchemaTypes.ActivityLogOnCollaborationQueryVariables
+>;
+export function refetchActivityLogOnCollaborationQuery(
+  variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
+) {
+  return { query: ActivityLogOnCollaborationDocument, variables: variables };
+}
+
+export const HubPostTemplatesLibraryDocument = gql`
+  query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        postTemplates {
+          ...PostTemplate
+        }
+      }
+      host {
+        id
+        nameID
+        profile {
+          ...TemplateProviderProfile
+        }
+      }
+    }
+  }
+  ${PostTemplateFragmentDoc}
+  ${TemplateProviderProfileFragmentDoc}
+`;
+
+/**
+ * __useHubPostTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `useHubPostTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPostTemplatesLibraryQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubPostTemplatesLibraryQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPostTemplatesLibraryQuery, SchemaTypes.HubPostTemplatesLibraryQueryVariables>(
+    HubPostTemplatesLibraryDocument,
+    options
+  );
+}
+
+export function useHubPostTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubPostTemplatesLibraryQuery,
+    SchemaTypes.HubPostTemplatesLibraryQueryVariables
+  >(HubPostTemplatesLibraryDocument, options);
+}
+
+export type HubPostTemplatesLibraryQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryQuery>;
+export type HubPostTemplatesLibraryLazyQueryHookResult = ReturnType<typeof useHubPostTemplatesLibraryLazyQuery>;
+export type HubPostTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPostTemplatesLibraryQuery,
+  SchemaTypes.HubPostTemplatesLibraryQueryVariables
+>;
+export function refetchHubPostTemplatesLibraryQuery(variables: SchemaTypes.HubPostTemplatesLibraryQueryVariables) {
+  return { query: HubPostTemplatesLibraryDocument, variables: variables };
+}
+
+export const PlatformPostTemplatesLibraryDocument = gql`
+  query PlatformPostTemplatesLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          id
+          nameID
+          provider {
+            id
+            profile {
+              ...TemplateProviderProfile
+            }
+          }
+          templates {
+            id
+            postTemplates {
+              ...PostTemplate
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+  ${PostTemplateFragmentDoc}
+`;
+
+/**
+ * __usePlatformPostTemplatesLibraryQuery__
+ *
+ * To run a query within a React component, call `usePlatformPostTemplatesLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformPostTemplatesLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformPostTemplatesLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformPostTemplatesLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >(PlatformPostTemplatesLibraryDocument, options);
+}
+
+export function usePlatformPostTemplatesLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformPostTemplatesLibraryQuery,
+    SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+  >(PlatformPostTemplatesLibraryDocument, options);
+}
+
+export type PlatformPostTemplatesLibraryQueryHookResult = ReturnType<typeof usePlatformPostTemplatesLibraryQuery>;
+export type PlatformPostTemplatesLibraryLazyQueryHookResult = ReturnType<
+  typeof usePlatformPostTemplatesLibraryLazyQuery
+>;
+export type PlatformPostTemplatesLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformPostTemplatesLibraryQuery,
+  SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+>;
+export function refetchPlatformPostTemplatesLibraryQuery(
+  variables?: SchemaTypes.PlatformPostTemplatesLibraryQueryVariables
+) {
+  return { query: PlatformPostTemplatesLibraryDocument, variables: variables };
+}
+
 export const HubAspectDocument = gql`
   query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -10000,8 +10546,18 @@ export const UpdateCalloutDocument = gql`
         id
         description
         displayName
+        tagset {
+          id
+          tags
+        }
+        references {
+          id
+          name
+          uri
+        }
       }
       state
+      group
       type
       visibility
       ...CalloutPostTemplate
@@ -10263,6 +10819,50 @@ export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.RemoveCommentFromCalloutMutation,
   SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
+export const CalloutMessageReceivedDocument = gql`
+  subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
+    calloutMessageReceived(calloutIDs: $calloutIDs) {
+      commentsID
+      message {
+        ...MessageDetails
+      }
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCalloutMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useCalloutMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutMessageReceivedSubscription({
+ *   variables: {
+ *      calloutIDs: // value for 'calloutIDs'
+ *   },
+ * });
+ */
+export function useCalloutMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalloutMessageReceivedSubscription,
+    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalloutMessageReceivedSubscription,
+    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
+  >(CalloutMessageReceivedDocument, options);
+}
+
+export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
+export type CalloutMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
 export const CalloutsDocument = gql`
   query Callouts(
     $hubNameId: UUID_NAMEID!
@@ -10271,6 +10871,7 @@ export const CalloutsDocument = gql`
     $includeOpportunity: Boolean = false
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
+    $calloutGroups: [String!]
   ) {
     hub(ID: $hubNameId) {
       id
@@ -10319,6 +10920,7 @@ export const CalloutsDocument = gql`
  *      includeOpportunity: // value for 'includeOpportunity'
  *      challengeNameId: // value for 'challengeNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
+ *      calloutGroups: // value for 'calloutGroups'
  *   },
  * });
  */
@@ -10804,50 +11406,6 @@ export function refetchPrivilegesOnOpportunityCollaborationQuery(
   return { query: PrivilegesOnOpportunityCollaborationDocument, variables: variables };
 }
 
-export const CalloutMessageReceivedDocument = gql`
-  subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
-    calloutMessageReceived(calloutIDs: $calloutIDs) {
-      commentsID
-      message {
-        ...MessageDetails
-      }
-    }
-  }
-  ${MessageDetailsFragmentDoc}
-`;
-
-/**
- * __useCalloutMessageReceivedSubscription__
- *
- * To run a query within a React component, call `useCalloutMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalloutMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutMessageReceivedSubscription({
- *   variables: {
- *      calloutIDs: // value for 'calloutIDs'
- *   },
- * });
- */
-export function useCalloutMessageReceivedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalloutMessageReceivedSubscription,
-    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalloutMessageReceivedSubscription,
-    SchemaTypes.CalloutMessageReceivedSubscriptionVariables
-  >(CalloutMessageReceivedDocument, options);
-}
-
-export type CalloutMessageReceivedSubscriptionHookResult = ReturnType<typeof useCalloutMessageReceivedSubscription>;
-export type CalloutMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalloutMessageReceivedSubscription>;
 export const HubWhiteboardTemplatesLibraryDocument = gql`
   query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -12711,6 +13269,7 @@ export const UploadVisualDocument = gql`
     uploadImageOnVisual(file: $file, uploadData: $uploadData) {
       id
       uri
+      alternativeText
     }
   }
 `;
@@ -12912,7 +13471,6 @@ export const DeleteDiscussionDocument = gql`
   mutation deleteDiscussion($deleteData: DeleteDiscussionInput!) {
     deleteDiscussion(deleteData: $deleteData) {
       id
-      title
     }
   }
 `;
@@ -13017,8 +13575,16 @@ export const PlatformDiscussionsDocument = gql`
         }
         discussions {
           id
-          title
-          description
+          nameID
+          profile {
+            id
+            displayName
+            description
+            tagline
+            visuals {
+              ...VisualFull
+            }
+          }
           category
           timestamp
           commentsCount
@@ -13032,6 +13598,7 @@ export const PlatformDiscussionsDocument = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -13165,14 +13732,23 @@ export const CommunicationDiscussionUpdatedDocument = gql`
   subscription communicationDiscussionUpdated($communicationID: UUID!) {
     communicationDiscussionUpdated(communicationID: $communicationID) {
       id
-      title
-      description
+      nameID
+      profile {
+        id
+        displayName
+        description
+        tagline
+        visuals {
+          ...VisualFull
+        }
+      }
       createdBy
       timestamp
       category
       commentsCount
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -21707,174 +22283,6 @@ export type CreateRelationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateRelationMutation,
   SchemaTypes.CreateRelationMutationVariables
 >;
-export const ActivityCreatedDocument = gql`
-  subscription activityCreated($collaborationID: UUID!) {
-    activityCreated(collaborationID: $collaborationID) {
-      activity {
-        ...ActivityLogOnCollaboration
-      }
-    }
-  }
-  ${ActivityLogOnCollaborationFragmentDoc}
-`;
-
-/**
- * __useActivityCreatedSubscription__
- *
- * To run a query within a React component, call `useActivityCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useActivityCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useActivityCreatedSubscription({
- *   variables: {
- *      collaborationID: // value for 'collaborationID'
- *   },
- * });
- */
-export function useActivityCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.ActivityCreatedSubscription,
-    SchemaTypes.ActivityCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.ActivityCreatedSubscription,
-    SchemaTypes.ActivityCreatedSubscriptionVariables
-  >(ActivityCreatedDocument, options);
-}
-
-export type ActivityCreatedSubscriptionHookResult = ReturnType<typeof useActivityCreatedSubscription>;
-export type ActivityCreatedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.ActivityCreatedSubscription>;
-export const ActivityLogOnCollaborationDocument = gql`
-  query activityLogOnCollaboration($queryData: ActivityLogInput!) {
-    activityLogOnCollaboration(queryData: $queryData) {
-      id
-      collaborationID
-      createdDate
-      description
-      type
-      __typename
-      triggeredBy {
-        id
-        nameID
-        firstName
-        lastName
-        profile {
-          id
-          displayName
-          visual(type: AVATAR) {
-            id
-            uri
-          }
-          tagsets {
-            id
-            tags
-          }
-          location {
-            id
-            city
-            country
-          }
-        }
-      }
-      ... on ActivityLogEntryMemberJoined {
-        ...ActivityLogMemberJoined
-      }
-      ... on ActivityLogEntryCalloutPublished {
-        ...ActivityLogCalloutPublished
-      }
-      ... on ActivityLogEntryCalloutCardCreated {
-        ...ActivityLogCalloutCardCreated
-      }
-      ... on ActivityLogEntryCalloutCardComment {
-        ...ActivityLogCalloutCardComment
-      }
-      ... on ActivityLogEntryCalloutCanvasCreated {
-        ...ActivityLogCalloutCanvasCreated
-      }
-      ... on ActivityLogEntryCalloutDiscussionComment {
-        ...ActivityLogCalloutDiscussionComment
-      }
-      ... on ActivityLogEntryChallengeCreated {
-        ...ActivityLogChallengeCreated
-      }
-      ... on ActivityLogEntryOpportunityCreated {
-        ...ActivityLogOpportunityCreated
-      }
-      ... on ActivityLogEntryUpdateSent {
-        ...ActivityLogUpdateSent
-      }
-    }
-  }
-  ${ActivityLogMemberJoinedFragmentDoc}
-  ${ActivityLogCalloutPublishedFragmentDoc}
-  ${ActivityLogCalloutCardCreatedFragmentDoc}
-  ${ActivityLogCalloutCardCommentFragmentDoc}
-  ${ActivityLogCalloutCanvasCreatedFragmentDoc}
-  ${ActivityLogCalloutDiscussionCommentFragmentDoc}
-  ${ActivityLogChallengeCreatedFragmentDoc}
-  ${ActivityLogOpportunityCreatedFragmentDoc}
-  ${ActivityLogUpdateSentFragmentDoc}
-`;
-
-/**
- * __useActivityLogOnCollaborationQuery__
- *
- * To run a query within a React component, call `useActivityLogOnCollaborationQuery` and pass it any options that fit your needs.
- * When your component renders, `useActivityLogOnCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useActivityLogOnCollaborationQuery({
- *   variables: {
- *      queryData: // value for 'queryData'
- *   },
- * });
- */
-export function useActivityLogOnCollaborationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >(ActivityLogOnCollaborationDocument, options);
-}
-
-export function useActivityLogOnCollaborationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ActivityLogOnCollaborationQuery,
-    SchemaTypes.ActivityLogOnCollaborationQueryVariables
-  >(ActivityLogOnCollaborationDocument, options);
-}
-
-export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
-export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
-export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
-  SchemaTypes.ActivityLogOnCollaborationQuery,
-  SchemaTypes.ActivityLogOnCollaborationQueryVariables
->;
-export function refetchActivityLogOnCollaborationQuery(
-  variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
-) {
-  return { query: ActivityLogOnCollaborationDocument, variables: variables };
-}
-
 export const PostCommentDocument = gql`
   mutation PostComment($messageData: CommentsSendMessageInput!) {
     sendComment(messageData: $messageData) {

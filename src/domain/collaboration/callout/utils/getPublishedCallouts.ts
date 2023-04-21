@@ -4,7 +4,7 @@ import {
   CalloutVisibility,
   CanvasDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../useCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../useCallouts/useCallouts';
 
 // These are two utility functions to reduce an array of callouts with an inside array of aspects/canvases
 // and flatten them into a single array of (AspectCardFragment & { calloutNameId: string}) or (CanvasDetailsFragment & { calloutNameId: string})

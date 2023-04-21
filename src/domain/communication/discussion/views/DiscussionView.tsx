@@ -5,12 +5,15 @@ import { useTranslation } from 'react-i18next';
 import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
-import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { Message } from '../../../shared/components/Comments/models/message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, BlockSectionTitle } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
+import { useResolvedPath } from 'react-router-dom';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
@@ -38,6 +41,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     commentsCount: totalComments,
     comments,
     myPrivileges,
+    nameID,
   } = discussion;
 
   const canPost = myPrivileges?.some(x => x === AuthorizationPrivilege.CreateComment) ?? false;
@@ -53,14 +57,17 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     body: description,
   } as Message;
 
+  const { pathname } = useResolvedPath('..');
+  const discussionUrl = buildDiscussionUrl(pathname, nameID);
+
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
       <Grid item xs={12} container direction="column">
         <Grid item>
-          <BlockTitle height={gutters(3)}>
-            {/* TODO: Share Button */}
-            {discussion.title}
-          </BlockTitle>
+          <Box display="flex" justifyContent="space-between">
+            <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
+            <ShareButton url={discussionUrl} entityTypeName="callout" />
+          </Box>
           <MessageView
             message={initialComment}
             canDelete={canDeleteDiscussion}
@@ -110,7 +117,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                   onPostComment={comment => onPostComment?.(comment)}
                   title={t('components.post-comment.fields.description.title')}
                   placeholder={t('components.post-comment.fields.description.placeholder')}
-                  maxLength={MID_TEXT_LENGTH}
+                  maxLength={LONG_TEXT_LENGTH}
                 />
               )}
               {!canPost && (

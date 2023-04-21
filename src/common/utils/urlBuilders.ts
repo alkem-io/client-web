@@ -90,7 +90,7 @@ export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
 };
 
 export const buildCalloutUrl = (calloutNameId: string, journeyLocation: JourneyLocation) => {
-  const calloutUrl = `/${EntityPageSection.Contribute}/callouts/${calloutNameId}`;
+  const calloutUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${calloutUrl}`;
 };
 
@@ -100,11 +100,11 @@ export const buildUpdatesUrl = (journeyLocation: JourneyLocation) => {
 };
 
 export const buildAspectUrl = (calloutNameId: string, aspectNameId: string, journeyLocation: JourneyLocation) => {
-  const aspectUrl = `/${EntityPageSection.Contribute}/callouts/${calloutNameId}/aspects/${aspectNameId}`;
+  const aspectUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/aspects/${aspectNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${aspectUrl}`;
 };
 
 export const buildCanvasUrl = (calloutNameId: string, canvasNameId: string, journeyLocation: JourneyLocation) => {
-  const canvasUrl = `/${EntityPageSection.Contribute}/callouts/${calloutNameId}/canvases/${canvasNameId}`;
+  const canvasUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/canvases/${canvasNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${canvasUrl}`;
 };

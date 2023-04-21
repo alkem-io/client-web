@@ -1,28 +1,21 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
-import { EntityTypeName } from '../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import CalloutsView from '../callout/CalloutsView/CalloutsView';
+import JourneyCalloutsTabView from '../callout/JourneyCalloutsTabView/JourneyCalloutsTabView';
 
 interface ContributePageProps {
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
   scrollToCallout?: boolean;
 }
 
-const ContributePage = ({
-  entityTypeName,
-  scrollToCallout = false,
-  children,
-}: PropsWithChildren<ContributePageProps>) => {
-  const PageLayout = usePageLayoutByEntity(entityTypeName);
+const ContributePage = ({ journeyTypeName, scrollToCallout = false }: ContributePageProps) => {
+  const PageLayout = usePageLayoutByEntity(journeyTypeName);
 
   return (
-    <>
-      <PageLayout currentSection={EntityPageSection.Contribute}>
-        <CalloutsView scrollToCallout={scrollToCallout} entityTypeName={entityTypeName} />
-      </PageLayout>
-      {children}
-    </>
+    <PageLayout currentSection={EntityPageSection.Contribute}>
+      <JourneyCalloutsTabView scrollToCallout={scrollToCallout} entityTypeName={journeyTypeName} />
+    </PageLayout>
   );
 };
 
