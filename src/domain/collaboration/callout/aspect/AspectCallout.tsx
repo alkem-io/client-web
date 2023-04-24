@@ -46,7 +46,11 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     const closeCreateDialog = () => setAspectDialogOpen(false);
     const navigate = useNavigate();
 
-    const { ref: intersectionObserverRef, inView } = useInView({ delay: 500, trackVisibility: true });
+    const { ref: intersectionObserverRef, inView } = useInView({
+      delay: 500,
+      trackVisibility: true,
+      triggerOnce: true,
+    });
 
     const { subscriptionEnabled, aspects, loading } = useAspectCreatedOnCalloutSubscription({
       hubNameId,
