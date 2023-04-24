@@ -4,7 +4,6 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { TypedCallout } from '../useCallouts/useCallouts';
-import { Loading } from '../../../../common/components/core';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
 import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
@@ -15,6 +14,24 @@ import CalloutView from '../CalloutView/CalloutView';
 import { useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { CardHeader, Skeleton } from '@mui/material';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import ContributeCard from '../../../../core/ui/card/ContributeCard';
+import CardFooter from '../../../../core/ui/card/CardFooter';
+import { gutters } from '../../../../core/ui/grid/utils';
+
+const CalloutsViewSkeleton = () => (
+  <PageContentBlock>
+    <Skeleton />
+    <ContributeCard>
+      <CardHeader title={<Skeleton />} />
+      <Skeleton sx={{ height: gutters(8), marginX: gutters() }} />
+      <CardFooter>
+        <Skeleton width="100%" />
+      </CardFooter>
+    </ContributeCard>
+  </PageContentBlock>
+);
 
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
@@ -87,7 +104,7 @@ const CalloutsView = ({
 
   return (
     <>
-      {loading && <Loading />}
+      {loading && <CalloutsViewSkeleton />}
       {!loading && callouts?.length === 0 && (
         <PageContentBlockSeamless textAlign="center">
           <Caption>
