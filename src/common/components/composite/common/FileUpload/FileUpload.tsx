@@ -13,9 +13,10 @@ import SectionSpacer from '../../../../../domain/shared/components/Section/Secti
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
+  referenceID: string;
 }
 
-const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
+const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { storage, platform } = useConfig();
@@ -46,7 +47,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
       variables: {
         file: selectedFile,
         uploadData: {
-          referenceID: '4ef379dd-7331-4f56-8253-b659a2e69e1a', // todo: pass in the right reference ID
+          referenceID,
         },
       },
     });
