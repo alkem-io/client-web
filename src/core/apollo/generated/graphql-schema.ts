@@ -17525,13 +17525,7 @@ export type ChallengeApplicationQuery = {
     challenge: {
       __typename?: 'Challenge';
       id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-      };
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
@@ -17546,13 +17540,7 @@ export type HubApplicationQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline: string;
-      visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-    };
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
   };
 };

@@ -4,10 +4,6 @@ query hubApplication($hubId: UUID_NAMEID!) {
     profile {
       id
       displayName
-      tagline
-      visuals {
-        ...VisualUri
-      }
     }
     community {
       id
