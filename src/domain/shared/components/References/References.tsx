@@ -1,9 +1,10 @@
 import React, { FC, ReactNode } from 'react';
 import { Reference } from '../../../common/profile/Profile';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
-import { Box, Link, styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { OpenInNew } from '@mui/icons-material';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 interface ReferencesProps {
   references: Reference[] | undefined;
@@ -29,10 +30,10 @@ const References: FC<ReferencesProps> = ({ references, noItemsView, icon, compac
       return (
         <CompactView>
           {references.map(reference => (
-            <Link key={reference.id} href={reference.uri} title={reference.description}>
+            <RouterLink key={reference.id} to={reference.uri} title={reference.description}>
               <OpenInNew fontSize="small" />
               {reference.name}
-            </Link>
+            </RouterLink>
           ))}
         </CompactView>
       );
