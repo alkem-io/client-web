@@ -3,7 +3,7 @@ import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import HubDashboardPage from '../pages/HubDashboardPage';
 import HubChallengesPage from '../pages/HubChallengesPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
+import KnowedgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
@@ -14,10 +14,14 @@ const getPageSection = (calloutGroup: string | undefined): EntityPageSection => 
     case CalloutsGroup.HomeLeft:
     case CalloutsGroup.HomeRight:
       return EntityPageSection.Dashboard;
+    case CalloutsGroup.CommunityLeft:
+    case CalloutsGroup.CommunityRight:
+      return EntityPageSection.Community;
     case CalloutsGroup.ChallengesLeft:
+    case CalloutsGroup.ChallengesRight:
       return EntityPageSection.Challenges;
     default:
-      return EntityPageSection.Contribute;
+      return EntityPageSection.KnowledgeBase;
   }
 };
 
@@ -29,7 +33,7 @@ const renderPage = (calloutGroup: string | undefined) => {
     case CalloutsGroup.ChallengesLeft:
       return <HubChallengesPage />;
     default:
-      return <ContributePage journeyTypeName="hub" />;
+      return <KnowedgeBasePage journeyTypeName="hub" />;
   }
 };
 

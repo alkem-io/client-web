@@ -11,6 +11,7 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 import useCanGoBack from '../../../core/routing/useCanGoBack';
+import { Theme, useMediaQuery } from '@mui/material';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -90,6 +91,8 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const canGoBack = useCanGoBack();
 
+  const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+
   if (!typedCallout) {
     return null;
   }
@@ -111,7 +114,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
   return (
     <>
       {renderPage(calloutGroup)}
-      <DialogWithGrid open columns={12} onClose={handleClose}>
+      <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCallout}
           hubNameId={hubNameId}

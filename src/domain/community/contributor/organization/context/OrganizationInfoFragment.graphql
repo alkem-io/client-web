@@ -18,6 +18,7 @@ fragment OrganizationInfo on Organization {
     description
     visual(type: AVATAR) {
       ...VisualUri
+      alternativeText
     }
     tagsets {
       id
@@ -51,6 +52,7 @@ fragment OrganizationInfo on Organization {
       }
       visual(type: AVATAR) {
         ...VisualUri
+        alternativeText
       }
       tagsets {
         id

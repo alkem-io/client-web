@@ -14,6 +14,7 @@ const DEFAULT_SIZE = 128;
 interface VisualUploadProps {
   visual?: Visual;
   height?: number;
+  altText?: string;
 }
 
 /**
@@ -23,7 +24,7 @@ interface VisualUploadProps {
  * @param width
  * @constructor
  */
-const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) => {
+const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, altText }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -72,7 +73,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) 
             <Avatar sx={{ width, height }} />
           </Skeleton>
         ) : (
-          <ImageComponent src={visual?.uri} width={width} height={height} />
+          <ImageComponent src={visual?.uri} altText={altText} width={width} height={height} />
         )}
       </Box>
       {visual && (

@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
@@ -8,7 +8,6 @@ import * as yup from 'yup';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import ErrorBlock from '../../../../common/components/core/ErrorBlock';
-import Image from '../../../shared/components/Image';
 import { Loading } from '../../../../common/components/core/Loading/Loading';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
@@ -65,15 +64,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
   const { data, loading, error } = useApplicationCommunityQuery(type);
 
-  const {
-    description,
-    questions = [],
-    communityId = '',
-    displayName: communityName,
-    avatar,
-    tagline,
-    backUrl = '',
-  } = data || {};
+  const { description, questions = [], communityId = '', displayName: communityName, backUrl = '' } = data || {};
 
   const [hasApplied, setHasApplied] = useState(false);
 
@@ -132,25 +123,15 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
         {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
         {loading && <Loading text={t('pages.hub.application.loading')} />}
         {!loading && !hasApplied && (
-          <Box marginY={4}>
-            <PageTitle>{t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
-          </Box>
+          <PageTitle>{t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}</PageTitle>
         )}
-        {!loading && (
-          <div className={styles.logoDiv}>
-            {avatar && <Image src={avatar} alt="Alkemio" />}
-            {!hasApplied && <span>{tagline}</span>}
-          </div>
-        )}
-        {!loading && !hasApplied && (
-          <Box marginY={5}>
-            {description ? (
-              <WrapperMarkdown>{description}</WrapperMarkdown>
-            ) : (
-              <BlockTitle> {t('pages.hub.application.subheader')}</BlockTitle>
-            )}
-          </Box>
-        )}
+        {!loading &&
+          !hasApplied &&
+          (description ? (
+            <WrapperMarkdown>{description}</WrapperMarkdown>
+          ) : (
+            <BlockTitle> {t('pages.hub.application.subheader')}</BlockTitle>
+          ))}
         {hasApplied ? (
           <div className={styles.thankYouDiv}>
             <BlockTitle>

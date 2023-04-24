@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ScrollerWithGradient from '../../overflow/ScrollerWithGradient';
 import CardsLayout, { CardsLayoutProps } from './CardsLayout';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
-import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
+
+// If the width of the component is bigger than 600, scroll will be vertical
+const HORIZONTAL_SCROLL_MAX_WIDTH = 600;
 
 const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
   maxHeight,
   ...props
 }: CardsLayoutProps<Item>) => {
-  const breakpoint = useCurrentBreakpoint();
-
-  const orientation = breakpoint === 'xs' ? 'horizontal' : 'vertical';
+  const containerRef = useRef<HTMLDivElement>(null);
+  const orientation =
+    containerRef.current && containerRef.current.offsetWidth <= HORIZONTAL_SCROLL_MAX_WIDTH ? 'horizontal' : 'vertical';
 
   return (
-    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight}>
+    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight} scrollerRef={containerRef}>
       <CardsLayout
         cards={orientation === 'vertical'}
         noWrap={orientation === 'horizontal'}

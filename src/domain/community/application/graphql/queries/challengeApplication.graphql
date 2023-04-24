@@ -6,12 +6,6 @@ query challengeApplication($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       profile {
         id
         displayName
-        tagline
-        visuals {
-          id
-          uri
-          name
-        }
       }
       community {
         id

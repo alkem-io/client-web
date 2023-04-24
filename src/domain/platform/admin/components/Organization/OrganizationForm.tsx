@@ -217,7 +217,17 @@ export const OrganizationForm: FC<Props> = ({
           {({ values: { references, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section avatar={<VisualUpload visual={visual} />}>
+                <Section
+                  avatar={
+                    <VisualUpload
+                      visual={visual}
+                      altText={t('visuals-alt-text.avatar.contributor.text', {
+                        displayName,
+                        altText: visual?.alternativeText,
+                      })}
+                    />
+                  }
+                >
                   <Header text={title} />
                   <Grid container spacing={2}>
                     <NameSegment disabled={isEditMode} required={!isEditMode} />
