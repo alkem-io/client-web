@@ -1,6 +1,6 @@
 import React, { forwardRef, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { useInView } from 'react-intersection-observer';
+import { useInView } from 'react-intersection-observer';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
@@ -19,9 +19,6 @@ import CalloutBlockFooter from '../../CalloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
-/*
-  TODO: Restore lazyLoading for these callouts when we fix the flickering effect
-*/
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -49,14 +46,18 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
     const closeCreateDialog = () => setAspectDialogOpen(false);
     const navigate = useNavigate();
 
-    //const { ref: intersectionObserverRef, inView } = useInView({ delay: 500, trackVisibility: true });
+    const { ref: intersectionObserverRef, inView } = useInView({
+      delay: 500,
+      trackVisibility: true,
+      triggerOnce: true,
+    });
 
     const { subscriptionEnabled, aspects, loading } = useAspectCreatedOnCalloutSubscription({
       hubNameId,
       calloutId: callout.id,
       challengeNameId,
       opportunityNameId,
-      //skip: !inView,
+      skip: !inView,
     });
 
     const [createAspect, { loading: isCreatingAspect }] = useCreateAspectFromContributeTabMutation({
@@ -156,14 +157,14 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
 
     const isMobile = breakpoint === 'xs';
 
-    const containerRef = useCombinedRefs(null, ref /*, intersectionObserverRef*/);
+    const containerRef = useCombinedRefs(null, ref, intersectionObserverRef);
 
     return (
       <>
         <PageContentBlock ref={containerRef} disablePadding disableGap {...blockProps}>
           <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
             <ScrollableCardsLayout
-              items={loading /*|| !inView */ ? [undefined, undefined] : aspects ?? []}
+              items={loading || !inView ? [undefined, undefined] : aspects ?? []}
               deps={[hubNameId, challengeNameId, opportunityNameId]}
               createButton={!isMobile && createButton}
               maxHeight={gutters(22)}
