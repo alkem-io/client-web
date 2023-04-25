@@ -15,7 +15,6 @@ import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
-import RecommendationsSegment from './Common/RecommendationsSegment';
 
 interface Props {
   context?: Context;
@@ -37,12 +36,10 @@ export interface HubEditFormValuesType {
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
-  recommendations: Reference[];
   tagsets: Tagset[];
 }
 
 const HubEditForm: FC<Props> = ({
-  context,
   profile,
   name,
   nameID,
@@ -74,7 +71,6 @@ const HubEditForm: FC<Props> = ({
     tagline: profile?.tagline || '',
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references || [],
-    recommendations: context?.recommendations || [],
     tagsets: tagsets,
     host: hostID || '',
   };
@@ -85,7 +81,6 @@ const HubEditForm: FC<Props> = ({
     host: yup.string().required(t('forms.validations.required')),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
-    recommendations: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
 
@@ -100,7 +95,7 @@ const HubEditForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references, recommendations }, handleSubmit }) => {
+      {({ values: { references }, handleSubmit }) => {
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
@@ -133,7 +128,6 @@ const HubEditForm: FC<Props> = ({
             </Grid>
             <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} profileId={profileId} />}
-            {isEdit && <RecommendationsSegment recommendations={recommendations || []} />}
           </Grid>
         );
       }}

@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useHub } from '../HubContext/useHub';
 import { useUserContext } from '../../../community/contributor/user';
 import {
-  useHubDashboardReferencesAndRecommendationsQuery,
+  useHubDashboardReferencesQuery,
   useHubPageQuery,
   usePlatformLevelAuthorizationQuery,
   useSendMessageToCommunityLeadsMutation,
@@ -44,7 +44,6 @@ export interface HubContainerEntities {
   aspectsCount: number | undefined;
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
-  recommendations: Reference[] | undefined;
   hostOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
@@ -77,7 +76,7 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
   const collaborationID = _hub?.hub?.collaboration?.id;
 
   // don't load references without READ privilege on Context
-  const { data: referencesData } = useHubDashboardReferencesAndRecommendationsQuery({
+  const { data: referencesData } = useHubDashboardReferencesQuery({
     variables: { hubId },
     skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
   });
@@ -118,7 +117,6 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
   const canvasesCount = useCanvasesCount(_hub?.hub.metrics);
 
   const references = referencesData?.hub?.profile.references;
-  const recommendations = referencesData?.hub?.context?.recommendations;
 
   const hostOrganizations = useMemo(() => _hub?.hub.host && [_hub?.hub.host], [_hub]);
 
@@ -156,7 +154,6 @@ export const HubDashboardContainer: FC<HubPageContainerProps> = ({ children }) =
           aspectsCount,
           canvasesCount,
           references,
-          recommendations,
           activities,
           activityLoading,
           hostOrganizations,

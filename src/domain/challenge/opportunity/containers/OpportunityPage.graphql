@@ -66,13 +66,6 @@ fragment OpportunityPage on Opportunity {
       anonymousReadAccess
       myPrivileges
     }
-
-    recommendations {
-      id
-      name
-      description
-      uri
-    }
   }
   community {
     ...EntityDashboardCommunity

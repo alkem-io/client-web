@@ -24,7 +24,6 @@ import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import TopCalloutDetails from '../../../../collaboration/callout/TopCallout/TopCalloutDetails';
-import { RecommendationIcon } from '../../../../shared/components/References/icons/RecommendationIcon';
 import getChildJourneyRoute from '../../utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../../shared/components/DashboardSections/DashboardCalendarSection';
@@ -43,7 +42,6 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
-  recommendations: Reference[] | undefined;
   community?: unknown;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
@@ -70,7 +68,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   communityId = '',
   childEntitiesCount,
   references,
-  recommendations,
   communityReadAccess = false,
   timelineReadAccess = false,
   entityReadAccess,
@@ -118,8 +115,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
     : 'community.leading-organizations';
   const leadUsersHeader = isHub ? 'community.host' : 'community.leads';
 
-  const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
-  const hasRecommendations = validRecommendations.length > 0;
   const hasTopCallouts = (topCallouts ?? []).length > 0;
   const messageReceivers = useMemo(
     () =>
@@ -182,14 +177,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        {hasRecommendations && (
-          <PageContentBlock halfWidth>
-            <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
-            <References references={validRecommendations} icon={RecommendationIcon} />
-          </PageContentBlock>
-        )}
         {hasTopCallouts && (
-          <PageContentBlock halfWidth={hasRecommendations}>
+          <PageContentBlock>
             <PageContentBlockHeader title={t('components.top-callouts.title')} />
             {topCallouts?.map(callout => (
               <TopCalloutDetails

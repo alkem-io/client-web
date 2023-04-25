@@ -234,8 +234,6 @@
     "search": "Search...",
     "reference": "Reference",
     "references": "References",
-    "recommendation": "Recommendation",
-    "recommendations": "Recommendations",
     "notifications": "Notifications",
     "credentials": "Credentials",
     "my-profile": "My profile",
@@ -789,7 +787,8 @@
       "label": {
         "COMMENTS": "Post",
         "CARD": "Call for Posts",
-        "CANVAS": "Call for Whiteboards"
+        "CANVAS": "Call for Whiteboards",
+        "LINK_COLLECTION": "Collection of Links"
       }
     },
     "aspect-creation": {
@@ -903,8 +902,7 @@
       "missing-refereneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
-        "remove-reference": "Remove the reference",
-        "remove-recommendation": "Clear recommendation"
+        "remove-reference": "Remove the reference"
       },
       "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
     },

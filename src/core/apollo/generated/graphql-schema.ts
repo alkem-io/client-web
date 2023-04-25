@@ -58,6 +58,8 @@ export enum ActivityEventType {
 }
 
 export type ActivityLogEntry = {
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -65,6 +67,10 @@ export type ActivityLogEntry = {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -77,6 +83,8 @@ export type ActivityLogEntryCalloutCanvasCreated = ActivityLogEntry & {
   callout: Callout;
   /** The Canvas that was created. */
   canvas: Canvas;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -84,6 +92,10 @@ export type ActivityLogEntryCalloutCanvasCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -96,6 +108,8 @@ export type ActivityLogEntryCalloutCardComment = ActivityLogEntry & {
   callout: Callout;
   /** The Card that was commented on. */
   card: Aspect;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -103,6 +117,10 @@ export type ActivityLogEntryCalloutCardComment = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -115,6 +133,8 @@ export type ActivityLogEntryCalloutCardCreated = ActivityLogEntry & {
   callout: Callout;
   /** The Card that was created. */
   card: Aspect;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -122,6 +142,10 @@ export type ActivityLogEntryCalloutCardCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -132,6 +156,8 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryCalloutDiscussionComment';
   /** The Callout in which the comment was added. */
   callout: Callout;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -139,6 +165,10 @@ export type ActivityLogEntryCalloutDiscussionComment = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -149,6 +179,8 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryCalloutPublished';
   /** The Callout that was published. */
   callout: Callout;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -156,6 +188,10 @@ export type ActivityLogEntryCalloutPublished = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -166,6 +202,8 @@ export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryChallengeCreated';
   /** The Challenge that was created. */
   challenge: Challenge;
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -173,6 +211,10 @@ export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -181,6 +223,8 @@ export type ActivityLogEntryChallengeCreated = ActivityLogEntry & {
 
 export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryMemberJoined';
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The community that was joined. */
@@ -192,6 +236,10 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   /** The text details for this Activity. */
   description: Scalars['String'];
   id: Scalars['UUID'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -202,6 +250,8 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
 
 export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryOpportunityCreated';
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -211,6 +261,10 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The Opportunity that was created. */
   opportunity: Opportunity;
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -219,6 +273,8 @@ export type ActivityLogEntryOpportunityCreated = ActivityLogEntry & {
 
 export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   __typename?: 'ActivityLogEntryUpdateSent';
+  /** Indicates if this Activity happened on a child Collaboration. Child results can be included via the "includeChild" parameter. */
+  child: Scalars['Boolean'];
   /** The id of the Collaboration entity within which the Activity was generated. */
   collaborationID: Scalars['UUID'];
   /** The timestamp for the Activity. */
@@ -228,6 +284,10 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
   id: Scalars['UUID'];
   /** The Message that been sent to this Community. */
   message: Scalars['String'];
+  /** The display name of the parent */
+  parentDisplayName: Scalars['String'];
+  /** The nameID of the parent */
+  parentNameID: Scalars['NameID'];
   /** The user that triggered this Activity. */
   triggeredBy: User;
   /** The event type for this Activity. */
@@ -239,6 +299,8 @@ export type ActivityLogEntryUpdateSent = ActivityLogEntry & {
 export type ActivityLogInput = {
   /** Display the activityLog results for the specified Collaboration. */
   collaborationID: Scalars['UUID'];
+  /** Include entries happened on child Collaborations. */
+  includeChild?: InputMaybe<Scalars['Boolean']>;
   /** The number of ActivityLog entries to return; if omitted return all. */
   limit?: InputMaybe<Scalars['Float']>;
   /** Which activity types to include in the results. Returns all by default. */
@@ -716,6 +778,7 @@ export enum CalloutType {
   Canvas = 'CANVAS',
   Card = 'CARD',
   Comments = 'COMMENTS',
+  LinkCollection = 'LINK_COLLECTION',
 }
 
 export enum CalloutVisibility {
@@ -5136,15 +5199,6 @@ export type ChallengePageQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
-                  recommendations?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
-                        description?: string | undefined;
-                      }>
-                    | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -5464,15 +5518,6 @@ export type ChallengeProfileFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
-              recommendations?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -5496,12 +5541,12 @@ export type ChallengeProfileFragment = {
     | undefined;
 };
 
-export type ChallengeDashboardReferencesAndRecommendationsQueryVariables = Exact<{
+export type ChallengeDashboardReferencesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeDashboardReferencesAndRecommendationsQuery = {
+export type ChallengeDashboardReferencesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -5516,21 +5561,6 @@ export type ChallengeDashboardReferencesAndRecommendationsQuery = {
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       };
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
     };
   };
 };
@@ -5640,15 +5670,6 @@ export type OpportunitiesOnChallengeFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
-              recommendations?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -6021,15 +6042,6 @@ export type ChallengeProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -6085,15 +6097,6 @@ export type OpportunityCreatedSubscription = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -7191,15 +7194,6 @@ export type HubProviderQuery = {
                 anonymousReadAccess: boolean;
               }
             | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
         }
       | undefined;
     profile: {
@@ -7285,9 +7279,6 @@ export type HubInfoFragment = {
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
               anonymousReadAccess: boolean;
             }
-          | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       }
     | undefined;
@@ -7958,11 +7949,11 @@ export type HubPageQuery = {
   };
 };
 
-export type HubDashboardReferencesAndRecommendationsQueryVariables = Exact<{
+export type HubDashboardReferencesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubDashboardReferencesAndRecommendationsQuery = {
+export type HubDashboardReferencesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -7974,21 +7965,6 @@ export type HubDashboardReferencesAndRecommendationsQuery = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
-    context?:
-      | {
-          __typename?: 'Context';
-          id: string;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -8387,9 +8363,6 @@ export type HubDetailsFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -8498,15 +8471,6 @@ export type CreateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -8591,15 +8555,6 @@ export type UpdateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -9182,15 +9137,6 @@ export type OpportunityPageQuery = {
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                 }
               | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  description?: string | undefined;
-                  uri: string;
-                }>
-              | undefined;
           }
         | undefined;
       community?:
@@ -9456,9 +9402,6 @@ export type OpportunityPageFragment = {
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             }
           | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
-          | undefined;
       }
     | undefined;
   community?:
@@ -9723,9 +9666,6 @@ export type OpportunityCardFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -9786,15 +9726,6 @@ export type CreateOpportunityMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -10002,15 +9933,6 @@ export type OpportunityCardsQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
-                  recommendations?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
-                        description?: string | undefined;
-                      }>
-                    | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -10211,15 +10133,6 @@ export type OpportunityProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -20727,9 +20640,6 @@ export type ContextDetailsFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
-  recommendations?:
-    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-    | undefined;
   authorization?:
     | {
         __typename?: 'Authorization';
