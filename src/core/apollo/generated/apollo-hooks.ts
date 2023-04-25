@@ -1192,6 +1192,9 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     createdDate
     description
     type
+    child
+    parentNameID
+    parentDisplayName
     __typename
     triggeredBy {
       id
@@ -8625,6 +8628,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       createdDate
       description
       type
+      child
+      parentNameID
+      parentDisplayName
       __typename
       triggeredBy {
         id

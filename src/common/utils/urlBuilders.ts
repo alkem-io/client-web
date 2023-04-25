@@ -6,6 +6,7 @@ import {
   isChallengeOpportunityIds,
   isHubId,
 } from '../../domain/shared/types/CoreEntityIds';
+import { JourneyTypeName } from '../../domain/challenge/JourneyTypeName';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
 
@@ -72,6 +73,17 @@ export const buildNewOrganizationUrl = () => {
 };
 
 export type JourneyLocation = CoreEntityIdTypes;
+
+export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof JourneyLocation => {
+  switch (journeyTypeName) {
+    case 'hub':
+      return 'hubNameId';
+    case 'challenge':
+      return 'challengeNameId';
+    case 'opportunity':
+      return 'opportunityNameId';
+  }
+};
 
 export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
   if (isHubId(journeyLocation)) {
