@@ -15,7 +15,6 @@ import {
   JourneyLocation,
 } from '../../../../common/utils/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -252,7 +251,6 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
             {readUsersAccess && entityReadAccess && showActivities && (
               <>
                 <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-                <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
               </>
             )}
             {!entityReadAccess && readUsersAccess && (
