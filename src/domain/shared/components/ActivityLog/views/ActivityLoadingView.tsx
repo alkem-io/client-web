@@ -16,6 +16,7 @@ export const ActivityLoadingView: FC<ActivityLoadingViewProps> = ({ rows }) => {
           author={undefined}
           createdDate=""
           action=""
+          parentDisplayName=""
         />
       ))}
     </>

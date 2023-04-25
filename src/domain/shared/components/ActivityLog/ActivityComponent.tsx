@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import {
   ActivityEventType,
@@ -15,20 +15,21 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from './constants';
 import {
-  ActivityCardCommentCreatedView,
   ActivityCalloutPublishedView,
   ActivityCanvasCreatedView,
+  ActivityCardCommentCreatedView,
   ActivityCardCreatedView,
+  ActivityChallengeCreatedView,
   ActivityDiscussionCommentCreatedView,
   ActivityLoadingView,
   ActivityMemberJoinedView,
-  ActivityChallengeCreatedView,
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { JourneyLocation } from '../../../../common/utils/urlBuilders';
+import { getJourneyLocationKey, JourneyLocation } from '../../../../common/utils/urlBuilders';
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -62,6 +63,19 @@ export interface ActivityLogComponentProps {
   journeyLocation: JourneyLocation | undefined;
 }
 
+const getActivityOriginJourneyTypeName = (
+  activity: ActivityLogResultType,
+  journeyLocation: JourneyLocation
+): JourneyTypeName | undefined => {
+  if (!activity.child) {
+    return undefined;
+  }
+  if (journeyLocation.challengeNameId) {
+    return 'opportunity';
+  }
+  return 'challenge';
+};
+
 export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, journeyLocation }) => {
   const display = useMemo(() => {
     if (!activities || !journeyLocation) {
@@ -70,9 +84,30 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
 
     return (
       <>
-        {activities.map(activity => (
-          <ActivityViewChooser activity={activity} journeyLocation={journeyLocation} key={activity.id} />
-        ))}
+        {activities.map(activity => {
+          const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
+          const ActivityOriginJourneyIcon =
+            activityOriginJourneyTypeName && journeyLocation[activityOriginJourneyTypeName];
+          const activityOriginJourneyLocation = activityOriginJourneyTypeName
+            ? {
+                ...journeyLocation,
+                [getJourneyLocationKey(activityOriginJourneyTypeName)]: activity.parentNameID,
+              }
+            : journeyLocation;
+
+          return (
+            <ActivityViewChooser
+              activity={activity}
+              journeyLocation={activityOriginJourneyLocation}
+              key={activity.id}
+              activityOriginJourneyIcon={
+                ActivityOriginJourneyIcon && (
+                  <ActivityOriginJourneyIcon sx={{ verticalAlign: 'bottom' }} fontSize="small" />
+                )
+              }
+            />
+          );
+        })}
       </>
     );
   }, [activities, journeyLocation]);
@@ -83,6 +118,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
 interface ActivityViewChooserProps {
   activity: ActivityLogResultType;
   journeyLocation: JourneyLocation;
+  activityOriginJourneyIcon?: ReactNode;
 }
 
 const ActivityViewChooser = ({
