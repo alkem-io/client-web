@@ -107,33 +107,6 @@ const ContributorsView: FC<ContributorsViewProps> = ({
     <>
       <SectionSpacer double />
       <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.contributors.organizations.title')} />
-        <ScrollerBox>
-          <Grid container spacing={1}>
-            <>
-              {orgs?.loading &&
-                times(ITEMS_PER_PAGE, i => (
-                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={`__loading_${i}`}>
-                    <ContributorCardSkeleton />
-                  </Grid>
-                ))}
-              {!orgs?.loading &&
-                orgs?.items?.map(organizationToContributorCard).map(org => (
-                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={org.id}>
-                    <ContributorCardSquare {...org} />
-                  </Grid>
-                ))}
-              {!orgs?.loading && orgs?.hasMore && (
-                <Grid item flexBasis="100%" display={'flex'} justifyContent={'end'}>
-                  {orgsLoader}
-                </Grid>
-              )}
-            </>
-          </Grid>
-        </ScrollerBox>
-      </PageContentBlock>
-      <SectionSpacer double />
-      <PageContentBlock>
         <PageContentBlockHeader title={t('pages.contributors.users.title')} />
         {showUsers && (
           <ScrollerBox>
@@ -176,6 +149,33 @@ const ContributorsView: FC<ContributorsViewProps> = ({
             />
           </Grid>
         )}
+      </PageContentBlock>
+      <SectionSpacer double />
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.contributors.organizations.title')} />
+        <ScrollerBox>
+          <Grid container spacing={1}>
+            <>
+              {orgs?.loading &&
+                times(ITEMS_PER_PAGE, i => (
+                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={`__loading_${i}`}>
+                    <ContributorCardSkeleton />
+                  </Grid>
+                ))}
+              {!orgs?.loading &&
+                orgs?.items?.map(organizationToContributorCard).map(org => (
+                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={org.id}>
+                    <ContributorCardSquare {...org} />
+                  </Grid>
+                ))}
+              {!orgs?.loading && orgs?.hasMore && (
+                <Grid item flexBasis="100%" display={'flex'} justifyContent={'end'}>
+                  {orgsLoader}
+                </Grid>
+              )}
+            </>
+          </Grid>
+        </ScrollerBox>
       </PageContentBlock>
     </>
   );
