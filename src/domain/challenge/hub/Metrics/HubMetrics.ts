@@ -8,11 +8,6 @@ const HubMetrics: MetricsItemSpec[] = [
     color: 'neutral',
   },
   {
-    label: 'common.opportunities',
-    type: MetricType.Opportunity,
-    color: 'primary',
-  },
-  {
     label: 'common.members',
     type: MetricType.Member,
     color: 'neutralMedium',
