@@ -9,6 +9,7 @@ const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.Card]: LibraryBooksIcon,
   [CalloutType.Canvas]: FilterNoneIcon,
   [CalloutType.Comments]: NotesIcon,
+  [CalloutType.LinkCollection]: NotesIcon,
 };
 
 export default calloutIcons;
