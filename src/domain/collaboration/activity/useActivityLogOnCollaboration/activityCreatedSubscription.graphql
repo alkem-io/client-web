@@ -1,5 +1,5 @@
-subscription activityCreated($collaborationID: UUID!) {
-  activityCreated(collaborationID: $collaborationID) {
+subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
+  activityCreated(input: $input) {
     activity {
       ...ActivityLogOnCollaboration
     }
@@ -12,6 +12,9 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   createdDate
   description
   type
+  child
+  parentNameID
+  parentDisplayName
   __typename
   triggeredBy {
     id

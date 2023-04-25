@@ -3,24 +3,41 @@ import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import HubDashboardPage from '../pages/HubDashboardPage';
 import HubChallengesPage from '../pages/HubChallengesPage';
-import ContributePage from '../../../collaboration/contribute/ContributePage';
+import KnowedgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
+import { CollaborationPageProps } from '../../common/CollaborationPage/CollaborationPage';
 
 const getPageSection = (calloutGroup: string | undefined): EntityPageSection => {
   switch (calloutGroup) {
     case CalloutsGroup.HomeLeft:
     case CalloutsGroup.HomeRight:
       return EntityPageSection.Dashboard;
+    case CalloutsGroup.CommunityLeft:
+    case CalloutsGroup.CommunityRight:
+      return EntityPageSection.Community;
     case CalloutsGroup.ChallengesLeft:
+    case CalloutsGroup.ChallengesRight:
       return EntityPageSection.Challenges;
     default:
-      return EntityPageSection.Contribute;
+      return EntityPageSection.KnowledgeBase;
   }
 };
 
-const HubCollaborationPage = () => {
+const renderPage = (calloutGroup: string | undefined) => {
+  switch (calloutGroup) {
+    case CalloutsGroup.HomeLeft:
+    case CalloutsGroup.HomeRight:
+      return <HubDashboardPage />;
+    case CalloutsGroup.ChallengesLeft:
+      return <HubChallengesPage />;
+    default:
+      return <KnowedgeBasePage journeyTypeName="hub" />;
+  }
+};
+
+const HubCollaborationPage = (props: CollaborationPageProps) => {
   const { hubNameId } = useUrlParams();
 
   if (!hubNameId) {
@@ -31,21 +48,7 @@ const HubCollaborationPage = () => {
     return `${buildHubUrl(hubNameId)}/${getPageSection(calloutGroup)}`;
   };
 
-  return (
-    <CalloutPage journeyTypeName="hub" parentRoute={getPageRoute}>
-      {calloutGroup => {
-        switch (calloutGroup) {
-          case CalloutsGroup.HomeLeft:
-          case CalloutsGroup.HomeRight:
-            return <HubDashboardPage />;
-          case CalloutsGroup.ChallengesLeft:
-            return <HubChallengesPage />;
-          default:
-            return <ContributePage journeyTypeName="hub" />;
-        }
-      }}
-    </CalloutPage>
-  );
+  return <CalloutPage journeyTypeName="hub" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default HubCollaborationPage;

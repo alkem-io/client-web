@@ -14,8 +14,6 @@ import {
   buildUserProfileUrl,
   JourneyLocation,
 } from '../../../../common/utils/urlBuilders';
-import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
@@ -52,9 +50,7 @@ interface HubWelcomeBlockContributor {
   profile: HubWelcomeBlockContributorProfileFragment;
 }
 
-export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
-  extends EntityDashboardContributors,
-    Partial<CoreEntityIdTypes> {
+interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partial<CoreEntityIdTypes> {
   displayName: ReactNode;
   tagline: ReactNode;
   metrics: Metric[] | undefined;
@@ -93,7 +89,7 @@ const FullWidthButton = <D extends React.ElementType = ButtonTypeMap['defaultCom
   return <Button {...props} sx={{ ...sx, width: '100%' }} />;
 };
 
-const JourneyDashboardView = <ChildEntity extends Identifiable>({
+const HubDashboardView = <ChildEntity extends Identifiable>({
   vision = '',
   displayName,
   tagline,
@@ -113,10 +109,6 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   timelineReadAccess = false,
   entityReadAccess,
   readUsersAccess,
-  memberUsers,
-  memberUsersCount,
-  memberOrganizations,
-  memberOrganizationsCount,
   leadOrganizations,
   leadUsers,
   activities,
@@ -129,7 +121,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   sendMessageToCommunityLeads,
   childrenLeft,
   childrenRight,
-}: JourneyDashboardViewProps<ChildEntity>) => {
+}: HubDashboardViewProps<ChildEntity>) => {
   const { t } = useTranslation();
 
   const journeyLocation: JourneyLocation | undefined =
@@ -228,17 +220,8 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
             <PageContentBlockHeader title={t('components.referenceSegment.title')} />
             <References references={references} />
             {/* TODO figure out the URL for references */}
-            <SeeMore subject={t('common.references')} to={EntityPageSection.About} />
           </PageContentBlock>
           {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
-          {communityReadAccess && (
-            <EntityDashboardContributorsSection
-              memberUsers={memberUsers}
-              memberUsersCount={memberUsersCount}
-              memberOrganizations={memberOrganizations}
-              memberOrganizationsCount={memberOrganizationsCount}
-            />
-          )}
           {childrenLeft}
         </PageContentColumn>
 
@@ -326,4 +309,4 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   );
 };
 
-export default JourneyDashboardView;
+export default HubDashboardView;

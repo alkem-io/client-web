@@ -9,9 +9,10 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../contributor/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -39,6 +40,7 @@ export interface ContributionDetails {
   displayName: string;
   journeyTypeName: JourneyTypeName;
   bannerUri?: string;
+  bannerAltText?: string;
   tags: string[];
   journeyUri: string;
   communityId?: string;
@@ -81,6 +83,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         displayName: hubData.hub.profile.displayName,
         journeyTypeName: 'hub',
         bannerUri: getVisualBannerNarrow(hubData.hub.profile.visuals),
+        bannerAltText: getVisualByType(VisualName.BANNER, hubData.hub.profile?.visuals)?.alternativeText,
         tags: hubData.hub.profile.tagset?.tags ?? [],
         journeyUri: buildHubUrl(hubData.hub.nameID),
         communityId: hubData.hub.community?.id,

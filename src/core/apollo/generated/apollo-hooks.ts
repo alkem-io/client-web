@@ -1192,6 +1192,9 @@ export const ActivityLogOnCollaborationFragmentDoc = gql`
     createdDate
     description
     type
+    child
+    parentNameID
+    parentDisplayName
     __typename
     triggeredBy {
       id
@@ -2036,6 +2039,7 @@ export const OrganizationInfoFragmentDoc = gql`
       description
       visual(type: AVATAR) {
         ...VisualUri
+        alternativeText
       }
       tagsets {
         id
@@ -2069,6 +2073,7 @@ export const OrganizationInfoFragmentDoc = gql`
         }
         visual(type: AVATAR) {
           ...VisualUri
+          alternativeText
         }
         tagsets {
           id
@@ -8578,8 +8583,8 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
 }
 
 export const ActivityCreatedDocument = gql`
-  subscription activityCreated($collaborationID: UUID!) {
-    activityCreated(collaborationID: $collaborationID) {
+  subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
+    activityCreated(input: $input) {
       activity {
         ...ActivityLogOnCollaboration
       }
@@ -8600,7 +8605,7 @@ export const ActivityCreatedDocument = gql`
  * @example
  * const { data, loading, error } = useActivityCreatedSubscription({
  *   variables: {
- *      collaborationID: // value for 'collaborationID'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -8627,6 +8632,9 @@ export const ActivityLogOnCollaborationDocument = gql`
       createdDate
       description
       type
+      child
+      parentNameID
+      parentDisplayName
       __typename
       triggeredBy {
         id
@@ -10559,6 +10567,7 @@ export const UpdateCalloutDocument = gql`
         }
       }
       state
+      group
       type
       visibility
       ...CalloutPostTemplate
@@ -14584,12 +14593,6 @@ export const ChallengeApplicationDocument = gql`
         profile {
           id
           displayName
-          tagline
-          visuals {
-            id
-            uri
-            name
-          }
         }
         community {
           id
@@ -14659,10 +14662,6 @@ export const HubApplicationDocument = gql`
       profile {
         id
         displayName
-        tagline
-        visuals {
-          ...VisualUri
-        }
       }
       community {
         id
@@ -14670,7 +14669,6 @@ export const HubApplicationDocument = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
 `;
 
 /**

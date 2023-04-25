@@ -6,6 +6,7 @@ import {
   isChallengeOpportunityIds,
   isHubId,
 } from '../../domain/shared/types/CoreEntityIds';
+import { JourneyTypeName } from '../../domain/challenge/JourneyTypeName';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
 
@@ -73,6 +74,17 @@ export const buildNewOrganizationUrl = () => {
 
 export type JourneyLocation = CoreEntityIdTypes;
 
+export const getJourneyLocationKey = (journeyTypeName: JourneyTypeName): keyof JourneyLocation => {
+  switch (journeyTypeName) {
+    case 'hub':
+      return 'hubNameId';
+    case 'challenge':
+      return 'challengeNameId';
+    case 'opportunity':
+      return 'opportunityNameId';
+  }
+};
+
 export const buildJourneyUrl = (journeyLocation: JourneyLocation) => {
   if (isHubId(journeyLocation)) {
     return buildHubUrl(journeyLocation.hubNameId);
@@ -100,11 +112,11 @@ export const buildUpdatesUrl = (journeyLocation: JourneyLocation) => {
 };
 
 export const buildAspectUrl = (calloutNameId: string, aspectNameId: string, journeyLocation: JourneyLocation) => {
-  const aspectUrl = `/${EntityPageSection.Contribute}/callouts/${calloutNameId}/aspects/${aspectNameId}`;
+  const aspectUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/aspects/${aspectNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${aspectUrl}`;
 };
 
 export const buildCanvasUrl = (calloutNameId: string, canvasNameId: string, journeyLocation: JourneyLocation) => {
-  const canvasUrl = `/${EntityPageSection.Contribute}/callouts/${calloutNameId}/canvases/${canvasNameId}`;
+  const canvasUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/canvases/${canvasNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${canvasUrl}`;
 };
