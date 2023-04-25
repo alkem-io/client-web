@@ -2871,7 +2871,7 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const UploadFileDocument = gql`
-  mutation UploadFile($file: Upload!, $uploadData: StorageSpaceUploadFileInput!) {
+  mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
     uploadFileOnReference(uploadData: $uploadData, file: $file) {
       id
       uri

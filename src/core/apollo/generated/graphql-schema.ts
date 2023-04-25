@@ -407,14 +407,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -625,12 +617,6 @@ export enum AuthorizationPrivilege {
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
 
-export type Branding = {
-  __typename?: 'Branding';
-  /** The style configuration */
-  styles?: Maybe<Scalars['String']>;
-};
-
 export type Calendar = {
   __typename?: 'Calendar';
   /** The authorization rules for the entity */
@@ -776,6 +762,7 @@ export enum CalloutType {
   Canvas = 'CANVAS',
   Card = 'CARD',
   Comments = 'COMMENTS',
+  LinkCollection = 'LINK_COLLECTION',
 }
 
 export enum CalloutVisibility {
@@ -865,8 +852,8 @@ export type Challenge = {
   preferences: Array<Preference>;
   /** The Profile for the  Challenge. */
   profile: Profile;
-  /** The StorageSpace with documents in use by this Challenge */
-  storageSpace?: Maybe<StorageSpace>;
+  /** The StorageBucket with documents in use by this Challenge */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -1847,8 +1834,8 @@ export type Hub = {
   project: Project;
   /** All projects within this hub */
   projects: Array<Project>;
-  /** The StorageSpace with documents in use by this Hub */
-  storageSpace?: Maybe<StorageSpace>;
+  /** The StorageBucket with documents in use by this Hub */
+  storageBucket?: Maybe<StorageBucket>;
   /** The templates in use by this Hub */
   templates?: Maybe<TemplatesSet>;
   /** The timeline with events in use by this Hub */
@@ -1889,16 +1876,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -1944,17 +1921,6 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-/** Filter used to filter the data for the Innovation space */
-export type ISelectionFilter = {
-  __typename?: 'ISelectionFilter';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of the selection filter, which will also give a hint how to parse its value */
-  type: SelectionFilterType;
-  /** The filter value. Usage and how it can be parsed hinted by the type */
-  value: Scalars['String'];
-};
-
 export type InnovationFlowTemplate = {
   __typename?: 'InnovationFlowTemplate';
   /** The authorization rules for the entity */
@@ -1972,27 +1938,6 @@ export type InnovationFlowTemplate = {
 export enum InnovationFlowType {
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
-}
-
-export type InnovationSpace = {
-  __typename?: 'InnovationSpace';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The branding for this Innovation space */
-  branding?: Maybe<Branding>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The criteria based on which the data is filtered */
-  selectionCriteria: SelectionCriteria;
-  /** Type of innovation space */
-  type: InnovationSpaceType;
-};
-
-export enum InnovationSpaceType {
-  Basic = 'BASIC',
-  Lite = 'LITE',
 }
 
 export type InnovatonPack = {
@@ -2021,8 +1966,8 @@ export type Library = {
   innovationPack?: Maybe<InnovatonPack>;
   /** Platform level library. */
   innovationPacks: Array<InnovatonPack>;
-  /** The StorageSpace with documents in use by this User */
-  storageSpace?: Maybe<StorageSpace>;
+  /** The StorageBucket with documents in use by this User */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -2947,7 +2892,7 @@ export type MutationUpdateWhiteboardTemplateArgs = {
 
 export type MutationUploadFileOnReferenceArgs = {
   file: Scalars['Upload'];
-  uploadData: StorageSpaceUploadFileInput;
+  uploadData: StorageBucketUploadFileInput;
 };
 
 export type MutationUploadImageOnVisualArgs = {
@@ -3044,8 +2989,8 @@ export type Organization = Groupable & {
   preferences: Array<Preference>;
   /** The profile for this organization. */
   profile: Profile;
-  /** The StorageSpace with documents in use by this Organization */
-  storageSpace?: Maybe<StorageSpace>;
+  /** The StorageBucket with documents in use by this Organization */
+  storageBucket?: Maybe<StorageBucket>;
   verification: OrganizationVerification;
   /** Organization website */
   website?: Maybe<Scalars['String']>;
@@ -3143,8 +3088,8 @@ export type Platform = {
   id: Scalars['UUID'];
   /** The Innovation Library for the platform */
   library: Library;
-  /** The StorageSpace with documents in use by Users + Organizations on the Platform. */
-  storageSpace?: Maybe<StorageSpace>;
+  /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type PlatformLocations = {
@@ -3360,8 +3305,6 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
-  /** List of innovation spaces on the platform */
-  innovationSpaces: Array<InnovationSpace>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3867,23 +3810,6 @@ export type SearchResultUserGroup = SearchResult & {
   userGroup: UserGroup;
 };
 
-export type SelectionCriteria = {
-  __typename?: 'SelectionCriteria';
-  filters: Array<ISelectionFilter>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  type: SelectionCriteriaType;
-};
-
-export enum SelectionCriteriaType {
-  And = 'AND',
-  Or = 'OR',
-}
-
-export enum SelectionFilterType {
-  Visibility = 'VISIBILITY',
-}
-
 export type SendMessageOnCalloutInput = {
   /** The Callout the message is being sent to */
   calloutID: Scalars['UUID'];
@@ -3909,41 +3835,41 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
-export type StorageConfig = {
-  __typename?: 'StorageConfig';
-  /** Config for uploading files to Alkemio. */
-  file: FileStorageConfig;
-};
-
-export type StorageSpace = {
-  __typename?: 'StorageSpace';
-  /** Mime types allowed to be stored on this StorageSpace. */
+export type StorageBucket = {
+  __typename?: 'StorageBucket';
+  /** Mime types allowed to be stored on this StorageBucket. */
   allowedMimeTypes: Array<Scalars['String']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A single Document */
   document?: Maybe<Document>;
-  /** The list of Documents for this StorageSpace. */
+  /** The list of Documents for this StorageBucket. */
   documents: Array<Document>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Maximum allowed file size on this StorageSpace. */
+  /** Maximum allowed file size on this StorageBucket. */
   maxFileSize: Scalars['Float'];
-  /** The aggregate size of all Documents for this StorageSpace. */
+  /** The aggregate size of all Documents for this StorageBucket. */
   size: Scalars['Float'];
 };
 
-export type StorageSpaceDocumentArgs = {
+export type StorageBucketDocumentArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type StorageSpaceDocumentsArgs = {
+export type StorageBucketDocumentsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   limit?: InputMaybe<Scalars['Float']>;
 };
 
-export type StorageSpaceUploadFileInput = {
+export type StorageBucketUploadFileInput = {
   referenceID: Scalars['String'];
+};
+
+export type StorageConfig = {
+  __typename?: 'StorageConfig';
+  /** Config for uploading files to Alkemio. */
+  file: FileStorageConfig;
 };
 
 export type Subscription = {
@@ -4683,7 +4609,7 @@ export type WhiteboardTemplate = {
 
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload'];
-  uploadData: StorageSpaceUploadFileInput;
+  uploadData: StorageBucketUploadFileInput;
 }>;
 
 export type UploadFileMutation = {
