@@ -23,6 +23,7 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   withCounter?: boolean;
   maxLength?: number;
   attachFile?: boolean;
+  referenceID?: string;
 };
 
 export const FormikInputField: FC<InputFieldProps> = ({
@@ -43,6 +44,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   maxLength,
   fullWidth,
   attachFile = false,
+  referenceID = '',
   ...rest
 }) => {
   const tErr = useValidationMessageTranslation();
@@ -91,7 +93,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
             <>
               {loading && <CircularProgress size={20} />}
               {helpIconText && <HelpButton helpText={helpIconText} />}
-              {attachFile && <FileUploadButton onUpload={helpers.setValue} />}
+              {attachFile && <FileUploadButton onUpload={helpers.setValue} referenceID={referenceID} />}
             </>
           ),
           readOnly: readOnly,
