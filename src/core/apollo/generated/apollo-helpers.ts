@@ -870,7 +870,6 @@ export type ContextKeySpecifier = (
   | 'ecosystemModel'
   | 'id'
   | 'impact'
-  | 'recommendations'
   | 'vision'
   | 'who'
   | ContextKeySpecifier
@@ -880,7 +879,6 @@ export type ContextFieldPolicy = {
   ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
-  recommendations?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
 };

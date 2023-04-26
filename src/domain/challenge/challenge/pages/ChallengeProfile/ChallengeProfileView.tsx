@@ -113,7 +113,6 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         nameID={challenge?.nameID}
         journeyType="challenge"
         tagset={challenge?.profile.tagset}
-        context={challenge?.context}
         profile={challenge?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

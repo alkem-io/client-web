@@ -215,7 +215,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 marginTop={gutters(-1)}
               />
             )}
-            {!editMode && (
+            {!editMode && calloutType !== CalloutType.LinkCollection && (
               <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
             )}
             <TagsetSegment

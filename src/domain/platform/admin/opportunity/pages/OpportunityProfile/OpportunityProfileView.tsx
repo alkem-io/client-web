@@ -115,7 +115,6 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         nameID={opportunity?.nameID}
         journeyType="opportunity"
         tagset={opportunity?.profile.tagset}
-        context={opportunity?.context}
         profile={opportunity?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

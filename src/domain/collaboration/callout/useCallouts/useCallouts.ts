@@ -15,6 +15,7 @@ import {
   ContributeTabAspectFragment,
   CalloutsQueryVariables,
   CalloutsQuery,
+  ReferenceDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import useSubscribeOnCommentCallouts from '../useSubscribeOnCommentCallouts';
 import { CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
@@ -29,6 +30,7 @@ interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
   [CalloutType.Canvas]: 'canvases';
   [CalloutType.Comments]: 'comments';
+  [CalloutType.LinkCollection]: 'links';
 }
 
 export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
@@ -37,16 +39,20 @@ export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId:
 
 export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
+export type ReferencesFragmentWithCallout = ReferenceDetailsFragment & { calloutNameId: string };
+
 interface CalloutChildPropValue {
   aspects: never;
   canvases: CanvasFragmentWithCallout[];
   comments: CommentsWithMessagesFragmentWithCallout;
+  links: ReferencesFragmentWithCallout;
 }
 
 type CalloutCardTemplateType = {
   [CalloutType.Card]: { postTemplate: CalloutPostTemplate };
   [CalloutType.Canvas]: { whiteboardTemplate: WhiteboardTemplate };
   [CalloutType.Comments]: {};
+  [CalloutType.LinkCollection]: {};
 };
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -66,6 +72,7 @@ export type TypedCallout = Pick<
     | CalloutTypesWithChildTypes[CalloutType.Card]
     | CalloutTypesWithChildTypes[CalloutType.Canvas]
     | CalloutTypesWithChildTypes[CalloutType.Comments]
+    | CalloutTypesWithChildTypes[CalloutType.LinkCollection]
   ) & {
     profile: {
       id: string;

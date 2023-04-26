@@ -1211,8 +1211,6 @@ export type Context = {
   id: Scalars['UUID'];
   /** What is the potential impact? */
   impact?: Maybe<Scalars['Markdown']>;
-  /** The Recommendations for this Context. */
-  recommendations?: Maybe<Array<Reference>>;
   /** The goal that is being pursued */
   vision?: Maybe<Scalars['Markdown']>;
   /** Who should get involved in this challenge */
@@ -4166,8 +4164,6 @@ export type UpdateCommunityApplicationFormInput = {
 
 export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
-  /** Update the set of Recommendations for the Context. */
-  recommendations?: InputMaybe<Array<UpdateReferenceInput>>;
   vision?: InputMaybe<Scalars['Markdown']>;
   who?: InputMaybe<Scalars['Markdown']>;
 };
