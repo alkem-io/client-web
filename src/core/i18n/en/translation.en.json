@@ -728,7 +728,8 @@
         "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
         "update-sent": "{{update}}"
-      }
+      },
+      "parent-details": "in {{displayName}}"
     },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"
@@ -745,6 +746,7 @@
     },
     "callout-creation": {
       "title": "What do you want to ask your community?",
+      "titleWithType": "Create {{type}}",
       "callout-type-label": "Callout type",
       "card-type-label": "Card label",
       "custom-template": "Custom Template",
@@ -775,22 +777,21 @@
         "title": "Create",
         "card-template-label": "Choose Card template"
       },
-      "callout-type-select": {
-        "title": "What would you like to add?",
-        "label": {
-          "post": "Post",
-          "posts": "Call for Posts",
-          "whiteboards": "Call for Whiteboards"
-        }
-      },
       "publish-dialog": {
         "text": "You are about to publish {{calloutDisplayName}}.\nDo you want members of this community to receive a notification?",
         "checkbox-label": "Yes, notify the community."
       }
     },
-    "callout-edit": {
-      "type-edit-help-text": "This will only affect new entries, yet submitted cards will not be changed",
-      "canvas-template-edit-help-text": "This will only affect new entries, yet submitted whiteboards will not be changed"
+    "calloutEdit": {
+      "titleWithType": "Edit {{type}}"
+    },
+    "calloutTypeSelect": {
+      "title": "What would you like to add?",
+      "label": {
+        "COMMENTS": "Post",
+        "CARD": "Call for Posts",
+        "CANVAS": "Call for Whiteboards"
+      }
     },
     "aspect-creation": {
       "title": "Submit your answer to {{calloutDisplayName}}",

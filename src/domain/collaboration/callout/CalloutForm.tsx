@@ -70,6 +70,7 @@ export interface CalloutFormProps {
   calloutType: CalloutType;
   callout: CalloutFormInput;
   editMode?: boolean;
+  canChangeCalloutGroup?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
@@ -81,6 +82,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   callout,
   calloutNames,
   editMode = false,
+  canChangeCalloutGroup,
   onChange,
   onStatusChanged,
   children,
@@ -224,7 +226,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {calloutType === CalloutType.Card && <PostTemplatesChooser name="postTemplateData" />}
             {calloutType === CalloutType.Canvas && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
             <FormikSwitch name="opened" title={t('callout.state-permission')} />
-            {editMode && (
+            {editMode && canChangeCalloutGroup && (
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"

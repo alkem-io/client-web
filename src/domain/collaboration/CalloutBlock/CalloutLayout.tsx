@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { IconButton, Menu } from '@mui/material';
+import { Box, IconButton, Menu } from '@mui/material';
 import {
   Authorization,
   AuthorizationPrivilege,
@@ -38,6 +38,8 @@ import {
 } from '@mui/icons-material';
 import { ExpandContentIcon } from '../../../core/ui/content/ExpandContent';
 import { Reference, Tagset } from '../../common/profile/Profile';
+import References from '../../shared/components/References/References';
+import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 
 export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   callout: {
@@ -91,7 +93,7 @@ const CalloutLayout = ({
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
-  const { hubNameId } = useUrlParams();
+  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubNameId! } });
 
@@ -148,6 +150,11 @@ const CalloutLayout = ({
     return null;
   }
 
+  // TODO: For now callout moving is only enabled for hubs.
+  // In the future check this in a cleaner way, maybe there is a privilege for this...
+  // or just remove all canChangeCalloutGroup properties
+  const canChangeCalloutGroup = !Boolean(challengeNameId) && !Boolean(opportunityNameId);
+
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
   const handleMove = (callback?: (id: string) => void) => () => {
@@ -195,7 +202,13 @@ const CalloutLayout = ({
       </DialogHeader>
       <Gutters minHeight={0} paddingTop={0}>
         {hasCalloutDetails && <BlockTitle>{callout.profile.displayName}</BlockTitle>}
-        <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
+        <Box sx={{ wordWrap: 'break-word' }}>
+          <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
+        </Box>
+        <References compact references={callout.profile.references} />
+        {callout.profile.tagset?.tags && callout.profile.tagset?.tags.length > 0 ? (
+          <TagsComponent tags={callout.profile.tagset?.tags} />
+        ) : undefined}
         {children}
       </Gutters>
       {calloutNotOpenStateName && (
@@ -264,9 +277,9 @@ const CalloutLayout = ({
         onClose={handleEditDialogClosed}
         calloutType={callout.type}
         callout={callout}
-        title={`${t('buttons.edit')} ${t('common.callout')}`}
         onCalloutEdit={handleCalloutEdit}
         onDelete={onCalloutDelete}
+        canChangeCalloutGroup={canChangeCalloutGroup}
         calloutNames={calloutNames}
         templates={templates}
       />

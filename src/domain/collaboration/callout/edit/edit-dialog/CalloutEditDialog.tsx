@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
-import { CalloutIcon } from '../../icon/CalloutIcon';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import calloutIcons from '../../utils/calloutIcons';
+import { DialogActions, DialogContent } from '../../../../../common/components/core/dialog';
+import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
@@ -25,24 +26,24 @@ import EmptyWhiteboard from '../../../../../common/components/composite/entities
 
 export interface CalloutEditDialogProps {
   open: boolean;
-  title: string;
   calloutType: CalloutType;
   callout: CalloutLayoutProps['callout'];
   onClose: () => void;
   onDelete: (callout: CalloutDeleteType) => Promise<void>;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
+  canChangeCalloutGroup?: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   open,
-  title,
   calloutType,
   callout,
   onClose,
   onDelete,
   onCalloutEdit,
+  canChangeCalloutGroup,
   calloutNames,
   templates,
 }) => {
@@ -133,15 +134,19 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     [confirmDialogOpened, handleDelete, setConfirmDialogOpened]
   );
 
+  const CalloutIcon = calloutType ? calloutIcons[calloutType] : undefined;
+
   return (
     <>
       <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
-        <DialogTitle onClose={onClose}>
-          <Box display="flex" alignItems="center">
-            <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
-            {title}
+        <DialogHeader onClose={onClose}>
+          <Box display="flex" alignItems="center" gap={1}>
+            {CalloutIcon && <CalloutIcon />}
+            {t('components.calloutEdit.titleWithType', {
+              type: t(`components.calloutTypeSelect.label.${calloutType}` as const),
+            })}
           </Box>
-        </DialogTitle>
+        </DialogHeader>
         <DialogContent dividers>
           <CalloutForm
             calloutType={calloutType}
@@ -150,6 +155,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             editMode
             onStatusChanged={handleStatusChanged}
             onChange={handleChange}
+            canChangeCalloutGroup={canChangeCalloutGroup}
           />
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
