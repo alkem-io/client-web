@@ -135,6 +135,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               scrollToCallout={scrollToCallout}
+              group={CalloutsGroup.KnowledgeBase}
             />
           </PageContentColumn>
         </PageContent>
@@ -147,6 +148,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
+        group={CalloutsGroup.KnowledgeBase}
       />
     </PageLayout>
   );
