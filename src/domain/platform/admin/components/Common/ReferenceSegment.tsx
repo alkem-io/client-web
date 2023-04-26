@@ -108,6 +108,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       readOnly={readOnly}
                       disabled={disabled || isRemoving(index)}
                       attachFile
+                      referenceID={attachment.id}
                       helperText={tLinks('components.referenceSegment.url-helper-text', {
                         terms: { href: platform?.terms },
                       })}

@@ -407,14 +407,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -624,14 +616,6 @@ export enum AuthorizationPrivilege {
   UpdateCanvas = 'UPDATE_CANVAS',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
-
-export type Branding = {
-  __typename?: 'Branding';
-  /** The logo of this instance of branding */
-  logo: Visual;
-  /** The style configuration */
-  styles?: Maybe<Scalars['String']>;
-};
 
 export type Calendar = {
   __typename?: 'Calendar';
@@ -867,6 +851,8 @@ export type Challenge = {
   preferences: Array<Preference>;
   /** The Profile for the  Challenge. */
   profile: Profile;
+  /** The StorageBucket with documents in use by this Challenge */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -1596,9 +1582,8 @@ export type DeleteDiscussionInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteFileInput = {
-  /** IPFS Content Identifier (CID) of the file, e.g. Qmde6CnXDGGe7Dynz1pnxgNARtdVBme9YBwNbo4HJiRy2W */
-  CID: Scalars['CID'];
+export type DeleteDocumentInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteHubInput = {
@@ -1709,6 +1694,24 @@ export type DiscussionSendMessageInput = {
   message: Scalars['String'];
 };
 
+export type Document = {
+  __typename?: 'Document';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The user that created this Document */
+  createdBy?: Maybe<User>;
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Mime type for this Document. */
+  mimeType: MimeType;
+  /** Size of the Document. */
+  size: Scalars['Float'];
+  /** The tagset in use on this Document. */
+  tagset: Tagset;
+};
+
 export type EcosystemModel = {
   __typename?: 'EcosystemModel';
   /** A list of ActorGroups */
@@ -1810,8 +1813,6 @@ export type Hub = {
   group: UserGroup;
   /** The User Groups on this Hub */
   groups: Array<UserGroup>;
-  /** All groups on this Hub that have the provided tag */
-  groupsWithTag: Array<UserGroup>;
   /** The Hub host. */
   host?: Maybe<Organization>;
   /** The ID of the entity */
@@ -1832,6 +1833,8 @@ export type Hub = {
   project: Project;
   /** All projects within this hub */
   projects: Array<Project>;
+  /** The StorageBucket with documents in use by this Hub */
+  storageBucket?: Maybe<StorageBucket>;
   /** The templates in use by this Hub */
   templates?: Maybe<TemplatesSet>;
   /** The timeline with events in use by this Hub */
@@ -1862,10 +1865,6 @@ export type HubGroupArgs = {
   ID: Scalars['UUID'];
 };
 
-export type HubGroupsWithTagArgs = {
-  tag: Scalars['String'];
-};
-
 export type HubOpportunitiesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
@@ -1876,16 +1875,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -1931,17 +1920,6 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-/** Filter used to filter the data for the Innovation space */
-export type ISelectionFilter = {
-  __typename?: 'ISelectionFilter';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of the selection filter, which will also give a hint how to parse its value */
-  type: SelectionFilterType;
-  /** The filter value. Usage and how it can be parsed hinted by the type */
-  value: Scalars['String'];
-};
-
 export type InnovationFlowTemplate = {
   __typename?: 'InnovationFlowTemplate';
   /** The authorization rules for the entity */
@@ -1959,27 +1937,6 @@ export type InnovationFlowTemplate = {
 export enum InnovationFlowType {
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
-}
-
-export type InnovationSpace = {
-  __typename?: 'InnovationSpace';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The branding for this Innovation space */
-  branding?: Maybe<Branding>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The criteria based on which the data is filtered */
-  selectionCriteria: SelectionCriteria;
-  /** Type of innovation space */
-  type: InnovationSpaceType;
-};
-
-export enum InnovationSpaceType {
-  Basic = 'BASIC',
-  Lite = 'LITE',
 }
 
 export type InnovatonPack = {
@@ -2008,6 +1965,8 @@ export type Library = {
   innovationPack?: Maybe<InnovatonPack>;
   /** Platform level library. */
   innovationPacks: Array<InnovatonPack>;
+  /** The StorageBucket with documents in use by this User */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -2062,6 +2021,18 @@ export type Metadata = {
   /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
 };
+
+export enum MimeType {
+  Bmp = 'BMP',
+  Gif = 'GIF',
+  Jpeg = 'JPEG',
+  Jpg = 'JPG',
+  Pdf = 'PDF',
+  Png = 'PNG',
+  Svg = 'SVG',
+  Webp = 'WEBP',
+  Xpng = 'XPNG',
+}
 
 export type MoveAspectInput = {
   /** ID of the Aspect to move. */
@@ -2194,8 +2165,8 @@ export type Mutation = {
   deleteCollaboration: Collaboration;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
-  /** Removes a file. */
-  deleteFile: Scalars['Boolean'];
+  /** Deletes the specified Document. */
+  deleteDocument: Document;
   /** Deletes the specified Hub. */
   deleteHub: Hub;
   /** Deletes the specified InnovationFlowTemplate. */
@@ -2316,6 +2287,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
+  /** Updates the specified Document. */
+  updateDocument: Document;
   /** Updates the specified EcosystemModel. */
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
@@ -2354,8 +2327,8 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified WhiteboardTemplate. */
   updateWhiteboardTemplate: WhiteboardTemplate;
-  /** Uploads a file. */
-  uploadFile: Scalars['String'];
+  /** Create a new Document on the Storage and return the value as part of the returned Reference. */
+  uploadFileOnReference: Reference;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -2592,8 +2565,8 @@ export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
 };
 
-export type MutationDeleteFileArgs = {
-  deleteData: DeleteFileInput;
+export type MutationDeleteDocumentArgs = {
+  deleteData: DeleteDocumentInput;
 };
 
 export type MutationDeleteHubArgs = {
@@ -2836,6 +2809,10 @@ export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
 
+export type MutationUpdateDocumentArgs = {
+  documentData: UpdateDocumentInput;
+};
+
 export type MutationUpdateEcosystemModelArgs = {
   ecosystemModelData: UpdateEcosystemModelInput;
 };
@@ -2912,8 +2889,9 @@ export type MutationUpdateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: UpdateWhiteboardTemplateInput;
 };
 
-export type MutationUploadFileArgs = {
+export type MutationUploadFileOnReferenceArgs = {
   file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileInput;
 };
 
 export type MutationUploadImageOnVisualArgs = {
@@ -3010,6 +2988,8 @@ export type Organization = Groupable & {
   preferences: Array<Preference>;
   /** The profile for this organization. */
   profile: Profile;
+  /** The StorageBucket with documents in use by this Organization */
+  storageBucket?: Maybe<StorageBucket>;
   verification: OrganizationVerification;
   /** Organization website */
   website?: Maybe<Scalars['String']>;
@@ -3107,6 +3087,8 @@ export type Platform = {
   id: Scalars['UUID'];
   /** The Innovation Library for the platform */
   library: Library;
+  /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type PlatformLocations = {
@@ -3322,8 +3304,6 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
-  /** List of innovation spaces on the platform */
-  innovationSpaces: Array<InnovationSpace>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3829,23 +3809,6 @@ export type SearchResultUserGroup = SearchResult & {
   userGroup: UserGroup;
 };
 
-export type SelectionCriteria = {
-  __typename?: 'SelectionCriteria';
-  filters: Array<ISelectionFilter>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  type: SelectionCriteriaType;
-};
-
-export enum SelectionCriteriaType {
-  And = 'AND',
-  Or = 'OR',
-}
-
-export enum SelectionFilterType {
-  Visibility = 'VISIBILITY',
-}
-
 export type SendMessageOnCalloutInput = {
   /** The Callout the message is being sent to */
   calloutID: Scalars['UUID'];
@@ -3869,6 +3832,37 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
+};
+
+export type StorageBucket = {
+  __typename?: 'StorageBucket';
+  /** Mime types allowed to be stored on this StorageBucket. */
+  allowedMimeTypes: Array<Scalars['String']>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** A single Document */
+  document?: Maybe<Document>;
+  /** The list of Documents for this StorageBucket. */
+  documents: Array<Document>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Maximum allowed file size on this StorageBucket. */
+  maxFileSize: Scalars['Float'];
+  /** The aggregate size of all Documents for this StorageBucket. */
+  size: Scalars['Float'];
+};
+
+export type StorageBucketDocumentArgs = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type StorageBucketDocumentsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type StorageBucketUploadFileInput = {
+  referenceID: Scalars['String'];
 };
 
 export type StorageConfig = {
@@ -4179,6 +4173,13 @@ export type UpdateDiscussionInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateDocumentInput = {
+  ID: Scalars['UUID'];
+  /** The display name for the Document. */
+  displayName: Scalars['String'];
+  tagset?: InputMaybe<UpdateTagsetInput>;
 };
 
 export type UpdateEcosystemModelInput = {
@@ -4607,9 +4608,13 @@ export type WhiteboardTemplate = {
 
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileInput;
 }>;
 
-export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
+export type UploadFileMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
+};
 
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
