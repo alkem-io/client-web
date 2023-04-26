@@ -762,7 +762,6 @@ export enum CalloutType {
   Canvas = 'CANVAS',
   Card = 'CARD',
   Comments = 'COMMENTS',
-  LinkCollection = 'LINK_COLLECTION',
 }
 
 export enum CalloutVisibility {
