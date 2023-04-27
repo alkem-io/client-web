@@ -16,9 +16,9 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 
-export interface ReferenceFormValues extends Pick<Reference, 'name' | 'uri' | 'description'> {}
+export interface CreateReferenceFormValues extends Pick<Reference, 'name' | 'uri' | 'description'> {}
 export interface FormValueType {
-  references: ReferenceFormValues[];
+  references: CreateReferenceFormValues[];
 }
 
 interface CreateReferencesDialogProps {

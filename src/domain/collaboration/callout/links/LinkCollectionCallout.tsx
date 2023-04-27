@@ -9,7 +9,7 @@ import EditReferenceDialog, {
   EditReferenceFormValues,
 } from '../../../shared/components/References/EditReferenceDialog';
 import CreateReferencesDialog, {
-  ReferenceFormValues,
+  CreateReferenceFormValues,
 } from '../../../shared/components/References/CreateReferencesDialog';
 import { Box, IconButton, Link } from '@mui/material';
 import {
@@ -21,7 +21,7 @@ import AddIcon from '@mui/icons-material/Add';
 import References from '../../../shared/components/References/References';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
-import { AuthorizationPrivilege, UpdateReferenceInput } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../domain/platform/admin/templates/ConfirmationDialog';
 
 type NeededFields = 'id' | 'calloutNameId';
@@ -33,15 +33,6 @@ interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   calloutNames: string[];
 }
 
-// Just remap the id property to ID for the server to accept the Reference
-const mapToUpdateReferenceInput = ({
-  id: ID,
-  ...rest
-}: EditReferenceFormValues['reference']): UpdateReferenceInput => ({
-  ID,
-  ...rest,
-});
-
 const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutProps>(
   ({ callout, loading, expanded, contributionsCount, onExpand, blockProps, ...calloutLayoutProps }, ref) => {
     const { t } = useTranslation();
@@ -50,7 +41,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const [deleteReference] = useDeleteReferenceMutation();
 
     const [addLinkDialogOpen, setAddLinkDialogOpen] = useState<boolean>(false);
-    const [editReference, setEditReference] = useState<EditReferenceFormValues['reference']>();
+    const [editReference, setEditReference] = useState<EditReferenceFormValues>();
     const [deletingReferenceId, setDeletingReferenceId] = useState<string>();
 
     // TODO: Maybe this needs review:
@@ -60,15 +51,13 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
     const handleCreateLinks = useCallback(
-      async (references: ReferenceFormValues[]) => {
+      async (references: CreateReferenceFormValues[]) => {
         for (let reference of references) {
           await createReference({
             variables: {
               input: {
                 profileID: callout.profile.id,
-                name: reference.name,
-                description: reference.description,
-                uri: reference.uri,
+                ...reference,
               },
             },
             update: cache => {
@@ -82,20 +71,19 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     );
 
     const handleEditLink = useCallback(
-      async ({ reference: editedReference }: EditReferenceFormValues) => {
-        // Map references to the UpdateReferenceInput and Replace the reference that has been edited:
-        const nextReferences = callout.profile.references?.map(reference =>
-          reference.id === editedReference.id
-            ? mapToUpdateReferenceInput(editedReference)
-            : mapToUpdateReferenceInput(reference)
-        );
-
+      async ({ id, ...rest }: EditReferenceFormValues) => {
         await updateReferences({
           variables: {
             calloutData: {
               ID: callout.id,
               profileData: {
-                references: nextReferences,
+                references: [
+                  {
+                    // Map to UpdateReferenceInput
+                    ID: id,
+                    ...rest,
+                  },
+                ],
               },
             },
           },
@@ -128,7 +116,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
 
     const limitedReferences = useMemo(() => callout.profile.references?.slice(0, MAX_REFERENCES_NORMALVIEW), [callout]);
     const isListTruncated = useMemo(
-      () => callout.profile.references?.length ?? 0 > MAX_REFERENCES_NORMALVIEW,
+      () => (callout.profile.references?.length ?? 0) > MAX_REFERENCES_NORMALVIEW,
       [callout]
     );
 

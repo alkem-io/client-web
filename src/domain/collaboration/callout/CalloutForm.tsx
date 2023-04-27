@@ -187,7 +187,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   }, [editMode]);
 
   // Enable or disable form fields depending on the callout type and other conditions
-  const formConfiguration: Record<string, boolean> = {
+  const formConfiguration = {
     references: calloutType !== CalloutType.LinkCollection,
     linkCollectionAdd: calloutType === CalloutType.LinkCollection,
     tags: true,

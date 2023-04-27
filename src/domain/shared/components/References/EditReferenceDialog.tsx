@@ -8,22 +8,26 @@ import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { referenceSegmentValidationObject } from '../../../platform/admin/components/Common/ReferenceSegment';
 import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export interface EditReferenceFormValues {
-  reference: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>;
-}
+export interface EditReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
+
+const validationSchema = yup.object().shape({
+  id: yup.string().required(),
+  name: yup.string().required(),
+  description: yup.string(),
+  uri: yup.string().required(),
+});
 
 interface EditReferenceDialogProps {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
-  reference: EditReferenceFormValues['reference'];
+  reference: EditReferenceFormValues;
   onSave: (values: EditReferenceFormValues) => Promise<void>;
   canDelete?: boolean;
   onDelete: () => void;
@@ -44,11 +48,7 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
 
   const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
 
-  const initialValues: EditReferenceFormValues = useMemo(() => ({ reference }), [reference]);
-
-  const validationSchema = yup.object().shape({
-    reference: referenceSegmentValidationObject,
-  });
+  const initialValues: EditReferenceFormValues = useMemo(() => ({ ...reference }), [reference]);
 
   return (
     <Dialog open={open} aria-labelledby="reference-edit" fullWidth maxWidth="lg">
@@ -73,18 +73,13 @@ const EditReferenceDialog: FC<EditReferenceDialogProps> = ({
               <>
                 <Gutters>
                   <Gutters row={!isMobile} disablePadding alignItems="start">
-                    <FormikInputField name={'reference.name'} title={t('common.title')} fullWidth={isMobile} />
+                    <FormikInputField name={'name'} title={t('common.title')} fullWidth={isMobile} />
                     <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
-                      <FormikInputField
-                        name={'reference.uri'}
-                        title={t('common.url')}
-                        attachFile
-                        sx={{ flexGrow: 1 }}
-                      />
+                      <FormikInputField name={'uri'} title={t('common.url')} attachFile sx={{ flexGrow: 1 }} />
                     </Box>
                   </Gutters>
                   <Box>
-                    <FormikInputField name={'reference.description'} title={'Description'} />
+                    <FormikInputField name={'description'} title={'Description'} />
                   </Box>
                 </Gutters>
                 {canDelete && (
