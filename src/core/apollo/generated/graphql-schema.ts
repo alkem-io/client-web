@@ -409,6 +409,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -618,6 +626,14 @@ export enum AuthorizationPrivilege {
   UpdateCanvas = 'UPDATE_CANVAS',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
+
+export type Branding = {
+  __typename?: 'Branding';
+  /** The logo of this instance of branding */
+  logo: Visual;
+  /** The style configuration */
+  styles?: Maybe<Scalars['String']>;
+};
 
 export type Calendar = {
   __typename?: 'Calendar';
@@ -1878,6 +1894,16 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
+};
+
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -1921,6 +1947,17 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+/** Filter used to filter the data for the Innovation space */
+export type ISelectionFilter = {
+  __typename?: 'ISelectionFilter';
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Type of the selection filter, which will also give a hint how to parse its value */
+  type: SelectionFilterType;
+  /** The filter value. Usage and how it can be parsed hinted by the type */
+  value: Scalars['String'];
+};
+
 export type InnovationFlowTemplate = {
   __typename?: 'InnovationFlowTemplate';
   /** The authorization rules for the entity */
@@ -1938,6 +1975,27 @@ export type InnovationFlowTemplate = {
 export enum InnovationFlowType {
   Challenge = 'CHALLENGE',
   Opportunity = 'OPPORTUNITY',
+}
+
+export type InnovationSpace = {
+  __typename?: 'InnovationSpace';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The branding for this Innovation space */
+  branding?: Maybe<Branding>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The criteria based on which the data is filtered */
+  selectionCriteria: SelectionCriteria;
+  /** Type of innovation space */
+  type: InnovationSpaceType;
+};
+
+export enum InnovationSpaceType {
+  Basic = 'BASIC',
+  Lite = 'LITE',
 }
 
 export type InnovatonPack = {
@@ -3305,6 +3363,8 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
+  /** List of innovation spaces on the platform */
+  innovationSpaces: Array<InnovationSpace>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3809,6 +3869,23 @@ export type SearchResultUserGroup = SearchResult & {
   /** The User Group that was found. */
   userGroup: UserGroup;
 };
+
+export type SelectionCriteria = {
+  __typename?: 'SelectionCriteria';
+  filters: Array<ISelectionFilter>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  type: SelectionCriteriaType;
+};
+
+export enum SelectionCriteriaType {
+  And = 'AND',
+  Or = 'OR',
+}
+
+export enum SelectionFilterType {
+  Visibility = 'VISIBILITY',
+}
 
 export type SendMessageOnCalloutInput = {
   /** The Callout the message is being sent to */
@@ -13637,6 +13714,7 @@ export type CreateCalloutMutation = {
     id: string;
     nameID: string;
     type: CalloutType;
+    group?: string | undefined;
     state: CalloutState;
     visibility: CalloutVisibility;
     profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };

@@ -8,6 +8,7 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
       displayName
       description
     }
+    group
     state
     visibility
     authorization {

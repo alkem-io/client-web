@@ -61,7 +61,12 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit
       </Tooltip>
       <ReferenceDescription>{reference.description}</ReferenceDescription>
       {canEdit && (
-        <IconButton onClick={onClickEdit}>
+        <IconButton
+          onClick={event => {
+            onClickEdit?.();
+            event.stopPropagation();
+          }}
+        >
           <EditIcon />
         </IconButton>
       )}

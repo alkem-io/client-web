@@ -10249,6 +10249,7 @@ export const CreateCalloutDocument = gql`
         displayName
         description
       }
+      group
       state
       visibility
       authorization {
