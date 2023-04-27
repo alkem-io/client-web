@@ -18,6 +18,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AddIcon from '@mui/icons-material/Add';
 import References from '../../../shared/components/References/References';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 
 type NeededFields = 'id' | 'calloutNameId';
 export type LinkCollectionCalloutData = Pick<ReferencesFragmentWithCallout, NeededFields>;
@@ -113,7 +114,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           {canAddLink && (
             <Box display="flex" justifyContent="end">
               <IconButton aria-label="Add" size="small" onClick={() => setAddLinkDialogOpen(true)}>
-                <AddIcon />
+                <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
               </IconButton>
             </Box>
           )}

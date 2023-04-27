@@ -6,6 +6,7 @@ fragment DashboardContributingUser on User {
     id
     displayName
     location {
+      id
       city
       country
     }

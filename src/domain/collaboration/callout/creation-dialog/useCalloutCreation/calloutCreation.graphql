@@ -1,29 +1,6 @@
 mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
   createCalloutOnCollaboration(calloutData: $calloutData) {
-    id
-    nameID
-    type
-    profile {
-      id
-      displayName
-      description
-    }
-    group
-    state
-    visibility
-    authorization {
-      id
-      myPrivileges
-    }
-    canvases {
-      id
-    }
-    aspects {
-      id
-    }
-    comments {
-      ...CommentsWithMessages
-    }
+    ...Callout
   }
 }
 

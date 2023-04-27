@@ -192,6 +192,7 @@ export const DashboardContributingUserFragmentDoc = gql`
       id
       displayName
       location {
+        id
         city
         country
       }
@@ -10241,33 +10242,10 @@ export function refetchWhiteboardTemplateValueQuery(variables: SchemaTypes.White
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     createCalloutOnCollaboration(calloutData: $calloutData) {
-      id
-      nameID
-      type
-      profile {
-        id
-        displayName
-        description
-      }
-      group
-      state
-      visibility
-      authorization {
-        id
-        myPrivileges
-      }
-      canvases {
-        id
-      }
-      aspects {
-        id
-      }
-      comments {
-        ...CommentsWithMessages
-      }
+      ...Callout
     }
   }
-  ${CommentsWithMessagesFragmentDoc}
+  ${CalloutFragmentDoc}
 `;
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCalloutMutation,

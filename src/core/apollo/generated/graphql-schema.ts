@@ -5201,7 +5201,7 @@ export type ChallengePageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -5520,7 +5520,7 @@ export type ChallengeProfileFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               };
@@ -6443,7 +6443,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
@@ -6526,7 +6526,7 @@ export type AboutPageMembersQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -6610,7 +6610,7 @@ export type AboutPageMembersQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -7121,7 +7121,7 @@ export type HubCommunityPageQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
@@ -7194,7 +7194,7 @@ export type CommunityPageCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
@@ -7948,7 +7948,7 @@ export type HubPageQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
@@ -8264,7 +8264,7 @@ export type HubPageFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               };
@@ -9248,7 +9248,7 @@ export type OpportunityPageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -9513,7 +9513,7 @@ export type OpportunityPageFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               };
@@ -13716,13 +13716,85 @@ export type CreateCalloutMutation = {
     type: CalloutType;
     group?: string | undefined;
     state: CalloutState;
+    sortOrder: number;
+    activity: number;
     visibility: CalloutVisibility;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+    canvases?:
+      | Array<{
+          __typename?: 'Canvas';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          checkout?:
+            | {
+                __typename?: 'CanvasCheckout';
+                id: string;
+                lockedBy: string;
+                status: CanvasCheckoutStateEnum;
+                lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+        }>
       | undefined;
-    canvases?: Array<{ __typename?: 'Canvas'; id: string }> | undefined;
-    aspects?: Array<{ __typename?: 'Aspect'; id: string }> | undefined;
     comments?:
       | {
           __typename?: 'Comments';
@@ -13763,6 +13835,37 @@ export type CreateCalloutMutation = {
                   | undefined;
               }>
             | undefined;
+        }
+      | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    postTemplate?:
+      | {
+          __typename?: 'PostTemplate';
+          id: string;
+          type: string;
+          defaultDescription: string;
+          profile: {
+            __typename?: 'Profile';
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
+    whiteboardTemplate?:
+      | {
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          value: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }
       | undefined;
   };
@@ -18244,7 +18347,7 @@ export type EntityDashboardCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
@@ -18293,7 +18396,7 @@ export type DashboardContributingUserFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
   };
