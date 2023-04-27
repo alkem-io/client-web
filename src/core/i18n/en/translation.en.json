@@ -436,7 +436,8 @@
       "CommunityLeft": "Community Left",
       "CommunityRight": "Community Right",
       "ChallengesLeft": "Challenges Left",
-      "ChallengesRight": "Challenges Right"
+      "ChallengesRight": "Challenges Right",
+      "KnowledgeBase": "Knowledge Base"
     }
   },
   "journey-creation": {
@@ -734,7 +735,8 @@
         "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
         "update-sent": "{{update}}"
-      }
+      },
+      "parent-details": "in {{displayName}}"
     },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"

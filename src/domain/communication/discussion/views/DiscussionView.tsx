@@ -66,7 +66,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
         <Grid item>
           <Box display="flex" justifyContent="space-between">
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
-            <ShareButton url={discussionUrl} entityTypeName="callout" />
+            <ShareButton url={discussionUrl} entityTypeName="discussion" />
           </Box>
           <MessageView
             message={initialComment}
