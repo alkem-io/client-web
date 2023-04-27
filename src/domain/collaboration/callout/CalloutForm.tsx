@@ -228,15 +228,15 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {!editMode && formConfiguration.references && (
               <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
             )}
-            {!editMode && formConfiguration.linkCollectionAdd && (
-              <Caption>{t('callout.link-collection.save-to-add')}</Caption>
-            )}
             {formConfiguration.tags && (
               <TagsetSegment
                 tagsets={tagsets}
                 title={t('common.tags')}
                 helpText={t('components.aspect-creation.info-step.tags-help-text')}
               />
+            )}
+            {!editMode && formConfiguration.linkCollectionAdd && (
+              <Caption>{t('callout.link-collection.save-to-add')}</Caption>
             )}
             {formConfiguration.postTemplate && <PostTemplatesChooser name="postTemplateData" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}

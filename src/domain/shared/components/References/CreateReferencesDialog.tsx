@@ -1,5 +1,5 @@
 import { FC, ReactNode, useMemo } from 'react';
-import { Reference } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, Reference } from '../../../../core/apollo/generated/graphql-schema';
 import { Box, Button, Dialog, DialogContent, IconButton, Tooltip } from '@mui/material';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,11 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AddIcon from '@mui/icons-material/Add';
+import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '../../../../core/ui/grid/utils';
+import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 
 export interface ReferenceFormValues extends Pick<Reference, 'name' | 'uri' | 'description'> {}
 export interface FormValueType {
@@ -35,6 +40,8 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({ open, onClose
   const breakpoint = useCurrentBreakpoint();
   const isMobile = ['xs', 'sm'].includes(breakpoint);
 
+  const CalloutIcon = calloutIcons[CalloutType.LinkCollection];
+
   const initialValues: FormValueType = useMemo(
     () => ({
       references: [emptyReference],
@@ -47,8 +54,13 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({ open, onClose
   });
 
   return (
-    <Dialog open={open} aria-labelledby="reference-creation">
-      <DialogHeader onClose={onClose}>{title}</DialogHeader>
+    <Dialog open={open} aria-labelledby="reference-creation" fullWidth maxWidth="lg">
+      <DialogHeader onClose={onClose}>
+        <Box display="flex" alignItems="center">
+          <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
+          <BlockTitle>{title}</BlockTitle>
+        </Box>
+      </DialogHeader>
       <DialogContent>
         <Formik
           initialValues={initialValues}
@@ -76,24 +88,36 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({ open, onClose
                         title={t('common.title')}
                         fullWidth={isMobile}
                       />
-                      <Box display="flex" flexDirection="row">
-                        <FormikInputField name={`${fieldName}.${index}.uri`} title={t('common.url')} attachFile />
-                        <Box>
-                          <Tooltip
-                            title={t('components.referenceSegment.tooltips.remove-reference') || ''}
-                            id={'remove a reference'}
-                            placement={'bottom'}
-                          >
-                            <IconButton
-                              aria-label="Remove"
-                              onClick={() => {
-                                setFieldValue(fieldName, values.references.splice(index, 1));
-                              }}
-                              size="large"
+                      <Box flexGrow={1} width={isMobile ? '100%' : undefined}>
+                        <Box display="flex">
+                          <FormikInputField
+                            name={`${fieldName}.${index}.uri`}
+                            title={t('common.url')}
+                            fullWidth
+                            attachFile
+                          />
+                          <Box>
+                            <Tooltip
+                              title={t('components.referenceSegment.tooltips.remove-reference') || ''}
+                              id={'remove a reference'}
+                              placement={'bottom'}
                             >
-                              <DeleteOutlineIcon />
-                            </IconButton>
-                          </Tooltip>
+                              <IconButton
+                                aria-label="Remove"
+                                disabled={values.references.length < 2}
+                                onClick={() => {
+                                  if (values.references.length > 1) {
+                                    const nextValue = [...values.references];
+                                    nextValue.splice(index, 1);
+                                    setFieldValue(fieldName, nextValue);
+                                  }
+                                }}
+                                size="large"
+                              >
+                                <DeleteOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
                         </Box>
                       </Box>
                     </Gutters>
@@ -102,15 +126,20 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({ open, onClose
                     </Box>
                   </Gutters>
                 ))}
-                <Box display="flex" justifyContent="end" gap={1}>
-                  <Button onClick={addAnother}>{t('callout.link-collection.add-another')}</Button>
+                <Box display="flex" justifyContent="end" padding={gutters()}>
+                  <BlockSectionTitle>
+                    {t('callout.link-collection.add-another')}
+                    <IconButton onClick={addAnother} color="primary">
+                      <AddIcon />
+                    </IconButton>
+                  </BlockSectionTitle>
                 </Box>
-
-                <Box display="flex" justifyContent="end">
+                <Actions paddingX={gutters()} justifyContent="space-between">
+                  <Button onClick={onClose}>{t('buttons.cancel')}</Button>
                   <Button variant="contained" onClick={() => onSave({ references: values.references })}>
                     {t('buttons.save')}
                   </Button>
-                </Box>
+                </Actions>
               </>
             );
           }}
