@@ -13,14 +13,17 @@ import {
   ActivityLogOnCollaborationFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 
-const useActivityOnCollaborationSubscription = (collaborationID: string, types?: ActivityEventType[]) =>
+const useActivityOnCollaborationSubscription = (
+  collaborationID: string,
+  { includeChild, types }: { types?: ActivityEventType[]; includeChild?: boolean }
+) =>
   createUseSubscriptionToSubEntityHook<
     Array<ActivityLogOnCollaborationFragment>,
     ActivityCreatedSubscription,
     ActivityCreatedSubscriptionVariables
   >({
     subscriptionDocument: ActivityCreatedDocument,
-    getSubscriptionVariables: () => ({ input: { collaborationID, types } }),
+    getSubscriptionVariables: () => ({ input: { collaborationID, types, includeChild } }),
     updateSubEntity: (subEntity, { activityCreated }) => {
       if (!subEntity) {
         return;
@@ -38,9 +41,9 @@ interface ActivityOnCollaborationReturnType {
 
 const useActivityOnCollaboration = (
   collaborationID: string | undefined,
-  options: { types?: ActivityEventType[]; skipCondition?: boolean }
+  options: { types?: ActivityEventType[]; includeChild?: boolean; skipCondition?: boolean }
 ): ActivityOnCollaborationReturnType => {
-  const { types, skipCondition } = options;
+  const { types, skipCondition, includeChild = true } = options;
   const {
     data: activityLogData,
     loading,
@@ -58,7 +61,7 @@ const useActivityOnCollaboration = (
     fetchPolicy: 'cache-and-network',
   });
 
-  useActivityOnCollaborationSubscription(collaborationID!, types)(
+  useActivityOnCollaborationSubscription(collaborationID!, { types, includeChild })(
     activityLogData,
     data => data?.activityLogOnCollaboration,
     subscribeToMore,

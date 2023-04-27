@@ -35,6 +35,8 @@ export type Apm = {
 export type ActivityCreatedSubscriptionInput = {
   /** The collaboration on which to subscribe for new activity */
   collaborationID: Scalars['UUID'];
+  /** Include activities happened on child Collaborations. */
+  includeChild?: InputMaybe<Scalars['Boolean']>;
   /** Which activity types to include in the results. Returns all by default. */
   types?: InputMaybe<Array<ActivityEventType>>;
 };
@@ -762,6 +764,7 @@ export enum CalloutType {
   Canvas = 'CANVAS',
   Card = 'CARD',
   Comments = 'COMMENTS',
+  LinkCollection = 'LINK_COLLECTION',
 }
 
 export enum CalloutVisibility {
