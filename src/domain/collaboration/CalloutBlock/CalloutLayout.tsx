@@ -70,6 +70,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   calloutUri: string;
   onExpand?: () => void;
   onClose?: () => void;
+  skipReferences?: boolean;
 }
 
 const CalloutLayout = ({
@@ -90,6 +91,7 @@ const CalloutLayout = ({
   expanded = false,
   onExpand,
   onClose,
+  skipReferences,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -205,7 +207,7 @@ const CalloutLayout = ({
         <Box sx={{ wordWrap: 'break-word' }}>
           <WrapperMarkdown>{callout.profile.description ?? ''}</WrapperMarkdown>
         </Box>
-        <References compact references={callout.profile.references} />
+        {!skipReferences && <References compact references={callout.profile.references} />}
         {callout.profile.tagset?.tags && callout.profile.tagset?.tags.length > 0 ? (
           <TagsComponent tags={callout.profile.tagset?.tags} />
         ) : undefined}

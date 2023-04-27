@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { Reference } from '../../../common/profile/Profile';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
@@ -7,10 +7,13 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { ReferenceIcon } from './icons/ReferenceIcon';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
+import EditIcon from '@mui/icons-material/Edit';
 
 export interface ReferenceViewProps {
   reference: Reference;
   icon?: RoundedIconProps['component'];
+  canEdit?: boolean;
+  onClickEdit?: () => void;
 }
 
 const REFERENCE_DESCRIPTION_MAX_LENGTH = 80; // characters
@@ -41,7 +44,7 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
   return formattedDescription;
 };
 
-const ReferenceView: FC<ReferenceViewProps> = ({ reference }) => {
+const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit }) => {
   return (
     <BadgeCardView
       component={RouterLink}
@@ -57,6 +60,11 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference }) => {
         <BlockSectionTitle>{reference.name}</BlockSectionTitle>
       </Tooltip>
       <ReferenceDescription>{reference.description}</ReferenceDescription>
+      {canEdit && (
+        <IconButton onClick={onClickEdit}>
+          <EditIcon />
+        </IconButton>
+      )}
     </BadgeCardView>
   );
 };
