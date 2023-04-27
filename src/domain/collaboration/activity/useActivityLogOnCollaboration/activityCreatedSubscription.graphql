@@ -12,6 +12,9 @@ fragment ActivityLogOnCollaboration on ActivityLogEntry {
   createdDate
   description
   type
+  child
+  parentNameID
+  parentDisplayName
   __typename
   triggeredBy {
     id
