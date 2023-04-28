@@ -33,7 +33,11 @@ interface ControlsButtonProps extends IconButtonProps {
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
 }
 
+/*
+Tabs component used without real Tabs, because MUI Tabs component has a very useful variant="scrollable"
+that adds buttons on the sides of the toolbar when the buttons don't fit in a single row */
 const Toolbar = styled(Tabs)(() => ({
+  /* Hide scroller buttons when they are disabled. Material puts opacity: 0 and toolbar looks ugly. Better hidden */
   '.MuiTabScrollButton-root.Mui-disabled': {
     display: 'none',
   },
