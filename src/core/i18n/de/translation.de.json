@@ -18,9 +18,7 @@
     "nl": "Dutch",
     "es": "Spanish",
     "bg": "Bulgarian",
-    "ua": "Ukranian",
-    "de": "German",
-    "fr": "French"
+    "ua": "Ukranian"
   },
   "fields": {
     "displayName": "Title",
