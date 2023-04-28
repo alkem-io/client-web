@@ -12,7 +12,8 @@ import {
   Title,
   Undo,
 } from '@mui/icons-material';
-import { Box, Collapse, IconButton, IconButtonProps } from '@mui/material';
+import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { gutters } from '../../grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
@@ -31,6 +32,12 @@ interface ControlsButtonProps extends IconButtonProps {
   command: (commandsChain: ChainedCommands) => ChainedCommands;
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
 }
+
+const Toolbar = styled(Tabs)(() => ({
+  '.MuiTabScrollButton-root.Mui-disabled': {
+    display: 'none',
+  },
+}));
 
 const ControlsButton = ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
   const isActiveArgs = specs && ((typeof specs === 'string' ? [specs] : specs) as Parameters<Editor['isActive']>);
@@ -66,7 +73,7 @@ const MarkdownInputControls = forwardRef<HTMLDivElement | null, MarkdownInputCon
 
     return (
       <Collapse in={isVisible} ref={ref}>
-        <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} paddingX={0.5}>
+        <Toolbar variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
           <ControlsButton editor={editor} command={e => e.undo()}>
             <Undo />
           </ControlsButton>
@@ -118,7 +125,7 @@ const MarkdownInputControls = forwardRef<HTMLDivElement | null, MarkdownInputCon
           <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-        </Box>
+        </Toolbar>
       </Collapse>
     );
   }
