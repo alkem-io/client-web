@@ -11,6 +11,8 @@ interface ReferencesProps {
   noItemsView?: ReactNode;
   icon?: ReferenceViewProps['icon'];
   compact?: boolean;
+  canEdit?: boolean;
+  onEdit?: (reference: Reference) => void;
 }
 
 const CompactView = styled(Box)(({ theme }) => ({
@@ -24,7 +26,7 @@ const CompactView = styled(Box)(({ theme }) => ({
   },
 }));
 
-const References: FC<ReferencesProps> = ({ references, noItemsView, icon, compact }) => {
+const References: FC<ReferencesProps> = ({ references, canEdit, onEdit, noItemsView, icon, compact }) => {
   if (compact) {
     if (references && references.length > 0) {
       return (
@@ -44,7 +46,15 @@ const References: FC<ReferencesProps> = ({ references, noItemsView, icon, compac
       <Box display="flex" flexDirection="column" gap={gutters()}>
         {!references
           ? null
-          : references.map(reference => <ReferenceView key={reference.id} reference={reference} icon={icon} />)}
+          : references.map(reference => (
+              <ReferenceView
+                key={reference.id}
+                reference={reference}
+                icon={icon}
+                canEdit={canEdit}
+                onClickEdit={() => onEdit?.(reference)}
+              />
+            ))}
         {references && !references.length && noItemsView}
       </Box>
     );

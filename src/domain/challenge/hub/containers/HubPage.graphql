@@ -4,21 +4,12 @@ query hubPage($hubId: UUID_NAMEID!) {
   }
 }
 
-query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
+query HubDashboardReferences($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     profile {
       id
       references {
-        id
-        name
-        uri
-        description
-      }
-    }
-    context {
-      id
-      recommendations {
         id
         name
         uri

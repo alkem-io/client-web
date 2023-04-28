@@ -25,6 +25,7 @@ import FormikSelect from '../../../common/components/composite/forms/FormikSelec
 import { CalloutsGroup } from './CalloutsInContext/CalloutsGroup';
 import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
+import { Caption } from '../../../core/ui/typography';
 
 type FormValueType = {
   displayName: string;
@@ -139,9 +140,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator.concat(uniqueNameValidator),
-    description: MarkdownValidator(MID_TEXT_LENGTH)
-      .required(t('common.field-required'))
-      .min(3, ({ min }) => t('common.field-min-length', { min })),
+    description: MarkdownValidator(MID_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),
     postTemplateData: yup.object().when('type', {
@@ -187,6 +186,17 @@ const CalloutForm: FC<CalloutFormProps> = ({
     return [];
   }, [editMode]);
 
+  // Enable or disable form fields depending on the callout type and other conditions
+  const formConfiguration = {
+    references: calloutType !== CalloutType.LinkCollection,
+    linkCollectionAdd: calloutType === CalloutType.LinkCollection,
+    tags: true,
+    postTemplate: calloutType === CalloutType.Card,
+    whiteboardTemplate: calloutType === CalloutType.Canvas,
+    newResponses: calloutType !== CalloutType.LinkCollection,
+    groupChange: editMode && Boolean(canChangeCalloutGroup),
+  };
+
   return (
     <Formik
       initialValues={initialValues}
@@ -207,7 +217,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               maxLength={MID_TEXT_LENGTH}
               withCounter
             />
-            {editMode && (
+            {editMode && formConfiguration.references && (
               <ProfileReferenceSegment
                 compactMode
                 references={formikState.values.references}
@@ -215,18 +225,23 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 marginTop={gutters(-1)}
               />
             )}
-            {!editMode && (
+            {!editMode && formConfiguration.references && (
               <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
             )}
-            <TagsetSegment
-              tagsets={tagsets}
-              title={t('common.tags')}
-              helpText={t('components.aspect-creation.info-step.tags-help-text')}
-            />
-            {calloutType === CalloutType.Card && <PostTemplatesChooser name="postTemplateData" />}
-            {calloutType === CalloutType.Canvas && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
-            <FormikSwitch name="opened" title={t('callout.state-permission')} />
-            {editMode && canChangeCalloutGroup && (
+            {formConfiguration.tags && (
+              <TagsetSegment
+                tagsets={tagsets}
+                title={t('common.tags')}
+                helpText={t('components.aspect-creation.info-step.tags-help-text')}
+              />
+            )}
+            {!editMode && formConfiguration.linkCollectionAdd && (
+              <Caption>{t('callout.link-collection.save-to-add')}</Caption>
+            )}
+            {formConfiguration.postTemplate && <PostTemplatesChooser name="postTemplateData" />}
+            {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardTemplateData" />}
+            {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
+            {formConfiguration.groupChange && (
               <FormControlLabel
                 sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"

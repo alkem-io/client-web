@@ -4,7 +4,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import { useHub } from '../../hub/HubContext/useHub';
 import { useChallenge } from '../hooks/useChallenge';
 import {
-  useChallengeDashboardReferencesAndRecommendationsQuery,
+  useChallengeDashboardReferencesQuery,
   useChallengePageQuery,
   usePlatformLevelAuthorizationQuery,
   useSendMessageToCommunityLeadsMutation,
@@ -44,7 +44,6 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   references: Reference[] | undefined;
-  recommendations: Reference[] | undefined;
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   permissions: {
@@ -109,7 +108,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     AuthorizationPrivilege.Read
   );
 
-  const { data: referenceData } = useChallengeDashboardReferencesAndRecommendationsQuery({
+  const { data: referenceData } = useChallengeDashboardReferencesQuery({
     variables: {
       hubId: hubNameId,
       challengeId: challengeNameId,
@@ -132,7 +131,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community, { memberUsersCount });
 
   const references = referenceData?.hub?.challenge?.profile.references;
-  const recommendations = referenceData?.hub?.challenge?.context?.recommendations;
 
   const topCallouts = _challenge?.hub.challenge.collaboration?.callouts?.slice(0, 3);
 
@@ -170,7 +168,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           permissions,
           isAuthenticated,
           references,
-          recommendations,
           isMember: user?.ofChallenge(challengeId) || false,
           ...contributors,
           activities,

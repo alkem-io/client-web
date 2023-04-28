@@ -3,12 +3,6 @@ fragment ContextDetails on Context {
   vision
   impact
   who
-  recommendations {
-    id
-    name
-    uri
-    description
-  }
   authorization {
     id
     myPrivileges
