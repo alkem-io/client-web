@@ -51,6 +51,7 @@ const editorSettings: Partial<EditorOptions> = {
 export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
   ({ value, onChange, maxLength, controlsVisible = 'focused', onFocus, onBlur }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const toolbarRef = useRef<HTMLDivElement>(null);
 
     const [hasFocus, setHasFocus] = useState(false);
     const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
@@ -98,11 +99,15 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     };
 
     const getLabelOffset = () => {
-      const guttersY = areControlsVisible() ? 3 : 1;
+      const offsetY = areControlsVisible()
+        ? toolbarRef.current
+          ? `${toolbarRef.current.clientHeight + 20}px`
+          : gutters(3)(theme)
+        : gutters(1)(theme);
 
       return {
         x: gutters()(theme),
-        y: gutters(guttersY)(theme),
+        y: offsetY,
       };
     };
 
@@ -241,6 +246,7 @@ export const MarkdownInput = forwardRef<MarkdownInputRefApi, MarkdownInputProps>
     return (
       <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
         <MarkdownInputControls
+          ref={toolbarRef}
           editor={editor}
           visible={areControlsVisible()}
           onDialogOpen={() => setIsControlsDialogOpen(true)}

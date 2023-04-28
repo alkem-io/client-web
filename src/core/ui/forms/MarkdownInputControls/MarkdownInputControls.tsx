@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react';
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -50,69 +50,78 @@ const ControlsButton = ({ editor, command, specs, ...buttonProps }: ControlsButt
 
 const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
 
-const MarkdownInputControls = ({
-  editor,
-  visible = false,
-  onDialogOpen,
-  onDialogClose,
-}: MarkdownInputControlsProps) => {
-  const [isVisible, setIsVisible] = useState(visible);
+const MarkdownInputControls = forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
+  ({ editor, visible = false, onDialogOpen, onDialogClose }, ref) => {
+    const [isVisible, setIsVisible] = useState(visible);
 
-  useEffect(() => {
-    if (visible) {
-      setTimeout(() => {
-        setIsVisible(() => visible);
-      }, CONTROLS_SHOW_DELAY_MS);
-    } else {
-      setIsVisible(false);
-    }
-  }, [visible]);
+    useEffect(() => {
+      if (visible) {
+        setTimeout(() => {
+          setIsVisible(() => visible);
+        }, CONTROLS_SHOW_DELAY_MS);
+      } else {
+        setIsVisible(false);
+      }
+    }, [visible]);
 
-  return (
-    <Collapse in={isVisible}>
-      <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} paddingX={0.5}>
-        <ControlsButton editor={editor} command={e => e.undo()}>
-          <Undo />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.redo()}>
-          <Redo />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleBold()} specs="bold">
-          <FormatBold />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
-          <FormatItalic />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleHeading({ level: 1 })} specs={['heading', { level: 1 }]}>
-          <Title fontSize="large" />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleHeading({ level: 2 })} specs={['heading', { level: 2 }]}>
-          <Title />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleHeading({ level: 3 })} specs={['heading', { level: 3 }]}>
-          <Title fontSize="small" />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleBulletList()} specs="bulletList">
-          <FormatListBulleted />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleOrderedList()} specs="orderedList">
-          <FormatListNumbered />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
-          <FormatQuoteOutlined />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
-          <Code />
-        </ControlsButton>
-        <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
-          <HorizontalRuleOutlined />
-        </ControlsButton>
-        <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-        <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-        <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-      </Box>
-    </Collapse>
-  );
-};
+    return (
+      <Collapse in={isVisible} ref={ref}>
+        <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} paddingX={0.5}>
+          <ControlsButton editor={editor} command={e => e.undo()}>
+            <Undo />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.redo()}>
+            <Redo />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.toggleBold()} specs="bold">
+            <FormatBold />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
+            <FormatItalic />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleHeading({ level: 1 })}
+            specs={['heading', { level: 1 }]}
+          >
+            <Title fontSize="large" />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleHeading({ level: 2 })}
+            specs={['heading', { level: 2 }]}
+          >
+            <Title />
+          </ControlsButton>
+          <ControlsButton
+            editor={editor}
+            command={e => e.toggleHeading({ level: 3 })}
+            specs={['heading', { level: 3 }]}
+          >
+            <Title fontSize="small" />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.toggleBulletList()} specs="bulletList">
+            <FormatListBulleted />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.toggleOrderedList()} specs="orderedList">
+            <FormatListNumbered />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
+            <FormatQuoteOutlined />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
+            <Code />
+          </ControlsButton>
+          <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
+            <HorizontalRuleOutlined />
+          </ControlsButton>
+          <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+          <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+          <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+        </Box>
+      </Collapse>
+    );
+  }
+);
 
 export default MarkdownInputControls;
