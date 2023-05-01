@@ -2,7 +2,6 @@ import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { RouterLink } from '../../../common/components/core/RouterLink';
 import { useSearchQuery } from '../../../core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
@@ -15,7 +14,6 @@ import {
   SearchResultType,
   SearchResultUserFragment,
 } from '../../../core/apollo/generated/graphql-schema';
-import { AUTH_LOGIN_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { useUserContext } from '../../community/contributor/user';
 import { SEARCH_TERMS_PARAM } from '../routes/constants';
@@ -25,6 +23,7 @@ import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import GridItem from '../../../core/ui/grid/GridItem';
 import SearchSuggestions from './SearchSuggestions';
+import { buildLoginUrl } from '../../../common/utils/urlBuilders';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -157,9 +156,7 @@ const SearchView = ({
       <PageContentColumn columns={12}>
         {!isAuthenticated && (
           <Box display="flex" justifyContent="center" paddingBottom={2}>
-            <Link component={RouterLink} to={AUTH_LOGIN_PATH}>
-              {t('pages.search.user-not-logged')}
-            </Link>
+            <Link href={buildLoginUrl()}>{t('pages.search.user-not-logged')}</Link>
           </Box>
         )}
         <SearchResultSection

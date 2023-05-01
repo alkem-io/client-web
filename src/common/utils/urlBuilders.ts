@@ -1,4 +1,4 @@
-import { AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
+import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import {
   CoreEntityIdTypes,
@@ -7,6 +7,7 @@ import {
   isHubId,
 } from '../../domain/shared/types/CoreEntityIds';
 import { JourneyTypeName } from '../../domain/challenge/JourneyTypeName';
+import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
 
@@ -37,8 +38,13 @@ export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
   `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
+export const buildReturnUrlParam = (returnUrl = ROUTE_HOME) => {
+  const fullReturnUrl = `${window.location.origin}${returnUrl}`;
+  return `?returnUrl=${encodeURI(fullReturnUrl)}`;
+};
+
 export const buildLoginUrl = (returnUrl?: string) => {
-  return returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
+  return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
 };
 
 export const buildHubApplyUrl = (hubNameId: string) => `${buildHubUrl(hubNameId)}/apply`;

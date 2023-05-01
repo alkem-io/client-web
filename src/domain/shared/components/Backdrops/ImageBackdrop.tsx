@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { BackdropProps } from './BackdropWithMessage';
 import {
-  AUTH_LOGIN_PATH,
+  _AUTH_LOGIN_PATH,
   AUTH_SIGN_UP_PATH,
 } from '../../../../core/auth/authentication/constants/authentication.constants';
 import Image from '../Image';
@@ -77,7 +77,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
               })}
             </Typography>
             <ButtonsWrapper>
-              <Button variant={'contained'} onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })}>
+              <Button variant={'contained'} onClick={() => navigate(_AUTH_LOGIN_PATH, { replace: true })}>
                 {t('authentication.sign-in')}
               </Button>
               <Button variant={'contained'} onClick={() => navigate(AUTH_SIGN_UP_PATH, { replace: true })}>

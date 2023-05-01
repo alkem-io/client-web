@@ -2,15 +2,15 @@ import React, { forwardRef, PropsWithChildren } from 'react';
 import { Box, Button, Paper } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
-  AUTH_LOGIN_PATH,
+  _AUTH_LOGIN_PATH,
   AUTH_SIGN_UP_PATH,
 } from '../../../../core/auth/authentication/constants/authentication.constants';
-import { RouterLink } from '../../../../common/components/core/RouterLink';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import GridItem from '../../../../core/ui/grid/GridItem';
+import IdentityRouteLink from '../../../../core/auth/components/IdentityRouteLink';
 
 interface AnonymousUserHomeBlockProps {
   imageUri: string;
@@ -41,18 +41,17 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
         <PageContentBlockHeader title={t('pages.home.sections.welcome.existing-user.header')} />
         <Caption>{t('pages.home.sections.welcome.existing-user.subheader')}</Caption>
         <Actions>
-          <Button
+          <IdentityRouteLink
             color="primary"
             variant="contained"
             aria-label="Sign in"
-            component={RouterLink}
-            to={AUTH_LOGIN_PATH}
+            to={_AUTH_LOGIN_PATH}
             sx={{
               marginRight: theme => theme.spacing(1),
             }}
           >
             {t('authentication.sign-in')}
-          </Button>
+          </IdentityRouteLink>
           <Button href={t('pages.home.sections.welcome.existing-user.more-info-url')} target="_blank">
             {t('pages.home.sections.welcome.existing-user.more-info')}
           </Button>
@@ -62,18 +61,17 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
         <PageContentBlockHeader title={t('pages.home.sections.welcome.new-to-alkemio.header')} />
         <Caption>{t('pages.home.sections.welcome.new-to-alkemio.subheader')}</Caption>
         <Actions>
-          <Button
+          <IdentityRouteLink
             color="primary"
             variant="contained"
             aria-label="Sign up"
-            component={RouterLink}
             to={AUTH_SIGN_UP_PATH}
             sx={{
               marginRight: theme => theme.spacing(1),
             }}
           >
             {t('authentication.sign-up')}
-          </Button>
+          </IdentityRouteLink>
           <Button href={t('pages.home.sections.welcome.new-to-alkemio.more-info-url')} target="_blank">
             {t('pages.home.sections.welcome.new-to-alkemio.more-info')}
           </Button>
