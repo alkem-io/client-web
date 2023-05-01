@@ -4,6 +4,8 @@ import translationEs from './es/translation.es.json';
 import translationNl from './nl/translation.nl.json';
 import translationBg from './bg/translation.bg.json';
 import translationUa from './ua/translation.ua.json';
+import translationDe from './de/translation.de.json';
+import translationFr from './fr/translation.fr.json';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -23,11 +25,17 @@ export const resources = {
   ua: {
     translation: translationUa,
   },
+  de: {
+    translation: translationDe,
+  },
+  fr: {
+    translation: translationFr,
+  },
 } as const;
 
 type Language = keyof typeof resources;
 
-export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua'];
+export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua', 'de', 'fr'];
 
 i18n
   .use(initReactI18next)
