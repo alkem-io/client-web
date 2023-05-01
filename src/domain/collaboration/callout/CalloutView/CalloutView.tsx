@@ -5,6 +5,7 @@ import CanvasCallout from '../canvas/CanvasCallout';
 import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
+import LinkCollectionCallout from '../links/LinkCollectionCallout';
 
 export interface CalloutsViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCallout;
@@ -38,6 +39,8 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutsViewProps>(
         return (
           <CommentsCallout ref={ref} callout={callout} isSubscribedToComments={isSubscribedToComments} {...props} />
         );
+      case CalloutType.LinkCollection:
+        return <LinkCollectionCallout ref={ref} callout={callout} {...props} />;
       default:
         throw new Error(`Unexpected Callout type "${callout['type']}"`);
     }

@@ -1,7 +1,6 @@
 import { Grid, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createContextInput, updateContextInput } from '../../../../../../common/utils/buildContext';
 import FormMode from '../../../components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../../common/components/composite/forms/ProfileForm';
 import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
@@ -66,7 +65,6 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput({ ...values }),
               profileData: {
                 displayName,
                 location: formatDatabaseLocation(values.location),
@@ -83,7 +81,6 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput({ ...values }),
               ID: opportunityId,
               profileData: {
                 displayName,
@@ -115,7 +112,6 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         nameID={opportunity?.nameID}
         journeyType="opportunity"
         tagset={opportunity?.profile.tagset}
-        context={opportunity?.context}
         profile={opportunity?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

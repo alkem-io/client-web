@@ -9,7 +9,6 @@ import {
 
 interface ContextObject {
   impact?: string;
-  recommendations?: Reference[];
   vision?: string;
   who?: string;
 }
@@ -25,11 +24,10 @@ export const createContextInput = (obj: ContextObject): CreateContextInput => {
 };
 
 export const updateContextInput = (obj: ContextObject): UpdateContextInput => {
-  const { impact, vision, who, recommendations = [] } = obj;
+  const { impact, vision, who } = obj;
 
   return {
     impact: impact,
-    recommendations: recommendations.map(toUpdateReferenceInput),
     vision: vision,
     who: who,
   };

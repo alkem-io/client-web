@@ -71,7 +71,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
-  recommendations: Reference[] | undefined;
   activities: ActivityLogResultType[] | undefined;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
@@ -144,11 +143,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     skipCondition: !permissions.opportunityReadAccess || !permissions.readUsers,
   });
 
-  const { context, profile, collaboration, metrics = [] } = opportunity ?? {};
+  const { profile, collaboration, metrics = [] } = opportunity ?? {};
   const relations = useMemo(() => collaboration?.relations ?? [], [collaboration?.relations]);
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { recommendations } = context ?? {};
   const { references } = profile ?? {};
   const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
@@ -228,7 +226,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           canvases,
           canvasesCount,
           references,
-          recommendations,
           ...contributors,
           activities,
           topCallouts,
