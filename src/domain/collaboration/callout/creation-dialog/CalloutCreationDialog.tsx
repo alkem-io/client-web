@@ -204,7 +204,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               loading={isCreating}
               loadingIndicator={`${t('buttons.save-draft')}...`}
               onClick={handleSaveAsDraftCallout}
-              variant="contained"
+              variant="outlined"
               disabled={!isValid}
             >
               {t('buttons.save-draft')}

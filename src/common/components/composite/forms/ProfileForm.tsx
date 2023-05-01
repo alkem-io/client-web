@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import { Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
@@ -15,7 +15,6 @@ import { LocationSegment } from '../../../../domain/common/location/LocationSegm
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
-import RecommendationsSegment from '../../../../domain/platform/admin/components/Common/RecommendationsSegment';
 
 export interface ProfileFormValues {
   name: string;
@@ -23,12 +22,10 @@ export interface ProfileFormValues {
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
-  recommendations: Reference[];
   tagsets: Tagset[];
 }
 
-interface Props {
-  context?: Context;
+interface ProfileFormProps {
   profile?: Profile;
   journeyType: JourneyTypeName;
   name?: string;
@@ -40,8 +37,7 @@ interface Props {
   isEdit: boolean;
 }
 
-const ProfileForm: FC<Props> = ({
-  context,
+const ProfileForm: FC<ProfileFormProps> = ({
   profile,
   journeyType,
   name,
@@ -70,7 +66,6 @@ const ProfileForm: FC<Props> = ({
     tagline: profile?.tagline || '',
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references || [],
-    recommendations: context?.recommendations || [],
     tagsets,
   };
 
@@ -79,7 +74,6 @@ const ProfileForm: FC<Props> = ({
     nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
-    recommendations: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
 
@@ -94,7 +88,7 @@ const ProfileForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references, recommendations }, handleSubmit }) => {
+      {({ values: { references }, handleSubmit }) => {
         // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
@@ -118,7 +112,6 @@ const ProfileForm: FC<Props> = ({
             </Grid>
             <TagsetSegment tagsets={tagsets} />
             <ContextReferenceSegment references={references || []} profileId={profile?.id} />
-            <RecommendationsSegment recommendations={recommendations || []} />
           </>
         );
       }}

@@ -13,9 +13,10 @@ import SectionSpacer from '../../../../../domain/shared/components/Section/Secti
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
+  referenceID: string;
 }
 
-const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
+const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID }) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { storage, platform } = useConfig();
@@ -31,7 +32,7 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
   const [uploadFile, { loading }] = useUploadFileMutation({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
-      onUpload?.(data.uploadFile);
+      onUpload?.(data.uploadFileOnReference.uri);
     },
   });
 
@@ -42,7 +43,14 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload }) => {
       notify(t('components.file-upload.file-size-error', { limit: MB_LIMIT }), 'error');
       return;
     }
-    await uploadFile({ variables: { file: selectedFile } });
+    await uploadFile({
+      variables: {
+        file: selectedFile,
+        uploadData: {
+          referenceID,
+        },
+      },
+    });
     handleClose();
   };
 

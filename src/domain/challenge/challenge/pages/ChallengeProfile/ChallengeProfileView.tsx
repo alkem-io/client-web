@@ -11,7 +11,6 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNavigateToEdit } from '../../../../../core/routing/useNavigateToEdit';
-import { updateContextInput } from '../../../../../common/utils/buildContext';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
@@ -19,11 +18,11 @@ import ProfileForm, { ProfileFormValues } from '../../../../../common/components
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
-interface Props {
+interface ChallengeProfileViewProps {
   mode: FormMode;
 }
 
-const ChallengeProfileView: FC<Props> = ({ mode }) => {
+const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
@@ -94,7 +93,6 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
                   uri: reference.uri,
                 })),
               },
-              context: updateContextInput({ ...values }),
             },
           },
         });
@@ -113,7 +111,6 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         nameID={challenge?.nameID}
         journeyType="challenge"
         tagset={challenge?.profile.tagset}
-        context={challenge?.context}
         profile={challenge?.profile}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

@@ -12,29 +12,38 @@ export type ActivityCreatedSubscriptionResultFieldPolicy = {
   activity?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryKeySpecifier = (
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryKeySpecifier
 )[];
 export type ActivityLogEntryFieldPolicy = {
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryCalloutCanvasCreatedKeySpecifier = (
   | 'callout'
   | 'canvas'
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutCanvasCreatedKeySpecifier
@@ -42,20 +51,26 @@ export type ActivityLogEntryCalloutCanvasCreatedKeySpecifier = (
 export type ActivityLogEntryCalloutCanvasCreatedFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   canvas?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryCalloutCardCommentKeySpecifier = (
   | 'callout'
   | 'card'
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutCardCommentKeySpecifier
@@ -63,20 +78,26 @@ export type ActivityLogEntryCalloutCardCommentKeySpecifier = (
 export type ActivityLogEntryCalloutCardCommentFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   card?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryCalloutCardCreatedKeySpecifier = (
   | 'callout'
   | 'card'
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutCardCreatedKeySpecifier
@@ -84,129 +105,168 @@ export type ActivityLogEntryCalloutCardCreatedKeySpecifier = (
 export type ActivityLogEntryCalloutCardCreatedFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   card?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryCalloutDiscussionCommentKeySpecifier = (
   | 'callout'
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutDiscussionCommentKeySpecifier
 )[];
 export type ActivityLogEntryCalloutDiscussionCommentFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryCalloutPublishedKeySpecifier = (
   | 'callout'
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryCalloutPublishedKeySpecifier
 )[];
 export type ActivityLogEntryCalloutPublishedFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryChallengeCreatedKeySpecifier = (
   | 'challenge'
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryChallengeCreatedKeySpecifier
 )[];
 export type ActivityLogEntryChallengeCreatedFieldPolicy = {
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryMemberJoinedKeySpecifier = (
+  | 'child'
   | 'collaborationID'
   | 'community'
   | 'communityType'
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | 'user'
   | ActivityLogEntryMemberJoinedKeySpecifier
 )[];
 export type ActivityLogEntryMemberJoinedFieldPolicy = {
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   communityType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryOpportunityCreatedKeySpecifier = (
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
   | 'opportunity'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | ActivityLogEntryOpportunityCreatedKeySpecifier
 )[];
 export type ActivityLogEntryOpportunityCreatedFieldPolicy = {
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityLogEntryUpdateSentKeySpecifier = (
+  | 'child'
   | 'collaborationID'
   | 'createdDate'
   | 'description'
   | 'id'
   | 'message'
+  | 'parentDisplayName'
+  | 'parentNameID'
   | 'triggeredBy'
   | 'type'
   | 'updates'
   | ActivityLogEntryUpdateSentKeySpecifier
 )[];
 export type ActivityLogEntryUpdateSentFieldPolicy = {
+  child?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -591,6 +651,7 @@ export type ChallengeKeySpecifier = (
   | 'opportunities'
   | 'preferences'
   | 'profile'
+  | 'storageBucket'
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
@@ -608,6 +669,7 @@ export type ChallengeFieldPolicy = {
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeCreatedKeySpecifier = ('challenge' | 'hubID' | ChallengeCreatedKeySpecifier)[];
 export type ChallengeCreatedFieldPolicy = {
@@ -810,7 +872,6 @@ export type ContextKeySpecifier = (
   | 'ecosystemModel'
   | 'id'
   | 'impact'
-  | 'recommendations'
   | 'vision'
   | 'who'
   | ContextKeySpecifier
@@ -820,7 +881,6 @@ export type ContextFieldPolicy = {
   ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
-  recommendations?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -895,6 +955,25 @@ export type DiscussionFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type DocumentKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'displayName'
+  | 'id'
+  | 'mimeType'
+  | 'size'
+  | 'tagset'
+  | DocumentKeySpecifier
+)[];
+export type DocumentFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
   | 'authorization'
@@ -963,7 +1042,6 @@ export type HubKeySpecifier = (
   | 'context'
   | 'group'
   | 'groups'
-  | 'groupsWithTag'
   | 'host'
   | 'id'
   | 'metrics'
@@ -974,6 +1052,7 @@ export type HubKeySpecifier = (
   | 'profile'
   | 'project'
   | 'projects'
+  | 'storageBucket'
   | 'templates'
   | 'timeline'
   | 'visibility'
@@ -990,7 +1069,6 @@ export type HubFieldPolicy = {
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
-  groupsWithTag?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1001,6 +1079,7 @@ export type HubFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1095,6 +1174,7 @@ export type LibraryKeySpecifier = (
   | 'id'
   | 'innovationPack'
   | 'innovationPacks'
+  | 'storageBucket'
   | LibraryKeySpecifier
 )[];
 export type LibraryFieldPolicy = {
@@ -1102,6 +1182,7 @@ export type LibraryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
   | 'id'
@@ -1213,7 +1294,7 @@ export type MutationKeySpecifier = (
   | 'deleteChallenge'
   | 'deleteCollaboration'
   | 'deleteDiscussion'
-  | 'deleteFile'
+  | 'deleteDocument'
   | 'deleteHub'
   | 'deleteInnovationFlowTemplate'
   | 'deleteInnovationPack'
@@ -1274,6 +1355,7 @@ export type MutationKeySpecifier = (
   | 'updateChallengeInnovationFlow'
   | 'updateCommunityApplicationForm'
   | 'updateDiscussion'
+  | 'updateDocument'
   | 'updateEcosystemModel'
   | 'updateHub'
   | 'updateHubVisibility'
@@ -1293,7 +1375,7 @@ export type MutationKeySpecifier = (
   | 'updateUserGroup'
   | 'updateVisual'
   | 'updateWhiteboardTemplate'
-  | 'uploadFile'
+  | 'uploadFileOnReference'
   | 'uploadImageOnVisual'
   | MutationKeySpecifier
 )[];
@@ -1359,7 +1441,7 @@ export type MutationFieldPolicy = {
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteFile?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1420,6 +1502,7 @@ export type MutationFieldPolicy = {
   updateChallengeInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1439,7 +1522,7 @@ export type MutationFieldPolicy = {
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  uploadFile?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
@@ -1507,6 +1590,7 @@ export type OrganizationKeySpecifier = (
   | 'owners'
   | 'preferences'
   | 'profile'
+  | 'storageBucket'
   | 'verification'
   | 'website'
   | OrganizationKeySpecifier
@@ -1527,6 +1611,7 @@ export type OrganizationFieldPolicy = {
   owners?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1576,12 +1661,20 @@ export type PaginatedUsersFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformKeySpecifier = ('authorization' | 'communication' | 'id' | 'library' | PlatformKeySpecifier)[];
+export type PlatformKeySpecifier = (
+  | 'authorization'
+  | 'communication'
+  | 'id'
+  | 'library'
+  | 'storageBucket'
+  | PlatformKeySpecifier
+)[];
 export type PlatformFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformLocationsKeySpecifier = (
   | 'about'
@@ -2050,6 +2143,25 @@ export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataK
 export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type StorageBucketKeySpecifier = (
+  | 'allowedMimeTypes'
+  | 'authorization'
+  | 'document'
+  | 'documents'
+  | 'id'
+  | 'maxFileSize'
+  | 'size'
+  | StorageBucketKeySpecifier
+)[];
+export type StorageBucketFieldPolicy = {
+  allowedMimeTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  document?: FieldPolicy<any> | FieldReadFunction<any>;
+  documents?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxFileSize?: FieldPolicy<any> | FieldReadFunction<any>;
+  size?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageConfigKeySpecifier = ('file' | StorageConfigKeySpecifier)[];
 export type StorageConfigFieldPolicy = {
@@ -2594,6 +2706,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
     fields?: DiscussionFieldPolicy;
   };
+  Document?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | DocumentKeySpecifier | (() => undefined | DocumentKeySpecifier);
+    fields?: DocumentFieldPolicy;
+  };
   EcosystemModel?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | EcosystemModelKeySpecifier | (() => undefined | EcosystemModelKeySpecifier);
     fields?: EcosystemModelFieldPolicy;
@@ -2851,6 +2967,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  StorageBucket?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | StorageBucketKeySpecifier | (() => undefined | StorageBucketKeySpecifier);
+    fields?: StorageBucketFieldPolicy;
   };
   StorageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageConfigKeySpecifier | (() => undefined | StorageConfigKeySpecifier);

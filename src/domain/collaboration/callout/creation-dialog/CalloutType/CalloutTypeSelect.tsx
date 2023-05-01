@@ -10,7 +10,7 @@ interface CalloutTypeSelectProps {
   value: CalloutType | undefined;
   disabled?: boolean;
 }
-const availableCalloutTypes = [CalloutType.Comments, CalloutType.Card, CalloutType.Canvas];
+const availableCalloutTypes = [CalloutType.Comments, CalloutType.LinkCollection, CalloutType.Card, CalloutType.Canvas];
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect,
   };
 
   return (
-    <RadioButtonGroup value={value} disabled={disabled} onChange={handleChange}>
+    <RadioButtonGroup value={value} disabled={disabled} onChange={handleChange} flexWrap="wrap" justifyContent="center">
       {availableCalloutTypes.map(calloutType => (
         <RadioButton key={calloutType} value={calloutType} iconComponent={calloutIcons[calloutType]}>
           {t(`components.calloutTypeSelect.label.${calloutType}` as const)}

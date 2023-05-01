@@ -18,9 +18,7 @@
     "nl": "Dutch",
     "es": "Spanish",
     "bg": "Bulgarian",
-    "ua": "Ukranian",
-    "de": "German",
-    "fr": "French"
+    "ua": "Ukranian"
   },
   "fields": {
     "displayName": "Title",
@@ -236,6 +234,8 @@
     "search": "Search...",
     "reference": "Reference",
     "references": "References",
+    "recommendation": "Recommendation",
+    "recommendations": "Recommendations",
     "notifications": "Notifications",
     "credentials": "Credentials",
     "my-profile": "My profile",
@@ -424,18 +424,6 @@
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
-    "link-collection": {
-      "add-link": "Add link to {{title}}",
-      "edit-link": "Edit {{title}}",
-      "add-another": "Add another link",
-      "delete-link": "Click here to delete this link",
-      "save-to-add": "Click ‘Save as draft’ or ‘Publish’ to start adding links.",
-      "click-to-see": "{{count}} links, click here to show all",
-      "no-links-yet": "There are no links yet, be the first to add one!",
-      "delete-confirm-title": "Delete this link?",
-      "delete-confirm": "Are you sure that you want to remove this link from {{title}}?",
-      "more-links": "{{count}} links, click here to show all"
-    },
     "callout-groups": {
       "HomeLeft": "Dashboard Left",
       "HomeRight": "Dashboard Right",
@@ -804,7 +792,7 @@
         "COMMENTS": "Post",
         "CARD": "Call for Posts",
         "CANVAS": "Call for Whiteboards",
-        "LINK_COLLECTION": "Collection of Links"
+        "LINK_COLLECTION": "Call for Whiteboards"
       }
     },
     "aspect-creation": {
@@ -918,7 +906,8 @@
       "missing-refereneces": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
-        "remove-reference": "Remove the reference"
+        "remove-reference": "Remove the reference",
+        "remove-recommendation": "Clear recommendation"
       },
       "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team.<br/> <terms>Click here</terms> for the terms and conditions."
     },
