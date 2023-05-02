@@ -23,14 +23,14 @@ interface ApplicationContainerState {
   loading: boolean;
 }
 
-interface ApplicationContainerProps
+export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   challengeId?: string;
   challengeNameId?: string;
   challengeName?: string;
 }
 
-export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
+export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
   challengeId,
   challengeNameId,
   challengeName,
