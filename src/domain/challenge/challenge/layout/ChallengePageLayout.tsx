@@ -1,9 +1,10 @@
+import React, { PropsWithChildren } from 'react';
 import { EntityPageLayout, EntityPageLayoutProps } from '../../common/EntityPageLayout';
 import ChallengePageBanner from './ChallengePageBanner';
 import ChallengeTabs from './ChallengeTabs';
-import React, { PropsWithChildren } from 'react';
 import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
+import { useChallenge } from '../hooks/useChallenge';
 
 export interface ChallengePageLayoutProps
   extends Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
@@ -14,6 +15,8 @@ const ChallengePageLayout = ({
   unauthorizedDialogDisabled = false,
   ...props
 }: PropsWithChildren<ChallengePageLayoutProps>) => {
+  const { challengeId, challengeNameId, profile } = useChallenge();
+
   return (
     <>
       <EntityPageLayout
@@ -26,6 +29,9 @@ const ChallengePageLayout = ({
         {({ vision, ...props }) => (
           <JourneyUnauthorizedDialog
             journeyTypeName="challenge"
+            challengeId={challengeId}
+            challengeNameId={challengeNameId}
+            challengeName={profile.displayName}
             description={vision}
             disabled={unauthorizedDialogDisabled}
             {...props}
