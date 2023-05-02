@@ -1,7 +1,7 @@
 {
   "notifications": {
     "release-updates": {
-      "text": "Er is een nieuwe versie van het platform!  <a href=\"https://alkemio.foundation/releases\">Klik hier</a> om meer te lezen over de laatste updates."
+      "text": "Er is een nieuwe versie van het platform! <clickhere>Klik hier</clickhere> om meer te lezen over de laatste updates."
     }
   },
   "cookie": {
@@ -1947,42 +1947,27 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": [
-          "Energie Transitie",
-          "Energietransitie"
-        ]
+        "tags": ["Energie Transitie", "Energietransitie"]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": [
-          "Inclusieve Samenleving",
-          "Inclusieve Samenleving"
-        ]
+        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
       },
       {
         "key": "publieke-diensten",
         "name": "Publieke Diensten",
-        "tags": [
-          "Publieke Diensten",
-          "Publieke Diensten"
-        ]
+        "tags": ["Publieke Diensten", "Publieke Diensten"]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": [
-          "Innovatie",
-          "Innovatie"
-        ]
+        "tags": ["Innovatie", "Innovatie"]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": [
-          "Digitalisering",
-          "Digitalisering"
-        ]
+        "tags": ["Digitalisering", "Digitalisering"]
       }
     ]
   },
