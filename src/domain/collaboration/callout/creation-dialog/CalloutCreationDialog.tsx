@@ -55,7 +55,7 @@ export interface CalloutCreationDialogProps {
   isCreating: boolean;
   calloutNames: string[];
   templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
-  group?: string;
+  group: string;
 }
 
 export interface TemplateProfile {

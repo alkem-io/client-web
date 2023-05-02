@@ -8,6 +8,10 @@ import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import JourneyDashboardView from '../../common/tabs/Dashboard/JourneyDashboardView';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -17,6 +21,14 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
   const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
+
+  const { hubNameId, opportunityNameId } = useUrlParams();
+
+  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } = useCallouts({
+    hubNameId,
+    opportunityNameId,
+    calloutGroups: [CalloutsGroup.HomeTop],
+  });
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -44,6 +56,21 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
               journeyTypeName="opportunity"
               topCallouts={entities.topCallouts}
               sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
+              recommendations={
+                groupedCallouts[CalloutsGroup.HomeTop] && (
+                  <CalloutsGroupView
+                    callouts={groupedCallouts[CalloutsGroup.HomeTop]}
+                    hubId={hubNameId!}
+                    canCreateCallout={false}
+                    loading={loading}
+                    entityTypeName="opportunity"
+                    sortOrder={calloutsSortOrder}
+                    calloutNames={calloutNames}
+                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    group={CalloutsGroup.HomeTop}
+                  />
+                )
+              }
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}

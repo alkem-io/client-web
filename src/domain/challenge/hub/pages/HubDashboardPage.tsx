@@ -35,7 +35,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
   const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
     useCallouts({
       hubNameId,
-      calloutGroups: [CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+      calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
     });
 
   return (
@@ -86,6 +86,21 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               )}
               journeyTypeName="hub"
               childEntityTitle={t('common.challenges')}
+              recommendations={
+                groupedCallouts[CalloutsGroup.HomeTop] && (
+                  <CalloutsGroupView
+                    callouts={groupedCallouts[CalloutsGroup.HomeTop]}
+                    hubId={hubNameId!}
+                    canCreateCallout={false}
+                    loading={loading}
+                    entityTypeName="hub"
+                    sortOrder={calloutsSortOrder}
+                    calloutNames={calloutNames}
+                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    group={CalloutsGroup.HomeTop}
+                  />
+                )
+              }
               childrenLeft={
                 <CalloutsGroupView
                   callouts={groupedCallouts[CalloutsGroup.HomeLeft]}
