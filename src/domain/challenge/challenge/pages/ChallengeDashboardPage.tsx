@@ -13,6 +13,10 @@ import { useTranslation } from 'react-i18next';
 import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -24,6 +28,14 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
   const { t } = useTranslation();
+
+  const { hubNameId, challengeNameId } = useUrlParams();
+
+  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } = useCallouts({
+    hubNameId,
+    challengeNameId,
+    calloutGroups: [CalloutsGroup.HomeTop],
+  });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -69,6 +81,23 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
               )}
               journeyTypeName="challenge"
               childEntityTitle={t('common.opportunities')}
+              recommendations={
+                groupedCallouts[CalloutsGroup.HomeTop] && (
+                  <CalloutsGroupView
+                    callouts={groupedCallouts[CalloutsGroup.HomeTop]}
+                    hubId={hubNameId!}
+                    canCreateCallout={false}
+                    loading={loading}
+                    entityTypeName="challenge"
+                    sortOrder={calloutsSortOrder}
+                    calloutNames={calloutNames}
+                    onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    group={CalloutsGroup.HomeTop}
+                    disableMarginal
+                    blockProps={{ sx: { minHeight: '100%' } }}
+                  />
+                )
+              }
             />
             <CommunityUpdatesDialog
               open={dialog === 'updates'}
