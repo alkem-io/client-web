@@ -4,7 +4,6 @@ import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useHub } from '../../HubContext/useHub';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container } from '@mui/material';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
@@ -35,7 +34,6 @@ export const HubProfile: FC = () => {
     updateHub({
       variables: {
         input: {
-          context: updateContextInput({ ...values }),
           profileData: {
             displayName,
             tagline,

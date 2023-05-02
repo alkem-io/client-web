@@ -192,6 +192,7 @@ export const DashboardContributingUserFragmentDoc = gql`
       id
       displayName
       location {
+        id
         city
         country
       }
@@ -276,12 +277,6 @@ export const ContextDetailsFragmentDoc = gql`
     vision
     impact
     who
-    recommendations {
-      id
-      name
-      uri
-      description
-    }
     authorization {
       id
       myPrivileges
@@ -960,12 +955,6 @@ export const OpportunityPageFragmentDoc = gql`
         anonymousReadAccess
         myPrivileges
       }
-      recommendations {
-        id
-        name
-        description
-        uri
-      }
     }
     community {
       ...EntityDashboardCommunity
@@ -1466,6 +1455,14 @@ export const PrivilegesOnCollaborationFragmentDoc = gql`
     }
   }
 `;
+export const ReferenceDetailsFragmentDoc = gql`
+  fragment ReferenceDetails on Reference {
+    id
+    name
+    uri
+    description
+  }
+`;
 export const CommentsWithMessagesFragmentDoc = gql`
   fragment CommentsWithMessages on Comments {
     id
@@ -1536,10 +1533,7 @@ export const CalloutFragmentDoc = gql`
         tags
       }
       references {
-        id
-        name
-        uri
-        description
+        ...ReferenceDetails
       }
     }
     state
@@ -1559,6 +1553,7 @@ export const CalloutFragmentDoc = gql`
     ...CalloutPostTemplate
     ...CalloutWhiteboardTemplate
   }
+  ${ReferenceDetailsFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
   ${CalloutPostTemplateFragmentDoc}
@@ -2802,14 +2797,6 @@ export const SearchResultOpportunityFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const ReferenceDetailsFragmentDoc = gql`
-  fragment ReferenceDetails on Reference {
-    id
-    name
-    uri
-    description
-  }
-`;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
     id
@@ -2871,8 +2858,11 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${CommentsWithMessagesFragmentDoc}
 `;
 export const UploadFileDocument = gql`
-  mutation UploadFile($file: Upload!) {
-    uploadFile(file: $file)
+  mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
+    uploadFileOnReference(uploadData: $uploadData, file: $file) {
+      id
+      uri
+    }
   }
 `;
 export type UploadFileMutationFn = Apollo.MutationFunction<
@@ -2894,6 +2884,7 @@ export type UploadFileMutationFn = Apollo.MutationFunction<
  * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
  *   variables: {
  *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
  *   },
  * });
  */
@@ -3837,8 +3828,8 @@ export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQu
   return { query: ChallengePageDocument, variables: variables };
 }
 
-export const ChallengeDashboardReferencesAndRecommendationsDocument = gql`
-  query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+export const ChallengeDashboardReferencesDocument = gql`
+  query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
@@ -3852,77 +3843,66 @@ export const ChallengeDashboardReferencesAndRecommendationsDocument = gql`
             description
           }
         }
-        context {
-          id
-          recommendations {
-            id
-            name
-            uri
-            description
-          }
-        }
       }
     }
   }
 `;
 
 /**
- * __useChallengeDashboardReferencesAndRecommendationsQuery__
+ * __useChallengeDashboardReferencesQuery__
  *
- * To run a query within a React component, call `useChallengeDashboardReferencesAndRecommendationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeDashboardReferencesAndRecommendationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useChallengeDashboardReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengeDashboardReferencesAndRecommendationsQuery({
+ * const { data, loading, error } = useChallengeDashboardReferencesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
  */
-export function useChallengeDashboardReferencesAndRecommendationsQuery(
+export function useChallengeDashboardReferencesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
-  >(ChallengeDashboardReferencesAndRecommendationsDocument, options);
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+  >(ChallengeDashboardReferencesDocument, options);
 }
 
-export function useChallengeDashboardReferencesAndRecommendationsLazyQuery(
+export function useChallengeDashboardReferencesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
-  >(ChallengeDashboardReferencesAndRecommendationsDocument, options);
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+  >(ChallengeDashboardReferencesDocument, options);
 }
 
-export type ChallengeDashboardReferencesAndRecommendationsQueryHookResult = ReturnType<
-  typeof useChallengeDashboardReferencesAndRecommendationsQuery
+export type ChallengeDashboardReferencesQueryHookResult = ReturnType<typeof useChallengeDashboardReferencesQuery>;
+export type ChallengeDashboardReferencesLazyQueryHookResult = ReturnType<
+  typeof useChallengeDashboardReferencesLazyQuery
 >;
-export type ChallengeDashboardReferencesAndRecommendationsLazyQueryHookResult = ReturnType<
-  typeof useChallengeDashboardReferencesAndRecommendationsLazyQuery
+export type ChallengeDashboardReferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeDashboardReferencesQuery,
+  SchemaTypes.ChallengeDashboardReferencesQueryVariables
 >;
-export type ChallengeDashboardReferencesAndRecommendationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQuery,
-  SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
->;
-export function refetchChallengeDashboardReferencesAndRecommendationsQuery(
-  variables: SchemaTypes.ChallengeDashboardReferencesAndRecommendationsQueryVariables
+export function refetchChallengeDashboardReferencesQuery(
+  variables: SchemaTypes.ChallengeDashboardReferencesQueryVariables
 ) {
-  return { query: ChallengeDashboardReferencesAndRecommendationsDocument, variables: variables };
+  return { query: ChallengeDashboardReferencesDocument, variables: variables };
 }
 
 export const CreateChallengeDocument = gql`
@@ -6031,8 +6011,8 @@ export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables
   return { query: HubPageDocument, variables: variables };
 }
 
-export const HubDashboardReferencesAndRecommendationsDocument = gql`
-  query HubDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!) {
+export const HubDashboardReferencesDocument = gql`
+  query HubDashboardReferences($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
       profile {
@@ -6044,75 +6024,60 @@ export const HubDashboardReferencesAndRecommendationsDocument = gql`
           description
         }
       }
-      context {
-        id
-        recommendations {
-          id
-          name
-          uri
-          description
-        }
-      }
     }
   }
 `;
 
 /**
- * __useHubDashboardReferencesAndRecommendationsQuery__
+ * __useHubDashboardReferencesQuery__
  *
- * To run a query within a React component, call `useHubDashboardReferencesAndRecommendationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubDashboardReferencesAndRecommendationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubDashboardReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHubDashboardReferencesAndRecommendationsQuery({
+ * const { data, loading, error } = useHubDashboardReferencesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useHubDashboardReferencesAndRecommendationsQuery(
+export function useHubDashboardReferencesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
+    SchemaTypes.HubDashboardReferencesQuery,
+    SchemaTypes.HubDashboardReferencesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
-  >(HubDashboardReferencesAndRecommendationsDocument, options);
+  return Apollo.useQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
+    HubDashboardReferencesDocument,
+    options
+  );
 }
 
-export function useHubDashboardReferencesAndRecommendationsLazyQuery(
+export function useHubDashboardReferencesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
+    SchemaTypes.HubDashboardReferencesQuery,
+    SchemaTypes.HubDashboardReferencesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
-    SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
-  >(HubDashboardReferencesAndRecommendationsDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
+    HubDashboardReferencesDocument,
+    options
+  );
 }
 
-export type HubDashboardReferencesAndRecommendationsQueryHookResult = ReturnType<
-  typeof useHubDashboardReferencesAndRecommendationsQuery
+export type HubDashboardReferencesQueryHookResult = ReturnType<typeof useHubDashboardReferencesQuery>;
+export type HubDashboardReferencesLazyQueryHookResult = ReturnType<typeof useHubDashboardReferencesLazyQuery>;
+export type HubDashboardReferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardReferencesQuery,
+  SchemaTypes.HubDashboardReferencesQueryVariables
 >;
-export type HubDashboardReferencesAndRecommendationsLazyQueryHookResult = ReturnType<
-  typeof useHubDashboardReferencesAndRecommendationsLazyQuery
->;
-export type HubDashboardReferencesAndRecommendationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubDashboardReferencesAndRecommendationsQuery,
-  SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
->;
-export function refetchHubDashboardReferencesAndRecommendationsQuery(
-  variables: SchemaTypes.HubDashboardReferencesAndRecommendationsQueryVariables
-) {
-  return { query: HubDashboardReferencesAndRecommendationsDocument, variables: variables };
+export function refetchHubDashboardReferencesQuery(variables: SchemaTypes.HubDashboardReferencesQueryVariables) {
+  return { query: HubDashboardReferencesDocument, variables: variables };
 }
 
 export const CreateHubDocument = gql`
@@ -10277,32 +10242,10 @@ export function refetchWhiteboardTemplateValueQuery(variables: SchemaTypes.White
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     createCalloutOnCollaboration(calloutData: $calloutData) {
-      id
-      nameID
-      type
-      profile {
-        id
-        displayName
-        description
-      }
-      state
-      visibility
-      authorization {
-        id
-        myPrivileges
-      }
-      canvases {
-        id
-      }
-      aspects {
-        id
-      }
-      comments {
-        ...CommentsWithMessages
-      }
+      ...Callout
     }
   }
-  ${CommentsWithMessagesFragmentDoc}
+  ${CalloutFragmentDoc}
 `;
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCalloutMutation,

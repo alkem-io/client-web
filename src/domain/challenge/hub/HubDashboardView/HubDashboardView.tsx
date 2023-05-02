@@ -15,7 +15,6 @@ import {
   JourneyLocation,
 } from '../../../../common/utils/urlBuilders';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { ActivityComponent, ActivityLogResultType } from '../../../shared/components/ActivityLog';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -27,7 +26,6 @@ import { CoreEntityIdTypes } from '../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import TopCalloutDetails from '../../../collaboration/callout/TopCallout/TopCalloutDetails';
-import { RecommendationIcon } from '../../../shared/components/References/icons/RecommendationIcon';
 import getChildJourneyRoute from '../../common/utils/getChildJourneyRoute';
 import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
@@ -61,7 +59,6 @@ interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partia
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
-  recommendations: Reference[] | undefined;
   leadOrganizations: (HubWelcomeBlockContributor & AssociatedOrganizationDetailsFragment)[] | undefined;
   leadUsers: (HubWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
   communityReadAccess: boolean;
@@ -104,7 +101,6 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
   communityId = '',
   childEntitiesCount,
   references,
-  recommendations,
   communityReadAccess = false,
   timelineReadAccess = false,
   entityReadAccess,
@@ -135,8 +131,6 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
 
   const showActivities = activities || activityLoading;
 
-  const validRecommendations = recommendations?.filter(rec => rec.uri) || [];
-  const hasRecommendations = validRecommendations.length > 0;
   const hasTopCallouts = (topCallouts ?? []).length > 0;
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
@@ -226,14 +220,8 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
         </PageContentColumn>
 
         <PageContentColumn columns={8}>
-          {hasRecommendations && (
-            <PageContentBlock halfWidth>
-              <PageContentBlockHeader title={t('pages.generic.sections.recommendations.title')} />
-              <References references={validRecommendations} icon={RecommendationIcon} />
-            </PageContentBlock>
-          )}
           {hasTopCallouts && (
-            <PageContentBlock halfWidth={hasRecommendations}>
+            <PageContentBlock>
               <PageContentBlockHeader title={t('components.top-callouts.title')} />
               {topCallouts?.map(callout => (
                 <TopCalloutDetails
@@ -252,7 +240,6 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
             {readUsersAccess && entityReadAccess && showActivities && (
               <>
                 <ActivityComponent activities={activities} journeyLocation={journeyLocation} />
-                <SeeMore subject={t('common.contributions')} to={EntityPageSection.Contribute} />
               </>
             )}
             {!entityReadAccess && readUsersAccess && (

@@ -158,10 +158,7 @@ fragment Callout on Callout {
       tags
     }
     references {
-      id
-      name
-      uri
-      description
+      ...ReferenceDetails
     }
   }
   state

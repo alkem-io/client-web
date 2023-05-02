@@ -60,7 +60,7 @@ fragment ChallengeProfile on Challenge {
   }
 }
 
-query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     challenge(ID: $challengeId) {
@@ -68,15 +68,6 @@ query ChallengeDashboardReferencesAndRecommendations($hubId: UUID_NAMEID!, $chal
       profile {
         id
         references {
-          id
-          name
-          uri
-          description
-        }
-      }
-      context {
-        id
-        recommendations {
           id
           name
           uri

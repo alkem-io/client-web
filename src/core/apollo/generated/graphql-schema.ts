@@ -35,6 +35,8 @@ export type Apm = {
 export type ActivityCreatedSubscriptionInput = {
   /** The collaboration on which to subscribe for new activity */
   collaborationID: Scalars['UUID'];
+  /** Include activities happened on child Collaborations. */
+  includeChild?: InputMaybe<Scalars['Boolean']>;
   /** Which activity types to include in the results. Returns all by default. */
   types?: InputMaybe<Array<ActivityEventType>>;
 };
@@ -778,6 +780,7 @@ export enum CalloutType {
   Canvas = 'CANVAS',
   Card = 'CARD',
   Comments = 'COMMENTS',
+  LinkCollection = 'LINK_COLLECTION',
 }
 
 export enum CalloutVisibility {
@@ -867,6 +870,8 @@ export type Challenge = {
   preferences: Array<Preference>;
   /** The Profile for the  Challenge. */
   profile: Profile;
+  /** The StorageBucket with documents in use by this Challenge */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type ChallengeOpportunitiesArgs = {
@@ -1210,8 +1215,6 @@ export type Context = {
   id: Scalars['UUID'];
   /** What is the potential impact? */
   impact?: Maybe<Scalars['Markdown']>;
-  /** The Recommendations for this Context. */
-  recommendations?: Maybe<Array<Reference>>;
   /** The goal that is being pursued */
   vision?: Maybe<Scalars['Markdown']>;
   /** Who should get involved in this challenge */
@@ -1596,9 +1599,8 @@ export type DeleteDiscussionInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteFileInput = {
-  /** IPFS Content Identifier (CID) of the file, e.g. Qmde6CnXDGGe7Dynz1pnxgNARtdVBme9YBwNbo4HJiRy2W */
-  CID: Scalars['CID'];
+export type DeleteDocumentInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteHubInput = {
@@ -1709,6 +1711,24 @@ export type DiscussionSendMessageInput = {
   message: Scalars['String'];
 };
 
+export type Document = {
+  __typename?: 'Document';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The user that created this Document */
+  createdBy?: Maybe<User>;
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Mime type for this Document. */
+  mimeType: MimeType;
+  /** Size of the Document. */
+  size: Scalars['Float'];
+  /** The tagset in use on this Document. */
+  tagset: Tagset;
+};
+
 export type EcosystemModel = {
   __typename?: 'EcosystemModel';
   /** A list of ActorGroups */
@@ -1810,8 +1830,6 @@ export type Hub = {
   group: UserGroup;
   /** The User Groups on this Hub */
   groups: Array<UserGroup>;
-  /** All groups on this Hub that have the provided tag */
-  groupsWithTag: Array<UserGroup>;
   /** The Hub host. */
   host?: Maybe<Organization>;
   /** The ID of the entity */
@@ -1832,6 +1850,8 @@ export type Hub = {
   project: Project;
   /** All projects within this hub */
   projects: Array<Project>;
+  /** The StorageBucket with documents in use by this Hub */
+  storageBucket?: Maybe<StorageBucket>;
   /** The templates in use by this Hub */
   templates?: Maybe<TemplatesSet>;
   /** The timeline with events in use by this Hub */
@@ -1860,10 +1880,6 @@ export type HubCommunityArgs = {
 
 export type HubGroupArgs = {
   ID: Scalars['UUID'];
-};
-
-export type HubGroupsWithTagArgs = {
-  tag: Scalars['String'];
 };
 
 export type HubOpportunitiesArgs = {
@@ -2008,6 +2024,8 @@ export type Library = {
   innovationPack?: Maybe<InnovatonPack>;
   /** Platform level library. */
   innovationPacks: Array<InnovatonPack>;
+  /** The StorageBucket with documents in use by this User */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type LibraryInnovationPackArgs = {
@@ -2062,6 +2080,18 @@ export type Metadata = {
   /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
 };
+
+export enum MimeType {
+  Bmp = 'BMP',
+  Gif = 'GIF',
+  Jpeg = 'JPEG',
+  Jpg = 'JPG',
+  Pdf = 'PDF',
+  Png = 'PNG',
+  Svg = 'SVG',
+  Webp = 'WEBP',
+  Xpng = 'XPNG',
+}
 
 export type MoveAspectInput = {
   /** ID of the Aspect to move. */
@@ -2194,8 +2224,8 @@ export type Mutation = {
   deleteCollaboration: Collaboration;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
-  /** Removes a file. */
-  deleteFile: Scalars['Boolean'];
+  /** Deletes the specified Document. */
+  deleteDocument: Document;
   /** Deletes the specified Hub. */
   deleteHub: Hub;
   /** Deletes the specified InnovationFlowTemplate. */
@@ -2316,6 +2346,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
+  /** Updates the specified Document. */
+  updateDocument: Document;
   /** Updates the specified EcosystemModel. */
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
@@ -2354,8 +2386,8 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified WhiteboardTemplate. */
   updateWhiteboardTemplate: WhiteboardTemplate;
-  /** Uploads a file. */
-  uploadFile: Scalars['String'];
+  /** Create a new Document on the Storage and return the value as part of the returned Reference. */
+  uploadFileOnReference: Reference;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
 };
@@ -2592,8 +2624,8 @@ export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
 };
 
-export type MutationDeleteFileArgs = {
-  deleteData: DeleteFileInput;
+export type MutationDeleteDocumentArgs = {
+  deleteData: DeleteDocumentInput;
 };
 
 export type MutationDeleteHubArgs = {
@@ -2836,6 +2868,10 @@ export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
 
+export type MutationUpdateDocumentArgs = {
+  documentData: UpdateDocumentInput;
+};
+
 export type MutationUpdateEcosystemModelArgs = {
   ecosystemModelData: UpdateEcosystemModelInput;
 };
@@ -2912,8 +2948,9 @@ export type MutationUpdateWhiteboardTemplateArgs = {
   whiteboardTemplateInput: UpdateWhiteboardTemplateInput;
 };
 
-export type MutationUploadFileArgs = {
+export type MutationUploadFileOnReferenceArgs = {
   file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileInput;
 };
 
 export type MutationUploadImageOnVisualArgs = {
@@ -3010,6 +3047,8 @@ export type Organization = Groupable & {
   preferences: Array<Preference>;
   /** The profile for this organization. */
   profile: Profile;
+  /** The StorageBucket with documents in use by this Organization */
+  storageBucket?: Maybe<StorageBucket>;
   verification: OrganizationVerification;
   /** Organization website */
   website?: Maybe<Scalars['String']>;
@@ -3107,6 +3146,8 @@ export type Platform = {
   id: Scalars['UUID'];
   /** The Innovation Library for the platform */
   library: Library;
+  /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
+  storageBucket?: Maybe<StorageBucket>;
 };
 
 export type PlatformLocations = {
@@ -3871,6 +3912,37 @@ export type ServiceMetadata = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type StorageBucket = {
+  __typename?: 'StorageBucket';
+  /** Mime types allowed to be stored on this StorageBucket. */
+  allowedMimeTypes: Array<Scalars['String']>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** A single Document */
+  document?: Maybe<Document>;
+  /** The list of Documents for this StorageBucket. */
+  documents: Array<Document>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Maximum allowed file size on this StorageBucket. */
+  maxFileSize: Scalars['Float'];
+  /** The aggregate size of all Documents for this StorageBucket. */
+  size: Scalars['Float'];
+};
+
+export type StorageBucketDocumentArgs = {
+  ID: Scalars['UUID_NAMEID'];
+};
+
+export type StorageBucketDocumentsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type StorageBucketUploadFileInput = {
+  referenceID: Scalars['String'];
+};
+
 export type StorageConfig = {
   __typename?: 'StorageConfig';
   /** Config for uploading files to Alkemio. */
@@ -4165,8 +4237,6 @@ export type UpdateCommunityApplicationFormInput = {
 
 export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
-  /** Update the set of Recommendations for the Context. */
-  recommendations?: InputMaybe<Array<UpdateReferenceInput>>;
   vision?: InputMaybe<Scalars['Markdown']>;
   who?: InputMaybe<Scalars['Markdown']>;
 };
@@ -4179,6 +4249,13 @@ export type UpdateDiscussionInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
+};
+
+export type UpdateDocumentInput = {
+  ID: Scalars['UUID'];
+  /** The display name for the Document. */
+  displayName: Scalars['String'];
+  tagset?: InputMaybe<UpdateTagsetInput>;
 };
 
 export type UpdateEcosystemModelInput = {
@@ -4607,9 +4684,13 @@ export type WhiteboardTemplate = {
 
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload'];
+  uploadData: StorageBucketUploadFileInput;
 }>;
 
-export type UploadFileMutation = { __typename?: 'Mutation'; uploadFile: string };
+export type UploadFileMutation = {
+  __typename?: 'Mutation';
+  uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
+};
 
 export type MyPrivilegesFragment = {
   __typename?: 'Authorization';
@@ -5120,7 +5201,7 @@ export type ChallengePageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -5198,15 +5279,6 @@ export type ChallengePageQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
-                  recommendations?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
-                        description?: string | undefined;
-                      }>
-                    | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -5448,7 +5520,7 @@ export type ChallengeProfileFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               };
@@ -5526,15 +5598,6 @@ export type ChallengeProfileFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
-              recommendations?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -5558,12 +5621,12 @@ export type ChallengeProfileFragment = {
     | undefined;
 };
 
-export type ChallengeDashboardReferencesAndRecommendationsQueryVariables = Exact<{
+export type ChallengeDashboardReferencesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeDashboardReferencesAndRecommendationsQuery = {
+export type ChallengeDashboardReferencesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -5578,21 +5641,6 @@ export type ChallengeDashboardReferencesAndRecommendationsQuery = {
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       };
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
     };
   };
 };
@@ -5702,15 +5750,6 @@ export type OpportunitiesOnChallengeFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
-              recommendations?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
               authorization?:
                 | {
                     __typename?: 'Authorization';
@@ -6083,15 +6122,6 @@ export type ChallengeProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -6147,15 +6177,6 @@ export type OpportunityCreatedSubscription = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -6422,7 +6443,7 @@ export type AboutPageMembersQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
@@ -6505,7 +6526,7 @@ export type AboutPageMembersQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -6589,7 +6610,7 @@ export type AboutPageMembersQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -7100,7 +7121,7 @@ export type HubCommunityPageQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
@@ -7173,7 +7194,7 @@ export type CommunityPageCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
@@ -7252,15 +7273,6 @@ export type HubProviderQuery = {
                 myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                 anonymousReadAccess: boolean;
               }
-            | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
             | undefined;
         }
       | undefined;
@@ -7347,9 +7359,6 @@ export type HubInfoFragment = {
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
               anonymousReadAccess: boolean;
             }
-          | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
           | undefined;
       }
     | undefined;
@@ -7939,7 +7948,7 @@ export type HubPageQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
@@ -8020,11 +8029,11 @@ export type HubPageQuery = {
   };
 };
 
-export type HubDashboardReferencesAndRecommendationsQueryVariables = Exact<{
+export type HubDashboardReferencesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubDashboardReferencesAndRecommendationsQuery = {
+export type HubDashboardReferencesQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -8036,21 +8045,6 @@ export type HubDashboardReferencesAndRecommendationsQuery = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
-    context?:
-      | {
-          __typename?: 'Context';
-          id: string;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -8270,7 +8264,7 @@ export type HubPageFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               };
@@ -8449,9 +8443,6 @@ export type HubDetailsFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -8560,15 +8551,6 @@ export type CreateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -8653,15 +8635,6 @@ export type UpdateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -9244,15 +9217,6 @@ export type OpportunityPageQuery = {
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                 }
               | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  description?: string | undefined;
-                  uri: string;
-                }>
-              | undefined;
           }
         | undefined;
       community?:
@@ -9284,7 +9248,7 @@ export type OpportunityPageQuery = {
                     __typename?: 'Profile';
                     id: string;
                     displayName: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                   };
@@ -9518,9 +9482,6 @@ export type OpportunityPageFragment = {
               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             }
           | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
-          | undefined;
       }
     | undefined;
   community?:
@@ -9552,7 +9513,7 @@ export type OpportunityPageFragment = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                 visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
               };
@@ -9785,9 +9746,6 @@ export type OpportunityCardFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        recommendations?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -9848,15 +9806,6 @@ export type CreateOpportunityMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          recommendations?:
-            | Array<{
-                __typename?: 'Reference';
-                id: string;
-                name: string;
-                uri: string;
-                description?: string | undefined;
-              }>
-            | undefined;
           authorization?:
             | {
                 __typename?: 'Authorization';
@@ -10064,15 +10013,6 @@ export type OpportunityCardsQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
-                  recommendations?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        uri: string;
-                        description?: string | undefined;
-                      }>
-                    | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -10273,15 +10213,6 @@ export type OpportunityProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            recommendations?:
-              | Array<{
-                  __typename?: 'Reference';
-                  id: string;
-                  name: string;
-                  uri: string;
-                  description?: string | undefined;
-                }>
-              | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -13783,14 +13714,87 @@ export type CreateCalloutMutation = {
     id: string;
     nameID: string;
     type: CalloutType;
+    group?: string | undefined;
     state: CalloutState;
+    sortOrder: number;
+    activity: number;
     visibility: CalloutVisibility;
-    profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+    canvases?:
+      | Array<{
+          __typename?: 'Canvas';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          checkout?:
+            | {
+                __typename?: 'CanvasCheckout';
+                id: string;
+                lockedBy: string;
+                status: CanvasCheckoutStateEnum;
+                lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+        }>
       | undefined;
-    canvases?: Array<{ __typename?: 'Canvas'; id: string }> | undefined;
-    aspects?: Array<{ __typename?: 'Aspect'; id: string }> | undefined;
     comments?:
       | {
           __typename?: 'Comments';
@@ -13831,6 +13835,37 @@ export type CreateCalloutMutation = {
                   | undefined;
               }>
             | undefined;
+        }
+      | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    postTemplate?:
+      | {
+          __typename?: 'PostTemplate';
+          id: string;
+          type: string;
+          defaultDescription: string;
+          profile: {
+            __typename?: 'Profile';
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
+    whiteboardTemplate?:
+      | {
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          value: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
         }
       | undefined;
   };
@@ -18312,7 +18347,7 @@ export type EntityDashboardCommunityFragment = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         };
@@ -18361,7 +18396,7 @@ export type DashboardContributingUserFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
-    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
   };
@@ -20870,9 +20905,6 @@ export type ContextDetailsFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
-  recommendations?:
-    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-    | undefined;
   authorization?:
     | {
         __typename?: 'Authorization';

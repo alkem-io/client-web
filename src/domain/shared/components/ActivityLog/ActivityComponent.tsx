@@ -30,6 +30,7 @@ import { getJourneyLocationKey, JourneyLocation } from '../../../../common/utils
 import { buildAuthorFromUser } from '../../../../common/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import journeyIcon from '../JourneyIcon/JourneyIcon';
 
 const Root = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -86,8 +87,7 @@ export const ActivityComponent: FC<ActivityLogComponentProps> = ({ activities, j
       <>
         {activities.map(activity => {
           const activityOriginJourneyTypeName = getActivityOriginJourneyTypeName(activity, journeyLocation);
-          const ActivityOriginJourneyIcon =
-            activityOriginJourneyTypeName && journeyLocation[activityOriginJourneyTypeName];
+          const ActivityOriginJourneyIcon = activityOriginJourneyTypeName && journeyIcon[activityOriginJourneyTypeName];
           const activityOriginJourneyLocation = activityOriginJourneyTypeName
             ? {
                 ...journeyLocation,

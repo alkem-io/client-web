@@ -1,14 +1,13 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material';
-import { FormControl, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
-import Button from './components/Button';
+import { FormControl, FormGroup, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { useAlkemioCookies } from './useAlkemioCookies';
 import TextContainer from './components/TextContainer';
+import { Actions } from '../../../core/ui/actions/Actions';
+import { Caption } from '../../../core/ui/typography';
 
 const CookieSettings: FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const { acceptOnlySelected } = useAlkemioCookies();
 
   const [cookiesState, setCookiesState] = useState({
@@ -44,32 +43,29 @@ const CookieSettings: FC = () => {
           <FormGroup>
             <FormControlLabel
               control={<Checkbox style={{ color: '#FFFFFF' }} checked name="technical" />}
-              label={CookieLabels.technical}
+              label={<Caption>{CookieLabels.technical}</Caption>}
             />
             <FormControlLabel
               control={
                 <Checkbox style={{ color: '#FFFFFF' }} checked={analysis} onChange={handleChange} name="analysis" />
               }
-              label={CookieLabels.analysis}
+              label={<Caption>{CookieLabels.analysis}</Caption>}
             />
           </FormGroup>
         </FormControl>
       </TextContainer>
-      <Button
-        sx={{
-          alignSelf: 'flex-end',
-          width: '250px',
-          color: theme.palette.background.default,
-          background: theme.palette.primary.dark,
-          ':hover': {
-            color: theme.palette.background.default,
-            background: theme.palette.primary.dark,
-          },
-        }}
-        onClick={handleConfirmChoice}
-      >
-        {t('buttons.confirm-choice')}
-      </Button>
+      <Actions>
+        <Button
+          variant="contained"
+          sx={{
+            alignSelf: 'flex-end',
+            width: '250px',
+          }}
+          onClick={handleConfirmChoice}
+        >
+          {t('buttons.confirm-choice')}
+        </Button>
+      </Actions>
     </>
   );
 };

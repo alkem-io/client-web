@@ -16,7 +16,7 @@ export interface ActivityBaseViewProps {
   action: string;
   url?: string;
   loading?: boolean;
-  childActivityIcon?: ReactNode;
+  activityOriginJourneyIcon?: ReactNode;
   parentDisplayName: string;
 }
 
@@ -27,7 +27,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
   children,
   url,
   loading,
-  childActivityIcon,
+  activityOriginJourneyIcon,
   parentDisplayName,
 }) => {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
       ? parentDisplayName.substring(0, PARENT_NAME_MAX_LENGTH).concat('...')
       : parentDisplayName;
 
-  const parentDetails = childActivityIcon
+  const parentDetails = activityOriginJourneyIcon
     ? t('components.activity-log-view.parent-details', { displayName: truncatedParentName })
     : undefined;
 
@@ -51,11 +51,11 @@ export const ActivityBaseView: FC<ActivityBaseViewProps> = ({
         ) : (
           author?.displayName ?? t('common.user')
         )}{' '}
-        {action} {childActivityIcon}
+        {action} {activityOriginJourneyIcon}
         {parentDetails}
       </>
     ),
-    [formattedTime, author?.displayName, action, author?.url, t, childActivityIcon, parentDetails]
+    [formattedTime, author?.displayName, action, author?.url, t, activityOriginJourneyIcon, parentDetails]
   );
 
   return (
