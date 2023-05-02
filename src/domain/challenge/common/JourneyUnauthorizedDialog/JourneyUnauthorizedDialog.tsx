@@ -3,7 +3,9 @@ import { Box } from '@mui/material';
 import React, { useRef } from 'react';
 import BackButton from '../../../../core/ui/actions/BackButton';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import ApplicationButtonContainer, {
+  ApplicationButtonContainerProps,
+} from '../../../community/application/containers/ApplicationButtonContainer';
 import PageContentRibbon from '../../../../core/ui/content/PageContentRibbon';
 import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +13,9 @@ import { useNavigate } from 'react-router-dom';
 import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
 import useCanGoBack from '../../../../core/routing/useCanGoBack';
 
-interface JourneyUnauthorizedDialogProps extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'> {
+interface JourneyUnauthorizedDialogProps
+  extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,
+    Omit<ApplicationButtonContainerProps, 'children'> {
   privilegesLoading: boolean;
   authorized: boolean | undefined;
   disabled?: boolean;
@@ -21,6 +25,9 @@ const JourneyUnauthorizedDialog = ({
   authorized,
   privilegesLoading,
   disabled = false,
+  challengeId,
+  challengeNameId,
+  challengeName,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
@@ -36,7 +43,7 @@ const JourneyUnauthorizedDialog = ({
       open={!disabled && !privilegesLoading && !authorized}
       startButton={canGoBack && <BackButton onClick={() => navigate(-1)} />}
       endButton={
-        <ApplicationButtonContainer>
+        <ApplicationButtonContainer {...{ challengeId, challengeNameId, challengeName }}>
           {(e, s) => (
             <ApplicationButton ref={applicationButtonRef} {...e?.applicationButtonProps} loading={s.loading} />
           )}
