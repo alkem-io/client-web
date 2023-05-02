@@ -68,6 +68,8 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     group={CalloutsGroup.HomeTop}
+                    disableMarginal
+                    blockProps={{ sx: { minHeight: '100%' } }}
                   />
                 )
               }

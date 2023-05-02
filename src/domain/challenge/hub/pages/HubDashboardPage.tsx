@@ -98,6 +98,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     group={CalloutsGroup.HomeTop}
+                    disableMarginal
+                    blockProps={{ sx: { minHeight: '100%' } }}
                   />
                 )
               }

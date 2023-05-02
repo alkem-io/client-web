@@ -42,6 +42,7 @@ export interface CalloutsViewProps {
   loading?: boolean;
   calloutNames: string[];
   blockProps?: CalloutViewProps['blockProps'];
+  disableMarginal?: boolean;
 }
 
 const CalloutsView = ({
@@ -53,6 +54,7 @@ const CalloutsView = ({
   sortOrder,
   onSortOrderUpdate,
   blockProps,
+  disableMarginal,
 }: CalloutsViewProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
@@ -147,6 +149,7 @@ const CalloutsView = ({
               calloutUri={calloutUri}
               onExpand={() => handleExpand(callout)}
               blockProps={blockProps}
+              disableMarginal={disableMarginal}
               {...sortEvents}
               {...sortProps}
             />

@@ -16,17 +16,11 @@ interface CalloutsGroupProps extends CalloutsViewProps {
 }
 
 const CalloutsGroupView = ({
-  callouts,
   hubId,
-  entityTypeName,
   calloutNames,
-  scrollToCallout,
-  sortOrder,
-  loading,
-  onSortOrderUpdate,
   canCreateCallout,
   group,
-  blockProps,
+  ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
     isCalloutCreationDialogOpen,
@@ -62,16 +56,7 @@ const CalloutsGroupView = ({
 
   return (
     <>
-      <CalloutsView
-        callouts={callouts}
-        entityTypeName={entityTypeName}
-        sortOrder={sortOrder}
-        calloutNames={calloutNames}
-        scrollToCallout={scrollToCallout}
-        loading={loading}
-        onSortOrderUpdate={onSortOrderUpdate}
-        blockProps={blockProps}
-      />
+      <CalloutsView calloutNames={calloutNames} {...calloutsViewProps} />
       {canCreateCallout && <AddContentButton onClick={handleCreate} />}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}

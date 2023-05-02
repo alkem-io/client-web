@@ -71,6 +71,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
   onExpand?: () => void;
   onClose?: () => void;
   skipReferences?: boolean;
+  disableMarginal?: boolean;
 }
 
 const CalloutLayout = ({
@@ -92,6 +93,7 @@ const CalloutLayout = ({
   onExpand,
   onClose,
   skipReferences,
+  disableMarginal = false,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
 
@@ -139,7 +141,7 @@ const CalloutLayout = ({
   const calloutNotOpenStateName = useMemo(() => {
     const state = callout?.state;
 
-    if (!state || state === CalloutState.Open) {
+    if (!state || state === CalloutState.Open || disableMarginal) {
       return undefined;
     }
 
