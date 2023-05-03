@@ -75,10 +75,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
             <>
               <EditTemplateButtonContainer>
                 <Button variant="contained" onClick={() => handleClickEditButton()}>
-                  {t('canvas-templates.edit-template-button')}
+                  {t('buttons.edit')}
                 </Button>
               </EditTemplateButtonContainer>
-
               <CanvasDialog
                 entities={{
                   canvas: canvasFromTemplate,
@@ -104,7 +103,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   headerActions: undefined,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
-                      {t('canvas-templates.edit-dialog-title')}
+                      {t('buttons.edit')}
                     </BlockTitle>
                   ),
                 }}

@@ -10,7 +10,13 @@ interface CalloutTypeSelectProps {
   value: CalloutType | undefined;
   disabled?: boolean;
 }
-const availableCalloutTypes = [CalloutType.Comments, CalloutType.LinkCollection, CalloutType.Card, CalloutType.Canvas];
+const availableCalloutTypes = [
+  CalloutType.Comments,
+  CalloutType.Whiteboard,
+  CalloutType.LinkCollection,
+  CalloutType.Card,
+  CalloutType.Canvas,
+];
 
 export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ value, onSelect, disabled = false }) => {
   const { t } = useTranslation();

@@ -772,6 +772,9 @@
         "type-canvases-help": "Select ‘Whiteboards’ when you want people to answer on a visual whiteboard, allowing them to draw and use text.",
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
+      "whiteboard": {
+        "label": "Whiteboard:"
+      },
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
@@ -802,7 +805,8 @@
         "COMMENTS": "Post",
         "CARD": "Call for Posts",
         "CANVAS": "Call for Whiteboards",
-        "LINK_COLLECTION": "Collection of Links"
+        "LINK_COLLECTION": "Collection of Links",
+        "WHITEBOARD": "Whiteboard"
       }
     },
     "aspect-creation": {

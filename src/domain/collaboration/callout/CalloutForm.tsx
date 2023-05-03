@@ -26,6 +26,9 @@ import { CalloutsGroup } from './CalloutsInContext/CalloutsGroup';
 import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
+import CalloutWhiteboardField, {
+  WhiteboardFieldSubmittedValues,
+} from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
 
 type FormValueType = {
   displayName: string;
@@ -37,6 +40,7 @@ type FormValueType = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -52,6 +56,7 @@ export type CalloutFormInput = {
   group?: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
   profileId?: string;
 };
 
@@ -65,6 +70,7 @@ export type CalloutFormOutput = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
 };
 
 export interface CalloutFormProps {
@@ -123,6 +129,12 @@ const CalloutForm: FC<CalloutFormProps> = ({
         },
         value: JSON.stringify(EmptyWhiteboard),
       },
+      whiteboard: callout?.whiteboard ?? {
+        profileData: {
+          displayName: t('components.callout-creation.whiteboard.label'),
+        },
+        value: JSON.stringify(EmptyWhiteboard),
+      },
     }),
     [callout?.id, tagsets]
   );
@@ -147,7 +159,6 @@ const CalloutForm: FC<CalloutFormProps> = ({
       is: CalloutType.Card,
       then: yup.object().shape({
         defaultDescription: yup.string().required(t('common.field-required')),
-        //type: yup.string().required(t('common.field-required')),
       }),
     }),
     whiteboardTemplateData: yup.object().when('type', {
@@ -172,6 +183,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       group: values.group,
       postTemplateData: values.postTemplateData,
       whiteboardTemplateData: values.whiteboardTemplateData,
+      whiteboard: values.whiteboard,
     };
     onChange?.(callout);
   };
@@ -195,6 +207,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     whiteboardTemplate: calloutType === CalloutType.Canvas,
     newResponses: calloutType !== CalloutType.LinkCollection,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
+    whiteboard: calloutType === CalloutType.Whiteboard,
   };
 
   return (
@@ -209,6 +222,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         <>
           <Gutters>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+            {formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
             <FormikMarkdownField
               name="description"

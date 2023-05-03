@@ -30,6 +30,7 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
+import { WhiteboardFieldSubmittedValues } from './CalloutWhiteboardField/CalloutWhiteboardField';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -40,6 +41,7 @@ export type CalloutCreationDialogFields = {
   state?: CalloutState;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
   profileId?: string;
 };
 
@@ -150,6 +152,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       postTemplate: callout.type === CalloutType.Card ? callout.postTemplateData : undefined,
       whiteboardTemplate: callout.type === CalloutType.Canvas ? callout.whiteboardTemplateData : undefined,
       group,
+      whiteboard: callout.whiteboard,
     };
 
     const result = await onSaveAsDraft(newCallout);

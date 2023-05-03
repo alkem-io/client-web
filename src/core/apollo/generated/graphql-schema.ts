@@ -409,14 +409,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -781,6 +773,7 @@ export enum CalloutType {
   Card = 'CARD',
   Comments = 'COMMENTS',
   LinkCollection = 'LINK_COLLECTION',
+  Whiteboard = 'WHITEBOARD',
 }
 
 export enum CalloutVisibility {
@@ -1306,8 +1299,17 @@ export type CreateCalloutOnCollaborationInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** Callout type. */
   type: CalloutType;
-  /** WhiteboardTemplate data for whiteboard Callouts. */
+  /** Whiteboard data for whiteboard Callouts. */
+  whiteboard?: InputMaybe<CreateCanvasInput>;
+  /** WhiteboardTemplate data for canvas Callouts. */
   whiteboardTemplate?: InputMaybe<CreateWhiteboardTemplateInput>;
+};
+
+export type CreateCanvasInput = {
+  /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  profileData: CreateProfileInput;
+  value?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateCanvasOnCalloutInput = {
@@ -1892,16 +1894,6 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {

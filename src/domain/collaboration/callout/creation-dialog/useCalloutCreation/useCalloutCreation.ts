@@ -12,6 +12,7 @@ import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/temp
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
 import { Identifiable } from '../../../../shared/types/Identifiable';
+import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 
 export type CalloutCreationType = {
   profile: {
@@ -24,6 +25,7 @@ export type CalloutCreationType = {
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
   group?: string;
 };
 
