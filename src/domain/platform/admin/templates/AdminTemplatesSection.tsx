@@ -18,6 +18,7 @@ import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTempla
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
+import DeleteButton from '../../../shared/components/DeleteButton';
 
 export interface Template extends Identifiable {
   profile: ProfileInfoWithVisualFragment;
@@ -359,7 +360,7 @@ const AdminTemplatesSection = <
           title={t('common.warning')}
           loading={isDeletingPostTemplate}
           onClose={() => setDeletingTemplateId(undefined)}
-          onConfirm={handlePostTemplateDeletion}
+          confirmButton={<DeleteButton onClick={handlePostTemplateDeletion} />}
         >
           {t('pages.admin.generic.sections.templates.delete-confirmation', {
             template: deletingTemplate?.profile.displayName,

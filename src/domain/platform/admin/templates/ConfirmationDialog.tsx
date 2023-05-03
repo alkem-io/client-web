@@ -1,44 +1,42 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Button, Dialog, DialogContent, Skeleton } from '@mui/material';
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loading } from '../../../../common/components/core';
-import DeleteButton from '../../../shared/components/DeleteButton';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface ConfirmationDialogProps {
   open: boolean;
   title: ReactNode;
   onClose: () => void;
-  onConfirm: () => void;
+  confirmButton: ReactNode;
   loading?: boolean;
 }
 
-// TODO make customizable / reusable
 const ConfirmationDialog = ({
   open,
   title,
   loading = false,
   onClose,
-  onConfirm,
+  confirmButton,
   children,
 }: PropsWithChildren<ConfirmationDialogProps>) => {
   const { t } = useTranslation();
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle sx={{ textTransform: 'uppercase', fontWeight: 'bold' }} color="error">
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <Typography variant="body1" color="primary">
-          {loading ? <Loading /> : children}
-        </Typography>
-        <DialogActions sx={{ p: 0, marginTop: 2 }}>
-          <Button variant="contained" onClick={onClose}>
-            {t('buttons.cancel')}
-          </Button>
-          <DeleteButton onClick={onConfirm} disabled={loading} />
-        </DialogActions>
-      </DialogContent>
+      <DialogHeader onClose={onClose}>
+        <BlockTitle>{title}</BlockTitle>
+      </DialogHeader>
+      <DialogContent>{loading ? <Loading /> : children}</DialogContent>
+      <Actions padding={gutters()} justifyContent="end">
+        <Button variant="contained" onClick={onClose}>
+          {t('buttons.cancel')}
+        </Button>
+        {loading ? <Skeleton sx={{ width: gutters(4), height: gutters(2) }} /> : confirmButton}
+      </Actions>
     </Dialog>
   );
 };
