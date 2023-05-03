@@ -17,6 +17,7 @@ import { useNavigateToEdit } from '../../../../../../core/routing/useNavigateToE
 import EditVisualsView from '../../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
+import Gutters from '../../../../../../core/ui/grid/Gutters';
 
 interface Props {
   mode: FormMode;
@@ -105,7 +106,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
 
   let submitWired;
   return (
-    <Grid container spacing={2}>
+    <Gutters>
       <ProfileForm
         isEdit={mode === FormMode.update}
         name={opportunity?.profile.displayName}
@@ -125,7 +126,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         </Typography>
         <EditVisualsView visuals={opportunity?.profile.visuals} />
       </Grid>
-    </Grid>
+    </Gutters>
   );
 };
 

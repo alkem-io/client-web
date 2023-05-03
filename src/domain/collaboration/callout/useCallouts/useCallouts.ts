@@ -92,7 +92,6 @@ interface UseCalloutsParams extends OptionalCoreEntityIds {
 interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutsGroup, TypedCallout[] | undefined>;
-  ungroupedCallouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
   calloutNames: string[];
   loading: boolean;
@@ -205,13 +204,11 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     [submitCalloutsSortOrder]
   );
 
-  const { groupedCallouts, ungroupedCallouts } = useMemo(() => {
-    const { [UNGROUPED_CALLOUTS_GROUP]: ungroupedCallouts, ...groupedCallouts } = groupBy(
-      sortedCallouts,
-      callout => callout.group ?? UNGROUPED_CALLOUTS_GROUP
-    ) as Record<CalloutsGroup | typeof UNGROUPED_CALLOUTS_GROUP, TypedCallout[] | undefined>;
-
-    return { groupedCallouts, ungroupedCallouts };
+  const groupedCallouts = useMemo(() => {
+    return groupBy(sortedCallouts, callout => callout.group ?? UNGROUPED_CALLOUTS_GROUP) as Record<
+      CalloutsGroup | typeof UNGROUPED_CALLOUTS_GROUP,
+      TypedCallout[] | undefined
+    >;
   }, [sortedCallouts]);
 
   const [runUpdateCalloutsSortOrderMutation] = useUpdateCalloutsSortOrderMutation();
@@ -219,7 +216,6 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
   return {
     callouts,
     groupedCallouts,
-    ungroupedCallouts,
     canCreateCallout,
     calloutNames,
     loading: calloutsLoading,

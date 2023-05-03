@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import {
   LONG_TEXT_LENGTH,
-  MID_TEXT_LENGTH,
+  SMALL_TEXT_LENGTH,
   VERY_LONG_TEXT_LENGTH,
 } from '../../../../../core/ui/forms/field-length.constants';
 import { JourneyTypeName } from '../../../../challenge/JourneyTypeName';
@@ -16,7 +16,7 @@ export const contextSegmentSchema = yup.object().shape({
   impact: MarkdownValidator(LONG_TEXT_LENGTH),
   vision: MarkdownValidator(VERY_LONG_TEXT_LENGTH),
   who: MarkdownValidator(LONG_TEXT_LENGTH),
-  tagline: yup.string().max(MID_TEXT_LENGTH),
+  tagline: yup.string().max(SMALL_TEXT_LENGTH),
 });
 
 export interface ContextSegmentProps {

@@ -33,6 +33,7 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '../../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
 export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
@@ -56,6 +57,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   childEntityTitle?: string;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
+  recommendations?: ReactNode;
   childrenLeft?: ReactNode;
   childrenRight?: ReactNode;
 }
@@ -86,6 +88,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   childEntityTitle,
   topCallouts,
   sendMessageToCommunityLeads,
+  recommendations,
   childrenLeft,
   childrenRight,
 }: JourneyDashboardViewProps<ChildEntity>) => {
@@ -177,8 +180,13 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
+        {recommendations && (
+          <PageContentBlockSeamless halfWidth={hasTopCallouts} disablePadding>
+            {recommendations}
+          </PageContentBlockSeamless>
+        )}
         {hasTopCallouts && (
-          <PageContentBlock>
+          <PageContentBlock halfWidth={!!recommendations}>
             <PageContentBlockHeader title={t('components.top-callouts.title')} />
             {topCallouts?.map(callout => (
               <TopCalloutDetails

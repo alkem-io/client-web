@@ -22,6 +22,7 @@ import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipB
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import CalloutsGroupView from '../CalloutsInContext/CalloutsGroupView';
 import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 
 interface JourneyCalloutsTabViewProps {
   entityTypeName: EntityTypeName;
@@ -35,12 +36,14 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
     throw new Error('Must be within a Hub');
   }
 
-  const { ungroupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
+  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
     useCallouts({
       hubNameId,
       challengeNameId,
       opportunityNameId,
     });
+
+  const callouts = groupedCallouts[CalloutsGroup.KnowledgeBase];
 
   const { t } = useTranslation();
 
@@ -85,7 +88,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
 
   return (
     <>
-      <MembershipBackdrop show={!loading && !ungroupedCallouts} blockName={t(`common.${entityTypeName}` as const)}>
+      <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${entityTypeName}` as const)}>
         <PageContent>
           <PageContentColumn columns={4}>
             <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
@@ -94,7 +97,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
                 title={t('pages.generic.sections.subentities.list', { entities: t('common.callouts') })}
               />
               <LinksList
-                items={ungroupedCallouts?.map(callout => {
+                items={callouts?.map(callout => {
                   const CalloutIcon = calloutIcons[callout.type];
                   return {
                     id: callout.id,
@@ -118,7 +121,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
 
           <PageContentColumn columns={8}>
             <CalloutsGroupView
-              callouts={ungroupedCallouts}
+              callouts={callouts}
               hubId={hubNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}
@@ -127,6 +130,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               scrollToCallout={scrollToCallout}
+              group={CalloutsGroup.KnowledgeBase}
             />
           </PageContentColumn>
         </PageContent>
@@ -139,6 +143,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
         isCreating={isCreating}
         calloutNames={calloutNames}
         templates={templates}
+        group={CalloutsGroup.KnowledgeBase}
       />
     </>
   );

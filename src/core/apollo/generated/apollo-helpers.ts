@@ -956,6 +956,7 @@ export type DiscussionFieldPolicy = {
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type DocumentKeySpecifier = (
+  | 'anonymousReadAccess'
   | 'authorization'
   | 'createdBy'
   | 'displayName'
@@ -966,6 +967,7 @@ export type DocumentKeySpecifier = (
   | DocumentKeySpecifier
 )[];
 export type DocumentFieldPolicy = {
+  anonymousReadAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;

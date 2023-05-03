@@ -10,7 +10,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
 import { useCommunityContext } from '../../community/CommunityContext';
 import clearCacheForType from '../../../shared/utils/apollo-cache/clearCacheForType';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -23,14 +23,14 @@ interface ApplicationContainerState {
   loading: boolean;
 }
 
-interface ApplicationContainerProps
+export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   challengeId?: string;
   challengeNameId?: string;
   challengeName?: string;
 }
 
-export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
+export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
   challengeId,
   challengeNameId,
   challengeName,
@@ -44,7 +44,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
 
   const { hubId, hubNameId, profile: hubProfile, refetchHub } = useHub();
 
-  const { communityId } = useCommunityContext();
+  const { communityId, myMembershipStatus } = useCommunityContext();
   const { data: memberShip, loading: membershipLoading } = useUserApplicationsQuery({
     variables: { input: userId },
     skip: !userId,
@@ -71,7 +71,8 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({
     x => x.hubID === hubId && !x.challengeID && !x.opportunityID && challengeId
   );
 
-  const isMember = (challengeId && challengeNameId ? user?.ofChallenge(challengeId) : user?.ofHub(hubId)) || false;
+  const isMember = myMembershipStatus === CommunityMembershipStatus.Member;
+
   const applyUrl =
     challengeId && challengeNameId ? buildChallengeApplyUrl(hubNameId, challengeNameId) : buildHubApplyUrl(hubNameId);
   const joinParentUrl = challengeNameId && buildHubUrl(hubNameId);

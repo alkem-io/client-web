@@ -1,20 +1,21 @@
-import { Grid } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Profile, Reference, Tagset } from '../../../../core/apollo/generated/graphql-schema';
-import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import FormikAutocomplete from '../../../../common/components/composite/forms/FormikAutocomplete';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
-import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
 
 interface Props {
   context?: Context;
@@ -102,33 +103,27 @@ const HubEditForm: FC<Props> = ({
         }
 
         return (
-          <Grid container spacing={2}>
+          <Gutters>
             <NameSegment disabled={isEdit} required={!isEdit} />
-            <Grid item xs={12}>
-              <FormikAutocomplete
-                title={t('components.editHubForm.host.title')}
-                name="host"
-                values={organizations}
-                required
-                placeholder={t('components.editHubForm.host.title')}
-              />
-            </Grid>
-            <InputField name="tagline" label={t('context.hub.tagline.title')} rows={3} />
+            <FormikAutocomplete
+              title={t('components.editHubForm.host.title')}
+              name="host"
+              values={organizations}
+              required
+              placeholder={t('components.editHubForm.host.title')}
+            />
+            <FormikInputField
+              name={'tagline'}
+              title={t('context.hub.tagline.title')}
+              rows={3}
+              maxLength={SMALL_TEXT_LENGTH}
+              withCounter
+            />
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
-            <Grid item xs={12}>
-              <WrapperTypography variant={'h4'} color={'primary'}>
-                {t('components.tagsSegment.title')}
-              </WrapperTypography>
-            </Grid>
+            <BlockSectionTitle color={'primary'}>{t('components.tagsSegment.title')}</BlockSectionTitle>
             <TagsetSegment tagsets={tagsets} />
-            {/* <Grid item xs={12}>
-              <WrapperTypography variant={'h4'} color={'primary'}>
-                {t('components.visualSegment.title')}
-              </WrapperTypography>
-            </Grid>
-            <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} profileId={profileId} />}
-          </Grid>
+          </Gutters>
         );
       }}
     </Formik>

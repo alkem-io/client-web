@@ -10,7 +10,7 @@ import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
 import { compact } from 'lodash';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import UpdateOrder, { findTargetItemIndex, OrderUpdate } from '../../../../core/utils/UpdateOrder';
-import CalloutView from '../CalloutView/CalloutView';
+import CalloutView, { CalloutViewProps } from '../CalloutView/CalloutView';
 import { useNavigate } from 'react-router-dom';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
@@ -41,6 +41,8 @@ export interface CalloutsViewProps {
   onSortOrderUpdate?: (update: OrderUpdate) => void;
   loading?: boolean;
   calloutNames: string[];
+  blockProps?: CalloutViewProps['blockProps'];
+  disableMarginal?: boolean;
 }
 
 const CalloutsView = ({
@@ -51,6 +53,8 @@ const CalloutsView = ({
   loading = false,
   sortOrder,
   onSortOrderUpdate,
+  blockProps,
+  disableMarginal,
 }: CalloutsViewProps) => {
   const { hubNameId, challengeNameId, opportunityNameId, calloutNameId } = useUrlParams();
 
@@ -144,6 +148,8 @@ const CalloutsView = ({
               isSubscribedToComments={callout.isSubscribedToComments}
               calloutUri={calloutUri}
               onExpand={() => handleExpand(callout)}
+              blockProps={blockProps}
+              disableMarginal={disableMarginal}
               {...sortEvents}
               {...sortProps}
             />

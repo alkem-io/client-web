@@ -43,6 +43,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 
 interface HubWelcomeBlockContributor {
   profile: HubWelcomeBlockContributorProfileFragment;
@@ -72,6 +73,7 @@ interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partia
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   journeyTypeName: JourneyTypeName;
   childEntityTitle?: string;
+  recommendations?: ReactNode;
   topCallouts: DashboardTopCalloutFragment[] | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   childrenLeft?: ReactNode;
@@ -113,6 +115,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
   renderChildEntityCard,
   journeyTypeName,
   childEntityTitle,
+  recommendations,
   topCallouts,
   sendMessageToCommunityLeads,
   childrenLeft,
@@ -220,8 +223,13 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
         </PageContentColumn>
 
         <PageContentColumn columns={8}>
+          {recommendations && (
+            <PageContentBlockSeamless halfWidth={hasTopCallouts} disablePadding>
+              {recommendations}
+            </PageContentBlockSeamless>
+          )}
           {hasTopCallouts && (
-            <PageContentBlock>
+            <PageContentBlock halfWidth={!!recommendations}>
               <PageContentBlockHeader title={t('components.top-callouts.title')} />
               {topCallouts?.map(callout => (
                 <TopCalloutDetails
