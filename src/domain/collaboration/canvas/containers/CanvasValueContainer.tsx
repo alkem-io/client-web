@@ -50,7 +50,7 @@ const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   subscriptionDocument: CanvasContentUpdatedDocument,
   getSubscriptionVariables: canvas => ({ canvasIDs: [canvas.id] }),
   updateSubEntity: (canvas, subscriptionData) => {
-    if (canvas) {
+    if (canvas && subscriptionData.canvasContentUpdated.canvasID === canvas.id) {
       canvas.value = subscriptionData.canvasContentUpdated.value;
     }
   },
