@@ -1713,6 +1713,8 @@ export type DiscussionSendMessageInput = {
 
 export type Document = {
   __typename?: 'Document';
+  /** Do we allow anonymous read access for this document? */
+  anonymousReadAccess: Scalars['Boolean'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The user that created this Document */
@@ -17862,6 +17864,7 @@ export type ChallengeCommunityQuery = {
             __typename?: 'Community';
             id: string;
             displayName: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
                   __typename?: 'Communication';
@@ -17885,6 +17888,7 @@ export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
   displayName: string;
+  myMembershipStatus?: CommunityMembershipStatus | undefined;
   communication?:
     | {
         __typename?: 'Communication';
@@ -17911,6 +17915,7 @@ export type HubCommunityQuery = {
           __typename?: 'Community';
           id: string;
           displayName: string;
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
           communication?:
             | {
                 __typename?: 'Communication';
@@ -17948,6 +17953,7 @@ export type OpportunityCommunityQuery = {
             __typename?: 'Community';
             id: string;
             displayName: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
                   __typename?: 'Communication';

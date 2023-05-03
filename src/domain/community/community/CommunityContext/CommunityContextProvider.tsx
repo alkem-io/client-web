@@ -52,6 +52,7 @@ const CommunityContextProvider: FC = ({ children }) => {
 
   const community =
     hubData?.hub.community || challengeData?.hub.challenge.community || opportunityData?.hub.opportunity.community;
+
   const isLoading = loadingHub || loadingChallenge || loadingOpportunity;
 
   const providedValue = useMemo<CommunityContextValue>(
@@ -61,6 +62,7 @@ const CommunityContextProvider: FC = ({ children }) => {
       communicationId: community?.communication?.id || '',
       communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
       loading: isLoading,
+      myMembershipStatus: community?.myMembershipStatus,
     }),
     [community, isLoading]
   );

@@ -1757,6 +1757,7 @@ export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
     displayName
+    myMembershipStatus
     communication {
       id
       authorization {
