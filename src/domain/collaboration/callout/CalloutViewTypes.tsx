@@ -35,4 +35,5 @@ export interface BaseCalloutViewProps extends CoreEntityIdTypes, CalloutLayoutEv
   onExpand?: () => void;
   onClose?: () => void;
   blockProps?: Partial<PageContentBlockProps>;
+  disableMarginal?: boolean;
 }

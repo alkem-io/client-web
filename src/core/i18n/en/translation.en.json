@@ -437,6 +437,7 @@
       "more-links": "{{count}} links, click here to show all"
     },
     "callout-groups": {
+      "HomeTop": "Dashboard Recommendations",
       "HomeLeft": "Dashboard Left",
       "HomeRight": "Dashboard Right",
       "CommunityLeft": "Community Left",

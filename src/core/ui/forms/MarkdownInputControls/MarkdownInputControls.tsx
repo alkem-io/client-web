@@ -41,6 +41,7 @@ const Toolbar = styled(Tabs)(() => ({
   '.MuiTabScrollButton-root.Mui-disabled': {
     display: 'none',
   },
+  minHeight: 'auto',
 }));
 
 const ControlsButton = ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
