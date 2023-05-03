@@ -17866,6 +17866,7 @@ export type ChallengeCommunityQuery = {
             __typename?: 'Community';
             id: string;
             displayName: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
                   __typename?: 'Communication';
@@ -17889,6 +17890,7 @@ export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
   displayName: string;
+  myMembershipStatus?: CommunityMembershipStatus | undefined;
   communication?:
     | {
         __typename?: 'Communication';
@@ -17915,6 +17917,7 @@ export type HubCommunityQuery = {
           __typename?: 'Community';
           id: string;
           displayName: string;
+          myMembershipStatus?: CommunityMembershipStatus | undefined;
           communication?:
             | {
                 __typename?: 'Communication';
@@ -17952,6 +17955,7 @@ export type OpportunityCommunityQuery = {
             __typename?: 'Community';
             id: string;
             displayName: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
             communication?:
               | {
                   __typename?: 'Communication';
