@@ -17,7 +17,7 @@ import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import ChallengeAboutPage from '../pages/ChallengeAboutPage';
-import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
+import ChallengeOpportunitiesPage from '../pages/ChallengeOpportunitiesPage';
 import ContributePage from '../../../collaboration/contribute/ContributePage';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import Redirect from '../../../../core/routing/Redirect';
@@ -54,7 +54,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
         <Route path={routes.Contribute} element={<ContributePage journeyTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeAboutPage />} />
-        <Route path={routes.Opportunities} element={<ChallengeOpportunityPage />} />
+        <Route path={routes.Opportunities} element={<ChallengeOpportunitiesPage />} />
         <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<ChallengeCollaborationPage />} />
         <Route
           path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
