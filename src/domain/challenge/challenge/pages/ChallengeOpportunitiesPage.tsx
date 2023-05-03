@@ -21,9 +21,9 @@ import { useChallenge } from '../hooks/useChallenge';
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
-export interface ChallengeOpportunityPageProps {}
+export interface ChallengeOpportunitiesPageProps {}
 
-const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
+const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -101,4 +101,4 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = () => {
   );
 };
 
-export default ChallengeOpportunityPage;
+export default ChallengeOpportunitiesPage;

@@ -61,7 +61,7 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
   const { t } = useTranslation();
 
   return (
-    <MembershipBackdrop show={!childEntityReadAccess} blockName={t(`common.${journeyTypeName}` as const)}>
+    <MembershipBackdrop show={!childEntityReadAccess} blockName={t(getJourneyChildrenTranslationKey(journeyTypeName))}>
       <PageContent>
         <PageContentColumn columns={4}>
           <ChildJourneyCreate
@@ -109,7 +109,10 @@ const ChildJourneyView = <ChildEntity extends NameableEntity>({
                 <JourneyFilter
                   data={childEntities}
                   valueGetter={childEntityValueGetter}
-                  title={t('common.all-entities', { entityType: t('common.challenges'), count: childEntities.length })}
+                  title={t('common.all-entities', {
+                    entityType: t(getJourneyChildrenTranslationKey(journeyTypeName)),
+                    count: childEntities.length,
+                  })}
                 >
                   {filteredEntities => (
                     <CardsLayout items={filteredEntities} deps={[hubNameId]} disablePadding>
