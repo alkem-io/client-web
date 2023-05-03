@@ -16814,7 +16814,9 @@ export type CheckoutCanvasMutation = {
   };
 };
 
-export type CanvasContentUpdatedSubscriptionVariables = Exact<{ [key: string]: never }>;
+export type CanvasContentUpdatedSubscriptionVariables = Exact<{
+  canvasIDs: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
 
 export type CanvasContentUpdatedSubscription = {
   __typename?: 'Subscription';

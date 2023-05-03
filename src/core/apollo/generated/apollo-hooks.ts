@@ -12615,8 +12615,8 @@ export type CheckoutCanvasMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CheckoutCanvasMutationVariables
 >;
 export const CanvasContentUpdatedDocument = gql`
-  subscription canvasContentUpdated {
-    canvasContentUpdated {
+  subscription canvasContentUpdated($canvasIDs: [UUID!]!) {
+    canvasContentUpdated(canvasIDs: $canvasIDs) {
       canvasID
       value
     }
@@ -12635,11 +12635,12 @@ export const CanvasContentUpdatedDocument = gql`
  * @example
  * const { data, loading, error } = useCanvasContentUpdatedSubscription({
  *   variables: {
+ *      canvasIDs: // value for 'canvasIDs'
  *   },
  * });
  */
 export function useCanvasContentUpdatedSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
+  baseOptions: Apollo.SubscriptionHookOptions<
     SchemaTypes.CanvasContentUpdatedSubscription,
     SchemaTypes.CanvasContentUpdatedSubscriptionVariables
   >
