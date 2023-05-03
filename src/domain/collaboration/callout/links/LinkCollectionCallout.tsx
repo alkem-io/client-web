@@ -23,6 +23,7 @@ import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import { nanoid } from 'nanoid';
 
 type NeededFields = 'id' | 'calloutNameId';
 export type LinkCollectionCalloutData = Pick<ReferencesFragmentWithCallout, NeededFields>;
@@ -58,7 +59,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             profileID: callout.profile.id,
             // References names have to be unique, if everything goes well this name will never be shown:
             name: t('callout.link-collection.new-temporary-reference', {
-              temp: Math.random().toString(36).slice(2, 6),
+              temp: nanoid(4),
             }),
             description: '',
             uri: '',
