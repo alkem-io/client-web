@@ -183,8 +183,8 @@
     "aspects": "Cards",
     "host": "Host",
     "lead": "Lead",
-    "hub": "Hub",
-    "hubs": "Hubs",
+    "hub": "Space",
+    "hubs": "Spaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "all-entities": "All {{entityType}} ({{count}})",
@@ -298,17 +298,17 @@
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "Hub Admin",
+          "name": "Space Admin",
           "order": 3,
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Hub Host",
+          "name": "Space Host",
           "order": 4,
           "hidden": true
         },
         "HUB_MEMBER": {
-          "name": "Hub Member",
+          "name": "Space Member",
           "order": 5,
           "hidden": true
         },
@@ -406,7 +406,7 @@
     "members-count": "Members ({{count}})",
     "application-form": {
       "title": "Application Form",
-      "subtitle": "This section allows you to modify the questions for users wanting to join the Hub. <br /><b>Please note</b> that these questions will only be shown when the switch \"Allow applications to this Hub\" is turned <b>on</b>, and \"Allow any registered user to join this Hub\" is switched <b>off</b>. These can be set in the <b>Membership</b> block above.",
+      "subtitle": "This section allows you to modify the questions for users wanting to join the Space. <br /><b>Please note</b> that these questions will only be shown when the switch \"Allow applications to this Space\" is turned <b>on</b>, and \"Allow any registered user to join this Space\" is switched <b>off</b>. These can be set in the <b>Membership</b> block above.",
       "required-question": "Required question",
       "move-up": "Move question one position up",
       "move-down": "Move question one position down",
@@ -496,22 +496,22 @@
     "hub": {
       "tagline": {
         "title": "Tagline",
-        "description": "Explain in one sentence what this Hub is about.",
+        "description": "Explain in one sentence what this Space is about.",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "description": "Give a brief overview of the need for this Hub and how it came about.",
+        "description": "Give a brief overview of the need for this Space and how it came about.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "What will this Hub change? How will people and organizations be affected?",
+        "description": "What will this Space change? How will people and organizations be affected?",
         "placeholder": ""
       },
       "vision": {
         "title": "What is this community about?",
-        "description": "What is the frame of reference for this Hub?",
+        "description": "What is the frame of reference for this Space?",
         "placeholder": ""
       },
       "who": {
@@ -759,7 +759,7 @@
       "notify-members": "Notify members of the $t(common.community)"
     },
     "callout-creation": {
-      "title": "Create a new Callout",
+      "title": "What do you want to ask your community?",
       "titleWithType": "Create {{type}}",
       "callout-type-label": "Callout type",
       "card-type-label": "Card label",
@@ -885,12 +885,12 @@
       "applyTo": "Apply to",
       "extendedMessage": "{{join}} our Community and start making change!",
       "dialog-apply-parent": {
-        "title": "Want to join the parent Hub?",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
+        "title": "Want to join the parent Space?",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> Space first. Please add the challenge you want to join in the Spaces' application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. There is already an application pending for that <strong title='Hub name'>'{{hubName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> Space first. There is already an application pending for that <strong title='Hub name'>'{{hubName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Join community",
@@ -937,7 +937,7 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-hub members to challenges"
+      "read-access": "Allow read access for non-space members to challenges"
     },
     "nameSegment": {
       "name": "Name",
@@ -1097,7 +1097,7 @@
     },
     "contributions": {
       "title": "Contributions",
-      "help": "The Hubs and Challenges that this organization is contributing to"
+      "help": "The Spaces and Challenges that this organization is contributing to"
     },
     "discussions-list": {
       "name": "Discussions - {{community}}",
@@ -1241,12 +1241,12 @@
         }
       },
       "archived-notice": {
-        "archived-hub": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
-        "archived-journey": "This {{journey}} is under a currently archived Hub. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
+        "archived-hub": "This Space is currently archived. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio.",
+        "archived-journey": "This {{journey}} is under a currently archived Space. Interested in bringing it back to life? <contact>Click here</contact> to contact Alkemio."
       },
       "demo-notice": {
-        "demo-hub": "This is a Demo Hub. <alkemio>Click here</alkemio> to collaborate in active Hubs.",
-        "demo-journey": "This {{journey}} is within a Demo Hub. <alkemio>Click here</alkemio> to collaborate in active Hubs."
+        "demo-hub": "This is a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces.",
+        "demo-journey": "This {{journey}} is within a Demo Space. <alkemio>Click here</alkemio> to collaborate in active Spaces."
       }
     },
     "contribute": {
@@ -1279,12 +1279,12 @@
             "aspect-templates": "Card Templates",
             "canvas-templates": "Whiteboard Templates",
             "innovation-templates": "Innovation Flow Templates",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template.",
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",
-              "subtitle": "Find templates to use in your hub, challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
+              "subtitle": "Find templates to use in your Space, Challenge or opportunity. Select the template and click ‘select’ to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "no-templates": "No Hub templates found, find further platform templates below",
+              "no-templates": "No templates found in this Space, find further platform templates below",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -1347,7 +1347,7 @@
       "hub": {
         "sections": {
           "challenges": {
-            "description": "Here you can edit challenges for this hub."
+            "description": "Here you can edit challenges for this Space."
           }
         },
         "authorization": {
@@ -1362,8 +1362,8 @@
           }
         },
         "notifications": {
-          "hub-created": "Hub created successfuly.",
-          "hub-removed": "Hub '{{name}}' removed successfully."
+          "hub-created": "Space created successfuly.",
+          "hub-removed": "Space '{{name}}' removed successfully."
         }
       },
       "opportunity": {
@@ -1467,7 +1467,7 @@
         },
         "key": {
           "all": "All",
-          "hub": "Hubs",
+          "hub": "Spaces",
           "challenge": "Challenges",
           "opportunity": "Opportunities",
           "user": "Users",
@@ -1482,27 +1482,27 @@
     "challenge-explorer": {
       "search": {
         "title": "Explore Public Challenges",
-        "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge hubs. Here you can find all challenges from the public hubs. Challenges from private hubs are visible when you are signed in and a member of that particular hub.",
+        "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge Spaces. Here you can find all challenges from the public Spaces. Challenges from private Spaces are visible when you are signed in and a member of that particular Space.",
         "placeholder": "Search...",
         "default-search-term": "Innovation",
         "no-results": "No results matched your search terms."
       },
       "side-note": {
         "title": "The Alkemio Structure",
-        "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
+        "description": "At Alkemio, all Challenges are part of a Space. Each Space has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my-search": {
         "title": "Explore other Challenges visible to you",
-        "subtitle": "Challenges in public Hubs are visible to everyone. Challenges in private Hubs are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
+        "subtitle": "Challenges in public Spaces are visible to everyone. Challenges in private Spaces are visible to members only. Enter your search terms (e.g. ‘innovation’) below to find matching Challenges. "
       },
       "my": {
         "title": "My Challenges",
         "subtitle": "Here you'll find the challenges that you are contributing to."
       },
       "other": {
-        "title": "Other Challenges within My Hubs",
-        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
-        "filter-by-hub": "Filter by My Hub"
+        "title": "Other Challenges within My Spaces",
+        "subtitle": "Here you'll find the other challenges hosted by the Spaces that you are member of.",
+        "filter-by-hub": "Filter by My Spaces"
       }
     },
     "lead-organization": {
@@ -1513,7 +1513,7 @@
     },
     "activity": {
       "title": "{{blockName}} Activity",
-      "hubs": "Challenge Hubs",
+      "hubs": "Challenge Spaces",
       "innovation-flow-info": "Click to display the Innovation Flow"
     },
     "home": {
@@ -1539,13 +1539,13 @@
           }
         },
         "hub": {
-          "header": "Explore the Challenge Hubs!",
+          "header": "Explore the Challenge Spaces!",
           "subheader": "",
-          "body": "Each Hub is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
-          "body1": "For Users, Hubs are free to join. Explore the membership options, including for public and private Hubs."
+          "body": "Each Space is a community with a dedicated space for shared Challenges. To connect, collaborate and innovate together.",
+          "body1": "For Users, Spaces are free to join. Explore the membership options, including for public and private Spaces."
         },
         "my-hubs": {
-          "header": "My Hubs ({{myHubsCount}})"
+          "header": "My Spaces ({{myHubsCount}})"
         },
         "organizations": {
           "header": "Organizations",
@@ -1573,7 +1573,7 @@
       }
     },
     "hub": {
-      "title": "Hub",
+      "title": "Space",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
@@ -1585,15 +1585,15 @@
       "sections": {
         "dashboard": {
           "organization": "Facilitating organization",
-          "activity": "Hub statistics",
+          "activity": "Space statistics",
           "community": "Community"
         },
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
           "body": "",
-          "no-data": "No challenges available for this hub",
-          "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
+          "no-data": "No challenges available for this Space",
+          "description": "Here you can explore the Challenges hosted in this Space. Filter by key words to show just the topics you care about. "
         },
         "contribute": {
           "header": "Contribute"
@@ -1664,7 +1664,7 @@
       },
       "hub-host": {
         "title": "Facilitating organization",
-        "help-text": "The Organization that is facilitating this Hub."
+        "help-text": "The Organization that is facilitating this Space."
       },
       "members": {
         "help-text": "Shows members is this community, including the role they have",
@@ -1711,15 +1711,15 @@
         "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
       },
       "hub": {
-        "templatesHeader": "Templates defined in this hub",
-        "templatesSubheader": "The templates defined in this hub can be used in every challenge and opportunity that this hub hosts."
+        "templatesHeader": "Templates defined in this Space",
+        "templatesSubheader": "The templates defined in this Space can be used in every Challenge and Opportunity that this Space hosts."
       },
       "challenge": {
         "templatesHeader": "Templates defined in this challenge",
-        "templatesSubheader": "The templates defined in this challenge can be used in every opportunity that is in the scope of this challenge."
+        "templatesSubheader": "The templates defined in this Challenge can be used in every Opportunity that is in the scope of this Challenge."
       },
       "opportunity": {
-        "templatesHeader": "Templates defined in this opportunity"
+        "templatesHeader": "Templates defined in this Opportunity"
       }
     },
     "login": {
@@ -1924,7 +1924,7 @@
     "cardLocation": {
       "title": "Card location",
       "label": "Contributing to Callout",
-      "reminder": "Be careful changing the card’s location. Moving the card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move cards within the same Hub, Challenge or Opportunity.",
+      "reminder": "Be careful changing the card’s location. Moving the card to another Callout will make it disappear from the current Callout. This might make it difficult for people, including the person who created this card, to retrieve it. Note that you can only move cards within the same Space, Challenge or Opportunity.",
       "success": "Successfully moved card to the new Callout.",
       "error": "Something went wrong when moving the card, please try again."
     }
