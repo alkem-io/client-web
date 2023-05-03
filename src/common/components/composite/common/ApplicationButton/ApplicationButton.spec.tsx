@@ -348,7 +348,7 @@ describe('ApplicationButton component', () => {
       expect(dialogButton).toHaveAttribute('href');
       expect(dialogButton['href']).toContain('/parent/apply');
 
-      const title = screen.getByText('Want to join the parent Hub?');
+      const title = screen.getByText('Want to join the parent Space?');
       expect(title).toBeInTheDocument();
     });
   });
