@@ -6,7 +6,6 @@ import React, { ComponentType, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import ConfirmationDialog from './ConfirmationDialog';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import { SimpleCardProps } from '../../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
@@ -18,7 +17,7 @@ import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTempla
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
-import DeleteButton from '../../../shared/components/DeleteButton';
+import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 
 export interface Template extends Identifiable {
   profile: ProfileInfoWithVisualFragment;
@@ -356,16 +355,24 @@ const AdminTemplatesSection = <
       )}
       {deletingTemplateId && (
         <ConfirmationDialog
-          open={!!deletingTemplateId}
-          title={t('common.warning')}
-          loading={isDeletingPostTemplate}
-          onClose={() => setDeletingTemplateId(undefined)}
-          confirmButton={<DeleteButton onClick={handlePostTemplateDeletion} />}
-        >
-          {t('pages.admin.generic.sections.templates.delete-confirmation', {
-            template: deletingTemplate?.profile.displayName,
-          })}
-        </ConfirmationDialog>
+          actions={{
+            onConfirm: handlePostTemplateDeletion,
+            onCancel: () => setDeletingTemplateId(undefined),
+          }}
+          options={{
+            show: Boolean(deletingTemplateId),
+          }}
+          entities={{
+            titleId: 'common.warning',
+            content: t('pages.admin.generic.sections.templates.delete-confirmation', {
+              template: deletingTemplate?.profile.displayName,
+            }),
+            confirmButtonTextId: 'buttons.delete',
+          }}
+          state={{
+            isLoading: isDeletingPostTemplate,
+          }}
+        />
       )}
     </>
   );

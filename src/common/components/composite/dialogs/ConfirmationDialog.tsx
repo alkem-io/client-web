@@ -3,7 +3,12 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
 import TranslationKey from '../../../../types/TranslationKey';
-import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
+import { DialogContent } from '../../core/dialog';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { Button } from '@mui/material';
 
 export interface ConfirmationDialogProps {
   entities: {
@@ -46,11 +51,12 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ entities, actions, op
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onCancel}>
-      <DialogTitle id="confirmation-dialog-title" onClose={actions.onCancel}>
-        {title}
-      </DialogTitle>
+      <DialogHeader onClose={actions.onCancel}>
+        <BlockTitle>{title}</BlockTitle>
+      </DialogHeader>
       <DialogContent>{content}</DialogContent>
-      <DialogActions sx={{ justifyContent: 'end' }}>
+      <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
+        <Button variant="contained">{t('buttons.cancel')}</Button>
         <LoadingButton
           variant="text"
           loading={state?.isLoading}
@@ -59,7 +65,7 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ entities, actions, op
         >
           {confirmButtonText}
         </LoadingButton>
-      </DialogActions>
+      </Actions>
     </Dialog>
   );
 };

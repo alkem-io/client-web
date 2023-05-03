@@ -3,7 +3,7 @@ import React, { forwardRef, useCallback, useMemo, useState } from 'react';
 import { ReferencesFragmentWithCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { BlockTitle, Caption, CaptionSmall } from '../../../../core/ui/typography';
+import { Caption, CaptionSmall } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import EditReferenceDialog, {
   EditReferenceFormValues,
@@ -22,12 +22,13 @@ import References from '../../../shared/components/References/References';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import ConfirmationDialog from '../../../../domain/platform/admin/templates/ConfirmationDialog';
+import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 
 type NeededFields = 'id' | 'calloutNameId';
 export type LinkCollectionCalloutData = Pick<ReferencesFragmentWithCallout, NeededFields>;
 
 const MAX_REFERENCES_NORMALVIEW = 3;
+
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
   calloutNames: string[];
@@ -40,36 +41,74 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const [updateReferences] = useUpdateCalloutMutation();
     const [deleteReference] = useDeleteReferenceMutation();
 
-    const [addLinkDialogOpen, setAddLinkDialogOpen] = useState<boolean>(false);
+    const [addNewReferenceDialogOpen, setAddNewReferenceDialogOpen] = useState<boolean>(false);
     const [editReference, setEditReference] = useState<EditReferenceFormValues>();
     const [deletingReferenceId, setDeletingReferenceId] = useState<string>();
 
-    // TODO: Maybe this needs review:
     const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
     const canAddLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
     const canEditLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
     const canDeleteLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
 
-    const handleCreateLinks = useCallback(
+    // New References:
+    const getNewReferenceId = useCallback(async () => {
+      const { data } = await createReference({
+        variables: {
+          input: {
+            profileID: callout.profile.id,
+            // References names have to be unique, if everything goes well this name will never be shown:
+            name: t('callout.link-collection.new-temporary-reference', {
+              temp: Math.random().toString(36).slice(2, 6),
+            }),
+            description: '',
+            uri: '',
+          },
+        },
+      });
+      if (!data?.createReferenceOnProfile.id) {
+        throw new Error('Error creating the new Link');
+      }
+      return data.createReferenceOnProfile.id;
+    }, [createReference, callout]);
+
+    const removeNewReference = (referenceId: string) =>
+      deleteReference({
+        variables: {
+          input: {
+            ID: referenceId,
+          },
+        },
+      });
+
+    const handleSaveNewLinks = useCallback(
       async (references: CreateReferenceFormValues[]) => {
-        for (let reference of references) {
-          await createReference({
-            variables: {
-              input: {
-                profileID: callout.profile.id,
-                ...reference,
+        await updateReferences({
+          variables: {
+            calloutData: {
+              ID: callout.id,
+              profileData: {
+                references: [
+                  ...references.map(reference => ({
+                    ID: reference.id,
+                    name: reference.name,
+                    uri: reference.uri,
+                    description: reference.description,
+                  })),
+                ],
               },
             },
-            update: cache => {
-              evictFromCache(cache, String(callout.id), 'Callout');
-            },
-          });
-        }
-        setAddLinkDialogOpen(false);
+          },
+          update: cache => {
+            evictFromCache(cache, String(callout.id), 'Callout');
+          },
+        });
+        // Close the dialog
+        setAddNewReferenceDialogOpen(false);
       },
-      [createReference, setAddLinkDialogOpen, evictFromCache, callout]
+      [updateReferences, setAddNewReferenceDialogOpen, evictFromCache, callout]
     );
 
+    // Edit existing References:
     const handleEditLink = useCallback(
       async ({ id, ...rest }: EditReferenceFormValues) => {
         await updateReferences({
@@ -91,10 +130,10 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             evictFromCache(cache, String(callout.id), 'Callout');
           },
         });
-
+        // Close the dialog
         setEditReference(undefined);
       },
-      [deletingReferenceId, setEditReference, evictFromCache, updateReferences, callout]
+      [setEditReference, evictFromCache, updateReferences, callout]
     );
 
     const handleDeleteLink = useCallback(async () => {
@@ -111,9 +150,12 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           evictFromCache(cache, String(callout.id), 'Callout');
         },
       });
+      // Close the Confirm and the Edit dialogs
+      setDeletingReferenceId(undefined);
       setEditReference(undefined);
-    }, [deletingReferenceId, setEditReference, evictFromCache, deleteReference, callout]);
+    }, [deletingReferenceId, setEditReference, setDeletingReferenceId, evictFromCache, deleteReference, callout]);
 
+    // List References:
     const limitedReferences = useMemo(() => callout.profile.references?.slice(0, MAX_REFERENCES_NORMALVIEW), [callout]);
     const isListTruncated = useMemo(
       () => (callout.profile.references?.length ?? 0) > MAX_REFERENCES_NORMALVIEW,
@@ -144,16 +186,18 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               </Caption>
             )}
             {canAddLinks && (
-              <IconButton aria-label="Add" size="small" onClick={() => setAddLinkDialogOpen(true)}>
+              <IconButton aria-label="Add" size="small" onClick={() => setAddNewReferenceDialogOpen(true)}>
                 <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
               </IconButton>
             )}
           </Box>
           <CreateReferencesDialog
-            open={addLinkDialogOpen}
-            onClose={() => setAddLinkDialogOpen(false)}
+            open={addNewReferenceDialogOpen}
             title={<Box>{t('callout.link-collection.add-link', { title: callout.profile.displayName })}</Box>}
-            onSave={({ references }) => handleCreateLinks(references)}
+            onClose={() => setAddNewReferenceDialogOpen(false)}
+            onAddMore={getNewReferenceId}
+            onRemove={removeNewReference}
+            onSave={handleSaveNewLinks}
           />
           <EditReferenceDialog
             open={Boolean(editReference)}
@@ -165,15 +209,19 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             onDelete={() => setDeletingReferenceId(editReference?.id)}
           />
           <ConfirmationDialog
-            open={Boolean(deletingReferenceId)}
-            title={t('callout.link-collection.delete-confirm-title')}
-            onClose={() => setDeletingReferenceId(undefined)}
-            onConfirm={() => handleDeleteLink()}
-          >
-            <BlockTitle>
-              {t('callout.link-collection.delete-confirm', { title: callout.profile.displayName })}
-            </BlockTitle>
-          </ConfirmationDialog>
+            actions={{
+              onConfirm: handleDeleteLink,
+              onCancel: () => setDeletingReferenceId(undefined),
+            }}
+            options={{
+              show: Boolean(deletingReferenceId),
+            }}
+            entities={{
+              titleId: 'callout.link-collection.delete-confirm-title',
+              content: t('callout.link-collection.delete-confirm', { title: callout.profile.displayName }),
+              confirmButtonTextId: 'buttons.delete',
+            }}
+          />
         </CalloutLayout>
       </PageContentBlock>
     );
