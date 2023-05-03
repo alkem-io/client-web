@@ -11,10 +11,11 @@ import FormikAutocomplete from '../../../../common/components/composite/forms/Fo
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
-import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface Props {
   context?: Context;
@@ -113,7 +114,15 @@ const HubEditForm: FC<Props> = ({
                 placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>
-            <InputField name="tagline" label={t('context.hub.tagline.title')} rows={3} />
+            <Grid item xs={12}>
+              <FormikInputField
+                name={'tagline'}
+                title={t('context.hub.tagline.title')}
+                rows={3}
+                maxLength={SMALL_TEXT_LENGTH}
+                withCounter
+              />
+            </Grid>
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <Grid item xs={12}>
               <WrapperTypography variant={'h4'} color={'primary'}>
@@ -121,13 +130,9 @@ const HubEditForm: FC<Props> = ({
               </WrapperTypography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
-            {/* <Grid item xs={12}>
-              <WrapperTypography variant={'h4'} color={'primary'}>
-                {t('components.visualSegment.title')}
-              </WrapperTypography>
+            <Grid item xs={12}>
+              {isEdit && <ContextReferenceSegment references={references || []} profileId={profileId} />}
             </Grid>
-            <VisualSegment />*/}
-            {isEdit && <ContextReferenceSegment references={references || []} profileId={profileId} />}
           </Grid>
         );
       }}
