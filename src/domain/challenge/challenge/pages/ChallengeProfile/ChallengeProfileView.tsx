@@ -17,6 +17,7 @@ import FormMode from '../../../../platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 interface ChallengeProfileViewProps {
   mode: FormMode;
@@ -104,7 +105,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
 
   let submitWired;
   return (
-    <Grid container spacing={2}>
+    <Gutters>
       <ProfileForm
         isEdit={mode === FormMode.update}
         name={challenge?.profile.displayName}
@@ -124,7 +125,7 @@ const ChallengeProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
         </WrapperTypography>
         <EditVisualsView visuals={challenge?.profile.visuals} />
       </Grid>
-    </Grid>
+    </Gutters>
   );
 };
 

@@ -1,4 +1,3 @@
-import { Grid } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +8,14 @@ import { contextSegmentSchema } from '../../../../domain/platform/admin/componen
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
-import WrapperTypography from '../../core/WrapperTypography';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 import { JourneyTypeName } from '../../../../domain/challenge/JourneyTypeName';
 import FormikInputField from './FormikInputField';
 import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export interface ProfileFormValues {
   name: string;
@@ -97,7 +97,7 @@ const ProfileForm: FC<ProfileFormProps> = ({
         }
 
         return (
-          <>
+          <Gutters>
             <NameSegment disabled={isEdit} required={!isEdit} />
             <LocationSegment
               disabled={!isEdit}
@@ -105,25 +105,17 @@ const ProfileForm: FC<ProfileFormProps> = ({
               cityFieldName="location.city"
               countryFieldName="location.country"
             />
-            <Grid item xs={12}>
-              <FormikInputField
-                name={'tagline'}
-                title={t(`context.${journeyType}.tagline.title` as const)}
-                rows={3}
-                maxLength={SMALL_TEXT_LENGTH}
-                withCounter
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <WrapperTypography variant={'h4'} color={'primary'}>
-                {t('components.tagsSegment.title')}
-              </WrapperTypography>
-            </Grid>
+            <FormikInputField
+              name={'tagline'}
+              title={t(`context.${journeyType}.tagline.title` as const)}
+              rows={3}
+              maxLength={SMALL_TEXT_LENGTH}
+              withCounter
+            />
+            <BlockSectionTitle color={'primary'}>{t('components.tagsSegment.title')}</BlockSectionTitle>
             <TagsetSegment tagsets={tagsets} />
-            <Grid item xs={12}>
-              <ContextReferenceSegment references={references || []} profileId={profile?.id} />
-            </Grid>
-          </>
+            <ContextReferenceSegment references={references || []} profileId={profile?.id} />
+          </Gutters>
         );
       }}
     </Formik>
