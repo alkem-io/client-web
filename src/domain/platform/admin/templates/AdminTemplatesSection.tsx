@@ -17,7 +17,7 @@ import { TemplateImportCardComponentProps } from './InnovationPacks/ImportTempla
 import TemplateViewDialog from './TemplateViewDialog';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { ProfileInfoWithVisualFragment, Tagset } from '../../../../core/apollo/generated/graphql-schema';
-import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 export interface Template extends Identifiable {
   profile: ProfileInfoWithVisualFragment;

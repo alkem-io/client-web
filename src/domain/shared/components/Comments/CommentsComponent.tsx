@@ -12,7 +12,7 @@ import PostMessageToCommentsForm from './PostMessageToCommentsForm';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CaptionSmall } from '../../../../core/ui/typography';
-import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 

@@ -16,7 +16,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { newReferenceName } from '../../../../common/utils/newReferenceName';
-import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 export interface CreateReferenceFormValues extends Pick<Reference, 'id' | 'name' | 'uri' | 'description'> {}
 interface FormValueType {

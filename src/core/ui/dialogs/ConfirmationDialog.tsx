@@ -2,12 +2,12 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
-import TranslationKey from '../../../../types/TranslationKey';
-import { DialogContent } from '../../core/dialog';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../../core/ui/typography';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../core/ui/grid/utils';
+import TranslationKey from '../../../types/TranslationKey';
+import { DialogContent } from '../../../common/components/core/dialog';
+import DialogHeader from '../dialog/DialogHeader';
+import { BlockTitle } from '../typography';
+import { Actions } from '../actions/Actions';
+import { gutters } from '../grid/utils';
 import { Button } from '@mui/material';
 
 export interface ConfirmationDialogProps {

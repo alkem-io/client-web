@@ -22,7 +22,7 @@ import References from '../../../shared/components/References/References';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 
 type NeededFields = 'id' | 'calloutNameId';
