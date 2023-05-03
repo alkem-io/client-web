@@ -9,7 +9,9 @@ import { BlockTitle } from '../typography';
 import { Actions } from '../actions/Actions';
 import { gutters } from '../grid/utils';
 import { Button } from '@mui/material';
-
+/**
+ * @deprecated Needs refactor, do not base other components on this Props.
+ */
 export interface ConfirmationDialogProps {
   entities: {
     titleId?: TranslationKey;
