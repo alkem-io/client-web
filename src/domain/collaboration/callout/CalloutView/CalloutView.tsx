@@ -8,12 +8,12 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
 import WhiteboardCallout from '../whiteboard/WhiteboardCallout';
 
-export interface CalloutsViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
+export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCallout;
   isSubscribedToComments: boolean;
 }
 
-const CalloutView = forwardRef<HTMLDivElement, CalloutsViewProps>(
+const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(
   ({ callout, isSubscribedToComments, ...props }, ref) => {
     const canCreate = (privilege: AuthorizationPrivilege) => callout.authorization?.myPrivileges?.includes(privilege);
 

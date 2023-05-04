@@ -321,8 +321,8 @@ mutation checkoutCanvas($input: CanvasCheckoutEventInput!) {
   }
 }
 
-subscription canvasContentUpdated {
-  canvasContentUpdated {
+subscription canvasContentUpdated($canvasIDs: [UUID!]!) {
+  canvasContentUpdated(canvasIDs: $canvasIDs) {
     canvasID
     value
   }
