@@ -35,7 +35,7 @@ export interface AspectSettingsContainerEntities {
 
 export interface AspectSettingsContainerActions {
   handleUpdate: (aspect: AspectUpdateData) => Promise<void>;
-  handleAddReference: (push: PushFunc) => void;
+  handleAddReference: (push: PushFunc, referencesLength: number) => void;
   handleRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
   handleDelete: (id: string) => Promise<void>;
 }
@@ -153,12 +153,12 @@ const useAspectSettings: ContainerHook<
     });
   };
 
-  const handleAddReference = (push: PushFunc) => {
+  const handleAddReference = (push: PushFunc, referencesLength: number) => {
     setPush(push);
     if (aspect) {
       addReference({
         profileId: aspect.profile.id,
-        name: newReferenceName(aspect.profile.references?.length ?? 0),
+        name: newReferenceName(referencesLength),
       });
     }
   };
