@@ -19,7 +19,6 @@ import PageContentColumn from '../../../../../core/ui/content/PageContentColumn'
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../../core/ui/content/SeeMore';
-import JourneyDashboardVision from './JourneyDashboardVision';
 import { CoreEntityIdTypes } from '../../../../shared/types/CoreEntityIds';
 import { Identifiable } from '../../../../shared/types/Identifiable';
 import { JourneyTypeName } from '../../../JourneyTypeName';
@@ -39,7 +38,7 @@ export interface JourneyDashboardViewProps<ChildEntity extends Identifiable>
   extends EntityDashboardContributors,
     EntityDashboardLeads,
     Partial<CoreEntityIdTypes> {
-  vision?: string;
+  vision?: ReactNode;
   communityId?: string;
   organization?: unknown;
   references: Reference[] | undefined;
@@ -134,7 +133,7 @@ const JourneyDashboardView = <ChildEntity extends Identifiable>({
   return (
     <PageContent>
       <PageContentColumn columns={4}>
-        <JourneyDashboardVision vision={vision} journeyTypeName={journeyTypeName} />
+        {vision}
         <ShareButton
           title={t('share-dialog.share-this', { entity: t(`common.${journeyTypeName}` as const) })}
           url={journeyLocation && buildJourneyUrl(journeyLocation)}
