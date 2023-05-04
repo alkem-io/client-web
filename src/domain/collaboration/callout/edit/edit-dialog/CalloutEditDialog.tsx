@@ -6,9 +6,7 @@ import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../../utils/calloutIcons';
 import { DialogActions, DialogContent } from '../../../../../common/components/core/dialog';
 import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import ConfirmationDialog, {
-  ConfirmationDialogProps,
-} from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog, { ConfirmationDialogProps } from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import {
