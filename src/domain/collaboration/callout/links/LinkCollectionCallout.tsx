@@ -46,6 +46,9 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
     const [editReference, setEditReference] = useState<EditReferenceFormValues>();
     const [deletingReferenceId, setDeletingReferenceId] = useState<string>();
 
+    const closeAddNewDialog = () => setAddNewReferenceDialogOpen(false);
+    const closeEditDialog = () => setEditReference(undefined);
+
     const calloutPrivileges = callout?.authorization?.myPrivileges ?? [];
     const canAddLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
     const canEditLinks = calloutPrivileges.includes(AuthorizationPrivilege.Update);
@@ -88,14 +91,10 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             calloutData: {
               ID: callout.id,
               profileData: {
-                references: [
-                  ...references.map(reference => ({
-                    ID: reference.id,
-                    name: reference.name,
-                    uri: reference.uri,
-                    description: reference.description,
-                  })),
-                ],
+                references: references.map(({ id, ...reference }) => ({
+                  ...reference,
+                  ID: id,
+                })),
               },
             },
           },
@@ -103,10 +102,10 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             evictFromCache(cache, String(callout.id), 'Callout');
           },
         });
-        // Close the dialog
-        setAddNewReferenceDialogOpen(false);
+
+        closeAddNewDialog();
       },
-      [updateReferences, setAddNewReferenceDialogOpen, evictFromCache, callout]
+      [updateReferences, closeAddNewDialog, evictFromCache, callout]
     );
 
     // Edit existing References:
@@ -131,10 +130,10 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             evictFromCache(cache, String(callout.id), 'Callout');
           },
         });
-        // Close the dialog
-        setEditReference(undefined);
+
+        closeEditDialog();
       },
-      [setEditReference, evictFromCache, updateReferences, callout]
+      [closeEditDialog, evictFromCache, updateReferences, callout]
     );
 
     const handleDeleteLink = useCallback(async () => {
@@ -153,8 +152,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
       });
       // Close the Confirm and the Edit dialogs
       setDeletingReferenceId(undefined);
-      setEditReference(undefined);
-    }, [deletingReferenceId, setEditReference, setDeletingReferenceId, evictFromCache, deleteReference, callout]);
+      closeEditDialog();
+    }, [deletingReferenceId, closeEditDialog, setDeletingReferenceId, evictFromCache, deleteReference, callout]);
 
     // List References:
     const limitedReferences = useMemo(() => callout.profile.references?.slice(0, MAX_REFERENCES_NORMALVIEW), [callout]);
@@ -195,14 +194,14 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           <CreateReferencesDialog
             open={addNewReferenceDialogOpen}
             title={<Box>{t('callout.link-collection.add-link', { title: callout.profile.displayName })}</Box>}
-            onClose={() => setAddNewReferenceDialogOpen(false)}
+            onClose={closeAddNewDialog}
             onAddMore={getNewReferenceId}
             onRemove={removeNewReference}
             onSave={handleSaveNewLinks}
           />
           <EditReferenceDialog
             open={Boolean(editReference)}
-            onClose={() => setEditReference(undefined)}
+            onClose={closeEditDialog}
             title={<Box>{t('callout.link-collection.edit-link', { title: editReference?.name })}</Box>}
             reference={editReference!}
             onSave={values => handleEditLink(values)}

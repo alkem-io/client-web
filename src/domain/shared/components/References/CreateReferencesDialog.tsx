@@ -53,7 +53,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
 
   const handleOnClose = () => setCancelling(true);
   const handleConfirmCancelling = async () => {
-    for (let referenceId of hangingReferenceIds) {
+    for (const referenceId of hangingReferenceIds) {
       await onRemove(referenceId);
     }
     setHangingReferenceIds([]);
@@ -96,8 +96,8 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
     <>
       <Dialog open={open} aria-labelledby="reference-creation" fullWidth maxWidth="lg">
         <DialogHeader onClose={handleOnClose}>
-          <Box display="flex" alignItems="center">
-            <CalloutIcon sx={{ marginRight: theme => theme.spacing(1) }} />
+          <Box display="flex" alignItems="center" gap={gutters(0.5)}>
+            <CalloutIcon />
             <BlockTitle>{title}</BlockTitle>
           </Box>
         </DialogHeader>
@@ -129,7 +129,7 @@ const CreateReferencesDialog: FC<CreateReferencesDialogProps> = ({
               return (
                 <>
                   {currentReferences?.map((reference, index) => (
-                    <Gutters key={index}>
+                    <Gutters key={reference.id}>
                       <Gutters row={!isMobile} disablePadding alignItems="start">
                         <FormikInputField
                           name={`${fieldName}.${index}.name`}
