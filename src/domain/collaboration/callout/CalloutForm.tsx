@@ -131,7 +131,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       },
       whiteboard: callout?.whiteboard ?? {
         profileData: {
-          displayName: t('components.callout-creation.whiteboard.label'),
+          displayName: t('components.callout-creation.whiteboard.title'),
         },
         value: JSON.stringify(EmptyWhiteboard),
       },

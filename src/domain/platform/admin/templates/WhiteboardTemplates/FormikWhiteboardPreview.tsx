@@ -11,6 +11,9 @@ interface FormikWhiteboardPreviewProps extends BoxProps {
   canEdit: boolean;
   onChangeValue?: (value: string) => void;
   loading?: boolean;
+  dialogProps?: {
+    title?: string;
+  };
 }
 
 const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
@@ -25,6 +28,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   canEdit,
   onChangeValue,
   loading,
+  dialogProps,
   ...containerProps
 }) => {
   const { t } = useTranslation();
@@ -103,7 +107,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   headerActions: undefined,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
-                      {t('buttons.edit')}
+                      {dialogProps?.title}
                     </BlockTitle>
                   ),
                 }}

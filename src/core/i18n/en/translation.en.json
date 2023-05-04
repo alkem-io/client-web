@@ -776,7 +776,10 @@
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "whiteboard": {
-        "label": "Whiteboard:"
+        "title": "Whiteboard:"
+      },
+      "whiteboard-field-dialog": {
+        "title": "Edit Whiteboard"
       },
       "template-step": {
         "title": "Templates",

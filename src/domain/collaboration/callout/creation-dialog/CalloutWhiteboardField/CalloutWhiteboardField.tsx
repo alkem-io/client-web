@@ -35,10 +35,16 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
     <>
       <Box display="flex" alignItems="center">
         <Box>
-          <Caption>{t('components.callout-creation.whiteboard.label')}</Caption>
+          <Caption>{t('components.callout-creation.whiteboard.title')}</Caption>
         </Box>
       </Box>
-      <FormikWhiteboardPreview name={`${name}.value`} canEdit onChangeValue={handleChange} maxHeight={gutters(12)} />
+      <FormikWhiteboardPreview
+        name={`${name}.value`}
+        canEdit
+        onChangeValue={handleChange}
+        maxHeight={gutters(12)}
+        dialogProps={{ title: t('components.callout-creation.whiteboard-field-dialog.title') }}
+      />
     </>
   );
 };
