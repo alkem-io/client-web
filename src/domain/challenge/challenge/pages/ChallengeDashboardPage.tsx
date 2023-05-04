@@ -34,11 +34,12 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const { hubNameId, challengeNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } = useCallouts({
-    hubNameId,
-    challengeNameId,
-    calloutGroups: [CalloutsGroup.HomeTop],
-  });
+  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, reloadCallout } =
+    useCallouts({
+      hubNameId,
+      challengeNameId,
+      calloutGroups: [CalloutsGroup.HomeTop],
+    });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -109,6 +110,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={reloadCallout}
                     group={CalloutsGroup.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}

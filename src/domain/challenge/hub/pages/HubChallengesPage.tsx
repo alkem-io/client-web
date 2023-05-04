@@ -55,11 +55,18 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
     [navigate, createChallenge, hubNameId]
   );
 
-  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
-    useCallouts({
-      hubNameId,
-      calloutGroups: [CalloutsGroup.ChallengesLeft, CalloutsGroup.ChallengesRight],
-    });
+  const {
+    groupedCallouts,
+    canCreateCallout,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    reloadCallout,
+  } = useCallouts({
+    hubNameId,
+    calloutGroups: [CalloutsGroup.ChallengesLeft, CalloutsGroup.ChallengesRight],
+  });
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>
@@ -111,6 +118,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                onCalloutUpdate={reloadCallout}
                 group={CalloutsGroup.ChallengesLeft}
               />
             }
@@ -124,6 +132,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                onCalloutUpdate={reloadCallout}
                 group={CalloutsGroup.ChallengesRight}
               />
             }

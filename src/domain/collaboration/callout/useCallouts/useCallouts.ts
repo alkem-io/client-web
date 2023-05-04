@@ -96,6 +96,7 @@ interface UseCalloutsProvided {
   calloutNames: string[];
   loading: boolean;
   reloadCallouts: (options?: Partial<LazyQueryHookOptions<CalloutsQuery, CalloutsQueryVariables>>) => void;
+  reloadCallout: (calloutId: string) => void;
   calloutsSortOrder: string[];
   onCalloutsSortOrderUpdate: (update: OrderUpdate) => void;
 }
@@ -122,7 +123,11 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     calloutGroups: params.calloutGroups,
   };
 
-  const { data: calloutsData, loading: calloutsLoading } = useCalloutsQuery({
+  const {
+    data: calloutsData,
+    loading: calloutsLoading,
+    refetch: refetchCallouts,
+  } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
     skip: !params.hubNameId,
@@ -137,6 +142,12 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     ?.collaboration;
 
   const reloadCallouts = getCallouts;
+
+  const reloadCallout = (calloutId: string) => {
+    refetchCallouts({
+      calloutIds: [calloutId],
+    });
+  };
 
   const commentCalloutIds = collaboration?.callouts?.filter(x => x.type === CalloutType.Comments).map(x => x.id) ?? [];
 
@@ -220,6 +231,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     calloutNames,
     loading: calloutsLoading,
     reloadCallouts,
+    reloadCallout,
     calloutsSortOrder,
     onCalloutsSortOrderUpdate,
   };

@@ -36,7 +36,10 @@ interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
 }
 
 const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutProps>(
-  ({ callout, loading, expanded, contributionsCount, onExpand, blockProps, ...calloutLayoutProps }, ref) => {
+  (
+    { callout, loading, expanded, contributionsCount, onExpand, blockProps, onCalloutUpdate, ...calloutLayoutProps },
+    ref
+  ) => {
     const { t } = useTranslation();
     const [createReference] = useCreateReferenceOnProfileMutation();
     const [updateReferences] = useUpdateCalloutMutation();
@@ -98,8 +101,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               },
             },
           },
-          update: cache => {
-            evictFromCache(cache, String(callout.id), 'Callout');
+          update: () => {
+            onCalloutUpdate?.();
           },
         });
 
@@ -126,8 +129,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               },
             },
           },
-          update: cache => {
-            evictFromCache(cache, String(callout.id), 'Callout');
+          update: () => {
+            onCalloutUpdate?.();
           },
         });
 
@@ -146,8 +149,8 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             ID: deletingReferenceId,
           },
         },
-        update: cache => {
-          evictFromCache(cache, String(callout.id), 'Callout');
+        update: () => {
+          onCalloutUpdate?.();
         },
       });
       // Close the Confirm and the Edit dialogs
