@@ -222,8 +222,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
         <>
           <Gutters>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-            {formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
+            {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
             <FormikMarkdownField
               name="description"
               title={t('components.callout-creation.info-step.description')}
