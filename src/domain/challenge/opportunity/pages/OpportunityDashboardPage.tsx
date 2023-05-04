@@ -12,6 +12,11 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
+import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { useTranslation } from 'react-i18next';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -30,13 +35,32 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
     calloutGroups: [CalloutsGroup.HomeTop],
   });
 
+  const { t } = useTranslation();
+
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
       <OpportunityPageContainer>
         {(entities, state) => (
           <>
             <JourneyDashboardView
-              vision={entities.opportunity?.context?.vision}
+              vision={
+                <JourneyDashboardVision
+                  header={
+                    <PageContentBlockHeader
+                      title={`${t('common.welcome')}!`}
+                      actions={
+                        <ApplicationButtonContainer>
+                          {({ applicationButtonProps }) =>
+                            applicationButtonProps.isMember && <DashboardMemberIcon journeyTypeName="opportunity" />
+                          }
+                        </ApplicationButtonContainer>
+                      }
+                    />
+                  }
+                  vision={entities.opportunity?.context?.vision}
+                  journeyTypeName="opportunity"
+                />
+              }
               hubNameId={entities.hubNameId}
               challengeNameId={entities.challengeNameId}
               opportunityNameId={entities.opportunity?.nameID}
