@@ -39,6 +39,7 @@ export interface CalloutsViewProps {
   scrollToCallout?: boolean;
   sortOrder: string[];
   onSortOrderUpdate?: (update: OrderUpdate) => void;
+  onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
   calloutNames: string[];
   blockProps?: CalloutViewProps['blockProps'];
@@ -53,6 +54,7 @@ const CalloutsView = ({
   loading = false,
   sortOrder,
   onSortOrderUpdate,
+  onCalloutUpdate,
   blockProps,
   disableMarginal,
 }: CalloutsViewProps) => {
@@ -143,6 +145,7 @@ const CalloutsView = ({
               challengeNameId={challengeNameId}
               opportunityNameId={opportunityNameId}
               onCalloutEdit={handleEdit}
+              onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
               onVisibilityChange={handleVisibilityChange}
               onCalloutDelete={handleDelete}
               isSubscribedToComments={callout.isSubscribedToComments}

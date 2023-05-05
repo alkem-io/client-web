@@ -36,12 +36,19 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
     throw new Error('Must be within a Hub');
   }
 
-  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
-    useCallouts({
-      hubNameId,
-      challengeNameId,
-      opportunityNameId,
-    });
+  const {
+    groupedCallouts,
+    canCreateCallout,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+  } = useCallouts({
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
+  });
 
   const callouts = groupedCallouts[CalloutsGroup.KnowledgeBase];
 
@@ -129,6 +136,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
             />

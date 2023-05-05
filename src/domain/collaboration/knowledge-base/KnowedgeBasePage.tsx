@@ -39,13 +39,20 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     throw new Error('Must be within a Hub');
   }
 
-  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
-    useCallouts({
-      hubNameId,
-      challengeNameId,
-      opportunityNameId,
-      calloutGroups: [CalloutsGroup.KnowledgeBase],
-    });
+  const {
+    groupedCallouts,
+    canCreateCallout,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+  } = useCallouts({
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
+    calloutGroups: [CalloutsGroup.KnowledgeBase],
+  });
 
   const { t } = useTranslation();
 
@@ -134,6 +141,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
             />

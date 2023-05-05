@@ -29,11 +29,12 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const { hubNameId, opportunityNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } = useCallouts({
-    hubNameId,
-    opportunityNameId,
-    calloutGroups: [CalloutsGroup.HomeTop],
-  });
+  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
+    useCallouts({
+      hubNameId,
+      opportunityNameId,
+      calloutGroups: [CalloutsGroup.HomeTop],
+    });
 
   const { t } = useTranslation();
 
@@ -91,6 +92,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={refetchCallout}
                     group={CalloutsGroup.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
