@@ -6,7 +6,7 @@ import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
-import WhiteboardCallout from '../whiteboard/WhiteboardCallout';
+import WhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCallout;
