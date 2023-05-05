@@ -131,12 +131,13 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     skip: !params.hubNameId,
   });
 
-  const [getSingleCallout] = useCalloutsLazyQuery({
+  const [getCallouts] = useCalloutsLazyQuery({
+    variables,
     fetchPolicy: 'cache-and-network',
   });
 
   const refetchCallout = (calloutId: string) => {
-    getSingleCallout({
+    getCallouts({
       variables: {
         ...variables,
         calloutIds: [calloutId],
