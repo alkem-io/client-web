@@ -6,7 +6,7 @@ import CommentsCallout from '../comments/CommentsCallout';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import LinkCollectionCallout from '../links/LinkCollectionCallout';
-import WhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
+import SingleWhiteboardCallout from '../SingleWhiteboard/SingleWhiteboardCallout';
 
 export interface CalloutViewProps extends Omit<BaseCalloutViewProps, 'canCreate'> {
   callout: TypedCallout;
@@ -43,7 +43,7 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(
       case CalloutType.LinkCollection:
         return <LinkCollectionCallout ref={ref} callout={callout} {...props} />;
       case CalloutType.SingleWhiteboard:
-        return <WhiteboardCallout ref={ref} callout={callout} {...props} />;
+        return <SingleWhiteboardCallout ref={ref} callout={callout} {...props} />;
       default:
         throw new Error(`Unexpected Callout type "${callout['type']}"`);
     }

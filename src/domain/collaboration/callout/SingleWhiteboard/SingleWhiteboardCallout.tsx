@@ -1,24 +1,22 @@
-import React, { forwardRef, useMemo } from 'react';
+import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
-import { CalloutState, WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
-import { Skeleton } from '@mui/material';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
-import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
+import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { CanvasCardCanvas } from '../canvas/types';
-import CanvasCard from '../canvas/CanvasCard';
+import ImageWithCaption from '../../../shared/components/ImageWithCaption';
+import { useTranslation } from 'react-i18next';
 
-interface WhiteboardCalloutProps extends BaseCalloutViewProps {
+interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCardCanvas[];
     whiteboardTemplate: WhiteboardTemplate;
   };
 }
 
-const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
+const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCalloutProps>(
   (
     {
       callout,
@@ -32,6 +30,7 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
     },
     ref
   ) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const navigateToCanvas = (canvas: CanvasCardCanvas) => {
@@ -44,27 +43,21 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
       );
     };
 
-    const showCards = useMemo(
-      () => (!loading && callout.canvases.length > 0) || callout.state !== CalloutState.Closed,
-      [loading, callout.canvases.length, callout.state]
-    );
-
     return (
       <>
         <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
           <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
-            {showCards && (
-              <ScrollableCardsLayout
-                items={loading ? [undefined, undefined] : callout.canvases}
-                deps={[hubNameId, challengeNameId, opportunityNameId]}
-                maxHeight={gutters(22)}
-                cards={false}
-              >
-                {canvas =>
-                  canvas ? <CanvasCard key={canvas.id} canvas={canvas} onClick={navigateToCanvas} /> : <Skeleton />
-                }
-              </ScrollableCardsLayout>
-            )}
+            {callout.canvases.map(canvas => {
+              return (
+                <ImageWithCaption
+                  key={canvas.id}
+                  caption={t('callout.single-whiteboard.click-to-see')}
+                  src={canvas.profile.visual?.uri}
+                  alt={canvas.profile.displayName}
+                  onClick={() => navigateToCanvas(canvas)}
+                />
+              );
+            })}
           </CalloutLayout>
         </PageContentBlock>
       </>
@@ -72,4 +65,4 @@ const WhiteboardCallout = forwardRef<HTMLDivElement, WhiteboardCalloutProps>(
   }
 );
 
-export default WhiteboardCallout;
+export default SingleWhiteboardCallout;
