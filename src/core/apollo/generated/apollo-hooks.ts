@@ -1566,7 +1566,7 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: $calloutGroups) {
+    callouts(groups: $calloutGroups, IDs: $calloutIds) {
       ...Callout
     }
   }
@@ -10822,6 +10822,7 @@ export const CalloutsDocument = gql`
     $challengeNameId: UUID_NAMEID = "mockid"
     $opportunityNameId: UUID_NAMEID = "mockid"
     $calloutGroups: [String!]
+    $calloutIds: [UUID_NAMEID!]
   ) {
     hub(ID: $hubNameId) {
       id
@@ -10871,6 +10872,7 @@ export const CalloutsDocument = gql`
  *      challengeNameId: // value for 'challengeNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *      calloutGroups: // value for 'calloutGroups'
+ *      calloutIds: // value for 'calloutIds'
  *   },
  * });
  */

@@ -20,7 +20,6 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import References from '../../../shared/components/References/References';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
@@ -36,7 +35,10 @@ interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
 }
 
 const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutProps>(
-  ({ callout, loading, expanded, contributionsCount, onExpand, blockProps, ...calloutLayoutProps }, ref) => {
+  (
+    { callout, loading, expanded, contributionsCount, onExpand, blockProps, onCalloutUpdate, ...calloutLayoutProps },
+    ref
+  ) => {
     const { t } = useTranslation();
     const [createReference] = useCreateReferenceOnProfileMutation();
     const [updateReferences] = useUpdateCalloutMutation();
@@ -98,14 +100,11 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               },
             },
           },
-          update: cache => {
-            evictFromCache(cache, String(callout.id), 'Callout');
-          },
         });
-
+        onCalloutUpdate?.();
         closeAddNewDialog();
       },
-      [updateReferences, closeAddNewDialog, evictFromCache, callout]
+      [updateReferences, closeAddNewDialog, onCalloutUpdate, callout]
     );
 
     // Edit existing References:
@@ -126,14 +125,11 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
               },
             },
           },
-          update: cache => {
-            evictFromCache(cache, String(callout.id), 'Callout');
-          },
         });
-
+        onCalloutUpdate?.();
         closeEditDialog();
       },
-      [closeEditDialog, evictFromCache, updateReferences, callout]
+      [closeEditDialog, onCalloutUpdate, updateReferences, callout]
     );
 
     const handleDeleteLink = useCallback(async () => {
@@ -146,14 +142,11 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
             ID: deletingReferenceId,
           },
         },
-        update: cache => {
-          evictFromCache(cache, String(callout.id), 'Callout');
-        },
       });
-      // Close the Confirm and the Edit dialogs
+      onCalloutUpdate?.();
       setDeletingReferenceId(undefined);
       closeEditDialog();
-    }, [deletingReferenceId, closeEditDialog, setDeletingReferenceId, evictFromCache, deleteReference, callout]);
+    }, [deletingReferenceId, closeEditDialog, setDeletingReferenceId, onCalloutUpdate, deleteReference, callout]);
 
     // List References:
     const limitedReferences = useMemo(() => callout.profile.references?.slice(0, MAX_REFERENCES_NORMALVIEW), [callout]);

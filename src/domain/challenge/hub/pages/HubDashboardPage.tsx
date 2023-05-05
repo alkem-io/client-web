@@ -32,11 +32,18 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
 
   const { hubNameId } = useUrlParams();
 
-  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
-    useCallouts({
-      hubNameId,
-      calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
-    });
+  const {
+    groupedCallouts,
+    canCreateCallout,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+  } = useCallouts({
+    hubNameId,
+    calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
+  });
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -97,6 +104,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={refetchCallout}
                     group={CalloutsGroup.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
@@ -113,6 +121,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
                   group={CalloutsGroup.HomeLeft}
                 />
               }
@@ -126,6 +135,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
                   group={CalloutsGroup.HomeRight}
                 />
               }

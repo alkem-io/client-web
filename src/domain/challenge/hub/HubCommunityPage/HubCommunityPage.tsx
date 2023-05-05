@@ -36,11 +36,18 @@ const HubCommunityPage = () => {
     throw new TypeError('Must be within a Hub');
   }
 
-  const { groupedCallouts, canCreateCallout, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } =
-    useCallouts({
-      hubNameId,
-      calloutGroups: [CalloutsGroup.CommunityLeft, CalloutsGroup.CommunityRight],
-    });
+  const {
+    groupedCallouts,
+    canCreateCallout,
+    calloutNames,
+    loading,
+    calloutsSortOrder,
+    onCalloutsSortOrderUpdate,
+    refetchCallout,
+  } = useCallouts({
+    hubNameId,
+    calloutGroups: [CalloutsGroup.CommunityLeft, CalloutsGroup.CommunityRight],
+  });
 
   const [isContactLeadUsersDialogOpen, setIsContactLeadUsersDialogOpen] = useState(false);
   const openContactLeadsDialog = () => {
@@ -117,6 +124,7 @@ const HubCommunityPage = () => {
             sortOrder={calloutsSortOrder}
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
+            onCalloutUpdate={refetchCallout}
             group={CalloutsGroup.CommunityLeft}
           />
         </PageContentColumn>
@@ -135,6 +143,7 @@ const HubCommunityPage = () => {
             sortOrder={calloutsSortOrder}
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
+            onCalloutUpdate={refetchCallout}
             group={CalloutsGroup.CommunityRight}
           />
         </PageContentColumn>

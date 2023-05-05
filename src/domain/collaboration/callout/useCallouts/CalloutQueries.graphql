@@ -6,6 +6,7 @@ query Callouts(
   $challengeNameId: UUID_NAMEID = "mockid"
   $opportunityNameId: UUID_NAMEID = "mockid"
   $calloutGroups: [String!]
+  $calloutIds: [UUID_NAMEID!]
 ) {
   hub(ID: $hubNameId) {
     id
@@ -139,7 +140,7 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts(groups: $calloutGroups) {
+  callouts(groups: $calloutGroups, IDs: $calloutIds) {
     ...Callout
   }
 }
