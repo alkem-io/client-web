@@ -58,7 +58,9 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ entities, actions, op
       </DialogHeader>
       <DialogContent>{content}</DialogContent>
       <Actions padding={gutters()} sx={{ justifyContent: 'end' }}>
-        <Button variant="contained">{t('buttons.cancel')}</Button>
+        <Button variant="contained" onClick={actions.onCancel}>
+          {t('buttons.cancel')}
+        </Button>
         <LoadingButton
           variant="text"
           loading={state?.isLoading}
