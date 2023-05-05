@@ -49,7 +49,7 @@ const App: FC = () => {
         paddingBottom={cookieConsentHeight && `${cookieConsentHeight}px`}
         display="flex"
         flexDirection="column"
-        minHeight="100%"
+        flexGrow={1}
       >
         <Outlet />
       </Box>
