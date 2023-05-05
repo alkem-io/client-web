@@ -28,6 +28,7 @@ import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
 import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
+  WhiteboardFieldSubmittedValuesWithPreviewImage,
 } from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
 
 type FormValueType = {
@@ -40,7 +41,7 @@ type FormValueType = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -70,7 +71,7 @@ export type CalloutFormOutput = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
 };
 
 export interface CalloutFormProps {
@@ -129,12 +130,18 @@ const CalloutForm: FC<CalloutFormProps> = ({
         },
         value: JSON.stringify(EmptyWhiteboard),
       },
-      whiteboard: callout?.whiteboard ?? {
-        profileData: {
-          displayName: t('components.callout-creation.whiteboard.title'),
-        },
-        value: JSON.stringify(EmptyWhiteboard),
-      },
+      whiteboard: callout?.whiteboard
+        ? {
+            ...callout.whiteboard,
+            previewImage: undefined,
+          }
+        : {
+            profileData: {
+              displayName: t('components.callout-creation.whiteboard.title'),
+            },
+            value: JSON.stringify(EmptyWhiteboard),
+            previewImage: undefined,
+          },
     }),
     [callout?.id, tagsets]
   );
@@ -167,6 +174,12 @@ const CalloutForm: FC<CalloutFormProps> = ({
         profile: yup.object().shape({
           displayName: yup.string(),
         }),
+        value: yup.string().required(),
+      }),
+    }),
+    whiteboard: yup.object().when('type', {
+      is: CalloutType.SingleWhiteboard,
+      then: yup.object().shape({
         value: yup.string().required(),
       }),
     }),

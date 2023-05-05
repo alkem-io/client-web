@@ -1,20 +1,20 @@
 // TODO: This should be coming from the server:
-export const BannerNarrowDimensions: BannerCardParams = {
+export const BannerNarrowDimensions: PreviewImageDimensions = {
   maxHeight: 256,
   maxWidth: 410,
   minHeight: 192,
   minWidth: 307,
 };
 
-export const BannerDimensions: BannerCardParams = {
-  maxHeight: 384,
+export const BannerDimensions: PreviewImageDimensions = {
+  minWidth: 384,
   maxWidth: 1536,
   minHeight: 64,
-  minWidth: 256,
+  maxHeight: 256,
 };
 ////
 
-interface BannerCardParams {
+export interface PreviewImageDimensions {
   maxWidth: number;
   maxHeight: number;
   minWidth: number;
@@ -29,7 +29,7 @@ interface Dimensions {
 }
 
 const getCanvasBannerCardDimensions =
-  (params: BannerCardParams | undefined) =>
+  (params: PreviewImageDimensions | undefined) =>
   (contentWidth: number, contentHeight: number): Dimensions => {
     if (!params) {
       return {

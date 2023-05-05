@@ -5,6 +5,7 @@ import {
   useCreateCalloutMutation,
   useHubCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
+  useUploadVisualMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
@@ -12,7 +13,7 @@ import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/temp
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
 import { Identifiable } from '../../../../shared/types/Identifiable';
-import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValuesWithPreviewImage } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 
 export type CalloutCreationType = {
   profile: {
@@ -25,7 +26,7 @@ export type CalloutCreationType = {
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
   group?: string;
 };
 
@@ -42,6 +43,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
 
+  const [uploadVisual] = useUploadVisualMutation({});
   const { data: hubData } = useHubCollaborationIdQuery({
     variables: { hubId: hubNameId! },
     skip: !hubNameId || !!challengeNameId || !!opportunityNameId,
@@ -112,14 +114,38 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
+      // Remove the previewImage from the form data if it's present, to handle it separatelly
+      const { callout: cleanCallout, previewImage } = handlePreviewImage(callout);
+
       const result = await createCallout({
         variables: {
           calloutData: {
             collaborationID,
-            ...callout,
+            ...cleanCallout,
           },
         },
       });
+
+      if (previewImage && result.data?.createCalloutOnCollaboration.canvases?.[0]?.profile.preview?.id) {
+        if (
+          result.data?.createCalloutOnCollaboration.canvases &&
+          result.data?.createCalloutOnCollaboration.canvases.length > 0
+        ) {
+          const visualId = result.data.createCalloutOnCollaboration.canvases[0].profile.preview.id;
+          if (visualId) {
+            await uploadVisual({
+              variables: {
+                file: new File([previewImage], `/SingleWhiteboardCallout-${callout.profile.displayName}-preview.png`, {
+                  type: 'image/png',
+                }),
+                uploadData: {
+                  visualID: visualId,
+                },
+              },
+            });
+          }
+        }
+      }
 
       setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
@@ -128,6 +154,17 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     },
     [collaborationID, createCallout]
   );
+
+  const handlePreviewImage = (callout: CalloutCreationType) => {
+    if (callout.whiteboard) {
+      const {
+        whiteboard: { previewImage, ...restWhiteboard },
+        ...rest
+      } = callout;
+      return { callout: { whiteboard: restWhiteboard, ...rest }, previewImage };
+    }
+    return { callout };
+  };
 
   return {
     isCalloutCreationDialogOpen,

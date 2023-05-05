@@ -14,7 +14,10 @@ import { Loading } from '../../../../common/components/core';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import getCanvasBannerCardDimensions, { BannerNarrowDimensions } from '../utils/getCanvasBannerCardDimensions';
+import getCanvasBannerCardDimensions, {
+  PreviewImageDimensions,
+  BannerNarrowDimensions,
+} from '../utils/getCanvasBannerCardDimensions';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button, ButtonProps } from '@mui/material';
@@ -53,6 +56,7 @@ interface CanvasDialogProps<Canvas extends CanvasWithValue> {
     checkedOutByMe: boolean;
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
+    previewDimensions?: PreviewImageDimensions;
   };
   state?: {
     updatingCanvas?: boolean;
@@ -133,7 +137,14 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       appState,
       elements,
       files: files ?? null,
-      getDimensions: getCanvasBannerCardDimensions(canvas?.profile?.visual ?? BannerNarrowDimensions),
+      getDimensions: getCanvasBannerCardDimensions(
+        // If specified in the options, we'll generate a preview image of these dimensions
+        options.previewDimensions ??
+          // If canvas already exists, banner dimensions will come in the profile
+          canvas?.profile?.visual ??
+          // And by default just generate a BannerNarrow
+          BannerNarrowDimensions // TODO: This should come from the server
+      ),
       mimeType: 'image/png',
     });
 

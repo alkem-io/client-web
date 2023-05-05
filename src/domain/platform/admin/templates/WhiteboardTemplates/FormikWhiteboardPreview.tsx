@@ -5,15 +5,17 @@ import CanvasWhiteboard from '../../../../../common/components/composite/entitie
 import CanvasDialog from '../../../../collaboration/canvas/CanvasDialog/CanvasDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
+import { PreviewImageDimensions } from '../../../../collaboration/canvas/utils/getCanvasBannerCardDimensions';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Canvas value
   canEdit: boolean;
-  onChangeValue?: (value: string) => void;
+  onChangeValue?: (value: string, previewImage?: Blob) => void;
   loading?: boolean;
   dialogProps?: {
     title?: string;
   };
+  previewDimensions?: PreviewImageDimensions;
 }
 
 const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
@@ -29,6 +31,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   onChangeValue,
   loading,
   dialogProps,
+  previewDimensions,
   ...containerProps
 }) => {
   const { t } = useTranslation();
@@ -91,9 +94,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   onCancel: () => setEditDialogOpen(false),
                   onCheckin: undefined,
                   onCheckout: undefined,
-                  onUpdate: canvas => {
+                  onUpdate: (canvas, previewImage) => {
                     helpers.setValue(canvas.value);
-                    onChangeValue?.(canvas.value);
+                    onChangeValue?.(canvas.value, previewImage);
                     setEditDialogOpen(false);
                   },
                   onDelete: undefined,
@@ -105,6 +108,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   canDelete: false,
                   checkedOutByMe: true,
                   headerActions: undefined,
+                  previewDimensions,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
                       {dialogProps?.title}

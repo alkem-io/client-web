@@ -35,7 +35,7 @@ const CaptionContainer = styled(Box)(({ theme }) => ({
 const ImageWithCaption: FC<ImageWithCaptionProps> = ({ caption, captionPosition = 'bottom', onClick, ...imgProps }) => {
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
-      <Image {...imgProps} src="https://images.hdqwalls.com/wallpapers/matterhorn-mountains-ap.jpg" />
+      <Image {...imgProps} />
       <CaptionContainer
         sx={{
           top: captionPosition === 'top' ? 0 : undefined,

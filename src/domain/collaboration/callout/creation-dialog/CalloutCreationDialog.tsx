@@ -30,7 +30,7 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
-import { WhiteboardFieldSubmittedValues } from './CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValuesWithPreviewImage } from './CalloutWhiteboardField/CalloutWhiteboardField';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -41,7 +41,7 @@ export type CalloutCreationDialogFields = {
   state?: CalloutState;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
   profileId?: string;
 };
 
