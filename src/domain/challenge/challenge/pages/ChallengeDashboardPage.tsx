@@ -17,6 +17,9 @@ import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts'
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -31,11 +34,12 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
 
   const { hubNameId, challengeNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } = useCallouts({
-    hubNameId,
-    challengeNameId,
-    calloutGroups: [CalloutsGroup.HomeTop],
-  });
+  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
+    useCallouts({
+      hubNameId,
+      challengeNameId,
+      calloutGroups: [CalloutsGroup.HomeTop],
+    });
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
@@ -43,7 +47,21 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
         {(entities, state) => (
           <>
             <JourneyDashboardView
-              vision={entities.challenge?.context?.vision}
+              vision={
+                <JourneyDashboardVision
+                  vision={entities.challenge?.context?.vision}
+                  journeyTypeName="challenge"
+                  actions={
+                    <ApplicationButtonContainer
+                      challengeId={entities.challenge?.id}
+                      challengeNameId={challengeNameId}
+                      challengeName={entities.challenge?.profile.displayName}
+                    >
+                      {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+                    </ApplicationButtonContainer>
+                  }
+                />
+              }
               hubNameId={entities.hubNameId}
               challengeNameId={entities.challenge?.nameID}
               communityId={entities.challenge?.community?.id}
@@ -92,6 +110,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={refetchCallout}
                     group={CalloutsGroup.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}

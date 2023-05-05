@@ -44,7 +44,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     throw new Error('Callout ID is missing');
   }
 
-  const { data: calloutData } = useCalloutPageCalloutQuery({
+  const { data: calloutData, refetch: retechCalloutData } = useCalloutPageCalloutQuery({
     variables: {
       calloutNameId,
       hubNameId,
@@ -125,6 +125,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           contributionsCount={typedCallout.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
+          onCalloutUpdate={retechCalloutData}
           onCalloutDelete={handleDelete}
           onClose={handleClose}
           calloutUri={calloutUri}

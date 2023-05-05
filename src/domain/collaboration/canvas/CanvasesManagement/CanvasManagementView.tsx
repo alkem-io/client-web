@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useState } from 'react';
 import { Trans } from 'react-i18next';
 import CanvasDialog from '../CanvasDialog/CanvasDialog';
-import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../containers/CanvasActionsContainer';
 import CanvasValueContainer from '../containers/CanvasValueContainer';
 import { useUserContext } from '../../../community/contributor/user';

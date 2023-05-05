@@ -32,18 +32,19 @@ import DashboardCalendarSection from '../../../shared/components/DashboardSectio
 import { Caption } from '../../../../core/ui/typography/components';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import { Button, ButtonProps, IconButton, Theme, Tooltip } from '@mui/material';
+import { Button, ButtonProps, IconButton, Theme } from '@mui/material';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { Metric } from '../../../platform/metrics/utils/getMetricCount';
-import { Close, HowToRegOutlined, InfoOutlined } from '@mui/icons-material';
+import { Close, InfoOutlined } from '@mui/icons-material';
 import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
 
 interface HubWelcomeBlockContributor {
   profile: HubWelcomeBlockContributorProfileFragment;
@@ -169,21 +170,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
               {({ applicationButtonProps }) => (
                 <PageContentBlockHeader
                   title={`${t('common.welcome')}!`}
-                  actions={
-                    applicationButtonProps.isMember && (
-                      <Tooltip
-                        arrow
-                        title={
-                          <Caption>
-                            {t('pages.generic.sections.dashboard.memberOf', { entity: translatedJourneyTypeName })}
-                          </Caption>
-                        }
-                        placement="left"
-                      >
-                        <HowToRegOutlined />
-                      </Tooltip>
-                    )
-                  }
+                  actions={applicationButtonProps.isMember && <DashboardMemberIcon journeyTypeName={journeyTypeName} />}
                 />
               )}
             </ApplicationButtonContainer>

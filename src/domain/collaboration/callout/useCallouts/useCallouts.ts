@@ -14,7 +14,6 @@ import {
   CommentsWithMessagesFragment,
   ContributeTabAspectFragment,
   CalloutsQueryVariables,
-  CalloutsQuery,
   ReferenceDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import useSubscribeOnCommentCallouts from '../useSubscribeOnCommentCallouts';
@@ -22,7 +21,6 @@ import { CalloutPostTemplate } from '../creation-dialog/CalloutCreationDialog';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 import { compact, groupBy, sortBy } from 'lodash';
-import { LazyQueryHookOptions } from '@apollo/client/react/types/types';
 import { OrderUpdate } from '../../../../core/utils/UpdateOrder';
 import { Tagset } from '../../../common/profile/Profile';
 
@@ -95,7 +93,8 @@ interface UseCalloutsProvided {
   canCreateCallout: boolean;
   calloutNames: string[];
   loading: boolean;
-  reloadCallouts: (options?: Partial<LazyQueryHookOptions<CalloutsQuery, CalloutsQueryVariables>>) => void;
+  refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
+  refetchCallout: (calloutId: string) => void;
   calloutsSortOrder: string[];
   onCalloutsSortOrderUpdate: (update: OrderUpdate) => void;
 }
@@ -122,7 +121,11 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     calloutGroups: params.calloutGroups,
   };
 
-  const { data: calloutsData, loading: calloutsLoading } = useCalloutsQuery({
+  const {
+    data: calloutsData,
+    loading: calloutsLoading,
+    refetch: refetchCallouts,
+  } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
     skip: !params.hubNameId,
@@ -133,10 +136,17 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const refetchCallout = (calloutId: string) => {
+    getCallouts({
+      variables: {
+        ...variables,
+        calloutIds: [calloutId],
+      },
+    });
+  };
+
   const collaboration = (calloutsData?.hub.opportunity ?? calloutsData?.hub.challenge ?? calloutsData?.hub)
     ?.collaboration;
-
-  const reloadCallouts = getCallouts;
 
   const commentCalloutIds = collaboration?.callouts?.filter(x => x.type === CalloutType.Comments).map(x => x.id) ?? [];
 
@@ -219,7 +229,8 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     canCreateCallout,
     calloutNames,
     loading: calloutsLoading,
-    reloadCallouts,
+    refetchCallouts,
+    refetchCallout,
     calloutsSortOrder,
     onCalloutsSortOrderUpdate,
   };

@@ -48,7 +48,7 @@ export interface AspectFormProps {
   loading?: boolean;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
-  onAddReference?: (push: PushFunc) => void;
+  onAddReference?: (push: PushFunc, referencesLength: number) => void;
   onRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
   children?: FormikConfig<FormValueType>['children'];
 }
@@ -168,7 +168,7 @@ const AspectForm: FC<AspectFormProps> = ({
                 <SectionSpacer />
                 <ReferenceSegment
                   references={formikState.values.references}
-                  onAdd={onAddReference}
+                  onAdd={push => onAddReference?.(push, formikState.values.references?.length)}
                   onRemove={onRemoveReference}
                 />
               </>

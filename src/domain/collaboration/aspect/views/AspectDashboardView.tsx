@@ -20,7 +20,7 @@ import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDialog';
-import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;

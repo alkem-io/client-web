@@ -434,7 +434,10 @@
       "no-links-yet": "There are no links yet, be the first to add one!",
       "delete-confirm-title": "Delete this link?",
       "delete-confirm": "Are you sure that you want to remove this link from {{title}}?",
-      "more-links": "{{count}} links, click here to show all"
+      "cancel-confirm-title": "Are you sure?",
+      "cancel-confirm": "If you leave this dialog, your new links will not be saved.",
+      "more-links": "{{count}} links, click here to show all",
+      "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
     "callout-groups": {
       "HomeTop": "Dashboard Recommendations",

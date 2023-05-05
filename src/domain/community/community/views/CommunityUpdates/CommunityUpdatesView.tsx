@@ -29,7 +29,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
 import SaveButton from '../../../../../core/ui/actions/SaveButton';
 import { FontDownloadIcon } from '../../../../../common/icons/FontDownloadIcon';
