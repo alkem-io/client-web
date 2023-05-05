@@ -78,7 +78,7 @@ const MarkdownInputControls = forwardRef<HTMLDivElement | null, MarkdownInputCon
 
     return (
       <Collapse in={isVisible} ref={ref}>
-        <Toolbar value={0} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+        <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
           <ControlsButton editor={editor} command={e => e.undo()}>
             <Undo />
           </ControlsButton>
