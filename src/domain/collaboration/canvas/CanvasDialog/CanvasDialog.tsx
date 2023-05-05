@@ -14,7 +14,7 @@ import { Loading } from '../../../../common/components/core';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
+import getCanvasBannerCardDimensions, { BannerNarrowDimensions } from '../utils/getCanvasBannerCardDimensions';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button, ButtonProps } from '@mui/material';
@@ -133,7 +133,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
       appState,
       elements,
       files: files ?? null,
-      getDimensions: getCanvasBannerCardDimensions(canvas?.profile?.visual),
+      getDimensions: getCanvasBannerCardDimensions(canvas?.profile?.visual ?? BannerNarrowDimensions),
       mimeType: 'image/png',
     });
 

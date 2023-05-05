@@ -1,3 +1,19 @@
+// TODO: This should be coming from the server:
+export const BannerNarrowDimensions: BannerCardParams = {
+  maxHeight: 256,
+  maxWidth: 410,
+  minHeight: 192,
+  minWidth: 307,
+};
+
+export const BannerDimensions: BannerCardParams = {
+  maxHeight: 384,
+  maxWidth: 1536,
+  minHeight: 64,
+  minWidth: 256,
+};
+////
+
 interface BannerCardParams {
   maxWidth: number;
   maxHeight: number;

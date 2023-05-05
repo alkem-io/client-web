@@ -17,7 +17,7 @@ import {
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 
 export interface ICanvasActions {
-  onCreate: (canvas: CreateCanvasOnCalloutInput) => Promise<void>;
+  onCreate: (canvas: CreateCanvasOnCalloutInput, previewImage?: Blob) => Promise<void>;
   onDelete: (canvas: DeleteCanvasInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
   onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
@@ -38,12 +38,12 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnCalloutMutation({});
 
   const handleCreateCanvas = useCallback(
-    async (canvas: CreateCanvasOnCalloutInput) => {
+    async (canvas: CreateCanvasOnCalloutInput, previewImage?: Blob) => {
       if (!canvas.calloutID) {
         throw new Error('[canvas:onCreate]: Missing contextID');
       }
 
-      await createCanvas({
+      const result = await createCanvas({
         update(cache, { data }) {
           cache.modify({
             id: cache.identify({
@@ -69,6 +69,16 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           input: canvas,
         },
       });
+      if (previewImage && result.data?.createCanvasOnCallout.profile.visual?.id) {
+        await uploadVisual({
+          variables: {
+            file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
+            uploadData: {
+              visualID: result.data?.createCanvasOnCallout.profile.visual?.id,
+            },
+          },
+        });
+      }
     },
     [createCanvas]
   );
