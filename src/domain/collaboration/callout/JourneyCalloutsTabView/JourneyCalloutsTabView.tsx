@@ -43,7 +43,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
     loading,
     calloutsSortOrder,
     onCalloutsSortOrderUpdate,
-    reloadCallout,
+    refetchCallout,
   } = useCallouts({
     hubNameId,
     challengeNameId,
@@ -136,7 +136,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={reloadCallout}
+              onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
             />

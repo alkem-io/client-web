@@ -39,7 +39,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
     loading,
     calloutsSortOrder,
     onCalloutsSortOrderUpdate,
-    reloadCallout,
+    refetchCallout,
   } = useCallouts({
     hubNameId,
     calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
@@ -104,7 +104,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                    onCalloutUpdate={reloadCallout}
+                    onCalloutUpdate={refetchCallout}
                     group={CalloutsGroup.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
@@ -121,7 +121,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={reloadCallout}
+                  onCalloutUpdate={refetchCallout}
                   group={CalloutsGroup.HomeLeft}
                 />
               }
@@ -135,7 +135,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                  onCalloutUpdate={reloadCallout}
+                  onCalloutUpdate={refetchCallout}
                   group={CalloutsGroup.HomeRight}
                 />
               }

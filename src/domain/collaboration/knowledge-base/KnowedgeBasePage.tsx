@@ -46,7 +46,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     loading,
     calloutsSortOrder,
     onCalloutsSortOrderUpdate,
-    reloadCallout,
+    refetchCallout,
   } = useCallouts({
     hubNameId,
     challengeNameId,
@@ -141,7 +141,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={reloadCallout}
+              onCalloutUpdate={refetchCallout}
               scrollToCallout={scrollToCallout}
               group={CalloutsGroup.KnowledgeBase}
             />

@@ -43,7 +43,7 @@ const HubCommunityPage = () => {
     loading,
     calloutsSortOrder,
     onCalloutsSortOrderUpdate,
-    reloadCallout,
+    refetchCallout,
   } = useCallouts({
     hubNameId,
     calloutGroups: [CalloutsGroup.CommunityLeft, CalloutsGroup.CommunityRight],
@@ -124,7 +124,7 @@ const HubCommunityPage = () => {
             sortOrder={calloutsSortOrder}
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={reloadCallout}
+            onCalloutUpdate={refetchCallout}
             group={CalloutsGroup.CommunityLeft}
           />
         </PageContentColumn>
@@ -143,7 +143,7 @@ const HubCommunityPage = () => {
             sortOrder={calloutsSortOrder}
             calloutNames={calloutNames}
             onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={reloadCallout}
+            onCalloutUpdate={refetchCallout}
             group={CalloutsGroup.CommunityRight}
           />
         </PageContentColumn>
