@@ -3991,7 +3991,7 @@ export type SubscriptionCalloutMessageReceivedArgs = {
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
-  canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
+  canvasIDs: Array<Scalars['UUID']>;
 };
 
 export type SubscriptionChallengeCreatedArgs = {
@@ -14048,6 +14048,7 @@ export type CalloutsQueryVariables = Exact<{
   challengeNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   opportunityNameId?: InputMaybe<Scalars['UUID_NAMEID']>;
   calloutGroups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  calloutIds?: InputMaybe<Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID']>;
 }>;
 
 export type CalloutsQuery = {

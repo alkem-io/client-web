@@ -1,15 +1,17 @@
 import 'react-image-crop/dist/ReactCrop.css';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Dialog, FormControlLabel, Link } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import UploadButton from '../../../core/UploadButton';
-import { DialogTitle, DialogActions, DialogContent } from '../../../core/dialog';
 import { useConfig } from '../../../../../domain/platform/config/useConfig';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUploadFileMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { TranslateWithElements } from '../../../../../domain/shared/i18n/TranslateWithElements';
-import SectionSpacer from '../../../../../domain/shared/components/Section/SectionSpacer';
+import { Actions } from '../../../../../core/ui/actions/Actions';
+import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import { BlockTitle } from '../../../../../core/ui/typography';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 interface FileUploadProps {
   onUpload?: (fileCID: string) => void;
@@ -76,24 +78,26 @@ const FileUploadButton: FC<FileUploadProps> = ({ onUpload, referenceID }) => {
           }
         }}
       />
-      <Dialog open={dialogOpened} maxWidth="xs" aria-labelledby="confirm-innovation-flow">
-        <DialogTitle id="confirm-innovation-flow">{t('components.file-upload.confirm-dialog.title')}</DialogTitle>
+      <Dialog open={dialogOpened} maxWidth="xs" aria-labelledby="confirm-file-upload">
+        <DialogHeader onClose={handleClose}>
+          <BlockTitle>{t('components.file-upload.confirm-dialog.title')}</BlockTitle>
+        </DialogHeader>
         <DialogContent sx={{ paddingX: 2 }}>
           {tLinks('components.file-upload.confirm-dialog.confirm-text', {
             aup: { href: platform?.aup },
           })}
-          <SectionSpacer />
           <FormControlLabel
+            sx={{ marginTop: gutters() }}
             control={<Checkbox checked={confirmation} onChange={() => handleCheckboxToggle(confirmation)} />}
             label={t('components.file-upload.confirm-dialog.checkbox-label')}
           />
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'end' }}>
+        <Actions padding={gutters()} justifyContent="end">
           {handleClose && <Button onClick={handleClose}>{t('buttons.cancel')}</Button>}
-          <Button onClick={handleSubmit} disabled={loading || !confirmation}>
+          <Button variant="contained" onClick={handleSubmit} disabled={loading || !confirmation}>
             {t('buttons.confirm')}
           </Button>
-        </DialogActions>
+        </Actions>
       </Dialog>
     </>
   );

@@ -12,6 +12,11 @@ import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import JourneyDashboardVision from '../../common/tabs/Dashboard/JourneyDashboardVision';
+import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { useTranslation } from 'react-i18next';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';
@@ -24,11 +29,14 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
 
   const { hubNameId, opportunityNameId } = useUrlParams();
 
-  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate } = useCallouts({
-    hubNameId,
-    opportunityNameId,
-    calloutGroups: [CalloutsGroup.HomeTop],
-  });
+  const { groupedCallouts, calloutNames, loading, calloutsSortOrder, onCalloutsSortOrderUpdate, refetchCallout } =
+    useCallouts({
+      hubNameId,
+      opportunityNameId,
+      calloutGroups: [CalloutsGroup.HomeTop],
+    });
+
+  const { t } = useTranslation();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -36,7 +44,24 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
         {(entities, state) => (
           <>
             <JourneyDashboardView
-              vision={entities.opportunity?.context?.vision}
+              vision={
+                <JourneyDashboardVision
+                  header={
+                    <PageContentBlockHeader
+                      title={`${t('common.welcome')}!`}
+                      actions={
+                        <ApplicationButtonContainer>
+                          {({ applicationButtonProps }) =>
+                            applicationButtonProps.isMember && <DashboardMemberIcon journeyTypeName="opportunity" />
+                          }
+                        </ApplicationButtonContainer>
+                      }
+                    />
+                  }
+                  vision={entities.opportunity?.context?.vision}
+                  journeyTypeName="opportunity"
+                />
+              }
               hubNameId={entities.hubNameId}
               challengeNameId={entities.challengeNameId}
               opportunityNameId={entities.opportunity?.nameID}
@@ -67,6 +92,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                    onCalloutUpdate={refetchCallout}
                     group={CalloutsGroup.HomeTop}
                     disableMarginal
                     blockProps={{ sx: { minHeight: '100%' } }}
