@@ -45,6 +45,8 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
+import { DashboardNavigationItem } from '../HubDashboardNavigation/useHubDashboardNavigation';
+import DashboardNavigation from '../HubDashboardNavigation/DashboardNavigation';
 
 interface HubWelcomeBlockContributor {
   profile: HubWelcomeBlockContributorProfileFragment;
@@ -55,6 +57,7 @@ interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partia
   tagline: ReactNode;
   metrics: Metric[] | undefined;
   description: string | undefined;
+  dashboardNavigation: DashboardNavigationItem[] | undefined;
   who: string | undefined;
   impact: string | undefined;
   vision?: string;
@@ -95,6 +98,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
   tagline,
   metrics,
   description,
+  dashboardNavigation,
   who,
   impact,
   loading,
@@ -199,6 +203,11 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
           <FullWidthButton startIcon={<InfoOutlined />} onClick={() => setIsAboutDialogOpen(true)} variant="contained">
             {t('common.aboutThis', { entity: translatedJourneyTypeName })}
           </FullWidthButton>
+          <DashboardNavigation
+            hubNameId={hubNameId}
+            displayName={displayName}
+            dashboardNavigation={dashboardNavigation}
+          />
           {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.referenceSegment.title')} />

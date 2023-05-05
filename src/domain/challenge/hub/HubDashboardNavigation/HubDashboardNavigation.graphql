@@ -1,0 +1,45 @@
+query HubDashboardNavigationChallenges($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    challenges {
+      id
+      nameID
+      profile {
+        ...HubDashboardNavigationItem
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      community {
+        id
+        myMembershipStatus
+      }
+    }
+  }
+}
+
+query HubDashboardNavigationOpportunities($hubId: UUID_NAMEID!, $challengeIds: [UUID!]!) {
+  hub(ID: $hubId) {
+    id
+    challenges(IDs: $challengeIds) {
+      id
+      opportunities {
+        id
+        nameID
+        profile {
+          ...HubDashboardNavigationItem
+        }
+      }
+    }
+  }
+}
+
+fragment HubDashboardNavigationItem on Profile {
+  id
+  displayName
+  visual(type: CARD) {
+    id
+    uri
+  }
+}
