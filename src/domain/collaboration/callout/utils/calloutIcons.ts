@@ -12,7 +12,7 @@ const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.Canvas]: FilterNoneIcon,
   [CalloutType.Comments]: NotesIcon,
   [CalloutType.LinkCollection]: AttachFileIcon,
-  [CalloutType.Whiteboard]: DrawOutlinedIcon,
+  [CalloutType.SingleWhiteboard]: DrawOutlinedIcon,
 };
 
 export default calloutIcons;

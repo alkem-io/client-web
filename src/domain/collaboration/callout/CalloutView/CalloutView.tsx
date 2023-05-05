@@ -42,7 +42,7 @@ const CalloutView = forwardRef<HTMLDivElement, CalloutViewProps>(
         );
       case CalloutType.LinkCollection:
         return <LinkCollectionCallout ref={ref} callout={callout} {...props} />;
-      case CalloutType.Whiteboard:
+      case CalloutType.SingleWhiteboard:
         return <WhiteboardCallout ref={ref} callout={callout} {...props} />;
       default:
         throw new Error(`Unexpected Callout type "${callout['type']}"`);

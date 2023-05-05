@@ -12,7 +12,7 @@ interface CalloutTypeSelectProps {
 }
 const availableCalloutTypes = [
   CalloutType.Comments,
-  CalloutType.Whiteboard,
+  CalloutType.SingleWhiteboard,
   CalloutType.LinkCollection,
   CalloutType.Card,
   CalloutType.Canvas,

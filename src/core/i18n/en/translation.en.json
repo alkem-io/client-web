@@ -815,7 +815,7 @@
         "CARD": "Call for Posts",
         "CANVAS": "Call for Whiteboards",
         "LINK_COLLECTION": "Collection of Links",
-        "WHITEBOARD": "Whiteboard"
+        "SINGLE_WHITEBOARD": "Whiteboard"
       }
     },
     "aspect-creation": {

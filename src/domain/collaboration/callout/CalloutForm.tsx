@@ -207,7 +207,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
     whiteboardTemplate: calloutType === CalloutType.Canvas,
     newResponses: calloutType !== CalloutType.LinkCollection,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
-    whiteboard: calloutType === CalloutType.Whiteboard,
+    whiteboard: calloutType === CalloutType.SingleWhiteboard,
   };
 
   return (
