@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -8,8 +8,6 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { CanvasCardCanvas } from '../canvas/types';
 import { CanvasProvider } from '../../canvas/containers/CanvasProvider';
 import CanvasesManagementViewWrapper from '../../canvas/CanvasesManagement/CanvasesManagementViewWrapper';
-import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import { useResolvedPath } from 'react-router-dom';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
@@ -37,16 +35,6 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
     ref
   ) => {
     const { t } = useTranslation();
-    const parentUrl = useResolvedPath('..').pathname;
-    const { calloutUri } = calloutLayoutProps;
-    const [, buildLinkToCanvasRaw] = useBackToParentPage(calloutUri, { keepScroll: true });
-
-    const buildLinkToCanvas = useMemo(
-      () => (url: string) => {
-        return buildLinkToCanvasRaw(`${parentUrl}/${url}`);
-      },
-      [parentUrl, buildLinkToCanvasRaw]
-    );
 
     if (!callout.canvases || callout.canvases.length < 1) {
       return null;
@@ -69,7 +57,6 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
               <CanvasesManagementViewWrapper
                 canvasNameId={firstCanvas.id}
                 backToCanvases={() => onClose?.()}
-                buildLinkToCanvas={buildLinkToCanvas}
                 journeyTypeName={journeyTypeName}
                 {...entities}
                 {...state}

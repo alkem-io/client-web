@@ -30,7 +30,6 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   authorization,
   journeyTypeName,
   backToCanvases,
-  buildLinkToCanvas,
   loadingCanvases,
   ...canvasesState
 }) => {
@@ -76,7 +75,6 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
             canDelete: hasDeletePrivileges,
           }}
           backToCanvases={backToCanvases}
-          buildLinkToCanvas={buildLinkToCanvas}
         />
       )}
     </CanvasActionsContainer>

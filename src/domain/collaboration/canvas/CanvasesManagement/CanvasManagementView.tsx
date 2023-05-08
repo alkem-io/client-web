@@ -13,7 +13,6 @@ import {
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
-import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { useCanvasLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -53,7 +52,6 @@ export interface CanvasManagementViewOptions {
 
 export interface CanvasNavigationMethods {
   backToCanvases: () => void;
-  buildLinkToCanvas: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
 interface CanvasBeingDeleted {
