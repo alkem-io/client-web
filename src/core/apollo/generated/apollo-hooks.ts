@@ -70,8 +70,7 @@ export const CanvasProfileFragmentDoc = gql`
       ...VisualFull
     }
     preview: visual(type: BANNER) {
-      id
-      uri
+      ...VisualFull
     }
     tagset {
       id

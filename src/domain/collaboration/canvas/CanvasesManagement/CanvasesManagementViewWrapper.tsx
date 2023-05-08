@@ -52,7 +52,11 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   const hasDeletePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
   // Todo: need to decide who can edit what canvases, for now tie to CreateCanvas. May need to extend the information on a Canvas
   // to include who created it etc.
-  const hasUpdatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
+  // Also to have in mind: In SingleCallout canvases, users don't have CreateCanvas privilege to add another canvas but may have privilege
+  // to update the canvas itself
+  const hasUpdatePrivileges = authorization?.myPrivileges?.some(
+    p => p === AuthorizationPrivilege.CreateCanvas || p === AuthorizationPrivilege.Update
+  );
 
   return (
     <CanvasActionsContainer>

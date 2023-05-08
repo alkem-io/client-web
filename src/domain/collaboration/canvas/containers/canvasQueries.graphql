@@ -6,8 +6,7 @@ fragment CanvasProfile on Profile {
     ...VisualFull
   }
   preview: visual(type: BANNER) {
-    id
-    uri
+    ...VisualFull
   }
   tagset {
     id

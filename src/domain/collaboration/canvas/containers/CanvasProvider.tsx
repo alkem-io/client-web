@@ -12,8 +12,13 @@ import {
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { getCanvasCallout } from './getCanvasCallout';
+import UrlParams from '../../../../core/routing/urlParams';
 
 interface CanvasProviderProps {
+  canvasLocation?: Pick<
+    UrlParams,
+    'hubNameId' | 'challengeNameId' | 'opportunityNameId' | 'calloutNameId' | 'whiteboardNameId'
+  >;
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
@@ -33,14 +38,16 @@ export interface IProvidedEntitiesState {
   loadingTemplates: boolean;
 }
 
-const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
+const CanvasProvider: FC<CanvasProviderProps> = ({ canvasLocation, children }) => {
+  const urlParams = useUrlParams();
+
   const {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
     calloutNameId: calloutId = '',
     whiteboardNameId: canvasId = '',
-  } = useUrlParams();
+  } = canvasLocation ?? urlParams;
 
   const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
     variables: { hubId },
@@ -72,7 +79,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts, calloutId) ??
     getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts, calloutId);
 
-  const canvas = callout?.canvases?.find(canvas => canvas.nameID === canvasId) ?? undefined;
+  const canvas = callout?.canvases?.find(canvas => canvas.nameID === canvasId || canvas.id === canvasId) ?? undefined;
 
   const templates = whiteboardTemplates?.hub.templates?.whiteboardTemplates ?? [];
   const authorization = callout?.authorization;

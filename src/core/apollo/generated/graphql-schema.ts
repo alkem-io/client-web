@@ -5136,7 +5136,21 @@ export type ChallengePageQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -5460,7 +5474,21 @@ export type ChallengeProfileFragment = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
-                      preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     };
                     authorization?:
@@ -7571,7 +7599,21 @@ export type HubPageQuery = {
                               alternativeText?: string | undefined;
                             }
                           | undefined;
-                        preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
@@ -7888,7 +7930,21 @@ export type HubPageFragment = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
-                      preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     };
                     authorization?:
@@ -9242,7 +9298,21 @@ export type OpportunityPageQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -9512,7 +9582,21 @@ export type OpportunityPageFragment = {
                             alternativeText?: string | undefined;
                           }
                         | undefined;
-                      preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                     };
                     authorization?:
@@ -10467,7 +10551,21 @@ export type CalloutPageCalloutQuery = {
                               alternativeText?: string | undefined;
                             }
                           | undefined;
-                        preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
@@ -10651,7 +10749,21 @@ export type CalloutPageCalloutQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -10845,7 +10957,21 @@ export type CalloutPageCalloutQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -13476,7 +13602,21 @@ export type DashboardTopCalloutsFragment = {
                       alternativeText?: string | undefined;
                     }
                   | undefined;
-                preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
@@ -13597,7 +13737,21 @@ export type DashboardTopCalloutFragment = {
                 alternativeText?: string | undefined;
               }
             | undefined;
-          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          preview?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
         authorization?:
@@ -13848,7 +14002,21 @@ export type CreateCalloutMutation = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
-            preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
             tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
           };
           authorization?:
@@ -14217,7 +14385,21 @@ export type CalloutsQuery = {
                               alternativeText?: string | undefined;
                             }
                           | undefined;
-                        preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
@@ -14405,7 +14587,21 @@ export type CalloutsQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -14603,7 +14799,21 @@ export type CalloutsQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -15124,7 +15334,21 @@ export type CollaborationWithCalloutsFragment = {
                       alternativeText?: string | undefined;
                     }
                   | undefined;
-                preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
@@ -15290,7 +15514,21 @@ export type CalloutFragment = {
                 alternativeText?: string | undefined;
               }
             | undefined;
-          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          preview?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+                alternativeText?: string | undefined;
+              }
+            | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         };
         authorization?:
@@ -15666,7 +15904,21 @@ export type CanvasProfileFragment = {
         alternativeText?: string | undefined;
       }
     | undefined;
-  preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  preview?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        alternativeText?: string | undefined;
+      }
+    | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
 };
 
@@ -15695,7 +15947,21 @@ export type CanvasDetailsFragment = {
           alternativeText?: string | undefined;
         }
       | undefined;
-    preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+    preview?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   };
   authorization?:
@@ -15827,7 +16093,21 @@ export type CalloutWithCanvasFragment = {
                       alternativeText?: string | undefined;
                     }
                   | undefined;
-                preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
@@ -15915,7 +16195,21 @@ export type CollaborationWithCanvasDetailsFragment = {
                       alternativeText?: string | undefined;
                     }
                   | undefined;
-                preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               };
               authorization?:
@@ -16015,7 +16309,21 @@ export type HubCanvasFromCalloutQuery = {
                               alternativeText?: string | undefined;
                             }
                           | undefined;
-                        preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
@@ -16116,7 +16424,21 @@ export type HubCanvasesQuery = {
                               alternativeText?: string | undefined;
                             }
                           | undefined;
-                        preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
@@ -16218,7 +16540,21 @@ export type HubCanvasValuesQuery = {
                               alternativeText?: string | undefined;
                             }
                           | undefined;
-                        preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
                         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                       };
                       authorization?:
@@ -16325,7 +16661,21 @@ export type ChallengeCanvasFromCalloutQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -16436,7 +16786,21 @@ export type ChallengeCanvasValuesQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -16548,7 +16912,21 @@ export type OpportunityCanvasFromCalloutQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -16659,7 +17037,21 @@ export type OpportunityCanvasValuesQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                         authorization?:
@@ -16751,7 +17143,21 @@ export type HubTemplateCanvasValuesQuery = {
                         alternativeText?: string | undefined;
                       }
                     | undefined;
-                  preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  preview?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                 };
               }
@@ -16806,7 +17212,21 @@ export type PlatformTemplateCanvasValuesQuery = {
                                 alternativeText?: string | undefined;
                               }
                             | undefined;
-                          preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                          preview?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: string;
+                                allowedTypes: Array<string>;
+                                aspectRatio: number;
+                                maxHeight: number;
+                                maxWidth: number;
+                                minHeight: number;
+                                minWidth: number;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
                           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                         };
                       }
@@ -16850,7 +17270,21 @@ export type CreateCanvasOnCalloutMutation = {
             alternativeText?: string | undefined;
           }
         | undefined;
-      preview?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      preview?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     };
     authorization?:
