@@ -5,7 +5,6 @@ import {
   useCreateCalloutMutation,
   useHubCollaborationIdQuery,
   useOpportunityCollaborationIdQuery,
-  useUploadVisualMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
@@ -13,7 +12,8 @@ import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/temp
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
 import { Identifiable } from '../../../../shared/types/Identifiable';
-import { WhiteboardFieldSubmittedValuesWithPreviewImage } from '../CalloutWhiteboardField/CalloutWhiteboardField';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardField';
+import { useUploadWhiteboardVisuals } from '../../../canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export type CalloutCreationType = {
   profile: {
@@ -26,7 +26,7 @@ export type CalloutCreationType = {
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   group?: string;
 };
 
@@ -43,7 +43,8 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
 
-  const [uploadVisual] = useUploadVisualMutation({});
+  const { uploadVisuals } = useUploadWhiteboardVisuals();
+
   const { data: hubData } = useHubCollaborationIdQuery({
     variables: { hubId: hubNameId! },
     skip: !hubNameId || !!challengeNameId || !!opportunityNameId,
@@ -114,8 +115,8 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
-      // Remove the previewImage from the form data if it's present, to handle it separatelly
-      const { callout: cleanCallout, previewImage } = handlePreviewImage(callout);
+      // Remove the previewImages from the form data if it's present, to handle it separatelly
+      const { callout: cleanCallout, previewImages } = handlePreviewImages(callout);
 
       const result = await createCallout({
         variables: {
@@ -126,24 +127,19 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
         },
       });
 
-      if (previewImage && result.data?.createCalloutOnCollaboration.canvases?.[0]?.profile.preview?.id) {
-        if (
-          result.data?.createCalloutOnCollaboration.canvases &&
-          result.data?.createCalloutOnCollaboration.canvases.length > 0
-        ) {
-          const visualId = result.data.createCalloutOnCollaboration.canvases[0].profile.preview.id;
-          if (visualId) {
-            await uploadVisual({
-              variables: {
-                file: new File([previewImage], `/SingleWhiteboardCallout-${callout.profile.displayName}-preview.png`, {
-                  type: 'image/png',
-                }),
-                uploadData: {
-                  visualID: visualId,
-                },
-              },
-            });
-          }
+      // Single Whiteboard callouts are sent to the server with the canvas value, but
+      // the preview image needs to be sent separatelly:
+      if (callout.type === CalloutType.SingleWhiteboard) {
+        const canvas = result.data?.createCalloutOnCollaboration.canvases?.[0];
+        if (canvas && canvas.profile) {
+          await uploadVisuals(
+            previewImages,
+            {
+              cardVisualId: canvas.profile.visual?.id,
+              previewVisualId: canvas.profile.preview?.id,
+            },
+            result.data?.createCalloutOnCollaboration.nameID
+          );
         }
       }
 
@@ -155,13 +151,13 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     [collaborationID, createCallout]
   );
 
-  const handlePreviewImage = (callout: CalloutCreationType) => {
+  const handlePreviewImages = (callout: CalloutCreationType) => {
     if (callout.whiteboard) {
       const {
-        whiteboard: { previewImage, ...restWhiteboard },
+        whiteboard: { previewImages, ...restWhiteboard },
         ...rest
       } = callout;
-      return { callout: { whiteboard: restWhiteboard, ...rest }, previewImage };
+      return { callout: { whiteboard: restWhiteboard, ...rest }, previewImages };
     }
     return { callout };
   };

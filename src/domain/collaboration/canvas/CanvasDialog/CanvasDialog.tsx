@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import { exportToBlob, serializeAsJSON } from '@alkemio/excalidraw';
+import { serializeAsJSON } from '@alkemio/excalidraw';
 import { ExcalidrawAPIRefValue } from '@alkemio/excalidraw/types/types';
 import { Delete, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
@@ -14,10 +14,6 @@ import { Loading } from '../../../../common/components/core';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import getCanvasBannerCardDimensions, {
-  PreviewImageDimensions,
-  BannerNarrowDimensions,
-} from '../utils/getCanvasBannerCardDimensions';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button, ButtonProps } from '@mui/material';
@@ -35,6 +31,10 @@ import mergeCanvas from '../utils/mergeCanvas';
 import { error as logError } from '../../../../services/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { CanvasWithValue, CanvasWithoutValue } from '../containers/CanvasValueContainer';
+import {
+  WhiteboardPreviewImage,
+  generateWhiteboardPreviewImages,
+} from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface CanvasDialogProps<Canvas extends CanvasWithValue> {
   entities: {
@@ -45,7 +45,7 @@ interface CanvasDialogProps<Canvas extends CanvasWithValue> {
     onCancel: (canvas: CanvasWithoutValue<Canvas>) => void;
     onCheckin?: (canvas: CanvasWithoutValue<Canvas>) => void;
     onCheckout?: (canvas: CanvasWithoutValue<Canvas>) => void;
-    onUpdate: (canvas: Canvas, previewImage?: Blob) => void;
+    onUpdate: (canvas: Canvas, previewImages?: WhiteboardPreviewImage[]) => void;
     onDelete?: (canvas: CanvasWithoutValue<Canvas>) => void;
   };
   options: {
@@ -56,7 +56,6 @@ interface CanvasDialogProps<Canvas extends CanvasWithValue> {
     checkedOutByMe: boolean;
     headerActions?: ReactNode;
     fixedDialogTitle?: ReactNode;
-    previewDimensions?: PreviewImageDimensions;
   };
   state?: {
     updatingCanvas?: boolean;
@@ -133,20 +132,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
 
     const { appState, elements, files } = state;
 
-    const previewImage = await exportToBlob({
-      appState,
-      elements,
-      files: files ?? null,
-      getDimensions: getCanvasBannerCardDimensions(
-        // If specified in the options, we'll generate a preview image of these dimensions
-        options.previewDimensions ??
-          // If canvas already exists, banner dimensions will come in the profile
-          canvas?.profile?.visual ??
-          // And by default just generate a BannerNarrow
-          BannerNarrowDimensions // TODO: This should come from the server
-      ),
-      mimeType: 'image/png',
-    });
+    const previewImages = await generateWhiteboardPreviewImages(canvas, state);
 
     const value = serializeAsJSON(elements, appState, files ?? {}, 'local');
 
@@ -165,7 +151,7 @@ const CanvasDialog = <Canvas extends CanvasWithValue>({
         },
         value,
       } as Canvas,
-      previewImage ?? undefined
+      previewImages
     );
   };
 

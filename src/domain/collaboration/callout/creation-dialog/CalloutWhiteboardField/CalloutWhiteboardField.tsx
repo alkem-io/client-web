@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { CreateProfileInput } from '../../../../../core/apollo/generated/graphql-schema';
-import { BannerDimensions } from '../../../canvas/utils/getCanvasBannerCardDimensions';
+import { WhiteboardPreviewImage } from '../../../canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface CalloutWhiteboardFieldProps {
   name: string;
@@ -17,22 +17,22 @@ export interface WhiteboardFieldSubmittedValues {
   profileData: CreateProfileInput;
 }
 
-export interface WhiteboardFieldSubmittedValuesWithPreviewImage extends WhiteboardFieldSubmittedValues {
-  // Whiteboard Preview Image is sent in a different call to the server after the callout is saved. See useCalloutCreation.ts
-  previewImage: Blob | undefined;
+export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {
+  // Whiteboard Preview Images are sent as visuals in a different call to the server after the callout is saved (See useCalloutCreation.ts)
+  previewImages: WhiteboardPreviewImage[] | undefined;
 }
 
 export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }) => {
   const { t } = useTranslation();
-  const [, , helpers] = useField<WhiteboardFieldSubmittedValuesWithPreviewImage>(name);
+  const [, , helpers] = useField<WhiteboardFieldSubmittedValuesWithPreviewImages>(name);
 
-  const handleChange = (newValue: string, previewImage?: Blob) => {
+  const handleChange = (newValue: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
         displayName: t('components.callout-creation.custom-template'),
       },
       value: newValue,
-      previewImage,
+      previewImages,
     });
   };
 
@@ -49,7 +49,6 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
         onChangeValue={handleChange}
         maxHeight={gutters(12)}
         dialogProps={{ title: t('components.callout-creation.whiteboard-field-dialog.title') }}
-        previewDimensions={BannerDimensions}
       />
     </>
   );

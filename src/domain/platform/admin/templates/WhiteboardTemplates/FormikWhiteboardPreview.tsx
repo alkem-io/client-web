@@ -5,17 +5,16 @@ import CanvasWhiteboard from '../../../../../common/components/composite/entitie
 import CanvasDialog from '../../../../collaboration/canvas/CanvasDialog/CanvasDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
-import { PreviewImageDimensions } from '../../../../collaboration/canvas/utils/getCanvasBannerCardDimensions';
+import { WhiteboardPreviewImage } from '../../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Canvas value
   canEdit: boolean;
-  onChangeValue?: (value: string, previewImage?: Blob) => void;
+  onChangeValue?: (value: string, previewImages?: WhiteboardPreviewImage[]) => void;
   loading?: boolean;
   dialogProps?: {
     title?: string;
   };
-  previewDimensions?: PreviewImageDimensions;
 }
 
 const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
@@ -31,7 +30,6 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   onChangeValue,
   loading,
   dialogProps,
-  previewDimensions,
   ...containerProps
 }) => {
   const { t } = useTranslation();
@@ -94,9 +92,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   onCancel: () => setEditDialogOpen(false),
                   onCheckin: undefined,
                   onCheckout: undefined,
-                  onUpdate: (canvas, previewImage) => {
+                  onUpdate: (canvas, previewImages) => {
                     helpers.setValue(canvas.value);
-                    onChangeValue?.(canvas.value, previewImage);
+                    onChangeValue?.(canvas.value, previewImages);
                     setEditDialogOpen(false);
                   },
                   onDelete: undefined,
@@ -108,7 +106,6 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   canDelete: false,
                   checkedOutByMe: true,
                   headerActions: undefined,
-                  previewDimensions,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
                       {dialogProps?.title}
