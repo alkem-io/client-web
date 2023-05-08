@@ -50,7 +50,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
     calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
   });
 
-  const hubDashboardNavigation = useHubDashboardNavigation({ hubId: hubNameId });
+  const { dashboardNavigation, loading: dashboardNavigationLoading } = useHubDashboardNavigation({ hubId: hubNameId });
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
@@ -63,7 +63,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               displayName={entities.hub?.profile.displayName}
               tagline={entities.hub?.profile.tagline}
               description={entities.hub?.profile.description}
-              dashboardNavigation={hubDashboardNavigation}
+              dashboardNavigation={dashboardNavigation}
+              dashboardNavigationLoading={dashboardNavigationLoading}
               who={entities.hub?.context?.who}
               impact={entities.hub?.context?.impact}
               metrics={entities.hub?.metrics}

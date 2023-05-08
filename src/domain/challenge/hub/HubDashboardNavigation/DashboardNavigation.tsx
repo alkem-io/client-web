@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, ReactNode, useState } from 'react';
-import { Avatar, Box, Collapse, IconButton, Tooltip } from '@mui/material';
+import React, { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
+import { Avatar, Box, ButtonBase, Collapse, IconButton, Tooltip, useTheme } from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import {
@@ -24,6 +24,7 @@ interface DashboardNavigationProps {
   hubNameId: string | undefined;
   displayName: ReactNode;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
+  loading: boolean;
 }
 
 interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
@@ -55,7 +56,7 @@ const DashboardNavigationItemView = ({
   };
 
   return (
-    <Gutters disablePadding>
+    <Box>
       <BadgeCardView
         component={LinkNoUnderline}
         to={url ?? ''}
@@ -89,7 +90,7 @@ const DashboardNavigationItemView = ({
         visualRight={
           isPrivate ? (
             <Tooltip
-              title={<Caption>{t('components.dashboardNavigation.dashboardNavigationPrivateChallenge')}</Caption>}
+              title={<Caption>{t('components.dashboardNavigation.privateChallenge')}</Caption>}
               placement="right"
               arrow
             >
@@ -110,17 +111,37 @@ const DashboardNavigationItemView = ({
       </BadgeCardView>
       {children && (
         <Collapse in={isExpanded}>
-          <Gutters disablePadding paddingLeft={gutters(2)}>
+          <Gutters disablePadding paddingLeft={gutters(2)} marginTop={gutters()}>
             {children}
           </Gutters>
         </Collapse>
       )}
-    </Gutters>
+    </Box>
   );
 };
 
-const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation }: DashboardNavigationProps) => {
+const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
+
+const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation, loading }: DashboardNavigationProps) => {
   const { t } = useTranslation();
+
+  const theme = useTheme();
+
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const itemsCount = useMemo(() => {
+    if (loading) {
+      return undefined;
+    }
+    const childCount = dashboardNavigation?.reduce((count, item) => {
+      return count + (item.children?.length ?? 0);
+    }, 0);
+    return dashboardNavigation?.length! + childCount!;
+  }, [dashboardNavigation, loading]);
+
+  const allItemsFit = !itemsCount || itemsCount <= VISIBLE_ROWS_WHEN_COLLAPSED;
+
+  const showAll = isExpanded || allItemsFit;
 
   return (
     <PageContentBlock>
@@ -128,30 +149,39 @@ const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation }: Da
         icon={<HubOutlined />}
         title={displayName}
         actions={
-          <Tooltip
-            title={<Caption>{t('components.dashboardNavigation.dashboardNavigationHelp')}</Caption>}
-            placement="right"
-            arrow
-          >
+          <Tooltip title={<Caption>{t('components.dashboardNavigation.help')}</Caption>} placement="right" arrow>
             <HelpOutlineOutlined fontSize="small" />
           </Tooltip>
         }
       />
-      {dashboardNavigation?.map(({ id, nameId: challengeNameId, ...challenge }) => (
-        <DashboardNavigationItemView
-          key={id}
-          url={hubNameId && buildChallengeUrl(hubNameId, challengeNameId)}
-          {...challenge}
-        >
-          {challenge.children?.map(({ id, nameId: opportunityNameId, ...opportunity }) => (
+      <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
+        <Gutters disablePadding>
+          {dashboardNavigation?.map(({ id, nameId: challengeNameId, ...challenge }) => (
             <DashboardNavigationItemView
               key={id}
-              url={hubNameId && buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
-              {...opportunity}
-            />
+              url={hubNameId && buildChallengeUrl(hubNameId, challengeNameId)}
+              {...challenge}
+            >
+              {Boolean(challenge.children?.length) &&
+                challenge.children?.map(({ id, nameId: opportunityNameId, ...opportunity }) => (
+                  <DashboardNavigationItemView
+                    key={id}
+                    url={hubNameId && buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
+                    {...opportunity}
+                  />
+                ))}
+            </DashboardNavigationItemView>
           ))}
-        </DashboardNavigationItemView>
-      ))}
+        </Gutters>
+      </Collapse>
+      {!showAll && (
+        <ButtonBase onClick={() => setIsExpanded(true)}>
+          <Caption display="flex" alignItems="center">
+            <KeyboardArrowDownOutlined fontSize="small" />
+            {t('components.dashboardNavigation.showAll')}
+          </Caption>
+        </ButtonBase>
+      )}
     </PageContentBlock>
   );
 };

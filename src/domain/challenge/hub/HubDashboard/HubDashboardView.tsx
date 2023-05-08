@@ -58,6 +58,7 @@ interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partia
   metrics: Metric[] | undefined;
   description: string | undefined;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
+  dashboardNavigationLoading: boolean;
   who: string | undefined;
   impact: string | undefined;
   vision?: string;
@@ -99,6 +100,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
   metrics,
   description,
   dashboardNavigation,
+  dashboardNavigationLoading,
   who,
   impact,
   loading,
@@ -207,6 +209,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
             hubNameId={hubNameId}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
+            loading={dashboardNavigationLoading}
           />
           {timelineReadAccess && <DashboardCalendarSection journeyLocation={journeyLocation} />}
           <PageContentBlock>

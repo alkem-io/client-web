@@ -15,6 +15,11 @@ interface UseHubDashboardNavigationProps {
   hubId: string;
 }
 
+interface UseHubDashboardNavigationProvided {
+  dashboardNavigation: DashboardNavigationItem[] | undefined;
+  loading: boolean;
+}
+
 export interface DashboardNavigationItem {
   id: string;
   nameId: string;
@@ -44,10 +49,8 @@ const DashboardNavigationItemPropsGetter =
 const isReadable = ({ authorization }: { authorization?: Partial<Authorization> }) =>
   authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
 
-const useHubDashboardNavigation = ({
-  hubId,
-}: UseHubDashboardNavigationProps): DashboardNavigationItem[] | undefined => {
-  const { data: challengesQueryData } = useHubDashboardNavigationChallengesQuery({
+const useHubDashboardNavigation = ({ hubId }: UseHubDashboardNavigationProps): UseHubDashboardNavigationProvided => {
+  const { data: challengesQueryData, loading: challengesQueryLoading } = useHubDashboardNavigationChallengesQuery({
     variables: { hubId },
   });
 
@@ -55,13 +58,14 @@ const useHubDashboardNavigation = ({
 
   const readableChallengeIds = challenges?.filter(isReadable).map(({ id }) => id);
 
-  const { data: opportunitiesQueryData } = useHubDashboardNavigationOpportunitiesQuery({
-    variables: {
-      hubId,
-      challengeIds: readableChallengeIds!,
-    },
-    skip: !readableChallengeIds,
-  });
+  const { data: opportunitiesQueryData, loading: opportunitiesQueryLoading } =
+    useHubDashboardNavigationOpportunitiesQuery({
+      variables: {
+        hubId,
+        challengeIds: readableChallengeIds!,
+      },
+      skip: !readableChallengeIds,
+    });
 
   const challengeToItem = DashboardNavigationItemPropsGetter('challenge');
   const opportunityToItem = DashboardNavigationItemPropsGetter('opportunity');
@@ -71,7 +75,9 @@ const useHubDashboardNavigation = ({
     [opportunitiesQueryData]
   );
 
-  return useMemo(
+  const loading = challengesQueryLoading || opportunitiesQueryLoading;
+
+  const dashboardNavigation = useMemo(
     () =>
       challenges?.map(challenge => {
         const opportunities = challengesWithOpportunitiesById[challenge.id]?.opportunities ?? [];
@@ -83,6 +89,11 @@ const useHubDashboardNavigation = ({
       }),
     [challengesQueryData, opportunitiesQueryData]
   );
+
+  return {
+    dashboardNavigation,
+    loading,
+  };
 };
 
 export default useHubDashboardNavigation;
