@@ -13,7 +13,7 @@ import HubChallengesPage from '../pages/HubChallengesPage';
 import { routes } from '../routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../common/EntityPageLayout';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
-import HubDashboardPage from '../pages/HubDashboardPage';
+import HubDashboardPage from '../HubDashboard/HubDashboardPage';
 import HubPageLayout from '../layout/HubPageLayout';
 import Redirect from '../../../../core/routing/Redirect';
 import HubSearchPage from '../pages/HubSearchPage';

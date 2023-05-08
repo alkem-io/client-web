@@ -1,7 +1,7 @@
 import React from 'react';
 import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
-import HubDashboardPage from '../pages/HubDashboardPage';
+import HubDashboardPage from '../HubDashboard/HubDashboardPage';
 import HubChallengesPage from '../pages/HubChallengesPage';
 import KnowedgeBasePage from '../../../collaboration/knowledge-base/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
