@@ -7410,324 +7410,6 @@ export type HubInfoFragment = {
     | undefined;
 };
 
-export type HubTemplatesQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubTemplatesQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          postTemplates: Array<{
-            __typename?: 'PostTemplate';
-            id: string;
-            defaultDescription: string;
-            type: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-          whiteboardTemplates: Array<{
-            __typename?: 'WhiteboardTemplate';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-          innovationFlowTemplates: Array<{
-            __typename?: 'InnovationFlowTemplate';
-            id: string;
-            definition: string;
-            type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type CalloutFormTemplatesFromHubQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type CalloutFormTemplatesFromHubQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          postTemplates: Array<{
-            __typename?: 'PostTemplate';
-            id: string;
-            defaultDescription: string;
-            type: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-          whiteboardTemplates: Array<{
-            __typename?: 'WhiteboardTemplate';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type PostTemplatesFromHubQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type PostTemplatesFromHubQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          postTemplates: Array<{
-            __typename?: 'PostTemplate';
-            id: string;
-            defaultDescription: string;
-            type: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type WhiteboardTemplatesFromHubQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type WhiteboardTemplatesFromHubQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          whiteboardTemplates: Array<{
-            __typename?: 'WhiteboardTemplate';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type InnovationFlowTemplatesFromHubQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type InnovationFlowTemplatesFromHubQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          innovationFlowTemplates: Array<{
-            __typename?: 'InnovationFlowTemplate';
-            id: string;
-            definition: string;
-            type: InnovationFlowType;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type HubTemplatesWhiteboardTemplateWithValueQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  whiteboardTemplateId: Scalars['UUID'];
-}>;
-
-export type HubTemplatesWhiteboardTemplateWithValueQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          whiteboardTemplate?:
-            | {
-                __typename?: 'WhiteboardTemplate';
-                value: string;
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type HubTemplatesFragment = {
-  __typename?: 'Hub';
-  templates?:
-    | {
-        __typename?: 'TemplatesSet';
-        id: string;
-        postTemplates: Array<{
-          __typename?: 'PostTemplate';
-          id: string;
-          defaultDescription: string;
-          type: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }>;
-        whiteboardTemplates: Array<{
-          __typename?: 'WhiteboardTemplate';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-          };
-        }>;
-        innovationFlowTemplates: Array<{
-          __typename?: 'InnovationFlowTemplate';
-          id: string;
-          definition: string;
-          type: InnovationFlowType;
-          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-        }>;
-      }
-    | undefined;
-};
-
-export type PostTemplateFragment = {
-  __typename?: 'PostTemplate';
-  id: string;
-  defaultDescription: string;
-  type: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-};
-
-export type ProfileInfoFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  description?: string | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-};
-
-export type WhiteboardTemplateFragment = {
-  __typename?: 'WhiteboardTemplate';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-};
-
-export type WhiteboardTemplateWithValueFragment = {
-  __typename?: 'WhiteboardTemplate';
-  value: string;
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-};
-
-export type InnovationFlowTemplateFragment = {
-  __typename?: 'InnovationFlowTemplate';
-  id: string;
-  definition: string;
-  type: InnovationFlowType;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-};
-
 export type HubPageQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -8352,6 +8034,394 @@ export type HubWelcomeBlockContributorProfileFragment = {
   displayName: string;
   location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+};
+
+export type HubDashboardNavigationChallengesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubDashboardNavigationChallengesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          community?:
+            | { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined }
+            | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type HubDashboardNavigationOpportunitiesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type HubDashboardNavigationOpportunitiesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          opportunities?:
+            | Array<{
+                __typename?: 'Opportunity';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }>
+            | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type HubDashboardNavigationItemFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type HubTemplatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubTemplatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
+            id: string;
+            definition: string;
+            type: InnovationFlowType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutFormTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutFormTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type PostTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type PostTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          postTemplates: Array<{
+            __typename?: 'PostTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type WhiteboardTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type WhiteboardTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          whiteboardTemplates: Array<{
+            __typename?: 'WhiteboardTemplate';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type InnovationFlowTemplatesFromHubQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type InnovationFlowTemplatesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          innovationFlowTemplates: Array<{
+            __typename?: 'InnovationFlowTemplate';
+            id: string;
+            definition: string;
+            type: InnovationFlowType;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type HubTemplatesWhiteboardTemplateWithValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  whiteboardTemplateId: Scalars['UUID'];
+}>;
+
+export type HubTemplatesWhiteboardTemplateWithValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          whiteboardTemplate?:
+            | {
+                __typename?: 'WhiteboardTemplate';
+                value: string;
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type HubTemplatesFragment = {
+  __typename?: 'Hub';
+  templates?:
+    | {
+        __typename?: 'TemplatesSet';
+        id: string;
+        postTemplates: Array<{
+          __typename?: 'PostTemplate';
+          id: string;
+          defaultDescription: string;
+          type: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }>;
+        whiteboardTemplates: Array<{
+          __typename?: 'WhiteboardTemplate';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }>;
+        innovationFlowTemplates: Array<{
+          __typename?: 'InnovationFlowTemplate';
+          id: string;
+          definition: string;
+          type: InnovationFlowType;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }>;
+      }
+    | undefined;
+};
+
+export type PostTemplateFragment = {
+  __typename?: 'PostTemplate';
+  id: string;
+  defaultDescription: string;
+  type: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
+export type ProfileInfoFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  description?: string | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type WhiteboardTemplateFragment = {
+  __typename?: 'WhiteboardTemplate';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
+export type WhiteboardTemplateWithValueFragment = {
+  __typename?: 'WhiteboardTemplate';
+  value: string;
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
+export type InnovationFlowTemplateFragment = {
+  __typename?: 'InnovationFlowTemplate';
+  id: string;
+  definition: string;
+  type: InnovationFlowType;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
 };
 
 export type AdminHubFragment = {
