@@ -28,7 +28,7 @@ import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
 import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
-  WhiteboardFieldSubmittedValuesWithPreviewImage,
+  WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
 
 type FormValueType = {
@@ -41,7 +41,7 @@ type FormValueType = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -71,7 +71,7 @@ export type CalloutFormOutput = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImage;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
 export interface CalloutFormProps {
@@ -133,14 +133,14 @@ const CalloutForm: FC<CalloutFormProps> = ({
       whiteboard: callout?.whiteboard
         ? {
             ...callout.whiteboard,
-            previewImage: undefined,
+            previewImages: undefined,
           }
         : {
             profileData: {
               displayName: t('components.callout-creation.whiteboard.title'),
             },
             value: JSON.stringify(EmptyWhiteboard),
-            previewImage: undefined,
+            previewImages: undefined,
           },
     }),
     [callout?.id, tagsets]

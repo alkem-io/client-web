@@ -65,8 +65,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
             whiteboardTemplate: callout.whiteboardTemplate
               ? { value: callout.whiteboardTemplate.value, profileData: callout.whiteboardTemplate.profile }
               : undefined,
-            //!! CANT SEND WHITEBOARD DATA??
-            //whiteboard: callout.whiteboard
           },
         },
       });

@@ -2,6 +2,7 @@ import { Callout, CalloutVisibility } from '../../../core/apollo/generated/graph
 import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
 import { CoreEntityIdTypes } from '../../shared/types/CoreEntityIds';
 import { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
+import { JourneyTypeName } from '../../challenge/JourneyTypeName';
 
 export interface CalloutSortEvents {
   onMoveUp: (calloutId: string) => void;
@@ -26,6 +27,7 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 }
 
 export interface BaseCalloutViewProps extends CoreEntityIdTypes, CalloutLayoutEvents, Partial<CalloutSortProps> {
+  journeyTypeName: JourneyTypeName;
   calloutNames: string[];
   contributionsCount: number;
   loading?: boolean;

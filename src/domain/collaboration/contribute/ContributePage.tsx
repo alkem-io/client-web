@@ -14,7 +14,7 @@ const ContributePage = ({ journeyTypeName, scrollToCallout = false }: Contribute
 
   return (
     <PageLayout currentSection={EntityPageSection.Contribute}>
-      <JourneyCalloutsTabView scrollToCallout={scrollToCallout} entityTypeName={journeyTypeName} />
+      <JourneyCalloutsTabView scrollToCallout={scrollToCallout} journeyTypeName={journeyTypeName} />
     </PageLayout>
   );
 };

@@ -109,7 +109,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     hubId={hubNameId!}
                     canCreateCallout={false}
                     loading={loading}
-                    entityTypeName="hub"
+                    journeyTypeName="hub"
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -126,7 +126,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
-                  entityTypeName="hub"
+                  journeyTypeName="hub"
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -140,7 +140,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
-                  entityTypeName="hub"
+                  journeyTypeName="hub"
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}

@@ -9,15 +9,11 @@ import {
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import CanvasManagementView, {
-  ActiveCanvasIdHolder,
-  CanvasManagementViewEntities,
-  CanvasNavigationMethods,
-} from './CanvasManagementView';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import CanvasManagementView, { ActiveCanvasIdHolder, CanvasNavigationMethods } from './CanvasManagementView';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
   canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasWhiteboardTemplateFragment[];
   calloutId: string | undefined;
@@ -32,7 +28,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   canvas,
   templates,
   authorization,
-  entityTypeName,
+  journeyTypeName,
   backToCanvases,
   buildLinkToCanvas,
   loadingCanvases,
@@ -67,7 +63,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
             templates,
             calloutId,
             canvasNameId,
-            contextSource: entityTypeName as CanvasManagementViewEntities['contextSource'],
+            contextSource: journeyTypeName,
           }}
           actions={actions}
           state={{

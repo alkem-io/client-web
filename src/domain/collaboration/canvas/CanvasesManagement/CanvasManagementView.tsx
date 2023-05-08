@@ -19,6 +19,7 @@ import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import UrlParams from '../../../../core/routing/urlParams';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export interface ActiveCanvasIdHolder {
   canvasNameId?: string;
@@ -26,7 +27,7 @@ export interface ActiveCanvasIdHolder {
 
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   calloutId: string;
-  contextSource: 'hub' | 'challenge' | 'opportunity';
+  contextSource: JourneyTypeName;
   canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasWhiteboardTemplateFragment[];
   templateListHeader?: string;

@@ -106,7 +106,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                     hubId={hubNameId!}
                     canCreateCallout={false}
                     loading={loading}
-                    entityTypeName="challenge"
+                    journeyTypeName="challenge"
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
