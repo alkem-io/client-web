@@ -17,6 +17,7 @@ const Container = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  borderRadius: theme.shape.borderRadius,
   '> img': {
     minHeight: '100%',
   },
