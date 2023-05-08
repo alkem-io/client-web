@@ -21,7 +21,7 @@ export interface DashboardNavigationItem {
   displayName: string;
   journeyTypeName: JourneyTypeName;
   visualUri: string | undefined;
-  isAccessible?: boolean;
+  private?: boolean;
   children?: DashboardNavigationItem[];
 }
 
@@ -29,14 +29,14 @@ const DashboardNavigationItemPropsGetter =
   (journeyTypeName: JourneyTypeName) =>
   (
     journey: { id: string; nameID: string; profile: HubDashboardNavigationItemFragment },
-    isAccessible?: boolean
+    disabled?: boolean
   ): DashboardNavigationItem => {
     return {
       id: journey.id,
       nameId: journey.nameID,
       displayName: journey.profile.displayName,
       visualUri: journey.profile.visual?.uri,
-      isAccessible,
+      private: disabled,
       journeyTypeName,
     };
   };
@@ -77,7 +77,7 @@ const useHubDashboardNavigation = ({
         const opportunities = challengesWithOpportunitiesById[challenge.id]?.opportunities ?? [];
 
         return {
-          ...challengeToItem(challenge, isReadable(challenge)),
+          ...challengeToItem(challenge, !isReadable(challenge)),
           children: opportunities.map(opportunity => opportunityToItem(opportunity)),
         };
       }),

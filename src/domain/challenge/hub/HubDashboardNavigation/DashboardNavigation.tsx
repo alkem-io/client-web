@@ -7,6 +7,7 @@ import {
   HubOutlined,
   KeyboardArrowDownOutlined,
   KeyboardArrowUpOutlined,
+  LockOutlined,
 } from '@mui/icons-material';
 import { DashboardNavigationItem } from './useHubDashboardNavigation';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -17,6 +18,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
+import { useTranslation } from 'react-i18next';
 
 interface DashboardNavigationProps {
   hubNameId: string | undefined;
@@ -34,14 +36,21 @@ const DashboardNavigationItemView = ({
   url,
   journeyTypeName,
   children,
+  private: isPrivate = false,
 }: PropsWithChildren<DashboardNavigationItemViewProps>) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
+  const { t } = useTranslation();
+
   const JourneyIcon = journeyIcon[journeyTypeName];
 
-  const toggleExpand = (event: React.MouseEvent) => {
+  const preventDefault = (event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
+  };
+
+  const toggleExpand = (event: React.MouseEvent) => {
+    preventDefault(event);
     setIsExpanded(value => !value);
   };
 
@@ -78,10 +87,22 @@ const DashboardNavigationItemView = ({
           </Box>
         }
         visualRight={
-          children && (
-            <IconButton onClick={toggleExpand}>
-              {isExpanded ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
-            </IconButton>
+          isPrivate ? (
+            <Tooltip
+              title={<Caption>{t('components.dashboardNavigation.dashboardNavigationPrivateChallenge')}</Caption>}
+              placement="right"
+              arrow
+            >
+              <IconButton disableRipple onClick={preventDefault}>
+                <LockOutlined />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            children && (
+              <IconButton onClick={toggleExpand}>
+                {isExpanded ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
+              </IconButton>
+            )
           )
         }
       >
@@ -99,6 +120,8 @@ const DashboardNavigationItemView = ({
 };
 
 const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation }: DashboardNavigationProps) => {
+  const { t } = useTranslation();
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader
@@ -106,9 +129,9 @@ const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation }: Da
         title={displayName}
         actions={
           <Tooltip
-            title={
-              'This Space holds the following Challenges. When these Challenges have Opportunities, these are visible as well.'
-            }
+            title={<Caption>{t('components.dashboardNavigation.dashboardNavigationHelp')}</Caption>}
+            placement="right"
+            arrow
           >
             <HelpOutlineOutlined fontSize="small" />
           </Tooltip>
