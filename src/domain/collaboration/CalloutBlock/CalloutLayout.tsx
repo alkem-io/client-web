@@ -51,7 +51,6 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents, Partial<Callout
       description?: string;
       references?: Reference[];
       tagset?: Tagset;
-      visual?: { id: string; uri: string };
     };
     type: CalloutType;
     state: CalloutState;
