@@ -18,9 +18,6 @@ const Container = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: theme.shape.borderRadius,
-  '> img': {
-    minHeight: '100%',
-  },
 }));
 
 const CaptionContainer = styled(Box)(({ theme }) => ({
@@ -36,7 +33,7 @@ const CaptionContainer = styled(Box)(({ theme }) => ({
 const ImageWithCaption: FC<ImageWithCaptionProps> = ({ caption, captionPosition = 'bottom', onClick, ...imgProps }) => {
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
-      <Image {...imgProps} />
+      <Image sx={{ minHeight: '100%' }} {...imgProps} />
       <CaptionContainer
         sx={{
           top: captionPosition === 'top' ? 0 : undefined,

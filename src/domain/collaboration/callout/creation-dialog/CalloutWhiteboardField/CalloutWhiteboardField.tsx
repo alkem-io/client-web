@@ -18,7 +18,7 @@ export interface WhiteboardFieldSubmittedValues {
 }
 
 export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {
-  // Whiteboard Preview Images are sent as visuals in a different call to the server after the callout is saved (See useCalloutCreation.ts)
+  // Whiteboard Preview Images are sent as visuals in a different call to the server after the callout is saved (See useCalloutCreationWithPreviewImages.ts)
   previewImages: WhiteboardPreviewImage[] | undefined;
 }
 
@@ -48,7 +48,7 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
         canEdit
         onChangeValue={handleChange}
         maxHeight={gutters(12)}
-        dialogProps={{ title: t('components.callout-creation.whiteboard-field-dialog.title') }}
+        dialogProps={{ title: t('components.callout-creation.whiteboard.editDialogTitle') }}
       />
     </>
   );

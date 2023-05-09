@@ -439,8 +439,8 @@
       "more-links": "{{count}} links, click here to show all",
       "new-temporary-reference": "Temporary Link Id: {{temp}}"
     },
-    "single-whiteboard": {
-      "click-to-see": "Click to see the full whiteboard"
+    "singleWhiteboard": {
+      "clickToSee": "Click to see the full whiteboard"
     },
     "callout-groups": {
       "HomeTop": "Dashboard Recommendations",
@@ -787,10 +787,8 @@
         "unique-title-validation-text": "This title is already used for another $t(common.callout)"
       },
       "whiteboard": {
-        "title": "Whiteboard:"
-      },
-      "whiteboard-field-dialog": {
-        "title": "Edit Whiteboard"
+        "title": "Whiteboard:",
+        "editDialogTitle": "Edit Whiteboard"
       },
       "template-step": {
         "title": "Templates",

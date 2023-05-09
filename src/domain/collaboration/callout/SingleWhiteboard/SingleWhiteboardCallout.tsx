@@ -74,7 +74,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
           <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
             <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
               <ImageWithCaption
-                caption={t('callout.single-whiteboard.click-to-see')}
+                caption={t('callout.singleWhiteboard.clickToSee')}
                 src={firstCanvas.profile.preview?.uri}
                 alt={callout.profile.displayName}
                 onClick={onExpand}
