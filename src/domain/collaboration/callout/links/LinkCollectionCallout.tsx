@@ -164,6 +164,7 @@ const LinkCollectionCallout = forwardRef<HTMLDivElement, LinkCollectionCalloutPr
           expanded={expanded}
           onExpand={onExpand}
           skipReferences
+          disableMarginal
         >
           <References
             references={expanded ? callout.profile.references : limitedReferences}
