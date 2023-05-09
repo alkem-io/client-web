@@ -1,4 +1,4 @@
-fragment InnovationPackWithProvider on InnovatonPack {
+fragment InnovationPackWithProvider on InnovationPack {
   id
   nameID
   provider {

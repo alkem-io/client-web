@@ -1261,6 +1261,13 @@
       "initial-text": "Here you can **engage with your community**. Sharing ideas and insights. Making impact together",
       "no-cards": "No Card found"
     },
+    "innovationLibrary": {
+      "title": "Innovation Library on Alkemio is here to guide your way to impact",
+      "subtitle": "Alkemio’s Innovation Library is here to guide your way to impact",
+      "innovationPacks": {
+        "headerTitle": "Explore the Innovation Packs below"
+      }
+    },
     "admin": {
       "generic": {
         "sections": {

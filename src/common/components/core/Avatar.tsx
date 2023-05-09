@@ -78,6 +78,7 @@ export interface AvatarProps {
   userId?: string;
 }
 
+// TODO figure out if this custom component can be replaced with MUI Avatar
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   ({ size = 'md', classes = {}, className, src, theme = 'dark', name, userId }, ref) => {
     const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);

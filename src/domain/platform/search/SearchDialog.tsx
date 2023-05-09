@@ -1,7 +1,7 @@
 import { Box, BoxProps, Dialog } from '@mui/material';
 import { useSearchContext } from './SearchContext';
 import { useNavigate } from 'react-router-dom';
-import MultipleSelect from './MultipleSelect';
+import MultipleSelect from '../../../core/ui/search/MultipleSelect';
 import GridItem from '../../../core/ui/grid/GridItem';
 import GridProvider from '../../../core/ui/grid/GridProvider';
 import { SEARCH_TERMS_PARAM } from '../routes/constants';

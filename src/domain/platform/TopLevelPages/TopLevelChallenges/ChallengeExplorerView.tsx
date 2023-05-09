@@ -1,15 +1,12 @@
 import Grid from '@mui/material/Grid';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ChallengeExplorerContainerEntities,
-  ChallengeExplorerContainerState,
-} from '../containers/ChallengeExplorerContainer';
-import ChallengeExplorerHeader from './ChallengeExplorer/ChallengeExplorerHeader';
+import { ChallengeExplorerContainerEntities, ChallengeExplorerContainerState } from './ChallengeExplorerContainer';
+import ChallengeExplorerHeader from '../../../challenge/challenge/views/ChallengeExplorer/ChallengeExplorerHeader';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
-} from './ChallengeExplorer/ChallengeExplorerSearchView';
-import ChallengeExplorerListView from './ChallengeExplorer/ChallengeExplorerListView';
+} from '../../../challenge/challenge/views/ChallengeExplorer/ChallengeExplorerSearchView';
+import ChallengeExplorerListView from '../../../challenge/challenge/views/ChallengeExplorer/ChallengeExplorerListView';
 
 export interface ChallengeExplorerViewProps
   extends ChallengeExplorerContainerEntities,

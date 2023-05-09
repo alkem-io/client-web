@@ -10,7 +10,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWideContent, { ContributorType } from './CommunityContributorsBlockWideContent';
 import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
-import MultipleSelect from '../../../platform/search/MultipleSelect';
+import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { Theme } from '@mui/material/styles';
 import { gutters } from '../../../../core/ui/grid/utils';
 

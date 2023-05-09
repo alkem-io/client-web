@@ -1,12 +1,12 @@
 import { Skeleton } from '@mui/material';
-import { FC } from 'react';
+import React, { FC } from 'react';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import CardImage from '../../../../core/ui/card/CardImage';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
-import { InnovationPackIcon } from '../../../platform/admin/templates/InnovationPacks/InnovationPackIcon';
+import InnovationPackIcon from '../../InnovationPack/InnovationPackIcon';
 import { CanvasIcon } from '../icon/CanvasIcon';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';

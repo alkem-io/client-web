@@ -1979,6 +1979,22 @@ export enum InnovationFlowType {
   Opportunity = 'OPPORTUNITY',
 }
 
+export type InnovationPack = {
+  __typename?: 'InnovationPack';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The Profile for this InnovationPack. */
+  profile: Profile;
+  /** The InnovationPack provider. */
+  provider?: Maybe<Organization>;
+  /** The templates in use by this InnovationPack */
+  templates?: Maybe<TemplatesSet>;
+};
+
 export type InnovationSpace = {
   __typename?: 'InnovationSpace';
   /** The authorization rules for the entity */
@@ -2000,22 +2016,6 @@ export enum InnovationSpaceType {
   Lite = 'LITE',
 }
 
-export type InnovatonPack = {
-  __typename?: 'InnovatonPack';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The Profile for this InnovationPack. */
-  profile: Profile;
-  /** The InnovationPack provider. */
-  provider?: Maybe<Organization>;
-  /** The templates in use by this InnovationPack */
-  templates?: Maybe<TemplatesSet>;
-};
-
 export type Library = {
   __typename?: 'Library';
   /** The authorization rules for the entity */
@@ -2023,9 +2023,9 @@ export type Library = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A single Innovation Pack */
-  innovationPack?: Maybe<InnovatonPack>;
+  innovationPack?: Maybe<InnovationPack>;
   /** Platform level library. */
-  innovationPacks: Array<InnovatonPack>;
+  innovationPacks: Array<InnovationPack>;
   /** The StorageBucket with documents in use by this User */
   storageBucket?: Maybe<StorageBucket>;
 };
@@ -2187,7 +2187,7 @@ export type Mutation = {
   /** Creates a new InnovationFlowTemplate on the specified TemplatesSet. */
   createInnovationFlowTemplate: InnovationFlowTemplate;
   /** Create a new InnovatonPack on the Library. */
-  createInnovationPackOnLibrary: InnovatonPack;
+  createInnovationPackOnLibrary: InnovationPack;
   /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
   /** Creates a new Organization on the platform. */
@@ -2233,7 +2233,7 @@ export type Mutation = {
   /** Deletes the specified InnovationFlowTemplate. */
   deleteInnovationFlowTemplate: InnovationFlowTemplate;
   /** Deletes the specified InnovationPack. */
-  deleteInnovationPack: InnovatonPack;
+  deleteInnovationPack: InnovationPack;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -2359,7 +2359,7 @@ export type Mutation = {
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Updates the InnovationPack. */
-  updateInnovationPack: InnovatonPack;
+  updateInnovationPack: InnovationPack;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
   /** Updates the Innovation Flow on the specified Opportunity. */
@@ -4872,105 +4872,6 @@ export type ChallengeCardFragment = {
   };
   context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
   lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-};
-
-export type ChallengeExplorerPageQueryVariables = Exact<{
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type ChallengeExplorerPageQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    hubs: Array<{
-      __typename?: 'RolesResultHub';
-      id: string;
-      roles: Array<string>;
-      challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
-    }>;
-  };
-};
-
-export type ChallengeExplorerSearchQueryVariables = Exact<{
-  searchData: SearchInput;
-}>;
-
-export type ChallengeExplorerSearchQuery = {
-  __typename?: 'Query';
-  search: {
-    __typename?: 'ISearchResults';
-    journeyResults: Array<
-      | { __typename?: 'SearchResultCard'; id: string; type: SearchResultType; terms: Array<string> }
-      | {
-          __typename?: 'SearchResultChallenge';
-          id: string;
-          type: SearchResultType;
-          terms: Array<string>;
-          challenge: {
-            __typename?: 'Challenge';
-            id: string;
-            nameID: string;
-            hubID: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              tagline: string;
-              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-              visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-            };
-            context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-          };
-          hub: {
-            __typename?: 'Hub';
-            id: string;
-            nameID: string;
-            visibility: HubVisibility;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
-            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-          };
-        }
-      | { __typename?: 'SearchResultHub'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
-    >;
-  };
-};
-
-export type ChallengeExplorerDataQueryVariables = Exact<{
-  hubIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
-}>;
-
-export type ChallengeExplorerDataQuery = {
-  __typename?: 'Query';
-  hubs: Array<{
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    visibility: HubVisibility;
-    profile: { __typename?: 'Profile'; id: string; tagline: string; displayName: string };
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            tagline: string;
-            displayName: string;
-            description?: string | undefined;
-            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
-            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-          };
-          context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
-        }>
-      | undefined;
-  }>;
 };
 
 export type ChallengePageQueryVariables = Exact<{
@@ -12119,7 +12020,7 @@ export type PlatformPostTemplatesLibraryQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         provider?:
@@ -15499,7 +15400,7 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         provider?:
@@ -15552,7 +15453,7 @@ export type PlatformWhiteboardTemplateValueQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             nameID: string;
             templates?:
@@ -15595,7 +15496,7 @@ export type PlatformWhiteboardTemplateValueQuery = {
 };
 
 export type InnovationPackWithProviderFragment = {
-  __typename?: 'InnovatonPack';
+  __typename?: 'InnovationPack';
   id: string;
   nameID: string;
   provider?:
@@ -16737,7 +16638,7 @@ export type PlatformTemplateCanvasValuesQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             templates?:
               | {
                   __typename?: 'TemplatesSet';
@@ -17019,6 +16920,87 @@ export type CalloutAspectCreatedSubscription = {
       };
     };
   };
+};
+
+export type InnovationLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type InnovationLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      innovationPacks: Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        };
+        templates?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              postTemplates: Array<{ __typename?: 'PostTemplate'; id: string }>;
+              whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string }>;
+              innovationFlowTemplates: Array<{ __typename?: 'InnovationFlowTemplate'; id: string }>;
+            }
+          | undefined;
+        provider?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              };
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type InnovationPackCardFragment = {
+  __typename?: 'InnovationPack';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  };
+  templates?:
+    | {
+        __typename?: 'TemplatesSet';
+        id: string;
+        postTemplates: Array<{ __typename?: 'PostTemplate'; id: string }>;
+        whiteboardTemplates: Array<{ __typename?: 'WhiteboardTemplate'; id: string }>;
+        innovationFlowTemplates: Array<{ __typename?: 'InnovationFlowTemplate'; id: string }>;
+      }
+    | undefined;
+  provider?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
@@ -21013,6 +20995,105 @@ export type FullLocationFragment = {
   postalCode: string;
 };
 
+export type ChallengeExplorerPageQueryVariables = Exact<{
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type ChallengeExplorerPageQuery = {
+  __typename?: 'Query';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
+    hubs: Array<{
+      __typename?: 'RolesResultHub';
+      id: string;
+      roles: Array<string>;
+      challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
+    }>;
+  };
+};
+
+export type ChallengeExplorerSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type ChallengeExplorerSearchQuery = {
+  __typename?: 'Query';
+  search: {
+    __typename?: 'ISearchResults';
+    journeyResults: Array<
+      | { __typename?: 'SearchResultCard'; id: string; type: SearchResultType; terms: Array<string> }
+      | {
+          __typename?: 'SearchResultChallenge';
+          id: string;
+          type: SearchResultType;
+          terms: Array<string>;
+          challenge: {
+            __typename?: 'Challenge';
+            id: string;
+            nameID: string;
+            hubID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline: string;
+              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            };
+            context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+          };
+          hub: {
+            __typename?: 'Hub';
+            id: string;
+            nameID: string;
+            visibility: HubVisibility;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string };
+            authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
+          };
+        }
+      | { __typename?: 'SearchResultHub'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultOpportunity'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
+    >;
+  };
+};
+
+export type ChallengeExplorerDataQueryVariables = Exact<{
+  hubIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+}>;
+
+export type ChallengeExplorerDataQuery = {
+  __typename?: 'Query';
+  hubs: Array<{
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    visibility: HubVisibility;
+    profile: { __typename?: 'Profile'; id: string; tagline: string; displayName: string };
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            tagline: string;
+            displayName: string;
+            description?: string | undefined;
+            visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+          context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+        }>
+      | undefined;
+  }>;
+};
+
 export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSupportedCredentialMetadataQuery = {
@@ -21777,7 +21858,7 @@ export type InnovationPacksQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         provider?:
@@ -21902,7 +21983,7 @@ export type InnovationPackWhiteboardTemplateWithValueQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             templates?:
               | {
@@ -21931,7 +22012,7 @@ export type InnovationPackFullWhiteboardTemplateWithValueQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             templates?:
               | {
@@ -21970,7 +22051,7 @@ export type AdminInnovationPacksListQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -21985,7 +22066,7 @@ export type DeleteInnovationPackMutationVariables = Exact<{
 
 export type DeleteInnovationPackMutation = {
   __typename?: 'Mutation';
-  deleteInnovationPack: { __typename?: 'InnovatonPack'; id: string };
+  deleteInnovationPack: { __typename?: 'InnovationPack'; id: string };
 };
 
 export type InnovationPackProfileFragment = {
@@ -22100,7 +22181,7 @@ export type AdminInnovationPackQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             nameID: string;
             provider?:
@@ -22233,7 +22314,7 @@ export type CreateInnovationPackMutationVariables = Exact<{
 
 export type CreateInnovationPackMutation = {
   __typename?: 'Mutation';
-  createInnovationPackOnLibrary: { __typename?: 'InnovatonPack'; id: string; nameID: string };
+  createInnovationPackOnLibrary: { __typename?: 'InnovationPack'; id: string; nameID: string };
 };
 
 export type UpdateInnovationPackMutationVariables = Exact<{
@@ -22242,7 +22323,7 @@ export type UpdateInnovationPackMutationVariables = Exact<{
 
 export type UpdateInnovationPackMutation = {
   __typename?: 'Mutation';
-  updateInnovationPack: { __typename?: 'InnovatonPack'; id: string; nameID: string };
+  updateInnovationPack: { __typename?: 'InnovationPack'; id: string; nameID: string };
 };
 
 export type UpdateInnovationFlowTemplateMutationVariables = Exact<{

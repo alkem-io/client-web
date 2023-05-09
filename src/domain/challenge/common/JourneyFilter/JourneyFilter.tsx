@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { SearchTagsInputProps } from '../../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
-import MultipleSelect from '../../../../domain/platform/search/MultipleSelect';
+import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import filterFn, { MatchInformation, ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { Box } from '@mui/material';
 import { BlockTitle } from '../../../../core/ui/typography';

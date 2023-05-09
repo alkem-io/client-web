@@ -1137,6 +1137,23 @@ export type InnovationFlowTemplateFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InnovationPackKeySpecifier = (
+  | 'authorization'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | 'provider'
+  | 'templates'
+  | InnovationPackKeySpecifier
+)[];
+export type InnovationPackFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
+  templates?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovationSpaceKeySpecifier = (
   | 'authorization'
   | 'branding'
@@ -1153,23 +1170,6 @@ export type InnovationSpaceFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   selectionCriteria?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type InnovatonPackKeySpecifier = (
-  | 'authorization'
-  | 'id'
-  | 'nameID'
-  | 'profile'
-  | 'provider'
-  | 'templates'
-  | InnovatonPackKeySpecifier
-)[];
-export type InnovatonPackFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-  provider?: FieldPolicy<any> | FieldReadFunction<any>;
-  templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LibraryKeySpecifier = (
   | 'authorization'
@@ -2764,13 +2764,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | InnovationFlowTemplateKeySpecifier | (() => undefined | InnovationFlowTemplateKeySpecifier);
     fields?: InnovationFlowTemplateFieldPolicy;
   };
+  InnovationPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InnovationPackKeySpecifier | (() => undefined | InnovationPackKeySpecifier);
+    fields?: InnovationPackFieldPolicy;
+  };
   InnovationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationSpaceKeySpecifier | (() => undefined | InnovationSpaceKeySpecifier);
     fields?: InnovationSpaceFieldPolicy;
-  };
-  InnovatonPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | InnovatonPackKeySpecifier | (() => undefined | InnovatonPackKeySpecifier);
-    fields?: InnovatonPackFieldPolicy;
   };
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);

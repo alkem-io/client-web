@@ -1593,7 +1593,7 @@ export const TemplateProviderProfileFragmentDoc = gql`
   ${VisualUriFragmentDoc}
 `;
 export const InnovationPackWithProviderFragmentDoc = gql`
-  fragment InnovationPackWithProvider on InnovatonPack {
+  fragment InnovationPackWithProvider on InnovationPack {
     id
     nameID
     provider {
@@ -1702,6 +1702,44 @@ export const AspectsOnCalloutFragmentDoc = gql`
     }
   }
   ${ContributeTabAspectFragmentDoc}
+`;
+export const InnovationPackCardFragmentDoc = gql`
+  fragment InnovationPackCard on InnovationPack {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+    }
+    templates {
+      id
+      postTemplates {
+        id
+      }
+      whiteboardTemplates {
+        id
+      }
+      innovationFlowTemplates {
+        id
+      }
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+  }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -3555,231 +3593,6 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
 >;
-export const ChallengeExplorerPageDocument = gql`
-  query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
-      hubs {
-        id
-        roles
-        challenges {
-          id
-          roles
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeExplorerPageQuery__
- *
- * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeExplorerPageQuery({
- *   variables: {
- *      userID: // value for 'userID'
- *   },
- * });
- */
-export function useChallengeExplorerPageQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
-    options
-  );
-}
-
-export function useChallengeExplorerPageLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
-    options
-  );
-}
-
-export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
-export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
-export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerPageQuery,
-  SchemaTypes.ChallengeExplorerPageQueryVariables
->;
-export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
-  return { query: ChallengeExplorerPageDocument, variables: variables };
-}
-
-export const ChallengeExplorerSearchDocument = gql`
-  query ChallengeExplorerSearch($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      journeyResults {
-        id
-        type
-        terms
-        ... on SearchResultChallenge {
-          ...SearchResultChallenge
-        }
-      }
-    }
-  }
-  ${SearchResultChallengeFragmentDoc}
-`;
-
-/**
- * __useChallengeExplorerSearchQuery__
- *
- * To run a query within a React component, call `useChallengeExplorerSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeExplorerSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useChallengeExplorerSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerSearchQuery, SchemaTypes.ChallengeExplorerSearchQueryVariables>(
-    ChallengeExplorerSearchDocument,
-    options
-  );
-}
-
-export function useChallengeExplorerSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >(ChallengeExplorerSearchDocument, options);
-}
-
-export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
-export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
-export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerSearchQuery,
-  SchemaTypes.ChallengeExplorerSearchQueryVariables
->;
-export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
-  return { query: ChallengeExplorerSearchDocument, variables: variables };
-}
-
-export const ChallengeExplorerDataDocument = gql`
-  query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
-    hubs(IDs: $hubIDs) {
-      id
-      nameID
-      profile {
-        id
-        tagline
-        displayName
-      }
-      visibility
-      challenges(IDs: $challengeIDs) {
-        id
-        nameID
-        profile {
-          id
-          tagline
-          displayName
-          description
-          visuals {
-            ...VisualUri
-          }
-          tagset {
-            id
-            tags
-          }
-        }
-        context {
-          id
-          vision
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useChallengeExplorerDataQuery__
- *
- * To run a query within a React component, call `useChallengeExplorerDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeExplorerDataQuery({
- *   variables: {
- *      hubIDs: // value for 'hubIDs'
- *      challengeIDs: // value for 'challengeIDs'
- *   },
- * });
- */
-export function useChallengeExplorerDataQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerDataQuery,
-    SchemaTypes.ChallengeExplorerDataQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
-    ChallengeExplorerDataDocument,
-    options
-  );
-}
-
-export function useChallengeExplorerDataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerDataQuery,
-    SchemaTypes.ChallengeExplorerDataQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
-    ChallengeExplorerDataDocument,
-    options
-  );
-}
-
-export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
-export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
-export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerDataQuery,
-  SchemaTypes.ChallengeExplorerDataQueryVariables
->;
-export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
-  return { query: ChallengeExplorerDataDocument, variables: variables };
-}
-
 export const ChallengePageDocument = gql`
   query challengePage($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -12931,6 +12744,69 @@ export function useCalloutAspectCreatedSubscription(
 export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
 export type CalloutAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
+export const InnovationLibraryDocument = gql`
+  query InnovationLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          ...InnovationPackCard
+        }
+      }
+    }
+  }
+  ${InnovationPackCardFragmentDoc}
+`;
+
+/**
+ * __useInnovationLibraryQuery__
+ *
+ * To run a query within a React component, call `useInnovationLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
+    InnovationLibraryDocument,
+    options
+  );
+}
+
+export function useInnovationLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationLibraryQuery,
+    SchemaTypes.InnovationLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
+    InnovationLibraryDocument,
+    options
+  );
+}
+
+export type InnovationLibraryQueryHookResult = ReturnType<typeof useInnovationLibraryQuery>;
+export type InnovationLibraryLazyQueryHookResult = ReturnType<typeof useInnovationLibraryLazyQuery>;
+export type InnovationLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationLibraryQuery,
+  SchemaTypes.InnovationLibraryQueryVariables
+>;
+export function refetchInnovationLibraryQuery(variables?: SchemaTypes.InnovationLibraryQueryVariables) {
+  return { query: InnovationLibraryDocument, variables: variables };
+}
+
 export const ProfileVerifiedCredentialDocument = gql`
   subscription profileVerifiedCredential {
     profileVerifiedCredential {
@@ -19834,6 +19710,231 @@ export function refetchOpportunityContributionDetailsQuery(
   variables: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
+}
+
+export const ChallengeExplorerPageDocument = gql`
+  query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      hubs {
+        id
+        roles
+        challenges {
+          id
+          roles
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeExplorerPageQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerPageQuery({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useChallengeExplorerPageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerPageQuery,
+    SchemaTypes.ChallengeExplorerPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
+    ChallengeExplorerPageDocument,
+    options
+  );
+}
+
+export function useChallengeExplorerPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerPageQuery,
+    SchemaTypes.ChallengeExplorerPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
+    ChallengeExplorerPageDocument,
+    options
+  );
+}
+
+export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
+export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
+export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerPageQuery,
+  SchemaTypes.ChallengeExplorerPageQueryVariables
+>;
+export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
+  return { query: ChallengeExplorerPageDocument, variables: variables };
+}
+
+export const ChallengeExplorerSearchDocument = gql`
+  query ChallengeExplorerSearch($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      journeyResults {
+        id
+        type
+        terms
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
+      }
+    }
+  }
+  ${SearchResultChallengeFragmentDoc}
+`;
+
+/**
+ * __useChallengeExplorerSearchQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useChallengeExplorerSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerSearchQuery, SchemaTypes.ChallengeExplorerSearchQueryVariables>(
+    ChallengeExplorerSearchDocument,
+    options
+  );
+}
+
+export function useChallengeExplorerSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >(ChallengeExplorerSearchDocument, options);
+}
+
+export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
+export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
+export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerSearchQuery,
+  SchemaTypes.ChallengeExplorerSearchQueryVariables
+>;
+export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
+  return { query: ChallengeExplorerSearchDocument, variables: variables };
+}
+
+export const ChallengeExplorerDataDocument = gql`
+  query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
+    hubs(IDs: $hubIDs) {
+      id
+      nameID
+      profile {
+        id
+        tagline
+        displayName
+      }
+      visibility
+      challenges(IDs: $challengeIDs) {
+        id
+        nameID
+        profile {
+          id
+          tagline
+          displayName
+          description
+          visuals {
+            ...VisualUri
+          }
+          tagset {
+            id
+            tags
+          }
+        }
+        context {
+          id
+          vision
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useChallengeExplorerDataQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerDataQuery({
+ *   variables: {
+ *      hubIDs: // value for 'hubIDs'
+ *      challengeIDs: // value for 'challengeIDs'
+ *   },
+ * });
+ */
+export function useChallengeExplorerDataQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerDataQuery,
+    SchemaTypes.ChallengeExplorerDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
+    ChallengeExplorerDataDocument,
+    options
+  );
+}
+
+export function useChallengeExplorerDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerDataQuery,
+    SchemaTypes.ChallengeExplorerDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
+    ChallengeExplorerDataDocument,
+    options
+  );
+}
+
+export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
+export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
+export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerDataQuery,
+  SchemaTypes.ChallengeExplorerDataQueryVariables
+>;
+export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
+  return { query: ChallengeExplorerDataDocument, variables: variables };
 }
 
 export const GetSupportedCredentialMetadataDocument = gql`

@@ -19,7 +19,7 @@ import { SearchRoute } from './search.route';
 import { nameOfUrl } from './urlParams';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
-import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/ChallengeExplorerPage';
+import { ChallengeExplorerPage } from '../../domain/platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing';
 import { INSPIRATION_ROUTE } from '../../domain/platform/routes/constants';
 import InspirationPage from '../help/pages/InspirationPage';
@@ -28,6 +28,7 @@ import devRoute from '../../dev/routes';
 import RootRedirect from '../../domain/platform/routes/RootRedirect';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
+import InnovationLibraryPage from '../../domain/collaboration/templates/InnovationLibraryPage/InnovationLibraryPage';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -96,6 +97,14 @@ export const TopLevelRoutes: FC = () => {
               <NoIdentityRedirect>
                 <UserRoute />
               </NoIdentityRedirect>
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/innovation-library"
+          element={
+            <WithApmTransaction path="/innovation-library">
+              <InnovationLibraryPage />
             </WithApmTransaction>
           }
         />

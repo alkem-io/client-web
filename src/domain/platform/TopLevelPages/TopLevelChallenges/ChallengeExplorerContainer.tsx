@@ -10,7 +10,7 @@ import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { HubVisibility, SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { SearchResultT } from '../../../platform/search/SearchView';
+import { SearchResultT } from '../../search/SearchView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
 export type SimpleChallenge = {
