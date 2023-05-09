@@ -59,7 +59,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                 canvasNameId={firstCanvas.id}
                 backToCanvases={() => onClose?.()}
                 journeyTypeName={journeyTypeName}
-                canvasShareUrl={buildCalloutUrl(callout.nameID, {
+                overrideCanvasUrl={buildCalloutUrl(callout.nameID, {
                   hubNameId,
                   challengeNameId,
                   opportunityNameId,

@@ -21,7 +21,7 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
   templates: CreateCanvasWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
-  canvasShareUrl?: string;
+  overrideCanvasUrl?: string;
   loadingCanvases: boolean;
   loadingTemplates: boolean;
 }
@@ -45,11 +45,11 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   journeyTypeName,
   backToCanvases,
   loadingCanvases,
-  canvasShareUrl,
+  overrideCanvasUrl,
   ...canvasesState
 }) => {
   const urlParams = useUrlParams();
-  const canvasUrl = canvasShareUrl ? canvasShareUrl : buildCanvasShareUrl(urlParams);
+  const canvasShareUrl = overrideCanvasUrl ? overrideCanvasUrl : buildCanvasShareUrl(urlParams);
 
   const { isFeatureEnabled } = useConfig();
   if (!calloutId) {
@@ -91,7 +91,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
             canUpdate: hasUpdatePrivileges,
             canCreate: hasCreatePrivileges,
             canDelete: hasDeletePrivileges,
-            shareUrl: canvasUrl,
+            shareUrl: canvasShareUrl,
           }}
           backToCanvases={backToCanvases}
         />
