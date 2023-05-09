@@ -76,7 +76,12 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     return (
       <>
         <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
-          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
+          <CalloutLayout
+            callout={callout}
+            contributionsCount={contributionsCount}
+            {...calloutLayoutProps}
+            disableMarginal
+          >
             {showCards && (
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : callout.canvases}
