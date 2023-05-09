@@ -17,6 +17,7 @@ import { useCanvasLockedByDetailsQuery } from '../../../../core/apollo/generated
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { BlockTitle } from '../../../../core/ui/typography/components';
 
 export interface ActiveCanvasIdHolder {
   canvasNameId?: string;
@@ -44,6 +45,7 @@ export interface ContextViewState {
 
 export interface CanvasManagementViewOptions {
   canUpdate?: boolean;
+  canUpdateDisplayName?: boolean;
   canCreate?: boolean;
   canDelete?: boolean;
   shareUrl?: string;
@@ -119,6 +121,11 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               canEdit: isCanvasCheckedOutByMe && options.canUpdate,
               canDelete: isCanvasAvailable && options.canDelete,
               checkedOutByMe: isCanvasCheckedOutByMe,
+              fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
+                <BlockTitle display="flex" alignItems="center">
+                  {canvas?.profile.displayName}
+                </BlockTitle>
+              ),
               headerActions: (
                 <ShareButton url={options.shareUrl} entityTypeName="canvas" disabled={!options.shareUrl} />
               ),

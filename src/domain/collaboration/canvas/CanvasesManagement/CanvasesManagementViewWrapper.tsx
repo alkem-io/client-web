@@ -22,6 +22,7 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
   overrideCanvasUrl?: string;
+  readOnlyDisplayName?: boolean;
   loadingCanvases: boolean;
   loadingTemplates: boolean;
 }
@@ -46,6 +47,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   backToCanvases,
   loadingCanvases,
   overrideCanvasUrl,
+  readOnlyDisplayName,
   ...canvasesState
 }) => {
   const urlParams = useUrlParams();
@@ -89,6 +91,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
           }}
           options={{
             canUpdate: hasUpdatePrivileges,
+            canUpdateDisplayName: hasUpdatePrivileges && !readOnlyDisplayName,
             canCreate: hasCreatePrivileges,
             canDelete: hasDeletePrivileges,
             shareUrl: canvasShareUrl,

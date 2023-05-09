@@ -64,6 +64,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                   challengeNameId,
                   opportunityNameId,
                 })}
+                readOnlyDisplayName
                 {...entities}
                 {...state}
               />

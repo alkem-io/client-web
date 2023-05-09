@@ -29,7 +29,7 @@ export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }
   const handleChange = (newValue: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
       profileData: {
-        displayName: t('components.callout-creation.custom-template'),
+        displayName: t('common.canvas'),
       },
       value: newValue,
       previewImages,
