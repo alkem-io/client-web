@@ -19,7 +19,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/contributor/user/constants/RoleType';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
 import { SearchResultMetaType, SearchResultT } from '../SearchView';
@@ -101,7 +101,6 @@ const _hydrateHubCard = (
   }
   const hub = data.hub;
   const tagline = hub.profile?.tagline || '';
-  const visual = getVisualByType(VisualName.BANNER, hub.profile?.visuals);
   const name = hub.profile.displayName;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
@@ -115,8 +114,8 @@ const _hydrateHubCard = (
 
   return (
     <SearchHubCard
-      bannerUri={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
+      bannerAltText={getVisualByType(VisualName.BANNER, hub.profile.visuals)?.alternativeText}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -140,7 +139,6 @@ const useHydrateChallengeCard = (
   const challenge = data.challenge;
   const containingHub = data.hub;
   const tagline = challenge.profile.tagline || '';
-  const visual = getVisualByType(VisualName.BANNER, challenge.profile?.visuals);
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
@@ -159,8 +157,8 @@ const useHydrateChallengeCard = (
 
   return (
     <SearchChallengeCard
-      bannerUri={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
+      bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile.visuals)?.alternativeText}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -194,7 +192,6 @@ const useHydrateOpportunityCard = (
   const containingChallenge = data.challenge;
   const containingHub = data.hub;
   const tagline = opportunity.profile.tagline || '';
-  const visual = getVisualByType(VisualName.BANNER, opportunity.profile?.visuals);
   const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
@@ -213,8 +210,8 @@ const useHydrateOpportunityCard = (
 
   return (
     <SearchOpportunityCard
-      bannerUri={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)}
+      bannerAltText={getVisualByType(VisualName.BANNER, opportunity.profile.visuals)?.alternativeText}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
