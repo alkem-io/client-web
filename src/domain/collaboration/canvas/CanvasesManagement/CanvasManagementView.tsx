@@ -16,8 +16,6 @@ import { ViewProps } from '../../../../core/container/view';
 import { useCanvasLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import UrlParams from '../../../../core/routing/urlParams';
-import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export interface ActiveCanvasIdHolder {
@@ -48,6 +46,7 @@ export interface CanvasManagementViewOptions {
   canUpdate?: boolean;
   canCreate?: boolean;
   canDelete?: boolean;
+  shareUrl?: string;
 }
 
 export interface CanvasNavigationMethods {
@@ -69,16 +68,6 @@ export interface CanvasManagementViewProps
     >,
     CanvasNavigationMethods {}
 
-const getCanvasShareUrl = (urlParams: UrlParams) => {
-  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.whiteboardNameId) return;
-
-  return buildCanvasUrl(urlParams.calloutNameId, urlParams.whiteboardNameId, {
-    hubNameId: urlParams.hubNameId,
-    challengeNameId: urlParams.challengeNameId,
-    opportunityNameId: urlParams.opportunityNameId,
-  });
-};
-
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options, backToCanvases }) => {
   const { canvasNameId, calloutId, canvas } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
@@ -96,7 +85,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   });
 
   const urlParams = useUrlParams();
-  const canvasUrl = getCanvasShareUrl(urlParams);
 
   const handleCancel = (canvas: CanvasDetailsFragment) => {
     backToCanvases();
@@ -131,7 +119,9 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               canEdit: isCanvasCheckedOutByMe && options.canUpdate,
               canDelete: isCanvasAvailable && options.canDelete,
               checkedOutByMe: isCanvasCheckedOutByMe,
-              headerActions: <ShareButton url={canvasUrl} entityTypeName="canvas" disabled={!canvasUrl} />,
+              headerActions: (
+                <ShareButton url={options.shareUrl} entityTypeName="canvas" disabled={!options.shareUrl} />
+              ),
             }}
             state={state}
           />

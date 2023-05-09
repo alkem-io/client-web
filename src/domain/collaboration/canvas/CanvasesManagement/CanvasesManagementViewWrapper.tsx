@@ -11,6 +11,9 @@ import {
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import CanvasManagementView, { ActiveCanvasIdHolder, CanvasNavigationMethods } from './CanvasManagementView';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import UrlParams from '../../../../core/routing/urlParams';
+import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
   journeyTypeName: JourneyTypeName;
@@ -18,9 +21,20 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
   templates: CreateCanvasWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
+  canvasShareUrl?: string;
   loadingCanvases: boolean;
   loadingTemplates: boolean;
 }
+
+const buildCanvasShareUrl = (urlParams: UrlParams) => {
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.whiteboardNameId) return;
+
+  return buildCanvasUrl(urlParams.calloutNameId, urlParams.whiteboardNameId, {
+    hubNameId: urlParams.hubNameId,
+    challengeNameId: urlParams.challengeNameId,
+    opportunityNameId: urlParams.opportunityNameId,
+  });
+};
 
 const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   canvasNameId,
@@ -31,8 +45,12 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   journeyTypeName,
   backToCanvases,
   loadingCanvases,
+  canvasShareUrl,
   ...canvasesState
 }) => {
+  const urlParams = useUrlParams();
+  const canvasUrl = canvasShareUrl ? canvasShareUrl : buildCanvasShareUrl(urlParams);
+
   const { isFeatureEnabled } = useConfig();
   if (!calloutId) {
     return null;
@@ -73,6 +91,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
             canUpdate: hasUpdatePrivileges,
             canCreate: hasCreatePrivileges,
             canDelete: hasDeletePrivileges,
+            shareUrl: canvasUrl,
           }}
           backToCanvases={backToCanvases}
         />

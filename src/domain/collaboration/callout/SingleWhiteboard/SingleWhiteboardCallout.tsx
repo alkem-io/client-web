@@ -8,6 +8,7 @@ import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { CanvasCardCanvas } from '../canvas/types';
 import { CanvasProvider } from '../../canvas/containers/CanvasProvider';
 import CanvasesManagementViewWrapper from '../../canvas/CanvasesManagement/CanvasesManagementViewWrapper';
+import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
@@ -58,6 +59,11 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                 canvasNameId={firstCanvas.id}
                 backToCanvases={() => onClose?.()}
                 journeyTypeName={journeyTypeName}
+                canvasShareUrl={buildCalloutUrl(callout.nameID, {
+                  hubNameId,
+                  challengeNameId,
+                  opportunityNameId,
+                })}
                 {...entities}
                 {...state}
               />
