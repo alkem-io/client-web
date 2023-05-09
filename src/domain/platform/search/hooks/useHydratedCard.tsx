@@ -19,7 +19,7 @@ import {
 } from '../../../../common/utils/urlBuilders';
 import { SearchChallengeCard, SearchHubCard, SearchOpportunityCard } from '../../../shared/components/search-cards';
 import { RoleType } from '../../../community/contributor/user/constants/RoleType';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user/hooks/useUserContext';
 import { SearchResultMetaType, SearchResultT } from '../SearchView';
@@ -114,8 +114,7 @@ const _hydrateHubCard = (
 
   return (
     <SearchHubCard
-      bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
-      bannerAltText={getVisualByType(VisualName.BANNER, hub.profile.visuals)?.alternativeText}
+      banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -157,8 +156,7 @@ const useHydrateChallengeCard = (
 
   return (
     <SearchChallengeCard
-      bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
-      bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile.visuals)?.alternativeText}
+      banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -210,8 +208,7 @@ const useHydrateOpportunityCard = (
 
   return (
     <SearchOpportunityCard
-      bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)}
-      bannerAltText={getVisualByType(VisualName.BANNER, opportunity.profile.visuals)?.alternativeText}
+      banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}

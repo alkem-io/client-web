@@ -6,7 +6,7 @@ import HubCard, { HubCardProps } from '../../../challenge/hub/HubCard/HubCard';
 import { buildHubUrl } from '../../../../common/utils/urlBuilders';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { Hub, Nvp, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 
@@ -49,8 +49,7 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
         {hub => {
           return (
             <HubCard
-              bannerUri={getVisualBannerNarrow(hub.profile.visuals)}
-              bannerAltText={getVisualByType(VisualName.BANNER, hub.profile.visuals)?.alternativeText}
+              banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
               hubId={hub.id}
               displayName={hub.profile.displayName}
               journeyUri={buildHubUrl(hub.nameID)}
