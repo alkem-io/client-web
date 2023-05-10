@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -37,6 +37,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
     ref
   ) => {
     const { t } = useTranslation();
+    const [isWhiteboardDialogOpen, setWhiteboardDialog] = useState(false);
 
     if (!callout.canvases || callout.canvases.length < 1) {
       return null;
@@ -44,48 +45,52 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
     const firstCanvas = callout.canvases[0];
 
     return (
-      <>
-        {expanded ? (
-          <CanvasProvider
-            {...{
-              hubNameId,
-              challengeNameId,
-              opportunityNameId,
-              calloutNameId: callout.nameID,
-              whiteboardNameId: firstCanvas.id,
-            }}
-          >
-            {(entities, state) => (
-              <CanvasesManagementViewWrapper
-                canvasNameId={firstCanvas.id}
-                backToCanvases={() => onClose?.()}
-                journeyTypeName={journeyTypeName}
-                canvasShareUrl={buildCalloutUrl(callout.nameID, {
-                  hubNameId,
-                  challengeNameId,
-                  opportunityNameId,
-                })}
-                readOnlyDisplayName
-                updatePrivilege={AuthorizationPrivilege.Update}
-                {...entities}
-                {...state}
-              />
-            )}
-          </CanvasProvider>
-        ) : (
-          <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
-            <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
-              <ImageWithCaption
-                caption={t('callout.singleWhiteboard.clickToSee')}
-                src={firstCanvas.profile.preview?.uri}
-                alt={callout.profile.displayName}
-                defaultImageSvg={<CanvasIcon />}
-                onClick={onExpand}
-              />
-            </CalloutLayout>
-          </PageContentBlock>
-        )}
-      </>
+      <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
+        <CalloutLayout
+          callout={callout}
+          contributionsCount={contributionsCount}
+          {...calloutLayoutProps}
+          expanded={expanded}
+          onExpand={onExpand}
+          onClose={onClose}
+        >
+          <ImageWithCaption
+            caption={t('callout.singleWhiteboard.clickToSee')}
+            src={firstCanvas.profile.preview?.uri}
+            alt={callout.profile.displayName}
+            defaultImageSvg={<CanvasIcon />}
+            onClick={() => setWhiteboardDialog(true)}
+          />
+          {isWhiteboardDialogOpen && (
+            <CanvasProvider
+              {...{
+                hubNameId,
+                challengeNameId,
+                opportunityNameId,
+                calloutNameId: callout.nameID,
+                whiteboardNameId: firstCanvas.id,
+              }}
+            >
+              {(entities, state) => (
+                <CanvasesManagementViewWrapper
+                  canvasNameId={firstCanvas.id}
+                  backToCanvases={() => onClose?.()}
+                  journeyTypeName={journeyTypeName}
+                  canvasShareUrl={buildCalloutUrl(callout.nameID, {
+                    hubNameId,
+                    challengeNameId,
+                    opportunityNameId,
+                  })}
+                  readOnlyDisplayName
+                  updatePrivilege={AuthorizationPrivilege.Update}
+                  {...entities}
+                  {...state}
+                />
+              )}
+            </CanvasProvider>
+          )}
+        </CalloutLayout>
+      </PageContentBlock>
     );
   }
 );
