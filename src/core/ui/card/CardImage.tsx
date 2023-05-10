@@ -8,7 +8,7 @@ interface CardImageProps extends BoxProps<'img'> {
   defaultImageSvg?: JSX.Element;
 }
 
-const SvgWrapper = styled(Box)(({ theme }) => ({
+export const SvgWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',

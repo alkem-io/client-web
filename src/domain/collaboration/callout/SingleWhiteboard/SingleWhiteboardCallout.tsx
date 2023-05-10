@@ -9,6 +9,7 @@ import { CanvasCardCanvas } from '../canvas/types';
 import { CanvasProvider } from '../../canvas/containers/CanvasProvider';
 import CanvasesManagementViewWrapper from '../../canvas/CanvasesManagement/CanvasesManagementViewWrapper';
 import { buildCalloutUrl } from '../../../../common/utils/urlBuilders';
+import { CanvasIcon } from '../../canvas/icon/CanvasIcon';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
@@ -78,6 +79,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                 caption={t('callout.singleWhiteboard.clickToSee')}
                 src={firstCanvas.profile.preview?.uri}
                 alt={callout.profile.displayName}
+                defaultImageSvg={<CanvasIcon />}
                 onClick={onExpand}
               />
             </CalloutLayout>
