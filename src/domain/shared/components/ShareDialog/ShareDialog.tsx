@@ -21,7 +21,8 @@ interface ShareDialogProps extends ShareComponentProps {
     | 'card'
     | 'canvas'
     | 'discussion'
-    | 'event';
+    | 'event'
+    | 'innovationPack';
 }
 
 export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, entityTypeName, ...props }) => {

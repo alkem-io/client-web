@@ -55,7 +55,7 @@ const TagsComponent = ({
   const renderMore = useCallback(
     (remainingTags: string[]) => (
       <Tooltip title={getMoreTagsTooltipTitle(remainingTags)} arrow placement="bottom">
-        <Chip label={`+${remainingTags.length}`} size="small" />
+        <Chip label={`+${remainingTags.length}`} size={size} />
       </Tooltip>
     ),
     []

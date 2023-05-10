@@ -10,6 +10,7 @@ const EntityPageLayout = ({
   currentSection,
   children,
   pageBannerComponent: PageBanner,
+  pageBanner,
   tabsComponent: Tabs,
 }: PropsWithChildren<EntityPageLayoutProps>) => {
   const theme = useTheme();
@@ -19,7 +20,7 @@ const EntityPageLayout = ({
     <>
       <TopBar />
       <TopBarSpacer />
-      <PageBanner />
+      {PageBanner ? <PageBanner /> : pageBanner}
       {!isMobile && <Tabs currentTab={currentSection} />}
       {children}
       {isMobile && <Tabs currentTab={currentSection} mobile />}

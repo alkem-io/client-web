@@ -29,6 +29,7 @@ import RootRedirect from '../../domain/platform/routes/RootRedirect';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 import InnovationLibraryPage from '../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryPage';
+import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -105,6 +106,14 @@ export const TopLevelRoutes: FC = () => {
           element={
             <WithApmTransaction path="/innovation-library">
               <InnovationLibraryPage />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/innovation-pack/*"
+          element={
+            <WithApmTransaction path="/innovation-pack">
+              <InnovationPackRoute />
             </WithApmTransaction>
           }
         />
