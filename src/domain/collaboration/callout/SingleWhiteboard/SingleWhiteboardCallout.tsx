@@ -37,7 +37,11 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
     ref
   ) => {
     const { t } = useTranslation();
-    const [isWhiteboardDialogOpen, setWhiteboardDialog] = useState(false);
+    const [isWhiteboardDialogOpen, setIsWhiteboardDialogOpen] = useState(false);
+    const handleCloseWhiteboardDialog = () => {
+      onClose?.();
+      setIsWhiteboardDialogOpen(false);
+    };
 
     if (!callout.canvases || callout.canvases.length < 1) {
       return null;
@@ -59,7 +63,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
             src={firstCanvas.profile.preview?.uri}
             alt={callout.profile.displayName}
             defaultImageSvg={<CanvasIcon />}
-            onClick={() => setWhiteboardDialog(true)}
+            onClick={() => setIsWhiteboardDialogOpen(true)}
           />
           {isWhiteboardDialogOpen && (
             <CanvasProvider
@@ -74,7 +78,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
               {(entities, state) => (
                 <CanvasesManagementViewWrapper
                   canvasNameId={firstCanvas.id}
-                  backToCanvases={() => onClose?.()}
+                  backToCanvases={handleCloseWhiteboardDialog}
                   journeyTypeName={journeyTypeName}
                   canvasShareUrl={buildCalloutUrl(callout.nameID, {
                     hubNameId,
