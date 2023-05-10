@@ -59,8 +59,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
                         <ChallengeCard
                           challengeId={challenge.id}
                           challengeNameId={challenge.nameID}
-                          bannerUri={challenge.imageUrl}
-                          bannerAltText={challenge.imageAltText}
+                          banner={challenge.banner}
                           displayName={challenge.displayName}
                           tags={challenge.tags}
                           tagline={challenge.tagline}

@@ -10,7 +10,7 @@ import HubPageLayout from '../layout/HubPageLayout';
 import HubDashboardView from './HubDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
@@ -87,8 +87,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 <ChallengeCard
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
-                  bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
-                  bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
+                  banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
                   displayName={challenge.profile.displayName}
                   tags={challenge.profile.tagset?.tags!}
                   tagline={challenge.profile.tagline!}

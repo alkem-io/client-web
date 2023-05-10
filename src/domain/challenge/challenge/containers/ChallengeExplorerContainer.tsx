@@ -8,7 +8,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../community/contributor/user';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { HubVisibility, SearchResultChallengeFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchResultT } from '../../../platform/search/SearchView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
@@ -23,8 +23,10 @@ export type SimpleChallenge = {
   hubVisibility: HubVisibility;
   displayName: string;
   tagline: string;
-  imageUrl: string | undefined;
-  imageAltText: string | undefined;
+  banner?: {
+    uri: string;
+    alternativeText?: string;
+  };
   tags: string[];
   roles: string[];
   vision: string;
@@ -112,8 +114,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubVisibility: hub.visibility,
         hubTagline: hub.profile.tagline || '',
         displayName: ch.profile.displayName,
-        imageUrl: getVisualBannerNarrow(ch.profile.visuals),
-        imageAltText: getVisualByType(VisualName.BANNER, ch.profile?.visuals)?.alternativeText,
+        banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
@@ -151,8 +152,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubTagline: hub.profile.tagline || '',
         hubVisibility: hub.visibility,
         displayName: ch.profile.displayName,
-        imageUrl: getVisualBannerNarrow(ch.profile.visuals),
-        imageAltText: getVisualByType(VisualName.BANNER, ch.profile?.visuals)?.alternativeText,
+        banner: getVisualByType(VisualName.BANNERNARROW, ch.profile.visuals),
         tagline: ch.profile.tagline || '',
         tags: ch.profile.tagset?.tags || [],
         roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
