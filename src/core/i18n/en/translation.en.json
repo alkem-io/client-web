@@ -1262,6 +1262,7 @@
       "no-cards": "No Card found"
     },
     "innovationLibrary": {
+      "shortName": "Library",
       "title": "Innovation Library on Alkemio is here to guide your way to impact",
       "subtitle": "Alkemio’s Innovation Library is here to guide your way to impact",
       "innovationPacks": {

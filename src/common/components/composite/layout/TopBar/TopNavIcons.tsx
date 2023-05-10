@@ -7,6 +7,7 @@ import ProfileMenuItem from './ProfileMenuItem';
 import { ChallengeIcon } from '../../../../../domain/challenge/challenge/icon/ChallengeIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { useLocation } from 'react-router-dom';
+import InnovationLibraryIcon from '../../../../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 
 const PREFIX = 'TopNavIcons';
 const classes = {
@@ -77,6 +78,11 @@ const TopNavIcons = () => {
 
   const menuItems: MenuItem[] = useMemo(
     () => [
+      {
+        title: t('pages.innovationLibrary.shortName'),
+        icon: <InnovationLibraryIcon />,
+        url: '/innovation-library',
+      },
       {
         title: t('common.challenges'),
         icon: <ChallengeIcon />,

@@ -1,11 +1,10 @@
 import React, { ReactNode, useMemo, useState } from 'react';
-import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
-import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
-import InnovationPackCard, { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
+import InnovationPacksView from './InnovationPacksView';
+import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import { useTranslation } from 'react-i18next';
 
 interface DashboardInnovationPacksProps {
   headerTitle: ReactNode;
@@ -17,39 +16,42 @@ const innovationPackValueGetter = (innovationPack: Identifiable & InnovationPack
   values: [innovationPack.displayName, ...(innovationPack.tags ?? [])],
 });
 
+const MAX_PACKS_WHEN_NOT_EXPANDED = 10;
+
 const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInnovationPacksProps) => {
   const [filter, onFilterChange] = useState<string[]>([]);
 
-  const handleOpenInnovationPack = () => {};
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const filteredInnovationPacks = useMemo(
     () => filterFn(innovationPacks ?? [], filter, innovationPackValueGetter),
     [innovationPacks, filter]
   );
 
+  const { t } = useTranslation();
+
   return (
-    <PageContentBlock>
-      <PageContentBlockHeaderWithDialogAction
-        title={headerTitle}
-        onDialogOpen={() => {}}
-        actions={
-          <MultipleSelect
-            onChange={onFilterChange}
-            value={filter}
-            minLength={2}
-            containerProps={{
-              marginLeft: theme => theme.spacing(2),
-            }}
-            size="xsmall"
-          />
-        }
+    <>
+      <InnovationPacksView
+        filter={filter}
+        headerTitle={headerTitle}
+        innovationPacks={filteredInnovationPacks.slice(0, MAX_PACKS_WHEN_NOT_EXPANDED)}
+        onFilterChange={onFilterChange}
+        expanded={isDialogOpen}
+        onDialogOpen={() => setIsDialogOpen(true)}
+        hasMore={filteredInnovationPacks.length > MAX_PACKS_WHEN_NOT_EXPANDED}
       />
-      <PageContentBlockGrid>
-        {filteredInnovationPacks?.map(({ id, ...cardProps }) => (
-          <InnovationPackCard key={id} {...cardProps} onClick={handleOpenInnovationPack} />
-        ))}
-      </PageContentBlockGrid>
-    </PageContentBlock>
+      <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
+        <InnovationPacksView
+          filter={filter}
+          headerTitle={t('common.innovation-packs')}
+          innovationPacks={filteredInnovationPacks}
+          onFilterChange={onFilterChange}
+          expanded={isDialogOpen}
+          onDialogClose={() => setIsDialogOpen(false)}
+        />
+      </DialogWithGrid>
+    </>
   );
 };
 

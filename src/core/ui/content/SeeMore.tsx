@@ -1,17 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import RouterLink from '../link/RouterLink';
 import { CaptionSmall } from '../typography';
+import { ButtonBase } from '@mui/material';
 
 interface SeeMoreProps {
   subject: string;
-  to: string;
+  to?: string;
+  onClick?: () => void;
 }
 
-const SeeMore = ({ subject, to }: SeeMoreProps) => {
+const SeeMore = ({ subject, to, onClick }: SeeMoreProps) => {
   const { t } = useTranslation();
 
   return (
-    <CaptionSmall component={RouterLink} to={to} textAlign="right">
+    <CaptionSmall component={to ? RouterLink : ButtonBase} to={to} textAlign="right" onClick={onClick}>
       {t('buttons.see-all', { subject })}
     </CaptionSmall>
   );

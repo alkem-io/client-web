@@ -28,7 +28,7 @@ import devRoute from '../../dev/routes';
 import RootRedirect from '../../domain/platform/routes/RootRedirect';
 import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
-import InnovationLibraryPage from '../../domain/collaboration/templates/InnovationLibraryPage/InnovationLibraryPage';
+import InnovationLibraryPage from '../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryPage';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
