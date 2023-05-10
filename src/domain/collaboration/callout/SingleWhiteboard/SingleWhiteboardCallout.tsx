@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, WhiteboardTemplate } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import ImageWithCaption from '../../../shared/components/ImageWithCaption';
 import CalloutLayout, { CalloutLayoutProps } from '../../CalloutBlock/CalloutLayout';
@@ -65,6 +65,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                   opportunityNameId,
                 })}
                 readOnlyDisplayName
+                updatePrivilege={AuthorizationPrivilege.Update}
                 {...entities}
                 {...state}
               />

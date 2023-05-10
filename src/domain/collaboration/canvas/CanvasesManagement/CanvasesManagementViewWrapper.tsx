@@ -22,6 +22,7 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
   readOnlyDisplayName?: boolean;
   loadingCanvases: boolean;
   loadingTemplates: boolean;
+  updatePrivilege?: AuthorizationPrivilege;
 }
 
 const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
@@ -35,6 +36,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   loadingCanvases,
   canvasShareUrl,
   readOnlyDisplayName,
+  updatePrivilege = AuthorizationPrivilege.CreateCanvas,
   ...canvasesState
 }) => {
   const { isFeatureEnabled } = useConfig();
@@ -48,15 +50,13 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   if (!loadingCanvases && (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPrivileges))
     return <Error404 />;
 
-  const hasCreatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
-  const hasDeletePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
+  const hasCreatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas);
+  const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
   // Todo: need to decide who can edit what canvases, for now tie to CreateCanvas. May need to extend the information on a Canvas
   // to include who created it etc.
   // Also to have in mind: In SingleWhiteboard Callout canvases, users don't have CreateCanvas privilege to add another canvas but may have privilege
   // to update the canvas itself
-  const hasUpdatePrivileges = authorization?.myPrivileges?.some(
-    p => p === AuthorizationPrivilege.CreateCanvas || p === AuthorizationPrivilege.Update
-  );
+  const hasUpdatePrivileges = authorization?.myPrivileges?.includes(updatePrivilege);
 
   return (
     <CanvasActionsContainer>
