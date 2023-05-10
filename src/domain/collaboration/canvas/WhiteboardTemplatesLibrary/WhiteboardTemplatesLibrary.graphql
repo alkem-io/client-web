@@ -74,7 +74,7 @@ query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboa
   }
 }
 
-fragment InnovationPackWithProvider on InnovatonPack {
+fragment InnovationPackWithProvider on InnovationPack {
   id
   nameID
   provider {
