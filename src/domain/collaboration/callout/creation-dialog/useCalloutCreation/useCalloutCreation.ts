@@ -7,15 +7,13 @@ import {
   useOpportunityCollaborationIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
-import { Identifiable } from '../../../../shared/types/Identifiable';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { useUploadWhiteboardVisuals } from '../../../canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 
-export type CalloutCreationType = {
+export interface CalloutCreationType {
   profile: {
     description: string;
     displayName: string;
@@ -26,15 +24,17 @@ export type CalloutCreationType = {
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+  whiteboard?: WhiteboardFieldSubmittedValues;
   group?: string;
-};
+}
 
 export interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCreateCallout: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
+  handleCreateCallout: (
+    callout: CalloutCreationType
+  ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
   isCreating: boolean;
 }
 
@@ -42,8 +42,6 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-
-  const { uploadVisuals } = useUploadWhiteboardVisuals();
 
   const { data: hubData } = useHubCollaborationIdQuery({
     variables: { hubId: hubNameId! },
@@ -115,33 +113,14 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
 
       setIsCreating(true);
 
-      // Remove the previewImages from the form data if it's present, to handle it separatelly
-      const { callout: cleanCallout, previewImages } = handlePreviewImages(callout);
-
       const result = await createCallout({
         variables: {
           calloutData: {
             collaborationID,
-            ...cleanCallout,
+            ...callout,
           },
         },
       });
-
-      // Single Whiteboard callouts are sent to the server with the canvas value, but
-      // the preview image needs to be sent separatelly:
-      if (callout.type === CalloutType.SingleWhiteboard) {
-        const canvas = result.data?.createCalloutOnCollaboration.canvases?.[0];
-        if (canvas && canvas.profile) {
-          await uploadVisuals(
-            previewImages,
-            {
-              cardVisualId: canvas.profile.visual?.id,
-              previewVisualId: canvas.profile.preview?.id,
-            },
-            result.data?.createCalloutOnCollaboration.nameID
-          );
-        }
-      }
 
       setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
@@ -150,17 +129,6 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     },
     [collaborationID, createCallout]
   );
-
-  const handlePreviewImages = (callout: CalloutCreationType) => {
-    if (callout.whiteboard) {
-      const {
-        whiteboard: { previewImages, ...restWhiteboard },
-        ...rest
-      } = callout;
-      return { callout: { whiteboard: restWhiteboard, ...rest }, previewImages };
-    }
-    return { callout };
-  };
 
   return {
     isCalloutCreationDialogOpen,

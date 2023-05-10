@@ -7,7 +7,7 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../core/ui/list/LinksList';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
-import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
+import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import useCallouts, { TypedCallout } from '../useCallouts/useCallouts';
 import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
@@ -64,7 +64,7 @@ const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCal
     handleCreateCalloutClosed,
     handleCreateCallout,
     isCreating,
-  } = useCalloutCreation();
+  } = useCalloutCreationWithPreviewImages();
 
   const { hubId } = useHub();
 

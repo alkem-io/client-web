@@ -9,7 +9,7 @@ import {
   CalloutVisibility,
   Callout,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
+import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
@@ -48,7 +48,7 @@ export type CalloutCreationDialogFields = {
 export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
-  onSaveAsDraft: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
+  onSaveAsDraft: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   onVisibilityChange: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
@@ -140,7 +140,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   };
 
   const handleSaveAsDraftCallout = useCallback(async () => {
-    const newCallout: CalloutCreationType = {
+    const newCallout: CalloutCreationTypeWithPreviewImages = {
       profile: {
         displayName: callout.displayName!,
         description: callout.description!,

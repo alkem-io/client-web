@@ -105,7 +105,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         tags: callout?.tags ?? [],
       },
     ],
-    [callout?.tags]
+    [callout?.id]
   );
 
   const initialValues: FormValueType = useMemo(
@@ -181,6 +181,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       is: CalloutType.SingleWhiteboard,
       then: yup.object().shape({
         value: yup.string().required(),
+        previewImages: yup.array().of(yup.object()).required(),
       }),
     }),
   });
