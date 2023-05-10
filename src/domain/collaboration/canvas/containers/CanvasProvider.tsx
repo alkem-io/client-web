@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
-  useWhiteboardTemplatesQuery,
   useChallengeCanvasFromCalloutQuery,
   useHubCanvasFromCalloutQuery,
   useOpportunityCanvasFromCalloutQuery,
+  useWhiteboardTemplatesQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CanvasDetailsFragment,
@@ -12,13 +11,14 @@ import {
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { getCanvasCallout } from './getCanvasCallout';
-import UrlParams from '../../../../core/routing/urlParams';
+import { JourneyLocation } from '../../../../common/utils/urlBuilders';
 
-interface CanvasProviderProps {
-  canvasLocation?: Pick<
-    UrlParams,
-    'hubNameId' | 'challengeNameId' | 'opportunityNameId' | 'calloutNameId' | 'whiteboardNameId'
-  >;
+interface CanvasLocation extends JourneyLocation {
+  calloutNameId: string;
+  whiteboardNameId: string;
+}
+
+interface CanvasProviderProps extends CanvasLocation {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
@@ -38,17 +38,14 @@ export interface IProvidedEntitiesState {
   loadingTemplates: boolean;
 }
 
-const CanvasProvider: FC<CanvasProviderProps> = ({ canvasLocation, children }) => {
-  const urlParams = useUrlParams();
-
-  const {
-    hubNameId: hubId = '',
-    challengeNameId: challengeId = '',
-    opportunityNameId: opportunityId = '',
-    calloutNameId: calloutId = '',
-    whiteboardNameId: canvasId = '',
-  } = canvasLocation ?? urlParams;
-
+const CanvasProvider: FC<CanvasProviderProps> = ({
+  hubNameId: hubId,
+  challengeNameId: challengeId = '',
+  opportunityNameId: opportunityId = '',
+  calloutNameId: calloutId,
+  whiteboardNameId: canvasId,
+  children,
+}) => {
   const { data: whiteboardTemplates, loading: loadingTemplates } = useWhiteboardTemplatesQuery({
     variables: { hubId },
   });

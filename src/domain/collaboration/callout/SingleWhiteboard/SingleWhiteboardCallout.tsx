@@ -46,7 +46,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
       <>
         {expanded ? (
           <CanvasProvider
-            canvasLocation={{
+            {...{
               hubNameId,
               challengeNameId,
               opportunityNameId,
@@ -59,7 +59,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                 canvasNameId={firstCanvas.id}
                 backToCanvases={() => onClose?.()}
                 journeyTypeName={journeyTypeName}
-                overrideCanvasUrl={buildCalloutUrl(callout.nameID, {
+                canvasShareUrl={buildCalloutUrl(callout.nameID, {
                   hubNameId,
                   challengeNameId,
                   opportunityNameId,
