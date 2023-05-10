@@ -27,8 +27,6 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
 }
 
 const ContributionDetailsCard = ({
-  bannerUri,
-  bannerAltText,
   displayName,
   tagline,
   journeyTypeName,
@@ -52,8 +50,6 @@ const ContributionDetailsCard = ({
     <>
       <JourneyCard
         {...props}
-        bannerUri={bannerUri}
-        bannerAltText={bannerAltText}
         tagline={tagline}
         iconComponent={journeyIcon[journeyTypeName]}
         header={

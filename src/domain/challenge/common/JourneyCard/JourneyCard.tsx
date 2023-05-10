@@ -18,8 +18,10 @@ export interface JourneyCardProps extends ContributeCardContainerProps {
   iconComponent: ComponentType<SvgIconProps>;
   header: ReactNode;
   tagline: string;
-  bannerUri?: string;
-  bannerAltText?: string;
+  banner?: {
+    uri: string;
+    alternativeText?: string;
+  };
   tags: string[];
   journeyUri: string;
   expansion?: ReactNode;
@@ -35,8 +37,7 @@ const JourneyCard = ({
   iconComponent: Icon,
   header,
   tagline,
-  bannerUri,
-  bannerAltText,
+  banner,
   tags,
   journeyUri,
   expansion,
@@ -62,8 +63,8 @@ const JourneyCard = ({
     <ContributeCard {...containerProps}>
       <Box component={RouterLink} to={journeyUri}>
         <CardBanner
-          src={bannerUri}
-          alt={t('visuals-alt-text.banner.card.text', { altText: bannerAltText })}
+          src={banner?.uri}
+          alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
           overlay={
             <>
               {ribbon}

@@ -101,7 +101,6 @@ const _hydrateHubCard = (
   }
   const hub = data.hub;
   const tagline = hub.profile?.tagline || '';
-  const visual = getVisualByType(VisualName.BANNER, hub.profile?.visuals);
   const name = hub.profile.displayName;
   const url = buildHubUrl(hub.nameID);
   const tags = data.terms; // TODO: add terms field to journey card
@@ -115,8 +114,7 @@ const _hydrateHubCard = (
 
   return (
     <SearchHubCard
-      bannerUri={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -140,7 +138,6 @@ const useHydrateChallengeCard = (
   const challenge = data.challenge;
   const containingHub = data.hub;
   const tagline = challenge.profile.tagline || '';
-  const visual = getVisualByType(VisualName.BANNER, challenge.profile?.visuals);
   const name = challenge.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const hubId = containingHub.id;
@@ -159,8 +156,7 @@ const useHydrateChallengeCard = (
 
   return (
     <SearchChallengeCard
-      bannerUri={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}
@@ -194,7 +190,6 @@ const useHydrateOpportunityCard = (
   const containingChallenge = data.challenge;
   const containingHub = data.hub;
   const tagline = opportunity.profile.tagline || '';
-  const visual = getVisualByType(VisualName.BANNER, opportunity.profile?.visuals);
   const name = opportunity.profile.displayName;
   const matchedTerms = data?.terms ?? [];
   const challengeNameId = containingChallenge.nameID;
@@ -213,8 +208,7 @@ const useHydrateOpportunityCard = (
 
   return (
     <SearchOpportunityCard
-      bannerUri={visual?.uri}
-      bannerAltText={visual?.alternativeText}
+      banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
       member={!!isMember}
       displayName={name}
       tagline={tagline}

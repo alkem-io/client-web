@@ -6,7 +6,7 @@ import {
   journeyCardValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -76,8 +76,7 @@ const ChallengeOpportunitiesPage: FC<ChallengeOpportunitiesPageProps> = () => {
                 vision={opportunity.context?.vision!}
                 innovationFlowState={opportunity.lifecycle?.state}
                 tags={opportunity.profile.tagset?.tags!}
-                bannerUri={getVisualBannerNarrow(opportunity.profile.visuals)}
-                bannerAltText={getVisualByType(VisualName.BANNER, opportunity.profile?.visuals)?.alternativeText}
+                banner={getVisualByType(VisualName.BANNERNARROW, opportunity.profile.visuals)}
                 journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID)}
                 hubVisibility={visibility}
               />

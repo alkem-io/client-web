@@ -30,7 +30,7 @@ const JourneyCardsDemo = () => {
             <PageContentBlockHeader title="Hub Cards" />
             <PageContentBlockGrid disablePadding cards>
               <HubCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Hub Card"
@@ -39,7 +39,7 @@ const JourneyCardsDemo = () => {
                 journeyUri=""
               />
               <HubCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Hub Card"
@@ -48,7 +48,7 @@ const JourneyCardsDemo = () => {
                 journeyUri=""
               />
               <HubCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Hub Card"
@@ -62,7 +62,7 @@ const JourneyCardsDemo = () => {
             <PageContentBlockHeader title="Challenge Cards" />
             <PageContentBlockGrid disablePadding cards>
               <ChallengeCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Challenge Card"
@@ -73,7 +73,7 @@ const JourneyCardsDemo = () => {
                 hubUri=""
               />
               <ChallengeCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name"
@@ -84,7 +84,7 @@ const JourneyCardsDemo = () => {
                 hubUri=""
               />
               <ChallengeCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Challenge Card Display Name That Doesn't Even Fit On 2 Lines"
@@ -111,7 +111,7 @@ const JourneyCardsDemo = () => {
             <PageContentBlockHeader title="Opportunity Cards" />
             <PageContentBlockGrid disablePadding cards>
               <OpportunityCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Opportunity Card"
@@ -122,7 +122,7 @@ const JourneyCardsDemo = () => {
                 challengeUri=""
               />
               <OpportunityCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Opportunity Card Display Name"
@@ -133,7 +133,7 @@ const JourneyCardsDemo = () => {
                 challengeUri=""
               />
               <OpportunityCard
-                bannerUri={'/alkemio-banner/default-banner.png'}
+                banner={{ uri: '/alkemio-banner/default-banner.png' }}
                 tagline={loremIpsum}
                 vision={loremIpsum}
                 displayName="Really Long Opportunity Card Display Name That Doesn't Even Fit On 2 Lines"
