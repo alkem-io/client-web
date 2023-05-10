@@ -61,7 +61,13 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
           <WhiteboardTemplatesLibrary onSelectTemplate={handleSelectTemplate} />
         </Box>
       </Box>
-      <FormikWhiteboardPreview name={`${name}.value`} canEdit onChangeValue={handleChange} maxHeight={gutters(12)} />
+      <FormikWhiteboardPreview
+        name={`${name}.value`}
+        canEdit
+        onChangeValue={handleChange}
+        maxHeight={gutters(12)}
+        dialogProps={{ title: t('canvas-templates.edit-template-button') }}
+      />
     </>
   );
 };

@@ -5,7 +5,6 @@ import {
   useCreateCanvasOnCalloutMutation,
   useDeleteCanvasMutation,
   useUpdateCanvasMutation,
-  useUploadVisualMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -15,13 +14,17 @@ import {
   DeleteCanvasInput,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
+import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface ICanvasActions {
-  onCreate: (canvas: CreateCanvasOnCalloutInput) => Promise<void>;
+  onCreate: (canvas: CreateCanvasOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
   onDelete: (canvas: DeleteCanvasInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
   onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
-  onUpdate: (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => Promise<void>;
+  onUpdate: (
+    canvas: CanvasValueFragment & CanvasDetailsFragment,
+    previewImages?: WhiteboardPreviewImage[]
+  ) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -36,14 +39,15 @@ export interface CanvasActionsContainerProps
 
 const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) => {
   const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnCalloutMutation({});
+  const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 
   const handleCreateCanvas = useCallback(
-    async (canvas: CreateCanvasOnCalloutInput) => {
+    async (canvas: CreateCanvasOnCalloutInput, previewImages?: WhiteboardPreviewImage[]) => {
       if (!canvas.calloutID) {
         throw new Error('[canvas:onCreate]: Missing contextID');
       }
 
-      await createCanvas({
+      const result = await createCanvas({
         update(cache, { data }) {
           cache.modify({
             id: cache.identify({
@@ -69,6 +73,15 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           input: canvas,
         },
       });
+
+      await uploadVisuals(
+        previewImages,
+        {
+          cardVisualId: result.data?.createCanvasOnCallout.profile.visual?.id,
+          previewVisualId: result.data?.createCanvasOnCallout.profile.preview?.id,
+        },
+        canvas.nameID
+      );
     },
     [createCanvas]
   );
@@ -136,10 +149,8 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
 
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({});
 
-  const [uploadVisual, { loading: uploadingVisual }] = useUploadVisualMutation({});
-
   const handleUpdateCanvas = useCallback(
-    async (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImage?: Blob) => {
+    async (canvas: CanvasValueFragment & CanvasDetailsFragment, previewImages?: WhiteboardPreviewImage[]) => {
       await Promise.all([
         updateCanvas({
           variables: {
@@ -152,19 +163,16 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
             },
           },
         }),
-        canvas.profile.visual &&
-          previewImage &&
-          uploadVisual({
-            variables: {
-              file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
-              uploadData: {
-                visualID: canvas.profile.visual?.id,
-              },
-            },
-          }),
+        (canvas.profile.visual || canvas.profile.preview) &&
+          previewImages &&
+          uploadVisuals(
+            previewImages,
+            { cardVisualId: canvas.profile.visual?.id, previewVisualId: canvas.profile.preview?.id },
+            canvas.nameID
+          ),
       ]);
     },
-    [updateCanvas, uploadVisual]
+    [updateCanvas, uploadVisuals]
   );
 
   const actions = useMemo<ICanvasActions>(
@@ -186,7 +194,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           creatingCanvas,
           deletingCanvas,
           changingCanvasLockState: checkingoutCanvas,
-          updatingCanvas: updatingCanvas || uploadingVisual,
+          updatingCanvas: updatingCanvas || uploadingVisuals,
         },
         actions
       )}

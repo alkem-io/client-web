@@ -29,6 +29,7 @@ interface CalloutChildTypePropName {
   [CalloutType.Canvas]: 'canvases';
   [CalloutType.Comments]: 'comments';
   [CalloutType.LinkCollection]: 'links';
+  [CalloutType.SingleWhiteboard]: 'canvases';
 }
 
 export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
@@ -44,6 +45,7 @@ interface CalloutChildPropValue {
   canvases: CanvasFragmentWithCallout[];
   comments: CommentsWithMessagesFragmentWithCallout;
   links: ReferencesFragmentWithCallout;
+  whiteboard: CanvasFragmentWithCallout[];
 }
 
 type CalloutCardTemplateType = {
@@ -51,6 +53,7 @@ type CalloutCardTemplateType = {
   [CalloutType.Canvas]: { whiteboardTemplate: WhiteboardTemplate };
   [CalloutType.Comments]: {};
   [CalloutType.LinkCollection]: {};
+  [CalloutType.SingleWhiteboard]: { whiteboardTemplate: WhiteboardTemplate };
 };
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -71,6 +74,7 @@ export type TypedCallout = Pick<
     | CalloutTypesWithChildTypes[CalloutType.Canvas]
     | CalloutTypesWithChildTypes[CalloutType.Comments]
     | CalloutTypesWithChildTypes[CalloutType.LinkCollection]
+    | CalloutTypesWithChildTypes[CalloutType.SingleWhiteboard]
   ) & {
     profile: {
       id: string;

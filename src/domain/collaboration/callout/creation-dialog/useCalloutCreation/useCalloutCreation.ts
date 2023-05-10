@@ -7,13 +7,13 @@ import {
   useOpportunityCollaborationIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { CalloutState, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType, CreateCalloutMutation } from '../../../../../core/apollo/generated/graphql-schema';
 import { PostTemplateFormSubmittedValues } from '../../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { Reference } from '../../../../common/profile/Profile';
-import { Identifiable } from '../../../../shared/types/Identifiable';
+import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 
-export type CalloutCreationType = {
+export interface CalloutCreationType {
   profile: {
     description: string;
     displayName: string;
@@ -24,14 +24,17 @@ export type CalloutCreationType = {
   state: CalloutState;
   postTemplate?: PostTemplateFormSubmittedValues;
   whiteboardTemplate?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
   group?: string;
-};
+}
 
 export interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCreateCallout: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
+  handleCreateCallout: (
+    callout: CalloutCreationType
+  ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
   isCreating: boolean;
 }
 

@@ -9,7 +9,7 @@ import {
   CalloutVisibility,
   Callout,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
+import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
@@ -30,6 +30,7 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -40,13 +41,14 @@ export type CalloutCreationDialogFields = {
   state?: CalloutState;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
   profileId?: string;
 };
 
 export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
-  onSaveAsDraft: (callout: CalloutCreationType) => Promise<Identifiable | undefined>;
+  onSaveAsDraft: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   onVisibilityChange: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
@@ -138,7 +140,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   };
 
   const handleSaveAsDraftCallout = useCallback(async () => {
-    const newCallout: CalloutCreationType = {
+    const newCallout: CalloutCreationTypeWithPreviewImages = {
       profile: {
         displayName: callout.displayName!,
         description: callout.description!,
@@ -150,6 +152,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       postTemplate: callout.type === CalloutType.Card ? callout.postTemplateData : undefined,
       whiteboardTemplate: callout.type === CalloutType.Canvas ? callout.whiteboardTemplateData : undefined,
       group,
+      whiteboard: callout.whiteboard,
     };
 
     const result = await onSaveAsDraft(newCallout);

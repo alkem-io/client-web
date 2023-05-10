@@ -5,12 +5,16 @@ import CanvasWhiteboard from '../../../../../common/components/composite/entitie
 import CanvasDialog from '../../../../collaboration/canvas/CanvasDialog/CanvasDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../../core/ui/typography';
+import { WhiteboardPreviewImage } from '../../../../collaboration/canvas/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Canvas value
   canEdit: boolean;
-  onChangeValue?: (value: string) => void;
+  onChangeValue?: (value: string, previewImages?: WhiteboardPreviewImage[]) => void;
   loading?: boolean;
+  dialogProps?: {
+    title?: string;
+  };
 }
 
 const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
@@ -25,6 +29,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   canEdit,
   onChangeValue,
   loading,
+  dialogProps,
   ...containerProps
 }) => {
   const { t } = useTranslation();
@@ -75,10 +80,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
             <>
               <EditTemplateButtonContainer>
                 <Button variant="contained" onClick={() => handleClickEditButton()}>
-                  {t('canvas-templates.edit-template-button')}
+                  {t('buttons.edit')}
                 </Button>
               </EditTemplateButtonContainer>
-
               <CanvasDialog
                 entities={{
                   canvas: canvasFromTemplate,
@@ -88,9 +92,9 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   onCancel: () => setEditDialogOpen(false),
                   onCheckin: undefined,
                   onCheckout: undefined,
-                  onUpdate: canvas => {
+                  onUpdate: (canvas, previewImages) => {
                     helpers.setValue(canvas.value);
-                    onChangeValue?.(canvas.value);
+                    onChangeValue?.(canvas.value, previewImages);
                     setEditDialogOpen(false);
                   },
                   onDelete: undefined,
@@ -104,7 +108,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                   headerActions: undefined,
                   fixedDialogTitle: (
                     <BlockTitle display="flex" alignItems="center">
-                      {t('canvas-templates.edit-dialog-title')}
+                      {dialogProps?.title}
                     </BlockTitle>
                   ),
                 }}

@@ -5,6 +5,9 @@ fragment CanvasProfile on Profile {
   visual(type: CARD) {
     ...VisualFull
   }
+  preview: visual(type: BANNER) {
+    ...VisualFull
+  }
   tagset {
     id
     tags

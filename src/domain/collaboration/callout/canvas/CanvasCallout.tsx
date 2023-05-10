@@ -114,14 +114,17 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
               }}
               actions={{
                 onCancel: closeCreateDialog,
-                onUpdate: input => {
-                  actions.onCreate({
-                    value: input.value,
-                    profileData: {
-                      displayName: input.profile.displayName,
-                    },
-                    calloutID: callout.id,
-                  } as CreateCanvasOnCalloutInput);
+                onUpdate: (input, previewImages) => {
+                  actions.onCreate(
+                    {
+                      value: input.value,
+                      profileData: {
+                        displayName: input.profile.displayName,
+                      },
+                      calloutID: callout.id,
+                    } as CreateCanvasOnCalloutInput,
+                    previewImages
+                  );
                   setShowCreateCanvasDialog(false);
                 },
               }}
