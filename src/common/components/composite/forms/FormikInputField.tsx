@@ -93,7 +93,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
             <>
               {loading && <CircularProgress size={20} />}
               {helpIconText && <HelpButton helpText={helpIconText} />}
-              {attachFile && <FileUploadButton onUpload={helpers.setValue} referenceID={referenceID} />}
+              {attachFile && referenceID && <FileUploadButton onUpload={helpers.setValue} referenceID={referenceID} />}
             </>
           ),
           readOnly: readOnly,

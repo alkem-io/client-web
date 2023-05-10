@@ -9,7 +9,7 @@ import {
 import { ContainerChildProps } from '../../../../core/container/container';
 import { ContributionItem } from '../../contributor/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../contributor/user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
@@ -39,7 +39,10 @@ export interface EntityDetailsContainerProps
 export interface ContributionDetails {
   displayName: string;
   journeyTypeName: JourneyTypeName;
-  bannerUri?: string;
+  banner?: {
+    uri: string;
+    alternativeText?: string;
+  };
   bannerAltText?: string;
   tags: string[];
   journeyUri: string;
@@ -82,8 +85,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: hubData.hub.profile.displayName,
         journeyTypeName: 'hub',
-        bannerUri: getVisualBannerNarrow(hubData.hub.profile.visuals),
-        bannerAltText: getVisualByType(VisualName.BANNER, hubData.hub.profile?.visuals)?.alternativeText,
+        banner: getVisualByType(VisualName.BANNERNARROW, hubData.hub.profile.visuals),
         tags: hubData.hub.profile.tagset?.tags ?? [],
         journeyUri: buildHubUrl(hubData.hub.nameID),
         communityId: hubData.hub.community?.id,
@@ -96,7 +98,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: challengeData.hub.challenge.profile.displayName,
         journeyTypeName: 'challenge',
-        bannerUri: getVisualBannerNarrow(challengeData.hub.challenge.profile.visuals),
+        banner: getVisualByType(VisualName.BANNERNARROW, challengeData.hub.challenge.profile.visuals),
         tags: challengeData.hub.challenge.profile.tagset?.tags ?? [],
         journeyUri: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
         communityId: challengeData.hub.challenge.community?.id,
@@ -109,7 +111,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         displayName: opportunityData.hub.opportunity.profile.displayName,
         journeyTypeName: 'opportunity',
-        bannerUri: getVisualBannerNarrow(opportunityData.hub.opportunity.profile.visuals),
+        banner: getVisualByType(VisualName.BANNERNARROW, opportunityData.hub.opportunity.profile.visuals),
         tags: opportunityData.hub.opportunity.profile.tagset?.tags ?? [],
         journeyUri: buildOpportunityUrl(
           opportunityData.hub.nameID,

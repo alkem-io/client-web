@@ -47,12 +47,9 @@ const DashboardHubsSection: FC<DashboardHubSectionProps> = ({
       {children}
       <ScrollableCardsLayout items={hubs} cards={false}>
         {hub => {
-          const visual = getVisualByType(VisualName.BANNER, hub.profile?.visuals);
-
           return (
             <HubCard
-              bannerUri={visual?.uri}
-              bannerAltText={visual?.alternativeText}
+              banner={getVisualByType(VisualName.BANNERNARROW, hub.profile.visuals)}
               hubId={hub.id}
               displayName={hub.profile.displayName}
               journeyUri={buildHubUrl(hub.nameID)}

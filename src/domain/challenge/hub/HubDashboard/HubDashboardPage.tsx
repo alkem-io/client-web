@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import HubDashboardContainer from '../containers/HubDashboardContainer';
+import HubDashboardContainer from './HubDashboardContainer';
 import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import HubContributorsDialogContent from '../../../community/community/entities/HubContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import HubPageLayout from '../layout/HubPageLayout';
-import HubDashboardView from '../HubDashboardView/HubDashboardView';
+import HubDashboardView from './HubDashboardView';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { useTranslation } from 'react-i18next';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { buildChallengeUrl, buildHubUrl } from '../../../../common/utils/urlBuilders';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
@@ -18,6 +18,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { CalloutsGroup } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import useHubDashboardNavigation from '../HubDashboardNavigation/useHubDashboardNavigation';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors' | 'calendar';
@@ -32,6 +33,10 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
 
   const { hubNameId } = useUrlParams();
 
+  if (!hubNameId) {
+    throw new Error('Param :hubNameId is missing');
+  }
+
   const {
     groupedCallouts,
     canCreateCallout,
@@ -45,6 +50,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
     calloutGroups: [CalloutsGroup.HomeTop, CalloutsGroup.HomeLeft, CalloutsGroup.HomeRight],
   });
 
+  const { dashboardNavigation, loading: dashboardNavigationLoading } = useHubDashboardNavigation({ hubId: hubNameId });
+
   return (
     <HubPageLayout currentSection={EntityPageSection.Dashboard}>
       <HubDashboardContainer>
@@ -56,6 +63,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               displayName={entities.hub?.profile.displayName}
               tagline={entities.hub?.profile.tagline}
               description={entities.hub?.profile.description}
+              dashboardNavigation={dashboardNavigation}
+              dashboardNavigationLoading={dashboardNavigationLoading}
               who={entities.hub?.context?.who}
               impact={entities.hub?.context?.impact}
               metrics={entities.hub?.metrics}
@@ -78,8 +87,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 <ChallengeCard
                   challengeId={challenge.id}
                   challengeNameId={challenge.nameID}
-                  bannerUri={getVisualBannerNarrow(challenge.profile.visuals)}
-                  bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
+                  banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
                   displayName={challenge.profile.displayName}
                   tags={challenge.profile.tagset?.tags!}
                   tagline={challenge.profile.tagline!}
@@ -100,7 +108,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                     hubId={hubNameId!}
                     canCreateCallout={false}
                     loading={loading}
-                    entityTypeName="hub"
+                    journeyTypeName="hub"
                     sortOrder={calloutsSortOrder}
                     calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -117,7 +125,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
-                  entityTypeName="hub"
+                  journeyTypeName="hub"
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -131,7 +139,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                   hubId={hubNameId!}
                   canCreateCallout={canCreateCallout}
                   loading={loading}
-                  entityTypeName="hub"
+                  journeyTypeName="hub"
                   sortOrder={calloutsSortOrder}
                   calloutNames={calloutNames}
                   onSortOrderUpdate={onCalloutsSortOrderUpdate}

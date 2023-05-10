@@ -6,7 +6,7 @@ import {
   journeyCardValueGetter,
 } from '../../../../common/components/core/card-filter/value-getters/journeyCardValueGetter';
 import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
-import { getVisualBannerNarrow, getVisualByType } from '../../../common/visual/utils/visuals.utils';
+import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
@@ -84,9 +84,8 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={challenge => (
               <ChallengeCard
-                bannerUri={getVisualBannerNarrow(challenge.profile.visuals)!}
-                bannerAltText={getVisualByType(VisualName.BANNER, challenge.profile?.visuals)?.alternativeText}
                 displayName={challenge.profile.displayName}
+                banner={getVisualByType(VisualName.BANNERNARROW, challenge.profile.visuals)}
                 tags={challenge.profile.tagset?.tags!}
                 tagline={challenge.profile.tagline!}
                 vision={challenge.context?.vision!}
@@ -114,7 +113,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 hubId={hubNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
-                entityTypeName="hub"
+                journeyTypeName="hub"
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -128,7 +127,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 hubId={hubNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
-                entityTypeName="hub"
+                journeyTypeName="hub"
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}

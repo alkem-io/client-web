@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
-import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
+import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '../../../../core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
 import {
@@ -28,7 +28,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutClosed,
     handleCreateCallout,
     isCreating,
-  } = useCalloutCreation();
+  } = useCalloutCreationWithPreviewImages();
 
   const [fetchTemplates, { data: templatesData }] = useCalloutFormTemplatesFromHubLazyQuery();
   const getTemplates = () => fetchTemplates({ variables: { hubId: hubId } });

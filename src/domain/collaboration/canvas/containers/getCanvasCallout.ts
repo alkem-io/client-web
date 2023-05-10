@@ -3,7 +3,10 @@ import { CalloutType, CanvasDetailsFragment } from '../../../../core/apollo/gene
 export const getCanvasCallout = <T extends { type: CalloutType; nameID: string }>(
   callouts: T[] | undefined,
   calloutNameId: string
-) => callouts?.find(x => x.type === CalloutType.Canvas && x.nameID === calloutNameId);
+) =>
+  callouts?.find(
+    x => (x.type === CalloutType.Canvas || x.type === CalloutType.SingleWhiteboard) && x.nameID === calloutNameId
+  );
 
 export const getCanvasCalloutContainingCanvas = <
   A extends { id: string },
@@ -11,12 +14,18 @@ export const getCanvasCalloutContainingCanvas = <
 >(
   canvases: T[] | undefined,
   canvasId: string
-) => canvases?.find(x => x.type === CalloutType.Canvas && x.canvases?.some(x => x.id === canvasId));
+) =>
+  canvases?.find(
+    x =>
+      (x.type === CalloutType.Canvas || x.type === CalloutType.SingleWhiteboard) &&
+      x.canvases?.some(x => x.id === canvasId)
+  );
 
 export const getAllCanvasesOnCallouts = <T extends { type: CalloutType; canvases?: CanvasDetailsFragment[] }>(
   callouts: T[] | undefined
 ) => {
-  const filteredCallouts = callouts?.filter(x => x.type === CalloutType.Canvas) ?? [];
+  const filteredCallouts =
+    callouts?.filter(x => x.type === CalloutType.Canvas || x.type === CalloutType.SingleWhiteboard) ?? [];
   return filteredCallouts.reduce((acc, curr) => {
     const currCanvases = curr?.canvases ?? [];
     return [...acc, ...currCanvases];

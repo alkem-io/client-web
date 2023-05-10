@@ -1,36 +1,51 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import CanvasesManagementViewWrapper from '../CanvasesManagement/CanvasesManagementViewWrapper';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { CanvasProvider } from '../containers/CanvasProvider';
+import { buildCanvasUrl, JourneyLocation } from '../../../../common/utils/urlBuilders';
 
-export interface CanvasesPageProps {
-  canvasNameId?: string;
-  calloutNameId?: string;
+export interface CanvasesPageProps extends JourneyLocation {
+  whiteboardNameId: string;
+  calloutNameId: string;
   parentUrl: string;
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
 }
 
-const CanvasesView: FC<CanvasesPageProps> = ({ canvasNameId, entityTypeName, parentUrl }) => {
-  const [, buildLinkToCanvasRaw] = useBackToParentPage(parentUrl);
+const CanvasesView: FC<CanvasesPageProps> = ({
+  whiteboardNameId,
+  parentUrl,
+  calloutNameId,
+  hubNameId,
+  challengeNameId,
+  opportunityNameId,
+  ...props
+}) => {
   const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
   const backToCanvases = () => backToExplore();
 
-  const buildLinkToCanvas = useMemo(
-    () => (url: string) => buildLinkToCanvasRaw(`${parentUrl}/${url}`),
-    [parentUrl, buildLinkToCanvasRaw]
-  );
+  const canvasShareUrl = buildCanvasUrl(calloutNameId, whiteboardNameId, {
+    hubNameId,
+    challengeNameId,
+    opportunityNameId,
+  });
 
   return (
-    <CanvasProvider>
+    <CanvasProvider
+      whiteboardNameId={whiteboardNameId}
+      calloutNameId={calloutNameId}
+      hubNameId={hubNameId}
+      challengeNameId={challengeNameId}
+      opportunityNameId={opportunityNameId}
+    >
       {(entities, state) => (
         <CanvasesManagementViewWrapper
-          canvasNameId={canvasNameId}
+          canvasNameId={whiteboardNameId}
           backToCanvases={backToCanvases}
-          buildLinkToCanvas={buildLinkToCanvas}
-          entityTypeName={entityTypeName}
+          canvasShareUrl={canvasShareUrl}
           {...entities}
           {...state}
+          {...props}
         />
       )}
     </CanvasProvider>

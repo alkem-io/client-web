@@ -76,7 +76,12 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
     return (
       <>
         <PageContentBlock ref={ref} disablePadding disableGap {...blockProps}>
-          <CalloutLayout callout={callout} contributionsCount={contributionsCount} {...calloutLayoutProps}>
+          <CalloutLayout
+            callout={callout}
+            contributionsCount={contributionsCount}
+            {...calloutLayoutProps}
+            disableMarginal
+          >
             {showCards && (
               <ScrollableCardsLayout
                 items={loading ? [undefined, undefined] : callout.canvases}
@@ -109,14 +114,17 @@ const CanvasCallout = forwardRef<HTMLDivElement, CanvasCalloutProps>(
               }}
               actions={{
                 onCancel: closeCreateDialog,
-                onUpdate: input => {
-                  actions.onCreate({
-                    value: input.value,
-                    profileData: {
-                      displayName: input.profile.displayName,
-                    },
-                    calloutID: callout.id,
-                  } as CreateCanvasOnCalloutInput);
+                onUpdate: (input, previewImages) => {
+                  actions.onCreate(
+                    {
+                      value: input.value,
+                      profileData: {
+                        displayName: input.profile.displayName,
+                      },
+                      calloutID: callout.id,
+                    } as CreateCanvasOnCalloutInput,
+                    previewImages
+                  );
                   setShowCreateCanvasDialog(false);
                 },
               }}

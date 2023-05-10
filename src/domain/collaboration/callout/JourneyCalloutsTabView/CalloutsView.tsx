@@ -6,7 +6,7 @@ import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { TypedCallout } from '../useCallouts/useCallouts';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { Caption } from '../../../../core/ui/typography';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { compact } from 'lodash';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import UpdateOrder, { findTargetItemIndex, OrderUpdate } from '../../../../core/utils/UpdateOrder';
@@ -35,7 +35,7 @@ const CalloutsViewSkeleton = () => (
 
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
   scrollToCallout?: boolean;
   sortOrder: string[];
   onSortOrderUpdate?: (update: OrderUpdate) => void;
@@ -48,7 +48,7 @@ export interface CalloutsViewProps {
 
 const CalloutsView = ({
   callouts,
-  entityTypeName,
+  journeyTypeName,
   calloutNames,
   scrollToCallout = false,
   loading = false,
@@ -116,7 +116,7 @@ const CalloutsView = ({
           <Caption>
             {t('pages.generic.sections.subentities.empty', {
               entities: t('common.callouts'),
-              parentEntity: t(`common.${entityTypeName}` as const),
+              parentEntity: t(`common.${journeyTypeName}` as const),
             })}
           </Caption>
         </PageContentBlockSeamless>
@@ -144,6 +144,7 @@ const CalloutsView = ({
               hubNameId={hubNameId}
               challengeNameId={challengeNameId}
               opportunityNameId={opportunityNameId}
+              journeyTypeName={journeyTypeName}
               onCalloutEdit={handleEdit}
               onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
               onVisibilityChange={handleVisibilityChange}

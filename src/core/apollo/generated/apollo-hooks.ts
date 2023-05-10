@@ -69,6 +69,9 @@ export const CanvasProfileFragmentDoc = gql`
     visual(type: CARD) {
       ...VisualFull
     }
+    preview: visual(type: BANNER) {
+      ...VisualFull
+    }
     tagset {
       id
       tags
@@ -617,79 +620,6 @@ export const HubInfoFragmentDoc = gql`
   }
   ${HubDetailsFragmentDoc}
 `;
-export const ProfileInfoFragmentDoc = gql`
-  fragment ProfileInfo on Profile {
-    id
-    displayName
-    description
-    tagset {
-      id
-      tags
-    }
-    visual(type: CARD) {
-      id
-      uri
-    }
-  }
-`;
-export const PostTemplateFragmentDoc = gql`
-  fragment PostTemplate on PostTemplate {
-    id
-    defaultDescription
-    type
-    profile {
-      ...ProfileInfo
-    }
-  }
-  ${ProfileInfoFragmentDoc}
-`;
-export const WhiteboardTemplateFragmentDoc = gql`
-  fragment WhiteboardTemplate on WhiteboardTemplate {
-    id
-    profile {
-      ...ProfileInfo
-    }
-  }
-  ${ProfileInfoFragmentDoc}
-`;
-export const InnovationFlowTemplateFragmentDoc = gql`
-  fragment InnovationFlowTemplate on InnovationFlowTemplate {
-    id
-    definition
-    type
-    profile {
-      id
-      displayName
-      description
-    }
-  }
-`;
-export const HubTemplatesFragmentDoc = gql`
-  fragment HubTemplates on Hub {
-    templates {
-      id
-      postTemplates {
-        ...PostTemplate
-      }
-      whiteboardTemplates {
-        ...WhiteboardTemplate
-      }
-      innovationFlowTemplates {
-        ...InnovationFlowTemplate
-      }
-    }
-  }
-  ${PostTemplateFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
-  ${InnovationFlowTemplateFragmentDoc}
-`;
-export const WhiteboardTemplateWithValueFragmentDoc = gql`
-  fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
-    ...WhiteboardTemplate
-    value
-  }
-  ${WhiteboardTemplateFragmentDoc}
-`;
 export const HubWelcomeBlockContributorProfileFragmentDoc = gql`
   fragment HubWelcomeBlockContributorProfile on Profile {
     id
@@ -818,6 +748,89 @@ export const HubPageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
+`;
+export const HubDashboardNavigationItemFragmentDoc = gql`
+  fragment HubDashboardNavigationItem on Profile {
+    id
+    displayName
+    visual(type: CARD) {
+      id
+      uri
+    }
+  }
+`;
+export const ProfileInfoFragmentDoc = gql`
+  fragment ProfileInfo on Profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      tags
+    }
+    visual(type: CARD) {
+      id
+      uri
+    }
+  }
+`;
+export const PostTemplateFragmentDoc = gql`
+  fragment PostTemplate on PostTemplate {
+    id
+    defaultDescription
+    type
+    profile {
+      ...ProfileInfo
+    }
+  }
+  ${ProfileInfoFragmentDoc}
+`;
+export const WhiteboardTemplateFragmentDoc = gql`
+  fragment WhiteboardTemplate on WhiteboardTemplate {
+    id
+    profile {
+      ...ProfileInfo
+    }
+  }
+  ${ProfileInfoFragmentDoc}
+`;
+export const InnovationFlowTemplateFragmentDoc = gql`
+  fragment InnovationFlowTemplate on InnovationFlowTemplate {
+    id
+    definition
+    type
+    profile {
+      id
+      displayName
+      description
+    }
+  }
+`;
+export const HubTemplatesFragmentDoc = gql`
+  fragment HubTemplates on Hub {
+    templates {
+      id
+      postTemplates {
+        ...PostTemplate
+      }
+      whiteboardTemplates {
+        ...WhiteboardTemplate
+      }
+      innovationFlowTemplates {
+        ...InnovationFlowTemplate
+      }
+    }
+  }
+  ${PostTemplateFragmentDoc}
+  ${WhiteboardTemplateFragmentDoc}
+  ${InnovationFlowTemplateFragmentDoc}
+`;
+export const WhiteboardTemplateWithValueFragmentDoc = gql`
+  fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
+    ...WhiteboardTemplate
+    value
+  }
+  ${WhiteboardTemplateFragmentDoc}
 `;
 export const AdminHubFragmentDoc = gql`
   fragment AdminHub on Hub {
@@ -5556,6 +5569,281 @@ export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryV
   return { query: HubProviderDocument, variables: variables };
 }
 
+export const HubPageDocument = gql`
+  query hubPage($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      ...HubPage
+    }
+  }
+  ${HubPageFragmentDoc}
+`;
+
+/**
+ * __useHubPageQuery__
+ *
+ * To run a query within a React component, call `useHubPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPageQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubPageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>(HubPageDocument, options);
+}
+
+export function useHubPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>(HubPageDocument, options);
+}
+
+export type HubPageQueryHookResult = ReturnType<typeof useHubPageQuery>;
+export type HubPageLazyQueryHookResult = ReturnType<typeof useHubPageLazyQuery>;
+export type HubPageQueryResult = Apollo.QueryResult<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>;
+export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables) {
+  return { query: HubPageDocument, variables: variables };
+}
+
+export const HubDashboardReferencesDocument = gql`
+  query HubDashboardReferences($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      profile {
+        id
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubDashboardReferencesQuery__
+ *
+ * To run a query within a React component, call `useHubDashboardReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubDashboardReferencesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubDashboardReferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardReferencesQuery,
+    SchemaTypes.HubDashboardReferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
+    HubDashboardReferencesDocument,
+    options
+  );
+}
+
+export function useHubDashboardReferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardReferencesQuery,
+    SchemaTypes.HubDashboardReferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
+    HubDashboardReferencesDocument,
+    options
+  );
+}
+
+export type HubDashboardReferencesQueryHookResult = ReturnType<typeof useHubDashboardReferencesQuery>;
+export type HubDashboardReferencesLazyQueryHookResult = ReturnType<typeof useHubDashboardReferencesLazyQuery>;
+export type HubDashboardReferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardReferencesQuery,
+  SchemaTypes.HubDashboardReferencesQueryVariables
+>;
+export function refetchHubDashboardReferencesQuery(variables: SchemaTypes.HubDashboardReferencesQueryVariables) {
+  return { query: HubDashboardReferencesDocument, variables: variables };
+}
+
+export const HubDashboardNavigationChallengesDocument = gql`
+  query HubDashboardNavigationChallenges($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenges {
+        id
+        nameID
+        profile {
+          ...HubDashboardNavigationItem
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+        community {
+          id
+          myMembershipStatus
+        }
+      }
+    }
+  }
+  ${HubDashboardNavigationItemFragmentDoc}
+`;
+
+/**
+ * __useHubDashboardNavigationChallengesQuery__
+ *
+ * To run a query within a React component, call `useHubDashboardNavigationChallengesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardNavigationChallengesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubDashboardNavigationChallengesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubDashboardNavigationChallengesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardNavigationChallengesQuery,
+    SchemaTypes.HubDashboardNavigationChallengesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.HubDashboardNavigationChallengesQuery,
+    SchemaTypes.HubDashboardNavigationChallengesQueryVariables
+  >(HubDashboardNavigationChallengesDocument, options);
+}
+
+export function useHubDashboardNavigationChallengesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardNavigationChallengesQuery,
+    SchemaTypes.HubDashboardNavigationChallengesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubDashboardNavigationChallengesQuery,
+    SchemaTypes.HubDashboardNavigationChallengesQueryVariables
+  >(HubDashboardNavigationChallengesDocument, options);
+}
+
+export type HubDashboardNavigationChallengesQueryHookResult = ReturnType<
+  typeof useHubDashboardNavigationChallengesQuery
+>;
+export type HubDashboardNavigationChallengesLazyQueryHookResult = ReturnType<
+  typeof useHubDashboardNavigationChallengesLazyQuery
+>;
+export type HubDashboardNavigationChallengesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardNavigationChallengesQuery,
+  SchemaTypes.HubDashboardNavigationChallengesQueryVariables
+>;
+export function refetchHubDashboardNavigationChallengesQuery(
+  variables: SchemaTypes.HubDashboardNavigationChallengesQueryVariables
+) {
+  return { query: HubDashboardNavigationChallengesDocument, variables: variables };
+}
+
+export const HubDashboardNavigationOpportunitiesDocument = gql`
+  query HubDashboardNavigationOpportunities($hubId: UUID_NAMEID!, $challengeIds: [UUID!]!) {
+    hub(ID: $hubId) {
+      id
+      challenges(IDs: $challengeIds) {
+        id
+        opportunities {
+          id
+          nameID
+          profile {
+            ...HubDashboardNavigationItem
+          }
+        }
+      }
+    }
+  }
+  ${HubDashboardNavigationItemFragmentDoc}
+`;
+
+/**
+ * __useHubDashboardNavigationOpportunitiesQuery__
+ *
+ * To run a query within a React component, call `useHubDashboardNavigationOpportunitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardNavigationOpportunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubDashboardNavigationOpportunitiesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeIds: // value for 'challengeIds'
+ *   },
+ * });
+ */
+export function useHubDashboardNavigationOpportunitiesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardNavigationOpportunitiesQuery,
+    SchemaTypes.HubDashboardNavigationOpportunitiesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.HubDashboardNavigationOpportunitiesQuery,
+    SchemaTypes.HubDashboardNavigationOpportunitiesQueryVariables
+  >(HubDashboardNavigationOpportunitiesDocument, options);
+}
+
+export function useHubDashboardNavigationOpportunitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardNavigationOpportunitiesQuery,
+    SchemaTypes.HubDashboardNavigationOpportunitiesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubDashboardNavigationOpportunitiesQuery,
+    SchemaTypes.HubDashboardNavigationOpportunitiesQueryVariables
+  >(HubDashboardNavigationOpportunitiesDocument, options);
+}
+
+export type HubDashboardNavigationOpportunitiesQueryHookResult = ReturnType<
+  typeof useHubDashboardNavigationOpportunitiesQuery
+>;
+export type HubDashboardNavigationOpportunitiesLazyQueryHookResult = ReturnType<
+  typeof useHubDashboardNavigationOpportunitiesLazyQuery
+>;
+export type HubDashboardNavigationOpportunitiesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardNavigationOpportunitiesQuery,
+  SchemaTypes.HubDashboardNavigationOpportunitiesQueryVariables
+>;
+export function refetchHubDashboardNavigationOpportunitiesQuery(
+  variables: SchemaTypes.HubDashboardNavigationOpportunitiesQueryVariables
+) {
+  return { query: HubDashboardNavigationOpportunitiesDocument, variables: variables };
+}
+
 export const HubTemplatesDocument = gql`
   query HubTemplates($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -5964,121 +6252,6 @@ export function refetchHubTemplatesWhiteboardTemplateWithValueQuery(
   variables: SchemaTypes.HubTemplatesWhiteboardTemplateWithValueQueryVariables
 ) {
   return { query: HubTemplatesWhiteboardTemplateWithValueDocument, variables: variables };
-}
-
-export const HubPageDocument = gql`
-  query hubPage($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      ...HubPage
-    }
-  }
-  ${HubPageFragmentDoc}
-`;
-
-/**
- * __useHubPageQuery__
- *
- * To run a query within a React component, call `useHubPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPageQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubPageQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>(HubPageDocument, options);
-}
-
-export function useHubPageLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>(HubPageDocument, options);
-}
-
-export type HubPageQueryHookResult = ReturnType<typeof useHubPageQuery>;
-export type HubPageLazyQueryHookResult = ReturnType<typeof useHubPageLazyQuery>;
-export type HubPageQueryResult = Apollo.QueryResult<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>;
-export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables) {
-  return { query: HubPageDocument, variables: variables };
-}
-
-export const HubDashboardReferencesDocument = gql`
-  query HubDashboardReferences($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      id
-      profile {
-        id
-        references {
-          id
-          name
-          uri
-          description
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useHubDashboardReferencesQuery__
- *
- * To run a query within a React component, call `useHubDashboardReferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubDashboardReferencesQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubDashboardReferencesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.HubDashboardReferencesQuery,
-    SchemaTypes.HubDashboardReferencesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
-    HubDashboardReferencesDocument,
-    options
-  );
-}
-
-export function useHubDashboardReferencesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.HubDashboardReferencesQuery,
-    SchemaTypes.HubDashboardReferencesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
-    HubDashboardReferencesDocument,
-    options
-  );
-}
-
-export type HubDashboardReferencesQueryHookResult = ReturnType<typeof useHubDashboardReferencesQuery>;
-export type HubDashboardReferencesLazyQueryHookResult = ReturnType<typeof useHubDashboardReferencesLazyQuery>;
-export type HubDashboardReferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubDashboardReferencesQuery,
-  SchemaTypes.HubDashboardReferencesQueryVariables
->;
-export function refetchHubDashboardReferencesQuery(variables: SchemaTypes.HubDashboardReferencesQueryVariables) {
-  return { query: HubDashboardReferencesDocument, variables: variables };
 }
 
 export const CreateHubDocument = gql`

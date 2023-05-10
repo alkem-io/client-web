@@ -9,21 +9,20 @@ import {
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
-import CanvasManagementView, {
-  ActiveCanvasIdHolder,
-  CanvasManagementViewEntities,
-  CanvasNavigationMethods,
-} from './CanvasManagementView';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import CanvasManagementView, { ActiveCanvasIdHolder, CanvasNavigationMethods } from './CanvasManagementView';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
   canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasWhiteboardTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
+  canvasShareUrl: string;
+  readOnlyDisplayName?: boolean;
   loadingCanvases: boolean;
   loadingTemplates: boolean;
+  updatePrivilege?: AuthorizationPrivilege;
 }
 
 const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
@@ -32,13 +31,16 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   canvas,
   templates,
   authorization,
-  entityTypeName,
+  journeyTypeName,
   backToCanvases,
-  buildLinkToCanvas,
   loadingCanvases,
+  canvasShareUrl,
+  readOnlyDisplayName,
+  updatePrivilege = AuthorizationPrivilege.CreateCanvas,
   ...canvasesState
 }) => {
   const { isFeatureEnabled } = useConfig();
+
   if (!calloutId) {
     return null;
   }
@@ -48,11 +50,13 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   if (!loadingCanvases && (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPrivileges))
     return <Error404 />;
 
-  const hasCreatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
-  const hasDeletePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
+  const hasCreatePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas);
+  const hasDeletePrivileges = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete);
   // Todo: need to decide who can edit what canvases, for now tie to CreateCanvas. May need to extend the information on a Canvas
   // to include who created it etc.
-  const hasUpdatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
+  // Also to have in mind: In SingleWhiteboard Callout canvases, users don't have CreateCanvas privilege to add another canvas but may have privilege
+  // to update the canvas itself
+  const hasUpdatePrivileges = authorization?.myPrivileges?.includes(updatePrivilege);
 
   return (
     <CanvasActionsContainer>
@@ -63,7 +67,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
             templates,
             calloutId,
             canvasNameId,
-            contextSource: entityTypeName as CanvasManagementViewEntities['contextSource'],
+            contextSource: journeyTypeName,
           }}
           actions={actions}
           state={{
@@ -72,11 +76,12 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
           }}
           options={{
             canUpdate: hasUpdatePrivileges,
+            canUpdateDisplayName: hasUpdatePrivileges && !readOnlyDisplayName,
             canCreate: hasCreatePrivileges,
             canDelete: hasDeletePrivileges,
+            shareUrl: canvasShareUrl,
           }}
           backToCanvases={backToCanvases}
-          buildLinkToCanvas={buildLinkToCanvas}
         />
       )}
     </CanvasActionsContainer>

@@ -120,6 +120,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           hubNameId={hubNameId}
           challengeNameId={challengeNameId}
           opportunityNameId={opportunityNameId}
+          journeyTypeName={journeyTypeName}
           isSubscribedToComments={isSubscribedToComments}
           calloutNames={[]}
           contributionsCount={typedCallout.activity}
