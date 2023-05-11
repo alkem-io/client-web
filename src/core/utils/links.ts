@@ -37,6 +37,8 @@ export const makeAbsoluteUrl = (link: string) => {
   return `${window.location.origin}${link.startsWith('/') ? '' : '/'}${link}`;
 };
 
+const PRIVATE_STORAGE_ROOT_PATH = '/api/private/rest/storage/';
+
 export const isFileAttachmentUrl = (link: string) => {
   let path = link;
   if (isAbsoluteUrl(link)) {
@@ -45,5 +47,5 @@ export const isFileAttachmentUrl = (link: string) => {
     }
     path = link.slice(window.origin.length);
   }
-  return path.startsWith('/ipfs/');
+  return path.startsWith(PRIVATE_STORAGE_ROOT_PATH);
 };
