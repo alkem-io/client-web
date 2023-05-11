@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 
-export const ImageWrapper = styled(Box)(({ theme }) => ({
+const Centered = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -11,3 +11,5 @@ export const ImageWrapper = styled(Box)(({ theme }) => ({
     fontSize: '5em',
   },
 }));
+
+export default Centered;

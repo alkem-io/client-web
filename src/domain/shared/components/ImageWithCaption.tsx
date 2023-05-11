@@ -4,7 +4,7 @@ import Image from './Image';
 import { gutters } from '../../../core/ui/grid/utils';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import { Caption } from '../../../core/ui/typography';
-import { ImageWrapper } from './ImageWrapper';
+import Centered from './Centered';
 
 interface ImageWithCaptionProps extends BoxProps<'img'> {
   caption: ReactNode | string;
@@ -36,12 +36,12 @@ const ImageWithCaption: FC<ImageWithCaptionProps> = ({
   caption,
   captionPosition = 'bottom',
   onClick,
-  defaultImage: defaultImageSvg,
+  defaultImage,
   ...imgProps
 }) => {
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
-      {!imgProps.src && defaultImageSvg && <ImageWrapper>{defaultImageSvg}</ImageWrapper>}
+      {!imgProps.src && defaultImage && <Centered>{defaultImage}</Centered>}
       {imgProps.src && <Image sx={{ minHeight: '100%' }} {...imgProps} />}
       <CaptionContainer
         sx={{
