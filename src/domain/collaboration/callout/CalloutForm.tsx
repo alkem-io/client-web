@@ -181,7 +181,6 @@ const CalloutForm: FC<CalloutFormProps> = ({
       is: CalloutType.SingleWhiteboard,
       then: yup.object().shape({
         value: yup.string().required(),
-        previewImages: editMode ? yup.array() : yup.array().of(yup.object()).required(),
       }),
     }),
   });

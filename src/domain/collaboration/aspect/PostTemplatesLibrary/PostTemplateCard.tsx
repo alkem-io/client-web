@@ -23,7 +23,7 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, loading, onClic
         </CardHeaderCaption>
       </CardHeader>
       <CardContent>{template?.description}</CardContent>
-      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImageSvg={<AspectIcon />} />
+      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImage={<AspectIcon />} />
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{template?.innovationPack.displayName}</Caption>

@@ -1596,7 +1596,7 @@ export const TemplateProviderProfileFragmentDoc = gql`
   ${VisualUriFragmentDoc}
 `;
 export const InnovationPackWithProviderFragmentDoc = gql`
-  fragment InnovationPackWithProvider on InnovatonPack {
+  fragment InnovationPackWithProvider on InnovationPack {
     id
     nameID
     provider {
