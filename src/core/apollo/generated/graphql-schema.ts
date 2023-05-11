@@ -409,14 +409,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationTemplate = {
-  __typename?: 'ApplicationTemplate';
-  /** Application template name. */
-  name: Scalars['String'];
-  /** Template questions. */
-  questions: Array<QuestionTemplate>;
-};
-
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -626,14 +618,6 @@ export enum AuthorizationPrivilege {
   UpdateCanvas = 'UPDATE_CANVAS',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
-
-export type Branding = {
-  __typename?: 'Branding';
-  /** The logo of this instance of branding */
-  logo: Visual;
-  /** The style configuration */
-  styles?: Maybe<Scalars['String']>;
-};
 
 export type Calendar = {
   __typename?: 'Calendar';
@@ -1906,16 +1890,6 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type HubAspectTemplate = {
-  __typename?: 'HubAspectTemplate';
-  /** A default description for this Aspect. */
-  defaultDescription: Scalars['String'];
-  /** The type of the Aspect */
-  type: Scalars['String'];
-  /** A description for this Aspect type. */
-  typeDescription: Scalars['String'];
-};
-
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -1959,17 +1933,6 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
-/** Filter used to filter the data for the Innovation space */
-export type ISelectionFilter = {
-  __typename?: 'ISelectionFilter';
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of the selection filter, which will also give a hint how to parse its value */
-  type: SelectionFilterType;
-  /** The filter value. Usage and how it can be parsed hinted by the type */
-  value: Scalars['String'];
-};
-
 export type InnovationFlowTemplate = {
   __typename?: 'InnovationFlowTemplate';
   /** The authorization rules for the entity */
@@ -1989,29 +1952,32 @@ export enum InnovationFlowType {
   Opportunity = 'OPPORTUNITY',
 }
 
-export type InnovationSpace = {
-  __typename?: 'InnovationSpace';
+export type InnovationHub = {
+  __typename?: 'InnovationHub';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The branding for this Innovation space */
-  branding?: Maybe<Branding>;
+  hubListFilter: Array<Hub>;
+  /** If defined, what type of visibility to filter the Hubs on. You can have only one type of filter active at any given time. */
+  hubVisibilityFilter?: Maybe<HubVisibility>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
-  /** The criteria based on which the data is filtered */
-  selectionCriteria: SelectionCriteria;
-  /** Type of innovation space */
-  type: InnovationSpaceType;
+  /** The Innovation Hub profile. */
+  profile: Profile;
+  /** The subdomain associated with this Innovation Hub. */
+  subdomain: Scalars['String'];
+  /** Type of Innovation Hub */
+  type: InnovationHubType;
 };
 
-export enum InnovationSpaceType {
-  Basic = 'BASIC',
-  Lite = 'LITE',
+export enum InnovationHubType {
+  List = 'LIST',
+  Visibility = 'VISIBILITY',
 }
 
-export type InnovatonPack = {
-  __typename?: 'InnovatonPack';
+export type InnovationPack = {
+  __typename?: 'InnovationPack';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The ID of the entity */
@@ -2033,9 +1999,9 @@ export type Library = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A single Innovation Pack */
-  innovationPack?: Maybe<InnovatonPack>;
+  innovationPack?: Maybe<InnovationPack>;
   /** Platform level library. */
-  innovationPacks: Array<InnovatonPack>;
+  innovationPacks: Array<InnovationPack>;
   /** The StorageBucket with documents in use by this User */
   storageBucket?: Maybe<StorageBucket>;
 };
@@ -2120,6 +2086,8 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Migrate all ipfs links to use new storage access api */
+  adminStorageMigrateIpfsUrls: Scalars['Boolean'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization as a Lead of the specified Community. */
@@ -2197,7 +2165,7 @@ export type Mutation = {
   /** Creates a new InnovationFlowTemplate on the specified TemplatesSet. */
   createInnovationFlowTemplate: InnovationFlowTemplate;
   /** Create a new InnovatonPack on the Library. */
-  createInnovationPackOnLibrary: InnovatonPack;
+  createInnovationPackOnLibrary: InnovationPack;
   /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
   /** Creates a new Organization on the platform. */
@@ -2243,7 +2211,7 @@ export type Mutation = {
   /** Deletes the specified InnovationFlowTemplate. */
   deleteInnovationFlowTemplate: InnovationFlowTemplate;
   /** Deletes the specified InnovationPack. */
-  deleteInnovationPack: InnovatonPack;
+  deleteInnovationPack: InnovationPack;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -2369,7 +2337,7 @@ export type Mutation = {
   /** Updates the specified InnovationFlowTemplate. */
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Updates the InnovationPack. */
-  updateInnovationPack: InnovatonPack;
+  updateInnovationPack: InnovationPack;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
   /** Updates the Innovation Flow on the specified Opportunity. */
@@ -3156,10 +3124,19 @@ export type Platform = {
   communication: Communication;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Details about an Innovation Hubs on the platform */
+  innovationHub: InnovationHub;
+  /** List of Innovation Hubs on the platform */
+  innovationHubs: Array<InnovationHub>;
   /** The Innovation Library for the platform */
   library: Library;
   /** The StorageBucket with documents in use by Users + Organizations on the Platform. */
   storageBucket?: Maybe<StorageBucket>;
+};
+
+export type PlatformInnovationHubArgs = {
+  id?: InputMaybe<Scalars['UUID_NAMEID']>;
+  subdomain?: InputMaybe<Scalars['String']>;
 };
 
 export type PlatformLocations = {
@@ -3375,8 +3352,6 @@ export type Query = {
   hub: Hub;
   /** The Hubs on this platform */
   hubs: Array<Hub>;
-  /** List of innovation spaces on the platform */
-  innovationSpaces: Array<InnovationSpace>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -3881,23 +3856,6 @@ export type SearchResultUserGroup = SearchResult & {
   /** The User Group that was found. */
   userGroup: UserGroup;
 };
-
-export type SelectionCriteria = {
-  __typename?: 'SelectionCriteria';
-  filters: Array<ISelectionFilter>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  type: SelectionCriteriaType;
-};
-
-export enum SelectionCriteriaType {
-  And = 'AND',
-  Or = 'OR',
-}
-
-export enum SelectionFilterType {
-  Visibility = 'VISIBILITY',
-}
 
 export type SendMessageOnCalloutInput = {
   /** The Callout the message is being sent to */
@@ -12264,7 +12222,7 @@ export type PlatformPostTemplatesLibraryQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         provider?:
@@ -15764,7 +15722,7 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         provider?:
@@ -15817,7 +15775,7 @@ export type PlatformWhiteboardTemplateValueQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             nameID: string;
             templates?:
@@ -15860,7 +15818,7 @@ export type PlatformWhiteboardTemplateValueQuery = {
 };
 
 export type InnovationPackWithProviderFragment = {
-  __typename?: 'InnovatonPack';
+  __typename?: 'InnovationPack';
   id: string;
   nameID: string;
   provider?:
@@ -17182,7 +17140,7 @@ export type PlatformTemplateCanvasValuesQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             templates?:
               | {
                   __typename?: 'TemplatesSet';
@@ -22252,7 +22210,7 @@ export type InnovationPacksQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         provider?:
@@ -22377,7 +22335,7 @@ export type InnovationPackWhiteboardTemplateWithValueQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             templates?:
               | {
@@ -22406,7 +22364,7 @@ export type InnovationPackFullWhiteboardTemplateWithValueQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             templates?:
               | {
@@ -22445,7 +22403,7 @@ export type AdminInnovationPacksListQuery = {
       __typename?: 'Library';
       id: string;
       innovationPacks: Array<{
-        __typename?: 'InnovatonPack';
+        __typename?: 'InnovationPack';
         id: string;
         nameID: string;
         profile: { __typename?: 'Profile'; id: string; displayName: string };
@@ -22460,7 +22418,7 @@ export type DeleteInnovationPackMutationVariables = Exact<{
 
 export type DeleteInnovationPackMutation = {
   __typename?: 'Mutation';
-  deleteInnovationPack: { __typename?: 'InnovatonPack'; id: string };
+  deleteInnovationPack: { __typename?: 'InnovationPack'; id: string };
 };
 
 export type InnovationPackProfileFragment = {
@@ -22575,7 +22533,7 @@ export type AdminInnovationPackQuery = {
       id: string;
       innovationPack?:
         | {
-            __typename?: 'InnovatonPack';
+            __typename?: 'InnovationPack';
             id: string;
             nameID: string;
             provider?:
@@ -22708,7 +22666,7 @@ export type CreateInnovationPackMutationVariables = Exact<{
 
 export type CreateInnovationPackMutation = {
   __typename?: 'Mutation';
-  createInnovationPackOnLibrary: { __typename?: 'InnovatonPack'; id: string; nameID: string };
+  createInnovationPackOnLibrary: { __typename?: 'InnovationPack'; id: string; nameID: string };
 };
 
 export type UpdateInnovationPackMutationVariables = Exact<{
@@ -22717,7 +22675,7 @@ export type UpdateInnovationPackMutationVariables = Exact<{
 
 export type UpdateInnovationPackMutation = {
   __typename?: 'Mutation';
-  updateInnovationPack: { __typename?: 'InnovatonPack'; id: string; nameID: string };
+  updateInnovationPack: { __typename?: 'InnovationPack'; id: string; nameID: string };
 };
 
 export type UpdateInnovationFlowTemplateMutationVariables = Exact<{
