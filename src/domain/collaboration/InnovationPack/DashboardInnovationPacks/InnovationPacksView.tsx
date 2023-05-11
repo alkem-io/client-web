@@ -52,7 +52,7 @@ const InnovationPacksView = ({
           />
         }
       />
-      <PageContentBlockGrid disablePadding>
+      <PageContentBlockGrid cards disablePadding>
         {innovationPacks?.map(({ id, ...cardProps }) => (
           <InnovationPackCard key={id} {...cardProps} onClick={handleOpenInnovationPack} />
         ))}
