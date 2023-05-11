@@ -22,7 +22,7 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, loa
           {template?.provider?.displayName}
         </CardHeaderCaption>
       </CardHeader>
-      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImageSvg={<CanvasIcon />} />
+      <CardImage src={template?.visualUri} alt={template?.displayName} defaultImage={<CanvasIcon />} />
       {template?.innovationPack.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
           <Caption noWrap>{template?.innovationPack.displayName}</Caption>

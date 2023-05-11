@@ -24,7 +24,7 @@ const CanvasImportTemplateCard = ({ template, onClick }: CanvasImportTemplateCar
       <CardImage
         src={getVisualBannerNarrow(template.profile.visual)}
         alt={template.profile.displayName}
-        defaultImageSvg={<CanvasIcon />}
+        defaultImage={<CanvasIcon />}
       />
       <CardSegmentCaption icon={<InnovationPackIcon />}>
         <Caption noWrap>{template.innovationPackProfile.displayName}</Caption>

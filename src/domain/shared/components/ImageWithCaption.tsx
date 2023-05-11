@@ -4,10 +4,12 @@ import Image from './Image';
 import { gutters } from '../../../core/ui/grid/utils';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import { Caption } from '../../../core/ui/typography';
+import Centered from './Centered';
 
 interface ImageWithCaptionProps extends BoxProps<'img'> {
   caption: ReactNode | string;
   captionPosition?: 'top' | 'bottom';
+  defaultImage?: ReactNode;
 }
 
 const Container = styled(Box)(({ theme }) => ({
@@ -30,10 +32,17 @@ const CaptionContainer = styled(Box)(({ theme }) => ({
   backgroundColor: hexToRGBA(theme.palette.common.white, 0.8),
 }));
 
-const ImageWithCaption: FC<ImageWithCaptionProps> = ({ caption, captionPosition = 'bottom', onClick, ...imgProps }) => {
+const ImageWithCaption: FC<ImageWithCaptionProps> = ({
+  caption,
+  captionPosition = 'bottom',
+  onClick,
+  defaultImage,
+  ...imgProps
+}) => {
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
-      <Image sx={{ minHeight: '100%' }} {...imgProps} />
+      {!imgProps.src && defaultImage && <Centered>{defaultImage}</Centered>}
+      {imgProps.src && <Image sx={{ minHeight: '100%' }} {...imgProps} />}
       <CaptionContainer
         sx={{
           top: captionPosition === 'top' ? 0 : undefined,
