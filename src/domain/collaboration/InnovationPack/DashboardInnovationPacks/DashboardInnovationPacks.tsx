@@ -1,10 +1,11 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import React, { ReactNode, useLayoutEffect, useMemo, useState } from 'react';
 import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import filterFn, { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 import InnovationPacksView from './InnovationPacksView';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
 
 interface DashboardInnovationPacksProps {
   headerTitle: ReactNode;
@@ -30,16 +31,29 @@ const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInn
 
   const { t } = useTranslation();
 
+  const columns = useColumns();
+
+  const isExpandable = columns > 4;
+
+  useLayoutEffect(() => {
+    // This can be made computable but then the Dialog would reopen when going back to desktop resolution
+    if (!isExpandable) {
+      setIsDialogOpen(false);
+    }
+  }, [isExpandable]);
+
   return (
     <>
       <InnovationPacksView
         filter={filter}
         headerTitle={headerTitle}
-        innovationPacks={filteredInnovationPacks.slice(0, MAX_PACKS_WHEN_NOT_EXPANDED)}
+        innovationPacks={
+          isExpandable ? filteredInnovationPacks.slice(0, MAX_PACKS_WHEN_NOT_EXPANDED) : filteredInnovationPacks
+        }
         onFilterChange={onFilterChange}
         expanded={isDialogOpen}
         onDialogOpen={() => setIsDialogOpen(true)}
-        hasMore={filteredInnovationPacks.length > MAX_PACKS_WHEN_NOT_EXPANDED}
+        hasMore={isExpandable && filteredInnovationPacks.length > MAX_PACKS_WHEN_NOT_EXPANDED}
       />
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
         <InnovationPacksView
@@ -49,6 +63,7 @@ const DashboardInnovationPacks = ({ headerTitle, innovationPacks }: DashboardInn
           onFilterChange={onFilterChange}
           expanded={isDialogOpen}
           onDialogClose={() => setIsDialogOpen(false)}
+          sx={{ flexShrink: 1 }}
         />
       </DialogWithGrid>
     </>

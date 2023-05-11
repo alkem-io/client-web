@@ -1,12 +1,12 @@
 import React, { Dispatch, ReactNode } from 'react';
 import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import PageContentBlockGrid from '../../../../core/ui/content/PageContentBlockGrid';
 import InnovationPackCard, { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
 import { Identifiable } from '../../../shared/types/Identifiable';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
+import ScrollableCardsLayout from '../../../../core/ui/card/CardsLayout/ScrollableCardsLayout';
 
 interface InnovationPacksViewProps {
   filter: string[];
@@ -28,13 +28,14 @@ const InnovationPacksView = ({
   onDialogOpen,
   onDialogClose,
   hasMore = false,
-}: InnovationPacksViewProps) => {
+  ...props
+}: InnovationPacksViewProps & PageContentBlockProps) => {
   const handleOpenInnovationPack = () => {};
 
   const { t } = useTranslation();
 
   return (
-    <PageContentBlock>
+    <PageContentBlock {...props}>
       <PageContentBlockHeaderWithDialogAction
         title={headerTitle}
         onDialogOpen={onDialogOpen}
@@ -52,11 +53,11 @@ const InnovationPacksView = ({
           />
         }
       />
-      <PageContentBlockGrid cards disablePadding>
-        {innovationPacks?.map(({ id, ...cardProps }) => (
-          <InnovationPackCard key={id} {...cardProps} onClick={handleOpenInnovationPack} />
-        ))}
-      </PageContentBlockGrid>
+      {innovationPacks && (
+        <ScrollableCardsLayout items={innovationPacks} minHeight={0} noVerticalMarginTop>
+          {({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} onClick={handleOpenInnovationPack} />}
+        </ScrollableCardsLayout>
+      )}
       {hasMore && <SeeMore subject={t('common.innovation-packs')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );
