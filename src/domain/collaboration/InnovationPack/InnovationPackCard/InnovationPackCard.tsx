@@ -29,7 +29,7 @@ const InnovationPackCard = ({
     <ContributeCard {...props}>
       <CardHeader title={displayName} iconComponent={InnovationPackIcon} />
       <CardDetails>
-        {description && <CardDescription>{description}</CardDescription>}
+        <CardDescription>{description ?? ''}</CardDescription>
         <CardTags tags={tags} paddingX={1.5} marginY={1} />
       </CardDetails>
       <CardFooter>
