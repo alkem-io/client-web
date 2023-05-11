@@ -16,7 +16,7 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import { BlockTitle, Tagline } from '../../../../../core/ui/typography';
 import PageContentBlock, { PageContentBlockProps } from '../../../../../core/ui/content/PageContentBlock';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import { LifecycleState } from '../../../../platform/admin/templates/InnovationTemplates/LifecycleState';
+import InnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlow';
 import { ApplicationButton } from '../../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import ApplicationButtonContainer from '../../../../community/application/containers/ApplicationButtonContainer';
 import EntityDashboardContributorsSection from '../../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
@@ -143,7 +143,7 @@ export const AboutSection: FC<AboutSectionProps> = ({
             <Tagline>{tagline}</Tagline>
             <TagsComponent tags={tags} variant="filled" loading={loading} />
             <Actions justifyContent="end">
-              {lifecycle && <LifecycleState lifecycle={lifecycle} />}
+              {lifecycle && <InnovationFlow lifecycle={lifecycle} />}
               <ApplicationButtonContainer
                 challengeId={challengeId}
                 challengeNameId={challengeNameId}

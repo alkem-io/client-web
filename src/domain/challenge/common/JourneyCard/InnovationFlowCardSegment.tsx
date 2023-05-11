@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { LifecycleStateIcon } from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
+import { InnovationFlowIcon } from '../../../platform/admin/templates/InnovationTemplates/InnovationFlow/InnovationFlowIcon';
 import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 
 interface InnovationFlowCardSegmentProps {
@@ -8,7 +8,7 @@ interface InnovationFlowCardSegmentProps {
 
 const InnovationFlowCardSegment = ({ children }: InnovationFlowCardSegmentProps) => {
   return (
-    <CardSegmentCaption icon={<LifecycleStateIcon />} align="right">
+    <CardSegmentCaption icon={<InnovationFlowIcon />} align="right">
       {children}
     </CardSegmentCaption>
   );
