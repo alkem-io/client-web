@@ -5,6 +5,7 @@ import { CreateProfileInput, Visual } from '../../../../../core/apollo/generated
 import TemplateFormRows from '../TemplateFormRows';
 import TemplateForm from '../TemplateForm';
 import FormikWhiteboardPreview from './FormikWhiteboardPreview';
+import { useTranslation } from 'react-i18next';
 
 export interface WhiteboardTemplateFormValues {
   displayName: string;
@@ -33,6 +34,7 @@ const validator = {
 };
 
 const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, loading }: WhiteboardTemplateFormProps) => {
+  const { t } = useTranslation();
   return (
     <TemplateForm
       initialValues={initialValues}
@@ -42,7 +44,12 @@ const WhiteboardTemplateForm = ({ initialValues, visual, onSubmit, actions, load
       validator={validator}
     >
       <TemplateFormRows>
-        <FormikWhiteboardPreview name="value" canEdit loading={loading} />
+        <FormikWhiteboardPreview
+          name="value"
+          canEdit
+          loading={loading}
+          dialogProps={{ title: t('canvas-templates.edit-dialog-title') }}
+        />
       </TemplateFormRows>
     </TemplateForm>
   );

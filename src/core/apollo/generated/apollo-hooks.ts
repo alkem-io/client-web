@@ -69,6 +69,9 @@ export const CanvasProfileFragmentDoc = gql`
     visual(type: CARD) {
       ...VisualFull
     }
+    preview: visual(type: BANNER) {
+      ...VisualFull
+    }
     tagset {
       id
       tags
@@ -1703,44 +1706,6 @@ export const AspectsOnCalloutFragmentDoc = gql`
   }
   ${ContributeTabAspectFragmentDoc}
 `;
-export const InnovationPackCardFragmentDoc = gql`
-  fragment InnovationPackCard on InnovationPack {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        id
-        tags
-      }
-    }
-    templates {
-      id
-      postTemplates {
-        id
-      }
-      whiteboardTemplates {
-        id
-      }
-      innovationFlowTemplates {
-        id
-      }
-    }
-    provider {
-      id
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          id
-          uri
-        }
-      }
-    }
-  }
-`;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
@@ -2369,6 +2334,44 @@ export const UserRolesDetailsFragmentDoc = gql`
       hubID
       challengeID
       opportunityID
+    }
+  }
+`;
+export const InnovationPackCardFragmentDoc = gql`
+  fragment InnovationPackCard on InnovationPack {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+    }
+    templates {
+      id
+      postTemplates {
+        id
+      }
+      whiteboardTemplates {
+        id
+      }
+      innovationFlowTemplates {
+        id
+      }
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
     }
   }
 `;
@@ -12744,69 +12747,6 @@ export function useCalloutAspectCreatedSubscription(
 export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
 export type CalloutAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
-export const InnovationLibraryDocument = gql`
-  query InnovationLibrary {
-    platform {
-      id
-      library {
-        id
-        innovationPacks {
-          ...InnovationPackCard
-        }
-      }
-    }
-  }
-  ${InnovationPackCardFragmentDoc}
-`;
-
-/**
- * __useInnovationLibraryQuery__
- *
- * To run a query within a React component, call `useInnovationLibraryQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationLibraryQuery({
- *   variables: {
- *   },
- * });
- */
-export function useInnovationLibraryQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
-    InnovationLibraryDocument,
-    options
-  );
-}
-
-export function useInnovationLibraryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InnovationLibraryQuery,
-    SchemaTypes.InnovationLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
-    InnovationLibraryDocument,
-    options
-  );
-}
-
-export type InnovationLibraryQueryHookResult = ReturnType<typeof useInnovationLibraryQuery>;
-export type InnovationLibraryLazyQueryHookResult = ReturnType<typeof useInnovationLibraryLazyQuery>;
-export type InnovationLibraryQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationLibraryQuery,
-  SchemaTypes.InnovationLibraryQueryVariables
->;
-export function refetchInnovationLibraryQuery(variables?: SchemaTypes.InnovationLibraryQueryVariables) {
-  return { query: InnovationLibraryDocument, variables: variables };
-}
-
 export const ProfileVerifiedCredentialDocument = gql`
   subscription profileVerifiedCredential {
     profileVerifiedCredential {
@@ -19710,6 +19650,69 @@ export function refetchOpportunityContributionDetailsQuery(
   variables: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
+}
+
+export const InnovationLibraryDocument = gql`
+  query InnovationLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          ...InnovationPackCard
+        }
+      }
+    }
+  }
+  ${InnovationPackCardFragmentDoc}
+`;
+
+/**
+ * __useInnovationLibraryQuery__
+ *
+ * To run a query within a React component, call `useInnovationLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
+    InnovationLibraryDocument,
+    options
+  );
+}
+
+export function useInnovationLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationLibraryQuery,
+    SchemaTypes.InnovationLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
+    InnovationLibraryDocument,
+    options
+  );
+}
+
+export type InnovationLibraryQueryHookResult = ReturnType<typeof useInnovationLibraryQuery>;
+export type InnovationLibraryLazyQueryHookResult = ReturnType<typeof useInnovationLibraryLazyQuery>;
+export type InnovationLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationLibraryQuery,
+  SchemaTypes.InnovationLibraryQueryVariables
+>;
+export function refetchInnovationLibraryQuery(variables?: SchemaTypes.InnovationLibraryQueryVariables) {
+  return { query: InnovationLibraryDocument, variables: variables };
 }
 
 export const ChallengeExplorerPageDocument = gql`

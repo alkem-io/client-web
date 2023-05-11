@@ -7,12 +7,12 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import LinksList from '../../../../core/ui/list/LinksList';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CalloutCreationDialog from '../creation-dialog/CalloutCreationDialog';
-import { useCalloutCreation } from '../creation-dialog/useCalloutCreation/useCalloutCreation';
+import { useCalloutCreationWithPreviewImages } from '../creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import useCallouts, { TypedCallout } from '../useCallouts/useCallouts';
 import EllipsableWithCount from '../../../../core/ui/typography/EllipsableWithCount';
 import { ContributeCreationBlock } from '../../../challenge/common/tabs/Contribute/ContributeCreationBlock';
 import calloutIcons from '../utils/calloutIcons';
-import { EntityTypeName } from '../../../platform/constants/EntityTypeName';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
 import { useHub } from '../../../challenge/hub/HubContext/useHub';
 import {
   useCalloutFormTemplatesFromHubLazyQuery,
@@ -25,11 +25,11 @@ import { CalloutVisibility } from '../../../../core/apollo/generated/graphql-sch
 import { CalloutsGroup } from '../CalloutsInContext/CalloutsGroup';
 
 interface JourneyCalloutsTabViewProps {
-  entityTypeName: EntityTypeName;
+  journeyTypeName: JourneyTypeName;
   scrollToCallout?: boolean;
 }
 
-const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCalloutsTabViewProps) => {
+const JourneyCalloutsTabView = ({ journeyTypeName, scrollToCallout }: JourneyCalloutsTabViewProps) => {
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
 
   if (!hubNameId) {
@@ -64,7 +64,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
     handleCreateCalloutClosed,
     handleCreateCallout,
     isCreating,
-  } = useCalloutCreation();
+  } = useCalloutCreationWithPreviewImages();
 
   const { hubId } = useHub();
 
@@ -95,7 +95,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
 
   return (
     <>
-      <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${entityTypeName}` as const)}>
+      <MembershipBackdrop show={!loading && !callouts} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
           <PageContentColumn columns={4}>
             <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
@@ -119,7 +119,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
                 })}
                 emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
                   entities: t('common.callouts'),
-                  parentEntity: t(`common.${entityTypeName}` as const),
+                  parentEntity: t(`common.${journeyTypeName}` as const),
                 })}
                 loading={loading}
               />
@@ -132,7 +132,7 @@ const JourneyCalloutsTabView = ({ entityTypeName, scrollToCallout }: JourneyCall
               hubId={hubNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}
-              entityTypeName="hub"
+              journeyTypeName={journeyTypeName}
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}

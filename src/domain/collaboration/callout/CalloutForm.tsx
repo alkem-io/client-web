@@ -26,6 +26,10 @@ import { CalloutsGroup } from './CalloutsInContext/CalloutsGroup';
 import { FormikSelectValue } from '../../../common/components/composite/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
 import { Caption } from '../../../core/ui/typography';
+import CalloutWhiteboardField, {
+  WhiteboardFieldSubmittedValues,
+  WhiteboardFieldSubmittedValuesWithPreviewImages,
+} from './creation-dialog/CalloutWhiteboardField/CalloutWhiteboardField';
 
 type FormValueType = {
   displayName: string;
@@ -37,6 +41,7 @@ type FormValueType = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -52,6 +57,7 @@ export type CalloutFormInput = {
   group?: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValues;
   profileId?: string;
 };
 
@@ -65,6 +71,7 @@ export type CalloutFormOutput = {
   group: string;
   postTemplateData?: PostTemplateFormSubmittedValues;
   whiteboardTemplateData?: WhiteboardTemplateFormSubmittedValues;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
 };
 
 export interface CalloutFormProps {
@@ -98,7 +105,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
         tags: callout?.tags ?? [],
       },
     ],
-    [callout?.tags]
+    [callout?.id]
   );
 
   const initialValues: FormValueType = useMemo(
@@ -123,6 +130,18 @@ const CalloutForm: FC<CalloutFormProps> = ({
         },
         value: JSON.stringify(EmptyWhiteboard),
       },
+      whiteboard: callout?.whiteboard
+        ? {
+            ...callout.whiteboard,
+            previewImages: undefined,
+          }
+        : {
+            profileData: {
+              displayName: t('components.callout-creation.whiteboard.title'),
+            },
+            value: JSON.stringify(EmptyWhiteboard),
+            previewImages: undefined,
+          },
     }),
     [callout?.id, tagsets]
   );
@@ -147,7 +166,6 @@ const CalloutForm: FC<CalloutFormProps> = ({
       is: CalloutType.Card,
       then: yup.object().shape({
         defaultDescription: yup.string().required(t('common.field-required')),
-        //type: yup.string().required(t('common.field-required')),
       }),
     }),
     whiteboardTemplateData: yup.object().when('type', {
@@ -157,6 +175,13 @@ const CalloutForm: FC<CalloutFormProps> = ({
           displayName: yup.string(),
         }),
         value: yup.string().required(),
+      }),
+    }),
+    whiteboard: yup.object().when('type', {
+      is: CalloutType.SingleWhiteboard,
+      then: yup.object().shape({
+        value: yup.string().required(),
+        previewImages: editMode ? yup.array() : yup.array().of(yup.object()).required(),
       }),
     }),
   });
@@ -172,6 +197,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       group: values.group,
       postTemplateData: values.postTemplateData,
       whiteboardTemplateData: values.whiteboardTemplateData,
+      whiteboard: values.whiteboard,
     };
     onChange?.(callout);
   };
@@ -193,8 +219,9 @@ const CalloutForm: FC<CalloutFormProps> = ({
     tags: true,
     postTemplate: calloutType === CalloutType.Card,
     whiteboardTemplate: calloutType === CalloutType.Canvas,
-    newResponses: calloutType !== CalloutType.LinkCollection,
+    newResponses: calloutType !== CalloutType.LinkCollection && calloutType !== CalloutType.SingleWhiteboard,
     groupChange: editMode && Boolean(canChangeCalloutGroup),
+    whiteboard: calloutType === CalloutType.SingleWhiteboard,
   };
 
   return (
@@ -210,6 +237,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
           <Gutters>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
+            {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
             <FormikMarkdownField
               name="description"
               title={t('components.callout-creation.info-step.description')}

@@ -1,20 +1,19 @@
-interface BannerCardParams {
-  maxWidth: number;
-  maxHeight: number;
-  minWidth: number;
-  minHeight: number;
-  minScale?: number;
-}
+import { PreviewImageDimensions } from './WhiteboardPreviewImages';
 
-interface Dimensions {
+interface ExcalidrawDimensions {
   width: number;
   height: number;
   scale?: number;
 }
-
-const getCanvasBannerCardDimensions =
-  (params: BannerCardParams | undefined) =>
-  (contentWidth: number, contentHeight: number): Dimensions => {
+/**
+ *
+ * @param params The Alkemio Visual expected dimensions
+ * @returns Returns a function that will be called by Excalidraw API when
+ * exporting a Canvas to an image
+ */
+const getWhiteboardPreviewDimensions =
+  (params: PreviewImageDimensions | undefined) =>
+  (contentWidth: number, contentHeight: number): ExcalidrawDimensions => {
     if (!params) {
       return {
         width: contentWidth,
@@ -52,4 +51,4 @@ const getCanvasBannerCardDimensions =
     };
   };
 
-export default getCanvasBannerCardDimensions;
+export default getWhiteboardPreviewDimensions;

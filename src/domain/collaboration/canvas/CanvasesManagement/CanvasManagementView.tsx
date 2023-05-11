@@ -13,12 +13,11 @@ import {
   CreateCanvasWhiteboardTemplateFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ViewProps } from '../../../../core/container/view';
-import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { useCanvasLockedByDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import UrlParams from '../../../../core/routing/urlParams';
-import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import { JourneyTypeName } from '../../../challenge/JourneyTypeName';
+import { BlockTitle } from '../../../../core/ui/typography/components';
 
 export interface ActiveCanvasIdHolder {
   canvasNameId?: string;
@@ -26,7 +25,7 @@ export interface ActiveCanvasIdHolder {
 
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   calloutId: string;
-  contextSource: 'hub' | 'challenge' | 'opportunity';
+  contextSource: JourneyTypeName;
   canvas: CanvasDetailsFragment | undefined;
   templates: CreateCanvasWhiteboardTemplateFragment[];
   templateListHeader?: string;
@@ -46,13 +45,14 @@ export interface ContextViewState {
 
 export interface CanvasManagementViewOptions {
   canUpdate?: boolean;
+  canUpdateDisplayName?: boolean;
   canCreate?: boolean;
   canDelete?: boolean;
+  shareUrl?: string;
 }
 
 export interface CanvasNavigationMethods {
   backToCanvases: () => void;
-  buildLinkToCanvas: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
 interface CanvasBeingDeleted {
@@ -69,16 +69,6 @@ export interface CanvasManagementViewProps
       CanvasManagementViewOptions
     >,
     CanvasNavigationMethods {}
-
-const getCanvasShareUrl = (urlParams: UrlParams) => {
-  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.whiteboardNameId) return;
-
-  return buildCanvasUrl(urlParams.calloutNameId, urlParams.whiteboardNameId, {
-    hubNameId: urlParams.hubNameId,
-    challengeNameId: urlParams.challengeNameId,
-    opportunityNameId: urlParams.opportunityNameId,
-  });
-};
 
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options, backToCanvases }) => {
   const { canvasNameId, calloutId, canvas } = entities;
@@ -97,7 +87,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   });
 
   const urlParams = useUrlParams();
-  const canvasUrl = getCanvasShareUrl(urlParams);
 
   const handleCancel = (canvas: CanvasDetailsFragment) => {
     backToCanvases();
@@ -132,7 +121,14 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               canEdit: isCanvasCheckedOutByMe && options.canUpdate,
               canDelete: isCanvasAvailable && options.canDelete,
               checkedOutByMe: isCanvasCheckedOutByMe,
-              headerActions: <ShareButton url={canvasUrl} entityTypeName="canvas" disabled={!canvasUrl} />,
+              fixedDialogTitle: options.canUpdateDisplayName ? undefined : (
+                <BlockTitle display="flex" alignItems="center">
+                  {canvas?.profile.displayName}
+                </BlockTitle>
+              ),
+              headerActions: (
+                <ShareButton url={options.shareUrl} entityTypeName="canvas" disabled={!options.shareUrl} />
+              ),
             }}
             state={state}
           />

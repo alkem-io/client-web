@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.37.0",
+  "version": "0.37.2",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -30,7 +30,7 @@
     "@elastic/apm-rum-react": "^1.4.2",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
-    "@mui/icons-material": "^5.2.0",
+    "@mui/icons-material": "^5.11.16",
     "@mui/lab": "^5.0.0-alpha.56",
     "@mui/material": "^5.2.0",
     "@mui/styles": "^5.2.0",

@@ -14,7 +14,7 @@ import { useUrlParams } from '../../../core/routing/useUrlParams';
 import useCallouts, { TypedCallout } from '../callout/useCallouts/useCallouts';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '../../../core/ui/typography/EllipsableWithCount';
-import { useCalloutCreation } from '../callout/creation-dialog/useCalloutCreation/useCalloutCreation';
+import { useCalloutCreationWithPreviewImages } from '../callout/creation-dialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { useHub } from '../../challenge/hub/HubContext/useHub';
 import {
   useCalloutFormTemplatesFromHubLazyQuery,
@@ -66,7 +66,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
     handleCreateCalloutClosed,
     handleCreateCallout,
     isCreating,
-  } = useCalloutCreation();
+  } = useCalloutCreationWithPreviewImages();
 
   const { hubId } = useHub();
 
@@ -137,7 +137,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
               hubId={hubNameId!}
               canCreateCallout={canCreateCallout}
               loading={loading}
-              entityTypeName="hub"
+              journeyTypeName="hub"
               sortOrder={calloutsSortOrder}
               calloutNames={calloutNames}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}

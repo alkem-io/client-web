@@ -113,7 +113,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 hubId={hubNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
-                entityTypeName="hub"
+                journeyTypeName="hub"
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
@@ -127,7 +127,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = () => {
                 hubId={hubNameId}
                 canCreateCallout={canCreateCallout}
                 loading={loading}
-                entityTypeName="hub"
+                journeyTypeName="hub"
                 sortOrder={calloutsSortOrder}
                 calloutNames={calloutNames}
                 onSortOrderUpdate={onCalloutsSortOrderUpdate}
