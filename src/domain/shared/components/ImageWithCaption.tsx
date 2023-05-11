@@ -4,12 +4,12 @@ import Image from './Image';
 import { gutters } from '../../../core/ui/grid/utils';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import { Caption } from '../../../core/ui/typography';
-import { SvgWrapper } from '../../../core/ui/card/CardImage';
+import { ImageWrapper } from './ImageWrapper';
 
 interface ImageWithCaptionProps extends BoxProps<'img'> {
   caption: ReactNode | string;
   captionPosition?: 'top' | 'bottom';
-  defaultImageSvg?: JSX.Element;
+  defaultImage?: ReactNode;
 }
 
 const Container = styled(Box)(({ theme }) => ({
@@ -36,12 +36,12 @@ const ImageWithCaption: FC<ImageWithCaptionProps> = ({
   caption,
   captionPosition = 'bottom',
   onClick,
-  defaultImageSvg,
+  defaultImage: defaultImageSvg,
   ...imgProps
 }) => {
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
-      {!imgProps.src && defaultImageSvg && <SvgWrapper>{defaultImageSvg}</SvgWrapper>}
+      {!imgProps.src && defaultImageSvg && <ImageWrapper>{defaultImageSvg}</ImageWrapper>}
       {imgProps.src && <Image sx={{ minHeight: '100%' }} {...imgProps} />}
       <CaptionContainer
         sx={{

@@ -62,7 +62,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
             caption={t('callout.singleWhiteboard.clickToSee')}
             src={firstCanvas.profile.preview?.uri}
             alt={callout.profile.displayName}
-            defaultImageSvg={<CanvasIcon />}
+            defaultImage={<CanvasIcon />}
             onClick={() => setIsWhiteboardDialogOpen(true)}
           />
           {isWhiteboardDialogOpen && (
