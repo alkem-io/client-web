@@ -22,7 +22,7 @@ export interface InnovationPackCardProps {
   providerDisplayName: string | undefined;
   onClick?: () => void;
   whiteboardTemplatesCount?: ReactNode;
-  cardTemplatesCount: ReactNode;
+  postTemplatesCount: ReactNode;
   innovationFlowTemplatesCount: ReactNode;
 }
 
@@ -33,7 +33,7 @@ const InnovationPackCard = ({
   providerDisplayName,
   providerAvatarUri,
   whiteboardTemplatesCount,
-  cardTemplatesCount,
+  postTemplatesCount,
   innovationFlowTemplatesCount,
   ...props
 }: InnovationPackCardProps) => {
@@ -47,7 +47,7 @@ const InnovationPackCard = ({
       <CardFooter flexDirection="column" alignItems="stretch" height="auto">
         <Box display="flex" gap={gutters()} height={gutters(2)} alignItems="center" justifyContent="end">
           <CardFooterCountWithBadge iconComponent={CanvasIcon}>{whiteboardTemplatesCount}</CardFooterCountWithBadge>
-          <CardFooterCountWithBadge iconComponent={AspectIcon}>{cardTemplatesCount}</CardFooterCountWithBadge>
+          <CardFooterCountWithBadge iconComponent={AspectIcon}>{postTemplatesCount}</CardFooterCountWithBadge>
           <CardFooterCountWithBadge
             icon={
               // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
