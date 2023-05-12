@@ -6,7 +6,7 @@ cache:
     - node_modules
 before_install:
   - npm i -g npm@8.5.5
-  - export NODE_OPTIONS=–max_old_space_size=4096
+  - export NODE_OPTIONS=–max_old_space_size=8192
 install:
   - npm install
 script:
