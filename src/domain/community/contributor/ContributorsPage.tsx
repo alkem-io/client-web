@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorsSearchContainer from './ContributorsSearch/ContributorsSearchContainer';
@@ -8,9 +7,10 @@ import { debounce } from 'lodash';
 import { useUserContext } from './user';
 import { useUpdateNavigation } from '../../../core/routing/useNavigation';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
-import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import TopLevelDesktopLayout from '../../platform/ui/PageLayout/TopLevelDesktopLayout';
 import { PageTitle, Text } from '../../../core/ui/typography';
+import PageContentColumn from '../../../core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
 
 export interface ContributorsPageProps {}
 
@@ -33,21 +33,22 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
 
   return (
     <TopLevelDesktopLayout>
-      <Box paddingY={2} marginTop={2}>
-        <PageTitle>{t('pages.contributors.search.title')}</PageTitle>
-        <Text>{t('pages.contributors.search.subtitle')}</Text>
-        <SectionSpacer double />
-        <OutlinedInput
-          value={searchTerms}
-          sx={{ width: '100%' }}
-          placeholder={t('components.searchableList.placeholder')}
-          onChange={onSearchHandler}
-          endAdornment={
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          }
-        />
+      <PageContentColumn columns={12}>
+        <PageContentBlockSeamless disablePadding>
+          <PageTitle>{t('pages.contributors.search.title')}</PageTitle>
+          <Text>{t('pages.contributors.search.subtitle')}</Text>
+          <OutlinedInput
+            value={searchTerms}
+            sx={{ width: '100%' }}
+            placeholder={t('components.searchableList.placeholder')}
+            onChange={onSearchHandler}
+            endAdornment={
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>
+            }
+          />
+        </PageContentBlockSeamless>
         <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
           {({ users, organizations }) => {
             return (
@@ -59,7 +60,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
             );
           }}
         </ContributorsSearchContainer>
-      </Box>
+      </PageContentColumn>
     </TopLevelDesktopLayout>
   );
 };
