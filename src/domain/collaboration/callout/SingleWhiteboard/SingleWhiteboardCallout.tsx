@@ -86,7 +86,7 @@ const SingleWhiteboardCallout = forwardRef<HTMLDivElement, SingleWhiteboardCallo
                     opportunityNameId,
                   })}
                   readOnlyDisplayName
-                  updatePrivilege={AuthorizationPrivilege.Update}
+                  updatePrivilege={AuthorizationPrivilege.Contribute}
                   {...entities}
                   {...state}
                 />
