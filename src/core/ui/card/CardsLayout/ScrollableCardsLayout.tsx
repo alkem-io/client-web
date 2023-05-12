@@ -11,6 +11,10 @@ interface ScrollableCardsLayoutProps<Item extends Identifiable | null | undefine
   minHeight?: number;
 }
 
+/**
+ * @deprecated use ScrollableCardsLayoutContainer
+ * TODO reuse ScrollableCardsLayoutContainer within this one
+ */
 const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
   maxHeight,
   noVerticalMarginTop = false,
