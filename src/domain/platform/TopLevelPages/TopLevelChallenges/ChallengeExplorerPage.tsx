@@ -1,9 +1,9 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateNavigation } from '../../../../core/routing/useNavigation';
-import { ChallengeExplorerContainer } from '../containers/ChallengeExplorerContainer';
-import { ChallengeExplorerView } from '../views/ChallengeExplorerView';
-import TopLevelDesktopLayout from '../../../platform/ui/PageLayout/TopLevelDesktopLayout';
+import { ChallengeExplorerContainer } from './ChallengeExplorerContainer';
+import { ChallengeExplorerView } from './ChallengeExplorerView';
+import TopLevelDesktopLayout from '../../ui/PageLayout/TopLevelDesktopLayout';
 
 export interface ChallengeExplorerPageProps {}
 

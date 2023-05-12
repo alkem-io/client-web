@@ -10,7 +10,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogIcon from '../../../../core/ui/dialog/DialogIcon';
 import { ImageSearch as ImageSearchIcon } from '@mui/icons-material';
-import MultipleSelect from '../../../platform/search/MultipleSelect';
+import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import { TemplateBase, TemplateBaseWithValue, TemplateCardBaseProps, TemplatePreviewBaseProps } from './TemplateBase';
 
 export interface CollaborationTemplatesLibraryProps<

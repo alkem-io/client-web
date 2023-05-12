@@ -1,0 +1,49 @@
+query InnovationLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        ...InnovationPackCard
+      }
+    }
+  }
+}
+
+fragment InnovationPackCard on InnovationPack {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      id
+      tags
+    }
+  }
+  templates {
+    id
+    postTemplates {
+      id
+    }
+    whiteboardTemplates {
+      id
+    }
+    innovationFlowTemplates {
+      id
+    }
+  }
+  provider {
+    id
+    #nameID
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+}

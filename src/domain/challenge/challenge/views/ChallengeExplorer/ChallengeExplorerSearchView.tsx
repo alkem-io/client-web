@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
 import { HubIcon } from '../../../hub/icon/HubIcon';
-import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
+import { SimpleChallengeWithSearchTerms } from '../../../../platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerContainer';
 import { buildChallengeUrl, buildHubUrl } from '../../../../../common/utils/urlBuilders';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';

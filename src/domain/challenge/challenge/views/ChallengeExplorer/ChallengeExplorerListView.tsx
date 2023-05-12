@@ -9,7 +9,7 @@ import {
   simpleChallengeHubDataGetter,
   simpleChallengeTagsValueGetter,
   simpleChallengeValueGetter,
-} from '../../containers/ChallengeExplorerContainer';
+} from '../../../../platform/TopLevelPages/TopLevelChallenges/ChallengeExplorerContainer';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import withOptionalCount from '../../../../shared/utils/withOptionalCount';

@@ -20,7 +20,7 @@ import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import { useUserContext } from '../../community/contributor/user';
 import { SEARCH_TERMS_PARAM } from '../routes/constants';
 import { contributionFilterConfig, contributorFilterConfig, FilterConfig, FilterDefinition } from './Filter';
-import MultipleSelect, { MultipleSelectProps } from './MultipleSelect';
+import MultipleSelect, { MultipleSelectProps } from '../../../core/ui/search/MultipleSelect';
 import SearchResultSection from './SearchResultSection';
 import { useQueryParams } from '../../../core/routing/useQueryParams';
 import GridItem from '../../../core/ui/grid/GridItem';
