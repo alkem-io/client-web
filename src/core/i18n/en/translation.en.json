@@ -169,6 +169,7 @@
     "create-new-entity": "Create new {{entity}}",
     "date": "Date",
     "description": "Description",
+    "event": "Event",
     "events": "Events",
     "about": "About",
     "aboutThis": "About this {{entity}}",

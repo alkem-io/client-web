@@ -120,3 +120,8 @@ export const buildCanvasUrl = (calloutNameId: string, canvasNameId: string, jour
   const canvasUrl = `/${EntityPageSection.Collaboration}/${calloutNameId}/canvases/${canvasNameId}`;
   return `${buildJourneyUrl(journeyLocation)}${canvasUrl}`;
 };
+
+export const buildEventUrl = (eventNameId: string, journeyLocation: JourneyLocation) => {
+  const eventUrl = `/${EntityPageSection.Dashboard}/calendar/${eventNameId}`;
+  return `${buildJourneyUrl(journeyLocation)}${eventUrl}`;
+};
