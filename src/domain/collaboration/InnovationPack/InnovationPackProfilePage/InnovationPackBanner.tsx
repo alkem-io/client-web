@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
 import { DEFAULT_BANNER_URL } from '../../../shared/components/PageHeader/JourneyPageBanner';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { PageTitle, Tagline } from '../../../../core/ui/typography';
-import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
@@ -40,21 +39,29 @@ const Root = styled(Box)(({ theme }) => ({
   backgroundPosition: 'center',
 }));
 
-interface InnovationPackBannerProps {
-  displayName: string;
+export interface InnovationPackBannerProps {
+  displayName: ReactNode;
+  tagline: ReactNode;
+  providerDisplayName: string;
+  providerUri: string;
 }
 
-const InnovationPackBanner = ({ displayName }: InnovationPackBannerProps) => {
+const InnovationPackBanner = ({
+  displayName,
+  tagline,
+  providerDisplayName,
+  providerUri,
+}: InnovationPackBannerProps) => {
   return (
     <Root>
       <PageContent column disableBackground>
         <PageTitle>{displayName}</PageTitle>
-        <Tagline>Tagline</Tagline>
+        <Tagline>{tagline}</Tagline>
         <ContributorCardHorizontal
           profile={{
-            displayName: 'Org Name',
+            displayName: providerDisplayName,
           }}
-          url={buildOrganizationUrl('org.nameID')}
+          url={providerUri}
         />
       </PageContent>
     </Root>

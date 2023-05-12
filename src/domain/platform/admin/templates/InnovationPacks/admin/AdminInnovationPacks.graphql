@@ -37,6 +37,7 @@ fragment InnovationPackProfile on Profile {
     uri
   }
 }
+
 fragment InnovationPackTemplates on TemplatesSet {
   id
   postTemplates {

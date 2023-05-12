@@ -8530,6 +8530,90 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
   return { query: CalloutPageCalloutDocument, variables: variables };
 }
 
+export const InnovationPackProfilePageDocument = gql`
+  query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          nameID
+          provider {
+            id
+            nameID
+            profile {
+              id
+              displayName
+            }
+          }
+          profile {
+            ...InnovationPackProfile
+            tagline
+          }
+          templates {
+            ...InnovationPackTemplates
+          }
+        }
+      }
+    }
+  }
+  ${InnovationPackProfileFragmentDoc}
+  ${InnovationPackTemplatesFragmentDoc}
+`;
+
+/**
+ * __useInnovationPackProfilePageQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackProfilePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackProfilePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackProfilePageQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *   },
+ * });
+ */
+export function useInnovationPackProfilePageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >(InnovationPackProfilePageDocument, options);
+}
+
+export function useInnovationPackProfilePageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >(InnovationPackProfilePageDocument, options);
+}
+
+export type InnovationPackProfilePageQueryHookResult = ReturnType<typeof useInnovationPackProfilePageQuery>;
+export type InnovationPackProfilePageLazyQueryHookResult = ReturnType<typeof useInnovationPackProfilePageLazyQuery>;
+export type InnovationPackProfilePageQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackProfilePageQuery,
+  SchemaTypes.InnovationPackProfilePageQueryVariables
+>;
+export function refetchInnovationPackProfilePageQuery(variables: SchemaTypes.InnovationPackProfilePageQueryVariables) {
+  return { query: InnovationPackProfilePageDocument, variables: variables };
+}
+
 export const ActivityCreatedDocument = gql`
   subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
     activityCreated(input: $input) {

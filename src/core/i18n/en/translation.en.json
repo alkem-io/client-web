@@ -263,6 +263,9 @@
     "innovationPack": "Innovation Pack",
     "more": "More",
     "url": "URL",
+    "postTemplates": "Card Templates",
+    "whiteboardTemplates": "Whiteboard Templates",
+    "innovationTemplates": "Innovation Flow Templates",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -1302,9 +1305,6 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "aspect-templates": "Card Templates",
-            "canvas-templates": "Whiteboard Templates",
-            "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
             "import": {
               "title": "Template Library: {{templateType}}",

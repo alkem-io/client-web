@@ -38,6 +38,7 @@ query InnovationPacks {
     }
   }
 }
+
 query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
