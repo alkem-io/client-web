@@ -10,6 +10,8 @@ import { BlockTitle } from '../../../../core/ui/typography';
 import AspectDashboardView from '../../../collaboration/aspect/views/AspectDashboardView';
 import CalendarEventDetailContainer from '../CalendarEventDetailContainer';
 import EventCardHeader from './EventCardHeader';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import { buildEventUrl } from '../../../../common/utils/urlBuilders';
 
 interface CalendarEventDetailProps {
   hubNameId: string;
@@ -46,11 +48,21 @@ const CalendarEventDetail = ({
             <DialogHeader
               onClose={onClose}
               actions={
-                canEdit && (
-                  <IconButton onClick={onEdit}>
-                    <SettingsIcon />
-                  </IconButton>
-                )
+                <>
+                  {canEdit && (
+                    <IconButton onClick={onEdit}>
+                      <SettingsIcon />
+                    </IconButton>
+                  )}
+                  {event && (
+                    <ShareButton
+                      url={buildEventUrl(event.nameID, {
+                        hubNameId: hubNameId,
+                      })}
+                      entityTypeName="event"
+                    />
+                  )}
+                </>
               }
             >
               <BlockTitle>{t('common.events')}</BlockTitle>
