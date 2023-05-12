@@ -6,6 +6,10 @@ import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 // If the width of the component is bigger than 600, scroll will be vertical
 const HORIZONTAL_SCROLL_MAX_WIDTH = 600;
 
+/**
+ * @deprecated use ScrollableCardsLayoutContainer
+ * TODO reuse ScrollableCardsLayoutContainer within this one
+ */
 const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
   maxHeight,
   ...props
