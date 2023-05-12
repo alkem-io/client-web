@@ -120,11 +120,12 @@ const CalendarEventForm = ({
               <Box display="flex" gap={gutters()}>
                 <GridItem columns={4}>
                   <Box display="flex" gap={gutters()}>
-                    <FormikTimePicker name="startDate" label={t('fields.startTime')} />
+                    <FormikTimePicker name="startDate" label={t('fields.startTime')} containerProps={{ flexGrow: 1 }} />
                     <FormikDurationMinutes
                       name="durationMinutes"
                       startTimeFieldName="startDate"
                       label={t('fields.endTime')}
+                      containerProps={{ flexGrow: 1 }}
                     />
                   </Box>
                 </GridItem>
