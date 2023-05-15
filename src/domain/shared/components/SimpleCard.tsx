@@ -1,10 +1,9 @@
 import React, { ComponentType, ReactNode } from 'react';
 import withElevationOnHover from './withElevationOnHover';
 import { Box, Paper, SvgIconProps } from '@mui/material';
-import LinkNoUnderline from './LinkNoUnderline';
 import Icon, { IconProps } from '../../../core/ui/icon/Icon';
 import IconLabel from './IconLabel';
-import { LinkWithState } from '../types/LinkWithState';
+import ConditionalLink, { ConditionalLinkProps } from '../../../common/components/core/ConditionalLink';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
@@ -21,15 +20,16 @@ const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => 
   );
 };
 
-export interface SimpleCardProps extends LinkWithState {
+export interface SimpleCardProps extends ConditionalLinkProps {
   title?: ReactNode;
   imageUrl?: string;
   iconComponent?: ComponentType<SvgIconProps>;
+  onClick?: (event: React.MouseEvent) => void;
 }
 
 const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCardProps) => {
   return (
-    <LinkNoUnderline {...linkProps}>
+    <ConditionalLink {...linkProps}>
       <ElevatedPaper
         sx={{
           width: theme => theme.spacing(theme.cards.simpleCard.width),
@@ -47,7 +47,7 @@ const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCard
         ) : null}
         <IconLabel>{title}</IconLabel>
       </ElevatedPaper>
-    </LinkNoUnderline>
+    </ConditionalLink>
   );
 };
 

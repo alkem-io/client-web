@@ -2,10 +2,10 @@ import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import {
-  PostTemplateFragment,
+  PostTemplateCardFragment,
   CalloutState,
   CalloutType,
-  WhiteboardTemplateFragment,
+  WhiteboardTemplateCardFragment,
   CalloutVisibility,
   Callout,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -56,7 +56,7 @@ export interface CalloutCreationDialogProps {
   ) => Promise<void>;
   isCreating: boolean;
   calloutNames: string[];
-  templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
+  templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
   group: string;
 }
 

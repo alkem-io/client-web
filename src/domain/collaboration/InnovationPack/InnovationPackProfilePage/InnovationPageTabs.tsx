@@ -6,7 +6,11 @@ import { buildInnovationPackSettingsUrl, buildInnovationPackUrl } from '../urlBu
 import InnovationPackIcon from '../InnovationPackIcon';
 import { EntityTabsProps } from '../../../challenge/common/EntityPageLayout';
 
-const InnovationPageTabs = (props: EntityTabsProps) => {
+export interface InnovationPageTabsProps extends EntityTabsProps {
+  showSettings: boolean;
+}
+
+const InnovationPageTabs = ({ showSettings, ...props }: InnovationPageTabsProps) => {
   const { innovationPackNameId } = useUrlParams();
 
   if (!innovationPackNameId) {
@@ -22,7 +26,7 @@ const InnovationPageTabs = (props: EntityTabsProps) => {
   );
 
   return (
-    <ProfileTabs showSettings={true && true} profileIconComponent={InnovationPackIcon} routes={routes} {...props} />
+    <ProfileTabs showSettings={showSettings} profileIconComponent={InnovationPackIcon} routes={routes} {...props} />
   );
 };
 

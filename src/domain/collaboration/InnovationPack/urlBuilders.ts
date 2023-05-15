@@ -1,6 +1,7 @@
-const rootPath = '/innovation-pack';
+export const innovationPacksPath = '/innovation-packs';
 
-export const buildInnovationPackUrl = (innovationPackNameId: string) => `${rootPath}/${innovationPackNameId}`;
+export const buildInnovationPackUrl = (innovationPackNameId: string) =>
+  `${innovationPacksPath}/${innovationPackNameId}`;
 
 export const buildInnovationPackSettingsUrl = (innovationPackNameId: string) =>
-  `${buildInnovationPackUrl(innovationPackNameId)}/settings`;
+  `/admin/innovation-packs/${innovationPackNameId}`;

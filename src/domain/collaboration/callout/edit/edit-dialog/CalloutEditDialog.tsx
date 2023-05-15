@@ -11,8 +11,8 @@ import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import {
   CalloutType,
-  PostTemplateFragment,
-  WhiteboardTemplateFragment,
+  PostTemplateCardFragment,
+  WhiteboardTemplateCardFragment,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useHubTemplatesWhiteboardTemplateWithValueLazyQuery,
@@ -31,7 +31,7 @@ export interface CalloutEditDialogProps {
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutGroup?: boolean;
   calloutNames: string[];
-  templates: { postTemplates: PostTemplateFragment[]; whiteboardTemplates: WhiteboardTemplateFragment[] };
+  templates: { postTemplates: PostTemplateCardFragment[]; whiteboardTemplates: WhiteboardTemplateCardFragment[] };
 }
 
 const CalloutEditDialog: FC<CalloutEditDialogProps> = ({

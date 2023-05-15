@@ -6,20 +6,28 @@ query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
       innovationPack(ID: $innovationPackId) {
         id
         nameID
-        provider {
+        authorization {
           id
-          nameID
-          profile {
-            id
-            displayName
-          }
+          myPrivileges
+        }
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
         }
         profile {
           ...InnovationPackProfile
           tagline
         }
         templates {
-          ...InnovationPackTemplates
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
+          postTemplates {
+            ...PostTemplateCard
+          }
+          innovationFlowTemplates {
+            ...AdminInnovationFlowTemplate
+          }
         }
       }
     }

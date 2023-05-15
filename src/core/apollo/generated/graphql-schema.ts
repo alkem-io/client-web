@@ -8313,43 +8313,6 @@ export type HubTemplatesFragment = {
     | undefined;
 };
 
-export type PostTemplateFragment = {
-  __typename?: 'PostTemplate';
-  id: string;
-  defaultDescription: string;
-  type: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-};
-
-export type ProfileInfoFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  description?: string | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-};
-
-export type WhiteboardTemplateFragment = {
-  __typename?: 'WhiteboardTemplate';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-  };
-};
-
 export type WhiteboardTemplateWithValueFragment = {
   __typename?: 'WhiteboardTemplate';
   value: string;
@@ -11003,12 +10966,20 @@ export type InnovationPackProfilePageQuery = {
             __typename?: 'InnovationPack';
             id: string;
             nameID: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             provider?:
               | {
                   __typename?: 'Organization';
                   id: string;
                   nameID: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  };
                 }
               | undefined;
             profile: {
@@ -11032,6 +11003,18 @@ export type InnovationPackProfilePageQuery = {
               | {
                   __typename?: 'TemplatesSet';
                   id: string;
+                  whiteboardTemplates: Array<{
+                    __typename?: 'WhiteboardTemplate';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    };
+                  }>;
                   postTemplates: Array<{
                     __typename?: 'PostTemplate';
                     id: string;
@@ -11043,21 +11026,7 @@ export type InnovationPackProfilePageQuery = {
                       displayName: string;
                       description?: string | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     };
                   }>;
                   innovationFlowTemplates: Array<{
@@ -11065,32 +11034,6 @@ export type InnovationPackProfilePageQuery = {
                     id: string;
                     definition: string;
                     type: InnovationFlowType;
-                    profile: {
-                      __typename?: 'Profile';
-                      id: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
-                    };
-                  }>;
-                  whiteboardTemplates: Array<{
-                    __typename?: 'WhiteboardTemplate';
-                    id: string;
                     profile: {
                       __typename?: 'Profile';
                       id: string;
@@ -12222,6 +12165,21 @@ export type ActivityLogUpdateSentFragment = {
   updates: { __typename?: 'Updates'; id: string };
 };
 
+export type PostTemplateCardFragment = {
+  __typename?: 'PostTemplate';
+  id: string;
+  defaultDescription: string;
+  type: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
 export type HubPostTemplatesLibraryQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -12281,6 +12239,7 @@ export type PlatformPostTemplatesLibraryQuery = {
         __typename?: 'InnovationPack';
         id: string;
         nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
         provider?:
           | {
               __typename?: 'Organization';
@@ -15690,6 +15649,19 @@ export type CalloutWhiteboardTemplateFragment = {
     | undefined;
 };
 
+export type WhiteboardTemplateCardFragment = {
+  __typename?: 'WhiteboardTemplate';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
 export type HubWhiteboardTemplatesLibraryQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -15781,6 +15753,7 @@ export type PlatformWhiteboardTemplatesLibraryQuery = {
         __typename?: 'InnovationPack';
         id: string;
         nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
         provider?:
           | {
               __typename?: 'Organization';
@@ -15855,6 +15828,7 @@ export type PlatformWhiteboardTemplateValueQuery = {
                     | undefined;
                 }
               | undefined;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
             provider?:
               | {
                   __typename?: 'Organization';
@@ -15871,31 +15845,6 @@ export type PlatformWhiteboardTemplateValueQuery = {
         | undefined;
     };
   };
-};
-
-export type InnovationPackWithProviderFragment = {
-  __typename?: 'InnovationPack';
-  id: string;
-  nameID: string;
-  provider?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-      }
-    | undefined;
-};
-
-export type TemplateProviderProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  displayName: string;
-  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
 export type CanvasProfileFragment = {
@@ -17508,6 +17457,41 @@ export type CalloutAspectCreatedSubscription = {
       };
     };
   };
+};
+
+export type InnovationPackWithProviderFragment = {
+  __typename?: 'InnovationPack';
+  id: string;
+  nameID: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  provider?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type TemplateProviderProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type TemplateCardProfileInfoFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  description?: string | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
 };
 
 export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
@@ -21536,6 +21520,7 @@ export type InnovationLibraryQuery = {
           | {
               __typename?: 'Organization';
               id: string;
+              nameID: string;
               profile: {
                 __typename?: 'Profile';
                 id: string;
@@ -21573,6 +21558,7 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'Organization';
         id: string;
+        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -22556,6 +22542,18 @@ export type InnovationPacksQuery = {
   };
 };
 
+export type InnovationPackProviderProfileWithAvatarFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
 export type InnovationPackWhiteboardTemplateWithValueQueryVariables = Exact<{
   innovationPackId: Scalars['UUID_NAMEID'];
   whiteboardTemplateId: Scalars['UUID'];
@@ -22668,7 +22666,7 @@ export type InnovationPackProfileFragment = {
     | undefined;
 };
 
-export type InnovationPackTemplatesFragment = {
+export type AdminInnovationPackTemplatesFragment = {
   __typename?: 'TemplatesSet';
   id: string;
   postTemplates: Array<{

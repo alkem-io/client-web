@@ -7,7 +7,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../../common/components/composite/entities/Canvas/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../../../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithValue } from '../../../canvas/WhiteboardTemplatesLibrary/WhiteboardTemplate';
+import { WhiteboardTemplateWithValue } from '../../../canvas/WhiteboardTemplateCard/WhiteboardTemplate';
 import { WhiteboardTemplateFormSubmittedValues } from '../../../../platform/admin/templates/WhiteboardTemplates/WhiteboardTemplateForm';
 import { gutters } from '../../../../../core/ui/grid/utils';
 

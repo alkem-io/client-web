@@ -1,0 +1,6 @@
+fragment WhiteboardTemplateCard on WhiteboardTemplate {
+  id
+  profile {
+    ...TemplateCardProfileInfo
+  }
+}

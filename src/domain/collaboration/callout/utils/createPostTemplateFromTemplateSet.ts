@@ -1,9 +1,9 @@
-import { PostTemplateFragment, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { PostTemplateCardFragment, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import { PostTemplateFormSubmittedValues } from '../../../platform/admin/templates/PostTemplates/PostTemplateForm';
 
 export const createPostTemplateFromTemplateSet = <C extends { type?: CalloutType; postTemplateType?: string }>(
   callout: C,
-  cardTemplates: PostTemplateFragment[]
+  cardTemplates: PostTemplateCardFragment[]
 ): PostTemplateFormSubmittedValues | undefined => {
   let calloutPostTemplate: PostTemplateFormSubmittedValues | undefined;
   if (callout.type === CalloutType.Card) {

@@ -30,6 +30,7 @@ import { ROUTE_HOME } from '../../domain/platform/routes/constants';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 import InnovationLibraryPage from '../../domain/platform/TopLevelPages/InnovationLibraryPage/InnovationLibraryPage';
 import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
+import { innovationPacksPath } from '../../domain/collaboration/InnovationPack/urlBuilders';
 
 export const TopLevelRoutes: FC = () => {
   const { t } = useTranslation();
@@ -110,9 +111,9 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="/innovation-pack/*"
+          path={`${innovationPacksPath}/*`}
           element={
-            <WithApmTransaction path="/innovation-pack">
+            <WithApmTransaction path={innovationPacksPath}>
               <InnovationPackRoute />
             </WithApmTransaction>
           }

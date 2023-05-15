@@ -1,19 +1,24 @@
-import React, { PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import { EntityPageLayout, EntityPageLayoutProps } from '../../../challenge/common/EntityPageLayout';
-import InnovationPageTabs from './InnovationPageTabs';
+import InnovationPageTabs, { InnovationPageTabsProps } from './InnovationPageTabs';
 import InnovationPackBanner, { InnovationPackBannerProps } from './InnovationPackBanner';
 
 interface InnovationPackProfileLayoutProps
   extends InnovationPackBannerProps,
-    Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {}
+    Omit<EntityPageLayoutProps, 'pageBannerComponent' | 'tabsComponent' | 'entityTypeName'> {
+  showSettings: boolean;
+}
 
 const InnovationPackProfileLayout = ({
   displayName,
   tagline,
   providerDisplayName,
   providerUri,
+  showSettings,
   ...props
 }: PropsWithChildren<InnovationPackProfileLayoutProps>) => {
+  const Tabs = InnovationPageTabs as ComponentType<Partial<InnovationPageTabsProps>>;
+
   return (
     <EntityPageLayout
       {...props}
@@ -25,7 +30,7 @@ const InnovationPackProfileLayout = ({
           providerUri={providerUri}
         />
       }
-      tabsComponent={InnovationPageTabs}
+      tabs={<Tabs showSettings={showSettings} />}
       entityTypeName="innovationPack"
     />
   );
