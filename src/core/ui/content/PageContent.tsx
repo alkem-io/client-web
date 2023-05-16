@@ -6,9 +6,10 @@ import GridContainer, { GridContainerProps } from '../grid/GridContainer';
 
 interface PageContentProps extends BoxProps {
   gridContainerProps?: GridContainerProps;
+  transparent?: boolean;
 }
 
-const PageContent = ({ children, sx, gridContainerProps, ...props }: PageContentProps) => {
+const PageContent = ({ children, sx, gridContainerProps, transparent, ...props }: PageContentProps) => {
   const breakpoint = useCurrentBreakpoint();
 
   const theme = useTheme();
@@ -18,7 +19,11 @@ const PageContent = ({ children, sx, gridContainerProps, ...props }: PageContent
   const paddingBottom = isMobile ? 6 : 0;
 
   return (
-    <Box flexGrow={1} sx={{ backgroundColor: 'background.default', paddingBottom, ...sx }} {...props}>
+    <Box
+      flexGrow={1}
+      sx={{ backgroundColor: transparent ? undefined : 'background.default', paddingBottom, ...sx }}
+      {...props}
+    >
       <GridContainer maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX} marginX="auto" {...gridContainerProps}>
         <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP}>
           {children}

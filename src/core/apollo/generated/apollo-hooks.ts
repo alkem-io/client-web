@@ -2046,6 +2046,7 @@ export const OrganizationInfoFragmentDoc = gql`
       id
       displayName
       description
+      tagline
       visual(type: AVATAR) {
         ...VisualUri
         alternativeText
@@ -2142,6 +2143,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         ...VisualFull
       }
       description
+      tagline
       location {
         country
         city
@@ -2256,6 +2258,7 @@ export const UserDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      tagline
       location {
         country
         city

@@ -16,6 +16,7 @@ fragment OrganizationProfileInfo on Organization {
       ...VisualFull
     }
     description
+    tagline
     location {
       country
       city

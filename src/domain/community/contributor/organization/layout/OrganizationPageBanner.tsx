@@ -11,7 +11,7 @@ const OrganizationPageBanner: FC = () => {
       {({ organization, permissions, socialLinks, handleSendMessage }, { loading }) => (
         <ProfileBanner
           title={organization?.profile.displayName}
-          tagline={organization?.profile.description}
+          tagline={organization?.profile.tagline}
           location={organization?.profile.location}
           socialLinks={socialLinks}
           avatarUrl={organization?.profile.visual?.uri}

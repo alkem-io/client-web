@@ -977,6 +977,10 @@
         "name": "Avatar",
         "placeholder": "Enter an avatar URL..."
       },
+      "tagline": {
+        "name": "Tagline",
+        "placeholder": "Enter a tagline"
+      },
       "description": {
         "name": "Description",
         "placeholder": "Enter a description"
@@ -1078,6 +1082,9 @@
         },
         "description": {
           "title": "Description"
+        },
+        "tagline": {
+          "title": "Tagline"
         },
         "phone": {
           "title": "Phone"
