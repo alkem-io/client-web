@@ -168,7 +168,6 @@ const AspectCallout = forwardRef<HTMLDivElement, AspectCalloutProps>(
               deps={[hubNameId, challengeNameId, opportunityNameId]}
               createButton={!isMobile && createButton}
               maxHeight={gutters(22)}
-              cards={false}
             >
               {aspect => <AspectCard aspect={aspect} onClick={navigateToAspect} />}
             </ScrollableCardsLayout>
