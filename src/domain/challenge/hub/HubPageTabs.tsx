@@ -5,7 +5,6 @@ import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNaviga
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import { EntityTypeName } from '../../platform/constants/EntityTypeName';
 import HeaderNavigationButton from '../../shared/components/PageHeader/HeaderNavigationButton';
-import { ShareDialog } from '../../shared/components/ShareDialog/ShareDialog';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -32,6 +31,7 @@ import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../../shared/utils/getEntityColor';
 import { FloatingActionButtons } from '../../../common/components/core';
 import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
+import useShare from '../../../core/utils/Share';
 
 interface TabDefinition {
   label: ReactNode;
@@ -66,11 +66,6 @@ enum NavigationActions {
   More = 'more',
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/API/Navigator/canShare
-interface ShareCapableNavigator extends Navigator {
-  canShare(data?: ShareData | undefined): boolean;
-}
-
 const HubPageTabs: FC<EntityPageTabsProps> = ({
   currentTab,
   showSettings,
@@ -83,16 +78,8 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
   actions,
 }) => {
   const { t } = useTranslation();
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
-  const share = async () => {
-    const shareNavigator = navigator as ShareCapableNavigator;
-    if (shareNavigator.canShare?.({ url: shareUrl })) {
-      await shareNavigator.share({ url: shareUrl });
-    } else {
-      setShareDialogOpen(true);
-    }
-  };
+  const { share, shareDialog } = useShare({ url: shareUrl, entityTypeName });
 
   const navigate = useNavigate();
 
@@ -102,15 +89,6 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
   const navigationForegroundColor =
     /*
     entityTypeName === 'opportunity' ? theme.palette.hub.main : */ theme.palette.common.white;
-
-  const shareDialog = shareUrl && (
-    <ShareDialog
-      open={shareDialogOpen}
-      onClose={() => setShareDialogOpen(false)}
-      url={shareUrl}
-      entityTypeName={entityTypeName}
-    />
-  );
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -214,7 +192,7 @@ const HubPageTabs: FC<EntityPageTabsProps> = ({
                 <ListItemButton
                   onClick={() => {
                     setIsDrawerOpen(false);
-                    setShareDialogOpen(true);
+                    share();
                   }}
                 >
                   <ListItemIcon>

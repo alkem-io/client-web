@@ -26,7 +26,14 @@ const InnovationPageTabs = ({ showSettings, ...props }: InnovationPageTabsProps)
   );
 
   return (
-    <ProfileTabs showSettings={showSettings} profileIconComponent={InnovationPackIcon} routes={routes} {...props} />
+    <ProfileTabs
+      showSettings={showSettings}
+      profileIconComponent={InnovationPackIcon}
+      routes={routes}
+      entityTypeName="innovationPack"
+      shareUrl={buildInnovationPackUrl(innovationPackNameId)}
+      {...props}
+    />
   );
 };
 

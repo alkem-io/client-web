@@ -117,7 +117,7 @@ const UserSegment = <El extends ElementType>({
                 <ListItemButton
                   onClick={() => {
                     setDropdownOpen(false);
-                    navigate('/admin', { replace: true });
+                    navigate('/admin');
                   }}
                 >
                   <ListItemIcon>

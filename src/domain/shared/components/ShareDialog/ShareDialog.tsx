@@ -8,7 +8,7 @@ import { ShareOnAlkemioButton } from './platforms/ShareOnAlkemio';
 import { ShareOnClipboardButton } from './platforms/ShareOnClipboard';
 import { DialogContent } from '../../../../common/components/core/dialog';
 
-interface ShareDialogProps extends ShareComponentProps {
+export interface ShareDialogProps extends ShareComponentProps {
   open: boolean;
   onClose: () => void;
   entityTypeName:
