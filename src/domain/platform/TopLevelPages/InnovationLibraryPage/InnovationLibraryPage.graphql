@@ -35,15 +35,6 @@ fragment InnovationPackCard on InnovationPack {
     }
   }
   provider {
-    id
-    #nameID
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        id
-        uri
-      }
-    }
+    ...InnovationPackProviderProfileWithAvatar
   }
 }

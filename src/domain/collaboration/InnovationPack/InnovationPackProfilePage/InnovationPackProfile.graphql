@@ -1,0 +1,35 @@
+query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
+  platform {
+    id
+    library {
+      id
+      innovationPack(ID: $innovationPackId) {
+        id
+        nameID
+        authorization {
+          id
+          myPrivileges
+        }
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
+        }
+        profile {
+          ...InnovationPackProfile
+          tagline
+        }
+        templates {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplateCard
+          }
+          postTemplates {
+            ...PostTemplateCard
+          }
+          innovationFlowTemplates {
+            ...InnovationFlowTemplateCard
+          }
+        }
+      }
+    }
+  }
+}

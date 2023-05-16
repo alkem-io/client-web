@@ -1,6 +1,10 @@
 fragment InnovationPackWithProvider on InnovationPack {
   id
   nameID
+  profile {
+    id
+    displayName
+  }
   provider {
     id
     profile {
@@ -8,6 +12,7 @@ fragment InnovationPackWithProvider on InnovationPack {
     }
   }
 }
+
 fragment TemplateProviderProfile on Profile {
   id
   displayName

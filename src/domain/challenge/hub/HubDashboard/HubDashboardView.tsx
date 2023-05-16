@@ -42,7 +42,7 @@ import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import { DashboardNavigationItem } from '../HubDashboardNavigation/useHubDashboardNavigation';
@@ -185,7 +185,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
             </OverflowGradient>
             <Gutters row disablePadding>
               {leadUsers?.slice(0, 2).map(user => (
-                <HubWelcomeSectionContributor
+                <ContributorCardHorizontal
                   key={user.id}
                   profile={user.profile}
                   url={buildUserProfileUrl(user.nameID)}
@@ -194,11 +194,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
             </Gutters>
             <Gutters row disablePadding>
               {leadOrganizations?.slice(0, 2).map(org => (
-                <HubWelcomeSectionContributor
-                  key={org.id}
-                  profile={org.profile}
-                  url={buildOrganizationUrl(org.nameID)}
-                />
+                <ContributorCardHorizontal key={org.id} profile={org.profile} url={buildOrganizationUrl(org.nameID)} />
               ))}
             </Gutters>
           </PageContentBlock>

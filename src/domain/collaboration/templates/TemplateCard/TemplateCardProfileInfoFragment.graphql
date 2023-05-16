@@ -1,0 +1,13 @@
+fragment TemplateCardProfileInfo on Profile {
+  id
+  displayName
+  description
+  tagset {
+    id
+    tags
+  }
+  visual(type: CARD) {
+    id
+    uri
+  }
+}

@@ -4,7 +4,7 @@ query HubPostTemplatesLibrary($hubId: UUID_NAMEID!) {
     templates {
       id
       postTemplates {
-        ...PostTemplate
+        ...PostTemplateCard
       }
     }
     host {
@@ -25,6 +25,10 @@ query PlatformPostTemplatesLibrary {
       innovationPacks {
         id
         nameID
+        profile {
+          id
+          displayName
+        }
         provider {
           id
           profile {
@@ -34,7 +38,7 @@ query PlatformPostTemplatesLibrary {
         templates {
           id
           postTemplates {
-            ...PostTemplate
+            ...PostTemplateCard
           }
         }
       }

@@ -11,10 +11,10 @@ query CalloutFormTemplatesFromHub($hubId: UUID_NAMEID!) {
     templates {
       id
       postTemplates {
-        ...PostTemplate
+        ...PostTemplateCard
       }
       whiteboardTemplates {
-        ...WhiteboardTemplate
+        ...WhiteboardTemplateCard
       }
     }
   }
@@ -26,7 +26,7 @@ query PostTemplatesFromHub($hubId: UUID_NAMEID!) {
     templates {
       id
       postTemplates {
-        ...PostTemplate
+        ...PostTemplateCard
       }
     }
   }
@@ -38,7 +38,7 @@ query WhiteboardTemplatesFromHub($hubId: UUID_NAMEID!) {
     templates {
       id
       whiteboardTemplates {
-        ...WhiteboardTemplate
+        ...WhiteboardTemplateCard
       }
     }
   }
@@ -72,10 +72,10 @@ fragment HubTemplates on Hub {
   templates {
     id
     postTemplates {
-      ...PostTemplate
+      ...PostTemplateCard
     }
     whiteboardTemplates {
-      ...WhiteboardTemplate
+      ...WhiteboardTemplateCard
     }
     innovationFlowTemplates {
       ...InnovationFlowTemplate
@@ -83,36 +83,8 @@ fragment HubTemplates on Hub {
   }
 }
 
-fragment PostTemplate on PostTemplate {
-  id
-  defaultDescription
-  type
-  profile {
-    ...ProfileInfo
-  }
-}
-
-fragment ProfileInfo on Profile {
-  id
-  displayName
-  description
-  tagset {
-    id
-    tags
-  }
-  visual(type: CARD) {
-    id
-    uri
-  }
-}
-fragment WhiteboardTemplate on WhiteboardTemplate {
-  id
-  profile {
-    ...ProfileInfo
-  }
-}
 fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
-  ...WhiteboardTemplate
+  ...WhiteboardTemplateCard
   value
 }
 

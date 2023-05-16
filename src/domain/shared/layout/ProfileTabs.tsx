@@ -5,18 +5,27 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import getEntityColor from '../utils/getEntityColor';
 import { BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
-import { SettingsOutlined, SvgIconComponent } from '@mui/icons-material';
+import { SettingsOutlined, ShareOutlined, SvgIconComponent } from '@mui/icons-material';
 import { EntityPageSection } from './EntityPageSection';
 import HeaderNavigationTab from '../components/PageHeader/HeaderNavigationTab';
 import hexToRGBA from '../../../common/utils/hexToRGBA';
 import HeaderNavigationTabs from '../components/PageHeader/HeaderNavigationTabs';
 import { FloatingActionButtons } from '../../../common/components/core';
 import HelpButton from '../../../common/components/core/FloatingActionButtons/HelpButton/HelpButton';
+import useShare from '../../../core/utils/Share';
+import { EntityTypeName } from '../../platform/constants/EntityTypeName';
+import HeaderNavigationButton from '../components/PageHeader/HeaderNavigationButton';
 
 interface ProfileTabsProps extends EntityTabsProps {
   showSettings: boolean;
   profileIconComponent: SvgIconComponent;
   routes: Record<EntityPageSection.Profile | EntityPageSection.Settings, string>;
+  shareUrl?: string;
+  entityTypeName: EntityTypeName;
+}
+
+enum NavigationActions {
+  Share = 'share',
 }
 
 const ProfileTabs = ({
@@ -24,6 +33,7 @@ const ProfileTabs = ({
   showSettings,
   routes,
   mobile,
+  shareUrl,
   profileIconComponent: ProfileIcon,
 }: ProfileTabsProps) => {
   const { t } = useTranslation();
@@ -32,6 +42,8 @@ const ProfileTabs = ({
 
   const navigationBackgroundColor = getEntityColor(theme, 'profile');
   const navigationForegroundColor = theme.palette.common.white;
+
+  const { share, shareDialog } = useShare({ url: shareUrl, entityTypeName: 'innovationPack' });
 
   if (mobile) {
     return (
@@ -43,6 +55,10 @@ const ProfileTabs = ({
             showLabels
             value={currentTab}
             onChange={(event, nextValue) => {
+              if (nextValue === NavigationActions.Share) {
+                share();
+                return;
+              }
               navigate(routes[nextValue]);
             }}
             sx={{
@@ -60,6 +76,11 @@ const ProfileTabs = ({
               label={t('common.profile')}
               icon={<ProfileIcon />}
             />
+            <BottomNavigationAction
+              value={NavigationActions.Share}
+              label={t('buttons.share')}
+              icon={<ShareOutlined />}
+            />
             {showSettings && (
               <BottomNavigationAction
                 value={EntityPageSection.Settings}
@@ -70,24 +91,31 @@ const ProfileTabs = ({
           </BottomNavigation>
         </Paper>
         <FloatingActionButtons bottom={theme => theme.spacing(10)} floatingActions={<HelpButton />} />
+        {shareDialog}
       </>
     );
   }
 
   return (
-    <HeaderNavigationTabs
-      value={currentTab}
-      defaultTab={EntityPageSection.Profile}
-      showSettings={showSettings}
-      settingsUrl={routes[EntityPageSection.Settings]}
-    >
-      <HeaderNavigationTab
-        label={t('common.profile')}
-        value={EntityPageSection.Profile}
-        to={routes[EntityPageSection.Profile]}
-        className="singleCenteredTab"
-      />
-    </HeaderNavigationTabs>
+    <>
+      <HeaderNavigationTabs
+        value={currentTab}
+        defaultTab={EntityPageSection.Profile}
+        showSettings={showSettings}
+        settingsUrl={routes[EntityPageSection.Settings]}
+      >
+        <HeaderNavigationTab
+          label={t('common.profile')}
+          value={EntityPageSection.Profile}
+          to={routes[EntityPageSection.Profile]}
+          className="singleCenteredTab"
+        />
+        {shareUrl && (
+          <HeaderNavigationButton icon={<ShareOutlined />} value={NavigationActions.Share} onClick={share} />
+        )}
+      </HeaderNavigationTabs>
+      {shareDialog}
+    </>
   );
 };
 
