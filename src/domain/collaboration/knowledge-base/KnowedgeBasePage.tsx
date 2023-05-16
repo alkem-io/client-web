@@ -42,6 +42,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
   const {
     groupedCallouts,
     canCreateCallout,
+    canReadCallout,
     calloutNames,
     loading,
     calloutsSortOrder,
@@ -97,10 +98,7 @@ const KnowledgeBasePage = ({ journeyTypeName, scrollToCallout = false }: PropsWi
 
   return (
     <PageLayout currentSection={EntityPageSection.KnowledgeBase}>
-      <MembershipBackdrop
-        show={!loading && !groupedCallouts[CalloutsGroup.KnowledgeBase]}
-        blockName={t(`common.${journeyTypeName}` as const)}
-      >
+      <MembershipBackdrop show={!loading && !canReadCallout} blockName={t(`common.${journeyTypeName}` as const)}>
         <PageContent>
           <PageContentColumn columns={4}>
             <ContributeCreationBlock canCreate={canCreateCallout} handleCreate={handleCreate} />
