@@ -248,7 +248,7 @@ export const UserForm: FC<UserProps> = ({
                         />
                       </FormRow>
 
-                      <LocationSegment withoutHeader readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
+                      <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
                         {onVerify && (
                           <>
                             <Box marginLeft={1} />

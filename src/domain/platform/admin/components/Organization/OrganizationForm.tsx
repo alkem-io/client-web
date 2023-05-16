@@ -242,7 +242,6 @@ export const OrganizationForm: FC<Props> = ({
                           disabled={isReadOnlyMode}
                           cityFieldName="location.city"
                           countryFieldName="location.country"
-                          withoutHeader
                         />
 
                         <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
