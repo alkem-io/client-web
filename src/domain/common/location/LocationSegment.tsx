@@ -10,7 +10,7 @@ interface LocationSegmentProps {
   readonly?: boolean;
   disabled?: boolean;
   required?: boolean;
-
+  withoutHeader?: boolean;
   cityFieldName?: string;
   countryFieldName?: string;
 }
@@ -26,9 +26,11 @@ export const LocationSegment: FC<PropsWithChildren<LocationSegmentProps>> = prop
 
   return (
     <>
-      <Grid item xs={12}>
-        <Typography variant="h4">{t('components.profileSegment.location.title')}</Typography>
-      </Grid>
+      {!props.withoutHeader && (
+        <Grid item xs={12}>
+          <Typography variant="h4">{t('components.profileSegment.location.title')}</Typography>
+        </Grid>
+      )}
       <FormRow cols={cols}>
         <CountrySelect
           name={countryFieldName}
