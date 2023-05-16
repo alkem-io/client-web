@@ -19,9 +19,10 @@ interface HubWelcomeSectionContributorProps {
     tagsets?: { tags: string[] }[];
   };
   url: string;
+  onContact?: () => void;
 }
 
-const ContributorCardHorizontal = ({ url, profile }: HubWelcomeSectionContributorProps) => {
+const ContributorCardHorizontal = ({ url, profile, onContact }: HubWelcomeSectionContributorProps) => {
   const { t } = useTranslation();
 
   const tags = profile.tagsets ? profile.tagsets.flatMap(tagset => tagset.tags) : [];
@@ -38,6 +39,8 @@ const ContributorCardHorizontal = ({ url, profile }: HubWelcomeSectionContributo
               tags={tags}
               city={profile.location?.city}
               country={profile.location?.country}
+              isContactable={!!onContact}
+              onContact={onContact}
             />
           }
           componentsProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent' } } } }}
