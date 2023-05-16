@@ -95,6 +95,7 @@ interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutsGroup, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
+  canReadCallout: boolean;
   calloutNames: string[];
   loading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
@@ -158,6 +159,8 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
 
   const canCreateCallout =
     collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout) ?? false;
+
+  const canReadCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
   const callouts = useMemo(
     () =>
@@ -231,6 +234,7 @@ const useCallouts = (params: UseCalloutsParams): UseCalloutsProvided => {
     callouts,
     groupedCallouts,
     canCreateCallout,
+    canReadCallout,
     calloutNames,
     loading: calloutsLoading,
     refetchCallouts,
