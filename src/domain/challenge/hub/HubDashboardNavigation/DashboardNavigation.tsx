@@ -50,7 +50,7 @@ const DashboardNavigationItemView = ({
   journeyTypeName,
   children,
   private: isPrivate = false,
-  tooltipPlacement = 'right',
+  tooltipPlacement,
 }: PropsWithChildren<DashboardNavigationItemViewProps>) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
