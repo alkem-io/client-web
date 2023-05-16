@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 import { Dialog, DialogActions, Box, Alert } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -18,9 +18,10 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 
 const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
+
 export interface MessageReceiverChipData {
   id?: string;
-  title?: string;
+  displayName?: string;
   city?: string;
   country?: string;
   avatarUri?: string;
@@ -31,7 +32,7 @@ interface MessageUserDialogProps {
   onClose: () => void;
   onSendMessage: (text: string) => Promise<void>;
   messageReceivers?: MessageReceiverChipData[];
-  title?: string;
+  title?: ReactNode;
 }
 
 interface SendMessageData {
@@ -91,7 +92,7 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
                     {messageReceivers?.map((receiver, index) => (
                       <ProfileChip
                         key={receiver.id ?? index}
-                        displayName={receiver.title}
+                        displayName={receiver.displayName}
                         avatarUrl={receiver.avatarUri}
                         city={receiver.city}
                         country={receiver.country}
