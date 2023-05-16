@@ -55,6 +55,10 @@ const ProfileTabs = ({
             showLabels
             value={currentTab}
             onChange={(event, nextValue) => {
+              if (nextValue === NavigationActions.Share) {
+                share();
+                return;
+              }
               navigate(routes[nextValue]);
             }}
             sx={{
@@ -87,6 +91,7 @@ const ProfileTabs = ({
           </BottomNavigation>
         </Paper>
         <FloatingActionButtons bottom={theme => theme.spacing(10)} floatingActions={<HelpButton />} />
+        {shareDialog}
       </>
     );
   }
