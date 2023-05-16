@@ -11040,21 +11040,7 @@ export type InnovationPackProfilePageQuery = {
                       displayName: string;
                       description?: string | undefined;
                       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                      visual?:
-                        | {
-                            __typename?: 'Visual';
-                            id: string;
-                            uri: string;
-                            name: string;
-                            allowedTypes: Array<string>;
-                            aspectRatio: number;
-                            maxHeight: number;
-                            maxWidth: number;
-                            minHeight: number;
-                            minWidth: number;
-                            alternativeText?: string | undefined;
-                          }
-                        | undefined;
+                      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                     };
                   }>;
                 }
@@ -17483,6 +17469,21 @@ export type TemplateProviderProfileFragment = {
   id: string;
   displayName: string;
   visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type InnovationFlowTemplateCardFragment = {
+  __typename?: 'InnovationFlowTemplate';
+  id: string;
+  definition: string;
+  type: InnovationFlowType;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
 };
 
 export type TemplateCardProfileInfoFragment = {

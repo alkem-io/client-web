@@ -1710,6 +1710,17 @@ export const InnovationPackWithProviderFragmentDoc = gql`
   }
   ${TemplateProviderProfileFragmentDoc}
 `;
+export const InnovationFlowTemplateCardFragmentDoc = gql`
+  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
+    id
+    definition
+    type
+    profile {
+      ...TemplateCardProfileInfo
+    }
+  }
+  ${TemplateCardProfileInfoFragmentDoc}
+`;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
     id
@@ -8570,7 +8581,7 @@ export const InnovationPackProfilePageDocument = gql`
               ...PostTemplateCard
             }
             innovationFlowTemplates {
-              ...AdminInnovationFlowTemplate
+              ...InnovationFlowTemplateCard
             }
           }
         }
@@ -8581,7 +8592,7 @@ export const InnovationPackProfilePageDocument = gql`
   ${InnovationPackProfileFragmentDoc}
   ${WhiteboardTemplateCardFragmentDoc}
   ${PostTemplateCardFragmentDoc}
-  ${AdminInnovationFlowTemplateFragmentDoc}
+  ${InnovationFlowTemplateCardFragmentDoc}
 `;
 
 /**
