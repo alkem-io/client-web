@@ -47,6 +47,7 @@ import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlo
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import { DashboardNavigationItem } from '../HubDashboardNavigation/useHubDashboardNavigation';
 import DashboardNavigation from '../HubDashboardNavigation/DashboardNavigation';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 interface HubWelcomeBlockContributor {
   profile: HubWelcomeBlockContributorProfileFragment;
@@ -149,8 +150,13 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
   return (
     <>
+      {directMessageDialog}
       <PageContent>
         <ApplicationButtonContainer>
           {({ applicationButtonProps }, { loading }) => {
@@ -189,6 +195,17 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
                   key={user.id}
                   profile={user.profile}
                   url={buildUserProfileUrl(user.nameID)}
+                  onContact={() => {
+                    sendMessage([
+                      {
+                        id: user.id,
+                        displayName: user.profile.displayName,
+                        avatarUri: user.profile.visual?.uri,
+                        country: user.profile.location?.country,
+                        city: user.profile.location?.city,
+                      },
+                    ]);
+                  }}
                 />
               ))}
             </Gutters>
