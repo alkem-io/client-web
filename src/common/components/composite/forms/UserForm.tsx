@@ -283,12 +283,14 @@ export const UserForm: FC<UserProps> = ({
                       />
 
                       {isEditMode && (
-                        <ProfileReferenceSegment
-                          references={references}
-                          readOnly={isReadOnlyMode}
-                          disabled={isSubmitting}
-                          profileId={profileId}
-                        />
+                        <Grid item>
+                          <ProfileReferenceSegment
+                            references={references}
+                            readOnly={isReadOnlyMode}
+                            disabled={isSubmitting}
+                            profileId={profileId}
+                          />
+                        </Grid>
                       )}
 
                       {isEditMode && (
