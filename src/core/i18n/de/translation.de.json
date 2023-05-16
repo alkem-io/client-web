@@ -1948,42 +1948,27 @@
       {
         "key": "Energie-Übergang",
         "name": "Energietransfer",
-        "tags": [
-          "Energie-Übergang",
-          "Energietransitie"
-        ]
+        "tags": ["Energie-Übergang", "Energietransitie"]
       },
       {
         "key": "inklusive-Gesellschaft",
         "name": "Inklusive Gesellschaft",
-        "tags": [
-          "Inklusive Gesellschaft",
-          "Einschließlich Sieben-Samenleving"
-        ]
+        "tags": ["Inklusive Gesellschaft", "Einschließlich Sieben-Samenleving"]
       },
       {
         "key": "Öffentliche Dienstleistungen",
         "name": "Öffentliche Dienstleistungen",
-        "tags": [
-          "Öffentliche Dienstleistungen",
-          "Publieke Diensten"
-        ]
+        "tags": ["Öffentliche Dienstleistungen", "Publieke Diensten"]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": [
-          "Innovation",
-          "Innovation"
-        ]
+        "tags": ["Innovation", "Innovation"]
       },
       {
         "key": "digitalisierung der Gesellschaft",
         "name": "Digitalisierung der Gesellschaft",
-        "tags": [
-          "Digitalisierung der Gesellschaft",
-          "Digitalisierung"
-        ]
+        "tags": ["Digitalisierung der Gesellschaft", "Digitalisierung"]
       }
     ]
   },
