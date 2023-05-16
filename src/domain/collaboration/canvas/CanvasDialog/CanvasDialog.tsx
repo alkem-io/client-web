@@ -26,7 +26,7 @@ import isCanvasValueEqual from '../utils/isCanvasValueEqual';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { PageTitle } from '../../../../core/ui/typography';
 import WhiteboardTemplatesLibrary from '../WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithValue } from '../WhiteboardTemplatesLibrary/WhiteboardTemplate';
+import { WhiteboardTemplateWithValue } from '../WhiteboardTemplateCard/WhiteboardTemplate';
 import mergeCanvas from '../utils/mergeCanvas';
 import { error as logError } from '../../../../services/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';

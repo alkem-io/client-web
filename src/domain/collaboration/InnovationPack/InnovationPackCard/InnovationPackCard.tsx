@@ -24,6 +24,7 @@ export interface InnovationPackCardProps {
   whiteboardTemplatesCount?: ReactNode;
   postTemplatesCount: ReactNode;
   innovationFlowTemplatesCount: ReactNode;
+  innovationPackUri: string;
 }
 
 const InnovationPackCard = ({
@@ -35,10 +36,11 @@ const InnovationPackCard = ({
   whiteboardTemplatesCount,
   postTemplatesCount,
   innovationFlowTemplatesCount,
+  innovationPackUri,
   ...props
 }: InnovationPackCardProps) => {
   return (
-    <ContributeCard {...props}>
+    <ContributeCard {...props} to={innovationPackUri}>
       <CardHeader title={displayName} iconComponent={InnovationPackIcon} />
       <CardDetails>
         <CardDescription>{description ?? ''}</CardDescription>

@@ -4,6 +4,7 @@ export interface MarkdownOptions {
   card: boolean;
   flat: boolean;
   multiline: boolean;
+  disableParagraphPadding: boolean;
 }
 
 const MarkdownOptionsContext = createContext<MarkdownOptions | undefined>(undefined);

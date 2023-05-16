@@ -13,6 +13,10 @@ export interface AspectPreviewProps {
   loading: boolean | undefined;
 }
 
+/**
+ * @deprecated
+ * TODO figure out if can be replaced with src/domain/collaboration/aspect/PostTemplatesLibrary/PostTemplatePreview.tsx
+ */
 const PostTemplatePreview: FC<AspectPreviewProps> = ({
   description,
   tags,

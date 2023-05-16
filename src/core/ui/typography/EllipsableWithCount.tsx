@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import { Box, Typography } from '@mui/material';
 
 interface EllipsableWithCountProps {
-  count: number;
+  count: ReactNode;
 }
 
 const EllipsableWithCount = ({ count, children }: PropsWithChildren<EllipsableWithCountProps>) => {

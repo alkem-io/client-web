@@ -7,8 +7,8 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { PostTemplate, postTemplateMapper, PostTemplateWithValue } from './PostTemplate';
-import PostTemplateCard from './PostTemplateCard';
+import { PostTemplate, postTemplateMapper, PostTemplateWithValue } from '../PostTemplateCard/PostTemplate';
+import PostTemplateCard from '../PostTemplateCard/PostTemplateCard';
 import PostTemplatePreview from './PostTemplatePreview';
 
 export interface PostTemplatesLibraryProps {

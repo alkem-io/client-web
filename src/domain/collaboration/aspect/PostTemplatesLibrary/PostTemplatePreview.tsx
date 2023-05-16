@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { TemplatePreviewBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
-import { PostTemplateWithValue } from './PostTemplate';
+import { PostTemplateWithValue } from '../PostTemplateCard/PostTemplate';
 import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
 

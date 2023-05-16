@@ -25,6 +25,7 @@ const OrganizationTabs = (props: EntityTabsProps) => {
           showSettings={permissions.canEdit}
           profileIconComponent={BadgeOutlined}
           routes={routes}
+          entityTypeName="organization"
           {...props}
         />
       )}
