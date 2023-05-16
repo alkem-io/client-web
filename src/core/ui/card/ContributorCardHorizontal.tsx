@@ -48,7 +48,6 @@ const ContributorCardHorizontal = ({ url, profile }: HubWelcomeSectionContributo
                 src={profile.visual?.uri}
                 aria-label="User avatar"
                 alt={t('common.avatar-of', { user: profile.displayName })}
-                variant="square"
               >
                 {profile.displayName[0]}
               </Avatar>
