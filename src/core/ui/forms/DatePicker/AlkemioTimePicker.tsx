@@ -2,6 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { Box, BoxProps, MenuItem, Select, SelectProps, styled } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import { times } from 'lodash';
 
 export interface AlkemioTimePickerProps
   extends Omit<SelectProps<string>, 'name' | 'value' | 'renderInput' | 'onChange' | 'error'> {
@@ -37,7 +38,7 @@ const AlkemioTimePicker = ({
   const djsDate = useMemo(() => dayjs(value).startOf('day'), [value]);
 
   const timeSlots = useMemo(
-    () => Array.from(Array(24).keys()).flatMap(h => [djsDate.set('hour', h), djsDate.set('hour', h).set('minute', 30)]),
+    () => times(24).flatMap(h => [djsDate.set('hour', h), djsDate.set('hour', h).set('minute', 30)]),
     [djsDate]
   );
 
