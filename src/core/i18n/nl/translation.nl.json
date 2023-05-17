@@ -1,7 +1,7 @@
 {
   "notifications": {
     "release-updates": {
-      "text": "Er is een nieuwe versie van het platform! <clickhere>Klik hier</clickhere> om meer te lezen over de laatste updates."
+      "text": "Er is een nieuwe versie van het platform!  <a href=\"https://alkemio.foundation/releases\">Klik hier</a> om meer te lezen over de laatste updates."
     }
   },
   "cookie": {
@@ -29,7 +29,7 @@
     "add-event": "Voeg evenement toe",
     "edit-event": "Evenement wijzigen",
     "delete-event": "Verwijder evenement",
-    "delete-confirmation": "Weet u zeker dat u de gebeurtenis '{{title}}' wilt verwijderen uit de hub?",
+    "delete-confirmation": "Weet u zeker dat u de gebeurtenis '{{title}}' wilt verwijderen uit de Space?",
     "event": {
       "type": "Type evenement",
       "multiple-days": "{days} dagen",
@@ -181,8 +181,8 @@
     "aspects": "Kaarten",
     "host": "Host",
     "lead": "Lead",
-    "hub": "Hub",
-    "hubs": "Hubs",
+    "hub": "Space",
+    "hubs": "Spaces",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "all-entities": "Alle {{entityType}} ({{count}})",
@@ -283,7 +283,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
-          "name": "Globale Hubs Beheerder",
+          "name": "Globale Spaces Beheerder",
           "order": 1,
           "hidden": false
         },
@@ -298,17 +298,17 @@
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "Hub Beheerder",
+          "name": "Space Beheerder",
           "order": 3,
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Hub host",
+          "name": "Space host",
           "order": 4,
           "hidden": true
         },
         "HUB_MEMBER": {
-          "name": "Hub Lid",
+          "name": "Space Lid",
           "order": 5,
           "hidden": true
         },
@@ -406,7 +406,7 @@
     "members-count": "Leden ({{count}})",
     "application-form": {
       "title": "Aanmeldingsformulier",
-      "subtitle": "Deze sectie stelt je in staat om de vragen te wijzigen voor gebruikers die willen toetreden tot de Hub. <br /><b>Houd er rekening mee dat</b> deze vragen alleen worden weergegeven wanneer de schakelaar \"Allow applications to this Hub\" is ingeschakeld <b>in</b>, en \"Allow any registered user to join this Hub\" is uitgeschakeld <b>.</b>. Deze kunnen in het bovenstaande <b>Lidmaatschap</b> blok worden ingesteld.",
+      "subtitle": "Deze sectie stelt je in staat om de vragen te wijzigen voor gebruikers die willen toetreden tot de Space. <br /><b>Houd er rekening mee dat</b> deze vragen alleen worden weergegeven wanneer de schakelaar \"Allow applications to this Space\" is ingeschakeld <b>in</b>, en \"Allow any registered user to join this Space\" is uitgeschakeld <b>.</b>. Deze kunnen in het bovenstaande <b>Lidmaatschap</b> blok worden ingesteld.",
       "required-question": "Vereiste vraag",
       "move-up": "Vraag één positie omhoog verplaatsen",
       "move-down": "Vraag één positie naar beneden verplaatsen",
@@ -482,22 +482,22 @@
     "hub": {
       "tagline": {
         "title": "Tagline",
-        "description": "Leg in één zin uit waar deze Hub over gaat.",
+        "description": "Leg in één zin uit waar deze Space over gaat.",
         "placeholder": ""
       },
       "background": {
         "title": "Achtergrond",
-        "description": "Geef een korte omschrijving waar de behoefte voor deze Hub vandaan komt en hoe de Hub is ontstaan.",
+        "description": "Geef een korte omschrijving waar de behoefte voor deze Space vandaan komt en hoe de Space is ontstaan.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "description": "Wat zal deze Hub veranderen? Wat is de impact voor individuen en organisaties?",
+        "description": "Wat zal deze Space veranderen? Wat is de impact voor individuen en organisaties?",
         "placeholder": ""
       },
       "vision": {
         "title": "Waar gaat deze community over?",
-        "description": "Wat is het referentiekader voor deze Hub?",
+        "description": "Wat is het referentiekader voor deze Space?",
         "placeholder": ""
       },
       "who": {
@@ -524,7 +524,7 @@
       },
       "impact": {
         "title": "Extra context",
-        "description": "Geef een korte beschrijving van hoe deze Challenge in het grotere plaatje past? Wat is de impact? Hoe past de Challenge in deze Hub?",
+        "description": "Geef een korte beschrijving van hoe deze Challenge in het grotere plaatje past? Wat is de impact? Hoe past de Challenge in deze Space?",
         "placeholder": ""
       },
       "vision": {
@@ -728,7 +728,8 @@
         "challenge-created": "{{displayName}}",
         "opportunity-created": "{{displayName}}",
         "update-sent": "{{update}}"
-      }
+      },
+      "parent-details": "in {{displayName}}"
     },
     "lifecycle-visualizer": {
       "error": "De definitie kon niet gevisualiseerd worden"
@@ -745,6 +746,7 @@
     },
     "callout-creation": {
       "title": "Plaats een nieuwe oproep",
+      "titleWithType": "{{type}} toevoegen",
       "callout-type-label": "Oproep type",
       "card-type-label": "Kaart label",
       "custom-template": "Eigen template",
@@ -775,22 +777,21 @@
         "title": "Maak aan",
         "card-template-label": "Kies een template voor de Kaart"
       },
-      "callout-type-select": {
-        "title": "Wat zou je willen toevoegen?",
-        "label": {
-          "post": "Post",
-          "posts": "Oproep voor posts",
-          "whiteboards": "Oproep voor Whiteboards"
-        }
-      },
       "publish-dialog": {
         "text": "Je bent bezig met het publiceren van {{calloutDisplayName}}.\nWil je een melding over deze nieuwe oproep sturen naar de leden van deze community?",
         "checkbox-label": "Ja, informeer de community."
       }
     },
-    "callout-edit": {
-      "type-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe items, eerder ingediende kaarten zullen niet worden gewijzigd",
-      "canvas-template-edit-help-text": "Dit zal alleen van invloed zijn op nieuwe kaarten, eerder ingediende kaarten zullen niet worden gewijzigd"
+    "calloutEdit": {
+      "titleWithType": "{{type}} aanpassen"
+    },
+    "calloutTypeSelect": {
+      "title": "Wat zou je willen toevoegen?",
+      "label": {
+        "COMMENTS": "Post",
+        "CARD": "Oproep voor Posts",
+        "CANVAS": "Oproep voor Whiteboards"
+      }
     },
     "aspect-creation": {
       "title": "Dien je antwoord in op {{calloutDisplayName}}",
@@ -863,18 +864,18 @@
       "apply-disabled": "Lid worden niet mogelijk",
       "apply-not-signed": "Log in om in te schrijven",
       "apply-pending": "Uw aanmelding is in behandeling",
-      "join": "Word lid",
+      "join": "Word lid van",
       "join-parent": "Word lid van de bovenliggende groep",
       "parent-pending": "Inschrijving van bovenliggende groep loopt",
       "applyTo": "Word lid",
       "extendedMessage": "{{join}} onze Community en start met impact maken!",
       "dialog-apply-parent": {
-        "title": "Wil je lid worden van de bovenliggende Hub?",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Hub."
+        "title": "Wil je lid worden van de bovenliggende Space?",
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Space. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Hub."
       },
       "dialog-parent-app-pending": {
         "title": "Bovenliggende aanmelding loopt!",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus je kan ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Space. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus je kan ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
       },
       "dialog-join": {
         "title": "Word lid van de community",
@@ -922,7 +923,7 @@
         "title": "Organisator",
         "select": "Select een organisator"
       },
-      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen"
+      "read-access": "Sta niet-leden van de Space toe de Challenges te lezen"
     },
     "nameSegment": {
       "name": "Naam",
@@ -1082,7 +1083,7 @@
     },
     "contributions": {
       "title": "Bijdragen",
-      "help": "De Hubs en Challenges waar deze organisatie aan bijdraagt"
+      "help": "De Spaces en Challenges waar deze organisatie aan bijdraagt"
     },
     "discussions-list": {
       "name": "Discussies - {{community}}",
@@ -1226,12 +1227,12 @@
         }
       },
       "archived-notice": {
-        "archived-hub": "Deze Hub is momenteel gearchiveerd. Wil je de Hub weer in leven brengen? <contact>Klik hier</contact> om contact te zoeken.",
-        "archived-journey": "Deze {{journey}} staat onder een gearchiveerde Hub. Geïnteresseerd om het terug te brengen naar het leven? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
+        "archived-hub": "Deze Space is momenteel gearchiveerd. Wil je de Space weer in leven brengen? <contact>Klik hier</contact> om contact te zoeken.",
+        "archived-journey": "Deze {{journey}} staat onder een gearchiveerde Space. Geïnteresseerd om het terug te brengen naar het leven? <contact>Klik hier</contact> om contact op te nemen met Alkemio."
       },
       "demo-notice": {
-        "demo-hub": "Dit is een Demo Hub. <alkemio>Klik hier</alkemio> om samen te werken in actieve Hubs.",
-        "demo-journey": "Deze {{journey}} ligt binnen een Demo Hub. <alkemio>Klik hier</alkemio> om samen te werken in actieve Hubs."
+        "demo-hub": "Dit is een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces.",
+        "demo-journey": "Deze {{journey}} ligt binnen een Demo Space. <alkemio>Klik hier</alkemio> om samen te werken in actieve Spaces."
       }
     },
     "contribute": {
@@ -1264,12 +1265,12 @@
             "aspect-templates": "Templates voor Kaarten",
             "canvas-templates": "Whiteboard templates",
             "innovation-templates": "Templates voor Innovation Flows",
-            "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?",
+            "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Space? Je kunt ook de template informatie aanpassen?",
             "import": {
               "title": "Sjabloon bibliotheek: {{templateType}}",
-              "subtitle": "Hier vind je templates om te gebruiken in je Hub, Challenge of Opportunity. Selecteer een template en klik op 'importeer' om deze toe te voegen.",
+              "subtitle": "Hier vind je templates om te gebruiken in je Space, Challenge of Opportunity. Selecteer een template en klik op 'importeer' om deze toe te voegen.",
               "callout-template-import-subtitle": "Vind een template die mensen kunnen gebruiken voor het bijdragen aan jouw $t(common.callout)",
-              "no-templates": "Er zijn geen Hub templates gevonden, vind verdere platform templates hieronder",
+              "no-templates": "Er zijn geen Space templates gevonden, vind verdere platform templates hieronder",
               "imported-successfully-notification": "Template succesvol geïmporteerd"
             }
           },
@@ -1317,7 +1318,7 @@
         },
         "sections": {
           "opportunities": {
-            "description": "Hier kan je de Opportunities voor deze Hub aanpassen."
+            "description": "Hier kan je de Opportunities voor deze Space aanpassen."
           },
           "innovation-flow": {
             "description": "Hier kan je de status van deze Challenge aanpassen, of een ander Innovatie Flow template kiezen."
@@ -1332,7 +1333,7 @@
       "hub": {
         "sections": {
           "challenges": {
-            "description": "Hier kan je de Challenges voor deze Hub aanpassen."
+            "description": "Hier kan je de Challenges voor deze Space aanpassen."
           }
         },
         "authorization": {
@@ -1347,8 +1348,8 @@
           }
         },
         "notifications": {
-          "hub-created": "Hub succesvol aangemaakt.",
-          "hub-removed": "Hub '{{name}}' succesvol verwijderd."
+          "hub-created": "Space succesvol aangemaakt.",
+          "hub-removed": "'{{name}}' Space succesvol verwijderd."
         }
       },
       "opportunity": {
@@ -1452,7 +1453,7 @@
         },
         "key": {
           "all": "Alles",
-          "hub": "Hubs",
+          "hub": "Spaces",
           "challenge": "Challenges",
           "opportunity": "Opportunities",
           "user": "Gebruikers",
@@ -1474,20 +1475,20 @@
       },
       "side-note": {
         "title": "De Alkemio Structuur",
-        "description": "Bij Alkemio zijn alle Challenges onderdeel van een Hub. Elke Hub heeft zijn specifieke referentiekader, waarin Challenges worden gebruikt om de actuele kwesties te begrijpen."
+        "description": "Bij Alkemio zijn alle Challenges onderdeel van een Space. Elke Space heeft zijn specifieke referentiekader, waarin Challenges worden gebruikt om de actuele kwesties te begrijpen."
       },
       "my-search": {
         "title": "Verken andere Challenges die voor jou toegankelijk zijn",
-        "subtitle": "Challenges in openbare Hubs zijn zichtbaar voor iedereen. Challenges in privé Hubs zijn alleen zichtbaar voor leden. Voer je zoektermen hieronder in (bv. 'innovatie') om de bijbehorende Challenges te vinden. "
+        "subtitle": "Challenges in openbare Spaces zijn zichtbaar voor iedereen. Challenges in privé Spaces zijn alleen zichtbaar voor leden. Voer je zoektermen hieronder in (bv. 'innovatie') om de bijbehorende Challenges te vinden. "
       },
       "my": {
         "title": "Mijn Challenges",
         "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. "
       },
       "other": {
-        "title": "Andere Challenges binnen mijn Hubs",
-        "subtitle": "Hier vind je de andere Challenges die vallen onder de Hubs waarvan je lid bent.",
-        "filter-by-hub": "Filter op mijn Hub"
+        "title": "Andere Challenges binnen mijn Spaces",
+        "subtitle": "Hier vind je de andere Challenges die vallen onder de Spaces waarvan je lid bent.",
+        "filter-by-hub": "Filter op mijn Space"
       }
     },
     "lead-organization": {
@@ -1498,7 +1499,7 @@
     },
     "activity": {
       "title": "{{blockName}} Activiteit",
-      "hubs": "Challenges Hubs",
+      "hubs": "Challenges Spaces",
       "innovation-flow-info": "Klik om de Innovatie Flow te weergeven"
     },
     "home": {
@@ -1524,13 +1525,13 @@
           }
         },
         "hub": {
-          "header": "Verken de Challenge Hubs!",
+          "header": "Verken de Challenge Spaces!",
           "subheader": "",
           "body": "In iedere Space werkt de community samen aan een aantal gedefinieerde uitdagingen. Het is een plek om te verbinden, samen te werken en te innoveren.",
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
         },
         "my-hubs": {
-          "header": "Mijn Hubs ({{myHubsCount}})"
+          "header": "Mijn Spaces ({{myHubsCount}})"
         },
         "organizations": {
           "header": "Organisaties",
@@ -1558,7 +1559,7 @@
       }
     },
     "hub": {
-      "title": "Hub",
+      "title": "Space",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
         "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
@@ -1570,15 +1571,15 @@
       "sections": {
         "dashboard": {
           "organization": "Faciliterende organisatie",
-          "activity": "Hub statistieken",
+          "activity": "Space statistieken",
           "community": "Community"
         },
         "challenges": {
           "header": "Challenges",
           "subheader": "Er is geen definitieve grens",
           "body": "",
-          "no-data": "Er zijn geen Challenges beschikbaar voor deze Hub",
-          "description": "Hier kan je Challenges verkennen die door deze Hub worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
+          "no-data": "Er zijn geen Challenges beschikbaar voor deze Space",
+          "description": "Hier kan je Challenges verkennen die door deze Space worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
         },
         "contribute": {
           "header": "Bijdragen"
@@ -1696,8 +1697,8 @@
         "how-to": "Om een whiteboard te creeëren moet je een nieuw whiteboard aanmaken of een bestaande selecteren en die als template opslaan."
       },
       "hub": {
-        "templatesHeader": "Templates gedefinieerd in deze Hub",
-        "templatesSubheader": "De templates gedefinieerd in deze Hub kunnen in elke Challenge en Opportunity die binnen deze Hub vallen gebruikt worden."
+        "templatesHeader": "Templates gedefinieerd in deze Space",
+        "templatesSubheader": "De templates gedefinieerd in deze Space kunnen in elke Challenge en Opportunity die binnen deze Space vallen gebruikt worden."
       },
       "challenge": {
         "templatesHeader": "Templates gedefinieerd in deze Challenge",
@@ -1947,27 +1948,42 @@
       {
         "key": "energie-transitie",
         "name": "Energie Transitie",
-        "tags": ["Energie Transitie", "Energietransitie"]
+        "tags": [
+          "Energie Transitie",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusieve-samenleving",
         "name": "Inclusieve Samenleving",
-        "tags": ["Inclusieve Samenleving", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusieve Samenleving",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "publieke-diensten",
         "name": "Publieke Diensten",
-        "tags": ["Publieke Diensten", "Publieke Diensten"]
+        "tags": [
+          "Publieke Diensten",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovatie",
         "name": "Innovatie",
-        "tags": ["Innovatie", "Innovatie"]
+        "tags": [
+          "Innovatie",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalisering",
         "name": "Digitalisering",
-        "tags": ["Digitalisering", "Digitalisering"]
+        "tags": [
+          "Digitalisering",
+          "Digitalisering"
+        ]
       }
     ]
   },
