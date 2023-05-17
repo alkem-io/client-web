@@ -3,6 +3,7 @@ import { Box, BoxProps, MenuItem, Select, SelectProps, styled } from '@mui/mater
 import dayjs, { Dayjs } from 'dayjs';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { times } from 'lodash';
+import { gutters } from '../../grid/utils';
 
 export interface AlkemioTimePickerProps
   extends Omit<SelectProps<string>, 'name' | 'value' | 'renderInput' | 'onChange' | 'error'> {
@@ -54,6 +55,7 @@ const AlkemioTimePicker = ({
           },
         }}
         IconComponent={ScheduleIcon}
+        MenuProps={{ sx: { '.MuiPaper-root': { maxHeight: gutters(12) } } }}
         fullWidth
         notched
         {...timePickerProps}
