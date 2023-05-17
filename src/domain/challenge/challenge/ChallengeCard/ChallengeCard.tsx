@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import HubChildJourneyCard, { HubChildJourneyCardProps } from '../../common/HubChildJourneyCard/HubChildJourneyCard';
 import { ChallengeIcon } from '../icon/ChallengeIcon';
 import CardParentJourneySegment from '../../common/HubChildJourneyCard/CardParentJourneySegment';
@@ -16,7 +16,7 @@ interface ChallengeCardProps
   challengeId?: string;
   challengeNameId?: string;
   hubUri?: string;
-  hubDisplayName?: string;
+  hubDisplayName?: ReactNode;
   hubVisibility?: HubVisibility;
   innovationFlowState?: string;
   private?: boolean;

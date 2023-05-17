@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
-import { Avatar, Box, ButtonBase, Collapse, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Avatar, Box, ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import {
@@ -11,7 +11,7 @@ import {
 } from '@mui/icons-material';
 import { DashboardNavigationItem } from './useHubDashboardNavigation';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { buildChallengeUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import { Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -19,9 +19,13 @@ import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
 import { useTranslation } from 'react-i18next';
+import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
+import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
 
 interface DashboardNavigationProps {
   hubNameId: string | undefined;
+  hubVisibility?: HubVisibility;
   displayName: ReactNode;
   dashboardNavigation: DashboardNavigationItem[] | undefined;
   loading: boolean;
@@ -29,12 +33,14 @@ interface DashboardNavigationProps {
 
 interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
   url?: string;
+  tooltip?: NonNullable<ReactNode>;
 }
 
 const DashboardNavigationItemView = ({
   displayName,
-  visualUri,
+  visual,
   url,
+  tooltip = <></>,
   journeyTypeName,
   children,
   private: isPrivate = false,
@@ -57,58 +63,60 @@ const DashboardNavigationItemView = ({
 
   return (
     <Box>
-      <BadgeCardView
-        component={LinkNoUnderline}
-        to={url ?? ''}
-        visual={
-          <Box position="relative">
-            <Avatar
-              src={visualUri}
-              sx={{
-                '.MuiAvatar-img': { filter: 'blur(1.5px)', opacity: '50%' },
-                '.MuiAvatar-fallback': { display: 'none' },
-                borderRadius: 0.5,
-                backgroundColor: theme => theme.palette.challenge.main,
-              }}
-            />
-            <SwapColors>
-              <Box
-                position="absolute"
-                top={0}
-                left={0}
-                bottom={0}
-                right={0}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
+      <Tooltip title={tooltip} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
+        <BadgeCardView
+          component={LinkNoUnderline}
+          to={url ?? ''}
+          visual={
+            <Box position="relative">
+              <Avatar
+                src={visual?.uri}
+                sx={{
+                  '.MuiAvatar-img': { filter: 'blur(1.5px)', opacity: '50%' },
+                  '.MuiAvatar-fallback': { display: 'none' },
+                  borderRadius: 0.5,
+                  backgroundColor: theme => theme.palette.challenge.main,
+                }}
+              />
+              <SwapColors>
+                <Box
+                  position="absolute"
+                  top={0}
+                  left={0}
+                  bottom={0}
+                  right={0}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <JourneyIcon color="primary" />
+                </Box>
+              </SwapColors>
+            </Box>
+          }
+          visualRight={
+            isPrivate ? (
+              <Tooltip
+                title={<Caption>{t('components.dashboardNavigation.privateChallenge')}</Caption>}
+                placement="right"
+                arrow
               >
-                <JourneyIcon color="primary" />
-              </Box>
-            </SwapColors>
-          </Box>
-        }
-        visualRight={
-          isPrivate ? (
-            <Tooltip
-              title={<Caption>{t('components.dashboardNavigation.privateChallenge')}</Caption>}
-              placement="right"
-              arrow
-            >
-              <IconButton disableRipple onClick={preventDefault}>
-                <LockOutlined />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            children && (
-              <IconButton onClick={toggleExpand}>
-                {isExpanded ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
-              </IconButton>
+                <IconButton disableRipple onClick={preventDefault}>
+                  <LockOutlined />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              children && (
+                <IconButton onClick={toggleExpand}>
+                  {isExpanded ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
+                </IconButton>
+              )
             )
-          )
-        }
-      >
-        <Caption>{displayName}</Caption>
-      </BadgeCardView>
+          }
+        >
+          <Caption>{displayName}</Caption>
+        </BadgeCardView>
+      </Tooltip>
       {children && (
         <Collapse in={isExpanded}>
           <Gutters disablePadding paddingLeft={gutters(2)} marginTop={gutters()}>
@@ -122,7 +130,13 @@ const DashboardNavigationItemView = ({
 
 const VISIBLE_ROWS_WHEN_COLLAPSED = 6;
 
-const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation, loading }: DashboardNavigationProps) => {
+const DashboardNavigation = ({
+  hubNameId,
+  displayName,
+  hubVisibility,
+  dashboardNavigation,
+  loading,
+}: DashboardNavigationProps) => {
   const { t } = useTranslation();
 
   const theme = useTheme();
@@ -156,22 +170,62 @@ const DashboardNavigation = ({ hubNameId, displayName, dashboardNavigation, load
       />
       <Collapse in={showAll} collapsedSize={allItemsFit ? 0 : theme.spacing(6 * VISIBLE_ROWS_WHEN_COLLAPSED - 2)}>
         <Gutters disablePadding>
-          {dashboardNavigation?.map(({ id, nameId: challengeNameId, ...challenge }) => (
-            <DashboardNavigationItemView
-              key={id}
-              url={hubNameId && buildChallengeUrl(hubNameId, challengeNameId)}
-              {...challenge}
-            >
-              {Boolean(challenge.children?.length) &&
-                challenge.children?.map(({ id, nameId: opportunityNameId, ...opportunity }) => (
-                  <DashboardNavigationItemView
-                    key={id}
-                    url={hubNameId && buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
-                    {...opportunity}
+          {dashboardNavigation?.map(({ id, nameId: challengeNameId, ...challenge }) => {
+            if (!hubNameId) {
+              return <Skeleton />;
+            }
+            const challengeUrl = buildChallengeUrl(hubNameId, challengeNameId);
+            const hubUrl = buildHubUrl(hubNameId);
+            return (
+              <DashboardNavigationItemView
+                key={id}
+                url={challengeUrl}
+                tooltip={
+                  <ChallengeCard
+                    challengeId={id}
+                    challengeNameId={challengeNameId}
+                    banner={challenge.visual}
+                    displayName={challenge.displayName}
+                    tags={challenge.tags ?? []}
+                    tagline={challenge.tagline}
+                    vision={challenge.vision ?? ''}
+                    innovationFlowState={challenge.lifecycleState}
+                    journeyUri={challengeUrl}
+                    hubDisplayName={displayName ?? ''}
+                    hubUri={hubUrl}
+                    hubVisibility={hubVisibility}
+                    sx={{ width: gutters(15) }}
                   />
-                ))}
-            </DashboardNavigationItemView>
-          ))}
+                }
+                {...challenge}
+              >
+                {Boolean(challenge.children?.length) &&
+                  challenge.children?.map(({ id, nameId: opportunityNameId, ...opportunity }) => (
+                    <DashboardNavigationItemView
+                      key={id}
+                      url={hubNameId && buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
+                      tooltip={
+                        <OpportunityCard
+                          opportunityId={id}
+                          banner={opportunity.visual}
+                          displayName={opportunity.displayName}
+                          tags={opportunity.tags ?? []}
+                          tagline={opportunity.tagline}
+                          vision={opportunity.vision ?? ''}
+                          innovationFlowState={opportunity.lifecycleState}
+                          journeyUri={buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
+                          challengeDisplayName={challenge.displayName}
+                          challengeUri={challengeUrl}
+                          hubVisibility={hubVisibility}
+                          sx={{ width: gutters(15) }}
+                        />
+                      }
+                      {...opportunity}
+                    />
+                  ))}
+              </DashboardNavigationItemView>
+            );
+          })}
         </Gutters>
       </Collapse>
       {!showAll && (

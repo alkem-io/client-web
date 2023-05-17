@@ -5,7 +5,13 @@ query HubDashboardNavigationChallenges($hubId: UUID_NAMEID!) {
       id
       nameID
       profile {
-        ...HubDashboardNavigationItem
+        ...HubDashboardNavigationProfile
+      }
+      context {
+        ...HubDashboardNavigationContext
+      }
+      lifecycle {
+        ...HubDashboardNavigationLifecycle
       }
       authorization {
         id
@@ -16,6 +22,7 @@ query HubDashboardNavigationChallenges($hubId: UUID_NAMEID!) {
         myMembershipStatus
       }
     }
+    visibility
   }
 }
 
@@ -28,18 +35,40 @@ query HubDashboardNavigationOpportunities($hubId: UUID_NAMEID!, $challengeIds: [
         id
         nameID
         profile {
-          ...HubDashboardNavigationItem
+          ...HubDashboardNavigationProfile
+        }
+        context {
+          ...HubDashboardNavigationContext
+        }
+        lifecycle {
+          ...HubDashboardNavigationLifecycle
         }
       }
     }
   }
 }
 
-fragment HubDashboardNavigationItem on Profile {
+fragment HubDashboardNavigationProfile on Profile {
   id
   displayName
+  tagline
+  tagset {
+    id
+    tags
+  }
   visual(type: CARD) {
     id
     uri
+    alternativeText
   }
+}
+
+fragment HubDashboardNavigationContext on Context {
+  id
+  vision
+}
+
+fragment HubDashboardNavigationLifecycle on Lifecycle {
+  id
+  state
 }

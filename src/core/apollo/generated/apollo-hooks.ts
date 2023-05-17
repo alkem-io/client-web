@@ -749,14 +749,32 @@ export const HubPageFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
-export const HubDashboardNavigationItemFragmentDoc = gql`
-  fragment HubDashboardNavigationItem on Profile {
+export const HubDashboardNavigationProfileFragmentDoc = gql`
+  fragment HubDashboardNavigationProfile on Profile {
     id
     displayName
+    tagline
+    tagset {
+      id
+      tags
+    }
     visual(type: CARD) {
       id
       uri
+      alternativeText
     }
+  }
+`;
+export const HubDashboardNavigationContextFragmentDoc = gql`
+  fragment HubDashboardNavigationContext on Context {
+    id
+    vision
+  }
+`;
+export const HubDashboardNavigationLifecycleFragmentDoc = gql`
+  fragment HubDashboardNavigationLifecycle on Lifecycle {
+    id
+    state
   }
 `;
 export const TemplateCardProfileInfoFragmentDoc = gql`
@@ -5527,7 +5545,13 @@ export const HubDashboardNavigationChallengesDocument = gql`
         id
         nameID
         profile {
-          ...HubDashboardNavigationItem
+          ...HubDashboardNavigationProfile
+        }
+        context {
+          ...HubDashboardNavigationContext
+        }
+        lifecycle {
+          ...HubDashboardNavigationLifecycle
         }
         authorization {
           id
@@ -5538,9 +5562,12 @@ export const HubDashboardNavigationChallengesDocument = gql`
           myMembershipStatus
         }
       }
+      visibility
     }
   }
-  ${HubDashboardNavigationItemFragmentDoc}
+  ${HubDashboardNavigationProfileFragmentDoc}
+  ${HubDashboardNavigationContextFragmentDoc}
+  ${HubDashboardNavigationLifecycleFragmentDoc}
 `;
 
 /**
@@ -5611,13 +5638,21 @@ export const HubDashboardNavigationOpportunitiesDocument = gql`
           id
           nameID
           profile {
-            ...HubDashboardNavigationItem
+            ...HubDashboardNavigationProfile
+          }
+          context {
+            ...HubDashboardNavigationContext
+          }
+          lifecycle {
+            ...HubDashboardNavigationLifecycle
           }
         }
       }
     }
   }
-  ${HubDashboardNavigationItemFragmentDoc}
+  ${HubDashboardNavigationProfileFragmentDoc}
+  ${HubDashboardNavigationContextFragmentDoc}
+  ${HubDashboardNavigationLifecycleFragmentDoc}
 `;
 
 /**

@@ -67,6 +67,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
               dashboardNavigationLoading={dashboardNavigationLoading}
               who={entities.hub?.context?.who}
               impact={entities.hub?.context?.impact}
+              hubVisibility={entities.hub?.visibility}
               metrics={entities.hub?.metrics}
               loading={state.loading}
               communityId={entities.hub?.community?.id}
