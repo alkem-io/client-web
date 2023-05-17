@@ -2,8 +2,11 @@ import { useMemo } from 'react';
 import { UserCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
-const useUserCardProps = (data: UserCardFragment[] | undefined): SearchableUserCardProps[] | undefined => {
+const useUserCardProps = (
+  data: UserCardFragment[] | undefined
+): (Identifiable & SearchableUserCardProps)[] | undefined => {
   return useMemo(() => {
     if (!data) {
       return;

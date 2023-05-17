@@ -6,10 +6,11 @@ import React from 'react';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { useTranslation } from 'react-i18next';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 export interface ContributingUsersProps {
   loading?: boolean;
-  users: SearchableUserCardProps[] | undefined;
+  users: (Identifiable & SearchableUserCardProps)[] | undefined;
 }
 
 const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) => {
@@ -53,15 +54,13 @@ const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) =
               city={user.city}
               url={user.url}
               onContact={() =>
-                sendMessage([
-                  {
-                    id: user.id,
-                    displayName: user.displayName,
-                    avatarUri: user.avatarSrc,
-                    city: user.city,
-                    country: user.country,
-                  },
-                ])
+                sendMessage('user', {
+                  id: user.id,
+                  displayName: user.displayName,
+                  avatarUri: user.avatarSrc,
+                  city: user.city,
+                  country: user.country,
+                })
               }
             />
           </Grid>
