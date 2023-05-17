@@ -409,6 +409,14 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
+export type ApplicationTemplate = {
+  __typename?: 'ApplicationTemplate';
+  /** Application template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
@@ -1888,6 +1896,16 @@ export type HubOpportunityArgs = {
 
 export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  defaultDescription: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -22179,6 +22197,71 @@ export type HubApplicationsQuery = {
         }
       | undefined;
   };
+};
+
+export type HubStorageAdminQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubStorageAdminQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    storageBucket?:
+      | {
+          __typename?: 'StorageBucket';
+          id: string;
+          size: number;
+          documents: Array<{
+            __typename?: 'Document';
+            id: string;
+            displayName: string;
+            size: number;
+            mimeType: MimeType;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type DocumentDataFragment = {
+  __typename?: 'Document';
+  id: string;
+  displayName: string;
+  size: number;
+  mimeType: MimeType;
+  createdBy?:
+    | {
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type DeleteDocumentMutationVariables = Exact<{
+  documentId: Scalars['UUID'];
+}>;
+
+export type DeleteDocumentMutation = {
+  __typename?: 'Mutation';
+  deleteDocument: { __typename?: 'Document'; id: string };
 };
 
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{

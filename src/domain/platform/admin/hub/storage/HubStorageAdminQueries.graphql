@@ -1,0 +1,47 @@
+query HubStorageAdmin($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    storageBucket {
+      id
+      size
+      #maxFileSize
+      #allowedMimeTypes
+      documents {
+        ...DocumentData
+      }
+    }
+  }
+}
+
+fragment DocumentData on Document {
+  id
+  displayName
+  size
+  mimeType
+  # tagset {
+  #   id
+  #   tags
+  # }
+  createdBy {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+
+  # MISSING:
+  # Location
+  # Uploaded date
+}
+
+mutation DeleteDocument($documentId: UUID!) {
+  deleteDocument(deleteData: { ID: $documentId }) {
+    id
+  }
+}
