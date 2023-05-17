@@ -45,7 +45,7 @@ interface DashboardNavigationProps {
 
 interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
   url?: string;
-  tooltipCard?: ReactNode;
+  tooltip?: ReactNode;
   tooltipPlacement?: TooltipProps['placement'];
 }
 
@@ -56,7 +56,7 @@ const DashboardNavigationItemView = ({
   journeyTypeName,
   children,
   private: isPrivate = false,
-  tooltipCard,
+  tooltip,
   tooltipPlacement,
 }: PropsWithChildren<DashboardNavigationItemViewProps>) => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -77,7 +77,7 @@ const DashboardNavigationItemView = ({
 
   return (
     <Box>
-      <Tooltip title={tooltipCard ?? <Skeleton />} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
+      <Tooltip title={tooltip ?? <Skeleton />} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
         <BadgeCardView
           component={LinkNoUnderline}
           to={url ?? ''}
@@ -202,7 +202,7 @@ const DashboardNavigation = ({
               <DashboardNavigationItemView
                 key={id}
                 url={challengeUrl}
-                tooltipCard={
+                tooltip={
                   <ChallengeCard
                     challengeId={id}
                     challengeNameId={challengeNameId}
@@ -227,7 +227,7 @@ const DashboardNavigation = ({
                     <DashboardNavigationItemView
                       key={id}
                       url={hubNameId && buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
-                      tooltipCard={
+                      tooltip={
                         <OpportunityCard
                           opportunityId={id}
                           banner={opportunity.visual}
