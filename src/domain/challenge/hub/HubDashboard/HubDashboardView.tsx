@@ -5,6 +5,7 @@ import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
+  HubVisibility,
   HubWelcomeBlockContributorProfileFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -42,11 +43,12 @@ import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import HubWelcomeSectionContributor from '../HubWelcomeSection/HubWelcomeSectionContributor';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
 import { DashboardNavigationItem } from '../HubDashboardNavigation/useHubDashboardNavigation';
 import DashboardNavigation from '../HubDashboardNavigation/DashboardNavigation';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 interface HubWelcomeBlockContributor {
   profile: HubWelcomeBlockContributorProfileFragment;
@@ -61,6 +63,7 @@ interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partia
   dashboardNavigationLoading: boolean;
   who: string | undefined;
   impact: string | undefined;
+  hubVisibility?: HubVisibility;
   vision?: string;
   communityId?: string;
   organization?: unknown;
@@ -103,6 +106,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
   dashboardNavigationLoading,
   who,
   impact,
+  hubVisibility,
   loading,
   hubNameId,
   challengeNameId,
@@ -149,8 +153,13 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
   return (
     <>
+      {directMessageDialog}
       <PageContent>
         <ApplicationButtonContainer>
           {({ applicationButtonProps }, { loading }) => {
@@ -185,19 +194,37 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
             </OverflowGradient>
             <Gutters row disablePadding>
               {leadUsers?.slice(0, 2).map(user => (
-                <HubWelcomeSectionContributor
+                <ContributorCardHorizontal
                   key={user.id}
                   profile={user.profile}
                   url={buildUserProfileUrl(user.nameID)}
+                  onContact={() => {
+                    sendMessage('user', {
+                      id: user.id,
+                      displayName: user.profile.displayName,
+                      avatarUri: user.profile.visual?.uri,
+                      country: user.profile.location?.country,
+                      city: user.profile.location?.city,
+                    });
+                  }}
                 />
               ))}
             </Gutters>
             <Gutters row disablePadding>
               {leadOrganizations?.slice(0, 2).map(org => (
-                <HubWelcomeSectionContributor
+                <ContributorCardHorizontal
                   key={org.id}
                   profile={org.profile}
                   url={buildOrganizationUrl(org.nameID)}
+                  onContact={() => {
+                    sendMessage('organization', {
+                      id: org.id,
+                      displayName: org.profile.displayName,
+                      avatarUri: org.profile.visual?.uri,
+                      country: org.profile.location?.country,
+                      city: org.profile.location?.city,
+                    });
+                  }}
                 />
               ))}
             </Gutters>
@@ -207,6 +234,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
           </FullWidthButton>
           <DashboardNavigation
             hubNameId={hubNameId}
+            hubVisibility={hubVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}

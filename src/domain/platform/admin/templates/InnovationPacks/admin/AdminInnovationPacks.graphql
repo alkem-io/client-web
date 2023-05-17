@@ -37,7 +37,8 @@ fragment InnovationPackProfile on Profile {
     uri
   }
 }
-fragment InnovationPackTemplates on TemplatesSet {
+
+fragment AdminInnovationPackTemplates on TemplatesSet {
   id
   postTemplates {
     ...AdminPostTemplate
@@ -70,7 +71,7 @@ query AdminInnovationPack($innovationPackId: UUID_NAMEID!) {
           ...InnovationPackProfile
         }
         templates {
-          ...InnovationPackTemplates
+          ...AdminInnovationPackTemplates
         }
       }
     }

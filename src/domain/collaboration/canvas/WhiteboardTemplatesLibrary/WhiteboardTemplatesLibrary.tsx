@@ -9,8 +9,12 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { WhiteboardTemplate, whiteboardTemplateMapper, WhiteboardTemplateWithValue } from './WhiteboardTemplate';
-import WhiteboardTemplateCard from './WhiteboardTemplateCard';
+import {
+  WhiteboardTemplate,
+  whiteboardTemplateMapper,
+  WhiteboardTemplateWithValue,
+} from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import WhiteboardTemplateCard from '../WhiteboardTemplateCard/WhiteboardTemplateCard';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 
 export interface WhiteboardTemplatesLibraryProps {

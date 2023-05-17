@@ -2,44 +2,23 @@ import Grid from '@mui/material/Grid';
 import LoadingUserCard from '../../../shared/components/LoadingUserCard';
 import Typography from '@mui/material/Typography';
 import { UserCard } from '../../../../common/components/composite/common/cards';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { useTranslation } from 'react-i18next';
-import {
-  DirectMessageDialog,
-  MessageReceiverChipData,
-} from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { compact } from 'lodash';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 export interface ContributingUsersProps {
   loading?: boolean;
-  users: SearchableUserCardProps[] | undefined;
+  users: (Identifiable & SearchableUserCardProps)[] | undefined;
 }
 
 const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) => {
   const { t } = useTranslation();
 
-  const [sendMessageToUser] = useSendMessageToUserMutation();
-  const [directMessageReceivers, setDirectMessageReceivers] = useState<MessageReceiverChipData[]>();
-  const handleSendMessage = useCallback(
-    async (messageText: string) => {
-      const receiverIds = compact(directMessageReceivers?.map(r => r.id));
-      if (!receiverIds || receiverIds.length === 0) {
-        return;
-      }
-
-      await sendMessageToUser({
-        variables: {
-          messageData: {
-            message: messageText,
-            receiverIds,
-          },
-        },
-      });
-    },
-    [sendMessageToUser, directMessageReceivers]
-  );
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
 
   if (loading) {
     return (
@@ -75,27 +54,19 @@ const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) =
               city={user.city}
               url={user.url}
               onContact={() =>
-                setDirectMessageReceivers([
-                  {
-                    id: user.id,
-                    title: user.displayName,
-                    avatarUri: user.avatarSrc,
-                    city: user.city,
-                    country: user.country,
-                  },
-                ])
+                sendMessage('user', {
+                  id: user.id,
+                  displayName: user.displayName,
+                  avatarUri: user.avatarSrc,
+                  city: user.city,
+                  country: user.country,
+                })
               }
             />
           </Grid>
         ))}
       </Grid>
-      <DirectMessageDialog
-        title={t('send-message-dialog.direct-message-title')}
-        open={Boolean(directMessageReceivers?.length)}
-        onClose={() => setDirectMessageReceivers(undefined)}
-        onSendMessage={handleSendMessage}
-        messageReceivers={directMessageReceivers}
-      />
+      {directMessageDialog}
     </>
   );
 };

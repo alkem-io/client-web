@@ -4,7 +4,7 @@ query HubWhiteboardTemplatesLibrary($hubId: UUID_NAMEID!) {
     templates {
       id
       whiteboardTemplates {
-        ...WhiteboardTemplate
+        ...WhiteboardTemplateCard
       }
     }
     host {
@@ -23,7 +23,7 @@ query HubWhiteboardTemplateValue($hubId: UUID_NAMEID!, $whiteboardTemplateId: UU
     templates {
       id
       whiteboardTemplate(ID: $whiteboardTemplateId) {
-        ...WhiteboardTemplate
+        ...WhiteboardTemplateCard
         value
       }
     }
@@ -38,6 +38,10 @@ query PlatformWhiteboardTemplatesLibrary {
       innovationPacks {
         id
         nameID
+        profile {
+          id
+          displayName
+        }
         provider {
           id
           profile {
@@ -47,7 +51,7 @@ query PlatformWhiteboardTemplatesLibrary {
         templates {
           id
           whiteboardTemplates {
-            ...WhiteboardTemplate
+            ...WhiteboardTemplateCard
           }
         }
       }
@@ -65,29 +69,11 @@ query PlatformWhiteboardTemplateValue($innovationPackId: UUID_NAMEID!, $whiteboa
         templates {
           id
           whiteboardTemplate(ID: $whiteboardTemplateId) {
-            ...WhiteboardTemplate
+            ...WhiteboardTemplateCard
             value
           }
         }
       }
     }
-  }
-}
-
-fragment InnovationPackWithProvider on InnovationPack {
-  id
-  nameID
-  provider {
-    id
-    profile {
-      ...TemplateProviderProfile
-    }
-  }
-}
-fragment TemplateProviderProfile on Profile {
-  id
-  displayName
-  visual(type: AVATAR) {
-    ...VisualUri
   }
 }

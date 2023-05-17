@@ -14,6 +14,7 @@ export interface UserModel {
     id?: string;
     displayName: string;
     description: string;
+    tagline: string;
     location: {
       city: string;
       country: string;
@@ -48,6 +49,7 @@ export const defaultUser: UserModel = {
     id: '',
     displayName: '',
     description: '',
+    tagline: '',
     location: {
       city: '',
       country: '',
@@ -71,6 +73,7 @@ export interface UserFormGenerated {
   twitter: string;
   github: string;
   displayName: string;
+  tagline: string;
   tagsets: Tagset[];
   references: Reference[];
   country: CountryType | null;

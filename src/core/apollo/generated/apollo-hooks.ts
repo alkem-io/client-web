@@ -749,18 +749,36 @@ export const HubPageFragmentDoc = gql`
   ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
-export const HubDashboardNavigationItemFragmentDoc = gql`
-  fragment HubDashboardNavigationItem on Profile {
+export const HubDashboardNavigationProfileFragmentDoc = gql`
+  fragment HubDashboardNavigationProfile on Profile {
     id
     displayName
+    tagline
+    tagset {
+      id
+      tags
+    }
     visual(type: CARD) {
       id
       uri
+      alternativeText
     }
   }
 `;
-export const ProfileInfoFragmentDoc = gql`
-  fragment ProfileInfo on Profile {
+export const HubDashboardNavigationContextFragmentDoc = gql`
+  fragment HubDashboardNavigationContext on Context {
+    id
+    vision
+  }
+`;
+export const HubDashboardNavigationLifecycleFragmentDoc = gql`
+  fragment HubDashboardNavigationLifecycle on Lifecycle {
+    id
+    state
+  }
+`;
+export const TemplateCardProfileInfoFragmentDoc = gql`
+  fragment TemplateCardProfileInfo on Profile {
     id
     displayName
     description
@@ -774,25 +792,25 @@ export const ProfileInfoFragmentDoc = gql`
     }
   }
 `;
-export const PostTemplateFragmentDoc = gql`
-  fragment PostTemplate on PostTemplate {
+export const PostTemplateCardFragmentDoc = gql`
+  fragment PostTemplateCard on PostTemplate {
     id
     defaultDescription
     type
     profile {
-      ...ProfileInfo
+      ...TemplateCardProfileInfo
     }
   }
-  ${ProfileInfoFragmentDoc}
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
-export const WhiteboardTemplateFragmentDoc = gql`
-  fragment WhiteboardTemplate on WhiteboardTemplate {
+export const WhiteboardTemplateCardFragmentDoc = gql`
+  fragment WhiteboardTemplateCard on WhiteboardTemplate {
     id
     profile {
-      ...ProfileInfo
+      ...TemplateCardProfileInfo
     }
   }
-  ${ProfileInfoFragmentDoc}
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
 export const InnovationFlowTemplateFragmentDoc = gql`
   fragment InnovationFlowTemplate on InnovationFlowTemplate {
@@ -811,26 +829,26 @@ export const HubTemplatesFragmentDoc = gql`
     templates {
       id
       postTemplates {
-        ...PostTemplate
+        ...PostTemplateCard
       }
       whiteboardTemplates {
-        ...WhiteboardTemplate
+        ...WhiteboardTemplateCard
       }
       innovationFlowTemplates {
         ...InnovationFlowTemplate
       }
     }
   }
-  ${PostTemplateFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
   ${InnovationFlowTemplateFragmentDoc}
 `;
 export const WhiteboardTemplateWithValueFragmentDoc = gql`
   fragment WhiteboardTemplateWithValue on WhiteboardTemplate {
-    ...WhiteboardTemplate
+    ...WhiteboardTemplateCard
     value
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 export const AdminHubFragmentDoc = gql`
   fragment AdminHub on Hub {
@@ -1585,29 +1603,6 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
   }
   ${CalloutFragmentDoc}
 `;
-export const TemplateProviderProfileFragmentDoc = gql`
-  fragment TemplateProviderProfile on Profile {
-    id
-    displayName
-    visual(type: AVATAR) {
-      ...VisualUri
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const InnovationPackWithProviderFragmentDoc = gql`
-  fragment InnovationPackWithProvider on InnovationPack {
-    id
-    nameID
-    provider {
-      id
-      profile {
-        ...TemplateProviderProfile
-      }
-    }
-  }
-  ${TemplateProviderProfileFragmentDoc}
-`;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
@@ -1705,6 +1700,44 @@ export const AspectsOnCalloutFragmentDoc = gql`
     }
   }
   ${ContributeTabAspectFragmentDoc}
+`;
+export const TemplateProviderProfileFragmentDoc = gql`
+  fragment TemplateProviderProfile on Profile {
+    id
+    displayName
+    visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const InnovationPackWithProviderFragmentDoc = gql`
+  fragment InnovationPackWithProvider on InnovationPack {
+    id
+    nameID
+    profile {
+      id
+      displayName
+    }
+    provider {
+      id
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+  ${TemplateProviderProfileFragmentDoc}
+`;
+export const InnovationFlowTemplateCardFragmentDoc = gql`
+  fragment InnovationFlowTemplateCard on InnovationFlowTemplate {
+    id
+    definition
+    type
+    profile {
+      ...TemplateCardProfileInfo
+    }
+  }
+  ${TemplateCardProfileInfoFragmentDoc}
 `;
 export const DiscussionDetailsFragmentDoc = gql`
   fragment DiscussionDetails on Discussion {
@@ -2046,6 +2079,7 @@ export const OrganizationInfoFragmentDoc = gql`
       id
       displayName
       description
+      tagline
       visual(type: AVATAR) {
         ...VisualUri
         alternativeText
@@ -2142,6 +2176,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         ...VisualFull
       }
       description
+      tagline
       location {
         country
         city
@@ -2256,6 +2291,7 @@ export const UserDetailsFragmentDoc = gql`
     profile {
       id
       displayName
+      tagline
       location {
         country
         city
@@ -2336,6 +2372,51 @@ export const UserRolesDetailsFragmentDoc = gql`
       opportunityID
     }
   }
+`;
+export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
+  fragment InnovationPackProviderProfileWithAvatar on Organization {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+`;
+export const InnovationPackCardFragmentDoc = gql`
+  fragment InnovationPackCard on InnovationPack {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+    }
+    templates {
+      id
+      postTemplates {
+        id
+      }
+      whiteboardTemplates {
+        id
+      }
+      innovationFlowTemplates {
+        id
+      }
+    }
+    provider {
+      ...InnovationPackProviderProfileWithAvatar
+    }
+  }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -2474,8 +2555,8 @@ export const AdminWhiteboardTemplateFragmentDoc = gql`
   }
   ${ProfileInfoWithVisualFragmentDoc}
 `;
-export const InnovationPackTemplatesFragmentDoc = gql`
-  fragment InnovationPackTemplates on TemplatesSet {
+export const AdminInnovationPackTemplatesFragmentDoc = gql`
+  fragment AdminInnovationPackTemplates on TemplatesSet {
     id
     postTemplates {
       ...AdminPostTemplate
@@ -3558,231 +3639,6 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
 >;
-export const ChallengeExplorerPageDocument = gql`
-  query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
-    rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
-      hubs {
-        id
-        roles
-        challenges {
-          id
-          roles
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useChallengeExplorerPageQuery__
- *
- * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeExplorerPageQuery({
- *   variables: {
- *      userID: // value for 'userID'
- *   },
- * });
- */
-export function useChallengeExplorerPageQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
-    options
-  );
-}
-
-export function useChallengeExplorerPageLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerPageQuery,
-    SchemaTypes.ChallengeExplorerPageQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
-    ChallengeExplorerPageDocument,
-    options
-  );
-}
-
-export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
-export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
-export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerPageQuery,
-  SchemaTypes.ChallengeExplorerPageQueryVariables
->;
-export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
-  return { query: ChallengeExplorerPageDocument, variables: variables };
-}
-
-export const ChallengeExplorerSearchDocument = gql`
-  query ChallengeExplorerSearch($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      journeyResults {
-        id
-        type
-        terms
-        ... on SearchResultChallenge {
-          ...SearchResultChallenge
-        }
-      }
-    }
-  }
-  ${SearchResultChallengeFragmentDoc}
-`;
-
-/**
- * __useChallengeExplorerSearchQuery__
- *
- * To run a query within a React component, call `useChallengeExplorerSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeExplorerSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useChallengeExplorerSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerSearchQuery, SchemaTypes.ChallengeExplorerSearchQueryVariables>(
-    ChallengeExplorerSearchDocument,
-    options
-  );
-}
-
-export function useChallengeExplorerSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeExplorerSearchQuery,
-    SchemaTypes.ChallengeExplorerSearchQueryVariables
-  >(ChallengeExplorerSearchDocument, options);
-}
-
-export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
-export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
-export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerSearchQuery,
-  SchemaTypes.ChallengeExplorerSearchQueryVariables
->;
-export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
-  return { query: ChallengeExplorerSearchDocument, variables: variables };
-}
-
-export const ChallengeExplorerDataDocument = gql`
-  query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
-    hubs(IDs: $hubIDs) {
-      id
-      nameID
-      profile {
-        id
-        tagline
-        displayName
-      }
-      visibility
-      challenges(IDs: $challengeIDs) {
-        id
-        nameID
-        profile {
-          id
-          tagline
-          displayName
-          description
-          visuals {
-            ...VisualUri
-          }
-          tagset {
-            id
-            tags
-          }
-        }
-        context {
-          id
-          vision
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useChallengeExplorerDataQuery__
- *
- * To run a query within a React component, call `useChallengeExplorerDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeExplorerDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeExplorerDataQuery({
- *   variables: {
- *      hubIDs: // value for 'hubIDs'
- *      challengeIDs: // value for 'challengeIDs'
- *   },
- * });
- */
-export function useChallengeExplorerDataQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeExplorerDataQuery,
-    SchemaTypes.ChallengeExplorerDataQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
-    ChallengeExplorerDataDocument,
-    options
-  );
-}
-
-export function useChallengeExplorerDataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeExplorerDataQuery,
-    SchemaTypes.ChallengeExplorerDataQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
-    ChallengeExplorerDataDocument,
-    options
-  );
-}
-
-export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
-export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
-export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeExplorerDataQuery,
-  SchemaTypes.ChallengeExplorerDataQueryVariables
->;
-export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
-  return { query: ChallengeExplorerDataDocument, variables: variables };
-}
-
 export const ChallengePageDocument = gql`
   query challengePage($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -5692,7 +5548,13 @@ export const HubDashboardNavigationChallengesDocument = gql`
         id
         nameID
         profile {
-          ...HubDashboardNavigationItem
+          ...HubDashboardNavigationProfile
+        }
+        context {
+          ...HubDashboardNavigationContext
+        }
+        lifecycle {
+          ...HubDashboardNavigationLifecycle
         }
         authorization {
           id
@@ -5703,9 +5565,12 @@ export const HubDashboardNavigationChallengesDocument = gql`
           myMembershipStatus
         }
       }
+      visibility
     }
   }
-  ${HubDashboardNavigationItemFragmentDoc}
+  ${HubDashboardNavigationProfileFragmentDoc}
+  ${HubDashboardNavigationContextFragmentDoc}
+  ${HubDashboardNavigationLifecycleFragmentDoc}
 `;
 
 /**
@@ -5776,13 +5641,21 @@ export const HubDashboardNavigationOpportunitiesDocument = gql`
           id
           nameID
           profile {
-            ...HubDashboardNavigationItem
+            ...HubDashboardNavigationProfile
+          }
+          context {
+            ...HubDashboardNavigationContext
+          }
+          lifecycle {
+            ...HubDashboardNavigationLifecycle
           }
         }
       }
     }
   }
-  ${HubDashboardNavigationItemFragmentDoc}
+  ${HubDashboardNavigationProfileFragmentDoc}
+  ${HubDashboardNavigationContextFragmentDoc}
+  ${HubDashboardNavigationLifecycleFragmentDoc}
 `;
 
 /**
@@ -5907,16 +5780,16 @@ export const CalloutFormTemplatesFromHubDocument = gql`
       templates {
         id
         postTemplates {
-          ...PostTemplate
+          ...PostTemplateCard
         }
         whiteboardTemplates {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
         }
       }
     }
   }
-  ${PostTemplateFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -5980,12 +5853,12 @@ export const PostTemplatesFromHubDocument = gql`
       templates {
         id
         postTemplates {
-          ...PostTemplate
+          ...PostTemplateCard
         }
       }
     }
   }
-  ${PostTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
 `;
 
 /**
@@ -6047,12 +5920,12 @@ export const WhiteboardTemplatesFromHubDocument = gql`
       templates {
         id
         whiteboardTemplates {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
         }
       }
     }
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -8717,6 +8590,101 @@ export function refetchCalloutPageCalloutQuery(variables: SchemaTypes.CalloutPag
   return { query: CalloutPageCalloutDocument, variables: variables };
 }
 
+export const InnovationPackProfilePageDocument = gql`
+  query InnovationPackProfilePage($innovationPackId: UUID_NAMEID!) {
+    platform {
+      id
+      library {
+        id
+        innovationPack(ID: $innovationPackId) {
+          id
+          nameID
+          authorization {
+            id
+            myPrivileges
+          }
+          provider {
+            ...InnovationPackProviderProfileWithAvatar
+          }
+          profile {
+            ...InnovationPackProfile
+            tagline
+          }
+          templates {
+            id
+            whiteboardTemplates {
+              ...WhiteboardTemplateCard
+            }
+            postTemplates {
+              ...PostTemplateCard
+            }
+            innovationFlowTemplates {
+              ...InnovationFlowTemplateCard
+            }
+          }
+        }
+      }
+    }
+  }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
+  ${InnovationPackProfileFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
+  ${InnovationFlowTemplateCardFragmentDoc}
+`;
+
+/**
+ * __useInnovationPackProfilePageQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackProfilePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackProfilePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackProfilePageQuery({
+ *   variables: {
+ *      innovationPackId: // value for 'innovationPackId'
+ *   },
+ * });
+ */
+export function useInnovationPackProfilePageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >(InnovationPackProfilePageDocument, options);
+}
+
+export function useInnovationPackProfilePageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackProfilePageQuery,
+    SchemaTypes.InnovationPackProfilePageQueryVariables
+  >(InnovationPackProfilePageDocument, options);
+}
+
+export type InnovationPackProfilePageQueryHookResult = ReturnType<typeof useInnovationPackProfilePageQuery>;
+export type InnovationPackProfilePageLazyQueryHookResult = ReturnType<typeof useInnovationPackProfilePageLazyQuery>;
+export type InnovationPackProfilePageQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackProfilePageQuery,
+  SchemaTypes.InnovationPackProfilePageQueryVariables
+>;
+export function refetchInnovationPackProfilePageQuery(variables: SchemaTypes.InnovationPackProfilePageQueryVariables) {
+  return { query: InnovationPackProfilePageDocument, variables: variables };
+}
+
 export const ActivityCreatedDocument = gql`
   subscription activityCreated($input: ActivityCreatedSubscriptionInput!) {
     activityCreated(input: $input) {
@@ -8895,7 +8863,7 @@ export const HubPostTemplatesLibraryDocument = gql`
       templates {
         id
         postTemplates {
-          ...PostTemplate
+          ...PostTemplateCard
         }
       }
       host {
@@ -8907,7 +8875,7 @@ export const HubPostTemplatesLibraryDocument = gql`
       }
     }
   }
-  ${PostTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
   ${TemplateProviderProfileFragmentDoc}
 `;
 
@@ -8972,6 +8940,10 @@ export const PlatformPostTemplatesLibraryDocument = gql`
         innovationPacks {
           id
           nameID
+          profile {
+            id
+            displayName
+          }
           provider {
             id
             profile {
@@ -8981,7 +8953,7 @@ export const PlatformPostTemplatesLibraryDocument = gql`
           templates {
             id
             postTemplates {
-              ...PostTemplate
+              ...PostTemplateCard
             }
           }
         }
@@ -8989,7 +8961,7 @@ export const PlatformPostTemplatesLibraryDocument = gql`
     }
   }
   ${TemplateProviderProfileFragmentDoc}
-  ${PostTemplateFragmentDoc}
+  ${PostTemplateCardFragmentDoc}
 `;
 
 /**
@@ -11538,7 +11510,7 @@ export const HubWhiteboardTemplatesLibraryDocument = gql`
       templates {
         id
         whiteboardTemplates {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
         }
       }
       host {
@@ -11550,7 +11522,7 @@ export const HubWhiteboardTemplatesLibraryDocument = gql`
       }
     }
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
   ${TemplateProviderProfileFragmentDoc}
 `;
 
@@ -11617,13 +11589,13 @@ export const HubWhiteboardTemplateValueDocument = gql`
       templates {
         id
         whiteboardTemplate(ID: $whiteboardTemplateId) {
-          ...WhiteboardTemplate
+          ...WhiteboardTemplateCard
           value
         }
       }
     }
   }
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -11690,6 +11662,10 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
         innovationPacks {
           id
           nameID
+          profile {
+            id
+            displayName
+          }
           provider {
             id
             profile {
@@ -11699,7 +11675,7 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
           templates {
             id
             whiteboardTemplates {
-              ...WhiteboardTemplate
+              ...WhiteboardTemplateCard
             }
           }
         }
@@ -11707,7 +11683,7 @@ export const PlatformWhiteboardTemplatesLibraryDocument = gql`
     }
   }
   ${TemplateProviderProfileFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -11778,7 +11754,7 @@ export const PlatformWhiteboardTemplateValueDocument = gql`
           templates {
             id
             whiteboardTemplate(ID: $whiteboardTemplateId) {
-              ...WhiteboardTemplate
+              ...WhiteboardTemplateCard
               value
             }
           }
@@ -11787,7 +11763,7 @@ export const PlatformWhiteboardTemplateValueDocument = gql`
     }
   }
   ${InnovationPackWithProviderFragmentDoc}
-  ${WhiteboardTemplateFragmentDoc}
+  ${WhiteboardTemplateCardFragmentDoc}
 `;
 
 /**
@@ -19839,6 +19815,294 @@ export function refetchOpportunityContributionDetailsQuery(
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
 
+export const InnovationLibraryDocument = gql`
+  query InnovationLibrary {
+    platform {
+      id
+      library {
+        id
+        innovationPacks {
+          ...InnovationPackCard
+        }
+      }
+    }
+  }
+  ${InnovationPackCardFragmentDoc}
+`;
+
+/**
+ * __useInnovationLibraryQuery__
+ *
+ * To run a query within a React component, call `useInnovationLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useInnovationLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
+    InnovationLibraryDocument,
+    options
+  );
+}
+
+export function useInnovationLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationLibraryQuery,
+    SchemaTypes.InnovationLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InnovationLibraryQuery, SchemaTypes.InnovationLibraryQueryVariables>(
+    InnovationLibraryDocument,
+    options
+  );
+}
+
+export type InnovationLibraryQueryHookResult = ReturnType<typeof useInnovationLibraryQuery>;
+export type InnovationLibraryLazyQueryHookResult = ReturnType<typeof useInnovationLibraryLazyQuery>;
+export type InnovationLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationLibraryQuery,
+  SchemaTypes.InnovationLibraryQueryVariables
+>;
+export function refetchInnovationLibraryQuery(variables?: SchemaTypes.InnovationLibraryQueryVariables) {
+  return { query: InnovationLibraryDocument, variables: variables };
+}
+
+export const ChallengeExplorerPageDocument = gql`
+  query ChallengeExplorerPage($userID: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $userID, filter: { visibilities: [ACTIVE, DEMO] } }) {
+      hubs {
+        id
+        roles
+        challenges {
+          id
+          roles
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeExplorerPageQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerPageQuery({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useChallengeExplorerPageQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerPageQuery,
+    SchemaTypes.ChallengeExplorerPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
+    ChallengeExplorerPageDocument,
+    options
+  );
+}
+
+export function useChallengeExplorerPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerPageQuery,
+    SchemaTypes.ChallengeExplorerPageQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
+    ChallengeExplorerPageDocument,
+    options
+  );
+}
+
+export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
+export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
+export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerPageQuery,
+  SchemaTypes.ChallengeExplorerPageQueryVariables
+>;
+export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
+  return { query: ChallengeExplorerPageDocument, variables: variables };
+}
+
+export const ChallengeExplorerSearchDocument = gql`
+  query ChallengeExplorerSearch($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      journeyResults {
+        id
+        type
+        terms
+        ... on SearchResultChallenge {
+          ...SearchResultChallenge
+        }
+      }
+    }
+  }
+  ${SearchResultChallengeFragmentDoc}
+`;
+
+/**
+ * __useChallengeExplorerSearchQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useChallengeExplorerSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerSearchQuery, SchemaTypes.ChallengeExplorerSearchQueryVariables>(
+    ChallengeExplorerSearchDocument,
+    options
+  );
+}
+
+export function useChallengeExplorerSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >(ChallengeExplorerSearchDocument, options);
+}
+
+export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
+export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
+export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerSearchQuery,
+  SchemaTypes.ChallengeExplorerSearchQueryVariables
+>;
+export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
+  return { query: ChallengeExplorerSearchDocument, variables: variables };
+}
+
+export const ChallengeExplorerDataDocument = gql`
+  query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
+    hubs(IDs: $hubIDs) {
+      id
+      nameID
+      profile {
+        id
+        tagline
+        displayName
+      }
+      visibility
+      challenges(IDs: $challengeIDs) {
+        id
+        nameID
+        profile {
+          id
+          tagline
+          displayName
+          description
+          visuals {
+            ...VisualUri
+          }
+          tagset {
+            id
+            tags
+          }
+        }
+        context {
+          id
+          vision
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useChallengeExplorerDataQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerDataQuery({
+ *   variables: {
+ *      hubIDs: // value for 'hubIDs'
+ *      challengeIDs: // value for 'challengeIDs'
+ *   },
+ * });
+ */
+export function useChallengeExplorerDataQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerDataQuery,
+    SchemaTypes.ChallengeExplorerDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
+    ChallengeExplorerDataDocument,
+    options
+  );
+}
+
+export function useChallengeExplorerDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerDataQuery,
+    SchemaTypes.ChallengeExplorerDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerDataQuery, SchemaTypes.ChallengeExplorerDataQueryVariables>(
+    ChallengeExplorerDataDocument,
+    options
+  );
+}
+
+export type ChallengeExplorerDataQueryHookResult = ReturnType<typeof useChallengeExplorerDataQuery>;
+export type ChallengeExplorerDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerDataLazyQuery>;
+export type ChallengeExplorerDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerDataQuery,
+  SchemaTypes.ChallengeExplorerDataQueryVariables
+>;
+export function refetchChallengeExplorerDataQuery(variables?: SchemaTypes.ChallengeExplorerDataQueryVariables) {
+  return { query: ChallengeExplorerDataDocument, variables: variables };
+}
+
 export const GetSupportedCredentialMetadataDocument = gql`
   query getSupportedCredentialMetadata {
     getSupportedVerifiedCredentialMetadata {
@@ -20922,16 +21186,7 @@ export const InnovationPacksDocument = gql`
           id
           nameID
           provider {
-            id
-            nameID
-            profile {
-              id
-              displayName
-              visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
+            ...InnovationPackProviderProfileWithAvatar
           }
           profile {
             id
@@ -20953,6 +21208,7 @@ export const InnovationPacksDocument = gql`
       }
     }
   }
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
   ${AdminPostTemplateFragmentDoc}
   ${AdminWhiteboardTemplateFragmentDoc}
   ${AdminInnovationFlowTemplateFragmentDoc}
@@ -21300,7 +21556,7 @@ export const AdminInnovationPackDocument = gql`
             ...InnovationPackProfile
           }
           templates {
-            ...InnovationPackTemplates
+            ...AdminInnovationPackTemplates
           }
         }
       }
@@ -21315,7 +21571,7 @@ export const AdminInnovationPackDocument = gql`
     }
   }
   ${InnovationPackProfileFragmentDoc}
-  ${InnovationPackTemplatesFragmentDoc}
+  ${AdminInnovationPackTemplatesFragmentDoc}
 `;
 
 /**

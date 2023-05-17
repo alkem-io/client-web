@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Box, BoxProps, useTheme } from '@mui/material';
 
-export type RoundedBadgeSize = 'medium' | 'small';
+export type RoundedBadgeSize = 'medium' | 'small' | 'xsmall';
 
 export interface RoundedBadgeProps extends BoxProps {
   size: RoundedBadgeSize;
@@ -14,6 +14,8 @@ const getSizeInSpacing = (size: RoundedBadgeSize) => {
       return 4;
     case 'small':
       return 2.5;
+    case 'xsmall':
+      return 2;
   }
 };
 

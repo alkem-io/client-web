@@ -78,15 +78,17 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
         open={isContactDialogVisible}
         onClose={() => setContactDialogVisible(false)}
         onSendMessage={handleSendMessage}
-        messageReceivers={[
-          {
-            id: author?.id,
-            title: author?.displayName,
-            avatarUri: author?.avatarUrl,
-            city: author?.city,
-            country: author?.country,
-          },
-        ]}
+        messageReceivers={
+          author && [
+            {
+              id: author.id,
+              displayName: author.displayName,
+              avatarUri: author.avatarUrl,
+              city: author.city,
+              country: author.country,
+            },
+          ]
+        }
       />
     </>
   );

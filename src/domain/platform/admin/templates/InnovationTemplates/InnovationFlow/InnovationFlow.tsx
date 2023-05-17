@@ -3,14 +3,14 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../../core/apollo/generated/graphql-schema';
 import { LifecycleModal } from '../../../../../../common/components/composite/common/MetricsPanel/StateMetricCardItem';
-import { ReactComponent as LifecycleStateIcon } from './LifecycleStateIcon.svg';
+import { ReactComponent as LifecycleStateIcon } from './InnovationFlowIcon.svg';
 import RootThemeProvider from '../../../../../../core/ui/themes/RootThemeProvider';
 
-export interface LifecycleProps {
+export interface InnovationFlowProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
-export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
+const InnovationFlow: FC<InnovationFlowProps> = ({ lifecycle }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const state = lifecycle?.state || '';
   const { t } = useTranslation();
@@ -36,3 +36,5 @@ export const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
     </>
   );
 };
+
+export default InnovationFlow;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { InnovationPackIcon } from '../InnovationPacks/InnovationPackIcon';
+import InnovationPackIcon from '../../../../collaboration/InnovationPack/InnovationPackIcon';
 import { TemplateInnovationPackMetaInfo } from '../InnovationPacks/InnovationPack';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';

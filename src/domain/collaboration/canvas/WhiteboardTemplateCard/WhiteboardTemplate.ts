@@ -1,15 +1,13 @@
-import {
-  WhiteboardTemplateFragment,
-  InnovationPackWithProviderFragment,
-  TemplateProviderProfileFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { WhiteboardTemplateCardFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateCardInnovationPack, TemplateCardProviderProfile } from '../../templates/TemplateCard/Types';
 
 export interface WhiteboardTemplate extends TemplateBase {
   displayName: string;
-  description: string;
+  description: string | undefined;
   visualUri: string | undefined;
-  tags: string[] | undefined;
+  // TODO display tags
+  // tags: string[] | undefined;
   provider: {
     displayName: string | undefined;
     avatarUri: string | undefined;
@@ -25,22 +23,22 @@ export interface WhiteboardTemplateWithValue extends WhiteboardTemplate {
 }
 
 export const whiteboardTemplateMapper = (
-  template: WhiteboardTemplateFragment,
-  profile?: TemplateProviderProfileFragment,
-  innovationPack?: InnovationPackWithProviderFragment
+  template: WhiteboardTemplateCardFragment,
+  providerProfile?: TemplateCardProviderProfile,
+  innovationPack?: TemplateCardInnovationPack
 ): WhiteboardTemplate => {
   return {
     id: template.id,
     displayName: template.profile.displayName,
-    description: template.profile.description ?? '',
+    description: template.profile.description,
     tags: template.profile.tagset?.tags,
     provider: {
-      displayName: profile?.displayName,
-      avatarUri: profile?.visual?.uri,
+      displayName: providerProfile?.displayName,
+      avatarUri: providerProfile?.visual?.uri,
     },
     innovationPack: {
       id: innovationPack?.id,
-      displayName: innovationPack?.provider?.profile.displayName,
+      displayName: innovationPack?.profile?.displayName,
     },
     visualUri: template.profile.visual?.uri,
   };

@@ -20,7 +20,7 @@ import { COUNTRIES } from '../../../../domain/common/location/countries.constant
 import FormRow from '../../FormLayout';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { ALT_TEXT_LENGTH, LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 const socialNames = [
@@ -69,6 +69,7 @@ export const UserForm: FC<UserProps> = ({
       id: profileId,
       displayName,
       description: bio,
+      tagline,
       references,
       location: { city, country },
       tagsets,
@@ -90,6 +91,7 @@ export const UserForm: FC<UserProps> = ({
 
   const initialValues: UserFormGenerated = {
     displayName: displayName || '',
+    tagline: tagline || '',
     firstName: firstName || '',
     lastName: lastName || '',
     email: email || '',
@@ -123,6 +125,7 @@ export const UserForm: FC<UserProps> = ({
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(LONG_TEXT_LENGTH),
+    tagline: yup.string().max(ALT_TEXT_LENGTH),
   });
 
   /**
@@ -144,6 +147,7 @@ export const UserForm: FC<UserProps> = ({
         twitter,
         github,
         displayName,
+        tagline,
         ...otherData
       } = userData;
       const finalReferences = [
@@ -158,6 +162,7 @@ export const UserForm: FC<UserProps> = ({
         profile: {
           id: profileId,
           displayName: displayName,
+          tagline: tagline,
           description: bio,
           references: finalReferences,
           location: {
@@ -253,8 +258,20 @@ export const UserForm: FC<UserProps> = ({
                           </>
                         )}
                       </LocationSegment>
+                      <FormRow>
+                        <FormikInputField
+                          name={'tagline'}
+                          title={t('components.profile.fields.tagline.title')}
+                          readOnly={isReadOnlyMode}
+                          placeholder={t('components.profile.fields.tagline.title')}
+                          disabled={isSubmitting}
+                          withCounter
+                          maxLength={ALT_TEXT_LENGTH}
+                        />
+                      </FormRow>
                     </Grid>
-                    <Grid container spacing={4} marginTop={2}>
+
+                    <Grid container spacing={4} marginTop={1}>
                       <FormRow>
                         <FormikMarkdownField
                           name="bio"
@@ -283,12 +300,14 @@ export const UserForm: FC<UserProps> = ({
                       />
 
                       {isEditMode && (
-                        <ProfileReferenceSegment
-                          references={references}
-                          readOnly={isReadOnlyMode}
-                          disabled={isSubmitting}
-                          profileId={profileId}
-                        />
+                        <Grid item>
+                          <ProfileReferenceSegment
+                            references={references}
+                            readOnly={isReadOnlyMode}
+                            disabled={isSubmitting}
+                            profileId={profileId}
+                          />
+                        </Grid>
                       )}
 
                       {isEditMode && (

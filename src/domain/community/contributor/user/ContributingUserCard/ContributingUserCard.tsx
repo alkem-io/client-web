@@ -24,6 +24,7 @@ const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserC
 
   const messageReceivers = [
     {
+      id,
       title: contributorCardProps.displayName,
       avatarUri: contributorCardProps.avatarUri,
       city: contributorCardProps.city,
@@ -35,10 +36,6 @@ const ContributingUserCard = ({ id, ...contributorCardProps }: ContributingUserC
 
   const handleSendMessage = useCallback(
     async (messageText: string) => {
-      if (!id) {
-        throw new Error('User not loaded.');
-      }
-
       await sendMessageToUser({
         variables: {
           messageData: {

@@ -11,6 +11,9 @@ import { useTranslation } from 'react-i18next';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import { CaptionSmall } from '../../../../core/ui/typography/components';
+import PageContent from '../../../../core/ui/content/PageContent';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
 // The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
@@ -47,24 +50,14 @@ const Root = styled(Box)(({ theme }) => ({
 }));
 
 const ProfileInfo = styled(Box)(({ theme }) => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-around',
-  // Icons:
   '& svg': {
     marginRight: theme.spacing(0.5),
   },
 }));
 
-const ProfileInfoWrapper = styled(Grid)(({ theme }) => ({
-  height: '75%',
-  [theme.breakpoints.down('lg')]: {
-    height: '90%',
-  },
-  [theme.breakpoints.only('xs')]: {
-    height: '100%',
-  },
+const ProfileInfoWrapper = styled(Box)(({ theme }) => ({
+  marginTop: gutters(2)(theme),
+  flexGrow: 1,
 }));
 
 const ImageWrapper = styled('div')(({ theme }) => ({
@@ -144,6 +137,7 @@ export interface ProfileBannerProps {
  */
 const ProfileBanner: FC<ProfileBannerProps> = ({
   title,
+  tagline,
   location,
   phone,
   socialLinks,
@@ -166,49 +160,60 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   const imageLoadError = () => {
     setImageLoading(false);
   };
-  const messageReceivers = [{ title, avatarUri: avatarUrl, city: location?.city, country: location?.country }];
+
+  // Since there's only 1 receiver, and it's used just for the Dialog, it's ok to have id=''
+  const messageReceivers = [{ id: '', title, avatarUri: avatarUrl, city: location?.city, country: location?.country }];
 
   return (
     <Root ref={containerReference}>
       {!dataLoading && (
         <Grid container spacing={1} sx={{ height: '100%', alignItems: 'center' }}>
-          <Grid item sx={{ aspectRatio: '1/1', height: '100%' }}>
-            <ImageWrapper>
-              {imageLoading && (
-                <Skeleton
-                  variant="rectangular"
-                  animation="wave"
-                  sx={{ height: '100%', width: '100%', position: 'absolute' }}
+          <PageContent background="transparent">
+            <Grid item sx={{ aspectRatio: '1/1', height: '100%' }}>
+              <ImageWrapper>
+                {imageLoading && (
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    sx={{ height: '100%', width: '100%', position: 'absolute' }}
+                  />
+                )}
+                <Image
+                  src={avatarUrl}
+                  alt={avatarAltText}
+                  onLoad={() => setImageLoading(false)}
+                  onError={imageLoadError}
+                >
+                  {title ? title[0] : ''}
+                </Image>
+              </ImageWrapper>
+            </Grid>
+            <ProfileInfoWrapper>
+              <ProfileInfo>
+                <Title>
+                  <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
+                    {title}
+                  </Typography>
+                </Title>
+                {tagline && <CaptionSmall sx={{ maxWidth: '50%' }}>{tagline}</CaptionSmall>}
+                <LocationView location={formatLocation(location)} mode="icon" iconSize={'small'} />
+                <ContactDetail
+                  icon={<LocalPhoneIcon color="primary" fontSize="small" />}
+                  title={t('components.profile.fields.telephone.title')}
+                  value={phone}
                 />
-              )}
-              <Image src={avatarUrl} alt={avatarAltText} onLoad={() => setImageLoading(false)} onError={imageLoadError}>
-                {title ? title[0] : ''}
-              </Image>
-            </ImageWrapper>
-          </Grid>
-          <ProfileInfoWrapper item>
-            <ProfileInfo>
-              <Title>
-                <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
-                  {title}
-                </Typography>
-              </Title>
-              <LocationView location={formatLocation(location)} mode="icon" iconSize={'small'} />
-              <ContactDetail
-                icon={<LocalPhoneIcon color="primary" fontSize="small" />}
-                title={t('components.profile.fields.telephone.title')}
-                value={phone}
-              />
-              <Box>
-                <SocialLinks
-                  items={socialLinks}
-                  iconSize="medium"
-                  isContactable={isContactable}
-                  onContact={openMessageUserDialog}
-                />
-              </Box>
-            </ProfileInfo>
-          </ProfileInfoWrapper>
+                <Box>
+                  <SocialLinks
+                    items={socialLinks}
+                    iconSize="medium"
+                    isContactable={isContactable}
+                    onContact={openMessageUserDialog}
+                  />
+                </Box>
+              </ProfileInfo>
+            </ProfileInfoWrapper>
+          </PageContent>
+
           <DirectMessageDialog
             title={t('send-message-dialog.direct-message-title')}
             open={isMessageUserDialogOpen}

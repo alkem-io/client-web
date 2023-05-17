@@ -6,20 +6,33 @@ import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 // If the width of the component is bigger than 600, scroll will be vertical
 const HORIZONTAL_SCROLL_MAX_WIDTH = 600;
 
+interface ScrollableCardsLayoutProps<Item extends Identifiable | null | undefined> extends CardsLayoutProps<Item> {
+  noVerticalMarginTop?: boolean;
+  minHeight?: number;
+}
+
 /**
  * @deprecated use ScrollableCardsLayoutContainer
  * TODO reuse ScrollableCardsLayoutContainer within this one
  */
 const ScrollableCardsLayout = <Item extends Identifiable | null | undefined>({
   maxHeight,
+  noVerticalMarginTop = false,
+  minHeight,
   ...props
-}: CardsLayoutProps<Item>) => {
+}: ScrollableCardsLayoutProps<Item>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const orientation =
     containerRef.current && containerRef.current.offsetWidth <= HORIZONTAL_SCROLL_MAX_WIDTH ? 'horizontal' : 'vertical';
 
   return (
-    <ScrollerWithGradient orientation={orientation} maxHeight={maxHeight} scrollerRef={containerRef}>
+    <ScrollerWithGradient
+      orientation={orientation}
+      minHeight={minHeight}
+      maxHeight={maxHeight}
+      scrollerRef={containerRef}
+      marginTop={orientation === 'vertical' && noVerticalMarginTop ? 0 : undefined}
+    >
       <CardsLayout
         cards={orientation === 'vertical'}
         noWrap={orientation === 'horizontal'}

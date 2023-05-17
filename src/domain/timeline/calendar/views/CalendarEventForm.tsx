@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { Box, Theme, useMediaQuery } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
@@ -64,6 +64,7 @@ const CalendarEventForm = ({
   actions,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
     onSubmit(formValues as CalendarEventFormData);
@@ -117,14 +118,15 @@ const CalendarEventForm = ({
                   <FormikInputField name="displayName" title={t('fields.displayName')} />
                 </Box>
               </Box>
-              <Box display="flex" gap={gutters()}>
-                <GridItem columns={4}>
+              <Box display="flex" gap={gutters()} flexWrap="wrap">
+                <GridItem columns={isMobile ? undefined : 4}>
                   <Box display="flex" gap={gutters()}>
-                    <FormikTimePicker name="startDate" label={t('fields.startTime')} />
+                    <FormikTimePicker name="startDate" label={t('fields.startTime')} containerProps={{ flexGrow: 1 }} />
                     <FormikDurationMinutes
                       name="durationMinutes"
                       startTimeFieldName="startDate"
                       label={t('fields.endTime')}
+                      containerProps={{ flexGrow: 1 }}
                     />
                   </Box>
                 </GridItem>

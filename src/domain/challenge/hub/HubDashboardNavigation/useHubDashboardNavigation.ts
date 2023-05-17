@@ -6,7 +6,9 @@ import { JourneyTypeName } from '../../JourneyTypeName';
 import {
   Authorization,
   AuthorizationPrivilege,
-  HubDashboardNavigationItemFragment,
+  HubDashboardNavigationContextFragment,
+  HubDashboardNavigationProfileFragment,
+  HubDashboardNavigationLifecycleFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
 import { useMemo } from 'react';
@@ -24,8 +26,15 @@ export interface DashboardNavigationItem {
   id: string;
   nameId: string;
   displayName: string;
+  tagline: string;
+  vision?: string;
   journeyTypeName: JourneyTypeName;
-  visualUri: string | undefined;
+  visual?: {
+    uri: string;
+    alternativeText?: string;
+  };
+  tags: string[] | undefined;
+  lifecycleState: string | undefined;
   private?: boolean;
   children?: DashboardNavigationItem[];
 }
@@ -33,14 +42,24 @@ export interface DashboardNavigationItem {
 const DashboardNavigationItemPropsGetter =
   (journeyTypeName: JourneyTypeName) =>
   (
-    journey: { id: string; nameID: string; profile: HubDashboardNavigationItemFragment },
+    journey: {
+      id: string;
+      nameID: string;
+      profile: HubDashboardNavigationProfileFragment;
+      context?: HubDashboardNavigationContextFragment;
+      lifecycle?: HubDashboardNavigationLifecycleFragment;
+    },
     disabled?: boolean
   ): DashboardNavigationItem => {
     return {
       id: journey.id,
       nameId: journey.nameID,
       displayName: journey.profile.displayName,
-      visualUri: journey.profile.visual?.uri,
+      tagline: journey.profile.tagline,
+      vision: journey.context?.vision,
+      visual: journey.profile.visual,
+      tags: journey.profile.tagset?.tags,
+      lifecycleState: journey.lifecycle?.state,
       private: disabled,
       journeyTypeName,
     };

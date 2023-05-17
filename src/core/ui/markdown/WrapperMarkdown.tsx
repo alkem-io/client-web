@@ -11,9 +11,20 @@ const allowedNodeTypes = ['iframe'] as const;
 
 export interface MarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
 
-export const WrapperMarkdown = ({ card = false, flat = false, multiline = !flat, ...props }: MarkdownProps) => {
+export const WrapperMarkdown = ({
+  card = false,
+  flat = false,
+  multiline = !flat,
+  disableParagraphPadding = card,
+  ...props
+}: MarkdownProps) => {
   return (
-    <MarkdownOptionsProvider card={card} flat={flat} multiline={multiline}>
+    <MarkdownOptionsProvider
+      card={card}
+      flat={flat}
+      multiline={multiline}
+      disableParagraphPadding={disableParagraphPadding}
+    >
       <ReactMarkdown
         components={components}
         remarkPlugins={[gfm, [emoji, { padSpaceAfter: false, emoticon: true }], [PlainText, { enabled: flat }]]}

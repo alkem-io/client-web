@@ -7,16 +7,7 @@ query InnovationPacks {
         id
         nameID
         provider {
-          id
-          nameID
-          profile {
-            id
-            displayName
-            visual(type: AVATAR) {
-              id
-              uri
-            }
-          }
+          ...InnovationPackProviderProfileWithAvatar
         }
         profile {
           id
@@ -38,6 +29,20 @@ query InnovationPacks {
     }
   }
 }
+
+fragment InnovationPackProviderProfileWithAvatar on Organization {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    visual(type: AVATAR) {
+      id
+      uri
+    }
+  }
+}
+
 query InnovationPackWhiteboardTemplateWithValue($innovationPackId: UUID_NAMEID!, $whiteboardTemplateId: UUID!) {
   platform {
     id
