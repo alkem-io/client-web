@@ -166,7 +166,9 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
   const imageLoadError = () => {
     setImageLoading(false);
   };
-  const messageReceivers = [{ title, avatarUri: avatarUrl, city: location?.city, country: location?.country }];
+
+  // Since there's only 1 receiver, and it's used just for the Dialog, it's ok to have id=''
+  const messageReceivers = [{ id: '', title, avatarUri: avatarUrl, city: location?.city, country: location?.country }];
 
   return (
     <Root ref={containerReference}>

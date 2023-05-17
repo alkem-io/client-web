@@ -1,30 +1,60 @@
 import React, { ReactNode, useCallback, useState } from 'react';
-import { compact } from 'lodash';
-import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useSendMessageToOrganizationMutation,
+  useSendMessageToUserMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { DirectMessageDialog, MessageReceiverChipData } from './DirectMessageDialog';
 
 interface UseDirectMessageDialogOptions {
   dialogTitle: ReactNode;
 }
 
+export type ReceiverType = 'user' | 'organization';
+
 const useDirectMessageDialog = ({ dialogTitle }: UseDirectMessageDialogOptions) => {
   const [sendMessageToUser] = useSendMessageToUserMutation();
+  const [sendMessageToOrganization] = useSendMessageToOrganizationMutation();
+
+  const [receiverType, setReceiverType] = useState<ReceiverType>();
   const [directMessageReceivers, setDirectMessageReceivers] = useState<MessageReceiverChipData[]>();
+  const [isDialogOpen, setIsDialogOpen] = useState(!!directMessageReceivers);
+
   const handleSendMessage = useCallback(
     async (messageText: string) => {
-      const receiverIds = compact(directMessageReceivers?.map(r => r.id));
-      if (!receiverIds || receiverIds.length === 0) {
+      if (!directMessageReceivers || directMessageReceivers.length === 0) {
         return;
       }
 
-      await sendMessageToUser({
-        variables: {
-          messageData: {
-            message: messageText,
-            receiverIds,
-          },
-        },
-      });
+      switch (receiverType) {
+        case 'user': {
+          const receiverIds = directMessageReceivers?.map(r => r.id);
+
+          await sendMessageToUser({
+            variables: {
+              messageData: {
+                message: messageText,
+                receiverIds,
+              },
+            },
+          });
+
+          return;
+        }
+        case 'organization': {
+          const [{ id: organizationId }] = directMessageReceivers;
+
+          await sendMessageToOrganization({
+            variables: {
+              messageData: {
+                message: messageText,
+                organizationId,
+              },
+            },
+          });
+
+          return;
+        }
+      }
     },
     [sendMessageToUser, directMessageReceivers]
   );
@@ -32,15 +62,17 @@ const useDirectMessageDialog = ({ dialogTitle }: UseDirectMessageDialogOptions) 
   const directMessageDialog = (
     <DirectMessageDialog
       title={dialogTitle}
-      open={Boolean(directMessageReceivers?.length)}
-      onClose={() => setDirectMessageReceivers(undefined)}
+      open={isDialogOpen}
+      onClose={() => setIsDialogOpen(false)}
       onSendMessage={handleSendMessage}
       messageReceivers={directMessageReceivers}
     />
   );
 
-  const sendMessage = useCallback((receivers: MessageReceiverChipData[]) => {
+  const sendMessage = useCallback((receiverType: ReceiverType, ...receivers: MessageReceiverChipData[]) => {
     setDirectMessageReceivers(receivers);
+    setReceiverType(receiverType);
+    setIsDialogOpen(true);
   }, []);
 
   return {
