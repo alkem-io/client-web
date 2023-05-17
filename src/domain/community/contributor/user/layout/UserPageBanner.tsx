@@ -48,7 +48,7 @@ const UserPageBanner: FC = () => {
     return (
       <ProfileBanner
         title={profile.displayName}
-        tagline={profile.description}
+        tagline={profile.tagline}
         location={profile.location}
         phone={phone}
         socialLinks={socialLinks}

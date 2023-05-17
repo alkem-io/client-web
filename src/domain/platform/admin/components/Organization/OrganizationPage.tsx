@@ -76,6 +76,7 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
         profileData: {
           displayName: profileData.displayName,
           description: profileData.description,
+          tagline: profileData.tagline,
           referencesData: profileData.referencesData,
         },
       };
@@ -124,6 +125,7 @@ const OrganizationPage: FC<Props> = ({ title, mode }) => {
         profileData: {
           displayName: profileData?.displayName,
           description: profileData?.description,
+          tagline: profileData?.tagline,
           location: {
             city: profileData?.location?.city,
             country: profileData?.location?.country,
