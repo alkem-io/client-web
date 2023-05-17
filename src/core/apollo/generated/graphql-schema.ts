@@ -7975,6 +7975,7 @@ export type HubDashboardNavigationChallengesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    visibility: HubVisibility;
     challenges?:
       | Array<{
           __typename?: 'Challenge';
@@ -7984,8 +7985,14 @@ export type HubDashboardNavigationChallengesQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagline: string;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            visual?:
+              | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+              | undefined;
           };
+          context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+          lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -8020,8 +8027,14 @@ export type HubDashboardNavigationOpportunitiesQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagline: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  visual?:
+                    | { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined }
+                    | undefined;
                 };
+                context?: { __typename?: 'Context'; id: string; vision?: string | undefined } | undefined;
+                lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
               }>
             | undefined;
         }>
@@ -8029,11 +8042,21 @@ export type HubDashboardNavigationOpportunitiesQuery = {
   };
 };
 
-export type HubDashboardNavigationItemFragment = {
+export type HubDashboardNavigationProfileFragment = {
   __typename?: 'Profile';
   id: string;
   displayName: string;
-  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  tagline: string;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  visual?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
+};
+
+export type HubDashboardNavigationContextFragment = { __typename?: 'Context'; id: string; vision?: string | undefined };
+
+export type HubDashboardNavigationLifecycleFragment = {
+  __typename?: 'Lifecycle';
+  id: string;
+  state?: string | undefined;
 };
 
 export type HubTemplatesQueryVariables = Exact<{

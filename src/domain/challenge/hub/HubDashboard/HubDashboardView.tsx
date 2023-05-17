@@ -5,6 +5,7 @@ import {
   AssociatedOrganizationDetailsFragment,
   DashboardLeadUserFragment,
   DashboardTopCalloutFragment,
+  HubVisibility,
   HubWelcomeBlockContributorProfileFragment,
   Reference,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -62,6 +63,7 @@ interface HubDashboardViewProps<ChildEntity extends Identifiable> extends Partia
   dashboardNavigationLoading: boolean;
   who: string | undefined;
   impact: string | undefined;
+  hubVisibility?: HubVisibility;
   vision?: string;
   communityId?: string;
   organization?: unknown;
@@ -104,6 +106,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
   dashboardNavigationLoading,
   who,
   impact,
+  hubVisibility,
   loading,
   hubNameId,
   challengeNameId,
@@ -231,6 +234,7 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
           </FullWidthButton>
           <DashboardNavigation
             hubNameId={hubNameId}
+            hubVisibility={hubVisibility}
             displayName={displayName}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
