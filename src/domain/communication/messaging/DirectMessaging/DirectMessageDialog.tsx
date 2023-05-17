@@ -20,7 +20,7 @@ const GRID_COLUMNS_DESKTOP = 6;
 const GRID_COLUMNS_MOBILE = 3;
 
 export interface MessageReceiverChipData {
-  id?: string;
+  id: string;
   displayName?: string;
   city?: string;
   country?: string;
@@ -39,6 +39,10 @@ interface SendMessageData {
   message: string;
 }
 
+/**
+ * @deprecated - please don't use directly unless absolutely unavoidable.
+ * Use useDirectMessageDialog hook instead.
+ */
 export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
   open,
   onClose,
@@ -47,6 +51,8 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
   title,
 }) => {
   const { t } = useTranslation();
+
+  const [isMessageSent, setMessageSent] = useState(false);
 
   const [handleSendMessage, isLoading, error] = useLoadingState(async (values: SendMessageData, { resetForm }) => {
     await onSendMessage(values.message);
@@ -58,13 +64,12 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
 
   const handleClose = () => {
     onClose();
+    setMessageSent(false);
   };
 
   const validationSchema = yup.object().shape({
     message: yup.string().required(t('forms.validations.required')),
   });
-
-  const [isMessageSent, setMessageSent] = useState(false);
 
   const initialValues: SendMessageData = {
     message: '',
@@ -89,9 +94,9 @@ export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
               <Form noValidate autoComplete="off">
                 <GridContainer disablePadding marginBottom={gutters(1)}>
                   <GridProvider columns={breakpoint === 'xs' ? GRID_COLUMNS_MOBILE : GRID_COLUMNS_DESKTOP} force>
-                    {messageReceivers?.map((receiver, index) => (
+                    {messageReceivers?.map(receiver => (
                       <ProfileChip
-                        key={receiver.id ?? index}
+                        key={receiver.id}
                         displayName={receiver.displayName}
                         avatarUrl={receiver.avatarUri}
                         city={receiver.city}

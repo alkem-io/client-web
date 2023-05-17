@@ -199,22 +199,33 @@ const HubDashboardView = <ChildEntity extends Identifiable>({
                   profile={user.profile}
                   url={buildUserProfileUrl(user.nameID)}
                   onContact={() => {
-                    sendMessage([
-                      {
-                        id: user.id,
-                        displayName: user.profile.displayName,
-                        avatarUri: user.profile.visual?.uri,
-                        country: user.profile.location?.country,
-                        city: user.profile.location?.city,
-                      },
-                    ]);
+                    sendMessage('user', {
+                      id: user.id,
+                      displayName: user.profile.displayName,
+                      avatarUri: user.profile.visual?.uri,
+                      country: user.profile.location?.country,
+                      city: user.profile.location?.city,
+                    });
                   }}
                 />
               ))}
             </Gutters>
             <Gutters row disablePadding>
               {leadOrganizations?.slice(0, 2).map(org => (
-                <ContributorCardHorizontal key={org.id} profile={org.profile} url={buildOrganizationUrl(org.nameID)} />
+                <ContributorCardHorizontal
+                  key={org.id}
+                  profile={org.profile}
+                  url={buildOrganizationUrl(org.nameID)}
+                  onContact={() => {
+                    sendMessage('organization', {
+                      id: org.id,
+                      displayName: org.profile.displayName,
+                      avatarUri: org.profile.visual?.uri,
+                      country: org.profile.location?.country,
+                      city: org.profile.location?.city,
+                    });
+                  }}
+                />
               ))}
             </Gutters>
           </PageContentBlock>
