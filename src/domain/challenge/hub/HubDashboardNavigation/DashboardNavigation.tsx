@@ -1,5 +1,16 @@
 import React, { PropsWithChildren, ReactNode, useMemo, useState } from 'react';
-import { Avatar, Box, ButtonBase, Collapse, IconButton, Skeleton, Tooltip, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  ButtonBase,
+  Collapse,
+  IconButton,
+  Skeleton,
+  Tooltip,
+  TooltipProps,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import {
@@ -19,6 +30,7 @@ import LinkNoUnderline from '../../../shared/components/LinkNoUnderline';
 import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import SwapColors from '../../../../core/ui/palette/SwapColors';
 import { useTranslation } from 'react-i18next';
+import { Theme } from '@mui/material/styles';
 import ChallengeCard from '../../challenge/ChallengeCard/ChallengeCard';
 import { HubVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import OpportunityCard from '../../opportunity/OpportunityCard/OpportunityCard';
@@ -33,17 +45,19 @@ interface DashboardNavigationProps {
 
 interface DashboardNavigationItemViewProps extends Omit<DashboardNavigationItem, 'id' | 'nameId' | 'children'> {
   url?: string;
-  tooltip?: NonNullable<ReactNode>;
+  tooltipCard?: ReactNode;
+  tooltipPlacement?: TooltipProps['placement'];
 }
 
 const DashboardNavigationItemView = ({
   displayName,
   visual,
   url,
-  tooltip = <></>,
   journeyTypeName,
   children,
   private: isPrivate = false,
+  tooltipCard,
+  tooltipPlacement,
 }: PropsWithChildren<DashboardNavigationItemViewProps>) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -63,7 +77,7 @@ const DashboardNavigationItemView = ({
 
   return (
     <Box>
-      <Tooltip title={tooltip} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
+      <Tooltip title={tooltipCard ?? <Skeleton />} PopperProps={{ sx: { '.MuiTooltip-tooltip': { padding: 0 } } }}>
         <BadgeCardView
           component={LinkNoUnderline}
           to={url ?? ''}
@@ -98,7 +112,7 @@ const DashboardNavigationItemView = ({
             isPrivate ? (
               <Tooltip
                 title={<Caption>{t('components.dashboardNavigation.privateChallenge')}</Caption>}
-                placement="right"
+                placement={tooltipPlacement}
                 arrow
               >
                 <IconButton disableRipple onClick={preventDefault}>
@@ -157,13 +171,21 @@ const DashboardNavigation = ({
 
   const showAll = isExpanded || allItemsFit;
 
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
+  const tooltipPlacement = isMobile ? 'left' : 'right';
+
   return (
     <PageContentBlock>
       <PageContentBlockHeader
         icon={<HubOutlined />}
         title={displayName}
         actions={
-          <Tooltip title={<Caption>{t('components.dashboardNavigation.help')}</Caption>} placement="right" arrow>
+          <Tooltip
+            title={<Caption>{t('components.dashboardNavigation.help')}</Caption>}
+            placement={tooltipPlacement}
+            arrow
+          >
             <HelpOutlineOutlined fontSize="small" />
           </Tooltip>
         }
@@ -180,7 +202,7 @@ const DashboardNavigation = ({
               <DashboardNavigationItemView
                 key={id}
                 url={challengeUrl}
-                tooltip={
+                tooltipCard={
                   <ChallengeCard
                     challengeId={id}
                     challengeNameId={challengeNameId}
@@ -197,6 +219,7 @@ const DashboardNavigation = ({
                     sx={{ width: gutters(15) }}
                   />
                 }
+                tooltipPlacement={tooltipPlacement}
                 {...challenge}
               >
                 {Boolean(challenge.children?.length) &&
@@ -204,7 +227,7 @@ const DashboardNavigation = ({
                     <DashboardNavigationItemView
                       key={id}
                       url={hubNameId && buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
-                      tooltip={
+                      tooltipCard={
                         <OpportunityCard
                           opportunityId={id}
                           banner={opportunity.visual}
