@@ -56,7 +56,7 @@ const useDirectMessageDialog = ({ dialogTitle }: UseDirectMessageDialogOptions) 
         }
       }
     },
-    [sendMessageToUser, directMessageReceivers]
+    [sendMessageToUser, sendMessageToOrganization, directMessageReceivers, receiverType]
   );
 
   const directMessageDialog = (
