@@ -6,6 +6,7 @@ export interface OrganizationInput {
   name: string | undefined;
   nameID: string;
   description: string | undefined;
+  tagline: string | undefined;
   location: Location;
   tagsets: Tagset[];
   contactEmail: string | undefined;

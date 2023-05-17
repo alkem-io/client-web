@@ -1948,42 +1948,27 @@
       {
         "key": "transition-énergie",
         "name": "Transition énergétique",
-        "tags": [
-          "Transition énergétique",
-          "Énergie transitoire"
-        ]
+        "tags": ["Transition énergétique", "Énergie transitoire"]
       },
       {
         "key": "société inclusive",
         "name": "Société inclusive",
-        "tags": [
-          "Société inclusive",
-          "Samenleving inclusive"
-        ]
+        "tags": ["Société inclusive", "Samenleving inclusive"]
       },
       {
         "key": "services publics",
         "name": "Services publics",
-        "tags": [
-          "Services publics",
-          "Publieke Diensten"
-        ]
+        "tags": ["Services publics", "Publieke Diensten"]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": [
-          "Innovation",
-          "Innovations"
-        ]
+        "tags": ["Innovation", "Innovations"]
       },
       {
         "key": "digitalisation de la société",
         "name": "Digitalisation de la société",
-        "tags": [
-          "Digitalisation de la société",
-          "Numérisation"
-        ]
+        "tags": ["Digitalisation de la société", "Numérisation"]
       }
     ]
   },

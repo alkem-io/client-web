@@ -54,7 +54,7 @@ const InnovationPackBanner = ({
 }: InnovationPackBannerProps) => {
   return (
     <Root>
-      <PageContent column disableBackground>
+      <PageContent column background="none">
         <PageTitle>{displayName}</PageTitle>
         <Tagline>{tagline}</Tagline>
         <ContributorCardHorizontal

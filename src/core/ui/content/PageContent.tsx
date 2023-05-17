@@ -7,7 +7,7 @@ import GridContainer, { GridContainerProps } from '../grid/GridContainer';
 interface PageContentProps extends BoxProps {
   gridContainerProps?: GridContainerProps;
   column?: boolean;
-  disableBackground?: boolean;
+  background?: string;
 }
 
 const PageContent = ({
@@ -15,7 +15,7 @@ const PageContent = ({
   sx,
   gridContainerProps,
   column = false,
-  disableBackground = false,
+  background = 'background.default',
   ...props
 }: PageContentProps) => {
   const breakpoint = useCurrentBreakpoint();
@@ -27,11 +27,7 @@ const PageContent = ({
   const paddingBottom = isMobile ? 6 : 0;
 
   return (
-    <Box
-      flexGrow={1}
-      sx={{ backgroundColor: disableBackground ? 'none' : 'background.default', paddingBottom, ...sx }}
-      {...props}
-    >
+    <Box flexGrow={1} sx={{ backgroundColor: background, paddingBottom, ...sx }} {...props}>
       <GridContainer
         maxWidth={MAX_CONTENT_WIDTH_WITH_GUTTER_PX}
         marginX="auto"

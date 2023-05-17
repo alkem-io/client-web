@@ -90,7 +90,7 @@ export const OrganizationForm: FC<Props> = ({
     legalEntityName,
     website,
     verification: { status: verificationStatus },
-    profile: { id: profileId, displayName, description, references, tagsets, visual, location },
+    profile: { id: profileId, displayName, description, tagline, references, tagsets, visual, location },
   } = currentOrganization;
 
   const getUpdatedTagsets = useCallback(
@@ -110,6 +110,7 @@ export const OrganizationForm: FC<Props> = ({
     name: displayName || EmptyOrganization.profile.displayName,
     nameID: nameID || EmptyOrganization.nameID,
     description: description || EmptyOrganization.profile.description || '',
+    tagline: tagline || EmptyOrganization.profile.tagline || '',
     location: {
       ...EmptyLocation,
       ...formatLocation(location),
@@ -144,13 +145,14 @@ export const OrganizationForm: FC<Props> = ({
    */
   const handleSubmit = useCallback(
     (orgData: OrganizationInput) => {
-      const { tagsets, references, description, location, ...otherData } = orgData;
+      const { tagsets, references, description, tagline, location, ...otherData } = orgData;
 
       if (isCreateMode) {
         const organization: CreateOrganizationInput = {
           ...otherData,
           profileData: {
             description,
+            tagline,
             displayName: otherData.name!, // ensured by yup
             referencesData: references,
             location: {
@@ -171,6 +173,7 @@ export const OrganizationForm: FC<Props> = ({
           profileData: {
             displayName: otherData.name,
             description,
+            tagline,
             references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
             tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
             location: {
@@ -231,13 +234,10 @@ export const OrganizationForm: FC<Props> = ({
                   <Header text={title} />
                   <Grid container spacing={2}>
                     <NameSegment disabled={isEditMode} required={!isEditMode} />
-
                     {!isCreateMode && (
                       <>
                         <ProfileSegment disabled={isReadOnlyMode} />
-
                         <OrganizationSegment disabled={isReadOnlyMode} />
-
                         <LocationSegment
                           disabled={isReadOnlyMode}
                           cityFieldName="location.city"
