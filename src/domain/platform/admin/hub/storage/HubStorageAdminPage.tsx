@@ -86,8 +86,6 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
     }
   };
 
-  console.log(filterModel);
-
   const [deletingDocument, setDeletingDocument] = useState<DocumentDataFragment>();
   const [deleteDocument, { loading: isDeleting }] = useDeleteDocumentMutation();
   const handleDeleteDocument = async () => {
@@ -97,10 +95,15 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
     await deleteDocument({
       variables: { documentId: deletingDocument.id },
     });
+    await refetchDocuments();
     setDeletingDocument(undefined);
   };
 
-  const { data, loading } = useHubStorageAdminQuery({
+  const {
+    data,
+    loading,
+    refetch: refetchDocuments,
+  } = useHubStorageAdminQuery({
     variables: {
       hubId: hubId!,
     },
@@ -207,7 +210,9 @@ const HubStorageAdminPage: FC<HubStorageAdminPageProps> = ({ hubId, routePrefix 
                   capacity: formatFileSize(MAX_STORAGE_CAPACITY),
                 })}
               </Caption>
-              <RouterLink to="// TODO">{t('pages.admin.generic.sections.storage.contact')}</RouterLink>
+              <Caption component={RouterLink} to="// TODO">
+                {t('pages.admin.generic.sections.storage.contact')}
+              </Caption>
             </Box>
           </GridItem>
         </GridProvider>
