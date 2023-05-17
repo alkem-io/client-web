@@ -166,7 +166,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
     <Root ref={containerReference}>
       {!dataLoading && (
         <Grid container spacing={1} sx={{ height: '100%', alignItems: 'center' }}>
-          <PageContent transparent>
+          <PageContent background="transparent">
             <Grid item sx={{ aspectRatio: '1/1', height: '100%' }}>
               <ImageWrapper>
                 {imageLoading && (
