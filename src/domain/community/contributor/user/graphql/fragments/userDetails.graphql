@@ -16,6 +16,7 @@ fragment UserDetails on User {
   profile {
     id
     displayName
+    tagline
     location {
       country
       city
